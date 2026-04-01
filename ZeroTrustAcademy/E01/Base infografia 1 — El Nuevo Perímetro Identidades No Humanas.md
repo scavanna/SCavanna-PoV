@@ -51,4 +51,4 @@ Las organizaciones que adoptan IA agéntica enfrentan un desafío que no admite 
 
 Esta problemática no es solo teórica. Microsoft formalizó en marzo de 2026 su enfoque Zero Trust for AI (ZT4AI), que extiende los principios probados de Zero Trust al ciclo de vida completo de la IA: desde la ingesta de datos y el entrenamiento de modelos hasta el despliegue y el comportamiento de los agentes en producción. El lanzamiento incluye arquitectura de referencia, taller guiado, herramienta de evaluación y patrones prácticos de implementación.
 
- [Microsoft Security CSU MCSA - ZeroTrust Academy (E01) Zero Trust en la Era de los Agentes de IA + Ticket de salida.md](Microsoft Security CSU MCSA - ZeroTrust Academy (E01) Zero Trust en la Era de los Agentes de IA + Ticket de salida.md) 
+ [Microsoft Security CSU MCSA - ZeroTrust Academy (E01) Zero Trust en la Era de los Agentes de IA + Ticket de salida.md](https://github.com/scavanna/SCavanna-PoV/blob/main/ZeroTrustAcademy/E01/Microsoft%20Security%20CSU%20MCSA%20-%20ZeroTrust%20Academy%20(E01)%20Zero%20Trust%20en%20la%20Era%20de%20los%20Agentes%20de%20IA%20%2B%20Ticket%20de%20salida.md)

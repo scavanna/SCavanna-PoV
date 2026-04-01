@@ -72,4 +72,4 @@ Compliance y protección de datos para agentes custom y agentes en Foundry/Copil
 > "La autonomía requiere gobernanza. La eficiencia necesita control. La IA agéntica necesita un marco de confianza basado en verificación constante, no en suposiciones." — Zero Trust for AI, Microsoft 2026
 >
 
- [Microsoft Security CSU MCSA - ZeroTrust Academy (E01) Zero Trust en la Era de los Agentes de IA + Ticket de salida.md](Microsoft Security CSU MCSA - ZeroTrust Academy (E01) Zero Trust en la Era de los Agentes de IA + Ticket de salida.md) 
+  [Microsoft Security CSU MCSA - ZeroTrust Academy (E01) Zero Trust en la Era de los Agentes de IA + Ticket de salida.md](https://github.com/scavanna/SCavanna-PoV/blob/main/ZeroTrustAcademy/E01/Microsoft%20Security%20CSU%20MCSA%20-%20ZeroTrust%20Academy%20(E01)%20Zero%20Trust%20en%20la%20Era%20de%20los%20Agentes%20de%20IA%20%2B%20Ticket%20de%20salida.md)
