@@ -29,18 +29,19 @@ El problema de seguridad no reside en que los agentes sean maliciosos. Reside en
 El Doble Desafío para los Equipos de Seguridad
 Las organizaciones que adoptan IA agéntica enfrentan un desafío que no admite atajos presupuestarios: gestionar simultáneamente los riesgos de la identidad humana y los de las identidades no humanas, generalmente con los mismos recursos y el mismo equipo. La superficie de ataque no crece de forma lineal; crece de forma exponencial con cada agente que se despliega.
 
-IDENTIDAD HUMANA
-IDENTIDAD NO HUMANA (AGENTE)
-Usuario autenticado con MFA
-Token o API key con ciclo de vida propio
-Acceso basado en rol organizacional
-Acceso basado en propósito funcional
-Comportamiento predecible con desvíos detectables
-Patrones de ejecución a velocidad de máquina
-Credenciales rotadas periódicamente
-Secretos en bóveda, rotación automática
-Sesión con duración razonable
-Ejecución continua, sin sesión definida
+- IDENTIDAD HUMANA
+
+- IDENTIDAD NO HUMANA (AGENTE)
+- Usuario autenticado con MFA
+- Token o API key con ciclo de vida propio
+- Acceso basado en rol organizacional
+- Acceso basado en propósito funcional
+- Comportamiento predecible con desvíos detectables
+- Patrones de ejecución a velocidad de máquina
+- Credenciales rotadas periódicamente
+- Secretos en bóveda, rotación automática
+- Sesión con duración razonable
+- Ejecución continua, sin sesión definida
 
 
 La Respuesta de Microsoft: Zero Trust for AI (ZT4AI)
