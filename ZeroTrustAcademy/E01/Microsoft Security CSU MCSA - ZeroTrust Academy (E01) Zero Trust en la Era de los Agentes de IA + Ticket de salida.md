@@ -14,9 +14,9 @@
 
 ## B) **Infografias compiladas en PPTx / PDF**
 
- [Microsoft Security CSU MCSA - ZeroTrust Academy (E01).pptx](Microsoft Security CSU MCSA - ZeroTrust Academy (E01).pptx) 
+ [Microsoft Security CSU MCSA - ZeroTrust Academy (E01).pptx](https://github.com/scavanna/SCavanna-PoV/blob/main/ZeroTrustAcademy/E01/Microsoft%20Security%20CSU%20MCSA%20-%20ZeroTrust%20Academy%20(E01).pptx)
 
- [Microsoft Security CSU MCSA - ZeroTrust Academy (E01).pdf](Microsoft Security CSU MCSA - ZeroTrust Academy (E01).pdf) 
+ [Microsoft Security CSU MCSA - ZeroTrust Academy (E01).pdf](https://github.com/scavanna/SCavanna-PoV/blob/main/ZeroTrustAcademy/E01/Microsoft%20Security%20CSU%20MCSA%20-%20ZeroTrust%20Academy%20(E01).pdf) 
 
 ------
 
@@ -150,15 +150,15 @@ La autonomía requiere gobernanza. La eficiencia necesita control. Y la intelige
 
 ## E) Texto Base infografias: 
 
- [Base infografia 1 — El Nuevo Perímetro Identidades No Humanas.md](Base infografia 1 — El Nuevo Perímetro Identidades No Humanas.md) 
+ [Base infografia 1 — El Nuevo Perímetro Identidades No Humanas.md](https://github.com/scavanna/SCavanna-PoV/blob/main/ZeroTrustAcademy/E01/Base%20infografia%201%20%E2%80%94%20El%20Nuevo%20Per%C3%ADmetro%20Identidades%20No%20Humanas.md) 
 
- [Base Infografía 2 — Mínimo Privilegio y Control de Acceso para Agentes.md](Base Infografía 2 — Mínimo Privilegio y Control de Acceso para Agentes.md) 
+ [Base Infografía 2 — Mínimo Privilegio y Control de Acceso para Agentes.md](https://github.com/scavanna/SCavanna-PoV/blob/main/ZeroTrustAcademy/E01/Base%20Infograf%C3%ADa%202%20%E2%80%94%20M%C3%ADnimo%20Privilegio%20y%20Control%20de%20Acceso%20para%20Agentes.md) 
 
- [Base Infografía 3 — Nuevas Amenazas Prompt Injection y Data Poisoning.md](Base Infografía 3 — Nuevas Amenazas Prompt Injection y Data Poisoning.md) 
+ [Base Infografía 3 — Nuevas Amenazas Prompt Injection y Data Poisoning.md](https://github.com/scavanna/SCavanna-PoV/blob/main/ZeroTrustAcademy/E01/Base%20Infograf%C3%ADa%203%20%E2%80%94%20Nuevas%20Amenazas%20Prompt%20Injection%20y%20Data%20Poisoning.md) 
 
- [Base Infografía 4 — Verificación Continua, Observabilidad y Trazabilidad.md](Base Infografía 4 — Verificación Continua, Observabilidad y Trazabilidad.md) 
+ [Base Infografía 4 — Verificación Continua, Observabilidad y Trazabilidad.md](https://github.com/scavanna/SCavanna-PoV/blob/main/ZeroTrustAcademy/E01/Base%20Infograf%C3%ADa%204%20%E2%80%94%20Verificaci%C3%B3n%20Continua%2C%20Observabilidad%20y%20Trazabilidad.md) 
 
- [Base Infografía 5 — Gobernanza, Supervisión Humana y Diseño Responsable.md](Base Infografía 5 — Gobernanza, Supervisión Humana y Diseño Responsable.md) 
+ [Base Infografía 5 — Gobernanza, Supervisión Humana y Diseño Responsable.md](https://github.com/scavanna/SCavanna-PoV/blob/main/ZeroTrustAcademy/E01/Base%20Infograf%C3%ADa%205%20%E2%80%94%20Gobernanza%2C%20Supervisi%C3%B3n%20Humana%20y%20Dise%C3%B1o%20Responsable.md) 
 
 
 
