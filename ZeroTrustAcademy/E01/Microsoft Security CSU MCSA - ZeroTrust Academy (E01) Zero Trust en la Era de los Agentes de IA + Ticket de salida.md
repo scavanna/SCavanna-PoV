@@ -12,7 +12,7 @@
 
 Base Infografía 2 — Mínimo Privilegio y Control de Acceso para Agentes
 
-Base Infografía 3 — Nuevas Amenazas: Prompt Injection y Data Poisoning
+[Base Infografía 3 — Nuevas Amenazas: Prompt Injection y Data Poisoning](Nuevas_Amenazas.md) 
 
 Base Infografía 4 — Verificación Continua, Observabilidad y Trazabilidad
 
