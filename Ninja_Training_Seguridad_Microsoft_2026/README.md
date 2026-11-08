@@ -1,10 +1,12 @@
 # Ninja Training de Seguridad Microsoft · Edición 2026
 
-*Trece programas en español, en el formato de los Ninja Training de Microsoft, para equipos de seguridad, identidad, protección de datos y cumplimiento de MCSA (México, Centroamérica y Sudamérica, sin Brasil). Actualizados al 6 de noviembre de 2026.*
+*Quince programas en español, en el formato de los Ninja Training de Microsoft, para equipos de seguridad, identidad, protección de datos y cumplimiento de MCSA (México, Centroamérica y Sudamérica, sin Brasil). Actualizados al 6 de noviembre de 2026 (programas 1 a 13) y al 7 de noviembre de 2026 (programas 14 y 15; la especialización por workload del programa 14, al 8 de noviembre).*
 
 Cada programa reproduce la forma y el espíritu de los Ninja oficiales: módulos con una introducción breve, documentación de Microsoft Learn, blogs oficiales, webinars, GitHub y contenido de la comunidad (MVP de Microsoft y empleados que publican para la comunidad), práctica guiada y una evaluación por nivel con certificado al 80 %. Esta edición agrega justificación por módulo, ejercicios etiquetados según dónde se pueden practicar, plan semanal, retos, tablas de referencia y precisión de licencias y fechas.
 
-> **Fecha de corte:** 6 de noviembre de 2026. Microsoft Ignite (17 al 20 de noviembre de 2026) puede cambiar estados de vista previa y nombres. Antes de recomendar algo, confirma la fuente oficial enlazada.
+> **Versión web.** Abre [index.html](index.html): es la portada interactiva de la serie, con los programas, las rutas de aprendizaje, la búsqueda en los módulos de todos los programas y los anexos comunes para leer en el navegador. Cada guía web tiene una barra para volver a la portada y saltar a otro programa. El sitio es estático y autoportante: funciona sin servidor, desde una carpeta local o publicado con GitHub Pages (incluye `.nojekyll`). Este Markdown es la fuente legible en GitHub.
+
+> **Fecha de corte:** 6 y 7 de noviembre de 2026. Microsoft Ignite (17 al 20 de noviembre de 2026) puede cambiar estados de vista previa y nombres. Antes de recomendar algo, confirma la fuente oficial enlazada.
 
 ## Los programas
 
@@ -23,7 +25,9 @@ Cada programa reproduce la forma y el espíritu de los Ninja oficiales: módulos
 | 11 | **Purview Compliance Manager** | GRC, cumplimiento y auditoría | 18 | ~63 | 113 | 95 | 54 | [Serie](11_Purview_Compliance_Manager/README.md) · [Web](11_Purview_Compliance_Manager/Purview_Compliance_Manager_Ninja_Training_2026.html) · [Excel](11_Purview_Compliance_Manager/Purview_Compliance_Manager_Ninja_Training_2026_Plan_y_catalogo.xlsx) |
 | 12 | **Purview DSPM y seguridad de datos para IA** | Seguridad de datos y gobierno de la IA | 18 | ~80 | 124 | 88 | 53 | [Serie](12_Purview_DSPM_y_Seguridad_de_datos_para_IA/README.md) · [Web](12_Purview_DSPM_y_Seguridad_de_datos_para_IA/Purview_DSPM_IA_Ninja_Training_2026.html) · [Excel](12_Purview_DSPM_y_Seguridad_de_datos_para_IA/Purview_DSPM_IA_Ninja_Training_2026_Plan_y_catalogo.xlsx) |
 | 13 | **Seguridad de Microsoft 365 Copilot, agentes y Copilot Studio** | Seguridad y gobierno de la IA: Microsoft 365, Power Platform, datos, SOC y cumplimiento | 34 | ~184 | 502 | 219 | 60 | [Serie](13_Seguridad_de_Copilot_y_Copilot_Studio/README.md) · [Web](13_Seguridad_de_Copilot_y_Copilot_Studio/Seguridad_Copilot_Copilot_Studio_Ninja_Training_2026.html) · [Excel](13_Seguridad_de_Copilot_y_Copilot_Studio/Seguridad_Copilot_Copilot_Studio_Ninja_Training_2026_Plan_y_catalogo.xlsx) |
-| | **Total** | | 318 | ~1613 | 2974 | 1650 | 731 | |
+| 14 | **Microsoft Defender for Cloud (Servers Plan 2 y cargas de IA)** | Seguridad en la nube: arquitectura, plataforma, SOC, DevSecOps y FinOps | 41 | ~236 | 873 | 327 | 81 | [Serie](14_Defender_for_Cloud/README.md) · [Web](14_Defender_for_Cloud/Defender_for_Cloud_Ninja_Training_2026.html) · [Excel](14_Defender_for_Cloud/Defender_for_Cloud_Ninja_Training_2026_Plan_y_catalogo.xlsx) |
+| 15 | **Seguridad de agentes de IA en Microsoft Foundry (complementario)** | Arquitectura de IA, plataforma de Azure, desarrollo, seguridad de datos, SOC y gobierno de la IA | 28 | ~151 | 472 | 188 | 60 | [Serie](15_Seguridad_de_agentes_de_IA_en_Foundry/README.md) · [Web](15_Seguridad_de_agentes_de_IA_en_Foundry/Seguridad_Agentes_IA_Foundry_Ninja_Training_2026.html) · [Excel](15_Seguridad_de_agentes_de_IA_en_Foundry/Seguridad_Agentes_IA_Foundry_Ninja_Training_2026_Plan_y_catalogo.xlsx) |
+| | **Total** | | 387 | ~2000 | 4319 | 2165 | 872 | |
 
 Los recursos se cuentan por programa; un mismo enlace puede aparecer en más de un programa.
 
@@ -43,6 +47,13 @@ Los recursos se cuentan por programa; un mismo enlace puede aparecer en más de 
 | **Cumplimiento, registros y legal** | GRC, gestión documental, Legal e investigaciones | Purview Compliance Manager → Purview Ciclo de vida y Registros → Purview eDiscovery y Audit → Purview Communication Compliance e Information Barriers |
 | **SOC agéntico (dirección y arquitectura)** | Líderes de SOC, CISO y arquitectos de seguridad | Security Copilot (inicial) → Defender XDR (track de excelencia S1–S7) → Security Copilot (track de agentes X1–X5) → Entra (track de agentes X1–X7) |
 | **Seguridad y gobierno de Copilot y agentes** | Administradores de Microsoft 365 y Power Platform, seguridad de datos, SOC, GRC y dueños de la plataforma de IA | Entra (inicial e intermedio) → Purview DSPM y seguridad de datos para IA (inicial e intermedio) → Seguridad de Microsoft 365 Copilot, agentes y Copilot Studio (los cuatro niveles) → Entra (track de agentes X1–X7) → Security Copilot (agentes) |
+| **Seguridad en la nube con Defender for Cloud** | Arquitectos de nube, equipos de plataforma, SOC, DevSecOps y FinOps | Defender for Cloud (Base y Avanzado) → Defender XDR (I4 y M6: Defender for Endpoint y vulnerabilidades) → Defender for Cloud (Experto, especialización por workload W1–W7 según los planes activos y track de operación) → Sentinel (nivel 3) → Security Copilot (agentes) |
+| **Arquitectura segura para agentes de IA en Azure** | Arquitectos de IA y de nube, ingenieros de plataforma, desarrolladores de agentes, seguridad de datos, SOC y gobierno de la IA | Plan integrado (documento transversal) → Seguridad de agentes de IA en Foundry (nivel 1) → Entra (track de agentes X1–X7) → Defender for Cloud (A1 y A2) → Seguridad de agentes de IA en Foundry (niveles 2 a 4) → Purview DSPM y seguridad de datos para IA → Sentinel y Defender XDR (respuesta) |
+
+## Documentos transversales
+
+- [Plan integrado: arquitectura segura para agentes de IA en Azure](Plan_Arquitectura_Segura_Agentes_IA_Azure.md): análisis de la infografía «Secure Architecture for AI Agents — Microsoft Azure», cobertura de cada capa con los programas existentes, entrenamientos que faltaban, el programa complementario 15 y una ruta integrada por rol.
+- [Anexo de laboratorio en Azure: Defender for Cloud y Foundry](Anexo_Laboratorio_Azure_Defender_for_Cloud_y_Foundry.md): guía paso a paso para montar el laboratorio de los programas 14 y 15 con el crédito mensual de Visual Studio Enterprise, con presupuesto por perfil, sesiones con tiempo acotado para los componentes caros, generación segura de señales y limpieza.
 
 ## Entorno de práctica
 
