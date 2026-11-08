@@ -1,12 +1,14 @@
 # Anexo común · Entorno de práctica y práctica segura en producción
 
-*Ninja Training de Seguridad Microsoft · Edición 2026 · Anexo común a los 13 programas · Volver al [índice general](README.md)*
+*Ninja Training de Seguridad Microsoft · Edición 2026 · Anexo común a los 15 programas · Volver al [índice general](README.md)*
 
-*Serie Ninja Training 2026 (Microsoft Sentinel, Defender XDR, Entra e identidades de agentes, Security Copilot, ocho programas de Microsoft Purview y Seguridad de Copilot, agentes y Copilot Studio). Fuentes verificadas al 6 de noviembre de 2026. Precios en USD, sin impuestos, consultados el 6 de noviembre de 2026.*
+> Para Defender for Cloud y para la seguridad de agentes de IA en Microsoft Foundry hay además una guía paso a paso con presupuesto, comandos y limpieza: el [Anexo de laboratorio en Azure](Anexo_Laboratorio_Azure_Defender_for_Cloud_y_Foundry.md).
+
+*Serie Ninja Training 2026 (Microsoft Sentinel, Defender XDR, Entra e identidades de agentes, Security Copilot, ocho programas de Microsoft Purview, Seguridad de Copilot, agentes y Copilot Studio, Defender for Cloud y Seguridad de agentes de IA en Foundry). Fuentes verificadas al 6 de noviembre de 2026. Precios en USD, sin impuestos, consultados el 6 de noviembre de 2026.*
 
 ## 1. Propósito y cómo usar el anexo
 
-Este anexo te ayuda a montar, con recursos que muchos profesionales de seguridad ya tienen, un **laboratorio completo y repetible** para practicar los ejercicios de los 13 programas de la serie. La receta base es:
+Este anexo te ayuda a montar, con recursos que muchos profesionales de seguridad ya tienen, un **laboratorio completo y repetible** para practicar los ejercicios de los 15 programas de la serie. La receta base es:
 
 - una **suscripción de Visual Studio Enterprise**, que incluye un crédito mensual de Azure (150 USD en la suscripción estándar; otros tipos de suscripción reciben 100 o 50 USD), y
 - un **inquilino (tenant) de Microsoft 365 con licencias E5 de prueba** (prueba comercial de E5 o, si calificas, el sandbox E5 del Microsoft 365 Developer Program).
@@ -23,6 +25,8 @@ Con eso puedes practicar la gran mayoría de los ejercicios marcados como **[LAB
 4. Antes de cualquier práctica en producción, completa la **Ficha de práctica en producción** y las listas de la sección 8.
 5. Si practicas Purview, lee la sección 9: pruebas y licencias, siembra de datos sintéticos, tiempos de procesamiento y práctica segura en producción para los ocho programas de Purview.
 6. Si practicas la seguridad de Microsoft 365 Copilot, los agentes y Copilot Studio, lee la sección 10: cómo conseguir licencias de Copilot y capacidad de Copilot Studio para el laboratorio, siembra de datos y agentes de prueba, entornos de Power Platform, tiempos de procesamiento y práctica segura en producción.
+7. Si practicas Defender for Cloud, lee la sección 11: créditos y pruebas gratuitas de los planes, qué se puede practicar y qué no, y práctica segura en producción. La guía paso a paso, con presupuesto y comandos, está en el [Anexo de laboratorio en Azure](Anexo_Laboratorio_Azure_Defender_for_Cloud_y_Foundry.md).
+8. Si practicas la seguridad de agentes de IA en Microsoft Foundry, lee la sección 12: costos de los componentes de red, sesiones con tiempo acotado, qué se puede practicar y qué no, y práctica segura en producción. La guía paso a paso está en el mismo [Anexo de laboratorio en Azure](Anexo_Laboratorio_Azure_Defender_for_Cloud_y_Foundry.md).
 
 **Convenciones.**
 
@@ -33,7 +37,7 @@ Con eso puedes practicar la gran mayoría de los ejercicios marcados como **[LAB
 | **[No confirmado]** | No hay una declaración oficial pública; se explica la inferencia y el riesgo. |
 | [LAB] / [LAB-PARCIAL] / [SOLO-PRODUCCION] | Etiquetas de los ejercicios de los programas (ver la matriz de laboratorio de cada programa). |
 
-> **Importante.** Las condiciones comerciales cambian con frecuencia y Microsoft Ignite (17 al 20 de noviembre de 2026) puede modificar estados de vista previa, pruebas y precios. Antes de empezar, revisa las páginas de la sección 11. Este anexo no es asesoría legal ni comercial: las condiciones de uso de cada oferta prevalecen.
+> **Importante.** Las condiciones comerciales cambian con frecuencia y Microsoft Ignite (17 al 20 de noviembre de 2026) puede modificar estados de vista previa, pruebas y precios. Antes de empezar, revisa las páginas de la sección 13. Este anexo no es asesoría legal ni comercial: las condiciones de uso de cada oferta prevalecen.
 
 ## 2. Qué incluye la suscripción de Visual Studio Enterprise (créditos y reglas)
 
@@ -389,7 +393,7 @@ Cada fase indica el objetivo, los pasos, la evidencia que debes guardar y una li
 
 ## 7. Qué no se puede practicar en el laboratorio y por qué
 
-La matriz detallada por programa está en el archivo 07 de la serie de cada programa y en la hoja «Laboratorio» de su libro de Excel; Purview (sección 11) y la seguridad de Copilot, agentes y Copilot Studio (sección 10) tienen además su propia sección en este anexo. Este resumen agrupa las limitaciones estructurales.
+La matriz detallada por programa está en el archivo 07 de la serie de cada programa y en la hoja «Laboratorio» de su libro de Excel; Purview (sección 9), la seguridad de Copilot, agentes y Copilot Studio (sección 10), Defender for Cloud (sección 11) y la seguridad de agentes de IA en Foundry (sección 12) tienen además su propia sección en este anexo. Este resumen agrupa las limitaciones estructurales.
 
 | Programa | Capacidad | Por qué no (o solo en parte) en el laboratorio | Cómo practicarla |
 |---|---|---|---|
@@ -1062,7 +1066,145 @@ Casi todo lo que el laboratorio no reproduce (volumen, permisos heredados y pers
 - Fuera de alcance (Agent 365 o E7): https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-365-overview?view=o365-worldwide · https://message.cengizyilmaz.net/message/mc1280556-microsoft-purview-for-agents-ai-observability-and-insider-risk-management-now-generally-available · https://learn.microsoft.com/en-us/entra/identity/conditional-access/agent-id · https://learn.microsoft.com/en-us/defender-xdr/security-for-ai/transition-agent-security-to-agent-365 · https://learn.microsoft.com/en-us/azure/defender-for-cloud/ai-security-posture
 - Normativa en MCSA: https://www.diputados.gob.mx/LeyesBiblio/pdf/LFPDPPP.pdf?version=published · https://www.bcn.cl/leychile/N?i=1209272&f=2026-12-01 · https://normograma.mintic.gov.co/mintic/compilacion/docs/circular_superindustria_0002_2024.htm · https://www.gob.pe/institucion/pcm/normas-legales/7133522-115-2025-pcm
 
-## 11. Fuentes
+## 11. Defender for Cloud en el entorno de práctica
+
+*La guía completa, paso a paso, está en el anexo adicional «Anexo de laboratorio en Azure: Defender for Cloud y Foundry», y la matriz por capacidad en `lab_matrix_mdc.json`. Fuentes verificadas al 7 de noviembre de 2026 (especialización por workload: 8 de noviembre).*
+
+### 11.1 Pruebas, créditos y costos
+
+- **Facturación:** consumo de Azure por plan ([precios](https://azure.microsoft.com/en-us/pricing/details/defender-for-cloud/)). Ninguna fuente oficial confirma ni excluye que el crédito de Visual Studio lo pague; mantén el límite de gasto y paga Security Copilot en otra suscripción.
+- **Pruebas:** 30 días gratis cada vez que activas un plan nuevo en una suscripción ([prueba gratuita](https://learn.microsoft.com/en-us/azure/defender-for-cloud/free-trial)); no se pueden detener, pausar ni extender ([Servers](https://learn.microsoft.com/en-us/azure/defender-for-cloud/tutorial-enable-servers-plan)). El escaneo de malware de Storage (0,15 USD/GB) se cobra desde el primer día y Defender for AI Services tiene 30 días o 75 000 millones de tokens. Con la gestión de planes en el portal de Defender [Vista previa], la prueba requiere aceptación explícita ([gestión de planes](https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-portal/manage-plans-defender-portal)).
+- **Presupuesto [Estimado]:** mínimo ≈ 29–36 USD/mes (dos VM, Storage y SQL); recomendado ≈ 64 USD (suma Arc, contenedores e IA); completo por sesiones ≈ 107 USD más 12 USD de Security Copilot aparte. Mantener todos los planes tras las pruebas sumaría hasta ≈ 132 USD al mes: desactívalos el día 25.
+- **Mayores riesgos de costo:** un nodo de AKS encendido todo el mes (≈ 140 USD), el escaneo de malware sin tope y la capacidad de Security Copilot olvidada.
+
+### 11.2 Qué se puede practicar y qué no
+
+- **Sí:** CSPM, Servers P2 completo, Storage con malware y cuarentena automatizada, SQL Database en el nivel gratuito, PostgreSQL flexible, Cosmos DB en el nivel gratuito, App Service, postura de contenedores serverless, Defender for AI con prompts benignos, AI-SPM, CSPM de AWS y GCP, conectores de DevOps con escaneo sin agente y Defender for Cloud CLI, un servidor local con Arc, alertas de ejemplo, supresión, automatización, exportación continua y Sentinel.
+- **Parcial:** rutas de ataque (pueden quedar vacías), contenedores en tiempo de ejecución y acciones de respuesta sobre pods (AKS por sesiones), EKS y GKE, Key Vault y Resource Manager (alertas de ejemplo; las de línea base de comportamiento no se generan), CIEM multinube, DSPM, Defender for APIs dentro de la prueba, alertas DNS, GHAS con la prueba de GitHub Enterprise Cloud, CloudTrail, Security Copilot y el beneficio de 500 MB.
+- **No:** Defender for APIs fuera de la prueba, seguridad de agentes (Agent 365), habilitación global con DWU, incorporación por organización de AWS y GCP, Direct onboarding, Arc gateway con proxy corporativo, MDASH, migración de planes clásicos, Defender Experts y operación a escala. Defender EASM solo se prueba con tu propio dominio y en una región fuera de MCSA.
+- **Especialización por workload (W1 a W7):** recursos mínimos, costos, trampas y lo que solo se practica en producción, en la sección 3.15 de la Parte A del anexo de laboratorio en Azure.
+
+### 11.3 Practicar en producción con riesgo mitigado
+
+#### 11.3.1 Principios
+
+1. **Leer antes de cambiar:** empieza con Security Reader.
+2. **Piloto acotado:** suscripción piloto o Plan 1 por recurso en VM etiquetadas; Plan 2 solo se habilita por suscripción, aunque se puede deshabilitar por recurso ([elegir plan](https://learn.microsoft.com/en-us/azure/defender-for-cloud/plan-defender-for-servers-select-plan)).
+3. **Auditar antes de imponer:** directivas en auditoría antes de deny o DeployIfNotExists.
+4. **Señales benignas:** alertas de ejemplo y cadenas de prueba oficiales, nunca malware ni credenciales reales.
+5. **Costo y reversión conocidos** antes de cada práctica, con la Ficha de práctica del anexo común.
+
+#### 11.3.2 Controles concretos
+
+- Habilita P1 por etiqueta con la directiva «Configure Azure Defender for Servers to be enabled (with 'P1' subplan) for all resources with the selected tag» y revierte con `pricingTier` Free o borrando la configuración por recurso (DELETE) ([Servers](https://learn.microsoft.com/en-us/azure/defender-for-cloud/tutorial-enable-servers-plan)).
+- Reglas de gobernanza con período de gracia y dueños avisados ([gobernanza](https://learn.microsoft.com/en-us/azure/defender-for-cloud/governance-rules)); workflow automation solo con notificaciones y acotada a un grupo de recursos de prueba ([automatización](https://learn.microsoft.com/en-us/azure/defender-for-cloud/workflow-automations)); supresión con expiración y simulación previa ([supresión](https://learn.microsoft.com/en-us/azure/defender-for-cloud/alerts-suppression-rules)).
+- JIT primero en VM no críticas con vía de acceso alternativa ([JIT](https://learn.microsoft.com/en-us/azure/defender-for-cloud/enable-just-in-time-access)).
+- Con antivirus de terceros en Windows Server, `ForceDefenderPassiveMode` = 1 antes de incorporar ([modo pasivo](https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-passive-mode)).
+- Escaneo sin agente: permisos de Key Vault para discos CMK (rol Key Vault Crypto Service Encryption User para la app 0c7668b5-3260-4ad0-9f53-34ed54fa19b2), exclusión por etiquetas y constancia de que la instantánea queda en la región de la VM ([escaneo sin agente](https://learn.microsoft.com/en-us/azure/defender-for-cloud/enable-agentless-scanning-vms)).
+- Exportación continua a un área de trabajo separada ([exportación](https://learn.microsoft.com/en-us/azure/defender-for-cloud/continuous-export)); presupuestos con alertas y tope de malware por cuenta (`capGBPerMonth`) ([Storage](https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-storage-infrastructure-as-code-enablement)).
+
+#### 11.3.3 Práctica → riesgo → mitigación
+
+| Práctica en producción | Riesgo | Mitigación |
+|---|---|---|
+| Habilitar Defender CSPM o P2 en una suscripción | Costo en todos los recursos del alcance | Suscripción piloto, conteo previo y fecha de corte |
+| MDE en servidores con antivirus de terceros | Conflicto de motores | Modo pasivo antes de incorporar y exclusiones mutuas |
+| Escaneo sin agente con discos CMK | Fallos de escaneo o dudas de residencia | Permisos documentados y aviso a Cumplimiento |
+| JIT en una VM | Bloqueo del acceso administrativo | VM no crítica, ventana de cambio y acceso alterno |
+| Workflow automation | Acciones automáticas sobre producción | Solo notificar y grupo de recursos de prueba |
+| Reglas de supresión | Ocultar ataques reales | Criterios estrechos, expiración y simulación |
+| Reglas de gobernanza | Correos masivos a dueños y gerentes | Alcance por etiqueta y aviso previo |
+| Escaneo de malware en Storage | Costo por GB | Tope por cuenta y override documentado |
+| Evidencia de prompts de Defender for AI | Datos personales guardados | Aprobación de Privacidad y proyecto piloto |
+| Alertas de ejemplo o simuladas | Playbooks y tickets reales | Aviso al SOC y filtros por suscripción piloto |
+
+#### 11.3.4 Qué no se puede deshacer
+
+| Acción | Por qué | Fuente |
+|---|---|---|
+| Iniciar la prueba de un plan | No se puede detener, pausar ni reiniciar | [Servers](https://learn.microsoft.com/en-us/azure/defender-for-cloud/tutorial-enable-servers-plan) |
+| Transferir la gestión de planes o activar la habilitación global en el portal de Defender | No conserva configuraciones por recurso y no hay regreso documentado | [gestión de planes](https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-portal/manage-plans-defender-portal) |
+| Borrar una regla de supresión | No reabre las alertas ya descartadas | [supresión](https://learn.microsoft.com/en-us/azure/defender-for-cloud/alerts-suppression-rules) |
+| Desincorporar MDE | Los datos históricos siguen hasta su retención y reincorporar tarda horas | [offboarding](https://learn.microsoft.com/en-us/defender-endpoint/offboard-machines) |
+| Key Vault con protección de purga | No se puede purgar antes de 90 días | [Key Vault](https://learn.microsoft.com/en-us/azure/key-vault/general/quick-create-cli) |
+| Secretos reales hallados por el escaneo | La exposición ya ocurrió; solo queda rotar | [secretos](https://learn.microsoft.com/en-us/azure/defender-for-cloud/secrets-scanning-servers) |
+
+### 11.4 Fuentes
+
+- https://azure.microsoft.com/en-us/pricing/details/defender-for-cloud/ · https://learn.microsoft.com/en-us/azure/defender-for-cloud/free-trial · https://learn.microsoft.com/en-us/azure/defender-for-cloud/tutorial-enable-servers-plan · https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-portal/manage-plans-defender-portal
+- https://learn.microsoft.com/en-us/azure/defender-for-cloud/plan-defender-for-servers-select-plan · https://learn.microsoft.com/en-us/azure/defender-for-cloud/governance-rules · https://learn.microsoft.com/en-us/azure/defender-for-cloud/workflow-automations · https://learn.microsoft.com/en-us/azure/defender-for-cloud/alerts-suppression-rules · https://learn.microsoft.com/en-us/azure/defender-for-cloud/enable-just-in-time-access
+- https://learn.microsoft.com/en-us/defender-endpoint/microsoft-defender-passive-mode · https://learn.microsoft.com/en-us/azure/defender-for-cloud/enable-agentless-scanning-vms · https://learn.microsoft.com/en-us/azure/defender-for-cloud/continuous-export · https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-storage-infrastructure-as-code-enablement
+- https://learn.microsoft.com/en-us/defender-endpoint/offboard-machines · https://learn.microsoft.com/en-us/azure/key-vault/general/quick-create-cli · https://learn.microsoft.com/en-us/azure/defender-for-cloud/secrets-scanning-servers
+
+## 12. Seguridad de agentes de IA en Foundry en el entorno de práctica
+
+> Fuentes verificadas al 7 de noviembre de 2026. Resumen del entorno de práctica del programa foundry-sec. La guía completa paso a paso está en el anexo adicional «Anexo de laboratorio en Azure: Defender for Cloud y Foundry»; la matriz por capacidad, en `lab_matrix_foundry.json`.
+
+### 12.1 Pruebas, créditos y costos
+
+- **Base:** la suscripción del crédito de Visual Studio Enterprise (150 USD al mes) en el inquilino de la prueba de E5, con límite de gasto activo, más una suscripción de pago por uso con presupuesto propio para lo que el crédito excluye o no admite: Application Insights (excluido; usarlo con el límite activo suspende la suscripción), Grounding with Bing (no elegible con crédito patrocinado), pago por uso de Purview y SCU de Security Copilot (4 USD por SCU-hora, sin prueba).
+- **Pruebas:** E5, 1 mes; Sentinel, 31 días con 10 GB/día; Defender for AI Services, 30 días o 75 000 millones de tokens y luego 0,0008 USD por 1 000 tokens; Defender CSPM, 30 días.
+- **Modelo:** gpt-5-mini GlobalStandard: 0,25 USD por 1M de tokens de entrada y 2 USD por 1M de salida.
+- **Solo en sesiones de 3–4 h:** WAF v2 (≈0,59 USD/h con capacidad 1), Azure Firewall Basic (0,395 USD/h), DDoS IP Protection (199 USD por IP al mes), DDoS Network Protection (2 944 USD al mes), APIM Standard v2 (700 USD al mes) y AI Search S1 (245,28 USD al mes). La hora parcial se cobra completa.
+- **Presupuesto [Estimado]:** mínimo ≈12 USD al mes, recomendado ≈35 y completo por sesiones ≈48 (≈64 con DDoS Network Protection). Con el laboratorio base del anexo general (≈81 USD) en el mismo mes, reparte las sesiones de borde en dos meses.
+
+### 12.2 Qué se puede practicar y qué no
+
+- **Sí:** autenticación sin claves y RBAC, modelos aprobados, guardrails y Prompt Shields, NSP, CMK, MCP propio con aprobación, Agent Framework, A2A, políticas LLM de APIM, evaluaciones, PyRIT, Entra Agent ID, Defender for AI Services y Sentinel.
+- **Parcial:** Agent Service con red privada, seguridad por documento en AI Search, Logic Apps como herramienta, APIM con red, WAF, Azure Firewall, DDoS, Control Plane, AI Red Teaming Agent, trazas, AI-SPM, Purview, Security Copilot y Bing (solo en pago por uso).
+- **No:** acceso condicional para agentes (E7, o Agent 365 con Entra ID P1) y la protección de agentes de Foundry en Defender (Agent 365 desde el 1 de julio de 2026).
+
+### 12.3 Practicar en producción con riesgo mitigado
+
+#### 12.3.1 Principios
+
+- Suscripción sandbox dentro de un landing zone de IA, con Azure Policy en Audit antes de Deny, y autenticación sin claves desde el primer día.
+- Detectar o anotar antes de bloquear: WAF en Detección y guardrails probados por solicitud con `x-policy-id`; anotar sin bloquear salidas de los daños principales exige aprobación, y los agentes solo admiten anotar y bloquear.
+- Cuotas de tokens generosas y con alertas.
+- Red teaming solo contra despliegues no productivos, con datos sintéticos.
+- Captura de contenido en trazas desactivada salvo aprobación de privacidad.
+- Ventanas de cambio y reversión preparada para la red.
+
+#### 12.3.2 Controles concretos
+
+- Directivas «key access disabled», de modelos aprobados y de elegibilidad (`denyPreviewModels`).
+- Foundry User en el ámbito del proyecto y roles mínimos por identidad de agente.
+- `llm-token-limit` con cuota holgada y alerta al 80 %; `llm-content-safety` en un producto piloto.
+- MCP con `require_approval="always"` para herramientas que escriben y `allowed_tools` explícito: una lista vacía permite todas.
+- NSP en Transition antes de Enforced; firewall con reglas amplias registradas antes de la lista de FQDN.
+- Evidencia de prompts desactivada salvo aprobación, reglas de Sentinel en severidad informativa y directivas de Purview en simulación.
+
+#### 12.3.3 Práctica → riesgo → mitigación
+
+| Práctica en producción | Riesgo | Mitigación |
+|---|---|---|
+| Deshabilitar claves | Romper integraciones | Directiva en Audit, inventario y reversión con `disableLocalAuth=false` |
+| Modelos aprobados en Deny | Bloquear despliegues legítimos | Audit primero y barra final para fijar modelos |
+| Guardrail nuevo | Falsos positivos | `x-policy-id` en tráfico piloto y canarios benignos |
+| WAF en Prevención | Bloquear prompts largos o JSON | Semanas en Detección y exclusiones por regla |
+| Egreso forzado por firewall | Romper identidad o telemetría | Dependencias documentadas y ruta de reversión |
+| NSP en Enforced | Cortar accesos legítimos | Transition y análisis de NSPAccessLogs |
+| Límites de tokens | Cortar el servicio | Cuotas holgadas y alertas |
+| Herramienta MCP nueva | Envenenamiento o exfiltración | Aprobación humana y `allowed_tools` explícito |
+| Red teaming | Contenido dañino o alertas reales | Solo despliegues no productivos y aviso al SOC |
+| Captura de contenido en trazas | Datos personales en registros | Desactivada salvo aprobación y retención mínima |
+
+#### 12.3.4 Qué no se puede deshacer
+
+| Acción | Por qué | Fuente |
+|---|---|---|
+| Purgar una cuenta de Foundry | Borrado definitivo de la cuenta y sus despliegues | https://learn.microsoft.com/en-us/azure/ai-services/recover-purge-resources |
+| Pasar un proyecto a CMK | Sin vuelta a claves de Microsoft; sin la clave, datos inaccesibles | https://learn.microsoft.com/en-us/azure/foundry/concepts/encryption-keys-portal |
+| Key Vault con protección de purga | El nombre queda reservado durante la retención (7–90 días) | https://learn.microsoft.com/en-us/azure/key-vault/general/soft-delete-overview |
+| Datos enviados a Grounding with Bing | Salen del límite de cumplimiento de Azure y no aplica el DPA | https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/bing-tools |
+| Conversaciones borradas en la configuración estándar | Viven en tu Cosmos DB; sin copia propia no se recuperan [No confirmado] | https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/standard-agent-setup |
+| Trazas con contenido ya ingeridas | Permanecen en el workspace durante su retención | https://learn.microsoft.com/en-us/azure/foundry/observability/how-to/trace-agent-framework |
+
+### 12.4 Fuentes
+
+https://azure.microsoft.com/en-us/pricing/member-offers/credit-for-visual-studio-subscribers/ · https://learn.microsoft.com/en-us/azure/foundry-classic/agents/how-to/tools-classic/bing-grounding · https://azure.microsoft.com/en-us/pricing/details/defender-for-cloud/ · https://learn.microsoft.com/en-us/azure/sentinel/billing · https://www.microsoft.com/en-us/security/pricing/microsoft-security-copilot/ · https://azure.microsoft.com/en-us/pricing/details/azure-openai/ · https://azure.microsoft.com/en-us/pricing/details/application-gateway/ · https://azure.microsoft.com/en-us/pricing/details/azure-firewall/ · https://azure.microsoft.com/en-us/pricing/details/ddos-protection/ · https://azure.microsoft.com/en-us/pricing/details/api-management/ · https://azure.microsoft.com/en-us/pricing/details/search/ · https://learn.microsoft.com/en-us/azure/ddos-protection/test-through-simulations · https://learn.microsoft.com/en-us/azure/foundry/concepts/ai-red-teaming-agent · https://learn.microsoft.com/en-us/entra/identity/conditional-access/agent-id · https://learn.microsoft.com/en-us/defender-xdr/security-for-ai/transition-agent-security-to-agent-365 · https://learn.microsoft.com/en-us/azure/foundry/guardrails/how-to-create-guardrails · https://learn.microsoft.com/en-us/azure/foundry/how-to/model-deployment-policy · https://learn.microsoft.com/en-us/azure/ai-services/disable-local-auth · https://learn.microsoft.com/en-us/azure/api-management/llm-token-limit-policy · https://learn.microsoft.com/en-us/azure/foundry/agents/how-to/tools/model-context-protocol · https://learn.microsoft.com/en-us/azure/foundry/how-to/add-foundry-to-network-security-perimeter · https://learn.microsoft.com/en-us/purview/ai-azure-foundry
+
+## 13. Fuentes
 
 Todas las URL de este anexo, en orden de aparición y agrupadas por tema. Las de terceros (agregadores de precios y respuestas de Microsoft Q&A) se usan solo como referencia de precios o de comportamiento observado y están marcadas en el texto.
 

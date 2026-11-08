@@ -204,10 +204,28 @@ h2.sec,.levelhead,.hero{scroll-margin-top:calc(var(--tb,64px) + 12px)}
 
 .tblwrap{overflow-x:auto}
 
+/* Barra de la serie: navegación entre programas y hacia la portada */
+.seriesbar{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:#06172B;color:#C9D6E6;padding:6px 18px;font-size:.86em;border-bottom:1px solid #1F3A5C}
+.seriesbar a{color:#E6EEF8}
+.seriesbar .sb-home{font-weight:600;margin-right:auto}
+.seriesbar .sb-prog{display:flex;gap:6px;align-items:center}
+.seriesbar select{padding:3px 6px;border-radius:5px;border:1px solid #5B7393;background:#0B2340;color:#fff;max-width:300px}
+@media print{.seriesbar{display:none!important}}
+
 </style>
 </head>
 <body data-key="ninja2026-pv-irm">
 <a class="skip" href="#main">Saltar al contenido</a>
+<nav class="seriesbar" aria-label="Serie Ninja Training de Seguridad Microsoft">
+  <a class="sb-home" href="../index.html">&#8962; Ninja Training de Seguridad Microsoft · Inicio de la serie</a>
+  <label class="sb-prog"><span>Ir al programa</span>
+    <select aria-label="Ir a otro programa de la serie" onchange="if(this.value){location.href=this.value}">
+      <option value="../01_Sentinel/Sentinel_Ninja_Training_2026.html">1 · Microsoft Sentinel</option><option value="../02_Defender_XDR/Defender_XDR_Ninja_Training_2026.html">2 · Microsoft Defender XDR</option><option value="../03_Entra_Identidad_y_Agentes/Entra_Identidad_Ninja_Training_2026.html">3 · Microsoft Entra (identidad y agentes)</option><option value="../04_Security_Copilot/Security_Copilot_Ninja_Training_2026.html">4 · Microsoft Security Copilot</option><option value="../05_Purview_Information_Protection/Purview_Information_Protection_Ninja_Training_2026.html">5 · Purview Information Protection</option><option value="../06_Purview_DLP/Purview_DLP_Ninja_Training_2026.html">6 · Purview Data Loss Prevention</option><option value="../07_Purview_Insider_Risk/Purview_Insider_Risk_Ninja_Training_2026.html" selected>7 · Purview Insider Risk Management</option><option value="../08_Purview_Communication_Compliance/Purview_Communication_Compliance_Ninja_Training_2026.html">8 · Purview Communication Compliance e Information Barriers</option><option value="../09_Purview_Ciclo_de_vida_y_Registros/Purview_Lifecycle_Records_Ninja_Training_2026.html">9 · Purview Data Lifecycle y Records Management</option><option value="../10_Purview_eDiscovery_y_Audit/Purview_eDiscovery_Audit_Ninja_Training_2026.html">10 · Purview eDiscovery y Audit</option><option value="../11_Purview_Compliance_Manager/Purview_Compliance_Manager_Ninja_Training_2026.html">11 · Purview Compliance Manager</option><option value="../12_Purview_DSPM_y_Seguridad_de_datos_para_IA/Purview_DSPM_IA_Ninja_Training_2026.html">12 · Purview DSPM y seguridad de datos para IA</option><option value="../13_Seguridad_de_Copilot_y_Copilot_Studio/Seguridad_Copilot_Copilot_Studio_Ninja_Training_2026.html">13 · Seguridad de Microsoft 365 Copilot, agentes y Copilot Studio</option><option value="../14_Defender_for_Cloud/Defender_for_Cloud_Ninja_Training_2026.html">14 · Microsoft Defender for Cloud (Servers Plan 2 y cargas de IA)</option><option value="../15_Seguridad_de_agentes_de_IA_en_Foundry/Seguridad_Agentes_IA_Foundry_Ninja_Training_2026.html">15 · Seguridad de agentes de IA en Microsoft Foundry (complementario)</option>
+    </select>
+  </label>
+  <a href="../index.html#rutas">Rutas de aprendizaje</a>
+  <a href="../index.html#anexos">Anexos comunes</a>
+</nav>
 <header class="topbar">
   <div class="brand">Insider Risk Ninja Training<span>Edición 2026</span></div>
   <div class="tools" role="search">
