@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Lockbox, Customer Key y M365 PAM — Guía Operacional (Configuración, Rutinas y Playbooks)</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.72;
+}
+code, pre, .mono {
+  font-family: Consolas, "Courier New", Courier, monospace;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 0.88em;
+  color: var(--cp-text);
+  word-break: break-word;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Sticky Top Navigation */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--cp-panel-strong);
+  border-bottom: 1px solid var(--cp-border);
+  backdrop-filter: blur(10px);
+  padding: 12px 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.topbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border-strong);
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.btn-primary:hover {
+  background: var(--cp-accent-hover);
+  border-color: var(--cp-accent-hover);
+  color: var(--cp-accent-fg);
+}
+.btn-sm {
+  padding: 5px 11px;
+  font-size: 12.5px;
+}
+.select-input, .search-input {
+  padding: 9px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+}
+.search-input { min-width: 260px; flex: 1; }
+
+/* Two-Column Spacious App Layout */
+.app-shell {
+  max-width: 1520px;
+  margin: 0 auto;
+  padding: 28px 32px 56px 32px;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+.sidebar {
+  position: sticky;
+  top: 76px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 20px 16px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+}
+.nav-section-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cp-text-soft);
+  padding: 12px 12px 6px 12px;
+}
+.nav-section-label:first-child { padding-top: 2px; }
+.nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border-radius: 0.625rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.nav-item:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border);
+}
+.nav-item.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.nav-subitem {
+  padding-left: 24px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.nav-count {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--cp-surface-soft);
+  color: var(--cp-text-muted);
+  border: 1px solid var(--cp-border);
+}
+.nav-item.active .nav-count {
+  background: var(--cp-panel-strong);
+  color: var(--cp-text);
+  border-color: transparent;
+}
+.sidebar-progress {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cp-border);
+}
+.prog-row { margin-bottom: 12px; }
+.prog-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--cp-text-muted);
+  font-weight: 600;
+}
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--cp-accent);
+  width: 0%;
+  transition: width 0.25s ease;
+}
+
+/* Main Reading Area */
+.main-area {
+  max-width: 1080px;
+  width: 100%;
+}
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+
+/* Hero & Section Headers */
+.hero-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 32px 36px;
+  margin-bottom: 28px;
+}
+.hero-card h1 {
+  margin: 10px 0 14px 0;
+  font-size: 28px;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+}
+.hero-lead {
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: var(--cp-text-muted);
+  margin: 0;
+}
+.section-banner {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-left: 5px solid var(--cp-accent);
+  border-radius: 16px;
+  padding: 26px 32px;
+  margin-bottom: 28px;
+}
+.section-banner h2 {
+  margin: 0 0 8px 0;
+  font-size: 23px;
+  line-height: 1.3;
+}
+.section-banner p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15.5px;
+}
+
+/* Mode Selector Cards on Overview */
+.modes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.mode-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+}
+.mode-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cp-accent);
+}
+.mode-card h3 {
+  margin: 6px 0 10px 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+.mode-card p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15px;
+}
+
+/* Badges & Inline Tags */
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 0.625rem;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface-soft);
+  color: var(--cp-text);
+}
+.badge-accent {
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border-color: var(--cp-accent);
+}
+.badge-learn {
+  border-color: var(--cp-success);
+  color: var(--cp-success);
+  background: var(--cp-surface-soft);
+}
+.badge-editorial {
+  border-color: var(--cp-warning);
+  color: var(--cp-warning);
+  background: var(--cp-surface-soft);
+}
+.inline-tag {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 6px;
+  margin-left: 4px;
+  vertical-align: middle;
+  border: 1px solid var(--cp-border);
+}
+.tag-learn { color: var(--cp-success); border-color: var(--cp-success); background: var(--cp-surface-soft); }
+.tag-edit { color: var(--cp-warning); border-color: var(--cp-warning); background: var(--cp-surface-soft); }
+
+/* Sub-navigation Switcher */
+.subnav-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.subnav-pill {
+  padding: 10px 18px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.subnav-pill:hover { border-color: var(--cp-border-strong); background: var(--cp-surface-soft); }
+.subnav-pill.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.filter-toolbar {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Spacious Operational, Setup & Playbook Cards */
+.spacious-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 30px 34px;
+  margin-bottom: 24px;
+}
+.spacious-card.is-done {
+  border-color: var(--cp-success);
+  background: var(--cp-bg-elevated);
+}
+.adhoc-card {
+  border-left: 5px solid var(--cp-accent);
+}
+.card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.card-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 280px;
+}
+.task-checkbox {
+  width: 22px;
+  height: 22px;
+  margin-top: 4px;
+  accent-color: var(--cp-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.card-code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border: 1px solid var(--cp-accent);
+  display: inline-block;
+  margin-bottom: 6px;
+}
+.card-heading {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+/* Info Callout Boxes inside Cards */
+.info-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.info-box {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+.info-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-soft);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.info-content {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.trigger-banner {
+  background: var(--cp-accent-soft);
+  border: 1px solid var(--cp-accent);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+}
+.trigger-banner .info-label {
+  color: var(--cp-accent);
+}
+
+/* Step-by-Step Spacious List */
+.steps-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-muted);
+  margin: 0 0 12px 0;
+}
+.steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.step-row:hover { border-color: var(--cp-border-strong); }
+.step-row.step-checked {
+  border-color: var(--cp-success);
+  opacity: 0.88;
+}
+.step-num {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border-strong);
+  color: var(--cp-text);
+  font-weight: 700;
+  font-size: 13.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-row.step-checked .step-num {
+  background: var(--cp-success);
+  border-color: var(--cp-success);
+  color: var(--cp-accent-fg);
+}
+.step-body {
+  font-size: 15.5px;
+  line-height: 1.72;
+  flex: 1;
+}
+
+/* Validation & Evidence Footer Box */
+.validation-footer {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.validation-footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--cp-border);
+  font-size: 13.5px;
+  color: var(--cp-text-muted);
+}
+
+/* Grids & Tables for Secondary Views */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.subsection-heading {
+  font-size: 20px;
+  margin: 34px 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cp-border);
+}
+pre.code-block {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 14px 0 0 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.table-wrap {
+  overflow-x: auto;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th, td { padding: 16px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--cp-border); line-height: 1.6; }
+th { background: var(--cp-bg-elevated); font-weight: 700; }
+tr:last-child td { border-bottom: none; }
+.muted { color: var(--cp-text-muted); }
+
+.footer {
+  margin-top: 48px;
+  padding: 24px 0;
+  border-top: 1px solid var(--cp-border);
+  color: var(--cp-text-muted);
+  font-size: 13.5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 1080px) {
+  .app-shell { grid-template-columns: 1fr; padding: 18px; gap: 20px; }
+  .sidebar { position: static; max-height: none; }
+  .grid-2, .info-pair { grid-template-columns: 1fr; }
+  .spacious-card, .hero-card { padding: 22px; }
+}
+@media print {
+  .topbar, .sidebar, .filter-toolbar, .subnav-bar { display: none !important; }
+  .app-shell { display: block; padding: 0; }
+  .view-panel { display: block !important; margin-bottom: 32px; }
+  body { background: var(--cp-surface); font-size: 13px; }
+}
+</style></head>
+<body>
+<header class="topbar">
+  <div class="topbar-group">
+    <a class="btn btn-primary" href="../index.html">← Portal Maestro (23 Módulos)</a>
+    <a class="btn" id="prevModBtn" href="#">Anterior</a>
+    <select class="select-input" id="modJumpSelect" aria-label="Cambiar de módulo"></select>
+    <a class="btn" id="nextModBtn" href="#">Siguiente</a>
+  </div>
+  <div class="topbar-group">
+    <a class="btn" id="xlsxLink" href="#" download>Libro .XLSX</a>
+    <a class="btn" id="mdLink" href="#">Guía .MD</a>
+    <button class="btn" type="button" id="exportCsvBtn">Exportar CSV</button>
+    <button class="btn" type="button" id="printBtn">Imprimir / PDF</button>
+    <button class="btn" type="button" id="themeToggleBtn">Tema Claro / Oscuro</button>
+  </div>
+</header>
+
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Navegación de la guía operativa">
+    <div class="nav-section-label">Introducción</div>
+    <button class="nav-item active" type="button" data-view="view-overview">
+      <span>Visión General y Mapa</span>
+    </button>
+
+    <div class="nav-section-label">1 · Configuración Puntual</div>
+    <button class="nav-item" type="button" data-view="view-config">
+      <span>Configuración y Validaciones</span>
+      <span class="nav-count" id="navCntConfig">0</span>
+    </button>
+
+    <div class="nav-section-label">2 · Acciones Periódicas</div>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Diaria">
+      <span>Rutinas Diarias</span>
+      <span class="nav-count" id="navCntDiaria">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Semanal">
+      <span>Rutinas Semanales</span>
+      <span class="nav-count" id="navCntSemanal">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Mensual">
+      <span>Rutinas Mensuales</span>
+      <span class="nav-count" id="navCntMensual">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="CICLOS_LARGOS">
+      <span>Trimestral · Semestral · Anual</span>
+      <span class="nav-count" id="navCntLargos">0</span>
+    </button>
+
+    <div class="nav-section-label">3 · Respuesta a Señales</div>
+    <button class="nav-item" type="button" data-view="view-adhoc">
+      <span>Playbooks Ad-Hoc (Alertas)</span>
+      <span class="nav-count" id="navCntAdhoc">0</span>
+    </button>
+
+    <div class="nav-section-label">Verificación y Gobierno</div>
+    <button class="nav-item" type="button" data-view="view-queries">
+      <span>Consultas KQL / Graph / PS</span>
+      <span class="nav-count" id="navCntQueries">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-kpis">
+      <span>KPIs, Madurez y Formación</span>
+      <span class="nav-count" id="navCntKpis">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-nist">
+      <span>Auditoría NIST 2.0 y Fuentes</span>
+      <span class="nav-count" id="navCntNist">0</span>
+    </button>
+
+    <div class="sidebar-progress" id="sidebarProgress"></div>
+  </aside>
+
+  <main class="main-area">
+    <!-- VISTA 0: OVERVIEW & MAPA DE LOS 3 MODOS -->
+    <section class="view-panel active" id="view-overview">
+      <div class="hero-card">
+        <div class="pill-row" id="heroBadges"></div>
+        <h1 id="heroTitle"></h1>
+        <p class="hero-lead" id="heroSummary"></p>
+      </div>
+
+      <h2 class="subsection-heading" style="margin-top:0;">Cómo operar esta tecnología: Los 3 Niveles de Acción</h2>
+      <div class="modes-grid" id="modesSummaryGrid"></div>
+
+      <div class="spacious-card" id="licensingOverviewCard"></div>
+
+      <h2 class="subsection-heading">Principios Rectores Oficiales (Zero Trust)</h2>
+      <div class="grid-2" id="principlesGrid"></div>
+    </section>
+
+    <!-- VISTA 1: ACCIONES PUNTUALES DE CONFIGURACIÓN Y VALIDACIONES -->
+    <section class="view-panel" id="view-config">
+      <div class="section-banner">
+        <h2>1. Acciones Puntuales de Configuración y Validaciones sobre la Plataforma</h2>
+        <p>Controles que se ejecutan al desplegar la tecnología, activar nuevas capacidades o auditar su línea base. Distingue qué debes configurar una sola vez y cómo validar técnicamente ("Proof of Life") que cada ajuste está activo y protegiendo el entorno.</p>
+      </div>
+
+      <div class="subnav-bar" id="configSubnav">
+        <a class="subnav-pill" href="#cfg-prereqs">1A. Puesta en Marcha Inicial</a>
+        <a class="subnav-pill" href="#cfg-validations">1B. Validaciones de Configuración ("Proof of Life")</a>
+        <a class="subnav-pill" href="#cfg-components">1C. Configuración por Componente</a>
+        <a class="subnav-pill" href="#cfg-rbac">1D. Privilegio Mínimo RBAC y PIM</a>
+      </div>
+
+      <h3 class="subsection-heading" id="cfg-prereqs">1A. Checklist de Puesta en Marcha y Prerrequisitos Puntuales</h3>
+      <div id="prereqsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-validations">1B. Validaciones Técnicas sobre las Configuraciones ("Proof of Life")</h3>
+      <p class="muted" style="margin-top:-8px;margin-bottom:20px;">Comprueba cada uno de estos indicadores en consola o mediante consulta para confirmar que la configuración no quedó solo en papel o en modo auditoría incompleta.</p>
+      <div id="validationsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-components">1C. Configuración Base por Componente e Integraciones</h3>
+      <div id="componentsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-rbac">1D. Configuración Puntual de Roles Administrativos y Estrategia PIM / JIT</h3>
+      <div id="rbacContainer"></div>
+    </section>
+
+    <!-- VISTA 2: ACCIONES PERIÓDICAS PROGRAMADAS -->
+    <section class="view-panel" id="view-periodic">
+      <div class="section-banner">
+        <h2 id="periodicTitle">2. Acciones Periódicas Programadas</h2>
+        <p id="periodicSubtitle">Rutinas recurrentes preventivas, de higiene operativa, tuning y gobierno. Selecciona la frecuencia deseada para leer cómodamente solo las actividades de ese ciclo.</p>
+      </div>
+
+      <div class="subnav-bar" id="periodicCadBar">
+        <button class="subnav-pill active" type="button" data-pcad="Diaria">Diarias</button>
+        <button class="subnav-pill" type="button" data-pcad="Semanal">Semanales</button>
+        <button class="subnav-pill" type="button" data-pcad="Mensual">Mensuales</button>
+        <button class="subnav-pill" type="button" data-pcad="CICLOS_LARGOS">Trimestrales · Semestrales · Anuales</button>
+        <button class="subnav-pill" type="button" data-pcad="ALL_PERIODIC">Ver Todas las Periódicas</button>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="perSearch" placeholder="Buscar acción periódica, consola, tabla KQL, control a validar o rol...">
+        <select class="select-input" id="perRole"><option value="ALL">Rol Responsable: Todos</option></select>
+        <select class="select-input" id="perOrigin">
+          <option value="ALL">Origen: Todos</option>
+          <option value="Verificado MS Learn">Verificado MS Learn</option>
+          <option value="Propuesta Editorial">Propuesta Editorial</option>
+        </select>
+        <button class="btn btn-sm" type="button" id="resetChecksBtn">Reiniciar Progreso</button>
+      </div>
+
+      <p class="muted" id="perCountLabel" style="margin-bottom:18px;"></p>
+      <div id="periodicCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 3: ACCIONES AD-HOC ANTE SEÑALES, ALERTAS E INCIDENTES -->
+    <section class="view-panel" id="view-adhoc">
+      <div class="section-banner">
+        <h2>3. Acciones Ad-Hoc ante Señales, Alertas e Incidentes (Playbooks del Analista)</h2>
+        <p>Procedimientos reactivos bajo demanda. A diferencia de las rutinas periódicas, estos playbooks se activan únicamente cuando una señal de riesgo, alerta de detección, anomalía o emergencia exige la intervención inmediata de un analista.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="adhocSearch" placeholder="Filtrar playbooks por alerta disparadora, síntoma, técnica MITRE o acción de contención...">
+      </div>
+
+      <div id="adhocCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 4: CONSULTAS KQL / GRAPH / POWERSHELL -->
+    <section class="view-panel" id="view-queries">
+      <div class="section-banner">
+        <h2>4. Consultas Técnicas de Validación, Monitoreo y Threat Hunting</h2>
+        <p>Consultas KQL, llamadas Microsoft Graph API y scripts PowerShell listos para auditar configuraciones puntuales, medir salud periódica o investigar alertas ad-hoc.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="kqlSearch" placeholder="Buscar consulta por nombre, tabla (SigninLogs, DeviceEvents, SentinelHealth...), comando o propósito...">
+        <select class="select-input" id="kqlUsageFilter">
+          <option value="ALL">Momento de Uso: Todos</option>
+          <option value="Validación de Configuración y Postura">1. Validación de Configuración y Postura</option>
+          <option value="Control Periódico de Salud, Auditoría y KPIs">2. Control Periódico de Salud y KPIs</option>
+          <option value="Investigación Ad-Hoc y Threat Hunting">3. Investigación Ad-Hoc y Hunting</option>
+        </select>
+      </div>
+
+      <div id="queriesContainer"></div>
+    </section>
+
+    <!-- VISTA 5: KPIs, MADUREZ Y FORMACIÓN -->
+    <section class="view-panel" id="view-kpis">
+      <div class="section-banner">
+        <h2>5. Indicadores Clave (KPIs), Modelo de Madurez y Ruta de Formación</h2>
+        <p>Métricas objetivas para medir eficacia operativa ante el CISO, evolución en 5 niveles de madurez y habilitación técnica recomendada por rol.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Indicadores Clave de Desempeño (KPIs)</h3>
+      <div class="grid-2" id="kpiContainer"></div>
+
+      <h3 class="subsection-heading">Modelo de Madurez Operacional (Niveles 1 a 5)</h3>
+      <div id="maturityContainer"></div>
+
+      <h3 class="subsection-heading">Ruta de Habilitación y Formación por Rol</h3>
+      <div id="trainingContainer"></div>
+    </section>
+
+    <!-- VISTA 6: AUDITORÍA NIST CSF 2.0, TRANSPARENCIA Y REFERENCIAS -->
+    <section class="view-panel" id="view-nist">
+      <div class="section-banner">
+        <h2>6. Mapeo de Auditoría NIST CSF 2.0, Revalidación (Nov 2026) y Referencias</h2>
+        <p>Evidencia auditable reproducible para las seis funciones de NIST CSF 2.0 (CSWP 29), registro transparente de verificaciones en Microsoft Learn frente a propuestas editoriales y fuentes públicas.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Matriz de Evidencia Auditable NIST CSF 2.0</h3>
+      <div class="filter-toolbar">
+        <select class="select-input" id="nistFuncSelect">
+          <option value="ALL">Función NIST CSF 2.0: Todas (6 Funciones)</option>
+          <option value="GOVERN">GOVERN (GV)</option>
+          <option value="IDENTIFY">IDENTIFY (ID)</option>
+          <option value="PROTECT">PROTECT (PR)</option>
+          <option value="DETECT">DETECT (DE)</option>
+          <option value="RESPOND">RESPOND (RS)</option>
+          <option value="RECOVER">RECOVER (RC)</option>
+        </select>
+      </div>
+      <div id="nistCardsContainer"></div>
+
+      <h3 class="subsection-heading">Registro de Revalidación Técnica (Noviembre 2026) y Decisiones Editoriales</h3>
+      <div class="spacious-card" id="auditSummaryBox"></div>
+      <div class="grid-2">
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Hallazgos y Actualizaciones Verificadas en MS Learn</h3>
+          <div id="corrContainer"></div>
+        </div>
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Decisiones y Propuestas Editoriales Explícitas</h3>
+          <div id="decContainer"></div>
+        </div>
+      </div>
+
+      <h3 class="subsection-heading">Directorio de Referencias Públicas Verificadas</h3>
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="refSearch" placeholder="Filtrar referencias por título, autor, MVP o URL...">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Recurso Oficial / Comunitario</th>
+              <th>Tipo</th>
+              <th>Autor / Entidad</th>
+              <th>Comentario de Alcance</th>
+            </tr>
+          </thead>
+          <tbody id="refTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>Guía Maestra de Excelencia Operacional Microsoft — Edición Espaciada v3.0 (Validación: 2026-11-11)</div>
+      <div>Configuración Puntual · Rutinas Periódicas · Playbooks Ad-Hoc · NIST CSF 2.0</div>
+    </footer>
+  </main>
+</div>
+
+<script>
+const MODULE_DATA = {"schemaVersion": "2.0", "id": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "orden": 21, "slug": "Customer_Lockbox_Customer_Key_y_M365_PAM", "nombre": "Microsoft Purview Customer Lockbox, Customer Key y Privileged Access Management (M365 PAM)", "nombreCorto": "Customer Lockbox, Customer Key y M365 PAM", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "bloqueOrigen": "Nuevo desde Microsoft Learn MCP (Nov 2026)", "fechaValidacion": "2026-11-11", "portalesPrincipales": ["https://admin.microsoft.com", "https://purview.microsoft.com", "https://portal.azure.com", "https://intune.microsoft.com"], "audiencia": ["CISO", "Cloud Security Architect", "Cryptography & PKI Lead", "Identity & Privileged Access Lead", "Exchange & SharePoint Platform Leads", "Compliance Officer / DPO", "SOC L2 / L3", "Internal Audit / GRC", "FinOps"], "relacionM365E5": {"estado": "Incluido en Microsoft 365 E5 / Microsoft Purview Suite (+ costos Azure Key Vault / Managed HSM para Customer Key)", "licencias": ["Microsoft 365 E5 / A5 / G5 (incluye derechos completos para Customer Lockbox, Customer Key y Microsoft Purview Privileged Access Management)", "Office 365 E5 / A5 / G5 (incluye Customer Lockbox, Customer Key y M365 PAM)", "Microsoft Purview Suite (anteriormente Microsoft 365 E5 Compliance, renombrado el 1 de octubre de 2025) para los tres pilares", "Microsoft 365 E5 / A5 / F5 / G5 Information Protection and Governance Add-on (incluye Customer Key)", "Microsoft 365 E5 / A5 / F5 / G5 Insider Risk Management Add-on (incluye Customer Lockbox y M365 PAM)", "Dos suscripciones Azure de pago independientes (Enterprise Agreement / MCA; no se admiten Free, Trial, Sponsorship ni MSDN) para alojar Azure Key Vault Premium (HSM) o Azure Key Vault Managed HSM en Customer Key", "Plan de soporte de Azure nivel Developer o superior (requerido únicamente para el control complementario Customer Lockbox for Microsoft Azure)"], "prerrequisitos": ["Dos suscripciones Azure de pago distintas creadas bajo el mismo tenant de Microsoft Entra ID y administradas por custodios separados para cumplir el aislamiento de claves raíz de Customer Key", "Aprovisionamiento de 6 Azure Key Vaults Premium SKU (3 pares para MDEP, Exchange y SharePoint) o 2 instancias Azure Key Vault Managed HSM (FIPS 140-2 Level 3) con Soft Delete de 90 días y Purge Protection obligatorios desde la creación, modelo Azure RBAC y firewall con Allow Trusted Microsoft Services", "Claves RSA / RSA-HSM de hasta 4.096 bits sin fecha de expiración (curvas elípticas EC no soportadas) y respaldo inmediato online/offline con Backup-AzKeyVaultKey", "Registro en el tenant de los principales de servicio oficiales: Customer Key Onboarding (19f7f505-34aa-44a4-9dcc-6a768854d2ea), M365DataAtRestEncryption (c066d759-24ae-40e7-a56f-027002b5d3e4), Exchange Online (00000002-0000-0ff1-ce00-000000000000) y SharePoint Online (00000003-0000-0ff1-ce00-000000000000)", "Validación aprobada (ValidationResult = Success) mediante el módulo oficial M365CustomerKeyOnboarding en modo Validate antes de ejecutar Enable", "Creación de un grupo de seguridad habilitado para correo (mail-enabled security group) como grupo aprobador dedicado antes de activar M365 PAM y asignación del rol Customer Lockbox access approver para evitar el uso cotidiano de Global Administrator"], "notaLicenciamiento": "Customer Lockbox, Customer Key y M365 PAM están incluidos como derechos de licencia dentro de Microsoft 365 E5 y Microsoft Purview Suite sin costo extra por usuario en M365, pero Customer Key exige costear en Azure dos suscripciones de pago para las llaves HSM (Premium Key Vault o Managed HSM) y operaciones wrapKey/unwrapKey. Microsoft valida periódicamente las cantidades de licencias elegibles de Customer Key: para Multi-workload DEP el tenant debe tener al menos tantas licencias Customer Key como el mayor número entre usuarios con licencia Exchange o Teams; para SharePoint DEP debe igualar o superar el total de usuarios con licencia SharePoint; y en Exchange DEP cada buzón de usuario requiere licencia persistente. Si el tenant cae por debajo del conteo requerido, el cifrado revierte automáticamente a claves administradas por Microsoft."}, "resumenEjecutivo": "Microsoft Purview Customer Lockbox, Customer Key y Privileged Access Management (M365 PAM) conforman la tríada de soberanía de datos, custodia criptográfica BYOK y privilegio administrativo cero permanente (Zero Standing Privileges) en Microsoft 365 E5 y Microsoft Purview Suite. Customer Lockbox garantiza que ningún ingeniero de Microsoft acceda al contenido del cliente (Exchange, SharePoint, OneDrive, Teams, Windows 365 e interacciones de Microsoft 365 Copilot) sin aprobación explícita del cliente con ventana máxima de 4 horas y auditoría inmutable bajo Microsoft Operator. Customer Key permite controlar en Azure Key Vault Premium o Managed HSM (FIPS 140-2 Level 3) en dos suscripciones y regiones distintas las claves raíz de cifrado de servicio (DEPs para múltiples cargas incluyendo Copilot y Windows 365 Cloud PCs, buzones Exchange y SharePoint/OneDrive) manteniendo compatibilidad total con Copilot, DLP y eDiscovery —a diferencia de Double Key Encryption (DKE)—, respaldado por una Availability Key aislada para resiliencia. Finalmente, M365 PAM complementa a Microsoft Entra PIM imponiendo aprobación Just-in-Time por pares a nivel de tarea o cmdlet individual en el sustrato de Exchange Online.", "principiosRectores": [{"principio": "Autorización explícita del cliente sobre accesos de soporte del proveedor (Zero Standing Vendor Access)", "descripcion": "Exigir aprobación formal del cliente mediante Customer Lockbox antes de cualquier acceso temporal (máx. 4 h) de ingenieros de Microsoft a contenido M365, Copilot o Windows 365, auditando cada acción de Microsoft Operator.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/customer-lockbox-requests"}, {"principio": "Doble suscripción, doble región y custodia dual segregada en claves raíz (Customer Key)", "descripcion": "Alojar las dos claves raíz de cada Data Encryption Policy (DEP) en dos suscripciones Azure de pago independientes bajo administradores distintos para impedir pérdida o sabotaje unilateral.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/customer-key-set-up"}, {"principio": "Inmutabilidad criptográfica antidestrucción (Soft Delete 90d, Purge Protection y preservación de versiones)", "descripcion": "Imponer Soft Delete de 90 días, Purge Protection, claves RSA/RSA-HSM sin fecha de expiración y prohibición absoluta de borrar o deshabilitar versiones históricas requeridas por respaldos.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/customer-key-availability-key-roll"}, {"principio": "Soberanía compatible con IA y cumplimiento (Customer Key para el 95 % vs. DKE para el 5 %)", "descripcion": "Usar Customer Key como estándar de cifrado en reposo preservando Microsoft 365 Copilot, eDiscovery, DLP y coautoría web, reservando Double Key Encryption (DKE) solo para activos Top Secret que deban ser opacos al servicio.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/double-key-encryption"}, {"principio": "Defensa en profundidad Rol + Tarea (Microsoft Entra PIM + Microsoft Purview PAM)", "descripcion": "Combinar la activación JIT de roles de directorio en Entra PIM con la aprobación por pares a nivel de cmdlet individual en M365 PAM sobre el Exchange Management runspace.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/privileged-access-management"}, {"principio": "Gobierno estricto entre Rollback operativo y Data Purge Path irreversible", "descripcion": "Separar con controles ejecutivos el regreso seguro a claves gestionadas por Microsoft (Rollback conservando Key Vaults) de la destrucción criptográfica regulada con Data Purge eDocument exclusiva para salida definitiva de Exchange.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/customer-key-manage"}], "arquitecturaYComponentes": [{"componente": "Microsoft Purview Customer Lockbox (para Microsoft 365)", "funcionOperativa": "Flujo de aprobación explícita del cliente (expira en 12 h; acceso máximo de 4 h sin enlaces de sign-in en correos) para solicitudes de soporte sobre Exchange, SharePoint, OneDrive, Teams, Windows 365 y M365 Copilot.", "portalRuta": "admin.microsoft.com > Settings > Org Settings > Security & Privacy > Customer Lockbox / Support > Customer Lockbox Requests", "integraciones": ["Microsoft Purview Audit (Set-AccessToCustomerDataRequest y Microsoft Operator)", "Microsoft Defender for Cloud Apps (alertamiento)", "Microsoft 365 Copilot & Windows 365"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Customer Lockbox for Microsoft Azure (Control Complementario MCSB PA-8)", "funcionOperativa": "Gobierno de solicitudes de acceso de soporte a datos en más de 40 servicios Azure (incluyendo Azure OpenAI, Foundry, SQL, Storage y AKS) con cola de 4 días y auditoría en Activity Log / Entra Audit Log.", "portalRuta": "portal.azure.com > Customer Lockbox for Microsoft Azure > Administration / Pending Requests", "integraciones": ["Azure Activity Logs & Microsoft Entra Audit Logs (Access Reviews)", "Microsoft Cloud Security Benchmark v2 (PA-8)", "Azure Support Plan (>= Developer)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Infraestructura Raíz Azure Key Vault Premium (HSM) y Managed HSM", "funcionOperativa": "Custodia de claves RSA/RSA-HSM (hasta 4.096 bits, sin expiración) en dos suscripciones Azure de pago con Soft Delete 90d, Purge Protection y Azure RBAC (6 Key Vaults Premium o solo 2 instancias Managed HSM FIPS 140-2 L3).", "portalRuta": "portal.azure.com > Key vaults / Managed HSMs", "integraciones": ["Azure RBAC (Key Vault / Managed HSM Crypto Service Encryption User)", "Azure Monitor & Microsoft Sentinel (AzureDiagnostics)", "M365CustomerKeyOnboarding PowerShell Service"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Customer Key Multi-Workload DEP (Scenario MDEP)", "funcionOperativa": "Política única activa por tenant que cifra en reposo Windows 365 Cloud PCs (Enterprise y Frontline), Teams, interacciones Microsoft 365 Copilot, Purview Information Protection (EDM/etiquetas) y exportaciones CMK de eDiscovery.", "portalRuta": "Exchange Online PowerShell (New/Set-M365DataAtRestEncryptionPolicyAssignment)", "integraciones": ["Service Principal M365DataAtRestEncryption (c066d759-24ae-40e7-a56f-027002b5d3e4)", "Microsoft Intune (Windows 365 Cloud PCs)", "Microsoft Purview eDiscovery (CMK direct exports preview)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Customer Key Exchange Mailbox DEPs y SharePoint/OneDrive Geo DEPs", "funcionOperativa": "Hasta 50 DEPs activas para buzones individuales/híbridos en Exchange Online y 1 DEP por Geo en SharePoint/OneDrive (jerarquía TIK -> Site Keys -> Blob Keys -> File chunks).", "portalRuta": "Exchange Online PowerShell (New-DataEncryptionPolicy) / SharePoint PowerShell (Register-SPODataEncryptionPolicy)", "integraciones": ["Exchange Online (00000002-0000-0ff1-ce00-000000000000)", "SharePoint Online & OneDrive (00000003-0000-0ff1-ce00-000000000000)", "Data Purge Path regulado (exclusivo de Exchange DEPs)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Availability Key y Almacenes Internos Aislados de Recuperación", "funcionOperativa": "Tercera clave raíz generada por DEP y protegida por código de servicio M365 para resiliencia ante fallos sistémicos transitorios (EXO/MDEP) y recuperación explícita ante pérdida total de claves del cliente.", "portalRuta": "purview.microsoft.com > Solutions > Audit (RecordType: CustomerKeyServiceEncryption)", "integraciones": ["Microsoft Purview Audit (Fallback to availability key)", "Microsoft Internal Lockbox & Secret Stores", "Microsoft Support Recovery Workflow"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Integración Customer Key para Windows 365 Cloud PCs en Microsoft Intune", "funcionOperativa": "Orquestación de re-cifrado deliberado (con reinicio automático en lotes de hasta 20.000 equipos) de discos, instantáneas e imágenes de Cloud PCs usando claves de la Multi-workload DEP.", "portalRuta": "intune.microsoft.com > Tenant administration > Cloud PC encryption type", "integraciones": ["Windows 365 Enterprise & Frontline (Dedicated/Shared)", "Azure Storage Server-Side Encryption (SSE)", "Multi-Workload DEP (MDEP)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Microsoft Purview Privileged Access Management (M365 PAM)", "funcionOperativa": "Motor JIT/JEA en el sustrato M365 y Exchange Management runspace con hasta 30 políticas de aprobación (Task, Role, Role Group), expiración de solicitud de 24 h y ventana aprobada por defecto de 4 h.", "portalRuta": "admin.microsoft.com > Settings > Org Settings > Security & Privacy > Privileged access", "integraciones": ["Exchange Management Runspace (New/Approve/Deny-ElevatedAccessRequest)", "Microsoft Entra Privileged Identity Management (defensa en profundidad)", "Microsoft Purview Audit & Graph auditLog/queries"], "estadoValidacion": "Verificado MS Learn"}], "rbacYRoles": [{"rol": "Customer Lockbox Access Approver", "nivelSOC": "CISO / DPO / Executive Governance", "permisosClave": "Activar/desactivar Customer Lockbox en admin.microsoft.com y aprobar, rechazar o cancelar solicitudes de acceso a datos de soporte (Set-AccessToCustomerDataRequest).", "asignacionPIM": "Elegible en Microsoft Entra PIM (activación <= 1 hora bajo verificación del ticket de soporte) para evitar uso de Global Administrator.", "responsabilidadOperativa": "Validar con el dueño técnico del ticket cada solicitud Lockbox dentro de la ventana de 12 h y ordenar auditoría posterior de Microsoft Operator.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Azure Customer Lockbox Approver for Subscription", "nivelSOC": "Cloud Security Governance", "permisosClave": "Revisar, aprobar o denegar solicitudes de Customer Lockbox for Microsoft Azure acotadas a recursos dentro de la suscripción asignada.", "asignacionPIM": "Asignación directa sobre grupo restringido de gobierno (en Azure Lockbox el rol debe estar activo antes de iniciarse la solicitud; no admite Management Groups).", "responsabilidadOperativa": "Gobernar accesos excepcionales de ingeniería de Azure sobre máquinas virtuales, bases de datos, Azure OpenAI y almacenamiento dentro del plazo de 4 días.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Key Vault / Managed HSM Crypto Custodian (Suscripción 1 y Suscripción 2)", "nivelSOC": "Cryptography & PKI Lead (Tier 0 Crypto)", "permisosClave": "Key Vault Administrator / Managed HSM Administrator (create, backup, restore, get, list; por diseño en RBAC de Customer Key sin borrado accidental) en UNA sola de las dos suscripciones.", "asignacionPIM": "Elegible en Azure PIM (máximo 2 h, aprobación dual y MFA FIDO2) con separación estricta entre el custodio de la Suscripción 1 y el de la Suscripción 2.", "responsabilidadOperativa": "Generar claves RSA/RSA-HSM sin fecha de expiración, crear nuevas versiones en rotaciones autorizadas y custodiar respaldos Backup-AzKeyVaultKey.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Key Vault RBAC Security Officer", "nivelSOC": "Cloud IAM / Security Architect", "permisosClave": "Key Vault Contributor / Role Based Access Control Administrator para asignar Key Vault / Managed HSM Crypto Service Encryption User a los principales de M365.", "asignacionPIM": "Elegible en Azure PIM (máximo 1 h con ticket de cambio aprobado).", "responsabilidadOperativa": "Mantener el modelo Azure RBAC puro en las bóvedas, migrar políticas de acceso heredadas y asegurar el firewall de servicios de confianza.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Customer Key Policy Administrator (MDEP / EXO / SPO)", "nivelSOC": "M365 Platform Security Engineer", "permisosClave": "Compliance Administrator, Exchange Administrator o SharePoint Administrator para ejecutar cmdlets de creación, asignación y refresco de DEPs.", "asignacionPIM": "Elegible en Entra PIM y sujeto a política de aprobación Manual en M365 PAM para cmdlets Set-DataEncryptionPolicy y Set-M365DataAtRestEncryptionPolicyAssignment.", "responsabilidadOperativa": "Ejecutar validaciones M365CustomerKeyOnboarding, asignar DEPs a cargas y buzones, coordinar cifrado Windows 365 en Intune y monitorear Get-SPODataEncryptionPolicy.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "M365 PAM Policy Administrator", "nivelSOC": "Identity & Privileged Access Architect (Tier 0)", "permisosClave": "Global Administrator requerido oficialmente para ejecutar Enable/Disable-ElevatedAccessControl y administrar las hasta 30 políticas New/Remove-ElevatedAccessApprovalPolicy.", "asignacionPIM": "Estricto JIT en Microsoft Entra PIM (máximo 1 hora con aprobación cruzada del CISO y autenticación resistente al phishing).", "responsabilidadOperativa": "Habilitar M365 PAM, definir el grupo aprobador por defecto, restringir al mínimo -SystemAccounts y mantener el catálogo de 30 políticas críticas.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "M365 PAM Approver Group Member", "nivelSOC": "SecOps Lead / Messaging Architecture Lead", "permisosClave": "Miembro del mail-enabled security group aprobador para ejecutar Approve-ElevatedAccessRequest y Deny-ElevatedAccessRequest en PowerShell (o en portal con Exchange Administrator).", "asignacionPIM": "Membresía nominal recertificada mensualmente; prohibido autoaprobar solicitudes propias.", "responsabilidadOperativa": "Evaluar justificación y duración solicitada antes de autorizar la ejecución JIT de cmdlets críticos de Exchange Online y revocar accesos ante anomalías.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Purview Audit & SIEM Cryptographic Monitor", "nivelSOC": "SOC L2 / Compliance Auditor", "permisosClave": "View-Only Audit Logs en Purview, permiso Graph AuditLogsQuery.Read.All y lectura en Microsoft Sentinel sobre OfficeActivity y AzureDiagnostics.", "asignacionPIM": "Activo en solo lectura para vigilancia continua 24x7.", "responsabilidadOperativa": "Auditar acciones de Microsoft Operator, alertar sobre eventos CustomerKeyServiceEncryption (Fallback to availability key) y vigilar elevaciones M365 PAM.", "estadoValidacion": "Verificado MS Learn"}], "actividadesOperacionales": [{"codigo": "D-01", "cadencia": "Diaria", "actividad": "Evaluación y decisión anti-phishing sobre solicitudes Customer Lockbox (M365 y Azure)", "objetivo": "Aprobar o rechazar con verificación interna toda solicitud de acceso de ingenieros de Microsoft dentro de la ventana de 12 h (M365) o 4 días (Azure).", "consolaRuta": "admin.microsoft.com > Support > Customer Lockbox Requests / portal.azure.com > Customer Lockbox > Pending Requests", "procedimiento": ["Navegar manualmente al portal oficial sin abrir enlaces sospechosos (Microsoft nunca incluye enlaces de sign-in en correos de notificación de M365 Lockbox).", "Contrastar el Service Request Number, la carga afectada y la duración solicitada (máximo 4 h en M365) con el responsable interno que abrió el ticket.", "Ejecutar Approve o Deny en consola o mediante Set-AccessToCustomerDataRequest documentando la justificación."], "rolResponsable": "Customer Lockbox Access Approver", "funcionNIST": "GV", "subcategoriaNIST": "GV.SC-07", "mitreTactic": "Initial Access (T1199)", "evidenciaAuditable": "Registro Set-AccessToCustomerDataRequest en Purview Audit o Approve/Deny Lockbox Request en Azure Activity Log.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Ausencia de enlaces en correos M365 Lockbox, expiración de 12 h vs. 4 días y tope de 4 h verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-lockbox-requests", "pasosDetallados": ["Ante una alerta de correo Lockbox, **nunca hacer clic en enlaces externos sospechosos** (recordando que Microsoft jamás incluye enlaces de inicio de sesión en correos de M365 Lockbox) e ingresar directamente al portal oficial `[Verificado MS Learn]`.", "Verificar el **Service Request Number**, el servicio afectado, la duración solicitada (máximo 4 h en M365) y confirmar con el ingeniero interno dueño del ticket que el problema sigue abierto y requiere inspección de contenido `[Verificado MS Learn]`.", "Aprobar o rechazar en consola (o vía `Set-AccessToCustomerDataRequest`), documentando el motivo en la bitácora del SOC `[Verificado MS Learn]`."], "disparadorAlerta": "Aprobar o rechazar con verificación interna toda solicitud de acceso de ingenieros de Microsoft dentro de la ventana de 12 h (M365) o 4 días (Azure).", "tipoAccion": "Periódica Programada"}, {"codigo": "D-02", "cadencia": "Diaria", "actividad": "Auditoría forense posterior de sesiones aprobadas ejecutadas por Microsoft Operator", "objetivo": "Verificar el 100 % de las acciones realizadas por el ingeniero de soporte durante las 4 horas siguientes a una aprobación de Customer Lockbox.", "consolaRuta": "purview.microsoft.com > Solutions > Audit / security.microsoft.com (Sentinel OfficeActivity)", "procedimiento": ["Ejecutar búsqueda de auditoría filtrando UserId igual a 'Microsoft Operator' en la ventana posterior a la aprobación.", "Validar dirección IP del operador, cmdlets ejecutados y correspondencia exacta con el incidente reportado.", "Archivar el extracto de auditoría firmado junto al ticket cerrado en el sistema ITSM."], "rolResponsable": "SOC L2 / Compliance Officer", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-03", "mitreTactic": "Collection", "evidenciaAuditable": "Exportación de registros Microsoft Operator en Purview Audit / Sentinel.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Identificador exacto 'Microsoft Operator' y ventana de 4 horas verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-lockbox-requests", "pasosDetallados": ["Filtrar registros de auditoría donde `User` / `UserIds` sea exactamente **`Microsoft Operator`** dentro de la ventana de 4 horas posterior a la aprobación `[Verificado MS Learn]`.", "Verificar dirección IP de origen, operaciones ejecutadas y correspondencia estricta con el alcance del ticket de soporte `[Verificado MS Learn]`.", "Adjuntar el extracto CSV/JSON de las acciones de `Microsoft Operator` al cierre del incidente interno `[Verificado MS Learn]`."], "disparadorAlerta": "Verificar el 100 % de las acciones realizadas por el ingeniero de soporte durante las 4 horas siguientes a una aprobación de Customer Lockbox.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-03", "cadencia": "Diaria", "actividad": "Revisión y aprobación peer-review de solicitudes JIT de tareas en M365 PAM", "objetivo": "Autorizar o denegar solicitudes de cmdlets críticos de Exchange antes de su expiración de 24 h asegurando control de cuatro ojos.", "consolaRuta": "admin.microsoft.com > Settings > Org Settings > Security & Privacy > Privileged access / Exchange Online PowerShell", "procedimiento": ["Inspeccionar solicitudes pendientes con Get-ElevatedAccessRequest validando tarea (ej. Exchange\\New-TransportRule), motivo y ticket de cambio.", "Confirmar que el aprobador sea distinto del solicitante y que DurationHours sea el mínimo necesario (por defecto 4 h).", "Ejecutar Approve-ElevatedAccessRequest o Deny-ElevatedAccessRequest con comentario trazable y revocar anticipadamente al concluir el cambio."], "rolResponsable": "M365 PAM Approver Group Member", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Persistence (T1098)", "evidenciaAuditable": "Eventos New/Approve/Deny-ElevatedAccessRequest y ejecución en Exchange Management runspace en Purview Audit.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Expiración de 24 h en cola, duración por defecto de 4 h y cmdlets verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/privileged-access-management-configuration", "pasosDetallados": ["Revisar solicitudes en estado `Pending` con `Get-ElevatedAccessRequest` verificando el cmdlet exacto solicitado (ej. `Exchange\\New-TransportRule`, `Exchange\\New-InboundConnector`), la razón (`-Reason`) y el ticket ITSM asociado `[Verificado MS Learn]`.", "Validar que la ventana solicitada (`-DurationHours`) sea proporcional al cambio (recomendado 1 a 2 horas, máximo estándar 4 horas) y que el aprobador no sea el mismo ingeniero solicitante `[Verificado MS Learn]` `[Decisión / Propuesta Editorial]`.", "Ejecutar `Approve-ElevatedAccessRequest -RequestId <GUID> -Comment '<Ticket y justificación>'` o `Deny-ElevatedAccessRequest` (y revocar anticipadamente con **Revoke** en consola si el mantenimiento concluye antes) `[Verificado MS Learn]`."], "disparadorAlerta": "Autorizar o denegar solicitudes de cmdlets críticos de Exchange antes de su expiración de 24 h asegurando control de cuatro ojos.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-04", "cadencia": "Diaria", "actividad": "Monitoreo de eventos Fallback to availability key (CustomerKeyServiceEncryption)", "objetivo": "Detectar de inmediato fallos simultáneos o problemas de acceso en los dos Azure Key Vaults / Managed HSM de Customer Key.", "consolaRuta": "purview.microsoft.com > Solutions > Audit / security.microsoft.com (Sentinel OfficeActivity)", "procedimiento": ["Consultar diariamente eventos con RecordType 'CustomerKeyServiceEncryption' y Activity 'Fallback to availability key'.", "De existir registros en cargas Exchange o M365DataAtRestEncryption, correlacionar DEP ID con AzureDiagnostics de ambas bóvedas.", "Escalar como incidente P1 cualquier denegación HTTP 403 o indisponibilidad de clave antes de afectar operaciones de usuario."], "rolResponsable": "SOC L2 / Cryptography & PKI Lead", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-09", "mitreTactic": "Impact", "evidenciaAuditable": "Resultado diario sin anomalías sobre RecordType CustomerKeyServiceEncryption.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Esquema exacto de auditoría CustomerKeyServiceEncryption y disparadores de fallback verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-availability-key-understand", "pasosDetallados": ["Consultar eventos con `RecordType == \"CustomerKeyServiceEncryption\"` y `Activity == \"Fallback to availability key\"` en las cargas `Exchange` y `M365DataAtRestEncryption` `[Verificado MS Learn]`.", "Si existe algún evento, inspeccionar `DEP ID`, `Policy ID` y los logs diagnósticos (`AuditEvent`) de ambos Azure Key Vaults / Managed HSM para distinguir entre fallo transitorio de plataforma y denegación de permisos (`AccessDenied`) `[Verificado MS Learn]`.", "Escalar a prioridad P1 si se detecta cualquier error `403 Forbidden` o `KeyNotFound` en cualquiera de las dos bóvedas `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Detectar de inmediato fallos simultáneos o problemas de acceso en los dos Azure Key Vaults / Managed HSM de Customer Key.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-05", "cadencia": "Diaria", "actividad": "Vigilancia SIEM de operaciones críticas en Azure Key Vaults y Managed HSM", "objetivo": "Detectar cualquier intento de borrado, cambio de firewall, alteración RBAC o acceso ajeno a los principales oficiales de M365.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel (AzureDiagnostics / AzureActivity)", "procedimiento": ["Monitorear eventos KeyDelete, KeyPurge, KeyUpdate, VaultPatch y RoleAssignmentDelete en las dos suscripciones dedicadas a Customer Key.", "Verificar que KeyWrap y KeyUnwrap provengan exclusivamente de los AppId oficiales de MDEP, Exchange Online y SharePoint Online.", "Investigar de inmediato cualquier código HTTP >= 400 o cambio administrativo fuera de ventana aprobada."], "rolResponsable": "SOC L2", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-09", "mitreTactic": "Credential Access (T1552)", "evidenciaAuditable": "Tablero diario de telemetría criptográfica en Microsoft Sentinel.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "AppIds oficiales verificados en MS Learn; correlación SIEM continua es práctica editorial recomendada.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-set-up", "pasosDetallados": ["Revisar alertas analíticas sobre operaciones `KeyDelete`, `KeyUpdate`, `VaultDelete`, `VaultPatch` o cambios de `roleAssignments` en las dos suscripciones dedicadas a Customer Key `[Decisión / Propuesta Editorial]`.", "Verificar que únicamente los principales `c066d759-24ae-40e7-a56f-027002b5d3e4`, `00000002-0000-0ff1-ce00-000000000000` y `00000003-0000-0ff1-ce00-000000000000` ejecuten `KeyWrap` y `KeyUnwrap` `[Verificado MS Learn]`.", "Bloquear y escalar cualquier acceso interactivo fuera de ventana de cambio aprobada `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Detectar cualquier intento de borrado, cambio de firewall, alteración RBAC o acceso ajeno a los principales oficiales de M365.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-06", "cadencia": "Diaria", "actividad": "Supervisión de actividad de cuentas excluidas (-SystemAccounts) en M365 PAM", "objetivo": "Confirmar que las cuentas de automatización excluidas de M365 PAM no presenten inicios de sesión interactivos ni desvíos de comandos.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel (OfficeActivity + SigninLogs)", "procedimiento": ["Auditar todos los cmdlets ejecutados por las identidades incluidas en el parámetro -SystemAccounts de Enable-ElevatedAccessControl.", "Correlacionar contra IPs de runners autorizados y confirmar cero inicios de sesión interactivos humanos.", "Bloquear la cuenta y revocar la exclusión ante cualquier comando fuera del catálogo automatizado."], "rolResponsable": "SOC L2 / Identity Lead", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-03", "mitreTactic": "Privilege Escalation (T1078.004)", "evidenciaAuditable": "Reporte diario de actividad automatizada de SystemAccounts sin alertas.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Basado en la recomendación oficial de MS Learn de auditar rigurosamente las exclusiones -SystemAccounts.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/privileged-access-management-configuration", "pasosDetallados": ["Correlacionar todas las ejecuciones de cmdlets Exchange realizadas por las cuentas listadas en `-SystemAccounts` contra sus IPs de origen y horarios programados `[Decisión / Propuesta Editorial]`.", "Confirmar ausencia total de inicios de sesión interactivos humanos sobre dichas cuentas `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Confirmar que las cuentas de automatización excluidas de M365 PAM no presenten inicios de sesión interactivos ni desvíos de comandos.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-07", "cadencia": "Diaria", "actividad": "Verificación de estado de cifrado Customer Key en Windows 365 Cloud PCs", "objetivo": "Asegurar que los Cloud PCs Enterprise y Frontline permanezcan cifrados con claves del cliente en Microsoft Intune.", "consolaRuta": "intune.microsoft.com > Tenant administration > Cloud PC encryption type", "procedimiento": ["Revisar la hoja Cloud PC encryption type verificando que Microsoft Purview Customer Key figure activo y sin errores de lote.", "Confirmar mediante Get-M365DataAtRestEncryptionPolicyAssignment que la política MDEP del tenant permanezca asignada."], "rolResponsable": "Endpoint / Windows 365 Administrator", "funcionNIST": "PR", "subcategoriaNIST": "PR.DS-01", "mitreTactic": "Collection", "evidenciaAuditable": "Estado conforme en Intune Admin Center > Cloud PC encryption type.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Ruta exacta en Intune Admin Center verificada en la documentación oficial de Windows 365.", "urlSoporte": "https://learn.microsoft.com/en-us/windows-365/enterprise/purview-customer-key", "pasosDetallados": ["Revisar el estado de cifrado en `Cloud PC encryption type` confirmando que se mantenga seleccionado **Microsoft Purview Customer Key** sin notificaciones de fallo `[Verificado MS Learn]`.", "Verificar en `Get-M365DataAtRestEncryptionPolicyAssignment` que la Multi-workload DEP continúe activa a nivel de tenant `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar que los Cloud PCs Enterprise y Frontline permanezcan cifrados con claves del cliente en Microsoft Intune.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-08", "cadencia": "Diaria", "actividad": "Conciliación diaria de tickets severos de soporte frente a colas Lockbox y pre-activación PIM en Azure", "objetivo": "Evitar expiraciones accidentales en tickets críticos y asegurar que aprobadores Azure Lockbox tengan rol activo antes del inicio de solicitudes.", "consolaRuta": "admin.microsoft.com > Support / portal.azure.com > Help + support & Customer Lockbox", "procedimiento": ["Cruzar los casos P1/P2 abiertos con Microsoft Support contra las colas pendientes de Customer Lockbox en M365 y Azure.", "Si un caso de Azure anticipa acceso a datos, asegurar que el aprobador tenga activo el rol Owner o Azure Customer Lockbox Approver antes de que ingeniería emita la solicitud.", "Verificar recepción de notificaciones en buzones alternativos configurados en Azure Lockbox."], "rolResponsable": "Cloud Governance / Service Desk Lead", "funcionNIST": "GV", "subcategoriaNIST": "GV.SC-07", "mitreTactic": "Initial Access", "evidenciaAuditable": "Bitácora diaria de conciliación de soporte crítico Microsoft.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Requisito crítico verificado en MS Learn: Azure Lockbox no reconoce activaciones PIM realizadas después de iniciada la solicitud.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/security/fundamentals/customer-lockbox-overview", "pasosDetallados": ["Cruzar diariamente los casos severos abiertos con Microsoft Support contra las bandejas de solicitudes pendientes de Customer Lockbox en M365 y Azure `[Verificado MS Learn]`.", "Confirmar que los aprobadores elegibles para **Customer Lockbox for Microsoft Azure** hayan activado previamente su rol en PIM cuando se prevea escalamiento a ingeniería de plataforma (dado que Azure Lockbox no reconoce activaciones posteriores al inicio de la solicitud) `[Verificado MS Learn]`.", "Verificar que las notificaciones alternas de correo de Azure Lockbox estén operativas para suscripciones críticas `[Verificado MS Learn]`."], "disparadorAlerta": "Evitar expiraciones accidentales en tickets críticos y asegurar que aprobadores Azure Lockbox tengan rol activo antes del inicio de solicitudes.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-01", "cadencia": "Semanal", "actividad": "Verificación de salud y asignación de DEPs en Multi-Workload, Exchange y SharePoint/OneDrive", "objetivo": "Confirmar que el 100 % de políticas DEP estén activas/registradas y asignar DEP a buzones nuevos o en pre-migración.", "consolaRuta": "Exchange Online PowerShell / SharePoint Online Management Shell", "procedimiento": ["Ejecutar Get-M365DataAtRestEncryptionPolicyAssignment y Get-DataEncryptionPolicy validando estado Enabled.", "Auditar buzones recién creados o MailUsers híbridos (Set-MailUser pre-migración) verificando Get-MailboxStatistics | fl IsEncrypted,DataEncryptionPolicyID.", "Ejecutar Get-SPODataEncryptionPolicy confirmando estado Registered al 100 % en cada geo."], "rolResponsable": "Customer Key Policy Administrator", "funcionNIST": "PR", "subcategoriaNIST": "PR.DS-01", "mitreTactic": "Collection", "evidenciaAuditable": "Salidas semanales firmadas de estado de DEPs en las tres cargas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Cmdlets oficiales y eficiencia de asignar Set-MailUser antes de migrar verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-manage", "pasosDetallados": ["Ejecutar `Get-M365DataAtRestEncryptionPolicy` y `Get-M365DataAtRestEncryptionPolicyAssignment` para validar la política multi-carga `[Verificado MS Learn]`.", "Ejecutar `Get-DataEncryptionPolicy` y auditar una muestra o el total de buzones nuevos/migrados con `Get-Mailbox | fl DataEncryptionPolicy` y `Get-MailboxStatistics <Mailbox> | fl IsEncrypted,DataEncryptionPolicyID`, asignando DEP a buzones pendientes (preferiblemente con `Set-MailUser` antes de migrar buzones híbridos) `[Verificado MS Learn]`.", "Ejecutar `Get-SPODataEncryptionPolicy` confirmando estado **`Registered`** al 100 % `[Verificado MS Learn]`."], "disparadorAlerta": "Confirmar que el 100 % de políticas DEP estén activas/registradas y asignar DEP a buzones nuevos o en pre-migración.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-02", "cadencia": "Semanal", "actividad": "Ejecución preventiva de M365CustomerKeyOnboarding en modo Validate", "objetivo": "Auditar de forma no destructiva las 9 reglas oficiales de configuración de suscripciones, licencias, claves y permisos.", "consolaRuta": "Azure PowerShell (M365CustomerKeyOnboarding)", "procedimiento": ["Ejecutar New-CustomerKeyOnboardingRequest con -OnboardingMode Validate para los escenarios MDEP y EXO.", "Comprobar ValidationResult = Success y ausencia de reglas en FailedValidations (KeyNeverExpires, RecoveryLevel, KeyOperationsSupported).", "Corregir de inmediato cualquier desviación detectada antes de que impacte renovaciones o re-envoltura de claves."], "rolResponsable": "Cryptography & PKI Lead", "funcionNIST": "ID", "subcategoriaNIST": "ID.RA-06", "mitreTactic": "Defense Evasion", "evidenciaAuditable": "Salida semanal PassedValidations del Customer Key Onboarding Service.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "El modo Validate puede ejecutarse tantas veces como sea necesario sin realizar cambios según MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-set-up", "pasosDetallados": ["Ejecutar `New-CustomerKeyOnboardingRequest` con `-OnboardingMode Validate` para los escenarios `MDEP` y `EXO` `[Verificado MS Learn]`.", "Confirmar que `$request.ValidationResult` devuelva **`Success`** y que `$request.FailedValidations` esté vacío (validando reglas `OrganizationHasRequiredServicePlan`, `EligibleLicenseCount`, `KeyNeverExpires`, `KeyOperationsSupported`, `RecoveryLevel`, `SubscriptionUniquePerScenario`) `[Verificado MS Learn]`."], "disparadorAlerta": "Auditar de forma no destructiva las 9 reglas oficiales de configuración de suscripciones, licencias, claves y permisos.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-03", "cadencia": "Semanal", "actividad": "Auditoría de cobertura de las hasta 30 políticas de M365 PAM y revisión de solicitudes expiradas", "objetivo": "Garantizar que el control global de M365 PAM siga encendido y cubriendo los cmdlets más críticos de Exchange Online.", "consolaRuta": "admin.microsoft.com > Settings > Org Settings > Security & Privacy > Privileged access / Exchange PowerShell", "procedimiento": ["Verificar que Require approvals for privileged tasks permanezca activo.", "Revisar Get-ElevatedAccessApprovalPolicy confirmando modo Manual sobre reglas de transporte, conectores, permisos de buzón, roles y DEPs.", "Analizar solicitudes expiradas (> 24 h) o denegadas en Get-ElevatedAccessRequest para detectar intentos no autorizados."], "rolResponsable": "Identity & Privileged Access Lead", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Exfiltration (T1114.003)", "evidenciaAuditable": "Listado exportado de políticas activas y resumen semanal de solicitudes PAM.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Límite de 30 políticas y expiración de 24 h verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/privileged-access-management", "pasosDetallados": ["Verificar que **Require approvals for privileged tasks** permanezca habilitado en el centro de administración `[Verificado MS Learn]`.", "Auditar con `Get-ElevatedAccessApprovalPolicy` que estén protegidos como mínimo los cmdlets críticos: `Exchange\\New-TransportRule`, `Exchange\\Set-TransportRule`, `Exchange\\New-InboundConnector`, `Exchange\\New-OutboundConnector`, `Exchange\\Add-MailboxPermission`, `Exchange\\New-ManagementRoleAssignment`, `Exchange\\Search-Mailbox` y `Exchange\\Set-DataEncryptionPolicy` `[Decisión / Propuesta Editorial]`.", "Revisar solicitudes expiradas (> 24 h) o denegadas en la semana para identificar cuellos de botella operativos o intentos indebidos `[Verificado MS Learn]`."], "disparadorAlerta": "Garantizar que el control global de M365 PAM siga encendido y cubriendo los cmdlets más críticos de Exchange Online.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-04", "cadencia": "Semanal", "actividad": "Verificación de estado activo de Customer Lockbox en M365 y Microsoft Azure (MCSB PA-8)", "objetivo": "Asegurar que el control de aprobación explícita permanezca habilitado en ambos planos cloud.", "consolaRuta": "admin.microsoft.com > Security & Privacy > Customer Lockbox / portal.azure.com > Customer Lockbox", "procedimiento": ["Comprobar que la casilla Require approval for all data access requests continúe marcada en M365 Admin Center.", "Verificar la habilitación del módulo Administration en Azure Lockbox y el estado conforme del control PA-8 en Defender for Cloud."], "rolResponsable": "Compliance Officer", "funcionNIST": "GV", "subcategoriaNIST": "GV.SC-07", "mitreTactic": "Trusted Relationship (T1199)", "evidenciaAuditable": "Evidencia semanal de estado habilitado y puntuación MCSB PA-8.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Integración oficial con MCSB v2 PA-8 verificada en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/security/fundamentals/customer-lockbox-overview", "pasosDetallados": ["Comprobar que la casilla **Require approval for all data access requests** esté marcada en M365 Admin Center `[Verificado MS Learn]`.", "Comprobar que el módulo **Administration** de Customer Lockbox for Microsoft Azure esté habilitado y que las suscripciones críticas cuenten con aprobadores activos (`Azure Customer Lockbox Approver for Subscription`) `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar que el control de aprobación explícita permanezca habilitado en ambos planos cloud.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-05", "cadencia": "Semanal", "actividad": "Revisión de métricas de disponibilidad, latencia y firewall de Key Vaults / Managed HSM", "objetivo": "Prevenir fallbacks o interrupciones validando salud de red y excepción de servicios confiables de Microsoft.", "consolaRuta": "portal.azure.com > Key vaults / Managed HSMs > Monitoring & Networking", "procedimiento": ["Revisar métricas Availability y ServiceApiLatency en las bóvedas de ambas regiones Azure.", "Confirmar en configuración de firewall que 'Allow Trusted Microsoft Services to bypass this firewall' permanezca habilitado."], "rolResponsable": "Cloud Security Architect", "funcionNIST": "PR", "subcategoriaNIST": "PR.IR-01", "mitreTactic": "Impact", "evidenciaAuditable": "Reporte semanal de salud de Azure Monitor sobre bóvedas de Customer Key.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Requisito Allow Trusted Microsoft Services en firewall verificado en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-set-up", "pasosDetallados": ["Revisar métricas `ServiceApiLatency`, `Availability` y códigos HTTP `4xx`/`5xx` en todos los Key Vaults / Managed HSM de las Suscripciones 1 y 2 `[Decisión / Propuesta Editorial]`.", "Confirmar en `Networking` que, si el firewall está activo, la opción **Allow Trusted Microsoft Services to bypass this firewall** siga marcada `[Verificado MS Learn]`."], "disparadorAlerta": "Prevenir fallbacks o interrupciones validando salud de red y excepción de servicios confiables de Microsoft.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-06", "cadencia": "Semanal", "actividad": "Control semanal de umbral de licenciamiento elegible para evitar reversión de Customer Key", "objetivo": "Mantener superávit de licencias Customer Key frente al conteo de usuarios Exchange, Teams y SharePoint.", "consolaRuta": "admin.microsoft.com > Billing > Licenses", "procedimiento": ["Calcular el ratio de licencias Customer Key disponibles frente a Máx(Usuarios Exchange, Usuarios Teams) y frente a Usuarios SharePoint.", "Si el margen libre baja del 5 %, aprovisionar licencias adicionales de inmediato para impedir reversión automática al cifrado por defecto."], "rolResponsable": "Licensing Admin / Compliance Officer", "funcionNIST": "GV", "subcategoriaNIST": "GV.OC-03", "mitreTactic": "Impact", "evidenciaAuditable": "Tabla semanal de conciliación contractual de licencias Customer Key.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "La validación periódica y reversión automática por falta de licencias están verificadas en MS Learn; el margen del 5 % es propuesta editorial.", "urlSoporte": "https://learn.microsoft.com/en-us/office365/servicedescriptions/microsoft-365-service-descriptions/microsoft-365-tenantlevel-services-licensing-guidance/microsoft-purview-service-description", "pasosDetallados": ["Verificar la regla oficial de **Multi-workload DEP**: `Licencias Customer Key >= Máximo(Usuarios con licencia Exchange, Usuarios con licencia Teams)` `[Verificado MS Learn]`.", "Verificar la regla oficial de **SharePoint DEP**: `Licencias Customer Key >= Usuarios con licencia SharePoint` `[Verificado MS Learn]`.", "Disparar compra o reasignación preventiva si el margen libre cae por debajo del 5 % `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Mantener superávit de licencias Customer Key frente al conteo de usuarios Exchange, Teams y SharePoint.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-01", "cadencia": "Mensual", "actividad": "Recertificación de aprobadores Lockbox, grupo aprobador PAM, SystemAccounts y custodios HSM", "objetivo": "Garantizar segregación estricta de funciones entre suscripciones criptográficas y entre solicitantes y aprobadores.", "consolaRuta": "entra.microsoft.com > Identity governance > Access reviews / Azure RBAC", "procedimiento": ["Recertificar titulares de Customer Lockbox access approver (M365) y Azure Customer Lockbox Approver for Subscription.", "Auditar membresía del mail-enabled security group aprobador de M365 PAM y justificar cada cuenta en -SystemAccounts.", "Comprobar que ningún usuario posea roles simultáneos en la Suscripción Azure 1 y en la Suscripción Azure 2 de Customer Key."], "rolResponsable": "CISO / Identity Governance Lead", "funcionNIST": "GV", "subcategoriaNIST": "GV.RR-02", "mitreTactic": "Valid Accounts (T1078)", "evidenciaAuditable": "Actas mensuales de Entra Access Reviews y matriz de segregación SoD.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Separación de administradores entre ambas suscripciones y requisito mail-enabled security group verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-set-up", "pasosDetallados": ["Auditar quiénes poseen el rol `Customer Lockbox access approver` en M365 y `Azure Customer Lockbox Approver for Subscription` en Azure (recordando activar roles elegibles o usar asignación directa en el grupo dedicado de Azure Lockbox) `[Verificado MS Learn]`.", "Auditar los miembros del *mail-enabled security group* aprobador de M365 PAM (confirmando que sea efectivamente un grupo de seguridad habilitado para correo y no una lista de distribución estándar) y validar cada cuenta en `-SystemAccounts` `[Verificado MS Learn]`.", "Comprobar mediante Azure RBAC que ningún administrador posea permisos simultáneos sobre la Suscripción 1 y la Suscripción 2 de Customer Key `[Verificado MS Learn]`."], "disparadorAlerta": "Garantizar segregación estricta de funciones entre suscripciones criptográficas y entre solicitantes y aprobadores.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-02", "cadencia": "Mensual", "actividad": "Verificación de custodia dual online/offline de backups de claves raíz (Backup-AzKeyVaultKey)", "objetivo": "Asegurar que toda clave y versión activa cuente con respaldo íntegro fuera de banda y cero fechas de expiración.", "consolaRuta": "Azure PowerShell / Bóveda de respaldo criptográfico offline", "procedimiento": ["Listar todas las claves y versiones con Get-AzKeyVaultKey -IncludeVersions verificando que Expires sea nulo.", "Conciliar los archivos generados por Backup-AzKeyVaultKey en ubicaciones online y offline segregadas.", "Verificar que ninguna versión histórica haya sido deshabilitada ni marcada para borrado."], "rolResponsable": "Cryptography & PKI Lead", "funcionNIST": "RC", "subcategoriaNIST": "RC.RP-03", "mitreTactic": "Inhibit System Recovery (T1490)", "evidenciaAuditable": "Inventario firmado de respaldos online/offline con hashes SHA-256.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Obligación de almacenar backups online y offline y no deshabilitar versiones antiguas verificada en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-set-up", "pasosDetallados": ["Inventariar las versiones actuales e históricas de todas las claves con `Get-AzKeyVaultKey -VaultName <Vault> -IncludeVersions` (o `-HsmName`) `[Verificado MS Learn]`.", "Confirmar que cada clave y versión creada posea su archivo generado con `Backup-AzKeyVaultKey` resguardado tanto en almacenamiento inmutable online como en custodia offline segregada `[Verificado MS Learn]`.", "Verificar que ninguna clave tenga fecha de expiración configurada (`Expires == null`) `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar que toda clave y versión activa cuente con respaldo íntegro fuera de banda y cero fechas de expiración.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-03", "cadencia": "Mensual", "actividad": "Auditoría de configuración Azure RBAC, Soft Delete (90d) y Purge Protection en bóvedas", "objetivo": "Confirmar inmutabilidad al 100 % y ausencia de legacy access policies en todos los Key Vaults / Managed HSM.", "consolaRuta": "portal.azure.com > Key vaults > Access configuration / Azure Policy", "procedimiento": ["Auditar EnableRbacAuthorization = True, EnableSoftDelete = True (90 días) y EnablePurgeProtection = True en cada bóveda.", "Si se detecta algún baúl legado con Vault access policy, migrarlo a Azure RBAC removiendo políticas previas con Remove-AzKeyVaultAccessPolicy."], "rolResponsable": "Key Vault RBAC Security Officer", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Modify Cloud Compute Infrastructure", "evidenciaAuditable": "Reporte mensual de cumplimiento de Azure Policy sobre Key Vaults y Managed HSM.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Procedimiento oficial de migración de legacy access policies a Azure RBAC verificado en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-manage", "pasosDetallados": ["Inspeccionar `Get-AzKeyVault` verificando `EnableRbacAuthorization == True`, `EnableSoftDelete == True` (`SoftDeleteRetentionInDays == 90`) y `EnablePurgeProtection == True` `[Verificado MS Learn]`.", "Si existiera algún baúl histórico con *Vault access policy*, ejecutar la secuencia oficial: remover políticas heredadas (`Remove-AzKeyVaultAccessPolicy`), cambiar a *Azure role-based access control* y asignar `Key Vault Crypto Service Encryption User` a la aplicación M365 correspondiente `[Verificado MS Learn]`."], "disparadorAlerta": "Confirmar inmutabilidad al 100 % y ausencia de legacy access policies en todos los Key Vaults / Managed HSM.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-04", "cadencia": "Mensual", "actividad": "Prueba de alertas en Defender for Cloud Apps / Sentinel y migración a Graph auditLog/queries", "objetivo": "Garantizar alertamiento en tiempo real para Lockbox/CK/PAM y completar salida de Search-UnifiedAuditLog antes del 15-oct-2027.", "consolaRuta": "security.microsoft.com / Microsoft Graph security/auditLog/queries", "procedimiento": ["Validar el funcionamiento de la política de alerta en Defender for Cloud Apps sobre Set-AccessToCustomerDataRequest y Microsoft Operator.", "Probar las consultas programadas en Microsoft Graph auditLog/queries (GA octubre 2026) verificando paridad con Search-UnifiedAuditLog."], "rolResponsable": "SOC L3 / Detection Engineer", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-03", "mitreTactic": "Defense Evasion", "evidenciaAuditable": "Registro de prueba mensual de reglas SIEM y avance de migración Graph Audit.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Uso de Defender for Cloud Apps para alertas Lockbox y retiro de Search-UnifiedAuditLog (MC1505599) verificados.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-lockbox-requests", "pasosDetallados": ["Verificar que la política de alerta en **Microsoft Defender for Cloud Apps** para `Set-AccessToCustomerDataRequest` y `Microsoft Operator` esté habilitada (supliendo la ausencia de alerta nativa post-aprobación en M365 Admin Center) `[Verificado MS Learn]`.", "Validar consultas sobre `Microsoft Graph security/auditLog/queries` (GA en octubre de 2026) reemplazando progresivamente scripts heredados basados en `Search-UnifiedAuditLog` `[Verificado MS Learn]`."], "disparadorAlerta": "Garantizar alertamiento en tiempo real para Lockbox/CK/PAM y completar salida de Search-UnifiedAuditLog antes del 15-oct-2027.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-05", "cadencia": "Mensual", "actividad": "Control de aislamiento, facturación activa y bloqueos CanNotDelete en las 2 suscripciones Azure", "objetivo": "Impedir suspensión por facturación o contaminación con recursos ajenos en las dos suscripciones dedicadas a Customer Key.", "consolaRuta": "portal.azure.com > Subscriptions / Locks / Cost Management", "procedimiento": ["Confirmar estado Active y vigencia financiera de ambas suscripciones de pago.", "Verificar con Azure Resource Graph que solo existan recursos de Customer Key y monitoreo asociado en dichas suscripciones.", "Validar bloqueos CanNotDelete sobre grupos de recursos y bóvedas."], "rolResponsable": "FinOps / Cloud Governance", "funcionNIST": "GV", "subcategoriaNIST": "GV.RM-02", "mitreTactic": "Impact", "evidenciaAuditable": "Informe mensual de higiene y continuidad financiera de suscripciones Customer Key.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "La dedicación exclusiva de las 2 suscripciones de pago está recomendada en MS Learn; los bloqueos CanNotDelete son propuesta editorial.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-set-up", "pasosDetallados": ["Confirmar que ambas suscripciones sigan vinculadas a un acuerdo empresarial de pago activo (Enterprise Agreement / MCA) sin métodos de pago próximos a vencer `[Verificado MS Learn]`.", "Verificar mediante Azure Policy que **ninguna carga de trabajo ajena a Customer Key** haya sido desplegada en esas dos suscripciones dedicadas `[Verificado MS Learn]`.", "Confirmar la existencia de `CanNotDelete` Resource Locks sobre los grupos de recursos y Key Vaults / Managed HSM `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Impedir suspensión por facturación o contaminación con recursos ajenos en las dos suscripciones dedicadas a Customer Key.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-01", "cadencia": "Trimestral", "actividad": "Simulacro técnico de elevación/revocación en M365 PAM y ejercicio anti-phishing Lockbox", "objetivo": "Validar la destreza operativa de aprobadores y analistas ante elevaciones reales y notificaciones Lockbox falsificadas.", "consolaRuta": "admin.microsoft.com > Privileged access / Exchange Online PowerShell", "procedimiento": ["Ejecutar en ventana controlada New-ElevatedAccessRequest, Approve-ElevatedAccessRequest y revocación anticipada Revoke verificando logs.", "Realizar simulacro de correo falso de Customer Lockbox con enlace de inicio de sesión comprobando su reporte inmediato como phishing."], "rolResponsable": "CISO / Identity Lead / SOC Manager", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Phishing / Valid Accounts", "evidenciaAuditable": "Acta trimestral de simulacro PAM y Lockbox con métricas de respuesta.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Diseñado sobre comportamientos oficiales verificados de M365 PAM y notificaciones Lockbox sin enlaces.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/privileged-access-management-configuration", "pasosDetallados": ["Ejecutar una solicitud real controlada en M365 PAM (`New-ElevatedAccessRequest` para un cmdlet de prueba), aprobarla por pares (`Approve-ElevatedAccessRequest`), ejecutar la tarea, revocar anticipadamente el permiso y verificar la traza completa en Purview Audit `[Verificado MS Learn]`.", "Simular en ejercicio de mesa la recepción de un correo falso de Customer Lockbox con enlace de inicio de sesión para validar que los aprobadores identifiquen el intento de phishing y verifiquen directamente en `admin.microsoft.com > Support > Customer Lockbox Requests` `[Verificado MS Learn]`."], "disparadorAlerta": "Validar la destreza operativa de aprobadores y analistas ante elevaciones reales y notificaciones Lockbox falsificadas.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-02", "cadencia": "Trimestral", "actividad": "Prueba empírica de restauración de claves raíz en bóveda aislada (Restore-AzKeyVaultKey)", "objetivo": "Comprobar que cada archivo .backup pueda restaurarse íntegramente en caso de desastre.", "consolaRuta": "Azure PowerShell (bóveda de laboratorio aislada)", "procedimiento": ["Aprovisionar un Key Vault / HSM temporal limpio sin colisión de nombres de clave.", "Ejecutar Restore-AzKeyVaultKey -VaultName <TestVault> -InputFile <BackupFile> comprobando restauración de todas las versiones.", "Eliminar la bóveda temporal de laboratorio y firmar el acta de validación."], "rolResponsable": "Cryptography & PKI Lead", "funcionNIST": "RC", "subcategoriaNIST": "RC.RP-03", "mitreTactic": "Inhibit System Recovery", "evidenciaAuditable": "Evidencia de ejecución exitosa de Restore-AzKeyVaultKey en entorno aislado.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Valida en práctica la restricción documentada en MS Learn de fallo de Restore-AzKeyVaultKey si el nombre ya existe.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-manage", "pasosDetallados": ["Seleccionar un Key Vault / HSM de validación sin clave preexistente con el mismo nombre (ya que `Restore-AzKeyVaultKey` falla si ya existe una clave con idéntico nombre) `[Verificado MS Learn]`.", "Ejecutar `Restore-AzKeyVaultKey -VaultName <TestVault> -InputFile <BackupFile>` verificando la restauración íntegra de versiones y metadatos `[Verificado MS Learn]`.", "Destruir la copia temporal del laboratorio tras documentar la prueba exitosa `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Comprobar que cada archivo .backup pueda restaurarse íntegramente en caso de desastre.", "tipoAccion": "Periódica Programada"}, {"codigo": "SM-01", "cadencia": "Semestral", "actividad": "Revisión arquitectónica de cobertura Customer Key (Windows 365 >20k lotes, Copilot, CMK eDiscovery y frontera DKE)", "objetivo": "Asegurar cobertura completa sobre nuevas cargas y evitar bloqueos de IA/colaboración por mal uso de DKE.", "consolaRuta": "intune.microsoft.com / purview.microsoft.com / Exchange & SPO PowerShell", "procedimiento": ["Verificar si existen lotes adicionales de Windows 365 Cloud PCs pendientes de cifrar (límite de 20.000 por ejecución con reinicio).", "Evaluar la adopción de CMK para exportaciones directas de Purview eDiscovery.", "Auditar etiquetas DKE confirmando que se limiten al ~5 % ultra-secreto sin afectar repositorios de Microsoft 365 Copilot."], "rolResponsable": "Cloud Security Architect / Compliance Lead", "funcionNIST": "ID", "subcategoriaNIST": "ID.AM-05", "mitreTactic": "Collection", "evidenciaAuditable": "Informe semestral de arquitectura criptográfica M365.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Lote de 20.000 Cloud PCs y frontera funcional Customer Key vs. DKE verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/windows-365/enterprise/purview-customer-key", "pasosDetallados": ["Si la flota supera los **20.000 Windows 365 Cloud PCs** (límite por ejecución), verificar que todos los lotes hayan completado su re-cifrado en horarios de mantenimiento (recordando que el proceso reinicia y desconecta temporalmente cada Cloud PC) `[Verificado MS Learn]`.", "Revisar la postura combinada de Customer Key frente a etiquetas con **Double Key Encryption (DKE)** para asegurar que ningún repositorio colaborativo o de M365 Copilot haya sido bloqueado inadvertidamente por uso excesivo de DKE `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar cobertura completa sobre nuevas cargas y evitar bloqueos de IA/colaboración por mal uso de DKE.", "tipoAccion": "Periódica Programada"}, {"codigo": "A-01", "cadencia": "Anual", "actividad": "Ceremonia gobernada de rotación de claves Customer Key (solo cuando la política lo exija)", "objetivo": "Ejecutar rotación controlada mediante nueva versión de clave (-Refresh / Update-SPODataEncryptionPolicy) conservando todas las versiones previas.", "consolaRuta": "Azure PowerShell / Exchange Online PowerShell / SharePoint PowerShell", "procedimiento": ["Confirmar mandato regulatorio de rotación (rotar únicamente si la política de cumplimiento de la organización lo exige).", "Crear nueva versión sin fecha de expiración con Add-AzKeyVaultKey y respaldarla de inmediato con Backup-AzKeyVaultKey.", "Ejecutar Set-M365DataAtRestEncryptionPolicy -Refresh, Set-DataEncryptionPolicy -Refresh y en SharePoint Update-SPODataEncryptionPolicy una clave a la vez hasta estado Registered, sin borrar ni deshabilitar versiones anteriores."], "rolResponsable": "Cryptography & PKI Lead / Customer Key Policy Admin", "funcionNIST": "PR", "subcategoriaNIST": "PR.DS-01", "mitreTactic": "Credential Access", "evidenciaAuditable": "Acta anual de ceremonia de rotación con salidas Registered y respaldos actualizados.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Advertencia de rotar solo si es requerido, rotación secuencial en SPO y prohibición de borrar versiones previas verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-availability-key-roll", "pasosDetallados": ["Confirmar la necesidad normativa (Microsoft advierte rotar claves de Customer Key **únicamente** cuando las políticas de seguridad/cumplimiento lo exijan) `[Verificado MS Learn]`.", "En cada bóveda, generar una **nueva versión de la misma clave** sin fecha de expiración usando `Add-AzKeyVaultKey -VaultName <Vault> -Name <KeyName> -Destination HSM -KeyOps @('wrapKey','unwrapKey') -NotBefore (Get-Date)` y ejecutar de inmediato `Backup-AzKeyVaultKey` `[Verificado MS Learn]`.", "Refrescar las DEPs en Exchange y Multi-workload ejecutando `Set-M365DataAtRestEncryptionPolicy -Identity <Policy> -Refresh` y `Set-DataEncryptionPolicy -Identity <Policy> -Refresh` `[Verificado MS Learn]`.", "En SharePoint y OneDrive, rotar **una sola clave a la vez**: ejecutar `Update-SPODataEncryptionPolicy <SPOAdminSiteUrl> -KeyVaultName <Name> -KeyName <Name> -KeyVersion <Version> -KeyType Primary`, monitorear con `Get-SPODataEncryptionPolicy` hasta que pase de `Rolling` a **`Registered`** al 100 %, y recién entonces repetir para `Secondary` `[Verificado MS Learn]`.", "**Verificar estrictamente que ninguna versión anterior de las claves haya sido deshabilitada ni eliminada** `[Verificado MS Learn]`."], "disparadorAlerta": "Ejecutar rotación controlada mediante nueva versión de clave (-Refresh / Update-SPODataEncryptionPolicy) conservando todas las versiones previas.", "tipoAccion": "Periódica Programada"}, {"codigo": "AH-01", "cadencia": "Ad-Hoc", "actividad": "Playbook de reemplazo de claves raíz ante sospecha de compromiso (Método -Replace)", "objetivo": "Sustituir claves potencialmente comprometidas por claves nuevas sin provocar interrupción de servicio ni pérdida de datos.", "consolaRuta": "Azure PowerShell / Exchange Online PowerShell / SharePoint PowerShell", "procedimiento": ["Revocar accesos administrativos comprometidos en Entra ID manteniendo la clave anterior temporalmente activa mientras se completa el reemplazo.", "Generar nuevas claves RSA/RSA-HSM con nombres nuevos, respaldarlas y validar permisos RBAC.", "Ejecutar Set-M365DataAtRestEncryptionPolicy -Replace -AzureKeyIDs <URI1>,<URI2>, Set-DataEncryptionPolicy -Replace y Update-SPODataEncryptionPolicy secuencialmente.", "Esperar obligatoriamente al menos 24 horas antes de deshabilitar la clave antigua y 24-48 horas adicionales, sin purgar versiones requeridas por backups."], "rolResponsable": "Cryptography & PKI Lead / Incident Commander", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-02", "mitreTactic": "Credential Access (T1552)", "evidenciaAuditable": "Registro cronológico del reemplazo con espera verificada de 24 h / 48 h.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Sintaxis -Replace y tiempos obligatorios de espera de 24 h y 24-48 h verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-availability-key-roll", "pasosDetallados": ["Contener el plano de identidad revocando sesiones en Entra ID del administrador comprometido **sin deshabilitar ni borrar aún la clave activa en Key Vault** (deshabilitarla prematuramente provocaría caída inmediata del acceso de usuarios) `[Verificado MS Learn]`.", "Crear claves completamente nuevas (`RSA` / `RSA-HSM`, sin expiración, con Soft Delete + Purge Protection) y respaldarlas con `Backup-AzKeyVaultKey`, verificando permisos RBAC para los principales de M365 `[Verificado MS Learn]`.", "Ejecutar reemplazo con el parámetro `-Replace` proporcionando **ambos URIs**: `Set-M365DataAtRestEncryptionPolicy -Identity <Policy> -Replace -AzureKeyIDs <KeyURI1>,<KeyURI2>` y `Set-DataEncryptionPolicy -Identity <Policy> -Replace -AzureKeyIDs <KeyURI1>,<KeyURI2>`; en SharePoint ejecutar `Update-SPODataEncryptionPolicy` secuencialmente (una clave a la vez hasta `Registered`) `[Verificado MS Learn]`.", "**Respetar los tiempos obligatorios de guarda:** esperar **mínimo 24 horas** tras completar el reemplazo antes de deshabilitar la clave comprometida, y **24 a 48 horas adicionales** antes de cualquier acción posterior (conservando siempre las claves históricas requeridas por backups de SharePoint) `[Verificado MS Learn]`."], "disparadorAlerta": "Sospecha fundada o confirmación de exposición de credenciales de administración de una suscripción/bóveda de Customer Key o reestructuración mayor `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-02", "cadencia": "Ad-Hoc", "actividad": "Playbook de recuperación ante pérdida total de claves del cliente usando la Availability Key", "objetivo": "Restaurar el acceso a los datos y migrar hacia una nueva DEP cuando ambas claves en Azure Key Vault se hayan perdido.", "consolaRuta": "Microsoft Support + Azure PowerShell + Exchange / SharePoint PowerShell", "procedimiento": ["Para Exchange y Multi-workload: crear 2 nuevas claves en suscripciones Azure válidas, crear una nueva DEP y asignarla permitiendo re-cifrado en segundo plano con la Availability Key (hasta 72 h).", "Para SharePoint y OneDrive: abrir ticket crítico con Microsoft Support para activar explícitamente la Availability Key, crear nueva DEP y re-incorporar (~4 h tras activación).", "Monitorear los eventos CustomerKeyServiceEncryption en Purview Audit hasta estabilizar la nueva jerarquía."], "rolResponsable": "CISO / Cryptography Lead / Platform Leads", "funcionNIST": "RC", "subcategoriaNIST": "RC.RP-03", "mitreTactic": "Impact (T1490)", "evidenciaAuditable": "Ticket de recuperación Microsoft Support, nueva DEP activa y trazas de auditoría.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tiempos y diferencia de recuperación EXO/MDEP (72 h autogestionable) vs. SPO (requiere Support, ~4 h) verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-availability-key-understand", "pasosDetallados": ["Para **Exchange y Multi-workload**: aprovisionar dos nuevas claves Customer Key en dos suscripciones Azure válidas, crear una nueva DEP (`New-DataEncryptionPolicy` / `New-M365DataAtRestEncryptionPolicy`) y asignarla a los buzones o al tenant; la Availability Key protege y permite re-cifrar los datos en segundo plano (hasta **72 horas**) `[Verificado MS Learn]`.", "Para **SharePoint y OneDrive**: abrir un ticket crítico con **Microsoft Support** solicitando explícitamente activar la Availability Key para recuperación (aprobando la solicitud Customer Lockbox correspondiente si aplica), crear dos nuevas claves y una nueva DEP de SharePoint/OneDrive y re-incorporar el servicio (~**4 horas** típicas tras la activación según cantidad de sitios) `[Verificado MS Learn]`.", "Auditar en Purview Audit los registros `CustomerKeyServiceEncryption` (`Fallback to availability key`) generados durante la contingencia `[Verificado MS Learn]`."], "disparadorAlerta": "Pérdida simultánea o inaccesibilidad permanente e irrecuperable de ambos Key Vaults / claves raíz del cliente `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-03", "cadencia": "Ad-Hoc", "actividad": "Playbook de rechazo inmediato de solicitud Customer Lockbox anómala o detección de phishing", "objetivo": "Bloquear cualquier intento de acceso externo no correlacionado o campaña de suplantación de notificaciones Lockbox.", "consolaRuta": "admin.microsoft.com > Support > Customer Lockbox Requests / Defender for Office 365", "procedimiento": ["Si el correo contiene enlaces de inicio de sesión, declararlo incidente de phishing (las notificaciones legítimas de M365 Lockbox nunca contienen links de sign-in).", "Si existe solicitud en el portal sin aprobación del propietario interno del incidente, pulsar Deny o ejecutar Set-AccessToCustomerDataRequest para rechazarla.", "Escalar formalmente con Microsoft Support citando el Service Request Number para auditoría de seguridad."], "rolResponsable": "Customer Lockbox Access Approver / SOC L2", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Initial Access (T1199)", "evidenciaAuditable": "Registro Set-AccessToCustomerDataRequest con ApprovalDecision = Deny.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Regla oficial anti-phishing de notificaciones sin enlaces y flujo Deny verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-lockbox-requests", "pasosDetallados": ["Si el correo recibido contiene un hipervínculo que solicita credenciales de inicio de sesión en Microsoft 365, clasificarlo inmediatamente como **phishing** (Microsoft nunca incluye enlaces de sign-in en notificaciones M365 Lockbox) y reportarlo en Microsoft Defender for Office 365 `[Verificado MS Learn]`.", "Si la solicitud existe realmente en `admin.microsoft.com > Support > Customer Lockbox Requests` pero carece de validación del dueño interno del servicio, seleccionar **Deny** inmediatamente (o ejecutar `Set-AccessToCustomerDataRequest` para denegar/cancelar) `[Verificado MS Learn]`.", "Contactar a Microsoft Support citando el número de Service Request para exigir aclaración formal del motivo de escalamiento `[Verificado MS Learn]`."], "disparadorAlerta": "Recepción de una solicitud Customer Lockbox sin ticket de soporte correlacionado, con alcance excesivo o notificación por correo anómala `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-04", "cadencia": "Ad-Hoc", "actividad": "Playbook de revocación de emergencia de ventana activa en M365 PAM ante compromiso administrativo", "objetivo": "Cortar instantáneamente la ejecución de tareas privilegiadas en Exchange Online para un administrador bajo sospecha.", "consolaRuta": "admin.microsoft.com > Settings > Org Settings > Security & Privacy > Privileged access > Manage access policies and requests", "procedimiento": ["Localizar las solicitudes en estado Approved del administrador afectado y seleccionar la acción Revoke para anular el permiso de inmediato.", "Revocar sesiones de usuario en Microsoft Entra ID y desactivar asignaciones en Entra PIM.", "Auditar en OfficeActivity todos los cmdlets ejecutados durante la ventana previa y revertir cambios no autorizados."], "rolResponsable": "M365 PAM Approver / SOC L3", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Privilege Escalation (T1078)", "evidenciaAuditable": "Registro de revocación PAM y auditoría forense de cmdlets ejecutados.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Capacidad nativa Revoke sobre solicitudes previamente aprobadas verificada en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/privileged-access-management-configuration", "pasosDetallados": ["Ingresar a `Manage access policies and requests`, filtrar por estado **Approved**, seleccionar la solicitud activa del administrador afectado y pulsar **Revoke** para cortar de inmediato la autorización en el *Exchange Management runspace* `[Verificado MS Learn]`.", "En paralelo, revocar tokens de sesión en Microsoft Entra ID y desactivar cualquier rol activo en Entra PIM `[Decisión / Propuesta Editorial]`.", "Auditar todos los cmdlets ejecutados durante los minutos en que la ventana estuvo activa y revertir cualquier regla de transporte o conector malicioso creado `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Alerta de compromiso de identidad (Entra ID Identity Protection / Defender XDR) o conducta anómala de un administrador que cuenta con una ventana activa aprobada en M365 PAM `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-05", "cadencia": "Ad-Hoc", "actividad": "Playbook ejecutivo de distinción entre Rollback seguro y Data Purge Path regulado (salida definitiva)", "objetivo": "Impedir destrucción criptográfica accidental y ejecutar con rigor legal cualquier salida regulada de Exchange Online.", "consolaRuta": "Azure PowerShell + Exchange Online PowerShell + Microsoft Support (Data Purge eDocument)", "procedimiento": ["Verificar alcance: si la empresa permanece en M365, ejecutar únicamente Rollback (Set-Mailbox -DataEncryptionPolicy $null o ticket de soporte para MDEP/SPO manteniendo intactos los Key Vaults).", "Solo ante salida total de Exchange Online (purgar MDEP o SPO DEPs no está soportado): quitar permisos wrap/unwrap de Exchange Online en ambos Key Vaults.", "Ejecutar Set-DataEncryptionPolicy <ID> -PermanentDataPurgeRequested -PermanentDataPurgeReason <Reason> -PermanentDataPurgeContact <Contact> y firmar legalmente el Data Purge eDocument para destruir la DEP y la Availability Key."], "rolResponsable": "CISO / General Counsel / Executive Representative", "funcionNIST": "RC", "subcategoriaNIST": "RC.CO-03", "mitreTactic": "Data Destruction (Compliance Shredding)", "evidenciaAuditable": "Data Purge eDocument firmado por representante legal y constancia de purga auditada bajo SOC 2.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Exclusividad para DEPs de buzones Exchange, no soporte en MDEP/SPO y requisito de Data Purge eDocument verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-manage", "pasosDetallados": ["**Control de Puerta Crítico:** Verificar qué escenario se solicita. Si la organización **continúa operando en Microsoft 365**, **PROHIBIDO ejecutar Data Purge Path**: para regresar a Microsoft-managed keys (*Rollback*), conservar los Key Vaults activos y con permisos intactos, ejecutar `Set-Mailbox -Identity <mailbox> -DataEncryptionPolicy $null` en Exchange o abrir ticket de Rollback ante Microsoft Support para Multi-workload / SharePoint (preview, no soportado en Gallatin/GCC-H/DoD) `[Verificado MS Learn]`.", "Si y solo si la organización **sale completamente de Exchange Online** y requiere *crypto-shredding* regulado (recordando que **purgar Multi-workload DEPs o SharePoint DEPs NO está soportado**): consolidar todos los buzones a purgar en una DEP de Exchange `[Verificado MS Learn]`.", "Remover los permisos `wrapKey` y `unwrapKey` de `Office 365 Exchange Online` en ambos Azure Key Vaults `[Verificado MS Learn]`.", "Ejecutar `Set-DataEncryptionPolicy <Policy ID> -PermanentDataPurgeRequested -PermanentDataPurgeReason <Reason> -PermanentDataPurgeContact <ContactName>` `[Verificado MS Learn]`.", "Solicitar a Microsoft Support el **Data Purge eDocument**, hacerlo firmar electrónicamente por el representante legal ejecutivo autorizado y remitirlo para que Microsoft verifique autenticidad, elimine la DEP, marque los buzones para eliminación permanente y **destruya irreversiblemente la Availability Key** `[Verificado MS Learn]`."], "disparadorAlerta": "Decisión corporativa aprobada por Directorio de (A) regresar a claves gestionadas por Microsoft conservando los datos (*Rollback*), o (B) abandonar definitivamente Exchange Online destruyendo criptográficamente todos los buzones (*Data Purge Path*) `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}], "consultasKQLyVerificacion": [{"nombre": "SIEM: Decisiones Customer Lockbox M365 y auditoría completa de Microsoft Operator", "plataforma": "Microsoft Sentinel / Microsoft Defender XDR", "tablaPrincipal": "OfficeActivity", "consulta": "OfficeActivity\n| where TimeGenerated > ago(30d)\n| where Operation =~ 'Set-AccessToCustomerDataRequest'\n    or UserId =~ 'Microsoft Operator'\n    or UserId startswith 'BOXServiceAccount@'\n| project TimeGenerated, UserId, Operation, ClientIP, ResultStatus, OfficeWorkload, Parameters\n| sort by TimeGenerated desc", "proposito": "Detectar cada aprobación o rechazo de Customer Lockbox en M365 y auditar exhaustivamente toda acción posterior ejecutada por ingenieros de Microsoft.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Control Periódico de Salud, Auditoría y KPIs"}, {"nombre": "SIEM: Alerta crítica de Fallback a la Availability Key en Customer Key", "plataforma": "Microsoft Sentinel / Microsoft Defender XDR", "tablaPrincipal": "OfficeActivity", "consulta": "OfficeActivity\n| where TimeGenerated > ago(7d)\n| where RecordType =~ 'CustomerKeyServiceEncryption' or Operation =~ 'Fallback to availability key'\n| project TimeGenerated, OfficeWorkload, Operation, OrganizationId, Parameters\n| sort by TimeGenerated desc", "proposito": "Alertar inmediatamente cuando Exchange Online o Multi-workload recurran a la Availability Key por fallos simultáneos en los dos Key Vaults del cliente.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "SIEM: Vigilancia de operaciones destructivas o fallos HTTP en Azure Key Vault / Managed HSM", "plataforma": "Microsoft Sentinel / Azure Monitor", "tablaPrincipal": "AzureDiagnostics", "consulta": "AzureDiagnostics\n| where TimeGenerated > ago(7d)\n| where ResourceProvider =~ 'MICROSOFT.KEYVAULT'\n| where OperationName in ('KeyDelete', 'KeyPurge', 'KeyUpdate', 'VaultDelete', 'VaultPatch', 'RoleAssignmentCreate', 'RoleAssignmentDelete')\n    or (ResultSignature != 'OK' and httpStatusCode_d >= 400)\n| project TimeGenerated, Resource, OperationName, CallerIPAddress, identity_claim_appid_g, identity_claim_upn_s, httpStatusCode_d, ResultDescription\n| sort by TimeGenerated desc", "proposito": "Monitorear cambios de seguridad, intentos de borrado de claves o errores de permisos sobre las bóvedas criptográficas de Customer Key.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "SIEM: Ciclo completo de políticas, solicitudes y aprobaciones en M365 PAM", "plataforma": "Microsoft Sentinel / Microsoft Defender XDR", "tablaPrincipal": "OfficeActivity", "consulta": "OfficeActivity\n| where TimeGenerated > ago(14d)\n| where Operation has_any ('Enable-ElevatedAccessControl', 'Disable-ElevatedAccessControl', 'New-ElevatedAccessApprovalPolicy', 'Remove-ElevatedAccessApprovalPolicy', 'New-ElevatedAccessRequest', 'Approve-ElevatedAccessRequest', 'Deny-ElevatedAccessRequest')\n| project TimeGenerated, UserId, Operation, ClientIP, ResultStatus, Parameters\n| sort by TimeGenerated desc", "proposito": "Auditar quién solicita, aprueba, rechaza o altera políticas de acceso privilegiado a nivel de tarea en Microsoft 365.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Microsoft Graph PowerShell: Consulta moderna auditLog/queries para Lockbox y M365 PAM", "plataforma": "Microsoft Graph PowerShell (v1.0)", "tablaPrincipal": "security/auditLog/queries", "consulta": "Connect-MgGraph -Scopes 'AuditLogsQuery.Read.All'\n$body = @{\n    displayName = 'Audit_Lockbox_and_PAM_7d'\n    filterStartDateTime = (Get-Date).AddDays(-7).ToUniversalTime().ToString('o')\n    filterEndDateTime   = (Get-Date).ToUniversalTime().ToString('o')\n    operationFilters    = @('Set-AccessToCustomerDataRequest', 'New-ElevatedAccessRequest', 'Approve-ElevatedAccessRequest')\n}\nInvoke-MgGraphRequest -Method POST -Uri 'https://graph.microsoft.com/v1.0/security/auditLog/queries' -Body ($body | ConvertTo-Json)", "proposito": "Sustituir de manera soportada el cmdlet en retiro Search-UnifiedAuditLog (retiro definitivo el 15-oct-2027) mediante la API GA de octubre de 2026.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Validación de Configuración y Postura"}, {"nombre": "PowerShell Criptográfico: Validación no destructiva Customer Key y estado de DEPs", "plataforma": "Azure PowerShell, Exchange Online y SharePoint PowerShell", "tablaPrincipal": "M365CustomerKeyOnboarding / DataEncryptionPolicy", "consulta": "$req = New-CustomerKeyOnboardingRequest -Organization '<TenantGUID>' -Scenario MDEP -Subscription1 '<Sub1>' -KeyIdentifier1 '<KeyURI1>' -Subscription2 '<Sub2>' -KeyIdentifier2 '<KeyURI2>' -OnboardingMode Validate\n$req | Select-Object ID, ValidationResult, FailedValidations\nGet-M365DataAtRestEncryptionPolicyAssignment\nGet-DataEncryptionPolicy | Select-Object Name, Enabled, PolicyState\nGet-SPODataEncryptionPolicy", "proposito": "Comprobar sin impacto productivo las 9 validaciones del servicio de onboarding y el estado de cifrado en Multi-workload, Exchange y SharePoint.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Validación de Configuración y Postura"}, {"nombre": "Exchange Online PowerShell: Inventario de políticas y solicitudes en M365 PAM", "plataforma": "Exchange Online PowerShell", "tablaPrincipal": "ElevatedAccessApprovalPolicy / ElevatedAccessRequest", "consulta": "Connect-ExchangeOnline\nGet-ElevatedAccessApprovalPolicy | Format-Table Name, Task, ApprovalType, ApproverGroup -AutoSize\nGet-ElevatedAccessRequest | Select-Object RequestId, Requestor, Task, RequestStatus, DurationHours, CreatedTime", "proposito": "Auditar el catálogo activo de hasta 30 políticas de M365 PAM y el estado de todas las solicitudes JIT recientes.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Validación de Configuración y Postura"}], "kpisYMetricas": [{"id": "KPI-01", "nombre": "Cobertura de Auditoría Post-Acceso Lockbox (Microsoft Operator)", "definicion": "Porcentaje de solicitudes Customer Lockbox aprobadas cuyas acciones posteriores de Microsoft Operator fueron auditadas y firmadas en menos de 24 horas.", "formula": "(Solicitudes Lockbox aprobadas con auditoría firmada de Microsoft Operator / Total solicitudes aprobadas) * 100", "metaSugerida": "100 % en <= 24 h", "frecuencia": "Por evento / Mensual", "audiencia": "CISO / DPO / Auditoría Interna", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Asegura verificación efectiva sobre la ventana máxima de 4 horas concedida al ingeniero de soporte."}, {"id": "KPI-02", "nombre": "Cobertura Efectiva de Cifrado Customer Key", "definicion": "Porcentaje de buzones elegibles, sitios SharePoint/OneDrive y Windows 365 Cloud PCs en alcance que operan bajo una DEP activa/registrada.", "formula": "(Activos cifrados con DEP activa y estado Registered / Total de activos en alcance) * 100", "metaSugerida": ">= 99.9 %", "frecuencia": "Semanal", "audiencia": "Cloud Security Architect / CISO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Medido con Get-MailboxStatistics (IsEncrypted), Get-SPODataEncryptionPolicy y estado Intune Cloud PC."}, {"id": "KPI-03", "nombre": "Incidencias de Fallback No Planificado a la Availability Key", "definicion": "Conteo de eventos de auditoría CustomerKeyServiceEncryption (Fallback to availability key) causados por errores de red, firewall o configuración.", "formula": "Conteo(RecordType == 'CustomerKeyServiceEncryption' and Operation == 'Fallback to availability key')", "metaSugerida": "0 eventos por error operativo", "frecuencia": "Diaria / Mensual", "audiencia": "Cryptography Lead / SOC Manager", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Indicador temprano crítico de salud de ambos Azure Key Vaults / Managed HSM."}, {"id": "KPI-04", "nombre": "Cumplimiento de Inmutabilidad en Bóvedas Criptográficas", "definicion": "Porcentaje de Key Vaults / Managed HSM de Customer Key con Soft Delete (90d), Purge Protection, Azure RBAC y claves sin fecha de expiración.", "formula": "(Bóvedas conformes en las 4 propiedades / Total bóvedas de Customer Key) * 100", "metaSugerida": "100 %", "frecuencia": "Mensual", "audiencia": "Cryptography Lead / GRC", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Alineado a las reglas RecoveryLevel, KeyNeverExpires y Azure RBAC de Microsoft Learn."}, {"id": "KPI-05", "nombre": "Margen de Seguridad de Licenciamiento Customer Key", "definicion": "Porcentaje de holgura entre las licencias Customer Key asignadas en el tenant y el máximo de usuarios con licencia Exchange, Teams o SharePoint.", "formula": "((Licencias Customer Key - Máx(Usuarios EXO, Teams, SPO)) / Máx(Usuarios EXO, Teams, SPO)) * 100", "metaSugerida": ">= 5 % de superávit continuo", "frecuencia": "Semanal", "audiencia": "FinOps / Compliance Officer", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Previene la reversión automática al cifrado por defecto documentada en la Service Description."}, {"id": "KPI-06", "nombre": "Tasa de Aprobación Peer-Review en M365 PAM sin Autoaprobación", "definicion": "Porcentaje de solicitudes M365 PAM aprobadas por un miembro distinto del solicitante con referencia válida a ticket de cambio.", "formula": "(Solicitudes PAM con Aprobador != Solicitante y ticket válido / Total solicitudes PAM aprobadas) * 100", "metaSugerida": "100 % (0 autoaprobaciones)", "frecuencia": "Mensual", "audiencia": "Identity Lead / Auditoría Interna", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Garantiza control real de cuatro ojos sobre cmdlets críticos de Exchange Online."}, {"id": "KPI-07", "nombre": "Higiene y No Interactividad de SystemAccounts en M365 PAM", "definicion": "Cantidad total de cuentas excluidas en -SystemAccounts y porcentaje libre de inicios de sesión interactivos humanos.", "formula": "Conteo(SystemAccounts) y % sin SigninLogs interactivos", "metaSugerida": "<= 2 cuentas y 100 % no interactivo", "frecuencia": "Mensual", "audiencia": "Identity Lead / SOC Manager", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Basado en la advertencia de MS Learn de mantener las exclusiones -SystemAccounts excepcionales y auditadas."}, {"id": "KPI-08", "nombre": "Tasa de Éxito en Pruebas Trimestrales de Restauración de Claves", "definicion": "Porcentaje de archivos .backup de claves raíz verificados exitosamente mediante Restore-AzKeyVaultKey en bóveda aislada de laboratorio.", "formula": "(Backups restaurados exitosamente en prueba trimestral / Total claves raíz activas) * 100", "metaSugerida": "100 %", "frecuencia": "Trimestral", "audiencia": "CISO / Comité de Riesgos", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Comprueba empíricamente la capacidad de recuperación antes de necesitar recurrir a la Availability Key."}], "mapeoNISTCSF20": [{"funcion": "GOVERN (GV)", "subcategoria": "GV.SC-07", "descripcionResultado": "Los riesgos planteados por proveedores cloud y terceros en la cadena de suministro se comprenden, controlan y monitorean.", "capacidadMicrosoft": "Microsoft Purview Customer Lockbox y Customer Lockbox for Microsoft Azure (MCSB PA-8) exigen autorización explícita del cliente antes de cualquier acceso humano de soporte.", "evidenciaAuditoria": "Configuración habilitada de Lockbox en M365 y Azure e historial auditado de decisiones Set-AccessToCustomerDataRequest.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "GOVERN (GV)", "subcategoria": "GV.RR-02", "descripcionResultado": "Los roles, responsabilidades y autoridades de custodia criptográfica y acceso privilegiado están segregados y aplicados.", "capacidadMicrosoft": "Separación de custodios entre dos suscripciones Azure en Customer Key, rol dedicado Customer Lockbox access approver y grupo aprobador en M365 PAM.", "evidenciaAuditoria": "Asignaciones Azure RBAC segregadas entre Suscripción 1 y 2 y actas de Microsoft Entra Access Reviews.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.AM-05", "descripcionResultado": "Los activos y datos se priorizan según clasificación, sensibilidad regulatoria e impacto operativo.", "capacidadMicrosoft": "Estrategia diferenciada: Customer Key (MDEP, EXO, SPO, Windows 365, Copilot) para el 95 % del patrimonio y Double Key Encryption (DKE) para el ~5 % Top Secret.", "evidenciaAuditoria": "Inventario de DEPs activas y matriz aprobada de clasificación criptográfica.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.RA-06", "descripcionResultado": "Las respuestas a riesgos de configuración se validan proactivamente y se les da seguimiento continuo.", "capacidadMicrosoft": "Ejecución periódica de M365CustomerKeyOnboarding en modo Validate para auditar las 9 reglas críticas sin impacto en producción.", "evidenciaAuditoria": "Reportes semanales PassedValidations con ValidationResult = Success.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.AA-05", "descripcionResultado": "Los permisos de acceso y autorizaciones privilegiadas aplican mínimo privilegio y separación de funciones.", "capacidadMicrosoft": "Defensa en profundidad combinando Microsoft Entra PIM (nivel rol) con Microsoft Purview PAM (nivel cmdlet/tarea en Exchange Management runspace).", "evidenciaAuditoria": "Catálogo Get-ElevatedAccessApprovalPolicy y registros de aprobación por pares Approve-ElevatedAccessRequest.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.DS-01", "descripcionResultado": "La confidencialidad, integridad y disponibilidad de los datos en reposo están protegidas criptográficamente.", "capacidadMicrosoft": "Cifrado de servicio con Customer Key sobre Azure Key Vault Premium HSM o Managed HSM (FIPS 140-2 Level 3) con Soft Delete 90d y Purge Protection.", "evidenciaAuditoria": "Propiedades de inmutabilidad en Key Vault / Managed HSM, Get-SPODataEncryptionPolicy (Registered) y cifrado Cloud PC en Intune.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.CM-03", "descripcionResultado": "Las actividades de administradores internos y operadores externos se monitorean continuamente para detectar abusos.", "capacidadMicrosoft": "Auditoría completa de comandos ejecutados por Microsoft Operator tras Lockbox y de tareas elevadas en M365 PAM dentro de Purview Audit y Sentinel.", "evidenciaAuditoria": "Políticas activas en Defender for Cloud Apps y reglas KQL sobre OfficeActivity.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.CM-09", "descripcionResultado": "La infraestructura criptográfica y servicios subyacentes se monitorean para detectar fallos o anomalías.", "capacidadMicrosoft": "Registro automático de eventos CustomerKeyServiceEncryption (Fallback to availability key) y diagnósticos AzureDiagnostics de Key Vault.", "evidenciaAuditoria": "Alertas SIEM sobre Fallback to availability key y códigos HTTP >= 400 en bóvedas.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.MI-01", "descripcionResultado": "Los incidentes de acceso no autorizado o abuso privilegiado se contienen en tiempo real.", "capacidadMicrosoft": "Denegación inmediata (Deny) en Customer Lockbox y revocación instantánea (Revoke) de ventanas activas aprobadas en M365 PAM.", "evidenciaAuditoria": "Registros de revocación PAM y decisiones ApprovalDecision = Deny en Purview Audit.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.MI-02", "descripcionResultado": "Los incidentes que afectan secretos o claves criptográficas son erradicados de forma segura.", "capacidadMicrosoft": "Reemplazo controlado de claves raíz mediante Set-DataEncryptionPolicy -Replace y Set-M365DataAtRestEncryptionPolicy -Replace respetando guardas de 24-48 h.", "evidenciaAuditoria": "Bitácora de ejecución de -Replace con nuevos Key URIs y preservación de claves históricas.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RECOVER (RC)", "subcategoria": "RC.RP-03", "descripcionResultado": "La integridad de las copias de respaldo de claves se verifica antes de su uso en contingencias.", "capacidadMicrosoft": "Respaldo cifrado con Backup-AzKeyVaultKey, validación trimestral con Restore-AzKeyVaultKey y recuperación asistida por la Availability Key.", "evidenciaAuditoria": "Actas firmadas de pruebas trimestrales de restauración en laboratorio aislado.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RECOVER (RC)", "subcategoria": "RC.CO-03", "descripcionResultado": "Las acciones de recuperación, reversión o salida regulada del servicio se documentan y comunican formalmente.", "capacidadMicrosoft": "Flujo formal auditado bajo SOC 2 de Data Purge Path (Data Purge eDocument firmado para destruir DEP y Availability Key en salida de Exchange) o Rollback.", "evidenciaAuditoria": "Protocolo corporativo de Exit Strategy e informes SOC 1 / SOC 2 del Microsoft Service Trust Portal.", "estadoValidacion": "Propuesta Editorial"}], "validacionYDecisionesEditoriales": {"fechaRevalidacion": "2026-11-11", "resumenAuditoria": "Módulo construido íntegramente desde cero contra Microsoft Learn MCP y la Microsoft Purview Service Description actualizada a noviembre de 2026, verificando la cobertura de Customer Lockbox sobre Windows 365 y M365 Copilot (y su contraste con Azure Lockbox MCSB PA-8), la arquitectura de Customer Key con Managed HSM (2 instancias vs. 6 Key Vaults), Windows 365 Cloud PCs, Availability Key, restricciones del Data Purge Path frente a DKE, y la operación granular de M365 PAM complementaria a Entra PIM.", "correccionesAplicadas": ["Verificada en MS Learn la cobertura oficial de Microsoft Purview Customer Lockbox sobre Exchange Online, SharePoint, OneDrive, Teams, Windows 365 y todas las interacciones de Microsoft 365 Copilot (vía Exchange Online), con expiración de 12 h, acceso máximo de 4 h y correos sin enlaces de sign-in.", "Contrastada con precisión la arquitectura de Customer Lockbox for Microsoft Azure (plan Developer, cola de 4 días, +40 servicios incluyendo Azure OpenAI y Foundry, requisito de activar PIM antes de la solicitud y control MCSB PA-8).", "Documentada la diferencia arquitectónica entre Azure Key Vault Premium (exige 6 bóvedas en 3 pares) y Azure Key Vault Managed HSM FIPS 140-2 Level 3 (requiere solo 2 instancias totales en 2 suscripciones de pago) y la migración obligatoria a Azure RBAC.", "Verificado el alcance de la Multi-workload DEP (MDEP): Windows 365 Cloud PCs (re-cifrado con reinicio en lotes de hasta 20.000 desde Intune), Teams, interacciones M365 Copilot, Purview Information Protection (EDM/etiquetas) y CMK en preview para exportaciones directas de eDiscovery.", "Documentada la restricción crítica del Data Purge Path (-PermanentDataPurgeRequested + Data Purge eDocument): soportado exclusivamente para DEPs de buzones Exchange al abandonar el servicio, y NO soportado en Multi-workload ni SharePoint DEPs.", "Establecida la frontera exacta frente a Double Key Encryption (DKE, actualizado oct-2026), que deja el contenido inaccesible a M365 Copilot, eDiscovery, DLP en nube, Office Web, coautoría, AutoSave, Loop y Teams.", "Verificados los parámetros exactos de M365 PAM (tope actual de 30 políticas, expiración de solicitud en 24 h, ventana aprobada default de 4 h) y la transición de auditoría hacia Graph auditLog/queries (GA oct-2026) ante el retiro de Search-UnifiedAuditLog el 15-oct-2027."], "decisionesEditoriales": [{"elemento": "Selección priorizada de cmdlets críticos para las 30 políticas disponibles en M365 PAM (S-03)", "tipo": "Propuesta Editorial", "justificacion": "Dado el límite actual de 30 políticas por organización en M365 PAM, priorizar conectores, reglas de transporte, delegación de buzones, asignaciones RBAC y DEPs de Customer Key maximiza la cobertura contra exfiltración y sabotaje."}, {"elemento": "Colchón mínimo del >= 5 % en licencias elegibles de Customer Key (S-06, KPI-05)", "tipo": "Propuesta Editorial", "justificacion": "Evita que altas masivas de usuarios en Exchange, Teams o SharePoint reduzcan la cobertura por debajo del conteo auditado por Microsoft y provoquen reversión automática al cifrado por defecto."}, {"elemento": "Política obligatoria de alerta en Defender for Cloud Apps y revisión forense del 100 % de Microsoft Operator (D-02, M-04)", "tipo": "Propuesta Editorial", "justificacion": "Compensa la ausencia de notificaciones push nativas post-aprobación en el portal de Microsoft 365 y asegura trazabilidad completa de toda intervención de soporte."}, {"elemento": "Ensayo trimestral de Restore-AzKeyVaultKey en bóveda aislada sin colisión de nombres (T-02)", "tipo": "Propuesta Editorial", "justificacion": "Comprueba empíricamente la validez de los archivos .backup antes de una emergencia real, previniendo fallos por clave preexistente con igual nombre."}, {"elemento": "Mapeo unificado a las 6 funciones de NIST CSF 2.0 y modelo de madurez de 5 niveles", "tipo": "Propuesta Editorial", "justificacion": "Integra la gobernanza de acceso del proveedor, custodia criptográfica y control JIT de tareas dentro del marco maestro de auditoría del CISO."}]}, "referenciasVerificadas": [{"id": "REF-01", "titulo": "Customer Lockbox requests (Microsoft Purview)", "url": "https://learn.microsoft.com/en-us/purview/customer-lockbox-requests", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Guía canónica de Customer Lockbox para M365: cargas soportadas (incluyendo Windows 365 y M365 Copilot), ventanas de 12 h / 4 h y auditoría Microsoft Operator.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-01)"}, {"id": "REF-02", "titulo": "Customer Lockbox for Microsoft Azure", "url": "https://learn.microsoft.com/en-us/azure/security/fundamentals/customer-lockbox-overview", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Documentación oficial de Azure Lockbox: plan Developer, servicios soportados (OpenAI, Foundry, SQL, AKS), expiración de 4 días, PIM pre-activado y MCSB PA-8.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-07-24)"}, {"id": "REF-03", "titulo": "Overview of Service encryption with Microsoft Purview Customer Key", "url": "https://learn.microsoft.com/en-us/purview/customer-key-overview", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Explica la relación con BitLocker/DKM y SSE, y el alcance exacto de las DEPs para múltiples cargas (incluyendo Copilot y Windows 365), Exchange y SharePoint.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-01)"}, {"id": "REF-04", "titulo": "What is Microsoft 365 service encryption?", "url": "https://learn.microsoft.com/en-us/purview/microsoft-365-service-encryption", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Detalla el modelo de cifrado de servicio y la diferencia entre claves gestionadas por Microsoft y Customer Key.", "verificacion": "Verificado vía Microsoft Learn (revalidado 2026-11-11)"}, {"id": "REF-05", "titulo": "Set up Customer Key (Azure Key Vault & Managed HSM)", "url": "https://learn.microsoft.com/en-us/purview/customer-key-set-up", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Prerrequisitos de 2 suscripciones de pago, 6 Key Vaults vs. 2 Managed HSM, Soft Delete 90d + Purge Protection, RBAC y módulo M365CustomerKeyOnboarding.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-16)"}, {"id": "REF-06", "titulo": "Manage Customer Key encryption policies", "url": "https://learn.microsoft.com/en-us/purview/customer-key-manage", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Cmdlets de creación/asignación de DEPs, migración de legacy access policies a Azure RBAC, Rollback y Data Purge Path exclusivo de Exchange.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-26)"}, {"id": "REF-07", "titulo": "Learn about the availability key for Customer Key", "url": "https://learn.microsoft.com/en-us/purview/customer-key-availability-key-understand", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Arquitectura de la Availability Key, disparadores de fallback (errores sistémicos vs. Access Denied) y telemetría CustomerKeyServiceEncryption.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-05-27)"}, {"id": "REF-08", "titulo": "Roll or rotate a Customer Key or an availability key", "url": "https://learn.microsoft.com/en-us/purview/customer-key-availability-key-roll", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Procedimientos -Refresh y -Replace, rotación secuencial en SharePoint, esperas de 24h/48h y prohibición de eliminar versiones antiguas.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-26)"}, {"id": "REF-09", "titulo": "Set up Microsoft Purview Customer Key for Windows 365 Cloud PCs", "url": "https://learn.microsoft.com/en-us/windows-365/enterprise/purview-customer-key", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Configuración en Intune Admin Center (Cloud PC encryption type), reinicio de equipos y límite de 20.000 Cloud PCs por lote.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-03-26)"}, {"id": "REF-10", "titulo": "Double Key Encryption (DKE)", "url": "https://learn.microsoft.com/en-us/purview/double-key-encryption", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Define el alcance del ~5 % de datos altamente sensibles y documenta las incompatibilidades con Copilot, eDiscovery, DLP y coautoría.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-10-27)"}, {"id": "REF-11", "titulo": "Learn about privileged access management (Microsoft Purview)", "url": "https://learn.microsoft.com/en-us/purview/privileged-access-management", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Arquitectura en capas de M365 PAM en el sustrato M365, diferenciación frente a Microsoft Entra PIM y límite de 30 políticas.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-11)"}, {"id": "REF-12", "titulo": "Get started with privileged access management", "url": "https://learn.microsoft.com/en-us/purview/privileged-access-management-configuration", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Configuración paso a paso y cmdlets Enable-ElevatedAccessControl, New-ElevatedAccessApprovalPolicy y New/Approve/Deny-ElevatedAccessRequest.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-11)"}, {"id": "REF-13", "titulo": "Microsoft Purview service description", "url": "https://learn.microsoft.com/en-us/office365/servicedescriptions/microsoft-365-service-descriptions/microsoft-365-tenantlevel-services-licensing-guidance/microsoft-purview-service-description", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": " Fuente contractual oficial de licenciamiento para Customer Key (reglas de validación MDEP/EXO/SPO), Customer Lockbox y Microsoft Purview Suite.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-11-09)"}, {"id": "REF-14", "titulo": "Microsoft Cloud Security Benchmark v2 — Privileged Access (PA-8)", "url": "https://learn.microsoft.com/en-us/security/benchmark/azure/mcsb-v2-privileged-access", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Estándar de referencia para gobernar el acceso de soporte del proveedor de nube mediante Customer Lockbox.", "verificacion": "Verificado vía Microsoft Learn (revalidado 2026-11-11)"}, {"id": "REF-15", "titulo": "Audit log activities in Microsoft Purview", "url": "https://learn.microsoft.com/en-us/purview/audit-log-activities", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Referencia oficial de operaciones registradas en el registro de auditoría unificado de Microsoft Purview.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-11-03)"}, {"id": "REF-16", "titulo": "Privileged Access Management in Office 365 — Technical Deep Dive", "url": "https://practical365.com/privileged-access-management-in-office-365/", "tipoFuente": "MVP Seguridad", "autor": "Vasil Michev (Microsoft 365 MVP)", "comentario": "Análisis práctico sobre grupos aprobadores mail-enabled security, políticas JEA/JIT y auditoría en Exchange Online.", "verificacion": "Verificado en Practical 365 (revalidado 2026-11-11)"}, {"id": "REF-17", "titulo": "What is Customer Lockbox in Microsoft 365, and how to use it?", "url": "https://blog.sonnes.cloud/what-is-customer-lockbox-in-microsoft-365-and-how-to-use-it/", "tipoFuente": "MVP Seguridad", "autor": "Michael Morten Sonne (Microsoft Security MVP)", "comentario": "Guía práctica de habilitación, flujo de aprobación y verificación forense de Microsoft Purview Customer Lockbox.", "verificacion": "Verificado en Sonnes.cloud (revalidado 2026-11-11)"}, {"id": "REF-18", "titulo": "Microsoft Purview Governance & Protections for Microsoft 365 Copilot", "url": "https://joannecklein.com/category/microsoft-purview/", "tipoFuente": "MVP Seguridad", "autor": "Joanne Klein (Microsoft Purview MVP)", "comentario": "Buenas prácticas de arquitectura sobre Customer Key, Customer Lockbox y gobierno de información para Microsoft 365 Copilot.", "verificacion": "Verificado en JoanneCKlein.com (actualizado 2026)"}, {"id": "REF-19", "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)", "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf", "tipoFuente": "Marco Normativo", "autor": "National Institute of Standards and Technology (NIST)", "comentario": "Marco normativo oficial empleado para mapear las subcategorías GV, ID, PR, DE, RS y RC de los tres pilares.", "verificacion": "Verificado contra publicación oficial NIST CSWP 29"}], "validacionesConfiguracion": [{"control": "**Customer Lockbox M365**", "comoValidar": "`admin.microsoft.com > Settings > Org Settings > Security & Privacy > Customer Lockbox` `[Verificado MS Learn]`", "estadoEsperado": "`Require approval for all data access requests = Checked` y rol `Customer Lockbox access approver` poblado `[Verificado MS Learn]`", "origen": "Verificado MS Learn"}, {"control": "**Customer Lockbox Azure**", "comoValidar": "`portal.azure.com > Customer Lockbox for Microsoft Azure > Administration` `[Verificado MS Learn]`", "estadoEsperado": "Módulo habilitado con plan Azure Support >= `Developer` y aprobadores activos en suscripciones `[Verificado MS Learn]`", "origen": "Verificado MS Learn"}, {"control": "**Customer Key Onboarding & Vaults**", "comoValidar": "`New-CustomerKeyOnboardingRequest -OnboardingMode Validate` `[Verificado MS Learn]`", "estadoEsperado": "`ValidationResult = Success`, `SoftDelete = 90d`, `PurgeProtection = True`, `Expires = null` y RBAC activo `[Verificado MS Learn]`", "origen": "Verificado MS Learn"}, {"control": "**DEPs Multi-Workload, EXO y SPO**", "comoValidar": "`Get-M365DataAtRestEncryptionPolicyAssignment` + `Get-SPODataEncryptionPolicy` `[Verificado MS Learn]`", "estadoEsperado": "MDEP asignada, buzones con `IsEncrypted = True` y SharePoint en estado `Registered` (100 %) `[Verificado MS Learn]`", "origen": "Verificado MS Learn"}, {"control": "**Windows 365 Cloud PC Customer Key**", "comoValidar": "`intune.microsoft.com > Tenant administration > Cloud PC encryption type` `[Verificado MS Learn]`", "estadoEsperado": "Tipo de cifrado establecido en `Microsoft Purview Customer Key` completado sin alertas `[Verificado MS Learn]`", "origen": "Verificado MS Learn"}, {"control": "**Microsoft Purview PAM**", "comoValidar": "`Get-ElevatedAccessApprovalPolicy` y `admin.microsoft.com > Privileged access` `[Verificado MS Learn]`", "estadoEsperado": "`Require approvals for privileged tasks = On`, grupo aprobador *mail-enabled security* y políticas Manual activas `[Verificado MS Learn]`", "origen": "Verificado MS Learn"}], "modeloMadurez": [{"nivel": "**Nivel 1**", "estadio": "**Inicial / Exposición Implícita**", "descripcion": "Customer Lockbox desactivado; cifrado únicamente con claves gestionadas por Microsoft; administradores Exchange permanentes sin Entra PIM ni M365 PAM."}, {"nivel": "**Nivel 2**", "estadio": "**Básico / Controles Parciales**", "descripcion": "Customer Lockbox M365 activado pero aprobado por `Global Administrators` sin revisar logs de `Microsoft Operator`; Entra PIM desplegado sin protección granular de cmdlets en M365 PAM."}, {"nivel": "**Nivel 3**", "estadio": "**Definido / Soberanía Estandarizada**", "descripcion": "Customer Lockbox M365 y Azure habilitados con aprobadores dedicados y alertas Defender for Cloud Apps; Customer Key operativo en Azure Key Vault Premium con Azure RBAC y 2 suscripciones; M365 PAM protegiendo top cmdlets de Exchange."}, {"nivel": "**Nivel 4**", "estadio": "**Gestionado / Cero Privilegio Permanente**", "descripcion": "Despliegue consolidado en **Azure Key Vault Managed HSM** (FIPS 140-2 Level 3, 2 instancias) cubriendo MDEP (Teams, M365 Copilot, Windows 365 Cloud PCs), Exchange y SharePoint; monitoreo SIEM diario de `CustomerKeyServiceEncryption` y custodia dual auditada."}, {"nivel": "**Nivel 5**", "estadio": "**Optimizado / Resiliencia Criptográfica Verificada**", "descripcion": "Validación semanal automatizada `M365CustomerKeyOnboarding -OnboardingMode Validate`, pruebas trimestrales `Restore-AzKeyVaultKey`, extensión CMK a exportaciones de eDiscovery, consultas Graph `auditLog/queries` y coexistencia calibrada con DKE para activos *Top Secret*."}], "rutaFormacion": {"headers": ["Rol Operativo", "Ruta Oficial Microsoft Learn / Certificaciones Vigentes (Nov 2026)", "Recursos Oficiales, Guías Interactivas y Comunidad MVP", "Laboratorio Práctico Obligatorio `[Decisión / Propuesta Editorial]`"], "rows": [["**Cryptography & Cloud Security Architect**", "Módulo *Understand Microsoft 365 encryption* + Certificaciones **SC-401** (*Information Security Administrator*) y **AZ-500** (*Azure Security Technologies*) `[Verificado MS Learn]`", "Documentación oficial de *Customer Key Onboarding Service*, *Managed HSM* y *Availability Key* + comparativas Purview/Copilot de **Joanne Klein** `[Verificado MS Learn]`", "Aprovisionar 2 bóvedas de prueba con Soft Delete + Purge Protection, ejecutar `New-CustomerKeyOnboardingRequest -OnboardingMode Validate` y probar `Backup/Restore-AzKeyVaultKey`."], ["**Identity & Exchange Privileged Admin**", "Módulo *Implement privileged access management* + Certificación **SC-300** (*Identity and Access Administrator*) `[Verificado MS Learn]`", "Guía interactiva *Monitor and control administrator tasks with privileged access management* + análisis técnico en profundidad de M365 PAM por **Vasil Michev** (*Practical365*) `[Verificado MS Learn]`", "Configurar `Enable-ElevatedAccessControl` en tenant de laboratorio, proteger `Exchange\\New-TransportRule` y completar el ciclo `New/Approve-ElevatedAccessRequest` + `Revoke`."], ["**CISO / Compliance Officer / Lockbox Approver**", "Documentación *Customer Lockbox requests* (M365) + *Customer Lockbox for Microsoft Azure* + Control **MCSB v2 `PA-8`** `[Verificado MS Learn]`", "Informes de aseguramiento **SOC 1 / SOC 2 SSAE 18** en *Microsoft Service Trust Portal* + guía práctica de **Michael Morten Sonne** (MVP) `[Verificado MS Learn]`", "Auditar con Graph `auditLog/queries` y Sentinel los registros simulados de `Set-AccessToCustomerDataRequest` y `Microsoft Operator`."], ["**Endpoint / Windows 365 Administrator**", "Guía oficial *Set up Microsoft Purview Customer Key for Windows 365 Cloud PCs* `[Verificado MS Learn]`", "Documentación de Windows 365 Enterprise y Frontline en Microsoft Learn `[Verificado MS Learn]`", "Validar en entorno piloto la transición de cifrado en `Tenant administration > Cloud PC encryption type` midiendo el impacto del reinicio automático del Cloud PC."]]}};
+const NAV_INDEX = [{"id": "00_Marco_Maestro_CISO_SOC_y_NIST", "orden": 0, "folder": "00_Marco_Maestro_CISO_SOC_y_NIST", "slug": "Marco_Maestro_CISO_SOC_y_NIST", "nombreCorto": "Marco Maestro CISO, SOC y NIST", "categoria": "Marco Transversal CISO, SOC y NIST", "htmlRel": "../00_Marco_Maestro_CISO_SOC_y_NIST/Marco_Maestro_CISO_SOC_y_NIST_Guia_Excelencia_Operacional.html"}, {"id": "01_Microsoft_Entra_ID", "orden": 1, "folder": "01_Microsoft_Entra_ID", "slug": "Microsoft_Entra_ID", "nombreCorto": "Microsoft Entra ID", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../01_Microsoft_Entra_ID/Microsoft_Entra_ID_Guia_Excelencia_Operacional.html"}, {"id": "02_Microsoft_Entra_ID_Governance", "orden": 2, "folder": "02_Microsoft_Entra_ID_Governance", "slug": "Microsoft_Entra_ID_Governance", "nombreCorto": "Microsoft Entra ID Governance", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../02_Microsoft_Entra_ID_Governance/Microsoft_Entra_ID_Governance_Guia_Excelencia_Operacional.html"}, {"id": "03_Microsoft_Defender_XDR", "orden": 3, "folder": "03_Microsoft_Defender_XDR", "slug": "Microsoft_Defender_XDR", "nombreCorto": "Defender XDR", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../03_Microsoft_Defender_XDR/Microsoft_Defender_XDR_Guia_Excelencia_Operacional.html"}, {"id": "04_Microsoft_Defender_for_Endpoint", "orden": 4, "folder": "04_Microsoft_Defender_for_Endpoint", "slug": "Microsoft_Defender_for_Endpoint", "nombreCorto": "Defender for Endpoint", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../04_Microsoft_Defender_for_Endpoint/Microsoft_Defender_for_Endpoint_Guia_Excelencia_Operacional.html"}, {"id": "05_Microsoft_Defender_for_Office_365", "orden": 5, "folder": "05_Microsoft_Defender_for_Office_365", "slug": "Microsoft_Defender_for_Office_365", "nombreCorto": "Defender for Office 365", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../05_Microsoft_Defender_for_Office_365/Microsoft_Defender_for_Office_365_Guia_Excelencia_Operacional.html"}, {"id": "06_Microsoft_Defender_for_Identity", "orden": 6, "folder": "06_Microsoft_Defender_for_Identity", "slug": "Microsoft_Defender_for_Identity", "nombreCorto": "Defender for Identity", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../06_Microsoft_Defender_for_Identity/Microsoft_Defender_for_Identity_Guia_Excelencia_Operacional.html"}, {"id": "07_Microsoft_Defender_for_Cloud_Apps", "orden": 7, "folder": "07_Microsoft_Defender_for_Cloud_Apps", "slug": "Microsoft_Defender_for_Cloud_Apps", "nombreCorto": "Defender for Cloud Apps", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../07_Microsoft_Defender_for_Cloud_Apps/Microsoft_Defender_for_Cloud_Apps_Guia_Excelencia_Operacional.html"}, {"id": "08_Microsoft_Sentinel", "orden": 8, "folder": "08_Microsoft_Sentinel", "slug": "Microsoft_Sentinel", "nombreCorto": "Microsoft Sentinel", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../08_Microsoft_Sentinel/Microsoft_Sentinel_Guia_Excelencia_Operacional.html"}, {"id": "09_Microsoft_Security_Copilot", "orden": 9, "folder": "09_Microsoft_Security_Copilot", "slug": "Microsoft_Security_Copilot", "nombreCorto": "Microsoft Security Copilot", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../09_Microsoft_Security_Copilot/Microsoft_Security_Copilot_Guia_Excelencia_Operacional.html"}, {"id": "10_Microsoft_Intune_Plan_1", "orden": 10, "folder": "10_Microsoft_Intune_Plan_1", "slug": "Microsoft_Intune_Plan_1", "nombreCorto": "Microsoft Intune Plan 1", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../10_Microsoft_Intune_Plan_1/Microsoft_Intune_Plan_1_Guia_Excelencia_Operacional.html"}, {"id": "11_Microsoft_Intune_Suite", "orden": 11, "folder": "11_Microsoft_Intune_Suite", "slug": "Microsoft_Intune_Suite", "nombreCorto": "Microsoft Intune Suite", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../11_Microsoft_Intune_Suite/Microsoft_Intune_Suite_Guia_Excelencia_Operacional.html"}, {"id": "12_Windows_Enterprise_Security_y_Cifrado", "orden": 12, "folder": "12_Windows_Enterprise_Security_y_Cifrado", "slug": "Windows_Enterprise_Security_y_Cifrado", "nombreCorto": "Windows Enterprise Security y Cifrado", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../12_Windows_Enterprise_Security_y_Cifrado/Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.html"}, {"id": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "orden": 13, "folder": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "slug": "Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "nombreCorto": "Microsoft Purview Suite", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno/Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.html"}, {"id": "14_Purview_Information_Protection", "orden": 14, "folder": "14_Purview_Information_Protection", "slug": "Purview_Information_Protection", "nombreCorto": "Purview Information Protection", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../14_Purview_Information_Protection/Purview_Information_Protection_Guia_Excelencia_Operacional.html"}, {"id": "15_Purview_Data_Loss_Prevention", "orden": 15, "folder": "15_Purview_Data_Loss_Prevention", "slug": "Purview_Data_Loss_Prevention", "nombreCorto": "Purview Data Loss Prevention", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../15_Purview_Data_Loss_Prevention/Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.html"}, {"id": "16_Purview_Data_Lifecycle_y_Records_Management", "orden": 16, "folder": "16_Purview_Data_Lifecycle_y_Records_Management", "slug": "Purview_Data_Lifecycle_y_Records_Management", "nombreCorto": "Purview DLCM y Records Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../16_Purview_Data_Lifecycle_y_Records_Management/Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.html"}, {"id": "17_Purview_Insider_Risk_Management", "orden": 17, "folder": "17_Purview_Insider_Risk_Management", "slug": "Purview_Insider_Risk_Management", "nombreCorto": "Purview Insider Risk Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../17_Purview_Insider_Risk_Management/Purview_Insider_Risk_Management_Guia_Excelencia_Operacional.html"}, {"id": "18_Purview_Communication_Compliance", "orden": 18, "folder": "18_Purview_Communication_Compliance", "slug": "Purview_Communication_Compliance", "nombreCorto": "Purview Communication Compliance", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../18_Purview_Communication_Compliance/Purview_Communication_Compliance_Guia_Excelencia_Operacional.html"}, {"id": "19_Purview_Audit_Premium", "orden": 19, "folder": "19_Purview_Audit_Premium", "slug": "Purview_Audit_Premium", "nombreCorto": "Purview Audit (Premium)", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../19_Purview_Audit_Premium/Purview_Audit_Premium_Guia_Excelencia_Operacional.html"}, {"id": "20_Purview_eDiscovery_Premium", "orden": 20, "folder": "20_Purview_eDiscovery_Premium", "slug": "Purview_eDiscovery_Premium", "nombreCorto": "Purview eDiscovery Premium", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../20_Purview_eDiscovery_Premium/Purview_eDiscovery_Premium_Guia_Excelencia_Operacional.html"}, {"id": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "orden": 21, "folder": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "slug": "Customer_Lockbox_Customer_Key_y_M365_PAM", "nombreCorto": "Customer Lockbox, Customer Key y M365 PAM", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../21_Customer_Lockbox_Customer_Key_y_M365_PAM/Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.html"}, {"id": "22_Microsoft_Agent_365", "orden": 22, "folder": "22_Microsoft_Agent_365", "slug": "Microsoft_Agent_365", "nombreCorto": "Microsoft Agent 365", "categoria": "Gobierno y Seguridad de Agentes IA", "htmlRel": "../22_Microsoft_Agent_365/Microsoft_Agent_365_Guia_Excelencia_Operacional.html"}];
+
+(() => {
+  const memStore = {};
+  const storageKey = "mseop_v3_state_" + MODULE_DATA.id;
+  function loadState() {
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      return raw ? JSON.parse(raw) : { tasks: {}, steps: {} };
+    } catch (_) {
+      return memStore[storageKey] || { tasks: {}, steps: {} };
+    }
+  }
+  function saveState(st) {
+    memStore[storageKey] = st;
+    try { window.localStorage.setItem(storageKey, JSON.stringify(st)); } catch (_) {}
+  }
+
+  let uiState = loadState();
+  if (!uiState.tasks) uiState.tasks = {};
+  if (!uiState.steps) uiState.steps = {};
+  let activeView = "view-overview";
+  let activePeriodicCad = "Diaria";
+
+  function esc(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // Converts inline Markdown (**bold**, `code`, [Verificado MS Learn], [Decisión / Propuesta Editorial]) into clean readable HTML
+  function richText(str) {
+    let s = esc(str);
+    s = s.replace(/`\[Verificado MS Learn\]`|\[Verificado MS Learn\]/g, '<span class="inline-tag tag-learn">Verificado MS Learn</span>');
+    s = s.replace(/`\[Decisión \/ Propuesta Editorial\]`|\[Decisión \/ Propuesta Editorial\]|`\[Propuesta Editorial\]`|\[Propuesta Editorial\]/g, '<span class="inline-tag tag-edit">Propuesta Editorial</span>');
+    s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    return s;
+  }
+
+  function valBadge(status) {
+    const isLearn = String(status).indexOf("Verificado") !== -1;
+    return '<span class="' + (isLearn ? "badge badge-learn" : "badge badge-editorial") + '">' + esc(status) + '</span>';
+  }
+
+  // Partition activities cleanly into Periodic vs Ad-Hoc
+  const allActs = MODULE_DATA.actividadesOperacionales || [];
+  const periodicActs = allActs.filter((a) => a.cadencia !== "Ad-Hoc");
+  const adhocActs = allActs.filter((a) => a.cadencia === "Ad-Hoc");
+  const prereqs = (MODULE_DATA.relacionM365E5 && MODULE_DATA.relacionM365E5.prerrequisitos) || [];
+  const validations = MODULE_DATA.validacionesConfiguracion || [];
+  const components = MODULE_DATA.arquitecturaYComponentes || [];
+  const rbacRoles = MODULE_DATA.rbacYRoles || [];
+
+  const dailyActs = periodicActs.filter((a) => a.cadencia === "Diaria");
+  const weeklyActs = periodicActs.filter((a) => a.cadencia === "Semanal");
+  const monthlyActs = periodicActs.filter((a) => a.cadencia === "Mensual");
+  const longCycleActs = periodicActs.filter((a) => ["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) !== -1);
+
+  // Topbar links & module switcher
+  const baseName = MODULE_DATA.slug + "_Guia_Excelencia_Operacional";
+  document.getElementById("xlsxLink").href = "./" + baseName + ".xlsx";
+  document.getElementById("mdLink").href = "./" + baseName + ".md";
+
+  const jumpSel = document.getElementById("modJumpSelect");
+  NAV_INDEX.forEach((m) => {
+    const opt = document.createElement("option");
+    opt.value = m.htmlRel;
+    opt.textContent = String(m.orden).padStart(2, "0") + " — " + m.nombreCorto;
+    if (m.id === MODULE_DATA.id) opt.selected = true;
+    jumpSel.appendChild(opt);
+  });
+  jumpSel.addEventListener("change", (e) => { if (e.target.value) window.location.href = e.target.value; });
+
+  const curIdx = NAV_INDEX.findIndex((m) => m.id === MODULE_DATA.id);
+  const prevBtn = document.getElementById("prevModBtn");
+  const nextBtn = document.getElementById("nextModBtn");
+  if (curIdx > 0) prevBtn.href = NAV_INDEX[curIdx - 1].htmlRel;
+  else { prevBtn.style.opacity = "0.4"; prevBtn.style.pointerEvents = "none"; }
+  if (curIdx >= 0 && curIdx < NAV_INDEX.length - 1) nextBtn.href = NAV_INDEX[curIdx + 1].htmlRel;
+  else { nextBtn.style.opacity = "0.4"; nextBtn.style.pointerEvents = "none"; }
+
+  document.getElementById("themeToggleBtn").addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+  });
+  document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+  // Sidebar counters
+  const totalConfigChecks = prereqs.length + validations.length;
+  document.getElementById("navCntConfig").textContent = totalConfigChecks;
+  document.getElementById("navCntDiaria").textContent = dailyActs.length;
+  document.getElementById("navCntSemanal").textContent = weeklyActs.length;
+  document.getElementById("navCntMensual").textContent = monthlyActs.length;
+  document.getElementById("navCntLargos").textContent = longCycleActs.length;
+  document.getElementById("navCntAdhoc").textContent = adhocActs.length;
+  document.getElementById("navCntQueries").textContent = (MODULE_DATA.consultasKQLyVerificacion || []).length;
+  document.getElementById("navCntKpis").textContent = (MODULE_DATA.kpisYMetricas || []).length;
+  document.getElementById("navCntNist").textContent = (MODULE_DATA.mapeoNISTCSF20 || []).length;
+
+  function switchView(viewId, periodicCadOverride) {
+    activeView = viewId;
+    if (periodicCadOverride) activePeriodicCad = periodicCadOverride;
+
+    document.querySelectorAll(".view-panel").forEach((p) => p.classList.remove("active"));
+    const target = document.getElementById(viewId);
+    if (target) target.classList.add("active");
+
+    document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+      const bv = btn.getAttribute("data-view");
+      const bc = btn.getAttribute("data-cad");
+      if (bv === viewId && (!bc || bc === activePeriodicCad)) btn.classList.add("active");
+      else btn.classList.remove("active");
+    });
+
+    if (viewId === "view-periodic") {
+      syncPeriodicSubnav();
+      renderPeriodicCards();
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      switchView(btn.getAttribute("data-view"), btn.getAttribute("data-cad") || null);
+    });
+  });
+
+  // Handle incoming URL hash (#config, #periodic-diaria, #adhoc, etc.)
+  function applyInitialHash() {
+    const h = (window.location.hash || "").replace("#", "");
+    if (h === "config") switchView("view-config");
+    else if (h === "periodic-diaria") switchView("view-periodic", "Diaria");
+    else if (h === "periodic-semanal") switchView("view-periodic", "Semanal");
+    else if (h === "periodic-mensual") switchView("view-periodic", "Mensual");
+    else if (h === "periodic-largos") switchView("view-periodic", "CICLOS_LARGOS");
+    else if (h === "adhoc") switchView("view-adhoc");
+    else if (h === "queries") switchView("view-queries");
+    else if (h === "nist") switchView("view-nist");
+  }
+
+  function updateProgressTracker() {
+    let cfgDone = 0;
+    prereqs.forEach((_, i) => { if (uiState.tasks["CFG-" + (i + 1)]) cfgDone++; });
+    validations.forEach((_, i) => { if (uiState.tasks["VAL-" + (i + 1)]) cfgDone++; });
+    const cfgPct = totalConfigChecks ? Math.round((cfgDone / totalConfigChecks) * 100) : 0;
+
+    const perDone = periodicActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const perPct = periodicActs.length ? Math.round((perDone / periodicActs.length) * 100) : 0;
+
+    const ahDone = adhocActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const ahPct = adhocActs.length ? Math.round((ahDone / adhocActs.length) * 100) : 0;
+
+    document.getElementById("sidebarProgress").innerHTML =
+      '<div class="nav-section-label" style="padding-left:0;">Tu Progreso de Revisión</div>' +
+      '<div class="prog-row"><div class="prog-head"><span>1. Configuración y Validación</span><span>' + cfgDone + '/' + totalConfigChecks + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + cfgPct + '%"></div></div></div>' +
+      '<div class="prog-row"><div class="prog-head"><span>2. Rutinas Periódicas</span><span>' + perDone + '/' + periodicActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + perPct + '%"></div></div></div>' +
+      '<div class="prog-row" style="margin-bottom:0;"><div class="prog-head"><span>3. Playbooks Ad-Hoc</span><span>' + ahDone + '/' + adhocActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + ahPct + '%"></div></div></div>';
+  }
+
+  // VISTA 0: OVERVIEW
+  document.getElementById("heroTitle").textContent = MODULE_DATA.nombre;
+  document.getElementById("heroSummary").textContent = MODULE_DATA.resumenEjecutivo;
+  document.getElementById("heroBadges").innerHTML = [
+    '<span class="badge badge-accent">Módulo ' + String(MODULE_DATA.orden).padStart(2, "0") + ' de 22</span>',
+    '<span class="badge">' + esc(MODULE_DATA.categoria) + '</span>',
+    '<span class="badge badge-learn">' + esc(MODULE_DATA.relacionM365E5.estado) + '</span>',
+    '<span class="badge">Validación: ' + esc(MODULE_DATA.fechaValidacion) + '</span>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").innerHTML = [
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 1 · Acciones Puntuales</div>' +
+        '<h3>Configuración Base y Validaciones</h3>' +
+        '<p>Qué debes habilitar al inicio (' + prereqs.length + ' prerrequisitos, ' + components.length + ' componentes y ' + rbacRoles.length + ' roles RBAC/PIM) y <strong>' + validations.length + ' validaciones "Proof of Life"</strong> para comprobar que todo quedó bien configurado.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-config">Ir a Configuración y Validaciones →</button></div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 2 · Operación Programada</div>' +
+        '<h3>Rutinas Periódicas por Frecuencia</h3>' +
+        '<p><strong>' + periodicActs.length + ' procedimientos preventivos</strong> separados con claridad en ciclos Diarios (' + dailyActs.length + '), Semanales (' + weeklyActs.length + '), Mensuales (' + monthlyActs.length + ') y Trimestrales/Anuales (' + longCycleActs.length + ').</p>' +
+      '</div>' +
+      '<div class="pill-row">' +
+        '<button class="btn btn-primary btn-sm" type="button" data-goto="view-periodic" data-gocad="Diaria">Diarias (' + dailyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Semanal">Semanales (' + weeklyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Mensual">Mensuales (' + monthlyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="CICLOS_LARGOS">Trim./Anual (' + longCycleActs.length + ')</button>' +
+      '</div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 3 · Reacción del Analista</div>' +
+        '<h3>Playbooks Ad-Hoc ante Alertas</h3>' +
+        '<p><strong>' + adhocActs.length + ' playbooks tácticos</strong> que no siguen calendario: se disparan cuando una alerta, señal de compromiso o incidente requiere contención e investigación del analista.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-adhoc">Abrir Playbooks Ad-Hoc →</button></div>' +
+    '</div>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-goto]");
+    if (!b) return;
+    switchView(b.getAttribute("data-goto"), b.getAttribute("data-gocad") || null);
+  });
+
+  const rel = MODULE_DATA.relacionM365E5;
+  document.getElementById("licensingOverviewCard").innerHTML =
+    '<h3 style="margin-top:0;font-size:20px;">Encaje de Licenciamiento en Microsoft 365 E5 y Portales Oficiales</h3>' +
+    '<p style="margin-bottom:16px;">' + richText(rel.notaLicenciamiento) + '</p>' +
+    '<div class="info-pair" style="margin-bottom:0;">' +
+      '<div class="info-box"><div class="info-label">Licencias y SKUs Aplicables</div><ul style="margin:6px 0 0 0;padding-left:20px;">' +
+        (rel.licencias || []).map((l) => '<li style="margin-bottom:6px;">' + richText(l) + '</li>').join("") +
+      '</ul></div>' +
+      '<div class="info-box"><div class="info-label">Consolas Oficiales de Administración y SOC</div><div class="pill-row" style="margin-top:10px;">' +
+        (MODULE_DATA.portalesPrincipales || []).map((u) => '<a class="btn" href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + ' ↗</a>').join("") +
+      '</div><div style="margin-top:16px;"><div class="info-label">Roles Involucrados</div><div class="pill-row" style="margin-top:6px;">' +
+        (MODULE_DATA.audiencia || []).map((au) => '<span class="badge">' + esc(au) + '</span>').join("") +
+      '</div></div></div>' +
+    '</div>';
+
+  document.getElementById("principlesGrid").innerHTML = (MODULE_DATA.principiosRectores || []).map((p) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:10px;">' +
+        '<h3 style="margin:0;font-size:17.5px;">' + esc(p.principio) + '</h3>' +
+        valBadge(p.estadoValidacion) +
+      '</div>' +
+      '<p class="muted" style="margin:0 0 12px 0;">' + richText(p.descripcion) + '</p>' +
+      (p.fuenteUrl ? '<a href="' + esc(p.fuenteUrl) + '" target="_blank" rel="noopener noreferrer">Consultar referencia en Microsoft Learn ↗</a>' : '') +
+    '</div>'
+  )).join("");
+
+  // VISTA 1: CONFIGURACIÓN PUNTUAL Y VALIDACIONES
+  function renderConfigView() {
+    document.getElementById("prereqsContainer").innerHTML = prereqs.map((pr, idx) => {
+      const code = "CFG-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '" style="padding:22px 28px;margin-bottom:16px;">' +
+          '<div class="card-title-group">' +
+            '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+            '<div style="flex:1;">' +
+              '<div class="pill-row" style="margin-bottom:6px;">' +
+                '<span class="card-code" style="margin-bottom:0;">' + code + '</span>' +
+                '<span class="badge">Acción Puntual de Puesta en Marcha</span>' +
+              '</div>' +
+              '<div style="font-size:16px;font-weight:600;">' + richText(pr) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("validationsContainer").innerHTML = validations.map((v, idx) => {
+      const code = "VAL-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + code + ' · Validación de Configuración</span>' +
+                '<h4 class="card-heading">' + richText(v.control) + '</h4>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' + valBadge(v.origen || "Verificado MS Learn") + '</div>' +
+          '</div>' +
+          '<div class="info-pair" style="margin-bottom:0;">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Dónde y Cómo Validar la Configuración</div>' +
+              '<div class="info-content">' + richText(v.comoValidar) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label">Estado / Resultado Esperado ("Proof of Life")</div>' +
+              '<div class="info-content">' + richText(v.estadoEsperado) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("componentsContainer").innerHTML = components.map((c, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">COMP-' + String(idx + 1).padStart(2, "0") + ' · Subsistema Técnico</span>' +
+            '<h4 class="card-heading">' + esc(c.componente) + '</h4>' +
+          '</div>' +
+          valBadge(c.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Qué Configurar y Habilitar en este Componente</div>' +
+            '<div class="info-content">' + richText(c.funcionOperativa) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Ruta Exacta en Consola</div>' +
+            '<div class="info-content"><code>' + esc(c.portalRuta) + '</code></div>' +
+            '<div class="info-label" style="margin-top:14px;">Integraciones que Validar</div>' +
+            '<div class="pill-row" style="margin-top:6px;">' + (c.integraciones || []).map((i) => '<span class="badge">' + esc(i) + '</span>').join("") + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+
+    document.getElementById("rbacContainer").innerHTML = rbacRoles.map((r) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">RBAC / PIM · ' + esc(r.nivelSOC) + '</span>' +
+            '<h4 class="card-heading">' + esc(r.rol) + '</h4>' +
+          '</div>' +
+          valBadge(r.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair" style="margin-bottom:14px;">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Configuración Puntual en PIM / Asignación</div>' +
+            '<div class="info-content">' + richText(r.asignacionPIM) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Alcance de Permisos a Validar</div>' +
+            '<div class="info-content">' + richText(r.permisosClave) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="validation-footer">' +
+          '<div><strong>Uso operativo autorizado:</strong> ' + richText(r.responsabilidadOperativa) + '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+
+  // Helper to render step-by-step lists with clickable step checkmarks
+  function renderStepRows(actCode, steps) {
+    return '<ol class="steps-list">' + (steps || []).map((st, idx) => {
+      const stepKey = actCode + "_S" + (idx + 1);
+      const isChecked = !!uiState.steps[stepKey];
+      return (
+        '<li class="step-row ' + (isChecked ? "step-checked" : "") + '" data-step="' + esc(stepKey) + '" title="Haz clic para marcar o desmarcar este paso">' +
+          '<span class="step-num">' + (isChecked ? "✓" : (idx + 1)) + '</span>' +
+          '<div class="step-body">' + richText(st) + '</div>' +
+        '</li>'
+      );
+    }).join("") + '</ol>';
+  }
+
+  // VISTA 2: ACCIONES PERIÓDICAS
+  const roleSet = new Set();
+  periodicActs.forEach((a) => {
+    String(a.rolResponsable || "").split(/[\/+,]/).forEach((r) => {
+      const clean = r.trim();
+      if (clean) roleSet.add(clean);
+    });
+  });
+  const perRoleSel = document.getElementById("perRole");
+  Array.from(roleSet).sort().forEach((r) => {
+    const o = document.createElement("option");
+    o.value = r; o.textContent = "Rol: " + r;
+    perRoleSel.appendChild(o);
+  });
+
+  function syncPeriodicSubnav() {
+    document.querySelectorAll("#periodicCadBar .subnav-pill").forEach((b) => {
+      b.classList.toggle("active", b.getAttribute("data-pcad") === activePeriodicCad);
+    });
+    const titles = {
+      "Diaria": ["2. Acciones Periódicas — Rutinas Diarias", "Controles diarios del turno SOC y administración para asegurar salud de plataforma, triaje a tiempo y cero caídas silenciosas."],
+      "Semanal": ["2. Acciones Periódicas — Rutinas Semanales", "Actividades semanales de tuning de falsos positivos, caza proactiva, revisión de postura e higiene operativa."],
+      "Mensual": ["2. Acciones Periódicas — Rutinas Mensuales", "Gobierno mensual de privilegios RBAC/PIM, optimización financiera/retención, pruebas de automatización y reporte ejecutivo al CISO."],
+      "CICLOS_LARGOS": ["2. Acciones Periódicas — Ciclos Trimestrales, Semestrales y Anuales", "Ejercicios Tabletop/Purple Team, análisis de cobertura MITRE ATT&CK, simulacros de continuidad y auditoría estratégica anual."],
+      "ALL_PERIODIC": ["2. Todas las Acciones Periódicas Programadas", "Listado consolidado de todas las rutinas preventivas y de gobierno del módulo (excluyendo playbooks reactivos Ad-Hoc)."]
+    };
+    const pair = titles[activePeriodicCad] || titles["ALL_PERIODIC"];
+    document.getElementById("periodicTitle").textContent = pair[0];
+    document.getElementById("periodicSubtitle").textContent = pair[1];
+  }
+
+  document.getElementById("periodicCadBar").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-pcad]");
+    if (!b) return;
+    activePeriodicCad = b.getAttribute("data-pcad");
+    syncPeriodicSubnav();
+    switchView("view-periodic", activePeriodicCad);
+  });
+
+  function getFilteredPeriodic() {
+    const q = document.getElementById("perSearch").value.trim().toLowerCase();
+    const rol = document.getElementById("perRole").value;
+    const orig = document.getElementById("perOrigin").value;
+
+    return periodicActs.filter((a) => {
+      if (activePeriodicCad === "CICLOS_LARGOS") {
+        if (["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) === -1) return false;
+      } else if (activePeriodicCad !== "ALL_PERIODIC") {
+        if (a.cadencia !== activePeriodicCad) return false;
+      }
+      if (rol !== "ALL" && String(a.rolResponsable).indexOf(rol) === -1) return false;
+      if (orig !== "ALL" && a.estadoValidacion !== orig) return false;
+      if (q) {
+        const hay = [a.codigo, a.cadencia, a.actividad, a.objetivo, a.consolaRuta, a.rolResponsable, a.evidenciaAuditable, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderPeriodicCards() {
+    const list = getFilteredPeriodic();
+    document.getElementById("perCountLabel").textContent =
+      "Mostrando " + list.length + " acciones periódicas en esta vista (haz clic en cada paso numerado para llevar control de lectura o ejecución).";
+
+    const box = document.getElementById("periodicCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay actividades periódicas que coincidan con los filtros seleccionados.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + ' aria-label="Completar ' + esc(a.codigo) + '">' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Rutina ' + esc(a.cadencia) + '</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge">' + esc(a.rolResponsable) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Objetivo de la Rutina</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Consola y Ruta Exacta</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Acciones Paso a Paso a Ejecutar y Validar (' + steps.length + ' pasos)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación de cierre y evidencia auditable:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<span>MITRE ATT&amp;CK: ' + esc(a.mitreTactic) + ' · ' + esc(a.notaValidacion) + '</span>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Ver guía oficial en MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+
+  ["perSearch", "perRole", "perOrigin"].forEach((id) => {
+    document.getElementById(id).addEventListener("input", renderPeriodicCards);
+    document.getElementById(id).addEventListener("change", renderPeriodicCards);
+  });
+
+  // VISTA 3: PLAYBOOKS AD-HOC (ALERTAS Y SEÑALES)
+  function renderAdhocCards() {
+    const q = document.getElementById("adhocSearch").value.trim().toLowerCase();
+    const list = adhocActs.filter((a) => {
+      if (!q) return true;
+      const hay = [a.codigo, a.actividad, a.disparadorAlerta, a.objetivo, a.consolaRuta, a.rolResponsable, a.mitreTactic, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+      return hay.indexOf(q) !== -1;
+    });
+
+    const box = document.getElementById("adhocCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay playbooks Ad-Hoc que coincidan con la búsqueda.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card adhoc-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Playbook Reactivo del Analista (Ad-Hoc)</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge badge-accent">MITRE: ' + esc(a.mitreTactic) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="trigger-banner">' +
+            '<div class="info-label">Señal, Alerta o Evento Disparador (Cuándo debe actuar el analista)</div>' +
+            '<div class="info-content" style="font-weight:600;">' + richText(a.disparadorAlerta) + '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Meta de Contención y Erradicación</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Analista Ejecutor y Consola de Intervención</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><strong>Rol:</strong> ' + esc(a.rolResponsable) + '<br><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Secuencia Táctica del Analista (' + steps.length + ' pasos de respuesta)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación post-contención y evidencia forense:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<button class="btn btn-sm go-queries-btn" type="button">Abrir Consultas KQL / Scripts de Apoyo →</button>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Documentación oficial de respuesta MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+  document.getElementById("adhocSearch").addEventListener("input", renderAdhocCards);
+
+  // Global delegation for task checkboxes, step rows, copy buttons & query jumps
+  document.addEventListener("change", (e) => {
+    const chk = e.target.closest(".task-checkbox");
+    if (!chk) return;
+    const key = chk.getAttribute("data-task");
+    uiState.tasks[key] = chk.checked;
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  document.addEventListener("click", (e) => {
+    const stepEl = e.target.closest(".step-row");
+    if (stepEl && !e.target.closest("a")) {
+      const sk = stepEl.getAttribute("data-step");
+      uiState.steps[sk] = !uiState.steps[sk];
+      saveState(uiState);
+      renderPeriodicCards();
+      renderAdhocCards();
+      return;
+    }
+    const copyBtn = e.target.closest(".copy-text-btn");
+    if (copyBtn) {
+      const txt = copyBtn.getAttribute("data-copy") || "";
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(() => {
+          const prev = copyBtn.textContent;
+          copyBtn.textContent = "¡Copiado!";
+          setTimeout(() => { copyBtn.textContent = prev; }, 1400);
+        });
+      }
+      return;
+    }
+    if (e.target.closest(".go-queries-btn")) {
+      switchView("view-queries");
+    }
+  });
+
+  document.getElementById("resetChecksBtn").addEventListener("click", () => {
+    uiState = { tasks: {}, steps: {} };
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  // Export CSV (all activities with action type distinction)
+  document.getElementById("exportCsvBtn").addEventListener("click", () => {
+    const hdr = ["TipoAccion", "Codigo", "Cadencia", "Actividad", "Disparador_u_Objetivo", "ConsolaRuta", "RolResponsable", "FuncionNIST", "SubcategoriaNIST", "MITRE", "EstadoValidacion", "Completado", "EvidenciaAuditable"];
+    const lines = [hdr.join(",")];
+    allActs.forEach((a) => {
+      const vals = [
+        a.tipoAccion, a.codigo, a.cadencia, a.actividad,
+        a.cadencia === "Ad-Hoc" ? a.disparadorAlerta : a.objetivo,
+        a.consolaRuta, a.rolResponsable, a.funcionNIST, a.subcategoriaNIST,
+        a.mitreTactic, a.estadoValidacion, uiState.tasks[a.codigo] ? "Si" : "No", a.evidenciaAuditable
+      ].map((v) => '"' + String(v || "").replace(/"/g, '""') + '"');
+      lines.push(vals.join(","));
+    });
+    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url; link.download = MODULE_DATA.slug + "_Guia_Operacional.csv";
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  });
+
+  // VISTA 4: QUERIES
+  function renderQueries() {
+    const q = document.getElementById("kqlSearch").value.trim().toLowerCase();
+    const uf = document.getElementById("kqlUsageFilter").value;
+    const list = (MODULE_DATA.consultasKQLyVerificacion || []).filter((it) => {
+      if (uf !== "ALL" && it.usoOperativo !== uf) return false;
+      if (q && [it.nombre, it.plataforma, it.tablaPrincipal, it.proposito, it.consulta, it.usoOperativo].join(" ").toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+
+    document.getElementById("queriesContainer").innerHTML = list.map((it, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">Q-' + String(idx + 1).padStart(2, "0") + ' · ' + esc(it.usoOperativo) + '</span>' +
+            '<h3 class="card-heading">' + esc(it.nombre) + '</h3>' +
+          '</div>' +
+          '<div class="pill-row">' +
+            '<span class="badge badge-accent">' + esc(it.plataforma) + '</span>' +
+            '<span class="badge mono">' + esc(it.tablaPrincipal) + '</span>' +
+            valBadge(it.estadoValidacion) +
+            '<button class="btn btn-sm copy-kql-btn" type="button" data-qidx="' + idx + '">Copiar consulta</button>' +
+          '</div>' +
+        '</div>' +
+        '<p style="margin:0 0 12px 0;"><strong>Qué valida o detecta:</strong> ' + richText(it.proposito) + '</p>' +
+        '<pre class="code-block">' + esc(it.consulta) + '</pre>' +
+      '</div>'
+    )).join("");
+
+    document.querySelectorAll(".copy-kql-btn").forEach((b) => {
+      b.addEventListener("click", () => {
+        const item = list[Number(b.getAttribute("data-qidx"))];
+        if (item && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(item.consulta).then(() => {
+            b.textContent = "¡Consulta copiada!";
+            setTimeout(() => { b.textContent = "Copiar consulta"; }, 1500);
+          });
+        }
+      });
+    });
+  }
+  document.getElementById("kqlSearch").addEventListener("input", renderQueries);
+  document.getElementById("kqlUsageFilter").addEventListener("change", renderQueries);
+
+  // VISTA 5: KPIs, MATURITY & TRAINING
+  document.getElementById("kpiContainer").innerHTML = (MODULE_DATA.kpisYMetricas || []).map((k) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:12px;">' +
+        '<div><span class="card-code">' + esc(k.id) + '</span><h4 class="card-heading" style="font-size:18px;">' + esc(k.nombre) + '</h4></div>' +
+        valBadge(k.estadoValidacion) +
+      '</div>' +
+      '<p style="margin:0 0 12px 0;">' + richText(k.definicion) + '</p>' +
+      '<pre class="code-block" style="margin:0 0 14px 0;">Fórmula: ' + esc(k.formula) + '</pre>' +
+      '<div class="pill-row">' +
+        '<span class="badge badge-accent">Meta: ' + esc(k.metaSugerida) + '</span>' +
+        '<span class="badge">Medición: ' + esc(k.frecuencia) + '</span>' +
+        '<span class="badge">' + esc(k.audiencia) + '</span>' +
+      '</div>' +
+      '<p class="muted" style="font-size:13px;margin:10px 0 0 0;">' + richText(k.notaValidacion) + '</p>' +
+    '</div>'
+  )).join("");
+
+  const mat = MODULE_DATA.modeloMadurez || [];
+  document.getElementById("maturityContainer").innerHTML = mat.map((m) => (
+    '<div class="spacious-card" style="padding:22px 28px;margin-bottom:14px;">' +
+      '<div class="pill-row" style="margin-bottom:6px;">' +
+        '<span class="card-code" style="margin-bottom:0;">' + richText(m.nivel) + '</span>' +
+        (m.estadio ? '<strong style="font-size:17px;">' + richText(m.estadio) + '</strong>' : '') +
+        '<span class="badge badge-editorial">Propuesta Editorial</span>' +
+      '</div>' +
+      '<div style="font-size:15.5px;">' + richText(m.descripcion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  const tr = MODULE_DATA.rutaFormacion || { headers: [], rows: [] };
+  if (tr.rows && tr.rows.length) {
+    document.getElementById("trainingContainer").innerHTML =
+      '<div class="table-wrap"><table><thead><tr>' +
+      tr.headers.map((h) => '<th>' + richText(h) + '</th>').join("") +
+      '</tr></thead><tbody>' +
+      tr.rows.map((row) => '<tr>' + row.map((cell, ci) => '<td>' + (ci === 0 ? '<strong>' + richText(cell) + '</strong>' : richText(cell)) + '</td>').join("") + '</tr>').join("") +
+      '</tbody></table></div>';
+  }
+
+  // VISTA 6: NIST CSF 2.0, AUDIT & REFS
+  function renderNist() {
+    const fn = document.getElementById("nistFuncSelect").value;
+    const rows = (MODULE_DATA.mapeoNISTCSF20 || []).filter((n) => fn === "ALL" || String(n.funcion).indexOf(fn) !== -1);
+    document.getElementById("nistCardsContainer").innerHTML = rows.map((n) => (
+      '<div class="spacious-card" style="padding:24px 30px;margin-bottom:16px;">' +
+        '<div class="card-top" style="margin-bottom:14px;">' +
+          '<div class="pill-row">' +
+            '<span class="card-code" style="margin-bottom:0;">' + esc(n.subcategoria) + '</span>' +
+            '<strong style="font-size:17px;">' + esc(n.funcion) + '</strong>' +
+          '</div>' +
+          valBadge(n.estadoValidacion) +
+        '</div>' +
+        '<p style="margin:0 0 14px 0;"><strong>Outcome NIST CSWP 29:</strong> ' + richText(n.descripcionResultado) + '</p>' +
+        '<div class="info-pair" style="margin-bottom:0;">' +
+          '<div class="info-box"><div class="info-label">Capacidad Habilitadora en Microsoft</div><div class="info-content">' + richText(n.capacidadMicrosoft) + '</div></div>' +
+          '<div class="info-box"><div class="info-label">Evidencia Auditable Reproducible</div><div class="info-content">' + richText(n.evidenciaAuditoria) + '</div></div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+  document.getElementById("nistFuncSelect").addEventListener("change", renderNist);
+
+  const vd = MODULE_DATA.validacionYDecisionesEditoriales || {};
+  document.getElementById("auditSummaryBox").innerHTML =
+    '<h4 style="margin:0 0 8px 0;font-size:18px;">Resumen de Auditoría Documental (' + esc(vd.fechaRevalidacion) + ')</h4>' +
+    '<p style="margin:0;">' + richText(vd.resumenAuditoria) + '</p>';
+
+  document.getElementById("corrContainer").innerHTML = '<ol style="padding-left:20px;margin:0;">' +
+    (vd.correccionesAplicadas || []).map((c) => '<li style="margin-bottom:12px;">' + richText(c) + '</li>').join("") + '</ol>';
+
+  document.getElementById("decContainer").innerHTML = (vd.decisionesEditoriales || []).map((d) => (
+    '<div class="info-box" style="margin-bottom:12px;">' +
+      '<div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;"><strong>' + esc(d.elemento) + '</strong>' + valBadge(d.tipo) + '</div>' +
+      '<div class="muted" style="font-size:14.5px;">' + richText(d.justificacion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  function renderRefs() {
+    const q = document.getElementById("refSearch").value.trim().toLowerCase();
+    const list = (MODULE_DATA.referenciasVerificadas || []).filter((r) => {
+      if (!q) return true;
+      return [r.id, r.titulo, r.tipoFuente, r.autor, r.comentario, r.url].join(" ").toLowerCase().indexOf(q) !== -1;
+    });
+    document.getElementById("refTableBody").innerHTML = list.map((r) => (
+      '<tr>' +
+        '<td class="mono"><strong>' + esc(r.id) + '</strong></td>' +
+        '<td><a href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer"><strong>' + esc(r.titulo) + ' ↗</strong></a><br><span class="mono muted" style="font-size:12px;">' + esc(r.url) + '</span></td>' +
+        '<td><span class="badge">' + esc(r.tipoFuente) + '</span></td>' +
+        '<td>' + esc(r.autor) + '</td>' +
+        '<td>' + richText(r.comentario) + '</td>' +
+      '</tr>'
+    )).join("");
+  }
+  document.getElementById("refSearch").addEventListener("input", renderRefs);
+
+  // Initial render
+  updateProgressTracker();
+  renderConfigView();
+  syncPeriodicSubnav();
+  renderPeriodicCards();
+  renderAdhocCards();
+  renderQueries();
+  renderNist();
+  renderRefs();
+  applyInitialHash();
+})();
+</script>
+</body>
+</html>

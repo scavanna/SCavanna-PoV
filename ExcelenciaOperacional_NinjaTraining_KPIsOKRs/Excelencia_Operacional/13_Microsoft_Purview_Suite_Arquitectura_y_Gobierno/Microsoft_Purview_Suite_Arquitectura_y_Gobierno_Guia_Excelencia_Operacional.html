@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft Purview Suite — Guía Operacional (Configuración, Rutinas y Playbooks)</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.72;
+}
+code, pre, .mono {
+  font-family: Consolas, "Courier New", Courier, monospace;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 0.88em;
+  color: var(--cp-text);
+  word-break: break-word;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Sticky Top Navigation */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--cp-panel-strong);
+  border-bottom: 1px solid var(--cp-border);
+  backdrop-filter: blur(10px);
+  padding: 12px 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.topbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border-strong);
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.btn-primary:hover {
+  background: var(--cp-accent-hover);
+  border-color: var(--cp-accent-hover);
+  color: var(--cp-accent-fg);
+}
+.btn-sm {
+  padding: 5px 11px;
+  font-size: 12.5px;
+}
+.select-input, .search-input {
+  padding: 9px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+}
+.search-input { min-width: 260px; flex: 1; }
+
+/* Two-Column Spacious App Layout */
+.app-shell {
+  max-width: 1520px;
+  margin: 0 auto;
+  padding: 28px 32px 56px 32px;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+.sidebar {
+  position: sticky;
+  top: 76px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 20px 16px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+}
+.nav-section-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cp-text-soft);
+  padding: 12px 12px 6px 12px;
+}
+.nav-section-label:first-child { padding-top: 2px; }
+.nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border-radius: 0.625rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.nav-item:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border);
+}
+.nav-item.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.nav-subitem {
+  padding-left: 24px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.nav-count {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--cp-surface-soft);
+  color: var(--cp-text-muted);
+  border: 1px solid var(--cp-border);
+}
+.nav-item.active .nav-count {
+  background: var(--cp-panel-strong);
+  color: var(--cp-text);
+  border-color: transparent;
+}
+.sidebar-progress {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cp-border);
+}
+.prog-row { margin-bottom: 12px; }
+.prog-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--cp-text-muted);
+  font-weight: 600;
+}
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--cp-accent);
+  width: 0%;
+  transition: width 0.25s ease;
+}
+
+/* Main Reading Area */
+.main-area {
+  max-width: 1080px;
+  width: 100%;
+}
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+
+/* Hero & Section Headers */
+.hero-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 32px 36px;
+  margin-bottom: 28px;
+}
+.hero-card h1 {
+  margin: 10px 0 14px 0;
+  font-size: 28px;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+}
+.hero-lead {
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: var(--cp-text-muted);
+  margin: 0;
+}
+.section-banner {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-left: 5px solid var(--cp-accent);
+  border-radius: 16px;
+  padding: 26px 32px;
+  margin-bottom: 28px;
+}
+.section-banner h2 {
+  margin: 0 0 8px 0;
+  font-size: 23px;
+  line-height: 1.3;
+}
+.section-banner p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15.5px;
+}
+
+/* Mode Selector Cards on Overview */
+.modes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.mode-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+}
+.mode-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cp-accent);
+}
+.mode-card h3 {
+  margin: 6px 0 10px 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+.mode-card p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15px;
+}
+
+/* Badges & Inline Tags */
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 0.625rem;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface-soft);
+  color: var(--cp-text);
+}
+.badge-accent {
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border-color: var(--cp-accent);
+}
+.badge-learn {
+  border-color: var(--cp-success);
+  color: var(--cp-success);
+  background: var(--cp-surface-soft);
+}
+.badge-editorial {
+  border-color: var(--cp-warning);
+  color: var(--cp-warning);
+  background: var(--cp-surface-soft);
+}
+.inline-tag {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 6px;
+  margin-left: 4px;
+  vertical-align: middle;
+  border: 1px solid var(--cp-border);
+}
+.tag-learn { color: var(--cp-success); border-color: var(--cp-success); background: var(--cp-surface-soft); }
+.tag-edit { color: var(--cp-warning); border-color: var(--cp-warning); background: var(--cp-surface-soft); }
+
+/* Sub-navigation Switcher */
+.subnav-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.subnav-pill {
+  padding: 10px 18px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.subnav-pill:hover { border-color: var(--cp-border-strong); background: var(--cp-surface-soft); }
+.subnav-pill.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.filter-toolbar {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Spacious Operational, Setup & Playbook Cards */
+.spacious-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 30px 34px;
+  margin-bottom: 24px;
+}
+.spacious-card.is-done {
+  border-color: var(--cp-success);
+  background: var(--cp-bg-elevated);
+}
+.adhoc-card {
+  border-left: 5px solid var(--cp-accent);
+}
+.card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.card-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 280px;
+}
+.task-checkbox {
+  width: 22px;
+  height: 22px;
+  margin-top: 4px;
+  accent-color: var(--cp-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.card-code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border: 1px solid var(--cp-accent);
+  display: inline-block;
+  margin-bottom: 6px;
+}
+.card-heading {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+/* Info Callout Boxes inside Cards */
+.info-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.info-box {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+.info-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-soft);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.info-content {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.trigger-banner {
+  background: var(--cp-accent-soft);
+  border: 1px solid var(--cp-accent);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+}
+.trigger-banner .info-label {
+  color: var(--cp-accent);
+}
+
+/* Step-by-Step Spacious List */
+.steps-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-muted);
+  margin: 0 0 12px 0;
+}
+.steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.step-row:hover { border-color: var(--cp-border-strong); }
+.step-row.step-checked {
+  border-color: var(--cp-success);
+  opacity: 0.88;
+}
+.step-num {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border-strong);
+  color: var(--cp-text);
+  font-weight: 700;
+  font-size: 13.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-row.step-checked .step-num {
+  background: var(--cp-success);
+  border-color: var(--cp-success);
+  color: var(--cp-accent-fg);
+}
+.step-body {
+  font-size: 15.5px;
+  line-height: 1.72;
+  flex: 1;
+}
+
+/* Validation & Evidence Footer Box */
+.validation-footer {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.validation-footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--cp-border);
+  font-size: 13.5px;
+  color: var(--cp-text-muted);
+}
+
+/* Grids & Tables for Secondary Views */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.subsection-heading {
+  font-size: 20px;
+  margin: 34px 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cp-border);
+}
+pre.code-block {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 14px 0 0 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.table-wrap {
+  overflow-x: auto;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th, td { padding: 16px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--cp-border); line-height: 1.6; }
+th { background: var(--cp-bg-elevated); font-weight: 700; }
+tr:last-child td { border-bottom: none; }
+.muted { color: var(--cp-text-muted); }
+
+.footer {
+  margin-top: 48px;
+  padding: 24px 0;
+  border-top: 1px solid var(--cp-border);
+  color: var(--cp-text-muted);
+  font-size: 13.5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 1080px) {
+  .app-shell { grid-template-columns: 1fr; padding: 18px; gap: 20px; }
+  .sidebar { position: static; max-height: none; }
+  .grid-2, .info-pair { grid-template-columns: 1fr; }
+  .spacious-card, .hero-card { padding: 22px; }
+}
+@media print {
+  .topbar, .sidebar, .filter-toolbar, .subnav-bar { display: none !important; }
+  .app-shell { display: block; padding: 0; }
+  .view-panel { display: block !important; margin-bottom: 32px; }
+  body { background: var(--cp-surface); font-size: 13px; }
+}
+</style></head>
+<body>
+<header class="topbar">
+  <div class="topbar-group">
+    <a class="btn btn-primary" href="../index.html">← Portal Maestro (23 Módulos)</a>
+    <a class="btn" id="prevModBtn" href="#">Anterior</a>
+    <select class="select-input" id="modJumpSelect" aria-label="Cambiar de módulo"></select>
+    <a class="btn" id="nextModBtn" href="#">Siguiente</a>
+  </div>
+  <div class="topbar-group">
+    <a class="btn" id="xlsxLink" href="#" download>Libro .XLSX</a>
+    <a class="btn" id="mdLink" href="#">Guía .MD</a>
+    <button class="btn" type="button" id="exportCsvBtn">Exportar CSV</button>
+    <button class="btn" type="button" id="printBtn">Imprimir / PDF</button>
+    <button class="btn" type="button" id="themeToggleBtn">Tema Claro / Oscuro</button>
+  </div>
+</header>
+
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Navegación de la guía operativa">
+    <div class="nav-section-label">Introducción</div>
+    <button class="nav-item active" type="button" data-view="view-overview">
+      <span>Visión General y Mapa</span>
+    </button>
+
+    <div class="nav-section-label">1 · Configuración Puntual</div>
+    <button class="nav-item" type="button" data-view="view-config">
+      <span>Configuración y Validaciones</span>
+      <span class="nav-count" id="navCntConfig">0</span>
+    </button>
+
+    <div class="nav-section-label">2 · Acciones Periódicas</div>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Diaria">
+      <span>Rutinas Diarias</span>
+      <span class="nav-count" id="navCntDiaria">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Semanal">
+      <span>Rutinas Semanales</span>
+      <span class="nav-count" id="navCntSemanal">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Mensual">
+      <span>Rutinas Mensuales</span>
+      <span class="nav-count" id="navCntMensual">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="CICLOS_LARGOS">
+      <span>Trimestral · Semestral · Anual</span>
+      <span class="nav-count" id="navCntLargos">0</span>
+    </button>
+
+    <div class="nav-section-label">3 · Respuesta a Señales</div>
+    <button class="nav-item" type="button" data-view="view-adhoc">
+      <span>Playbooks Ad-Hoc (Alertas)</span>
+      <span class="nav-count" id="navCntAdhoc">0</span>
+    </button>
+
+    <div class="nav-section-label">Verificación y Gobierno</div>
+    <button class="nav-item" type="button" data-view="view-queries">
+      <span>Consultas KQL / Graph / PS</span>
+      <span class="nav-count" id="navCntQueries">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-kpis">
+      <span>KPIs, Madurez y Formación</span>
+      <span class="nav-count" id="navCntKpis">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-nist">
+      <span>Auditoría NIST 2.0 y Fuentes</span>
+      <span class="nav-count" id="navCntNist">0</span>
+    </button>
+
+    <div class="sidebar-progress" id="sidebarProgress"></div>
+  </aside>
+
+  <main class="main-area">
+    <!-- VISTA 0: OVERVIEW & MAPA DE LOS 3 MODOS -->
+    <section class="view-panel active" id="view-overview">
+      <div class="hero-card">
+        <div class="pill-row" id="heroBadges"></div>
+        <h1 id="heroTitle"></h1>
+        <p class="hero-lead" id="heroSummary"></p>
+      </div>
+
+      <h2 class="subsection-heading" style="margin-top:0;">Cómo operar esta tecnología: Los 3 Niveles de Acción</h2>
+      <div class="modes-grid" id="modesSummaryGrid"></div>
+
+      <div class="spacious-card" id="licensingOverviewCard"></div>
+
+      <h2 class="subsection-heading">Principios Rectores Oficiales (Zero Trust)</h2>
+      <div class="grid-2" id="principlesGrid"></div>
+    </section>
+
+    <!-- VISTA 1: ACCIONES PUNTUALES DE CONFIGURACIÓN Y VALIDACIONES -->
+    <section class="view-panel" id="view-config">
+      <div class="section-banner">
+        <h2>1. Acciones Puntuales de Configuración y Validaciones sobre la Plataforma</h2>
+        <p>Controles que se ejecutan al desplegar la tecnología, activar nuevas capacidades o auditar su línea base. Distingue qué debes configurar una sola vez y cómo validar técnicamente ("Proof of Life") que cada ajuste está activo y protegiendo el entorno.</p>
+      </div>
+
+      <div class="subnav-bar" id="configSubnav">
+        <a class="subnav-pill" href="#cfg-prereqs">1A. Puesta en Marcha Inicial</a>
+        <a class="subnav-pill" href="#cfg-validations">1B. Validaciones de Configuración ("Proof of Life")</a>
+        <a class="subnav-pill" href="#cfg-components">1C. Configuración por Componente</a>
+        <a class="subnav-pill" href="#cfg-rbac">1D. Privilegio Mínimo RBAC y PIM</a>
+      </div>
+
+      <h3 class="subsection-heading" id="cfg-prereqs">1A. Checklist de Puesta en Marcha y Prerrequisitos Puntuales</h3>
+      <div id="prereqsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-validations">1B. Validaciones Técnicas sobre las Configuraciones ("Proof of Life")</h3>
+      <p class="muted" style="margin-top:-8px;margin-bottom:20px;">Comprueba cada uno de estos indicadores en consola o mediante consulta para confirmar que la configuración no quedó solo en papel o en modo auditoría incompleta.</p>
+      <div id="validationsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-components">1C. Configuración Base por Componente e Integraciones</h3>
+      <div id="componentsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-rbac">1D. Configuración Puntual de Roles Administrativos y Estrategia PIM / JIT</h3>
+      <div id="rbacContainer"></div>
+    </section>
+
+    <!-- VISTA 2: ACCIONES PERIÓDICAS PROGRAMADAS -->
+    <section class="view-panel" id="view-periodic">
+      <div class="section-banner">
+        <h2 id="periodicTitle">2. Acciones Periódicas Programadas</h2>
+        <p id="periodicSubtitle">Rutinas recurrentes preventivas, de higiene operativa, tuning y gobierno. Selecciona la frecuencia deseada para leer cómodamente solo las actividades de ese ciclo.</p>
+      </div>
+
+      <div class="subnav-bar" id="periodicCadBar">
+        <button class="subnav-pill active" type="button" data-pcad="Diaria">Diarias</button>
+        <button class="subnav-pill" type="button" data-pcad="Semanal">Semanales</button>
+        <button class="subnav-pill" type="button" data-pcad="Mensual">Mensuales</button>
+        <button class="subnav-pill" type="button" data-pcad="CICLOS_LARGOS">Trimestrales · Semestrales · Anuales</button>
+        <button class="subnav-pill" type="button" data-pcad="ALL_PERIODIC">Ver Todas las Periódicas</button>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="perSearch" placeholder="Buscar acción periódica, consola, tabla KQL, control a validar o rol...">
+        <select class="select-input" id="perRole"><option value="ALL">Rol Responsable: Todos</option></select>
+        <select class="select-input" id="perOrigin">
+          <option value="ALL">Origen: Todos</option>
+          <option value="Verificado MS Learn">Verificado MS Learn</option>
+          <option value="Propuesta Editorial">Propuesta Editorial</option>
+        </select>
+        <button class="btn btn-sm" type="button" id="resetChecksBtn">Reiniciar Progreso</button>
+      </div>
+
+      <p class="muted" id="perCountLabel" style="margin-bottom:18px;"></p>
+      <div id="periodicCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 3: ACCIONES AD-HOC ANTE SEÑALES, ALERTAS E INCIDENTES -->
+    <section class="view-panel" id="view-adhoc">
+      <div class="section-banner">
+        <h2>3. Acciones Ad-Hoc ante Señales, Alertas e Incidentes (Playbooks del Analista)</h2>
+        <p>Procedimientos reactivos bajo demanda. A diferencia de las rutinas periódicas, estos playbooks se activan únicamente cuando una señal de riesgo, alerta de detección, anomalía o emergencia exige la intervención inmediata de un analista.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="adhocSearch" placeholder="Filtrar playbooks por alerta disparadora, síntoma, técnica MITRE o acción de contención...">
+      </div>
+
+      <div id="adhocCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 4: CONSULTAS KQL / GRAPH / POWERSHELL -->
+    <section class="view-panel" id="view-queries">
+      <div class="section-banner">
+        <h2>4. Consultas Técnicas de Validación, Monitoreo y Threat Hunting</h2>
+        <p>Consultas KQL, llamadas Microsoft Graph API y scripts PowerShell listos para auditar configuraciones puntuales, medir salud periódica o investigar alertas ad-hoc.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="kqlSearch" placeholder="Buscar consulta por nombre, tabla (SigninLogs, DeviceEvents, SentinelHealth...), comando o propósito...">
+        <select class="select-input" id="kqlUsageFilter">
+          <option value="ALL">Momento de Uso: Todos</option>
+          <option value="Validación de Configuración y Postura">1. Validación de Configuración y Postura</option>
+          <option value="Control Periódico de Salud, Auditoría y KPIs">2. Control Periódico de Salud y KPIs</option>
+          <option value="Investigación Ad-Hoc y Threat Hunting">3. Investigación Ad-Hoc y Hunting</option>
+        </select>
+      </div>
+
+      <div id="queriesContainer"></div>
+    </section>
+
+    <!-- VISTA 5: KPIs, MADUREZ Y FORMACIÓN -->
+    <section class="view-panel" id="view-kpis">
+      <div class="section-banner">
+        <h2>5. Indicadores Clave (KPIs), Modelo de Madurez y Ruta de Formación</h2>
+        <p>Métricas objetivas para medir eficacia operativa ante el CISO, evolución en 5 niveles de madurez y habilitación técnica recomendada por rol.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Indicadores Clave de Desempeño (KPIs)</h3>
+      <div class="grid-2" id="kpiContainer"></div>
+
+      <h3 class="subsection-heading">Modelo de Madurez Operacional (Niveles 1 a 5)</h3>
+      <div id="maturityContainer"></div>
+
+      <h3 class="subsection-heading">Ruta de Habilitación y Formación por Rol</h3>
+      <div id="trainingContainer"></div>
+    </section>
+
+    <!-- VISTA 6: AUDITORÍA NIST CSF 2.0, TRANSPARENCIA Y REFERENCIAS -->
+    <section class="view-panel" id="view-nist">
+      <div class="section-banner">
+        <h2>6. Mapeo de Auditoría NIST CSF 2.0, Revalidación (Nov 2026) y Referencias</h2>
+        <p>Evidencia auditable reproducible para las seis funciones de NIST CSF 2.0 (CSWP 29), registro transparente de verificaciones en Microsoft Learn frente a propuestas editoriales y fuentes públicas.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Matriz de Evidencia Auditable NIST CSF 2.0</h3>
+      <div class="filter-toolbar">
+        <select class="select-input" id="nistFuncSelect">
+          <option value="ALL">Función NIST CSF 2.0: Todas (6 Funciones)</option>
+          <option value="GOVERN">GOVERN (GV)</option>
+          <option value="IDENTIFY">IDENTIFY (ID)</option>
+          <option value="PROTECT">PROTECT (PR)</option>
+          <option value="DETECT">DETECT (DE)</option>
+          <option value="RESPOND">RESPOND (RS)</option>
+          <option value="RECOVER">RECOVER (RC)</option>
+        </select>
+      </div>
+      <div id="nistCardsContainer"></div>
+
+      <h3 class="subsection-heading">Registro de Revalidación Técnica (Noviembre 2026) y Decisiones Editoriales</h3>
+      <div class="spacious-card" id="auditSummaryBox"></div>
+      <div class="grid-2">
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Hallazgos y Actualizaciones Verificadas en MS Learn</h3>
+          <div id="corrContainer"></div>
+        </div>
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Decisiones y Propuestas Editoriales Explícitas</h3>
+          <div id="decContainer"></div>
+        </div>
+      </div>
+
+      <h3 class="subsection-heading">Directorio de Referencias Públicas Verificadas</h3>
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="refSearch" placeholder="Filtrar referencias por título, autor, MVP o URL...">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Recurso Oficial / Comunitario</th>
+              <th>Tipo</th>
+              <th>Autor / Entidad</th>
+              <th>Comentario de Alcance</th>
+            </tr>
+          </thead>
+          <tbody id="refTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>Guía Maestra de Excelencia Operacional Microsoft — Edición Espaciada v3.0 (Validación: 2026-11-11)</div>
+      <div>Configuración Puntual · Rutinas Periódicas · Playbooks Ad-Hoc · NIST CSF 2.0</div>
+    </footer>
+  </main>
+</div>
+
+<script>
+const MODULE_DATA = {"schemaVersion": "2.0", "id": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "orden": 13, "slug": "Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "nombre": "Microsoft Purview Suite (Arquitectura Integral, Gobierno, DSPM, Seguridad para IA y Compliance Manager)", "nombreCorto": "Microsoft Purview Suite", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn", "fechaValidacion": "2026-11-11", "portalesPrincipales": ["https://purview.microsoft.com", "https://security.microsoft.com", "https://entra.microsoft.com"], "audiencia": ["CISO", "Chief Data Officer (CDO)", "DPO / Privacy Officer", "Data Security Architect", "SOC Manager", "Data Security Analyst", "GRC & Compliance Manager", "AI Governance Lead", "FinOps", "Internal & External Auditors"], "relacionM365E5": {"estado": "Incluido en Microsoft 365 E5 (y modelo complementario Pay-As-You-Go en Azure)", "licencias": ["Microsoft 365 E5 / E7 / A5 / G5 (incluye nativamente los derechos por usuario de Microsoft Purview Suite)", "Microsoft Purview Suite (nombre comercial vigente desde octubre de 2025 que reemplazó a Microsoft 365 E5 Compliance como add-on sobre M365 E3 u O365 E3 + EMS E3)", "Microsoft Purview Suite FLW (Frontline Worker), Microsoft Purview Suite Gov, Microsoft Purview Suite EDU y Microsoft Purview Suite for Business Premium (hasta 300 usuarios)", "Suscripción Azure vinculada para medidores Pay-As-You-Go (activos no-M365/Fabric, interacciones GenAI no-M365, Network Data Security, Data Security Investigations, Unified Catalog DGPUs y Security Compute Units)"], "prerrequisitos": ["Operación exclusiva sobre el nuevo portal unificado https://purview.microsoft.com (tras el retiro definitivo de compliance.microsoft.com en diciembre de 2024 y del eDiscovery clásico el 31 de agosto de 2025)", "Habilitación de etiquetas de sensibilidad para archivos Office en SharePoint y OneDrive y configuración explícita de derechos de uso VIEW + EXTRACT para Microsoft 365 Copilot e instancias de Microsoft Agent 365", "Onboarding activo de estaciones Windows y macOS a Microsoft Purview / Defender for Endpoint y despliegue de políticas en Microsoft Edge for Business para visibilidad Endpoint/Browser DLP e IA", "Diseño de Role groups en Settings > Roles and scopes vinculados a Administrative Units de Microsoft Entra ID y grupos gobernados por Entra ID PIM (contemplando hasta 2 horas de propagación tras activación JIT)", "Vinculación de suscripción Azure con presupuestos y alertas en Cost Management antes de activar medidores Pay-As-You-Go o Proactive AI insights en Data Security Investigations"], "notaLicenciamiento": "Desde octubre de 2025, Microsoft renombró Microsoft 365 E5 Compliance como Microsoft Purview Suite. El modelo por usuario cubre cargas Microsoft 365, endpoints Windows/macOS, interacciones de Microsoft 365 Copilot (sin cargo adicional de consumo) y otorga 3 plantillas regulatorias Premium gratuitas adicionales al Microsoft Data Protection Baseline en Compliance Manager. El modelo complementario Pay-As-You-Go en Azure factura activos únicos protegidos/día en fuentes no-M365/Fabric (contados una sola vez aunque apliquen múltiples políticas), solicitudes/registros de IA generativa de terceros, Text records (1.000 caracteres) en Communication Compliance, GB/mes + compute units en Data Security Investigations (DSI), DGPUs (60 min) en Unified Catalog y bloques horarios de SCUs en Security Copilot."}, "resumenEjecutivo": "Microsoft Purview Suite constituye el plano integral de seguridad de datos, cumplimiento regulatorio y gobierno del patrimonio de información e inteligencia artificial en arquitecturas Zero Trust sobre Microsoft 365 E5. Este Módulo 13 actúa como marco arquitectónico y de gobierno transversal sobre el nuevo portal unificado https://purview.microsoft.com, articulando los ocho módulos especializados subsiguientes (14 MIP, 15 DLP, 16 DLCM/Records, 17 IRM, 18 Communication Compliance, 19 Audit Premium, 20 eDiscovery y 21 Lockbox/Customer Key/PAM) junto con Microsoft Agent 365 (Módulo 22). Su operación moderna se centra en: (1) la nueva experiencia unificada de Data Security Posture Management (DSPM) guiada por Data security objectives, remediación de oversharing y AI observability sobre M365 Copilot, Copilot Studio, Microsoft Foundry, Agent 365 y apps GenAI externas; (2) investigaciones forenses asistidas por IA generativa mediante Data Security Investigations (DSI) con Vector search, Categorization, Examination y Soft/Hard Purge; (3) evaluación continua multicloud en Compliance Manager sobre más de 360 regulaciones (NIST CSF 2.0, ISO 27001, DORA, NIS2, EU AI Act) con puntuación ponderada por riesgo (27/9/3/1 puntos); (4) delegación jurisdiccional con Restricted Administrative Units; (5) convergencia bidireccional con Microsoft Defender XDR, Sentinel y Adaptive Protection; y (6) disciplina FinOps sobre medidores Pay-As-You-Go.", "principiosRectores": [{"principio": "Seguridad de datos orientada a resultados (Outcome-Driven Data Security en DSPM)", "descripcion": "Orquestar el descubrimiento, protección e investigación en purview.microsoft.com alrededor de los Data security objectives de DSPM en lugar de administrar políticas aisladas por silo.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about"}, {"principio": "Convergencia nativa entre Seguridad de Datos y SecOps XDR (Adaptive + Unified Incidents)", "descripcion": "Correlacionar alertas de Purview DLP e Insider Risk Management en incidentes de Microsoft Defender XDR y ajustar bloqueos preventivos en tiempo real mediante Adaptive Protection.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/dlp-adaptive-protection-learn"}, {"principio": "Observabilidad y protección integral de IA y agentes autónomos (Copilot, Foundry & Agent 365)", "descripcion": "Auditar prompts/respuestas, erradicar oversharing previo a la indexación y exigir explícitamente derechos VIEW y EXTRACT sobre archivos cifrados accedidos por Copilot e instancias de Microsoft Agent 365.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/ai-agent-365"}, {"principio": "Privacidad por diseño, segregación de lectura de contenido y Administrative Units", "descripcion": "Mantener seudonimización nativa, separar configuración de políticas respecto de Content Viewer / Purge y restringir jurisdiccionalmente Role groups mediante Administrative Units de Entra ID.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/purview-admin-units"}, {"principio": "Cumplimiento continuo ponderado por riesgo (Continuous Compliance Scoring)", "descripcion": "Gestionar más de 360 marcos normativos en Compliance Manager priorizando acciones Preventative mandatory (27 puntos) y distinguiendo controles de Microsoft, compartidos y propios.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/compliance-score-calculation"}, {"principio": "Gobierno FinOps proactivo sobre medidores Pay-As-You-Go, DSI y SCUs", "descripcion": "Acotar el alcance de políticas multicloud/Fabric, controlar el refresco cada 24h de Proactive AI insights en DSI y gestionar SCUs en bloques horarios bajo presupuestos auditados en Azure.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/purview-billing-models"}], "arquitecturaYComponentes": [{"componente": "Unified Microsoft Purview Portal & Settings Plane", "funcionOperativa": "Superficie única de operación en purview.microsoft.com (tras el retiro de compliance.microsoft.com) que centraliza búsqueda global, Role groups, Administrative Units, conectores y Usage center.", "portalRuta": "purview.microsoft.com > Home / Solutions / Settings", "integraciones": ["Microsoft Entra ID (PIM & Administrative Units)", "Microsoft Defender Portal", "Microsoft Fabric & Microsoft Priva"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Data Security Posture Management (DSPM Unificado y AI Observability)", "funcionOperativa": "Consolida postura tradicional e IA con Data security objectives, Data risk assessments (oversharing), Asset explorer (con Data Security Posture Agent) y AI observability incluyendo Microsoft Agent 365.", "portalRuta": "purview.microsoft.com > Solutions > DSPM", "integraciones": ["Microsoft 365 Copilot, Copilot Studio & Foundry", "Microsoft Agent 365 & Microsoft Security Copilot", "Microsoft Sentinel Data Lake (conectores GCP, Snowflake, Databricks)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Data Security Investigations (DSI)", "funcionOperativa": "Investigación profunda asistida por IA generativa sobre brechas y fugas de datos mediante Vector search semántico, Categorization (Standard/Advanced AI), Examination y mitigación Soft/Hard Purge.", "portalRuta": "purview.microsoft.com > Solutions > Data Security Investigations", "integraciones": ["Microsoft Defender XDR Incidents", "Purview Insider Risk Management & DSPM", "Endpoint DLP Evidence Collection & Unified Audit Log"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Microsoft Purview Compliance Manager", "funcionOperativa": "Evaluación automatizada multicloud sobre más de 360 plantillas regulatorias (NIST CSF 2.0, ISO 27001, DORA, NIS2, EU AI Act, ISO 42001) y cálculo continuo del Compliance Score.", "portalRuta": "purview.microsoft.com > Solutions > Compliance Manager", "integraciones": ["Microsoft 365 & Microsoft Entra Signals", "Microsoft Defender for Cloud (Multicloud)", "Microsoft Agent 365 (AI Regulations)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Unified Catalog y Data Map (Data Governance)", "funcionOperativa": "Descubrimiento, linaje, clasificación automática, Live view sin escaneo previo para Azure/Fabric, Data Map history y reportes de salud de datos empresariales.", "portalRuta": "purview.microsoft.com > Solutions > Unified Catalog / Data Map", "integraciones": ["Microsoft Fabric & Power BI", "Azure SQL, ADLS Gen2 & Blob Storage", "AWS, Google Cloud, Snowflake & Databricks"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Information Protection (MIP) & Data Loss Prevention (DLP) [-> Módulos 14 y 15]", "funcionOperativa": "Clasificadores SIT/entrenables, etiquetas de sensibilidad con cifrado (derechos VIEW/EXTRACT para IA) y protección DLP en M365, Endpoints, Edge for Business, Red y Fabric.", "portalRuta": "purview.microsoft.com > Solutions > Information Protection / Data Loss Prevention", "integraciones": ["Microsoft 365 Apps & SharePoint/OneDrive", "Microsoft Edge for Business & Network Data Security", "Microsoft Defender XDR"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Insider Risk Management, Adaptive Protection & Comm Compliance [-> Módulos 17 y 18]", "funcionOperativa": "Detección conductual seudonimizada (fuga de datos, Risky AI usage, Prompt shields) y asignación dinámica de perfiles de riesgo (Elevated/Moderate/Minor) hacia DLP y Conditional Access.", "portalRuta": "purview.microsoft.com > Solutions > Insider Risk Management / Communication Compliance", "integraciones": ["Purview DLP (Adaptive Protection)", "Microsoft Entra Conditional Access", "Microsoft Defender XDR"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Data Lifecycle, Records, Audit, eDiscovery & Soberanía [-> Módulos 16, 19, 20 y 21]", "funcionOperativa": "Retención/eliminación (incluyendo prompts IA), Records con Preservation Lock, Audit Standard/Premium, nuevo eDiscovery unificado (post ago-2025) y Lockbox/Customer Key/M365 PAM.", "portalRuta": "purview.microsoft.com > Solutions > Data Lifecycle / Records / Audit / eDiscovery", "integraciones": ["Microsoft Sentinel (OfficeActivity & E5 Grant)", "Exchange, SharePoint, Teams & Copilot Mailboxes", "Azure Key Vault (Customer Key)"], "estadoValidacion": "Verificado MS Learn"}], "rbacYRoles": [{"rol": "Microsoft Purview Compliance Administrator", "nivelSOC": "GRC Lead / Data Security Manager", "permisosClave": "Administración transversal de soluciones de cumplimiento, DSPM y Compliance Manager sin otorgar lectura indiscriminada de casos eDiscovery o DSI.", "asignacionPIM": "Elegible en Entra ID PIM (4-8h contemplando hasta 2 horas de propagación en Purview); prohibido el uso de Global Administrator.", "responsabilidadOperativa": "Gobernar configuración global de postura de cumplimiento, plantillas regulatorias y objetivos estratégicos en DSPM.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Role Management (Purview Role Group)", "nivelSOC": "Identity Governance Architect", "permisosClave": "Único rol facultado para administrar Role groups y vincular Restricted Administrative Units dentro del portal de Microsoft Purview.", "asignacionPIM": "Estrictamente elegible en PIM con aprobación dual y segregado de analistas operativos.", "responsabilidadOperativa": "Mantener el modelo de mínimo privilegio y aislamiento jurisdiccional por unidades administrativas.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "DSPM & Data Security Viewer / Content Explorer List vs. Content Viewer", "nivelSOC": "Data Security Analyst / AI Governance", "permisosClave": "Acceso a Posture, Objectives, AI observability y Security Copilot en DSPM; separación estricta entre List Viewer (metadatos) y Content Viewer (texto real).", "asignacionPIM": "List Viewer acotado por AU; Content Explorer Content Viewer exclusivamente JIT en PIM con aprobación del DPO.", "responsabilidadOperativa": "Ejecutar monitoreo diario de postura de datos, oversharing y actividad de agentes IA sin exponer datos privados innecesariamente.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Data Loss Prevention Compliance Management", "nivelSOC": "Data Security Engineer (Módulo 15)", "permisosClave": "Diseño, simulación y despliegue de políticas DLP en M365, Endpoint, Browser, Network y Fabric, e integración con Adaptive Protection.", "asignacionPIM": "Elegible vía grupo PIM y acotado a su Administrative Unit regional cuando aplique.", "responsabilidadOperativa": "Operar y calibrar reglas preventivas de fuga de datos y su acoplamiento con niveles de riesgo interno.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Insider Risk Management (Admins / Analysts / Investigators)", "nivelSOC": "Célula de Riesgo Interno + Legal / RRHH (Módulo 17)", "permisosClave": "Sub-roles segregados: Admin define políticas/indicadores; Analyst realiza triaje seudonimizado; Investigator revisa evidencia y escala hacia DSI.", "asignacionPIM": "Sub-roles asignados a personas distintas con Administrative Units regionales y seudonimización obligatoria.", "responsabilidadOperativa": "Gestionar alertas conductuales de robo/fuga de datos, uso riesgoso de IA y perfiles de Adaptive Protection.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Data Security Investigations (Investigators vs. Mitigation Admins)", "nivelSOC": "CSIRT / Respuesta a Brechas de Datos", "permisosClave": "Creación de investigaciones, ejecución de Vector search, AI Categorization y Examination, segregado del permiso de ejecución Soft/Hard Purge.", "asignacionPIM": "Activación JIT vinculada a incidente confirmado; purgado sujeto a autorización escrita de Legal/CISO.", "responsabilidadOperativa": "Determinar con IA el impacto exacto de datos expuestos en brechas y ejecutar purgas autorizadas.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Compliance Manager (Admins / Assessors / Contributors / Readers)", "nivelSOC": "GRC, Propietarios de Control TI y Auditores", "permisosClave": "Segregación entre quien crea evaluaciones (Admin), quien implementa/carga evidencia (Contributor), quien audita pruebas (Assessor) y lectura externa (Reader).", "asignacionPIM": "Asignación nominal por evaluación; Compliance Manager Reader temporal para auditores externos.", "responsabilidadOperativa": "Mantener actualizado el Compliance Score y el repositorio probatorio frente a NIST CSF 2.0, ISO 27001, DORA, NIS2 y EU AI Act.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Data Source Administrator & Data Curator (Unified Catalog)", "nivelSOC": "Oficina del CDO / Data Stewards", "permisosClave": "Gestión de conectores y escaneos en Data Map, curación de activos y monitoreo de calidad de datos por Collections/Dominios.", "asignacionPIM": "Delegado por dominio de datos bajo control presupuestario de DGPUs.", "responsabilidadOperativa": "Gobernar el catálogo técnico, linaje y clasificación de activos en Azure, Microsoft Fabric y nubes externas.", "estadoValidacion": "Verificado MS Learn"}], "actividadesOperacionales": [{"codigo": "D-01", "cadencia": "Diaria", "actividad": "Revisión del panel Posture y avance de Data Security Objectives en DSPM", "objetivo": "Monitorear desviaciones diarias de exposición de datos sensibles, oversharing y recomendaciones de agentes en la versión unificada de DSPM.", "consolaRuta": "purview.microsoft.com > Solutions > DSPM > Posture / Objectives", "procedimiento": ["Revisar la tendencia de 30 días en DSPM > Posture y variaciones abruptas de exposición en las tarjetas de Data security objectives.", "Inspeccionar View agent activity para auditar recomendaciones y triajes del Data Security Posture Agent antes de aplicar políticas one-click.", "Revisar hallazgos recientes en el objetivo de exfiltración si Proactive AI insights se encuentra habilitado."], "rolResponsable": "Data Security Analyst / SOC L2", "funcionNIST": "ID", "subcategoriaNIST": "ID.RA-05", "mitreTactic": "Exfiltration (TA0010)", "evidenciaAuditable": "Instantánea diaria de métricas de Data security objectives y registro auditado de acciones de agentes.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Navegación y capacidades de la versión actual de DSPM verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about", "pasosDetallados": ["Ingresar en `Solutions > DSPM > Posture` (verificando usar la experiencia actual y no *DSPM classic*) y revisar la gráfica de tendencia de 30 días junto con alertas de variación abrupta en exposición de datos sensibles `[Verificado MS Learn]`.", "Inspeccionar las tarjetas de **Data security objectives** (*Prevent data exposure in Microsoft 365 Copilot and Microsoft Copilot interactions*, *Prevent oversharing of sensitive data*, *Prevent exfiltration to risky destinations* y *Discover sensitive data*) `[Verificado MS Learn]`.", "Revisar mediante **View agent activity** las recomendaciones y triajes generados por el *Data Security Posture Agent* y agentes de triaje de alertas (auditando acciones sugeridas antes de aprobarlas) `[Verificado MS Learn]`.", "Si *Proactive AI insights* está habilitado sobre el objetivo de exfiltración, analizar los hallazgos refrescados en las últimas 24 horas por Data Security Investigations `[Verificado MS Learn]`."], "disparadorAlerta": "Monitorear desviaciones diarias de exposición de datos sensibles, oversharing y recomendaciones de agentes en la versión unificada de DSPM.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-02", "cadencia": "Diaria", "actividad": "Monitoreo diario de AI observability: Copilot, agentes y Microsoft Agent 365", "objetivo": "Detectar interacciones con datos sensibles, bloqueos DLP o riesgos elevados en copilotos, instancias de Agent 365 y sitios GenAI de terceros.", "consolaRuta": "purview.microsoft.com > Solutions > DSPM > AI observability / Discover > Activity explorer > AI activities", "procedimiento": ["Revisar en AI observability las aplicaciones y agentes activos (incluyendo Agent 365) priorizados con mayor nivel de riesgo en Insider Risk Management.", "Filtrar en Activity explorer > AI activities interacciones de las últimas 24h con SITs críticos, etiquetas Confidential o bloqueos en navegador/red.", "Notificar al propietario registrado cuando una política DLP bloquee una instancia de agente para evitar fallos silenciosos de flujo."], "rolResponsable": "Data Security Analyst / AI Governance Lead", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-06", "mitreTactic": "Exfiltration Over Web Service (T1567)", "evidenciaAuditable": "Resumen diario de metadatos de AI activities y alertas de agentes de alto riesgo.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Página AI observability y comportamiento de bloqueo DLP sobre instancias de Agent 365 verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/ai-agent-365", "pasosDetallados": ["Abrir `DSPM > AI observability` para revisar el inventario de aplicaciones y agentes IA con actividad reciente, priorizando las instancias de **Microsoft Agent 365** y agentes Copilot Studio clasificados con riesgo elevado por Insider Risk Management `[Verificado MS Learn]`.", "Filtrar en `Activity explorer > AI activities` eventos de las últimas 24 horas que involucren tipos de información sensible (SITs), etiquetas `Confidential` / `Highly Confidential` o bloqueos de DLP en navegador/red hacia IA generativa pública `[Verificado MS Learn]`.", "Verificar si algún agente fue bloqueado legítimamente por una política DLP e informar al propietario registrado del agente para evitar fallos silenciosos en flujos automatizados de negocio `[Verificado MS Learn]`."], "disparadorAlerta": "Detectar interacciones con datos sensibles, bloqueos DLP o riesgos elevados en copilotos, instancias de Agent 365 y sitios GenAI de terceros.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-03", "cadencia": "Diaria", "actividad": "Triaje convergente de alertas Purview (DLP e Insider Risk) en Microsoft Defender XDR", "objetivo": "Correlacionar alertas de fuga de datos y riesgo interno con señales de amenaza externa en la cola unificada de incidentes XDR.", "consolaRuta": "security.microsoft.com > Incidents & alerts > Incidents + purview.microsoft.com > Data Loss Prevention > Alerts", "procedimiento": ["Filtrar en security.microsoft.com incidentes enriquecidos con alertas de Microsoft Purview DLP o Insider Risk Management.", "Cruzar la identidad afectada contra alertas de Entra ID Protection y Defender for Endpoint para distinguir compromiso externo de riesgo interno.", "Ante exfiltración confirmada de alto impacto, abrir investigación directa en Data Security Investigations desde el incidente XDR."], "rolResponsable": "SOC L1 / SOC L2 + Data Security Analyst", "funcionNIST": "DE", "subcategoriaNIST": "DE.AE-03", "mitreTactic": "Collection (TA0009) / Exfiltration (TA0010)", "evidenciaAuditable": "Incidente documentado y clasificado en security.microsoft.com.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Correlación de alertas DLP/IRM en incidentes XDR y apertura de DSI verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/alerts-incidents-correlation", "pasosDetallados": ["Filtrar en `security.microsoft.com` incidentes que contengan fuentes de alerta `Microsoft Purview Data Loss Prevention` o `Microsoft Purview Insider Risk Management` `[Verificado MS Learn]`.", "Evaluar si el usuario involucrado presenta simultáneamente alertas de robo de credenciales/sesión en Microsoft Entra ID Protection o malware en Defender for Endpoint (distinguiendo actor externo con cuenta comprometida frente a insider real).", "Cuando se confirme exfiltración masiva o exposición de activos críticos, escalar directamente desde el incidente XDR hacia una investigación en **Data Security Investigations (DSI)** (`AH-01`) `[Verificado MS Learn]`."], "disparadorAlerta": "Correlacionar alertas de fuga de datos y riesgo interno con señales de amenaza externa en la cola unificada de incidentes XDR.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-04", "cadencia": "Diaria", "actividad": "Supervisión del bucle dinámico Adaptive Protection (IRM <-> DLP <-> Entra CA)", "objetivo": "Confirmar que los niveles dinámicos de riesgo interno (Elevated, Moderate, Minor) apliquen controles preventivos efectivos en DLP y Acceso Condicional.", "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Adaptive protection", "procedimiento": ["Verificar el conteo diario de perfiles asignados a niveles Elevated, Moderate y Minor bajo seudonimización.", "Comprobar que las políticas DLP asociadas a Insider risk level for Adaptive Protection estén activas en Exchange, Teams y Devices.", "Confirmar que Advanced classification scanning and protection esté operativo para Endpoint DLP."], "rolResponsable": "Data Security Analyst", "funcionNIST": "PR", "subcategoriaNIST": "PR.DS-02", "mitreTactic": "Exfiltration (TA0010)", "evidenciaAuditable": "Estado activo en el nodo Adaptive protection y conteo diario de bloqueos aplicados.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Perfiles Elevated/Moderate/Minor y prerrequisito de Endpoint DLP verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-adaptive-protection-learn", "pasosDetallados": ["Revisar el resumen diario de usuarios asignados actualmente a los perfiles **Elevated risk level**, **Moderate risk level** y **Minor risk level** (manteniendo seudonimización activa) `[Verificado MS Learn]`.", "Confirmar que las políticas DLP vinculadas a la condición *Insider risk level for Adaptive Protection is* se encuentren en estado `On` (y no estancadas indefinidamente en modo simulación tras finalizar la calibración inicial) sobre Exchange, Teams y Devices `[Verificado MS Learn]`.", "Validar la salud de *Advanced classification scanning and protection* en Endpoint DLP para garantizar efectividad de Adaptive Protection en estaciones Windows y macOS `[Verificado MS Learn]`."], "disparadorAlerta": "Confirmar que los niveles dinámicos de riesgo interno (Elevated, Moderate, Minor) apliquen controles preventivos efectivos en DLP y Acceso Condicional.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-05", "cadencia": "Diaria", "actividad": "Auditoría diaria de cambios administrativos, permisos y accesos a contenido en Purview", "objetivo": "Detectar alteraciones no autorizadas en políticas DLP/MIP/Retención, Role groups o inspecciones indebidas en Content Explorer y DSI.", "consolaRuta": "purview.microsoft.com > Solutions > Audit + security.microsoft.com > Advanced hunting", "procedimiento": ["Consultar eventos administrativos de las últimas 24h sobre políticas Purview, Role groups, Administrative Units y actividades de DSI.", "Conciliar cada cambio de configuración y cada lectura de contenido contra tickets aprobados y elevaciones JIT en PIM.", "Activar playbook AH-04 ante cualquier desactivación de control o lectura sin respaldo formal."], "rolResponsable": "SOC L2 / GRC Security Auditor", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-01", "mitreTactic": "Impair Defenses (T1562)", "evidenciaAuditable": "Bitácora diaria de auditoría sobre OfficeActivity conciliada con ITSM.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Registro automático de actividades administrativas y de DSI en el Unified Audit Log verificado en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/data-security-investigations", "pasosDetallados": ["Ejecutar búsqueda sobre operaciones administrativas de las últimas 24 horas en el *Unified Audit Log*: cambios en membresías de `Role groups`, exclusiones en políticas DLP, degradación o borrado de etiquetas MIP, desactivación de retenciones o accesos de lectura a *Content Explorer* / *Data Security Investigations* `[Verificado MS Learn]`.", "Contrastar cada cambio administrativo con solicitudes aprobadas en ITSM y activaciones legítimas en Entra ID PIM `[Decisión / Propuesta Editorial]`.", "Escalar como incidente grave cualquier acceso administrativo de lectura a contenido sensible sin caso forense o legal respaldatorio `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Detectar alteraciones no autorizadas en políticas DLP/MIP/Retención, Role groups o inspecciones indebidas en Content Explorer y DSI.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-06", "cadencia": "Diaria", "actividad": "Vigilancia de salud de Device onboarding, navegador Edge y conectores de datos", "objetivo": "Prevenir brechas silenciosas de visibilidad sobre estaciones Windows/macOS, sesiones de IA en navegador y conectores multicloud/RRHH.", "consolaRuta": "purview.microsoft.com > Settings > Device onboarding / Data connectors", "procedimiento": ["Validar el volumen de endpoints Windows y macOS reportando activamente en Device onboarding.", "Comprobar estado saludable del conector de RRHH (Insider Risk) y conectores de terceros / Sentinel Data Lake en DSPM.", "Confirmar flujo continuo de telemetría de sitios GenAI desde Microsoft Edge for Business en Activity explorer."], "rolResponsable": "Data Security Engineer", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-09", "mitreTactic": "Impair Defenses (T1562)", "evidenciaAuditable": "Estado Healthy de conectores y conteo de endpoints activos en Device onboarding.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Rutas de Device onboarding y conectores en Settings del nuevo portal verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-portal", "pasosDetallados": ["Verificar en `Settings > Device onboarding` que los dispositivos corporativos Windows y macOS reporten telemetría activa hacia Endpoint DLP e Insider Risk Management `[Verificado MS Learn]`.", "Comprobar el estado saludable de conectores de terceros (HR connector para IRM, conectores SaaS/multicloud e integración con **Sentinel Data Lake** cuando aplique en DSPM) `[Verificado MS Learn]`.", "Confirmar recepción continua de eventos de uso de IA en navegador (Microsoft Edge for Business y extensión Purview en Chrome/Firefox si aplica) en `Activity explorer` `[Verificado MS Learn]`."], "disparadorAlerta": "Prevenir brechas silenciosas de visibilidad sobre estaciones Windows/macOS, sesiones de IA en navegador y conectores multicloud/RRHH.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-07", "cadencia": "Diaria", "actividad": "Control diario FinOps de medidores Pay-As-You-Go, DSI y bloques horarios SCU", "objetivo": "Monitorear el gasto diario de consumo Azure generado por Purview PAYG, investigaciones DSI y capacidad de Security Copilot.", "consolaRuta": "purview.microsoft.com > Usage center + portal.azure.com > Cost Management + Billing", "procedimiento": ["Revisar consumo diario y alertas de presupuesto sobre medidores Purview PAYG (activos no-M365/Fabric, Requests, Text records, Processing units y DSI).", "Confirmar si Proactive AI insights en DSPM/DSI está activo intencionalmente (recordando que refresca y factura cada 24h).", "Programar cualquier escalado de Provisioned SCUs al inicio exacto de la hora para evitar doble facturación en el bloque horario."], "rolResponsable": "FinOps Lead / Purview Platform Administrator", "funcionNIST": "GV", "subcategoriaNIST": "GV.RM-02", "mitreTactic": "Resource Governance", "evidenciaAuditable": "Panel diario de Azure Cost Management dentro del presupuesto asignado.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Reglas de facturación PAYG, refresco de 24h en Proactive AI insights y bloques horarios SCU verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-billing-models", "pasosDetallados": ["Revisar alertas de presupuesto diario en Azure Cost Management filtradas por los recursos y medidores de **Microsoft Purview** (activos protegidos/día, *Requests* de red/IA, *Text records*, *Processing units* y almacenamiento/cómputo de **Data Security Investigations**) `[Verificado MS Learn]`.", "Verificar qué investigaciones en **DSI** permanecen activas y confirmar si el interruptor de *Proactive AI insights* en DSPM está deliberadamente encendido y presupuestado (dado que refresca e incurre en cargos cada 24 horas) `[Verificado MS Learn]`.", "Supervisar la utilización horaria de **Security Compute Units (SCUs)** de Security Copilot en Purview, programando cualquier ajuste de capacidad aprovisionada al inicio exacto de la hora para evitar doble cobro dentro del mismo bloque horario `[Verificado MS Learn]`."], "disparadorAlerta": "Monitorear el gasto diario de consumo Azure generado por Purview PAYG, investigaciones DSI y capacidad de Security Copilot.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-01", "cadencia": "Semanal", "actividad": "Ejecución de Data risk assessments y remediación de oversharing frente a Copilot e IA", "objetivo": "Detectar y corregir permisos excesivos sobre datos sensibles en SharePoint y OneDrive antes de que sean expuestos vía IA generativa.", "consolaRuta": "purview.microsoft.com > Solutions > DSPM > Discover > Data risk assessments", "procedimiento": ["Analizar los resultados semanales de Data risk assessments priorizando sitios con alto volumen de SITs y vínculos Anyone u Organization-wide.", "Aplicar remediaciones guiadas: revocación de vínculos públicos, aplicación de etiquetas de sensibilidad y restricción de acceso.", "Verificar que etiquetas cifradas de alta confidencialidad restrinjan el derecho EXTRACT para impedir resumen no autorizado por Copilot o agentes."], "rolResponsable": "Data Security Engineer + Propietarios de Datos", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Data from Information Repositories (T1213)", "evidenciaAuditable": "Reporte semanal de Data risk assessments con reducción de sitios sobreexpuestos.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Data risk assessments en DSPM y control del derecho EXTRACT para Copilot verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about", "pasosDetallados": ["Revisar los resultados semanales de las evaluaciones predeterminadas y personalizadas de *Data risk assessments* en DSPM, ordenando repositorios por volumen de ítems sensibles y amplitud de permisos de lectura `[Verificado MS Learn]`.", "Ejecutar acciones de remediación integradas sobre los sitios de mayor riesgo: revocar vínculos anónimos/organizacionales excesivos, exigir etiquetado de sensibilidad o coordinar controles de acceso restringido en SharePoint Advanced Management `[Verificado MS Learn]`.", "Validar que los archivos sensibles cifrados que **no** deban ser resumidos por Copilot ni por agentes carezcan del derecho de uso `EXTRACT` para grupos masivos `[Verificado MS Learn]`."], "disparadorAlerta": "Detectar y corregir permisos excesivos sobre datos sensibles en SharePoint y OneDrive antes de que sean expuestos vía IA generativa.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-02", "cadencia": "Semanal", "actividad": "Gestión semanal de Improvement actions y evolución del Compliance Score", "objetivo": "Impulsar el cierre priorizado por riesgo de acciones técnicas y documentales en Microsoft Purview Compliance Manager.", "consolaRuta": "purview.microsoft.com > Solutions > Compliance Manager > Improvement actions", "procedimiento": ["Revisar la evolución semanal del Compliance Score considerando la ventana de 24 horas de actualización automática de controles técnicos.", "Priorizar implementación sobre controles Preventative mandatory (27 puntos) y Preventative discretionary (9 puntos).", "Verificar adjuntos probatorios cargados por Contributors antes de aprobar el resultado de prueba como Assessor."], "rolResponsable": "GRC & Compliance Manager", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-03", "mitreTactic": "Governance & Compliance Assurance", "evidenciaAuditable": "Exportación semanal de Improvement actions y puntaje por evaluación.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Ponderación exacta 27/9/3/1 puntos y refresco de 24h verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/compliance-score-calculation", "pasosDetallados": ["Revisar la variación semanal del **Compliance Score** global (recordando que las acciones actualizan automáticamente su estado técnico dentro de las **24 horas** posteriores al cambio en el tenant) `[Verificado MS Learn]`.", "Priorizar el backlog semanal según el peso de riesgo oficial del motor de puntuación: primero acciones **Preventative mandatory (27 puntos)** y **Preventative discretionary (9 puntos)**, seguidas de **Detective / Corrective mandatory (3 puntos)** `[Verificado MS Learn]`.", "Verificar que cada acción manual completada por un *Contributor* incluya evidencia documental adjunta antes de que el *Assessor* marque su estado de prueba como `Passed` `[Verificado MS Learn]`."], "disparadorAlerta": "Impulsar el cierre priorizado por riesgo de acciones técnicas y documentales en Microsoft Purview Compliance Manager.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-03", "cadencia": "Semanal", "actividad": "Gobernanza semanal de inventario y políticas sobre agentes IA (Agent 365, Copilot Studio y Foundry)", "objetivo": "Asegurar que toda instancia nueva de agente IA quede cubierta por políticas DLP, Insider Risk, Communication Compliance y retención.", "consolaRuta": "purview.microsoft.com > Solutions > DSPM > AI observability / Discover > Apps and agents", "procedimiento": ["Conciliar nuevas instancias registradas en AI observability (Agent 365) y Apps and agents (Copilot Studio, Foundry, Entra-registered).", "Incorporar las nuevas instancias de Agent 365 (individualmente o por grupo de seguridad) en políticas de DLP, IRM, Communication Compliance y DLM.", "Revisar detecciones semanales de la plantilla Risky AI usage (IRM) y Prompt shields / Protected materials (Communication Compliance)."], "rolResponsable": "AI Governance Lead / Data Security Engineer", "funcionNIST": "ID", "subcategoriaNIST": "ID.AM-07", "mitreTactic": "Exfiltration Over Web Service (T1567)", "evidenciaAuditable": "Inventario semanal de agentes IA con matriz de cobertura de políticas Purview al 100%.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Inclusión explícita requerida de instancias Agent 365 en DLP/IRM/CommComp/DLM verificada en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/ai-agent-365", "pasosDetallados": ["Conciliar las nuevas instancias detectadas en `DSPM > AI observability` (especialmente **Microsoft Agent 365**) y en `Discover > Apps and agents` (Copilot Studio, Microsoft Foundry, agentes registrados en Entra) `[Verificado MS Learn]`.", "Aunque las instancias de **Agent 365** habilitan automáticamente auditoría, clasificación de datos y evaluaciones de regulaciones IA en Compliance Manager al crearse, incluirlas explícitamente (o mediante grupo de seguridad) en políticas de **DLP**, **Insider Risk Management**, **Communication Compliance** y **Data Lifecycle Management** igual que a un usuario `[Verificado MS Learn]`.", "Revisar alertas de la plantilla *Risky AI usage* (IRM) y detecciones de *Prompt shields / Protected materials* (Communication Compliance) de la última semana `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar que toda instancia nueva de agente IA quede cubierta por políticas DLP, Insider Risk, Communication Compliance y retención.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-04", "cadencia": "Semanal", "actividad": "Auditoría semanal de Role groups, Restricted Administrative Units y activaciones PIM", "objetivo": "Garantizar privilegio mínimo y segregación regional efectiva sobre todas las soluciones soportadas de Purview.", "consolaRuta": "purview.microsoft.com > Settings > Roles and scopes > Role groups + entra.microsoft.com > PIM", "procedimiento": ["Auditar membresías de Role Management, Compliance Administrator, eDiscovery Manager, IRM Investigators, DSI y Content Viewer.", "Confirmar la vinculación correcta de Administrative Units en DLP, IRM, Communication Compliance, DLM, Records, MIP, Audit y eDiscovery.", "Conciliar activaciones JIT de grupos en Entra ID PIM contra casos autorizados."], "rolResponsable": "Identity Governance Lead / Role Management Admin", "funcionNIST": "GV", "subcategoriaNIST": "GV.RR-02", "mitreTactic": "Valid Accounts (T1078)", "evidenciaAuditable": "Reporte semanal exportado de Role groups, Administrative Units y bitácora PIM.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Soluciones soportadas por Administrative Units en Purview verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-admin-units", "pasosDetallados": ["Auditar todos los miembros de *Role groups* de alto privilegio (`Organization Management`, `Compliance Administrator`, `Role Management`, `eDiscovery Manager`, `Insider Risk Management`, `Data Security Investigations` y `Content Explorer Content Viewer`) `[Verificado MS Learn]`.", "Verificar que los administradores regionales o subsidiarios mantengan correctamente asignadas sus **Restricted Administrative Units** en DLP, IRM, Communication Compliance, DLM, Records, MIP, Audit y eDiscovery `[Verificado MS Learn]`.", "Conciliar las activaciones JIT de grupos en Entra ID PIM de los últimos 7 días contra tickets de investigación autorizados `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Garantizar privilegio mínimo y segregación regional efectiva sobre todas las soluciones soportadas de Purview.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-05", "cadencia": "Semanal", "actividad": "Sintonización transversal de falsos positivos entre clasificadores, DLP, IRM y Comm Compliance", "objetivo": "Mantener alta relación señal-ruido en alertas enviadas al SOC y células de investigación.", "consolaRuta": "purview.microsoft.com > Solutions > DSPM > Reports / Data Loss Prevention / Insider Risk", "procedimiento": ["Identificar las reglas DLP y políticas IRM/Communication Compliance con mayor volumen de cierres por falso positivo en los últimos 7 días.", "Ajustar umbrales de confianza de SITs, palabras clave de soporte o exclusiones documentadas junto a los responsables de los Módulos 14, 15, 17 y 18.", "Validar los ajustes en modo simulación antes de promover a bloqueo productivo."], "rolResponsable": "Data Security Engineer + SOC L3", "funcionNIST": "DE", "subcategoriaNIST": "DE.AE-07", "mitreTactic": "Exfiltration (TA0010)", "evidenciaAuditable": "Acta semanal de tuning con comparativa de precisión de alertas.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Práctica operativa consultiva sobre capacidades nativas de simulación Purview.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-policy-design", "pasosDetallados": ["Analizar las reglas DLP y políticas IRM con mayor tasa de descarte (*False positive* / *Benign positive*) durante la semana en curso.", "Ajustar niveles de confianza de *Sensitive Information Types (SITs)*, diccionarios de proximidad o exclusiones de procesos de servicio documentadas (coordinando la modificación detallada con los propietarios de los Módulos `14`, `15`, `17` y `18`).", "Validar toda regla nueva o modificada en modo simulación con *Policy Tips* antes de pasarla a bloqueo productivo `[Verificado MS Learn]`."], "disparadorAlerta": "Mantener alta relación señal-ruido en alertas enviadas al SOC y células de investigación.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-06", "cadencia": "Semanal", "actividad": "Revisión semanal de investigaciones activas y huella de almacenamiento en DSI", "objetivo": "Asegurar avance oportuno de investigaciones abiertas en Data Security Investigations y depurar datos cerrados facturables por GB/mes.", "consolaRuta": "purview.microsoft.com > Solutions > Data Security Investigations", "procedimiento": ["Revisar el estado de categorización IA, hallazgos críticos y mitigaciones pendientes en cada investigación activa de DSI.", "Cerrar y depurar investigaciones concluidas que no requieran hold legal en eDiscovery para liberar cargos de almacenamiento mensual.", "Auditar en el Unified Audit Log todas las actividades registradas por investigadores en DSI."], "rolResponsable": "CSIRT Lead + FinOps", "funcionNIST": "RS", "subcategoriaNIST": "RS.AN-03", "mitreTactic": "Automated Exfiltration (T1020)", "evidenciaAuditable": "Inventario semanal de investigaciones DSI y volumen en GB almacenados.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Medidor GB/mes de almacenamiento y auditoría de DSI verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/data-security-investigations", "pasosDetallados": ["Revisar el estado de cada investigación activa en DSI (alcance de datos indexados, categorización IA completada y hallazgos críticos pendientes de mitigación) `[Verificado MS Learn]`.", "Cerrar y depurar contenedores de investigaciones concluidas que no requieran preservación legal en **eDiscovery** (Módulo 20), liberando consumo mensual del medidor *Data storage (GB/month)* `[Verificado MS Learn]`.", "Auditar en el *Unified Audit Log* todas las consultas y acciones ejecutadas dentro de DSI durante la semana `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar avance oportuno de investigaciones abiertas en Data Security Investigations y depurar datos cerrados facturables por GB/mes.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-01", "cadencia": "Mensual", "actividad": "Auditoría mensual de cobertura de descubrimiento y etiquetado en DSPM Asset Explorer", "objetivo": "Reducir mensualmente el porcentaje de activos sensibles sin etiqueta de protección en M365 y fuentes multicloud conectadas.", "consolaRuta": "purview.microsoft.com > Solutions > DSPM > Asset explorer / Reports", "procedimiento": ["Analizar en Asset explorer (pestañas Standard y Agent) la proporción de datos sensibles sin etiqueta por carga de trabajo.", "Confirmar habilitación de etiquetas de sensibilidad para archivos Office en SharePoint y OneDrive.", "Planificar políticas de auto-etiquetado (Módulo 14) o escaneos acotados de On-demand classification sobre repositorios descubiertos."], "rolResponsable": "Data Security Architect", "funcionNIST": "ID", "subcategoriaNIST": "ID.AM-07", "mitreTactic": "Data from Cloud Storage (T1530)", "evidenciaAuditable": "Reporte mensual de cobertura de clasificación y etiquetado desde DSPM.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Asset explorer y requisito de etiquetas en SharePoint/OneDrive para Copilot verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about", "pasosDetallados": ["Inspeccionar en `DSPM > Asset explorer` (pestaña *Standard* y pestaña *Agent*) el volumen de activos con información sensible aún sin etiquetar (*Unlabeled sensitive data*) en SharePoint, OneDrive, Exchange y fuentes no-M365 integradas `[Verificado MS Learn]`.", "Verificar que las etiquetas de sensibilidad estén habilitadas para archivos de Office en SharePoint y OneDrive (requisito esencial para que Copilot y agentes procesen archivos cifrados más allá de apps locales de escritorio) `[Verificado MS Learn]`.", "Derivar brechas de cobertura hacia políticas de auto-etiquetado o campañas de *On-demand classification* acotadas presupuestariamente `[Verificado MS Learn]`."], "disparadorAlerta": "Reducir mensualmente el porcentaje de activos sensibles sin etiqueta de protección en M365 y fuentes multicloud conectadas.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-02", "cadencia": "Mensual", "actividad": "Comité mensual de cumplimiento regulatorio en Compliance Manager (NIST CSF 2.0, DORA, NIS2, EU AI Act)", "objetivo": "Supervisar el estado de evaluaciones normativas multicloud y la vigencia de evidencias de controles propios y compartidos.", "consolaRuta": "purview.microsoft.com > Solutions > Compliance Manager > Assessments", "procedimiento": ["Evaluar el puntaje de Microsoft-managed controls, Your controls y Shared controls en Microsoft Data Protection Baseline y plantillas Premium activas.", "Procesar actualizaciones regulatorias publicadas por Microsoft sobre evaluaciones en curso.", "Exportar reportes ejecutivos para el comité GRC recordando que el puntaje guía priorización de riesgo y no sustituye validación jurídica."], "rolResponsable": "GRC & Compliance Officer / DPO / CISO", "funcionNIST": "GV", "subcategoriaNIST": "GV.OC-03", "mitreTactic": "Governance & Assurance", "evidenciaAuditable": "Reportes mensuales exportados por evaluación desde Compliance Manager.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tipos de control, 3 plantillas Premium incluidas en E5 y nota legal oficial verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/compliance-manager", "pasosDetallados": ["Revisar el puntaje desglosado entre *Microsoft-managed controls*, *Your controls* y *Shared controls* en la plantilla base **Microsoft Data Protection Baseline** y en las plantillas regulatorias activas (aprovechando las **3 plantillas Premium gratuitas** incluidas en M365 E5 / Purview Suite, ej. **NIST CSF 2.0**, **ISO/IEC 27001:2022**, **EU AI Act**, **DORA** o **NIS2**) `[Verificado MS Learn]`.", "Revisar actualizaciones normativas notificadas por Microsoft sobre las plantillas activas y reasignar nuevos controles derivados.", "Validar que el equipo legal y el CISO comprendan explícitamente el aviso oficial de Microsoft: el puntaje de Compliance Manager mide progreso de implementación pero **no constituye una garantía jurídica automática de cumplimiento** `[Verificado MS Learn]`."], "disparadorAlerta": "Supervisar el estado de evaluaciones normativas multicloud y la vigencia de evidencias de controles propios y compartidos.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-03", "cadencia": "Mensual", "actividad": "Conciliación FinOps mensual de facturación Purview Pay-As-You-Go y optimización de alcance", "objetivo": "Auditar el costo mensual por unidad de consumo en Azure y optimizar el alcance de políticas no-M365, Fabric, IA y SCUs.", "consolaRuta": "portal.azure.com > Cost Management + Billing + purview.microsoft.com > Usage center", "procedimiento": ["Desglosar cargos mensuales por medidor (activos únicos/día en SQL/ADLS/Fabric/AWS, Processing units IRM, Text records, Requests de red/IA, DSI y DGPUs).", "Depurar del alcance de políticas MIP/DLP espacios de trabajo sandbox o no productivos en Microsoft Fabric y nubes externas.", "Ajustar la relación entre Provisioned SCUs y Overage SCUs según la demanda real observada."], "rolResponsable": "FinOps Lead + Data Security Architect + CDO", "funcionNIST": "GV", "subcategoriaNIST": "GV.RM-02", "mitreTactic": "Financial & Resource Governance", "evidenciaAuditable": "Acta mensual de conciliación FinOps Purview y ajustes de scoping aplicados.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Regla de conteo único de activos en alcance y unidades de medida PAYG verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-billing-models", "pasosDetallados": ["Desglosar el cargo mensual por medidor PAYG: activos protegidos en Azure SQL/ADLS/Blob/Fabric/AWS (recordando que todo activo dentro del *scope* de una política cuenta diariamente aunque no dispare condición, pero se cobra una sola vez entre múltiples políticas), *Processing units* de IRM, *Text records* de Communication Compliance, *Requests* de Network Data Security, GB/cómputo de DSI y DGPUs de *Unified Catalog* `[Verificado MS Learn]`.", "Ajustar el alcance (*scoping*) de políticas MIP/DLP sobre espacios de trabajo de **Microsoft Fabric** y bases de datos cloud para excluir entornos efímeros de desarrollo/sandbox sin datos reales `[Decisión / Propuesta Editorial]`.", "Calibrar la dotación de **Provisioned SCUs** frente a **Overage SCUs** para *Security Copilot in Purview* según patrones reales de uso mensual `[Verificado MS Learn]`."], "disparadorAlerta": "Auditar el costo mensual por unidad de consumo en Azure y optimizar el alcance de políticas no-M365, Fabric, IA y SCUs.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-04", "cadencia": "Mensual", "actividad": "Revisión mensual de salud del Data Map y activos gobernados en Unified Catalog (Fabric & Multicloud)", "objetivo": "Asegurar que los activos críticos analíticos y multicloud mantengan curadores asignados, linaje e historial auditado.", "consolaRuta": "purview.microsoft.com > Solutions > Unified Catalog > Health management > Reports / Data Map", "procedimiento": ["Revisar ejecución de escaneos, Data Map history y visibilidad automática Live view sobre Azure y Microsoft Fabric.", "Identificar en Unified Catalog > Health management > Reports productos de datos sensibles sin propietario o con baja calidad.", "Coordinar aplicación de políticas de protección MIP/DLP sobre workspaces críticos de Microsoft Fabric."], "rolResponsable": "CDO Office / Data Governance Administrator", "funcionNIST": "ID", "subcategoriaNIST": "ID.AM-07", "mitreTactic": "Data from Cloud Storage (T1530)", "evidenciaAuditable": "Reporte mensual de Health management en Unified Catalog e historial Data Map history.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Reubicación de Data Estate Insights a Health management > Reports y Live view verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-portal", "pasosDetallados": ["Revisar en `Data Map` la salud de escaneos programados, el historial de cambios en **Data Map history** y la visibilidad en tiempo real mediante **Live view** para suscripciones Azure y **Microsoft Fabric** `[Verificado MS Learn]`.", "Inspeccionar en `Unified Catalog > Health management > Reports` (evolución del antiguo *Data Estate Insights*) activos huérfanos de curador, productos de datos con baja puntuación de calidad o tablas sensibles sin etiqueta de protección heredada `[Verificado MS Learn]`.", "Coordinar con Ingeniería de Seguridad de Datos la aplicación de políticas MIP/DLP sobre workspaces críticos de Fabric/Power BI `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar que los activos críticos analíticos y multicloud mantengan curadores asignados, linaje e historial auditado.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-05", "cadencia": "Mensual", "actividad": "Validación mensual de integración Purview <-> Defender XDR / Sentinel y retención Audit Premium", "objetivo": "Certificar el flujo ininterrumpido de alertas y logs hacia XDR/Sentinel y la vigencia de políticas de retención forense.", "consolaRuta": "security.microsoft.com > Advanced hunting / Sentinel > Data connectors + purview.microsoft.com > Audit", "procedimiento": ["Comprobar fusión normal de alertas DLP/IRM en incidentes XDR y disponibilidad de tablas en Advanced Hunting.", "Verificar en Sentinel la ingesta gratuita de OfficeActivity y el uso del E5 Data Grant (5 MB/usuario/día) para MicrosoftPurviewInformationProtection.", "Validar políticas de retención de Audit Premium (1 año incluido en E5 / 10 años con add-on) incluyendo registros de Copilot y Agent 365."], "rolResponsable": "SOC L3 Engineer + Purview Audit Admin", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-01", "mitreTactic": "Disable or Modify Cloud Logs (T1562.008)", "evidenciaAuditable": "Consulta KQL mensual de verificación de ingesta y captura de políticas Audit Retention.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Cobertura de OfficeActivity y Purview Information Protection en Sentinel verificada en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/billing", "pasosDetallados": ["Verificar en Defender XDR que las alertas de DLP e Insider Risk sigan correlacionándose en incidentes y que las consultas de *Advanced Hunting* devuelvan eventos vigentes de datos e IA (`CloudAppEvents`, `DataSecurityEvents` / `AlertInfo`) `[Verificado MS Learn]`.", "Validar en **Microsoft Sentinel** la ingesta gratuita de `OfficeActivity` y el aprovechamiento del **Microsoft 365 E5 Data Grant (hasta 5 MB/usuario/día)** para logs de *Microsoft Purview Information Protection* `[Verificado MS Learn]`.", "Auditar las políticas de retención de **Purview Audit (Premium)** (1 año incluido en E5 para usuarios licenciados y políticas de hasta 10 años donde exista requerimiento normativo y add-on) asegurando captura de eventos de Copilot y **Agent 365** (`Módulo 19`) `[Verificado MS Learn]`."], "disparadorAlerta": "Certificar el flujo ininterrumpido de alertas y logs hacia XDR/Sentinel y la vigencia de políticas de retención forense.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-01", "cadencia": "Trimestral", "actividad": "Recertificación Access Reviews de Role groups, Administrative Units y Adaptive Scopes", "objetivo": "Recertificar todos los privilegios Purview (especialmente acceso a contenido y purga) y validar integridad de alcances dinámicos.", "consolaRuta": "entra.microsoft.com > Identity governance > Access reviews + purview.microsoft.com > Settings > Roles and scopes", "procedimiento": ["Completar Access Reviews trimestrales sobre Role Management, Compliance Admin, eDiscovery Manager, IRM Investigators, DSI y Content Viewer.", "Auditar calidad de atributos de Entra ID que gobiernan Administrative Units y Adaptive Scopes.", "Revisar en el eDiscovery moderno la liberación ordenada de holds legales sobre casos definitivamente cerrados."], "rolResponsable": "Identity Governance Lead + DPO", "funcionNIST": "GV", "subcategoriaNIST": "GV.RR-02", "mitreTactic": "Valid Accounts (T1078)", "evidenciaAuditable": "Actas firmadas de Access Reviews trimestrales y reporte de consistencia de Adaptive Scopes.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Integración de Adaptive Scopes con Administrative Units y retiro de eDiscovery clásico verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-admin-units", "pasosDetallados": ["Ejecutar *Access Reviews* trimestrales sobre los grupos de seguridad asignados a `Role Management`, `Compliance Administrator`, `eDiscovery Manager`, `Insider Risk Management Investigators`, `Data Security Investigations` y `Content Explorer Content Viewer` `[Verificado MS Learn]`.", "Verificar que los atributos de directorio de Entra ID (`Department`, `Country`, `CustomAttributes`) que alimentan **Administrative Units** y **Adaptive Scopes** mantengan integridad sin dejar usuarios huérfanos fuera de cobertura de políticas `[Verificado MS Learn]`.", "Confirmar en el entorno moderno de **eDiscovery** que no existan casos cerrados reteniendo *holds* innecesarios tras la migración post agosto de 2025 `[Verificado MS Learn]`."], "disparadorAlerta": "Recertificar todos los privilegios Purview (especialmente acceso a contenido y purga) y validar integridad de alcances dinámicos.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-02", "cadencia": "Trimestral", "actividad": "Comité trimestral de gobernanza de IA y evaluaciones regulatorias IA (EU AI Act / ISO 42001 / NIST AI RMF)", "objetivo": "Evaluar el cumplimiento normativo y los controles de seguridad de datos sobre todos los sistemas y agentes de IA corporativos.", "consolaRuta": "purview.microsoft.com > Solutions > Compliance Manager / Solutions > DSPM > AI observability", "procedimiento": ["Evaluar el progreso trimestral en las plantillas EU Artificial Intelligence Act, ISO/IEC 42001:2023 y NIST AI RMF en Compliance Manager.", "Actualizar el catálogo de aplicaciones GenAI externas detectadas definiendo controles inline de bloqueo o advertencia en DLP.", "Auditar las políticas de retención y borrado en Data Lifecycle Management para prompts y respuestas de Copilot y agentes."], "rolResponsable": "AI Governance Committee (CISO + CDO + DPO + Legal)", "funcionNIST": "GV", "subcategoriaNIST": "GV.OC-03", "mitreTactic": "Exfiltration Over Web Service (T1567)", "evidenciaAuditable": "Paquete trimestral de evaluación regulatoria de IA exportado desde Compliance Manager.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Plantillas EU AI Act, ISO/IEC 42001 y NIST AI RMF en Compliance Manager verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/compliance-manager-regulations-list", "pasosDetallados": ["Evaluar en **Compliance Manager** el avance trimestral de las plantillas regulatorias de IA (**EU Artificial Intelligence Act**, **ISO/IEC 42001:2023**, **NIST AI Risk Management Framework**) incluyendo el inventario automático de instancias de **Agent 365** `[Verificado MS Learn]`.", "Revisar el catálogo de sitios GenAI externos detectados por navegador/red, actualizando la clasificación entre aplicaciones IA permitidas con controles DLP inline frente a aplicaciones bloqueadas `[Verificado MS Learn]`.", "Verificar políticas de retención y eliminación en **Data Lifecycle Management** específicas para prompts y respuestas de Copilot, agentes y aplicaciones IA conectadas `[Verificado MS Learn]`."], "disparadorAlerta": "Evaluar el cumplimiento normativo y los controles de seguridad de datos sobre todos los sistemas y agentes de IA corporativos.", "tipoAccion": "Periódica Programada"}, {"codigo": "SM-01", "cadencia": "Semestral", "actividad": "Simulacro semestral integrado de brecha y fuga de datos (Defender XDR + Adaptive Protection + DSI + Legal)", "objetivo": "Validar tiempos de contención, investigación con IA en DSI, propagación PIM de 2h y notificación regulatoria en menos de 72h.", "consolaRuta": "security.microsoft.com + purview.microsoft.com > Solutions > Data Security Investigations", "procedimiento": ["Simular con datos sintéticos una alerta combinada XDR + DLP/IRM verificando elevación automática en Adaptive Protection.", "Escalar hacia una investigación acotada en DSI probando Vector search, Categorization, Examination y flujo segregado de Soft Purge.", "Medir impacto práctico de la ventana de hasta 2 horas de propagación PIM en Purview y actualizar procedimientos de guardia."], "rolResponsable": "CISO + SOC Manager + CSIRT + DPO", "funcionNIST": "RS", "subcategoriaNIST": "RS.MA-01", "mitreTactic": "Exfiltration (TA0010)", "evidenciaAuditable": "Informe ejecutivo de simulacro semestral con métricas de respuesta y plan de mejora.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Ejercicio consultivo construido sobre capacidades verificadas de XDR, Adaptive Protection, DSI y PIM.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/data-security-investigations", "pasosDetallados": ["Simular sobre datos sintéticos de prueba una exfiltración detectada en Endpoint DLP / Insider Risk correlacionada en **Microsoft Defender XDR**, midiendo el tiempo de elevación automática en **Adaptive Protection** `[Verificado MS Learn]`.", "Escalar el incidente hacia **Data Security Investigations (DSI)** en un contenedor de prueba acotado, ejecutando *Vector search*, *AI Categorization* y *Examination* para identificar PII y secretos simulados dentro del plazo legal de notificación (ej. 72h GDPR) `[Verificado MS Learn]`.", "Practicar el flujo segregado de autorización legal y ejecución de **Soft Purge** sobre un ítem de prueba, teniendo presente el tiempo de hasta **2 horas de propagación PIM** para roles Purview activados bajo demanda `[Verificado MS Learn]`."], "disparadorAlerta": "Validar tiempos de contención, investigación con IA en DSI, propagación PIM de 2h y notificación regulatoria en menos de 72h.", "tipoAccion": "Periódica Programada"}, {"codigo": "A-01", "cadencia": "Anual", "actividad": "Revisión anual de taxonomía maestra de sensibilidad, portafolio regulatorio y soberanía (Módulo 21)", "objetivo": "Alinear anualmente la taxonomía de clasificación, las plantillas de Compliance Manager y los controles de soberanía criptográfica.", "consolaRuta": "purview.microsoft.com > Information Protection / Compliance Manager + admin.microsoft.com", "procedimiento": ["Recalibrar la jerarquía corporativa de etiquetas de sensibilidad, SITs personalizados y tabla maestra de retención.", "Revalidar la selección de las 3 plantillas Premium gratuitas incluidas en E5 / Purview Suite y licencias adicionales en Compliance Manager.", "Auditar junto al Módulo 21 el estado anual de Customer Lockbox, disponibilidad de claves en Customer Key y políticas M365 PAM."], "rolResponsable": "CISO + CDO + General Counsel + DPO", "funcionNIST": "GV", "subcategoriaNIST": "GV.RM-01", "mitreTactic": "Governance & Data Sovereignty", "evidenciaAuditable": "Acta anual de gobierno de datos y soberanía aprobada por dirección ejecutiva.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Cadencia anual de gobierno alineada a ISO 27001 y NIST CSF 2.0.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/compliance-manager-regulations", "pasosDetallados": ["Revisar anualmente la taxonomía corporativa de etiquetas de sensibilidad, *Sensitive Information Types* personalizados y políticas de retención frente a cambios de negocio, fusiones o nuevas leyes sectoriales.", "Revalidar la asignación de las **3 plantillas regulatorias Premium incluidas** en M365 E5 / Purview Suite y licencias adicionales requeridas en Compliance Manager `[Verificado MS Learn]`.", "Auditar junto al responsable del **Módulo `21`** el cumplimiento anual de **Customer Lockbox**, rotación/salud de claves en **Customer Key** y políticas de **Microsoft 365 Privileged Access Management** `[Verificado MS Learn]`."], "disparadorAlerta": "Alinear anualmente la taxonomía de clasificación, las plantillas de Compliance Manager y los controles de soberanía criptográfica.", "tipoAccion": "Periódica Programada"}, {"codigo": "AH-01", "cadencia": "Ad-Hoc", "actividad": "Playbook DSI-01: Investigación con IA y mitigación ante brecha o exfiltración confirmada de datos", "objetivo": "Determinar rápidamente qué secretos, PII o propiedad intelectual fueron comprometidos y purgar copias expuestas con autorización legal.", "consolaRuta": "security.microsoft.com > Incidents -> purview.microsoft.com > Data Security Investigations", "procedimiento": ["Contener identidad/host en Defender XDR y verificar elevación a Elevated risk level en Adaptive Protection.", "Abrir investigación en DSI desde el incidente XDR o caso IRM incorporando Audit search y evidencia de Endpoint DLP tras estimar volumen PAYG.", "Ejecutar Categorization con IA, Vector search semántico y Examination para identificar credenciales, PII y activos críticos expuestos.", "Con autorización escrita de Legal/CISO y rol segregado, aplicar Soft Purge o Hard Purge y entregar inventario exacto al DPO."], "rolResponsable": "CSIRT / DSI Investigator + Mitigation Admin + DPO", "funcionNIST": "RS", "subcategoriaNIST": "RS.AN-03", "mitreTactic": "Collection (TA0009) / Exfiltration (TA0010)", "evidenciaAuditable": "Reporte de Examination en DSI, registros en Unified Audit Log y acta legal de mitigación/notificación.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Capacidades Vector search, Categorization, Examination y Soft/Hard Purge de DSI verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/data-security-investigations", "pasosDetallados": ["**Contención inicial convergente:** Aislar endpoints afectados o revocar sesiones en Defender XDR / Entra ID y verificar que el usuario involucrado quede elevado a **Elevated risk level** en **Adaptive Protection** para bloquear compartición externa, copia a USB, impresión y subida a nubes no autorizadas `[Verificado MS Learn]`.", "**Apertura acotada en Data Security Investigations (DSI):** Crear la investigación directamente desde el incidente XDR, el caso IRM o el hallazgo DSPM, sumando evidencia del *Unified Audit Log* (*Audit search*) y archivos capturados por *Endpoint DLP evidence collection* tras validar estimación preliminar de volumen PAYG `[Verificado MS Learn]`.", "**Análisis profundo con IA generativa:** Ejecutar **Categorization** (*Standard* o *Advanced AI*) para agrupar activos por severidad de riesgo, **Vector search** semántico para hallar documentación relacionada sin depender de palabras clave exactas, y **Examination** para descubrir credenciales expuestas, secretos de red, código fuente o datos personales sujetos a notificación regulatoria `[Verificado MS Learn]`.", "**Mitigación y purgado autorizado:** Con aprobación escrita de Legal/CISO y rol segregado de mitigación, ejecutar **Soft Purge** o **Hard Purge** sobre copias indebidas distribuidas internamente, reforzar etiquetas de cifrado y entregar al DPO el inventario exacto de PII afectada `[Verificado MS Learn]`."], "disparadorAlerta": "Incidente crítico en **Microsoft Defender XDR** con acceso/descarga de repositorios sensibles, caso grave de fuga en **Insider Risk Management** o hallazgo crítico de exfiltración en **DSPM** `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-02", "cadencia": "Ad-Hoc", "actividad": "Playbook AI-01: Contención de fuga de datos o abuso en Copilot, Foundry o Microsoft Agent 365", "objetivo": "Cortar la exposición de información sensible a través de prompts/respuestas o agentes autónomos y purgar interacciones comprometidas.", "consolaRuta": "purview.microsoft.com > Solutions > DSPM > AI observability / eDiscovery", "procedimiento": ["Identificar en AI observability y Activity explorer > AI activities el usuario o Agent user ID y los archivos fuente accedidos.", "Restringir permisos de compartición en origen, aplicar etiqueta cifrada sin derecho EXTRACT para el agente/grupo o suspender la instancia en Agent 365.", "Abrir caso en Purview eDiscovery moderno filtrando Type = Copilot activity para localizar y eliminar interacciones almacenadas con datos críticos."], "rolResponsable": "AI Governance Lead + Data Security Engineer + SOC L2", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Data from Information Repositories (T1213)", "evidenciaAuditable": "Trazas de auditoría de Agent 365 / Copilot, revocación de permisos/EXTRACT y acta de eliminación en eDiscovery.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Condición Type > Copilot activity en eDiscovery y requisito EXTRACT verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/ai-agent-365", "pasosDetallados": ["**Identificación de alcance:** Inspeccionar en `DSPM > AI observability` y `Activity explorer > AI activities` la identidad humana o el `Agent user ID` de la instancia de **Agent 365** / agente Copilot Studio involucrado, identificando los archivos fuente referenciados y sus etiquetas de sensibilidad `[Verificado MS Learn]`.", "**Corte de exposición en origen:** Si la fuga proviene de *oversharing* en SharePoint/OneDrive, restringir permisos del sitio/archivo de inmediato y aplicar etiqueta de sensibilidad con cifrado sin otorgar `VIEW`/`EXTRACT` a la instancia del agente ni a grupos amplios `[Verificado MS Learn]`. Si el agente actúa de forma anómala, suspender la instancia en **Microsoft Agent 365** / Entra ID (`Módulo 22`).", "**Búsqueda y eliminación forense de interacciones IA:** Si se volcaron secretos o datos regulados en prompts/respuestas almacenados en buzones, abrir caso en **Purview eDiscovery** usando la condición `Type > Copilot activity` para localizar y purgar selectivamente las interacciones comprometidas conforme al procedimiento oficial `[Verificado MS Learn]`."], "disparadorAlerta": "Alerta de política *Risky AI usage* (Insider Risk), detección de *Prompt shields* en Communication Compliance, o hallazgo en `DSPM > AI observability` donde un usuario o instancia de **Agent 365** accede/expone información crítica indebidamente `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-03", "cadencia": "Ad-Hoc", "actividad": "Playbook GOV-01: Despliegue acelerado de evaluación regulatoria ante requerimiento de supervisor", "objetivo": "Instrumentar en menos de 48 horas una evaluación formal auditable en Compliance Manager ante una inspección o nueva norma.", "consolaRuta": "purview.microsoft.com > Solutions > Compliance Manager > Regulations / Assessments", "procedimiento": ["Seleccionar la plantilla regulatoria oficial entre las más de 360 disponibles (o plantilla personalizada) validando cupo de plantillas Premium.", "Crear el Assessment sobre los servicios en alcance y aguardar 24h para el cálculo automático de acciones técnicas ya implementadas.", "Asignar controles pendientes a Contributors/Assessors y habilitar acceso temporal Compliance Manager Reader para el equipo auditor."], "rolResponsable": "GRC & Compliance Manager", "funcionNIST": "GV", "subcategoriaNIST": "GV.OC-03", "mitreTactic": "Regulatory Compliance", "evidenciaAuditable": "Paquete completo de evaluación y evidencias exportado desde Compliance Manager.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Flujo oficial de creación de Assessments y ventana de 24h verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/compliance-manager", "pasosDetallados": ["Localizar la plantilla oficial correspondiente entre las más de **360 regulaciones** de **Compliance Manager** (o crear plantilla personalizada si se trata de una norma local específica) verificando disponibilidad de licencias/plantillas Premium en el contador de regulaciones `[Verificado MS Learn]`.", "Crear la evaluación (*Assessment*) definiendo los servicios en alcance (Microsoft 365, Azure, multicloud o plantilla universal), aprovechando el reconocimiento automático de *Technical actions* ya implementadas en el tenant para obtener línea base en 24 horas `[Verificado MS Learn]`.", "Asignar acciones pendientes con fecha objetivo a dueños técnicos, adjuntar evidencias verificadas y otorgar rol temporal de solo lectura (*Compliance Manager Reader*) al auditor si requiere inspección directa `[Verificado MS Learn]`."], "disparadorAlerta": "Entrada en vigor de una nueva exigencia sectorial, requerimiento de ente regulador (ej. supervisión bancaria DORA, autoridad NIS2 o auditoría de sistemas IA bajo EU AI Act) o due diligence corporativo `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-04", "cadencia": "Ad-Hoc", "actividad": "Playbook SEC-01: Respuesta ante compromiso o abuso administrativo dentro de Microsoft Purview", "objetivo": "Revocar acceso privilegiado abusivo, auditar lecturas o debilitamiento de políticas y restaurar el estado íntegro de Purview.", "consolaRuta": "entra.microsoft.com > Users / PIM + purview.microsoft.com > Settings > Roles and scopes / Audit", "procedimiento": ["Revocar sesiones en Entra ID, desactivar PIM y remover inmediatamente al actor de los Role groups en Purview.", "Extraer en OfficeActivity / Audit Premium todas las operaciones del actor (cambios DLP/MIP/Retención, búsquedas eDiscovery y actividades en DSI).", "Restaurar políticas modificadas, verificar Preservation Lock en políticas regulatorias y notificar al DPO si hubo lectura no autorizada de datos."], "rolResponsable": "SOC Incident Commander + Role Management Admin + DPO", "funcionNIST": "RC", "subcategoriaNIST": "RC.RP-05", "mitreTactic": "Impair Defenses (T1562) / Account Manipulation (T1098)", "evidenciaAuditable": "Extracción forense de OfficeActivity y acta de restauración de políticas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Trazabilidad en Unified Audit Log y gestión de Role groups verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-permissions", "pasosDetallados": ["Revocar sesiones en Microsoft Entra ID, desactivar membresías elegibles/activas en PIM y remover inmediatamente al actor del *Role group* en `Settings > Roles and scopes` `[Verificado MS Learn]`.", "Extraer desde `OfficeActivity` / **Audit (Premium)** todas las operaciones realizadas por el administrador durante la ventana de exposición (incluyendo consultas de búsqueda, descargas, cambios de políticas y actividades registradas en *Data Security Investigations activities*) `[Verificado MS Learn]`.", "Revertir las políticas alteradas, validar que las retenciones críticas cuenten con **Preservation Lock** cuando aplique (`Módulo 16`) y notificar al DPO si hubo acceso indebido a contenido personal o confidencial `[Verificado MS Learn]`."], "disparadorAlerta": "Detección de desactivación no autorizada de políticas DLP/IRM/Retención, alteración de *Role groups* o *Administrative Units*, o inspección no justificada de documentos en *Content Explorer* / *DSI* `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-05", "cadencia": "Ad-Hoc", "actividad": "Playbook FIN-01: Contención inmediata de desvío presupuestario en medidores Pay-As-You-Go", "objetivo": "Frenar picos anómalos de facturación Azure en medidores Purview PAYG sin degradar la protección base de Microsoft 365 E5.", "consolaRuta": "portal.azure.com > Cost Management + purview.microsoft.com > Usage center", "procedimiento": ["Aislar en Azure Cost Management el medidor exacto en desvío (activos no-M365/Fabric en alcance, Proactive AI insights en DSI, Network Data Security o SCUs).", "Restringir el scope de la política no-M365 a repositorios críticos etiquetados, desactivar Proactive AI insights si fue encendido por error o fijar tope de Overage SCUs.", "Registrar lección aprendida en el comité de cambios previo a futuros despliegues multicloud."], "rolResponsable": "FinOps Lead + Purview Platform Admin", "funcionNIST": "GV", "subcategoriaNIST": "GV.RM-02", "mitreTactic": "Resource & Cost Control", "evidenciaAuditable": "Alerta Azure atendida, cambio de scope auditado y normalización de curva de gasto.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Comportamiento de medidores PAYG y Overage SCUs verificado en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-billing-models", "pasosDetallados": ["Identificar en Azure Cost Management el medidor exacto causante del desvío (ej. política DLP/MIP asignada por error a miles de tablas/workspaces no-M365 o Fabric, bucle de *Proactive AI insights* en DSI, escaneo masivo de *On-demand classification*, alto tráfico en *Network Data Security* o consumo de *Overage SCUs*) `[Verificado MS Learn]`.", "Acotar inmediatamente el alcance (*scope*) de la política no-M365 a los contenedores productivos etiquetados como críticos, pausar *Proactive AI insights* si no es requerido 24/7 o ajustar el tope máximo de *Overage SCUs* sin afectar las políticas M365 cubiertas por licencia E5 por usuario `[Verificado MS Learn]`.", "Documentar causa raíz y actualizar la lista de verificación previa al despliegue de cualquier política con alcance multicloud o IA externa `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Alerta de umbral superado (> 80% o pico diario > 200%) en Azure Cost Management sobre medidores de Microsoft Purview `[Verificado MS Learn]` `[Decisión / Propuesta Editorial]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}], "consultasKQLyVerificacion": [{"nombre": "Auditoría de cambios críticos en políticas DLP, etiquetas, retención y Role groups", "plataforma": "Microsoft Sentinel / Log Analytics", "tablaPrincipal": "OfficeActivity", "consulta": "OfficeActivity\n| where TimeGenerated > ago(24h)\n| where RecordType in (\"ComplianceDLPSharePoint\", \"ComplianceDLPExchange\", \"ExchangeAdmin\", \"SecurityComplianceCenterEOPCmdlet\", \"MipLabel\") or Operation has_any (\"DlpCompliancePolicy\", \"DlpComplianceRule\", \"RetentionCompliancePolicy\", \"RoleGroup\", \"AdministrativeUnit\", \"InsiderRisk\", \"SensitivityLabel\")\n| where Operation has_any (\"New-\", \"Set-\", \"Remove-\", \"Add-RoleGroupMember\", \"Remove-RoleGroupMember\", \"Disable-\")\n| project TimeGenerated, UserId, Operation, RecordType, ClientIP, ResultStatus, Parameters\n| order by TimeGenerated desc", "proposito": "Detectar modificaciones administrativas sobre políticas y permisos de Purview aprovechando la ingesta gratuita de OfficeActivity en Sentinel.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Correlación XDR de usuarios con alertas simultáneas en Purview (DLP/IRM) y amenazas externas", "plataforma": "Microsoft Defender XDR Advanced Hunting", "tablaPrincipal": "AlertInfo, AlertEvidence", "consulta": "let PurviewAlerts = AlertInfo\n    | where Timestamp > ago(7d)\n    | where ServiceSource in (\"Microsoft Purview Data Loss Prevention\", \"Microsoft Purview Insider Risk Management\", \"Microsoft Data Loss Prevention\")\n    | join kind=inner (AlertEvidence | where EntityType == \"User\") on AlertId\n    | summarize PurviewAlertCount = dcount(AlertId), PurviewTitles = make_set(Title, 5) by AccountUpn;\nAlertInfo\n| where Timestamp > ago(7d)\n| where ServiceSource !in (\"Microsoft Purview Data Loss Prevention\", \"Microsoft Purview Insider Risk Management\", \"Microsoft Data Loss Prevention\")\n| join kind=inner (AlertEvidence | where EntityType == \"User\") on AlertId\n| summarize ThreatAlertCount = dcount(AlertId), ThreatSources = make_set(ServiceSource, 5) by AccountUpn\n| join kind=inner PurviewAlerts on AccountUpn\n| order by PurviewAlertCount desc, ThreatAlertCount desc", "proposito": "Identificar cuentas donde confluyen señales de exfiltración de datos en Purview con alertas de compromiso de identidad o endpoint en Defender XDR.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Observabilidad de volumen y aplicaciones en interacciones de Copilot y agentes IA", "plataforma": "Microsoft Defender XDR / Sentinel", "tablaPrincipal": "CloudAppEvents", "consulta": "CloudAppEvents\n| where Timestamp > ago(7d)\n| where ActionType has_any (\"CopilotInteraction\", \"Agent\", \"AIPrompt\") or Application has \"Copilot\"\n| summarize TotalInteractions = count(), DistinctApps = make_set(Application, 10), LastActivityUTC = max(Timestamp) by AccountDisplayName, AccountId\n| order by TotalInteractions desc", "proposito": "Monitorear adopción y picos anómalos de interacciones con copilotos y agentes registrados en la telemetría unificada.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Control Periódico de Salud, Auditoría y KPIs"}, {"nombre": "Detección de creación de vínculos anónimos o compartición amplia (Oversharing)", "plataforma": "Microsoft Sentinel / Log Analytics", "tablaPrincipal": "OfficeActivity", "consulta": "OfficeActivity\n| where TimeGenerated > ago(7d) and OfficeWorkload in (\"SharePoint\", \"OneDrive\")\n| where Operation in (\"AnonymousLinkCreated\", \"AnonymousLinkUpdated\", \"SharingInvitationCreated\", \"CompanyLinkCreated\")\n| summarize LinksCreated = count(), SampleUrls = make_set(OfficeObjectId, 5), LastShareUTC = max(TimeGenerated) by UserId, Operation, Site_Url\n| order by LinksCreated desc", "proposito": "Complementar Data risk assessments de DSPM detectando en tiempo casi real nuevos vínculos Anyone u organizacionales que expongan datos a Copilot.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Monitoreo de aplicación y degradación de etiquetas en Purview Information Protection", "plataforma": "Microsoft Sentinel", "tablaPrincipal": "MicrosoftPurviewInformationProtection", "consulta": "MicrosoftPurviewInformationProtection\n| where TimeGenerated > ago(7d)\n| summarize EventsCount = count(), UniqueUsers = dcount(UserId), DowngradesOrRemovals = countif(Activity has_any (\"Downgrade\", \"RemoveLabel\")) by Activity\n| order by EventsCount desc", "proposito": "Auditar el uso de etiquetas de sensibilidad y detectar degradaciones de clasificación ingeridas bajo el beneficio E5 Data Grant de Sentinel.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Auditoría de búsquedas, vistas previas y purgas en eDiscovery y Data Security Investigations", "plataforma": "Microsoft Sentinel / Log Analytics", "tablaPrincipal": "OfficeActivity", "consulta": "OfficeActivity\n| where TimeGenerated > ago(7d)\n| where Operation has_any (\"SearchCreated\", \"SearchExported\", \"Preview\", \"Purge\", \"Investigation\", \"ContentExplorer\")\n| project TimeGenerated, UserId, Operation, RecordType, ClientIP, ObjectId\n| order by TimeGenerated desc", "proposito": "Garantizar trazabilidad inmutable sobre quién inspecciona, exporta o purga contenido sensible dentro de Purview.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Extracción auditable de miembros de Role Groups críticos en Security & Compliance PowerShell", "plataforma": "Security & Compliance PowerShell (Connect-IPPSSession)", "tablaPrincipal": "Get-RoleGroup / Get-RoleGroupMember", "consulta": "Connect-IPPSSession -ShowBanner:$false\n$groups = @(\"Organization Management\",\"Compliance Administrator\",\"Data Loss Prevention\",\"Insider Risk Management\",\"Insider Risk Management Investigators\",\"eDiscovery Manager\",\"Content Explorer Content Viewer\")\n$report = foreach ($g in $groups) { $m = Get-RoleGroupMember -Identity $g -ErrorAction SilentlyContinue; [PSCustomObject]@{ RoleGroup = $g; Count = ($m | Measure-Object).Count; Members = ($m.Name -join \"; \") } }\n$report | Export-Csv -Path \".\\Purview_RoleGroups_Audit.csv\" -NoTypeInformation -Encoding UTF8", "proposito": "Generar evidencia semanal y trimestral de membresías efectivas en Role groups críticos de Microsoft Purview.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Validación de Configuración y Postura"}], "kpisYMetricas": [{"id": "KPI-01", "nombre": "Cobertura de etiquetado de sensibilidad sobre activos con datos sensibles", "definicion": "Porcentaje de archivos y activos con tipos de información sensible detectados en DSPM Asset Explorer que cuentan con etiqueta de sensibilidad aplicada.", "formula": "(Activos sensibles con etiqueta aplicada / Total activos con SITs en DSPM Asset Explorer) * 100", "metaSugerida": ">= 90 % en repositorios críticos M365 y Fabric", "frecuencia": "Mensual", "audiencia": "CISO / Chief Data Officer", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Medido sobre DSPM Asset Explorer; el umbral >= 90% es objetivo consultivo."}, {"id": "KPI-02", "nombre": "Índice de sitios con oversharing crítico expuestos a IA", "definicion": "Porcentaje de sitios SharePoint y cuentas OneDrive con datos sensibles que mantienen vínculos Anyone u Organization-wide sin remediación.", "formula": "(Sitios con datos sensibles y vínculos abiertos en Data risk assessments / Total sitios con datos sensibles) * 100", "metaSugerida": "< 2 % (0 vínculos Anyone en sitios Highly Confidential)", "frecuencia": "Semanal", "audiencia": "CISO / AI Governance Committee", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Meta consultiva clave para preparación y operación segura de Microsoft 365 Copilot y agentes."}, {"id": "KPI-03", "nombre": "Cobertura de políticas Purview sobre agentes IA activos", "definicion": "Porcentaje de instancias activas en AI observability (Agent 365, Copilot Studio y Foundry) incluidas en políticas DLP, IRM y retención DLM.", "formula": "(Agentes activos cubiertos por políticas DLP + IRM + DLM / Total agentes activos últimos 30 días en AI observability) * 100", "metaSugerida": "100 %", "frecuencia": "Semanal", "audiencia": "AI Governance Lead / CISO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Basado en el requisito oficial de incluir instancias de agentes explícitamente en políticas DLP/IRM/DLM."}, {"id": "KPI-04", "nombre": "Compliance Score sobre controles gestionados por el cliente", "definicion": "Porcentaje de puntos obtenidos en Your controls y Shared controls dentro de las evaluaciones regulatorias activas en Compliance Manager.", "formula": "(Puntos logrados por el cliente en evaluaciones activas / Total puntos posibles del cliente) * 100", "metaSugerida": ">= 85 % (100 % en controles Preventative mandatory de 27 puntos)", "frecuencia": "Mensual", "audiencia": "GRC / DPO / Comité de Auditoría", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "El motor de puntaje 27/9/3/1 es oficial en MS Learn; el umbral >= 85% es meta consultiva."}, {"id": "KPI-05", "nombre": "Tiempo medio de triaje (MTTA) en incidentes convergentes Datos + XDR", "definicion": "Tiempo promedio desde la creación de un incidente XDR con alertas Purview DLP o Insider Risk de severidad High hasta la primera acción del analista.", "formula": "Avg(Timestamp primera acción - Timestamp creación incidente XDR con alerta Purview High)", "metaSugerida": "<= 30 minutos (High) / <= 4 horas (Medium)", "frecuencia": "Diaria / Semanal", "audiencia": "SOC Manager / CSIRT Lead", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "SLA interno consultivo para operación convergente SOC + Data Security."}, {"id": "KPI-06", "nombre": "Efectividad operativa de Adaptive Protection y Device Onboarding", "definicion": "Porcentaje de políticas DLP de Adaptive Protection en modo enforcement activo combinada con la tasa de endpoints corporativos incorporados a Purview.", "formula": "(Políticas Adaptive Protection en modo On / Total requeridas) * 100 y % endpoints activos en Device onboarding", "metaSugerida": "100 % políticas activas y >= 98 % endpoints con onboarding saludable", "frecuencia": "Semanal", "audiencia": "Data Security Lead / Endpoint Security", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Meta consultiva para evitar estancamiento indefinido en modo simulación."}, {"id": "KPI-07", "nombre": "Cumplimiento de segregación jurisdiccional y acceso JIT a contenido", "definicion": "Porcentaje de administradores delegados restringidos por Administrative Units y proporción de roles Content Viewer asignados exclusivamente vía PIM JIT.", "formula": "(Admins regionales con AU + Content Viewers solo elegibles PIM / Total cuentas administrativas Purview) * 100", "metaSugerida": "100 % (0 accesos permanentes a texto plano de archivos/prompts)", "frecuencia": "Trimestral", "audiencia": "DPO / Internal Audit", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Meta de control interno de privacidad y mínimo privilegio."}, {"id": "KPI-08", "nombre": "Adherencia presupuestaria FinOps en medidores Purview PAYG y SCUs", "definicion": "Relación mensual entre el consumo real facturado en Azure por medidores Purview PAYG, DSI y SCUs frente al presupuesto aprobado.", "formula": "(Consumo mensual real Azure Purview PAYG + DSI + SCUs / Presupuesto mensual aprobado) * 100", "metaSugerida": "<= 100 % (variación no planificada < 10 %)", "frecuencia": "Semanal / Mensual", "audiencia": "FinOps / CIO / CISO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Meta consultiva de disciplina financiera cloud."}], "mapeoNISTCSF20": [{"funcion": "GOVERN (GV)", "subcategoria": "GV.OC-03", "descripcionResultado": "Los requisitos legales, regulatorios y contractuales sobre seguridad de datos, privacidad e IA se comprenden y gestionan continuamente.", "capacidadMicrosoft": "Microsoft Purview Compliance Manager con más de 360 plantillas regulatorias (NIST CSF 2.0, GDPR, DORA, NIS2, EU AI Act, ISO 27001/42001) y Compliance Score.", "evidenciaAuditoria": "Evaluaciones exportadas desde Compliance Manager mostrando controles de Microsoft, compartidos y del cliente con pruebas aprobadas.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "GOVERN (GV)", "subcategoria": "GV.RR-02", "descripcionResultado": "Los roles, responsabilidades y autoridades de seguridad y privacidad de datos están establecidos y reforzados técnicamente.", "capacidadMicrosoft": "Role groups en purview.microsoft.com, seudonimización nativa, Restricted Administrative Units de Entra ID y elevación JIT mediante PIM.", "evidenciaAuditoria": "Reporte PowerShell de Get-RoleGroup, mapeo de Administrative Units y certificaciones trimestrales de Access Reviews.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.AM-07", "descripcionResultado": "Se mantienen inventarios de datos y metadatos correspondientes clasificados según su sensibilidad.", "capacidadMicrosoft": "DSPM Asset Explorer, clasificadores SIT/entrenables, Data Map con Live view para Azure/Fabric y Unified Catalog.", "evidenciaAuditoria": "Reportes mensuales de DSPM > Asset explorer y Unified Catalog > Health management > Reports.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.RA-05", "descripcionResultado": "Las amenazas, sobreexposiciones de permisos y riesgos de uso de IA se utilizan para priorizar resultados de seguridad.", "capacidadMicrosoft": "Data security objectives en DSPM, Data risk assessments de oversharing y AI observability (incluyendo Microsoft Agent 365).", "evidenciaAuditoria": "Resultados semanales de Data risk assessments e inventario priorizado de agentes en AI observability.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.DS-01", "descripcionResultado": "La confidencialidad, integridad y disponibilidad de los datos en reposo están protegidas criptográficamente.", "capacidadMicrosoft": "Etiquetas de sensibilidad MIP con cifrado y control explícito de derechos VIEW y EXTRACT frente a Copilot y Agent 365, más Customer Key (Módulo 21).", "evidenciaAuditoria": "Configuración de etiquetas cifradas en SharePoint/OneDrive y telemetría en MicrosoftPurviewInformationProtection.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.DS-02", "descripcionResultado": "La confidencialidad, integridad y disponibilidad de los datos en tránsito, en uso y en prompts de IA están protegidas.", "capacidadMicrosoft": "Purview DLP omnicanal (M365, Endpoint, Edge Browser, Network Data Security y Fabric) acoplado dinámicamente a Adaptive Protection.", "evidenciaAuditoria": "Políticas DLP activas con condición Insider risk level for Adaptive Protection y métricas de bloqueos preventivos.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.AA-05", "descripcionResultado": "Los permisos de acceso y compartición sobre datos sensibles respetan el principio de mínimo privilegio.", "capacidadMicrosoft": "Remediación de vínculos Anyone/Org-wide en DSPM, Acceso Condicional basado en riesgo interno y Customer Lockbox / M365 PAM.", "evidenciaAuditoria": "Consulta KQL sobre OfficeActivity auditando vínculos anónimos y actas de remediación semanal S-01.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.CM-06", "descripcionResultado": "Se monitorean actividades con proveedores externos, nubes SaaS y servicios de IA generativa de terceros.", "capacidadMicrosoft": "Activity explorer > AI activities, protección inline en Microsoft Edge for Business, Network Data Security y conectores multicloud.", "evidenciaAuditoria": "Registros de AI activities y detecciones de políticas Risky AI usage y Prompt shields.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.AE-03", "descripcionResultado": "Se correlaciona información de múltiples fuentes para detectar incidentes complejos de robo o compromiso de datos.", "capacidadMicrosoft": "Correlación nativa de alertas Purview DLP e Insider Risk Management dentro de incidentes unificados en Microsoft Defender XDR y Microsoft Sentinel.", "evidenciaAuditoria": "Incidentes fusionados en security.microsoft.com y resultados de la consulta KQL de correlación multi-dominio.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.AN-03", "descripcionResultado": "Se realiza análisis profundo para establecer el alcance exacto de los datos comprometidos durante un incidente.", "capacidadMicrosoft": "Data Security Investigations (DSI) empleando Vector search, Categorization con IA y Examination de credenciales, código fuente y PII.", "evidenciaAuditoria": "Informes de Examination exportados desde DSI y trazas de Audit search en el Unified Audit Log.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.MI-01", "descripcionResultado": "Los incidentes de fuga de datos son contenidos rápidamente para impedir mayor exposición.", "capacidadMicrosoft": "Elevación automática a Elevated risk en Adaptive Protection, suspensión de instancias Agent 365 riesgosas y Soft/Hard Purge en DSI.", "evidenciaAuditoria": "Registros auditados de purga en OfficeActivity y bloqueos aplicados por Adaptive Protection.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RECOVER (RC)", "subcategoria": "RC.RP-05", "descripcionResultado": "Se asegura la integridad de la evidencia, las retenciones regulatorias y la restauración de políticas tras un incidente.", "capacidadMicrosoft": "Retenciones con Preservation Lock (Módulo 16), holds legales en el nuevo eDiscovery unificado (Módulo 20) y playbook AH-04 de restauración.", "evidenciaAuditoria": "Holds verificados en eDiscovery moderno e informe del simulacro semestral SM-01.", "estadoValidacion": "Propuesta Editorial"}], "validacionYDecisionesEditoriales": {"fechaRevalidacion": "2026-11-11", "resumenAuditoria": "Compilación y evolución del corpus estratégico MSEOP-MD de Purview cruzado con los programas Ninja Training 2026 (Módulos 11 Compliance Manager y 12 DSPM/IA) y revalidado contra Microsoft Learn MCP al 11 de noviembre de 2026. Se incorporó el rebranding oficial a Microsoft Purview Suite (oct-2025), el retiro definitivo de compliance.microsoft.com y de las soluciones clásicas de eDiscovery (31-ago-2025), la nueva versión unificada de DSPM con Data security objectives y AI observability para Microsoft Agent 365, Data Security Investigations (DSI) asistido por IA, el cálculo exacto del Compliance Score (27/9/3/1), la propagación de hasta 2 horas de PIM en Purview, las Restricted Administrative Units y el modelo financiero Pay-As-You-Go.", "correccionesAplicadas": ["Actualización contractual de Microsoft 365 E5 Compliance al nombre vigente Microsoft Purview Suite (efectivo desde octubre de 2025, incluyendo variantes FLW, Gov, EDU y Business Premium hasta 300 usuarios).", "Eliminación total de rutas heredadas en compliance.microsoft.com (retirado en diciembre de 2024, MC939918) y consolidación exclusiva en https://purview.microsoft.com documentando la reubicación de Classifiers, Roles and scopes y Unified Catalog > Health management > Reports.", "Actualización a la versión unificada actual de Data Security Posture Management (Solutions > DSPM), diferenciándola de DSPM (classic) y DSPM for AI (classic) e incorporando Data security objectives, Data Security Posture Agent e inventario de Microsoft Agent 365 en AI observability.", "Incorporación de Microsoft Purview Data Security Investigations (DSI) con Vector search, Categorization, Examination y Soft/Hard Purge, incluyendo la advertencia FinOps sobre el refresco continuo cada 24h al activar Proactive AI insights.", "Reflejo del retiro definitivo de todas las soluciones clásicas de eDiscovery y Content Search el 31 de agosto de 2025 en favor del nuevo eDiscovery unificado (incluyendo búsqueda y purga de Copilot activity).", "Incorporación de reglas exactas de permisos y cifrado para IA: exigencia explícita de derechos VIEW + EXTRACT para Copilot y compartición directa con instancias de Agent 365, además de la ventana oficial de hasta 2 horas de propagación para grupos activados en Entra ID PIM.", "Documentación detallada del modelo complementario Pay-As-You-Go en Azure (conteo único diario de activos en alcance, Processing units de 10.000 actividades, Text records de 1.000 caracteres, DGPUs de 60 minutos y bloques horarios de SCUs) y de las 3 plantillas regulatorias Premium gratuitas en Compliance Manager para E5 / Purview Suite."], "decisionesEditoriales": [{"elemento": "Posicionamiento del Módulo 13 como capa arquitectónica y de gobierno transversal sobre los Módulos 14 a 22", "tipo": "Propuesta Editorial", "justificacion": "Transforma el material previo puramente estratégico de MSEOP-MD en un modelo operativo SOC/GRC/CDO ejecutable sin duplicar la ingeniería granular de los ocho submódulos especializados de Purview."}, {"elemento": "Metas cuantitativas de KPI-01 a KPI-08 y SLAs de triaje convergente (<= 30 min High en XDR)", "tipo": "Propuesta Editorial", "justificacion": "Microsoft proporciona los tableros de postura y puntaje pero no fija porcentajes universales obligatorios; estos umbrales establecen gobernanza medible para el comité ejecutivo."}, {"elemento": "Segregación obligatoria entre List Viewer y Content Viewer (solo PIM JIT con DPO) y entre Investigator y Mitigation Admin en DSI", "tipo": "Propuesta Editorial", "justificacion": "Evita exposición innecesaria de información confidencial o ejecuciones unilaterales de Hard Purge durante investigaciones sensibles."}, {"elemento": "Matriz RACI pentapartita entre CISO/DataSec, GRC/Legal/DPO, SOC/XDR, CDO/AI y FinOps", "tipo": "Propuesta Editorial", "justificacion": "Resuelve la superposición de responsabilidades propia de un portal unificado donde convergen seguridad, cumplimiento legal, gobierno de datos y facturación por consumo."}, {"elemento": "Mapeo de auditoría a 12 subcategorías de las 6 funciones de NIST CSF 2.0 y modelo de madurez de 5 niveles", "tipo": "Propuesta Editorial", "justificacion": "Alinea los controles de Purview Suite a un estándar probatorio auditable para directorios y supervisores sectoriales."}]}, "referenciasVerificadas": [{"id": "REF-01", "titulo": "Learn about the Microsoft Purview portal", "url": "https://learn.microsoft.com/en-us/purview/purview-portal", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Arquitectura del portal unificado purview.microsoft.com, retiro del portal clásico y mapa de características reubicadas.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-02", "titulo": "Microsoft Purview service description", "url": "https://learn.microsoft.com/en-us/office365/servicedescriptions/microsoft-365-service-descriptions/microsoft-365-tenantlevel-services-licensing-guidance/microsoft-purview-service-description", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Referencia canónica de licenciamiento para Microsoft 365 E3/E5 y Microsoft Purview Suite / EDU / FLW.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-03", "titulo": "Learn about Data Security Posture Management", "url": "https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Documenta la versión actual unificada de DSPM, Data security objectives, AI observability, Data risk assessments e integraciones multicloud.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-04", "titulo": "Use Microsoft Purview to manage data security & compliance for AI agents", "url": "https://learn.microsoft.com/en-us/purview/ai-agents", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Matriz oficial de cobertura de Purview sobre agentes de M365 Copilot, Security Copilot, Fabric, Copilot Studio, Foundry, Entra y terceros.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-05", "titulo": "Use Microsoft Purview to manage data security & compliance for Microsoft Agent 365", "url": "https://learn.microsoft.com/en-us/purview/ai-agent-365", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Detalla soporte de AI observability, derechos explícitos VIEW y EXTRACT, no herencia automática en contenido nuevo e inclusión en políticas DLP/IRM/DLM.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-06", "titulo": "Learn about Data Security Investigations", "url": "https://learn.microsoft.com/en-us/purview/data-security-investigations", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Documenta Vector search, Categorization, Examination, Soft/Hard Purge, integraciones con XDR/IRM/DSPM/Endpoint DLP y facturación PAYG.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-07", "titulo": "Microsoft Purview Compliance Manager", "url": "https://learn.microsoft.com/en-us/purview/compliance-manager", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Arquitectura de controles (Microsoft-managed, Your controls, Shared controls), evaluaciones y más de 360 plantillas regulatorias.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-08", "titulo": "Compliance Manager scoring", "url": "https://learn.microsoft.com/en-us/purview/compliance-score-calculation", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Fórmula oficial de puntuación por tipo de acción (27, 9, 3 y 1 puntos), Microsoft Data Protection Baseline y actualización en 24 horas.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-09", "titulo": "Compliance Manager regulations list", "url": "https://learn.microsoft.com/en-us/purview/compliance-manager-regulations-list", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Catálogo de plantillas incluidas, 3 regulaciones Premium gratuitas para E5 y marcos de IA (EU AI Act, ISO/IEC 42001:2023, NIST AI RMF).", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-10", "titulo": "Learn about Microsoft Purview billing models", "url": "https://learn.microsoft.com/en-us/purview/purview-billing-models", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Unidades exactas de medida Pay-As-You-Go: activos únicos en alcance, Processing units, Text records (1.000 chars), GB/mes, Requests y bloques horarios SCU.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-11", "titulo": "Permissions in the Microsoft Purview portal", "url": "https://learn.microsoft.com/en-us/purview/purview-permissions", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Gestión de Role groups en Settings > Roles and scopes y nota crítica de propagación de hasta 2 horas al usar Entra ID PIM for Groups.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-12", "titulo": "Administrative units in Microsoft Purview", "url": "https://learn.microsoft.com/en-us/purview/purview-admin-units", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Alcance oficial de Restricted Administrative Units en DLP, IRM, Communication Compliance, DLM, Records, MIP, Audit y eDiscovery.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-13", "titulo": "Learn about Adaptive Protection in Data Loss Prevention", "url": "https://learn.microsoft.com/en-us/purview/dlp-adaptive-protection-learn", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Acoplamiento dinámico entre niveles de riesgo de Insider Risk Management (Elevated, Moderate, Minor) y políticas preventivas DLP.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-14", "titulo": "Alert correlation and incident merging in the Microsoft Defender portal", "url": "https://learn.microsoft.com/en-us/defender-xdr/alerts-incidents-correlation", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Correlación multi-fuente en Microsoft Defender XDR integrando alertas de Microsoft Purview DLP e Insider Risk Management.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-15", "titulo": "Microsoft Purview eDiscovery legacy solutions", "url": "https://learn.microsoft.com/en-us/purview/edisc-legacy", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Confirma el retiro total de Content Search, eDiscovery Standard y eDiscovery Premium clásicos el 31 de agosto de 2025.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-16", "titulo": "Microsoft Certified: Information Security Administrator Associate (Exam SC-401)", "url": "https://learn.microsoft.com/en-us/credentials/certifications/information-security-administrator/", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Certificación oficial vigente centrada en administración de seguridad de la información y protección de datos para IA con Microsoft Purview.", "verificacion": "Verificado (2026-11-11)"}, {"id": "REF-17", "titulo": "Microsoft Purview Blog — Microsoft Tech Community", "url": "https://techcommunity.microsoft.com/category/security/blog/microsoftpurviewblog", "tipoFuente": "Blog Oficial Microsoft", "autor": "Microsoft Purview Product Engineering", "comentario": "Canal oficial de anuncios de ingeniería sobre DSPM, seguridad para agentes IA, Data Security Investigations y gobierno.", "verificacion": "Verificado (2026-11-11)"}, {"id": "REF-18", "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)", "url": "https://doi.org/10.6028/NIST.CSWP.29", "tipoFuente": "Marco Normativo", "autor": "National Institute of Standards and Technology (NIST)", "comentario": "Marco normativo base para el mapeo de auditoría en las seis funciones GV, ID, PR, DE, RS y RC.", "verificacion": "Verificado (2026-11-11)"}, {"id": "REF-19", "titulo": "Artificial Intelligence Risk Management Framework (AI RMF 1.0 — NIST AI 100-1)", "url": "https://doi.org/10.6028/NIST.AI.100-1", "tipoFuente": "Marco Normativo", "autor": "National Institute of Standards and Technology (NIST)", "comentario": "Marco de referencia para gobernanza, mapeo, medición y gestión de riesgos en sistemas y agentes de IA.", "verificacion": "Verificado (2026-11-11)"}], "validacionesConfiguracion": [{"control": "**Portal Unificado Purview**", "comoValidar": "`https://purview.microsoft.com > Solutions`", "estadoEsperado": "Acceso activo a tarjetas *Data Security*, *Risk & Compliance* y *Data Governance*; sin referencias operativas a `compliance.microsoft.com`.", "origen": "Verificado MS Learn"}, {"control": "**DSPM Unificado y AI Observability**", "comoValidar": "`purview.microsoft.com > Solutions > DSPM > Posture / AI observability`", "estadoEsperado": "*Data security objectives* poblados y telemetría de últimos 30 días visible para Copilot, agentes y **Agent 365**.", "origen": "Verificado MS Learn"}, {"control": "**Adaptive Protection Activo**", "comoValidar": "`purview.microsoft.com > Solutions > Insider Risk Management > Adaptive protection`", "estadoEsperado": "Niveles de riesgo sincronizando dinámicamente con políticas DLP en modo aplicación (`On`) y Acceso Condicional.", "origen": "Verificado MS Learn"}, {"control": "**Convergencia con Defender XDR**", "comoValidar": "`security.microsoft.com > Incidents & alerts > Incidents`", "estadoEsperado": "Alertas de Purview DLP e Insider Risk correlacionándose en incidentes XDR con enlace de apertura hacia **DSI**.", "origen": "Verificado MS Learn"}, {"control": "**Compliance Manager Continuo**", "comoValidar": "`purview.microsoft.com > Solutions > Compliance Manager > Overview`", "estadoEsperado": "*Compliance Score* activo sobre *Microsoft Data Protection Baseline* y las plantillas regulatorias priorizadas con refresco de 24h.", "origen": "Verificado MS Learn"}, {"control": "**Administrative Units y RBAC**", "comoValidar": "`purview.microsoft.com > Settings > Roles and scopes > Role groups`", "estadoEsperado": "*Role groups* delegados vinculados a *Administrative Units* de Entra ID y sin cuentas *Global Administrator* permanentes.", "origen": "Verificado MS Learn"}, {"control": "**Gobierno FinOps PAYG / SCU**", "comoValidar": "`portal.azure.com > Cost Management` + `purview.microsoft.com > Usage center`", "estadoEsperado": "Presupuestos y alertas activas sobre medidores PAYG de Purview, almacenamiento DSI y bloques horarios de SCUs.", "origen": "Verificado MS Learn"}], "modeloMadurez": [{"nivel": "**Nivel 1**", "estadio": "**Fragmentado / Reactivo**", "descripcion": "Uso residual de etiquetas manuales aisladas, políticas DLP solo en modo simulación perpetua, *Global Administrator* compartido, sin visibilidad sobre uso de IA generativa ni integración con el SOC."}, {"nivel": "**Nivel 2**", "estadio": "**Fundacional en M365**", "descripcion": "Migración completada a `purview.microsoft.com`, taxonomía inicial MIP desplegada, políticas DLP básicas en Exchange/SharePoint y revisión pasiva del *Data Protection Baseline* en Compliance Manager."}, {"nivel": "**Nivel 3**", "estadio": "**Integrado y Orientado a Postura**", "descripcion": "Operación activa de **DSPM** por *Data security objectives*, Endpoint y Browser DLP desplegados, alertas DLP/IRM correlacionadas en **Microsoft Defender XDR**, *Role groups* con PIM y evaluaciones regulatorias prioritarias activas."}, {"nivel": "**Nivel 4**", "estadio": "**Adaptativo y Gobernado para IA**", "descripcion": "**Adaptive Protection** aplicando bloqueos dinámicos según riesgo IRM, **AI observability** gobernando Copilot, Copilot Studio, Foundry y **Agent 365** (incluyendo control estricto del derecho `EXTRACT`), **Administrative Units** restringidas y disciplina FinOps sobre PAYG."}, {"nivel": "**Nivel 5**", "estadio": "**Optimizado, Multicloud y Asistido por IA**", "descripcion": "**Data Security Investigations (DSI)** integrado en respuesta a brechas con búsqueda vectorial y purga gobernada, cobertura multicloud y **Microsoft Fabric** en *Unified Catalog* / *Sentinel Data Lake*, y cumplimiento continuo automatizado (> 85%) frente a NIST CSF 2.0, DORA, NIS2 y EU AI Act."}], "rutaFormacion": {"headers": ["Rol Destinatario", "Certificaciones y Rutas Oficiales Microsoft Learn (Vigentes Nov-2026)", "Recursos Especializados (`Ninja Training 2026` y Blogs Oficiales Microsoft)", "Laboratorio Práctico Recomendado"], "rows": [["**Data Security Architect & DLP/MIP/IRM Engineers**", "Certificación **SC-401** (*Microsoft Certified: Information Security Administrator Associate* — certificación vigente enfocada en seguridad de datos e IA en Purview) `[Verificado MS Learn]`.", "**Ninja Training Seguridad Microsoft 2026 — Módulo 12 (`Purview DSPM y Seguridad de datos para IA`)** y Microsoft Security Blog (categoría Microsoft Purview) `[Verificado MS Learn]`.", "Configurar *Data security objectives* en DSPM, activar *Adaptive Protection* y probar derechos `EXTRACT` con Copilot y Agent 365."], ["**GRC Manager, DPO & Auditores Internos**", "Rutas oficiales *Manage compliance with Microsoft Purview Compliance Manager* y *Administrative Units in Microsoft Purview* en Microsoft Learn `[Verificado MS Learn]`.", "**Ninja Training Seguridad Microsoft 2026 — Módulo 11 (`Purview Compliance Manager`)** y guía oficial de cálculo del *Compliance Score* `[Verificado MS Learn]`.", "Desplegar evaluación **NIST CSF 2.0** y **EU AI Act**, cargar evidencia de *Shared controls* y validar segregación con *Administrative Units*."], ["**SOC L2 / CSIRT & Data Security Investigators**", "Certificación **SC-200** (*Security Operations Analyst Associate*) + documentación oficial de **Data Security Investigations (DSI)** e integración Purview-XDR `[Verificado MS Learn]`.", "Serie oficial de arquitectura y demos de *Microsoft Purview Data Security Investigations* y *Microsoft Mechanics: New DSPM* `[Verificado MS Learn]`.", "Escalar un incidente XDR con alerta DLP hacia DSI, ejecutar *Vector search* / *Examination* y auditar actividades en `OfficeActivity`."], ["**CDO Office & FinOps Lead**", "Rutas *Microsoft Purview Data Governance in the new portal* y *Learn about Microsoft Purview billing models* en Microsoft Learn `[Verificado MS Learn]`.", "Calculadoras oficiales de precios Azure para **Microsoft Purview PAYG** y gestión horaria de **Security Compute Units (SCUs)** `[Verificado MS Learn]`.", "Configurar *Live view* para Microsoft Fabric en *Unified Catalog* y crear presupuestos/alertas por medidor PAYG en Azure Cost Management."]]}};
+const NAV_INDEX = [{"id": "00_Marco_Maestro_CISO_SOC_y_NIST", "orden": 0, "folder": "00_Marco_Maestro_CISO_SOC_y_NIST", "slug": "Marco_Maestro_CISO_SOC_y_NIST", "nombreCorto": "Marco Maestro CISO, SOC y NIST", "categoria": "Marco Transversal CISO, SOC y NIST", "htmlRel": "../00_Marco_Maestro_CISO_SOC_y_NIST/Marco_Maestro_CISO_SOC_y_NIST_Guia_Excelencia_Operacional.html"}, {"id": "01_Microsoft_Entra_ID", "orden": 1, "folder": "01_Microsoft_Entra_ID", "slug": "Microsoft_Entra_ID", "nombreCorto": "Microsoft Entra ID", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../01_Microsoft_Entra_ID/Microsoft_Entra_ID_Guia_Excelencia_Operacional.html"}, {"id": "02_Microsoft_Entra_ID_Governance", "orden": 2, "folder": "02_Microsoft_Entra_ID_Governance", "slug": "Microsoft_Entra_ID_Governance", "nombreCorto": "Microsoft Entra ID Governance", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../02_Microsoft_Entra_ID_Governance/Microsoft_Entra_ID_Governance_Guia_Excelencia_Operacional.html"}, {"id": "03_Microsoft_Defender_XDR", "orden": 3, "folder": "03_Microsoft_Defender_XDR", "slug": "Microsoft_Defender_XDR", "nombreCorto": "Defender XDR", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../03_Microsoft_Defender_XDR/Microsoft_Defender_XDR_Guia_Excelencia_Operacional.html"}, {"id": "04_Microsoft_Defender_for_Endpoint", "orden": 4, "folder": "04_Microsoft_Defender_for_Endpoint", "slug": "Microsoft_Defender_for_Endpoint", "nombreCorto": "Defender for Endpoint", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../04_Microsoft_Defender_for_Endpoint/Microsoft_Defender_for_Endpoint_Guia_Excelencia_Operacional.html"}, {"id": "05_Microsoft_Defender_for_Office_365", "orden": 5, "folder": "05_Microsoft_Defender_for_Office_365", "slug": "Microsoft_Defender_for_Office_365", "nombreCorto": "Defender for Office 365", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../05_Microsoft_Defender_for_Office_365/Microsoft_Defender_for_Office_365_Guia_Excelencia_Operacional.html"}, {"id": "06_Microsoft_Defender_for_Identity", "orden": 6, "folder": "06_Microsoft_Defender_for_Identity", "slug": "Microsoft_Defender_for_Identity", "nombreCorto": "Defender for Identity", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../06_Microsoft_Defender_for_Identity/Microsoft_Defender_for_Identity_Guia_Excelencia_Operacional.html"}, {"id": "07_Microsoft_Defender_for_Cloud_Apps", "orden": 7, "folder": "07_Microsoft_Defender_for_Cloud_Apps", "slug": "Microsoft_Defender_for_Cloud_Apps", "nombreCorto": "Defender for Cloud Apps", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../07_Microsoft_Defender_for_Cloud_Apps/Microsoft_Defender_for_Cloud_Apps_Guia_Excelencia_Operacional.html"}, {"id": "08_Microsoft_Sentinel", "orden": 8, "folder": "08_Microsoft_Sentinel", "slug": "Microsoft_Sentinel", "nombreCorto": "Microsoft Sentinel", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../08_Microsoft_Sentinel/Microsoft_Sentinel_Guia_Excelencia_Operacional.html"}, {"id": "09_Microsoft_Security_Copilot", "orden": 9, "folder": "09_Microsoft_Security_Copilot", "slug": "Microsoft_Security_Copilot", "nombreCorto": "Microsoft Security Copilot", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../09_Microsoft_Security_Copilot/Microsoft_Security_Copilot_Guia_Excelencia_Operacional.html"}, {"id": "10_Microsoft_Intune_Plan_1", "orden": 10, "folder": "10_Microsoft_Intune_Plan_1", "slug": "Microsoft_Intune_Plan_1", "nombreCorto": "Microsoft Intune Plan 1", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../10_Microsoft_Intune_Plan_1/Microsoft_Intune_Plan_1_Guia_Excelencia_Operacional.html"}, {"id": "11_Microsoft_Intune_Suite", "orden": 11, "folder": "11_Microsoft_Intune_Suite", "slug": "Microsoft_Intune_Suite", "nombreCorto": "Microsoft Intune Suite", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../11_Microsoft_Intune_Suite/Microsoft_Intune_Suite_Guia_Excelencia_Operacional.html"}, {"id": "12_Windows_Enterprise_Security_y_Cifrado", "orden": 12, "folder": "12_Windows_Enterprise_Security_y_Cifrado", "slug": "Windows_Enterprise_Security_y_Cifrado", "nombreCorto": "Windows Enterprise Security y Cifrado", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../12_Windows_Enterprise_Security_y_Cifrado/Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.html"}, {"id": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "orden": 13, "folder": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "slug": "Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "nombreCorto": "Microsoft Purview Suite", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno/Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.html"}, {"id": "14_Purview_Information_Protection", "orden": 14, "folder": "14_Purview_Information_Protection", "slug": "Purview_Information_Protection", "nombreCorto": "Purview Information Protection", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../14_Purview_Information_Protection/Purview_Information_Protection_Guia_Excelencia_Operacional.html"}, {"id": "15_Purview_Data_Loss_Prevention", "orden": 15, "folder": "15_Purview_Data_Loss_Prevention", "slug": "Purview_Data_Loss_Prevention", "nombreCorto": "Purview Data Loss Prevention", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../15_Purview_Data_Loss_Prevention/Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.html"}, {"id": "16_Purview_Data_Lifecycle_y_Records_Management", "orden": 16, "folder": "16_Purview_Data_Lifecycle_y_Records_Management", "slug": "Purview_Data_Lifecycle_y_Records_Management", "nombreCorto": "Purview DLCM y Records Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../16_Purview_Data_Lifecycle_y_Records_Management/Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.html"}, {"id": "17_Purview_Insider_Risk_Management", "orden": 17, "folder": "17_Purview_Insider_Risk_Management", "slug": "Purview_Insider_Risk_Management", "nombreCorto": "Purview Insider Risk Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../17_Purview_Insider_Risk_Management/Purview_Insider_Risk_Management_Guia_Excelencia_Operacional.html"}, {"id": "18_Purview_Communication_Compliance", "orden": 18, "folder": "18_Purview_Communication_Compliance", "slug": "Purview_Communication_Compliance", "nombreCorto": "Purview Communication Compliance", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../18_Purview_Communication_Compliance/Purview_Communication_Compliance_Guia_Excelencia_Operacional.html"}, {"id": "19_Purview_Audit_Premium", "orden": 19, "folder": "19_Purview_Audit_Premium", "slug": "Purview_Audit_Premium", "nombreCorto": "Purview Audit (Premium)", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../19_Purview_Audit_Premium/Purview_Audit_Premium_Guia_Excelencia_Operacional.html"}, {"id": "20_Purview_eDiscovery_Premium", "orden": 20, "folder": "20_Purview_eDiscovery_Premium", "slug": "Purview_eDiscovery_Premium", "nombreCorto": "Purview eDiscovery Premium", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../20_Purview_eDiscovery_Premium/Purview_eDiscovery_Premium_Guia_Excelencia_Operacional.html"}, {"id": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "orden": 21, "folder": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "slug": "Customer_Lockbox_Customer_Key_y_M365_PAM", "nombreCorto": "Customer Lockbox, Customer Key y M365 PAM", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../21_Customer_Lockbox_Customer_Key_y_M365_PAM/Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.html"}, {"id": "22_Microsoft_Agent_365", "orden": 22, "folder": "22_Microsoft_Agent_365", "slug": "Microsoft_Agent_365", "nombreCorto": "Microsoft Agent 365", "categoria": "Gobierno y Seguridad de Agentes IA", "htmlRel": "../22_Microsoft_Agent_365/Microsoft_Agent_365_Guia_Excelencia_Operacional.html"}];
+
+(() => {
+  const memStore = {};
+  const storageKey = "mseop_v3_state_" + MODULE_DATA.id;
+  function loadState() {
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      return raw ? JSON.parse(raw) : { tasks: {}, steps: {} };
+    } catch (_) {
+      return memStore[storageKey] || { tasks: {}, steps: {} };
+    }
+  }
+  function saveState(st) {
+    memStore[storageKey] = st;
+    try { window.localStorage.setItem(storageKey, JSON.stringify(st)); } catch (_) {}
+  }
+
+  let uiState = loadState();
+  if (!uiState.tasks) uiState.tasks = {};
+  if (!uiState.steps) uiState.steps = {};
+  let activeView = "view-overview";
+  let activePeriodicCad = "Diaria";
+
+  function esc(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // Converts inline Markdown (**bold**, `code`, [Verificado MS Learn], [Decisión / Propuesta Editorial]) into clean readable HTML
+  function richText(str) {
+    let s = esc(str);
+    s = s.replace(/`\[Verificado MS Learn\]`|\[Verificado MS Learn\]/g, '<span class="inline-tag tag-learn">Verificado MS Learn</span>');
+    s = s.replace(/`\[Decisión \/ Propuesta Editorial\]`|\[Decisión \/ Propuesta Editorial\]|`\[Propuesta Editorial\]`|\[Propuesta Editorial\]/g, '<span class="inline-tag tag-edit">Propuesta Editorial</span>');
+    s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    return s;
+  }
+
+  function valBadge(status) {
+    const isLearn = String(status).indexOf("Verificado") !== -1;
+    return '<span class="' + (isLearn ? "badge badge-learn" : "badge badge-editorial") + '">' + esc(status) + '</span>';
+  }
+
+  // Partition activities cleanly into Periodic vs Ad-Hoc
+  const allActs = MODULE_DATA.actividadesOperacionales || [];
+  const periodicActs = allActs.filter((a) => a.cadencia !== "Ad-Hoc");
+  const adhocActs = allActs.filter((a) => a.cadencia === "Ad-Hoc");
+  const prereqs = (MODULE_DATA.relacionM365E5 && MODULE_DATA.relacionM365E5.prerrequisitos) || [];
+  const validations = MODULE_DATA.validacionesConfiguracion || [];
+  const components = MODULE_DATA.arquitecturaYComponentes || [];
+  const rbacRoles = MODULE_DATA.rbacYRoles || [];
+
+  const dailyActs = periodicActs.filter((a) => a.cadencia === "Diaria");
+  const weeklyActs = periodicActs.filter((a) => a.cadencia === "Semanal");
+  const monthlyActs = periodicActs.filter((a) => a.cadencia === "Mensual");
+  const longCycleActs = periodicActs.filter((a) => ["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) !== -1);
+
+  // Topbar links & module switcher
+  const baseName = MODULE_DATA.slug + "_Guia_Excelencia_Operacional";
+  document.getElementById("xlsxLink").href = "./" + baseName + ".xlsx";
+  document.getElementById("mdLink").href = "./" + baseName + ".md";
+
+  const jumpSel = document.getElementById("modJumpSelect");
+  NAV_INDEX.forEach((m) => {
+    const opt = document.createElement("option");
+    opt.value = m.htmlRel;
+    opt.textContent = String(m.orden).padStart(2, "0") + " — " + m.nombreCorto;
+    if (m.id === MODULE_DATA.id) opt.selected = true;
+    jumpSel.appendChild(opt);
+  });
+  jumpSel.addEventListener("change", (e) => { if (e.target.value) window.location.href = e.target.value; });
+
+  const curIdx = NAV_INDEX.findIndex((m) => m.id === MODULE_DATA.id);
+  const prevBtn = document.getElementById("prevModBtn");
+  const nextBtn = document.getElementById("nextModBtn");
+  if (curIdx > 0) prevBtn.href = NAV_INDEX[curIdx - 1].htmlRel;
+  else { prevBtn.style.opacity = "0.4"; prevBtn.style.pointerEvents = "none"; }
+  if (curIdx >= 0 && curIdx < NAV_INDEX.length - 1) nextBtn.href = NAV_INDEX[curIdx + 1].htmlRel;
+  else { nextBtn.style.opacity = "0.4"; nextBtn.style.pointerEvents = "none"; }
+
+  document.getElementById("themeToggleBtn").addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+  });
+  document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+  // Sidebar counters
+  const totalConfigChecks = prereqs.length + validations.length;
+  document.getElementById("navCntConfig").textContent = totalConfigChecks;
+  document.getElementById("navCntDiaria").textContent = dailyActs.length;
+  document.getElementById("navCntSemanal").textContent = weeklyActs.length;
+  document.getElementById("navCntMensual").textContent = monthlyActs.length;
+  document.getElementById("navCntLargos").textContent = longCycleActs.length;
+  document.getElementById("navCntAdhoc").textContent = adhocActs.length;
+  document.getElementById("navCntQueries").textContent = (MODULE_DATA.consultasKQLyVerificacion || []).length;
+  document.getElementById("navCntKpis").textContent = (MODULE_DATA.kpisYMetricas || []).length;
+  document.getElementById("navCntNist").textContent = (MODULE_DATA.mapeoNISTCSF20 || []).length;
+
+  function switchView(viewId, periodicCadOverride) {
+    activeView = viewId;
+    if (periodicCadOverride) activePeriodicCad = periodicCadOverride;
+
+    document.querySelectorAll(".view-panel").forEach((p) => p.classList.remove("active"));
+    const target = document.getElementById(viewId);
+    if (target) target.classList.add("active");
+
+    document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+      const bv = btn.getAttribute("data-view");
+      const bc = btn.getAttribute("data-cad");
+      if (bv === viewId && (!bc || bc === activePeriodicCad)) btn.classList.add("active");
+      else btn.classList.remove("active");
+    });
+
+    if (viewId === "view-periodic") {
+      syncPeriodicSubnav();
+      renderPeriodicCards();
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      switchView(btn.getAttribute("data-view"), btn.getAttribute("data-cad") || null);
+    });
+  });
+
+  // Handle incoming URL hash (#config, #periodic-diaria, #adhoc, etc.)
+  function applyInitialHash() {
+    const h = (window.location.hash || "").replace("#", "");
+    if (h === "config") switchView("view-config");
+    else if (h === "periodic-diaria") switchView("view-periodic", "Diaria");
+    else if (h === "periodic-semanal") switchView("view-periodic", "Semanal");
+    else if (h === "periodic-mensual") switchView("view-periodic", "Mensual");
+    else if (h === "periodic-largos") switchView("view-periodic", "CICLOS_LARGOS");
+    else if (h === "adhoc") switchView("view-adhoc");
+    else if (h === "queries") switchView("view-queries");
+    else if (h === "nist") switchView("view-nist");
+  }
+
+  function updateProgressTracker() {
+    let cfgDone = 0;
+    prereqs.forEach((_, i) => { if (uiState.tasks["CFG-" + (i + 1)]) cfgDone++; });
+    validations.forEach((_, i) => { if (uiState.tasks["VAL-" + (i + 1)]) cfgDone++; });
+    const cfgPct = totalConfigChecks ? Math.round((cfgDone / totalConfigChecks) * 100) : 0;
+
+    const perDone = periodicActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const perPct = periodicActs.length ? Math.round((perDone / periodicActs.length) * 100) : 0;
+
+    const ahDone = adhocActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const ahPct = adhocActs.length ? Math.round((ahDone / adhocActs.length) * 100) : 0;
+
+    document.getElementById("sidebarProgress").innerHTML =
+      '<div class="nav-section-label" style="padding-left:0;">Tu Progreso de Revisión</div>' +
+      '<div class="prog-row"><div class="prog-head"><span>1. Configuración y Validación</span><span>' + cfgDone + '/' + totalConfigChecks + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + cfgPct + '%"></div></div></div>' +
+      '<div class="prog-row"><div class="prog-head"><span>2. Rutinas Periódicas</span><span>' + perDone + '/' + periodicActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + perPct + '%"></div></div></div>' +
+      '<div class="prog-row" style="margin-bottom:0;"><div class="prog-head"><span>3. Playbooks Ad-Hoc</span><span>' + ahDone + '/' + adhocActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + ahPct + '%"></div></div></div>';
+  }
+
+  // VISTA 0: OVERVIEW
+  document.getElementById("heroTitle").textContent = MODULE_DATA.nombre;
+  document.getElementById("heroSummary").textContent = MODULE_DATA.resumenEjecutivo;
+  document.getElementById("heroBadges").innerHTML = [
+    '<span class="badge badge-accent">Módulo ' + String(MODULE_DATA.orden).padStart(2, "0") + ' de 22</span>',
+    '<span class="badge">' + esc(MODULE_DATA.categoria) + '</span>',
+    '<span class="badge badge-learn">' + esc(MODULE_DATA.relacionM365E5.estado) + '</span>',
+    '<span class="badge">Validación: ' + esc(MODULE_DATA.fechaValidacion) + '</span>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").innerHTML = [
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 1 · Acciones Puntuales</div>' +
+        '<h3>Configuración Base y Validaciones</h3>' +
+        '<p>Qué debes habilitar al inicio (' + prereqs.length + ' prerrequisitos, ' + components.length + ' componentes y ' + rbacRoles.length + ' roles RBAC/PIM) y <strong>' + validations.length + ' validaciones "Proof of Life"</strong> para comprobar que todo quedó bien configurado.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-config">Ir a Configuración y Validaciones →</button></div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 2 · Operación Programada</div>' +
+        '<h3>Rutinas Periódicas por Frecuencia</h3>' +
+        '<p><strong>' + periodicActs.length + ' procedimientos preventivos</strong> separados con claridad en ciclos Diarios (' + dailyActs.length + '), Semanales (' + weeklyActs.length + '), Mensuales (' + monthlyActs.length + ') y Trimestrales/Anuales (' + longCycleActs.length + ').</p>' +
+      '</div>' +
+      '<div class="pill-row">' +
+        '<button class="btn btn-primary btn-sm" type="button" data-goto="view-periodic" data-gocad="Diaria">Diarias (' + dailyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Semanal">Semanales (' + weeklyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Mensual">Mensuales (' + monthlyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="CICLOS_LARGOS">Trim./Anual (' + longCycleActs.length + ')</button>' +
+      '</div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 3 · Reacción del Analista</div>' +
+        '<h3>Playbooks Ad-Hoc ante Alertas</h3>' +
+        '<p><strong>' + adhocActs.length + ' playbooks tácticos</strong> que no siguen calendario: se disparan cuando una alerta, señal de compromiso o incidente requiere contención e investigación del analista.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-adhoc">Abrir Playbooks Ad-Hoc →</button></div>' +
+    '</div>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-goto]");
+    if (!b) return;
+    switchView(b.getAttribute("data-goto"), b.getAttribute("data-gocad") || null);
+  });
+
+  const rel = MODULE_DATA.relacionM365E5;
+  document.getElementById("licensingOverviewCard").innerHTML =
+    '<h3 style="margin-top:0;font-size:20px;">Encaje de Licenciamiento en Microsoft 365 E5 y Portales Oficiales</h3>' +
+    '<p style="margin-bottom:16px;">' + richText(rel.notaLicenciamiento) + '</p>' +
+    '<div class="info-pair" style="margin-bottom:0;">' +
+      '<div class="info-box"><div class="info-label">Licencias y SKUs Aplicables</div><ul style="margin:6px 0 0 0;padding-left:20px;">' +
+        (rel.licencias || []).map((l) => '<li style="margin-bottom:6px;">' + richText(l) + '</li>').join("") +
+      '</ul></div>' +
+      '<div class="info-box"><div class="info-label">Consolas Oficiales de Administración y SOC</div><div class="pill-row" style="margin-top:10px;">' +
+        (MODULE_DATA.portalesPrincipales || []).map((u) => '<a class="btn" href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + ' ↗</a>').join("") +
+      '</div><div style="margin-top:16px;"><div class="info-label">Roles Involucrados</div><div class="pill-row" style="margin-top:6px;">' +
+        (MODULE_DATA.audiencia || []).map((au) => '<span class="badge">' + esc(au) + '</span>').join("") +
+      '</div></div></div>' +
+    '</div>';
+
+  document.getElementById("principlesGrid").innerHTML = (MODULE_DATA.principiosRectores || []).map((p) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:10px;">' +
+        '<h3 style="margin:0;font-size:17.5px;">' + esc(p.principio) + '</h3>' +
+        valBadge(p.estadoValidacion) +
+      '</div>' +
+      '<p class="muted" style="margin:0 0 12px 0;">' + richText(p.descripcion) + '</p>' +
+      (p.fuenteUrl ? '<a href="' + esc(p.fuenteUrl) + '" target="_blank" rel="noopener noreferrer">Consultar referencia en Microsoft Learn ↗</a>' : '') +
+    '</div>'
+  )).join("");
+
+  // VISTA 1: CONFIGURACIÓN PUNTUAL Y VALIDACIONES
+  function renderConfigView() {
+    document.getElementById("prereqsContainer").innerHTML = prereqs.map((pr, idx) => {
+      const code = "CFG-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '" style="padding:22px 28px;margin-bottom:16px;">' +
+          '<div class="card-title-group">' +
+            '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+            '<div style="flex:1;">' +
+              '<div class="pill-row" style="margin-bottom:6px;">' +
+                '<span class="card-code" style="margin-bottom:0;">' + code + '</span>' +
+                '<span class="badge">Acción Puntual de Puesta en Marcha</span>' +
+              '</div>' +
+              '<div style="font-size:16px;font-weight:600;">' + richText(pr) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("validationsContainer").innerHTML = validations.map((v, idx) => {
+      const code = "VAL-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + code + ' · Validación de Configuración</span>' +
+                '<h4 class="card-heading">' + richText(v.control) + '</h4>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' + valBadge(v.origen || "Verificado MS Learn") + '</div>' +
+          '</div>' +
+          '<div class="info-pair" style="margin-bottom:0;">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Dónde y Cómo Validar la Configuración</div>' +
+              '<div class="info-content">' + richText(v.comoValidar) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label">Estado / Resultado Esperado ("Proof of Life")</div>' +
+              '<div class="info-content">' + richText(v.estadoEsperado) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("componentsContainer").innerHTML = components.map((c, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">COMP-' + String(idx + 1).padStart(2, "0") + ' · Subsistema Técnico</span>' +
+            '<h4 class="card-heading">' + esc(c.componente) + '</h4>' +
+          '</div>' +
+          valBadge(c.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Qué Configurar y Habilitar en este Componente</div>' +
+            '<div class="info-content">' + richText(c.funcionOperativa) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Ruta Exacta en Consola</div>' +
+            '<div class="info-content"><code>' + esc(c.portalRuta) + '</code></div>' +
+            '<div class="info-label" style="margin-top:14px;">Integraciones que Validar</div>' +
+            '<div class="pill-row" style="margin-top:6px;">' + (c.integraciones || []).map((i) => '<span class="badge">' + esc(i) + '</span>').join("") + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+
+    document.getElementById("rbacContainer").innerHTML = rbacRoles.map((r) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">RBAC / PIM · ' + esc(r.nivelSOC) + '</span>' +
+            '<h4 class="card-heading">' + esc(r.rol) + '</h4>' +
+          '</div>' +
+          valBadge(r.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair" style="margin-bottom:14px;">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Configuración Puntual en PIM / Asignación</div>' +
+            '<div class="info-content">' + richText(r.asignacionPIM) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Alcance de Permisos a Validar</div>' +
+            '<div class="info-content">' + richText(r.permisosClave) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="validation-footer">' +
+          '<div><strong>Uso operativo autorizado:</strong> ' + richText(r.responsabilidadOperativa) + '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+
+  // Helper to render step-by-step lists with clickable step checkmarks
+  function renderStepRows(actCode, steps) {
+    return '<ol class="steps-list">' + (steps || []).map((st, idx) => {
+      const stepKey = actCode + "_S" + (idx + 1);
+      const isChecked = !!uiState.steps[stepKey];
+      return (
+        '<li class="step-row ' + (isChecked ? "step-checked" : "") + '" data-step="' + esc(stepKey) + '" title="Haz clic para marcar o desmarcar este paso">' +
+          '<span class="step-num">' + (isChecked ? "✓" : (idx + 1)) + '</span>' +
+          '<div class="step-body">' + richText(st) + '</div>' +
+        '</li>'
+      );
+    }).join("") + '</ol>';
+  }
+
+  // VISTA 2: ACCIONES PERIÓDICAS
+  const roleSet = new Set();
+  periodicActs.forEach((a) => {
+    String(a.rolResponsable || "").split(/[\/+,]/).forEach((r) => {
+      const clean = r.trim();
+      if (clean) roleSet.add(clean);
+    });
+  });
+  const perRoleSel = document.getElementById("perRole");
+  Array.from(roleSet).sort().forEach((r) => {
+    const o = document.createElement("option");
+    o.value = r; o.textContent = "Rol: " + r;
+    perRoleSel.appendChild(o);
+  });
+
+  function syncPeriodicSubnav() {
+    document.querySelectorAll("#periodicCadBar .subnav-pill").forEach((b) => {
+      b.classList.toggle("active", b.getAttribute("data-pcad") === activePeriodicCad);
+    });
+    const titles = {
+      "Diaria": ["2. Acciones Periódicas — Rutinas Diarias", "Controles diarios del turno SOC y administración para asegurar salud de plataforma, triaje a tiempo y cero caídas silenciosas."],
+      "Semanal": ["2. Acciones Periódicas — Rutinas Semanales", "Actividades semanales de tuning de falsos positivos, caza proactiva, revisión de postura e higiene operativa."],
+      "Mensual": ["2. Acciones Periódicas — Rutinas Mensuales", "Gobierno mensual de privilegios RBAC/PIM, optimización financiera/retención, pruebas de automatización y reporte ejecutivo al CISO."],
+      "CICLOS_LARGOS": ["2. Acciones Periódicas — Ciclos Trimestrales, Semestrales y Anuales", "Ejercicios Tabletop/Purple Team, análisis de cobertura MITRE ATT&CK, simulacros de continuidad y auditoría estratégica anual."],
+      "ALL_PERIODIC": ["2. Todas las Acciones Periódicas Programadas", "Listado consolidado de todas las rutinas preventivas y de gobierno del módulo (excluyendo playbooks reactivos Ad-Hoc)."]
+    };
+    const pair = titles[activePeriodicCad] || titles["ALL_PERIODIC"];
+    document.getElementById("periodicTitle").textContent = pair[0];
+    document.getElementById("periodicSubtitle").textContent = pair[1];
+  }
+
+  document.getElementById("periodicCadBar").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-pcad]");
+    if (!b) return;
+    activePeriodicCad = b.getAttribute("data-pcad");
+    syncPeriodicSubnav();
+    switchView("view-periodic", activePeriodicCad);
+  });
+
+  function getFilteredPeriodic() {
+    const q = document.getElementById("perSearch").value.trim().toLowerCase();
+    const rol = document.getElementById("perRole").value;
+    const orig = document.getElementById("perOrigin").value;
+
+    return periodicActs.filter((a) => {
+      if (activePeriodicCad === "CICLOS_LARGOS") {
+        if (["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) === -1) return false;
+      } else if (activePeriodicCad !== "ALL_PERIODIC") {
+        if (a.cadencia !== activePeriodicCad) return false;
+      }
+      if (rol !== "ALL" && String(a.rolResponsable).indexOf(rol) === -1) return false;
+      if (orig !== "ALL" && a.estadoValidacion !== orig) return false;
+      if (q) {
+        const hay = [a.codigo, a.cadencia, a.actividad, a.objetivo, a.consolaRuta, a.rolResponsable, a.evidenciaAuditable, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderPeriodicCards() {
+    const list = getFilteredPeriodic();
+    document.getElementById("perCountLabel").textContent =
+      "Mostrando " + list.length + " acciones periódicas en esta vista (haz clic en cada paso numerado para llevar control de lectura o ejecución).";
+
+    const box = document.getElementById("periodicCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay actividades periódicas que coincidan con los filtros seleccionados.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + ' aria-label="Completar ' + esc(a.codigo) + '">' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Rutina ' + esc(a.cadencia) + '</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge">' + esc(a.rolResponsable) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Objetivo de la Rutina</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Consola y Ruta Exacta</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Acciones Paso a Paso a Ejecutar y Validar (' + steps.length + ' pasos)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación de cierre y evidencia auditable:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<span>MITRE ATT&amp;CK: ' + esc(a.mitreTactic) + ' · ' + esc(a.notaValidacion) + '</span>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Ver guía oficial en MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+
+  ["perSearch", "perRole", "perOrigin"].forEach((id) => {
+    document.getElementById(id).addEventListener("input", renderPeriodicCards);
+    document.getElementById(id).addEventListener("change", renderPeriodicCards);
+  });
+
+  // VISTA 3: PLAYBOOKS AD-HOC (ALERTAS Y SEÑALES)
+  function renderAdhocCards() {
+    const q = document.getElementById("adhocSearch").value.trim().toLowerCase();
+    const list = adhocActs.filter((a) => {
+      if (!q) return true;
+      const hay = [a.codigo, a.actividad, a.disparadorAlerta, a.objetivo, a.consolaRuta, a.rolResponsable, a.mitreTactic, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+      return hay.indexOf(q) !== -1;
+    });
+
+    const box = document.getElementById("adhocCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay playbooks Ad-Hoc que coincidan con la búsqueda.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card adhoc-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Playbook Reactivo del Analista (Ad-Hoc)</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge badge-accent">MITRE: ' + esc(a.mitreTactic) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="trigger-banner">' +
+            '<div class="info-label">Señal, Alerta o Evento Disparador (Cuándo debe actuar el analista)</div>' +
+            '<div class="info-content" style="font-weight:600;">' + richText(a.disparadorAlerta) + '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Meta de Contención y Erradicación</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Analista Ejecutor y Consola de Intervención</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><strong>Rol:</strong> ' + esc(a.rolResponsable) + '<br><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Secuencia Táctica del Analista (' + steps.length + ' pasos de respuesta)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación post-contención y evidencia forense:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<button class="btn btn-sm go-queries-btn" type="button">Abrir Consultas KQL / Scripts de Apoyo →</button>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Documentación oficial de respuesta MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+  document.getElementById("adhocSearch").addEventListener("input", renderAdhocCards);
+
+  // Global delegation for task checkboxes, step rows, copy buttons & query jumps
+  document.addEventListener("change", (e) => {
+    const chk = e.target.closest(".task-checkbox");
+    if (!chk) return;
+    const key = chk.getAttribute("data-task");
+    uiState.tasks[key] = chk.checked;
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  document.addEventListener("click", (e) => {
+    const stepEl = e.target.closest(".step-row");
+    if (stepEl && !e.target.closest("a")) {
+      const sk = stepEl.getAttribute("data-step");
+      uiState.steps[sk] = !uiState.steps[sk];
+      saveState(uiState);
+      renderPeriodicCards();
+      renderAdhocCards();
+      return;
+    }
+    const copyBtn = e.target.closest(".copy-text-btn");
+    if (copyBtn) {
+      const txt = copyBtn.getAttribute("data-copy") || "";
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(() => {
+          const prev = copyBtn.textContent;
+          copyBtn.textContent = "¡Copiado!";
+          setTimeout(() => { copyBtn.textContent = prev; }, 1400);
+        });
+      }
+      return;
+    }
+    if (e.target.closest(".go-queries-btn")) {
+      switchView("view-queries");
+    }
+  });
+
+  document.getElementById("resetChecksBtn").addEventListener("click", () => {
+    uiState = { tasks: {}, steps: {} };
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  // Export CSV (all activities with action type distinction)
+  document.getElementById("exportCsvBtn").addEventListener("click", () => {
+    const hdr = ["TipoAccion", "Codigo", "Cadencia", "Actividad", "Disparador_u_Objetivo", "ConsolaRuta", "RolResponsable", "FuncionNIST", "SubcategoriaNIST", "MITRE", "EstadoValidacion", "Completado", "EvidenciaAuditable"];
+    const lines = [hdr.join(",")];
+    allActs.forEach((a) => {
+      const vals = [
+        a.tipoAccion, a.codigo, a.cadencia, a.actividad,
+        a.cadencia === "Ad-Hoc" ? a.disparadorAlerta : a.objetivo,
+        a.consolaRuta, a.rolResponsable, a.funcionNIST, a.subcategoriaNIST,
+        a.mitreTactic, a.estadoValidacion, uiState.tasks[a.codigo] ? "Si" : "No", a.evidenciaAuditable
+      ].map((v) => '"' + String(v || "").replace(/"/g, '""') + '"');
+      lines.push(vals.join(","));
+    });
+    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url; link.download = MODULE_DATA.slug + "_Guia_Operacional.csv";
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  });
+
+  // VISTA 4: QUERIES
+  function renderQueries() {
+    const q = document.getElementById("kqlSearch").value.trim().toLowerCase();
+    const uf = document.getElementById("kqlUsageFilter").value;
+    const list = (MODULE_DATA.consultasKQLyVerificacion || []).filter((it) => {
+      if (uf !== "ALL" && it.usoOperativo !== uf) return false;
+      if (q && [it.nombre, it.plataforma, it.tablaPrincipal, it.proposito, it.consulta, it.usoOperativo].join(" ").toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+
+    document.getElementById("queriesContainer").innerHTML = list.map((it, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">Q-' + String(idx + 1).padStart(2, "0") + ' · ' + esc(it.usoOperativo) + '</span>' +
+            '<h3 class="card-heading">' + esc(it.nombre) + '</h3>' +
+          '</div>' +
+          '<div class="pill-row">' +
+            '<span class="badge badge-accent">' + esc(it.plataforma) + '</span>' +
+            '<span class="badge mono">' + esc(it.tablaPrincipal) + '</span>' +
+            valBadge(it.estadoValidacion) +
+            '<button class="btn btn-sm copy-kql-btn" type="button" data-qidx="' + idx + '">Copiar consulta</button>' +
+          '</div>' +
+        '</div>' +
+        '<p style="margin:0 0 12px 0;"><strong>Qué valida o detecta:</strong> ' + richText(it.proposito) + '</p>' +
+        '<pre class="code-block">' + esc(it.consulta) + '</pre>' +
+      '</div>'
+    )).join("");
+
+    document.querySelectorAll(".copy-kql-btn").forEach((b) => {
+      b.addEventListener("click", () => {
+        const item = list[Number(b.getAttribute("data-qidx"))];
+        if (item && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(item.consulta).then(() => {
+            b.textContent = "¡Consulta copiada!";
+            setTimeout(() => { b.textContent = "Copiar consulta"; }, 1500);
+          });
+        }
+      });
+    });
+  }
+  document.getElementById("kqlSearch").addEventListener("input", renderQueries);
+  document.getElementById("kqlUsageFilter").addEventListener("change", renderQueries);
+
+  // VISTA 5: KPIs, MATURITY & TRAINING
+  document.getElementById("kpiContainer").innerHTML = (MODULE_DATA.kpisYMetricas || []).map((k) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:12px;">' +
+        '<div><span class="card-code">' + esc(k.id) + '</span><h4 class="card-heading" style="font-size:18px;">' + esc(k.nombre) + '</h4></div>' +
+        valBadge(k.estadoValidacion) +
+      '</div>' +
+      '<p style="margin:0 0 12px 0;">' + richText(k.definicion) + '</p>' +
+      '<pre class="code-block" style="margin:0 0 14px 0;">Fórmula: ' + esc(k.formula) + '</pre>' +
+      '<div class="pill-row">' +
+        '<span class="badge badge-accent">Meta: ' + esc(k.metaSugerida) + '</span>' +
+        '<span class="badge">Medición: ' + esc(k.frecuencia) + '</span>' +
+        '<span class="badge">' + esc(k.audiencia) + '</span>' +
+      '</div>' +
+      '<p class="muted" style="font-size:13px;margin:10px 0 0 0;">' + richText(k.notaValidacion) + '</p>' +
+    '</div>'
+  )).join("");
+
+  const mat = MODULE_DATA.modeloMadurez || [];
+  document.getElementById("maturityContainer").innerHTML = mat.map((m) => (
+    '<div class="spacious-card" style="padding:22px 28px;margin-bottom:14px;">' +
+      '<div class="pill-row" style="margin-bottom:6px;">' +
+        '<span class="card-code" style="margin-bottom:0;">' + richText(m.nivel) + '</span>' +
+        (m.estadio ? '<strong style="font-size:17px;">' + richText(m.estadio) + '</strong>' : '') +
+        '<span class="badge badge-editorial">Propuesta Editorial</span>' +
+      '</div>' +
+      '<div style="font-size:15.5px;">' + richText(m.descripcion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  const tr = MODULE_DATA.rutaFormacion || { headers: [], rows: [] };
+  if (tr.rows && tr.rows.length) {
+    document.getElementById("trainingContainer").innerHTML =
+      '<div class="table-wrap"><table><thead><tr>' +
+      tr.headers.map((h) => '<th>' + richText(h) + '</th>').join("") +
+      '</tr></thead><tbody>' +
+      tr.rows.map((row) => '<tr>' + row.map((cell, ci) => '<td>' + (ci === 0 ? '<strong>' + richText(cell) + '</strong>' : richText(cell)) + '</td>').join("") + '</tr>').join("") +
+      '</tbody></table></div>';
+  }
+
+  // VISTA 6: NIST CSF 2.0, AUDIT & REFS
+  function renderNist() {
+    const fn = document.getElementById("nistFuncSelect").value;
+    const rows = (MODULE_DATA.mapeoNISTCSF20 || []).filter((n) => fn === "ALL" || String(n.funcion).indexOf(fn) !== -1);
+    document.getElementById("nistCardsContainer").innerHTML = rows.map((n) => (
+      '<div class="spacious-card" style="padding:24px 30px;margin-bottom:16px;">' +
+        '<div class="card-top" style="margin-bottom:14px;">' +
+          '<div class="pill-row">' +
+            '<span class="card-code" style="margin-bottom:0;">' + esc(n.subcategoria) + '</span>' +
+            '<strong style="font-size:17px;">' + esc(n.funcion) + '</strong>' +
+          '</div>' +
+          valBadge(n.estadoValidacion) +
+        '</div>' +
+        '<p style="margin:0 0 14px 0;"><strong>Outcome NIST CSWP 29:</strong> ' + richText(n.descripcionResultado) + '</p>' +
+        '<div class="info-pair" style="margin-bottom:0;">' +
+          '<div class="info-box"><div class="info-label">Capacidad Habilitadora en Microsoft</div><div class="info-content">' + richText(n.capacidadMicrosoft) + '</div></div>' +
+          '<div class="info-box"><div class="info-label">Evidencia Auditable Reproducible</div><div class="info-content">' + richText(n.evidenciaAuditoria) + '</div></div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+  document.getElementById("nistFuncSelect").addEventListener("change", renderNist);
+
+  const vd = MODULE_DATA.validacionYDecisionesEditoriales || {};
+  document.getElementById("auditSummaryBox").innerHTML =
+    '<h4 style="margin:0 0 8px 0;font-size:18px;">Resumen de Auditoría Documental (' + esc(vd.fechaRevalidacion) + ')</h4>' +
+    '<p style="margin:0;">' + richText(vd.resumenAuditoria) + '</p>';
+
+  document.getElementById("corrContainer").innerHTML = '<ol style="padding-left:20px;margin:0;">' +
+    (vd.correccionesAplicadas || []).map((c) => '<li style="margin-bottom:12px;">' + richText(c) + '</li>').join("") + '</ol>';
+
+  document.getElementById("decContainer").innerHTML = (vd.decisionesEditoriales || []).map((d) => (
+    '<div class="info-box" style="margin-bottom:12px;">' +
+      '<div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;"><strong>' + esc(d.elemento) + '</strong>' + valBadge(d.tipo) + '</div>' +
+      '<div class="muted" style="font-size:14.5px;">' + richText(d.justificacion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  function renderRefs() {
+    const q = document.getElementById("refSearch").value.trim().toLowerCase();
+    const list = (MODULE_DATA.referenciasVerificadas || []).filter((r) => {
+      if (!q) return true;
+      return [r.id, r.titulo, r.tipoFuente, r.autor, r.comentario, r.url].join(" ").toLowerCase().indexOf(q) !== -1;
+    });
+    document.getElementById("refTableBody").innerHTML = list.map((r) => (
+      '<tr>' +
+        '<td class="mono"><strong>' + esc(r.id) + '</strong></td>' +
+        '<td><a href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer"><strong>' + esc(r.titulo) + ' ↗</strong></a><br><span class="mono muted" style="font-size:12px;">' + esc(r.url) + '</span></td>' +
+        '<td><span class="badge">' + esc(r.tipoFuente) + '</span></td>' +
+        '<td>' + esc(r.autor) + '</td>' +
+        '<td>' + richText(r.comentario) + '</td>' +
+      '</tr>'
+    )).join("");
+  }
+  document.getElementById("refSearch").addEventListener("input", renderRefs);
+
+  // Initial render
+  updateProgressTracker();
+  renderConfigView();
+  syncPeriodicSubnav();
+  renderPeriodicCards();
+  renderAdhocCards();
+  renderQueries();
+  renderNist();
+  renderRefs();
+  applyInitialHash();
+})();
+</script>
+</body>
+</html>

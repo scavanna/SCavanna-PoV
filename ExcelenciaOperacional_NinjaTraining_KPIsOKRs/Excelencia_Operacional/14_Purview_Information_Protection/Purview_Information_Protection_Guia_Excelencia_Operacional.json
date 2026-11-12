@@ -1,0 +1,1339 @@
+{
+  "schemaVersion": "2.0",
+  "id": "14_Purview_Information_Protection",
+  "orden": 14,
+  "slug": "Purview_Information_Protection",
+  "nombre": "Microsoft Purview Information Protection (Sensitivity Labels, Clasificación, Cifrado y Scanner)",
+  "nombreCorto": "Purview Information Protection",
+  "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)",
+  "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://purview.microsoft.com",
+    "https://security.microsoft.com",
+    "https://admin.microsoft.com",
+    "https://entra.microsoft.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "Data Security Architect",
+    "Information Protection Admin",
+    "SOC Manager",
+    "SOC L1",
+    "SOC L2",
+    "SOC L3 / Detection Engineer",
+    "Collaboration Admin",
+    "Data Owners",
+    "GRC"
+  ],
+  "relacionM365E5": {
+    "estado": "Incluido en Microsoft 365 E5",
+    "licencias": [
+      "Microsoft 365 E5 / A5 / G5 y Office 365 E5 (incluye etiquetado manual, auto-labeling en cliente y servicio, EDM, Trainable Classifiers, Dynamic Watermarking, Default Library Labels y DKE)",
+      "Microsoft Purview Suite (denominación oficial desde octubre de 2025 para Microsoft 365 E5 Compliance sobre base Microsoft 365 E3)",
+      "Microsoft 365 E5 Information Protection and Governance (add-on especializado sobre M365 E3)",
+      "Microsoft 365 E3 / Office 365 E3 / EMS E3 (incluye etiquetado manual, predeterminado de política, obligatorio y cifrado persistente Azure RMS sin auto-labeling)",
+      "Enterprise Mobility + Security (EMS) E5 / Azure Information Protection Premium P2 (auto-labeling en cliente, Scanner con condiciones automáticas y DKE; AIP P1 standalone retirado para nuevos clientes desde ene-2024)",
+      "Suscripción Azure Pay-As-You-Go (PAYG) para etiquetado en Microsoft Purview Data Map sobre orígenes no-M365 y Microsoft 365 E7 / Agent 365 (GA mayo de 2026) para cargas agénticas"
+    ],
+    "prerrequisitos": [
+      "Habilitación de integración de Sensitivity Labels para archivos Office y soporte nativo de PDF en SharePoint Online y OneDrive (EnableAIPIntegration = True y EnableSensitivityLabelforPDF = True)",
+      "Activación de Co-authoring for files with sensitivity labels en purview.microsoft.com y despliegue exclusivo de etiquetado nativo integrado (Built-in) en Microsoft 365 Apps tras el retiro del AIP Unified Labeling add-in",
+      "Adopción o migración planificada hacia el esquema moderno de Label groups (automático para tenants creados desde el 1 de octubre de 2025)",
+      "Activación de Azure Rights Management service y mantenimiento en estado Disabled por defecto de la característica Super User salvo excepción auditada",
+      "Habilitación de Unified Audit Log (recomendado Purview Audit Premium con retención de 1 año) e integración con CloudAppEvents / OfficeActivity en security.microsoft.com",
+      "Migración de File Policies de etiquetado heredadas desde Microsoft Defender for Cloud Apps antes de su retiro definitivo el 6 de enero de 2027"
+    ],
+    "notaLicenciamiento": "Aunque Purview Information Protection opera técnicamente a nivel de tenant, todo usuario que se beneficie del servicio (incluidos administradores) requiere licencia elegible. La diferencia crítica entre E3 y E5/Purview Suite radica en la automatización y escala: M365 E3 cubre etiquetado manual y cifrado Azure RMS, mientras que M365 E5 / Microsoft Purview Suite habilita auto-labeling en cliente y en servicio (hasta 500.000 archivos/día en SharePoint/OneDrive), Exact Data Match (hasta 100 millones de filas), Trainable Classifiers, Dynamic Watermarking, etiquetas predeterminadas en bibliotecas de SharePoint y Double Key Encryption (DKE). El etiquetado de activos fuera de M365 en Purview Data Map (SQL, Azure Storage, Amazon S3) se factura por consumo mediante Azure Pay-As-You-Go."
+  },
+  "resumenEjecutivo": "Microsoft Purview Information Protection es la plataforma fundacional de seguridad centrada en el dato del ecosistema Microsoft 365 E5 y Microsoft Purview Suite. Permite descubrir, clasificar, etiquetar y cifrar de forma persistente documentos, correos, reuniones, contenedores colaborativos (Teams, M365 Groups, SharePoint Sites, Loop, Viva Engage) y activos analíticos/multicloud (Microsoft Fabric, Power BI, SQL, Azure Storage, AWS S3). A noviembre de 2026, su excelencia operacional exige gobernar el esquema moderno de Label groups, operar el modelo Secure by Default combinando etiquetas predeterminadas, etiquetas de contenedor y auto-etiquetado en cliente/servicio (hasta 500.000 archivos/día con soporte PDF), asegurar que Microsoft 365 Copilot y agentes respeten estrictamente los derechos de uso VIEW y EXTRACT junto con la herencia de etiquetas, completar la salida de las File Policies de Defender for Cloud Apps antes del 6 de enero de 2027, e integrar la telemetría de degradación de etiquetas y oversharing en las cadencias diarias, semanales y de respuesta a incidentes del SOC en security.microsoft.com con evidencia auditable alineada a NIST CSF 2.0.",
+  "principiosRectores": [
+    {
+      "principio": "Verificación explícita mediante clasificación y derechos de uso (Zero Trust Data)",
+      "descripcion": "Evaluar en cada acceso, compartición externa, exportación de Power BI o interacción con Microsoft 365 Copilot y agentes tanto la identidad en Entra ID como la etiqueta de sensibilidad y los derechos RMS (VIEW y EXTRACT).",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/security/zero-trust/deploy/data"
+    },
+    {
+      "principio": "Despliegue Secure by Default y gestión por excepción",
+      "descripcion": "Aplicar etiquetado predeterminado corporativo, priorizar sitios y bibliotecas sensibles con etiquetas de contenedor y de biblioteca, expandir auto-labeling y entrenar a los usuarios para gestionar excepciones justificadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-secure-by-default-intro"
+    },
+    {
+      "principio": "Protección persistente que viaja con el dato (Assume Breach con Azure RMS)",
+      "descripcion": "Acoplar cifrado basado en identidad, marcas de agua dinámicas y capacidad de revocación directamente al archivo o mensaje para mitigar el impacto aun si el activo sale del perímetro corporativo.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/encryption-sensitivity-labels"
+    },
+    {
+      "principio": "Equilibrio entre seguridad criptográfica y Reasoning Over Data",
+      "descripcion": "Utilizar Azure RMS o Customer Key en el 95% de los datos sensibles para preservar búsqueda, coautoría, DLP, eDiscovery y Copilot autorizado, reservando Double Key Encryption (DKE) exclusivamente al ~5% ultraconfidencial regulado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/double-key-encryption"
+    },
+    {
+      "principio": "Gobierno basado en simulación previa (Simulation-First Auto-Labeling)",
+      "descripcion": "Ejecutar toda política de auto-etiquetado en servicio y clasificador EDM/entrenable en modo simulación con validación muestral de los dueños de datos antes de activar la aplicación en producción.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/apply-sensitivity-label-automatically"
+    },
+    {
+      "principio": "Operación SecOps continua y evidencia auditable por diseño",
+      "descripcion": "Integrar eventos de remoción/bajada de etiquetas, oversharing contenedor-documento y uso privilegiado con señales XDR/SIEM para transformar la telemetría en detección temprana, contención y prueba regulatoria.",
+      "estadoValidacion": "Propuesta Editorial",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/audit-log-activities"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Sensitivity Labels y Esquema Moderno de Label Groups",
+      "funcionOperativa": "Estructura la taxonomía corporativa en grupos organizativos ligeros (nombre, descripción, color y prioridad, predeterminados desde oct-2025) y etiquetas con cifrado, marcas visuales, auto-etiquetado en cliente y ámbitos modulares.",
+      "portalRuta": "purview.microsoft.com > Solutions > Information Protection > Sensitivity labels",
+      "integraciones": [
+        "Microsoft 365 Apps (Built-in labeling)",
+        "SharePoint Online & OneDrive",
+        "Exchange Online & Microsoft Teams",
+        "Microsoft 365 Copilot & Fabric/Power BI"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Políticas de Publicación (Label Publishing Policies)",
+      "funcionOperativa": "Distribuye etiquetas a usuarios, grupos o Administrative Units definiendo etiquetas predeterminadas por carga de trabajo, etiquetado obligatorio (mandatory labeling) y exigencia de justificación al reducir sensibilidad.",
+      "portalRuta": "purview.microsoft.com > Solutions > Information Protection > Publishing policies",
+      "integraciones": [
+        "Microsoft Entra ID Groups",
+        "Microsoft Entra Administrative Units",
+        "Outlook, Office Desktop/Web/Mobile y Power BI"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Motor de Auto-Labeling en Servicio (Service-Side Auto-Labeling)",
+      "funcionOperativa": "Clasifica y etiqueta automáticamente archivos en reposo en SharePoint y OneDrive (techo máximo agregado de hasta 500.000 archivos/día por tenant y simulación hasta 20M) y correos en tránsito en Exchange Online, con analítica en pestaña Insights.",
+      "portalRuta": "purview.microsoft.com > Solutions > Information Protection > Auto-labeling",
+      "integraciones": [
+        "SharePoint Online & OneDrive (Office y PDFs)",
+        "Exchange Online (en tránsito)",
+        "Microsoft Purview Data Map (activos no-M365 PAYG)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Suite de Clasificadores (SITs, Named Entities, EDM 100M y Trainable Classifiers)",
+      "funcionOperativa": "Identifica datos sensibles mediante más de 300 SITs integrados, SITs personalizados, entidades nombradas, huellas de documentos, Exact Data Match (hasta 100 millones de filas hasheadas con refresco diario) y modelos ML entrenables.",
+      "portalRuta": "purview.microsoft.com > Solutions > Information Protection > Classifiers",
+      "integraciones": [
+        "Purview Auto-labeling",
+        "Microsoft Purview Data Loss Prevention",
+        "Microsoft Purview Insider Risk Management & DSPM"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Azure Rights Management (Azure RMS), Dynamic Watermarking y Super User",
+      "funcionOperativa": "Aplica cifrado persistente basado en identidad, evalúa derechos de uso granulares (VIEW, EXTRACT, PRINT, EXPORT, OWNER), inserta marcas de agua dinámicas con UPN/fecha y provee recuperación controlada vía Super User.",
+      "portalRuta": "purview.microsoft.com > Settings > Information Protection + PowerShell AIPService",
+      "integraciones": [
+        "Microsoft Entra ID & External Identities B2B",
+        "Azure Key Vault / Managed HSM (BYOK & Customer Key)",
+        "Purview eDiscovery & Microsoft 365 Copilot"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Purview Double Key Encryption (DKE)",
+      "funcionOperativa": "Protege datos ultraconfidenciales regulados con dos claves independientes (una en Azure y otra en el servicio DKE custodiado por el cliente on-premises o en nube), impidiendo acceso en claro a servicios cloud incluidos Copilot y Office Web.",
+      "portalRuta": "Servicio DKE del cliente + purview.microsoft.com > Sensitivity labels > Encryption",
+      "integraciones": [
+        "Microsoft 365 Apps para Windows",
+        "Microsoft Purview Information Protection Client / Viewer / Scanner",
+        "MIP SDK 1.7+"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Etiquetas de Contenedor y Default Document Library Labels",
+      "funcionOperativa": "Aplica controles de privacidad, invitados externos, vínculos compartidos y acceso desde dispositivos no gestionados sobre Teams, M365 Groups, SharePoint Sites, Loop y Viva Engage, más etiquetado automático por ubicación en bibliotecas SharePoint.",
+      "portalRuta": "admin.microsoft.com / SharePoint Admin Center / Library Settings",
+      "integraciones": [
+        "Microsoft Entra Conditional Access (Authentication Context)",
+        "SharePoint Online & Microsoft Teams",
+        "Microsoft Loop & Viva Engage"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Purview Information Protection Scanner y Cliente MPIP",
+      "funcionOperativa": "Servicio sobre Windows Server (integrado en el cliente MPIP 3.2.x que sustituyó al cliente clásico AIP) para descubrir, clasificar y cifrar archivos en repositorios locales SMB, NFS (Preview) y SharePoint Server.",
+      "portalRuta": "purview.microsoft.com > Settings > Information Protection > Information protection scanner",
+      "integraciones": [
+        "Windows Server & SQL Server",
+        "Recursos compartidos UNC (SMB / NFS Preview)",
+        "SharePoint Server Subscription Edition / soporte extendido"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Exploradores, Informes de Postura y Telemetría XDR / Sentinel",
+      "funcionOperativa": "Proporciona inventario y trazabilidad en Data/Content Explorer, Activity Explorer e informes de postura (ventana móvil de 30 días), exportables por PowerShell y correlacionables en CloudAppEvents y OfficeActivity.",
+      "portalRuta": "purview.microsoft.com > Solutions > Information Protection > Explorers / Reports y security.microsoft.com",
+      "integraciones": [
+        "Microsoft Purview Audit (Standard / Premium)",
+        "Microsoft Defender XDR (CloudAppEvents)",
+        "Microsoft Sentinel & Microsoft Security Copilot"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "Information Protection Admin",
+      "nivelSOC": "Ingeniería de Seguridad de Datos / Plataforma",
+      "permisosClave": "Creación, edición y publicación de etiquetas de sensibilidad, políticas de publicación, auto-labeling, SITs personalizados, esquemas EDM y configuración del Scanner.",
+      "asignacionPIM": "Eligible en Entra PIM for Groups (elevación JIT máx. 4 horas con MFA phishing-resistant y ticket de cambio aprobado).",
+      "responsabilidadOperativa": "Diseño y mantenimiento de taxonomía, cifrado, clasificadores y despliegues controlados sin auto-aprobar cambios propios.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Information Protection Analyst",
+      "nivelSOC": "SOC L1 / L2 — Operaciones de Datos",
+      "permisosClave": "Revisión de alertas, métricas de simulación de auto-etiquetado, Activity Explorer e informes operativos sin alterar etiquetas globales.",
+      "asignacionPIM": "Eligible en Entra PIM (turno operativo máx. 8 horas con MFA phishing-resistant).",
+      "responsabilidadOperativa": "Triaje diario de alertas, validación de simulaciones de auto-labeling y monitoreo de tendencias y bajadas de etiqueta.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Information Protection Investigator",
+      "nivelSOC": "SOC L2 / L3 — Respuesta a Incidentes de Datos",
+      "permisosClave": "Investigación detallada de eventos y elementos clasificados asociados a alertas o incidentes de exposición de información.",
+      "asignacionPIM": "Eligible en Entra PIM (JIT máx. 4 horas vinculado a identificador de incidente activo).",
+      "responsabilidadOperativa": "Ejecución de investigaciones forenses sobre remoción masiva de etiquetas, oversharing o compromiso de cuentas.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Information Protection Reader",
+      "nivelSOC": "GRC / Auditoría Interna / Arquitectura",
+      "permisosClave": "Lectura de etiquetas, políticas de publicación, políticas de auto-labeling e informes de postura sin permisos de escritura.",
+      "asignacionPIM": "Asignación activa acotada o Eligible 8 horas para revisiones de gobierno y auditoría.",
+      "responsabilidadOperativa": "Verificación independiente de controles, conciliación mensual de cambios y preparación de auditorías.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Data Classification Content Viewer",
+      "nivelSOC": "Acceso Sensible Restringido (Forense / DPO)",
+      "permisosClave": "Visualización directa del cuerpo y contenido real de archivos y correos coincidentes en Content Explorer / Data Explorer.",
+      "asignacionPIM": "Eligible estricto (JIT máx. 2 horas con aprobación dual de Legal/Privacidad y SOC Manager).",
+      "responsabilidadOperativa": "Confirmación excepcional de contenido sensible en investigaciones mayores, segregado de administradores diarios.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Data Classification List Viewer",
+      "nivelSOC": "Analista de Postura / Remediación",
+      "permisosClave": "Consulta de rutas, nombres de elementos y recuentos por etiqueta o SIT en los exploradores sin permiso para abrir el contenido.",
+      "asignacionPIM": "Eligible en Entra PIM (JIT máx. 8 horas).",
+      "responsabilidadOperativa": "Inventario de cobertura y seguimiento de remediación con dueños de sitios preservando la confidencialidad del contenido.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Azure RMS Super User (Grupo dedicado)",
+      "nivelSOC": "Custodia Criptográfica / Recuperación Legal",
+      "permisosClave": "Otorga derecho OWNER (control total y descifrado) sobre cualquier activo protegido por Azure RMS en el tenant (excepto clave cliente DKE).",
+      "asignacionPIM": "Característica Disabled por defecto; habilitación temporal de emergencia con doble aprobación o restringida a cuentas de servicio auditadas.",
+      "responsabilidadOperativa": "Recuperación criptográfica de emergencia e inspección autorizada de eDiscovery/Scanner bajo auditoría estricta.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "SharePoint / Teams Administrator",
+      "nivelSOC": "Ingeniería de Colaboración Segura",
+      "permisosClave": "Activación de integración MIP y PDF en SharePoint, asignación de etiquetas de contenedor y vinculación con Authentication Contexts.",
+      "asignacionPIM": "Eligible en Entra PIM (JIT máx. 4 horas coordinado con Information Protection Admin).",
+      "responsabilidadOperativa": "Aplicación de guardrails de contenedor, bibliotecas predeterminadas y mitigación de oversharing previo a Copilot.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Verificación de salud de ingesta y telemetría de Information Protection",
+      "objetivo": "Confirmar que el flujo de eventos desde Unified Audit Log y Activity Explorer hacia Defender XDR y Microsoft Sentinel opera sin caídas silenciosas.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Data connectors y purview.microsoft.com > Information Protection > Activity explorer",
+      "procedimiento": [
+        "Comprobar estado Connected en los conectores de Microsoft 365 y Microsoft Defender XDR dentro de security.microsoft.com.",
+        "Comparar el volumen de eventos de etiquetado de las últimas 24 horas contra el promedio móvil de los últimos 7 días hábiles.",
+        "Confirmar presencia reciente de eventos en Activity Explorer sin retraso anormal.",
+        "Escalar incidente de infraestructura si el volumen cae más de un 20% en día hábil sin mantenimiento programado."
+      ],
+      "rolResponsable": "SOC L1 / Platform Engineer",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-06",
+      "mitreTactic": "Defense Evasion (T1562)",
+      "evidenciaAuditable": "Registro diario de salud de conectores y comparativa de ingesta 24h vs. línea base de 7 días.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Microsoft documenta la supervisión de conectores; el umbral del 20% y la secuencia previa al triaje son criterios consultivos.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/connect-data-sources"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Auditoría de cambios administrativos del día anterior sobre etiquetas y políticas",
+      "objetivo": "Detectar modificaciones, despublicaciones o eliminaciones no autorizadas en etiquetas de sensibilidad, políticas de publicación o auto-labeling.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit > Search (o Advanced Hunting en security.microsoft.com)",
+      "procedimiento": [
+        "Ejecutar búsqueda sobre operaciones New-Label, Set-Label, Remove-Label, New-LabelPolicy, Set-LabelPolicy, Remove-LabelPolicy y Set-AutoSensitivityLabelPolicy.",
+        "Conciliar cada operación detectada contra tickets aprobados en ITSM y elevaciones válidas en Entra PIM.",
+        "Verificar que ninguna etiqueta cifrante haya sido eliminada ni se hayan alterado derechos EXTRACT o BlockContentAnalysisServices sin autorización.",
+        "Activar el playbook AH-04 ante cualquier cambio administrativo sin respaldo aprobado."
+      ],
+      "rolResponsable": "SOC L1 / GRC Analyst",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Defense Evasion (T1562.001)",
+      "evidenciaAuditable": "Exportación diaria de operaciones administrativas conciliada al 100% con folios ITSM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Las operaciones auditadas corresponden al esquema oficial del Unified Audit Log; la tolerancia cero sin ticket es política operativa.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-log-activities"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Triaje de alertas e incidentes relacionados con clasificación y datos sensibles",
+      "objetivo": "Atender, clasificar y escalar dentro de SLA las alertas de Purview y detecciones correlacionadas en la cola unificada del SOC.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts > Incidents",
+      "procedimiento": [
+        "Filtrar incidentes activos asociados a eventos de clasificación, degradación de etiquetas y reglas personalizadas de protección de información.",
+        "Priorizar por severidad (Critical, High, Medium, Low) revisando identidad, dispositivo, archivo y etiqueta comprometida.",
+        "Clasificar cada alerta en Verdadero Positivo (activar AH-01/AH-02), Falso Positivo (documentar para S-01) o Actividad Benigna Autorizada.",
+        "Registrar marca temporal de reconocimiento y propietario del caso para control de MTTA."
+      ],
+      "rolResponsable": "SOC L1 / Information Protection Analyst",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "Collection (T1005)",
+      "evidenciaAuditable": "Bitácora auditable de triaje con clasificación VP/FP/BP y tiempos de atención.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Gestión unificada en security.microsoft.com verificada; la taxonomía operativa de triaje y SLAs son consultivos.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/incidents-overview"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Caza diaria de bajadas de nivel (downgrades) y remoción de etiquetas o cifrado",
+      "objetivo": "Identificar usuarios que degradan o eliminan etiquetas Confidential / Highly Confidential para preparar exfiltración o eludir controles.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Information Protection > Explorers > Activity explorer y Advanced Hunting",
+      "procedimiento": [
+        "Filtrar Activity Explorer y CloudAppEvents (últimas 24h) por Label removed y Label changed en sentido descendente de prioridad.",
+        "Inspeccionar justificaciones ingresadas para detectar textos evasivos o concentraciones inusuales (>=5 eventos por usuario en 24h).",
+        "Cruzar los usuarios identificados contra nivel de riesgo en Insider Risk Management y comparticiones externas posteriores.",
+        "Escalar anomalías confirmadas al playbook de investigación forense AH-01."
+      ],
+      "rolResponsable": "SOC L2 / Information Protection Analyst",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Defense Evasion (T1562)",
+      "evidenciaAuditable": "Reporte diario de bajadas/remociones críticas y revisión de justificaciones.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Eventos soportados en Activity Explorer y CloudAppEvents; umbral de >=5 eventos en 24h es propuesta consultiva.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/activity-explorer"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo y notificación de eventos de oversharing contenedor-documento",
+      "objetivo": "Detectar archivos cuya etiqueta supera la sensibilidad del sitio SharePoint o equipo Teams contenedor (FileSensitivityLabelMismatch).",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit > Search (FileSensitivityLabelMismatch)",
+      "procedimiento": [
+        "Consultar los eventos FileSensitivityLabelMismatch registrados en las últimas 24 horas en SharePoint Online y Teams.",
+        "Evaluar la severidad de la brecha identificando sitios públicos internos o con invitados externos habilitados.",
+        "Comprobar si el dueño del contenedor remedió el hallazgo tras la notificación automática por correo.",
+        "Ejecutar remediación inmediata (AH-03) cuando involucre activos Highly Confidential en sitios con acceso externo."
+      ],
+      "rolResponsable": "SOC L1 / Collaboration Security Analyst",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Exfiltration (T1567)",
+      "evidenciaAuditable": "Listado diario de eventos FileSensitivityLabelMismatch y estado de remediación por sitio.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "El evento de auditoría FileSensitivityLabelMismatch es nativo de Container Labels en SharePoint/Teams.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/sensitivity-labels-teams-groups-sites"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Vigilancia de salud operativa de Azure RMS, DKE y accesos denegados a archivos cifrados",
+      "objetivo": "Garantizar que el servicio criptográfico permanezca operativo y analizar picos de denegación de acceso sobre activos protegidos.",
+      "consolaRuta": "admin.microsoft.com > Health > Service health, endpoint DKE y Unified Audit Log",
+      "procedimiento": [
+        "Revisar Service Health para descartar incidentes de plataforma en Azure Rights Management y validar disponibilidad HTTPS del servicio DKE propio.",
+        "Agrupar eventos de acceso denegado a archivos cifrados por usuario, dirección IP y documento.",
+        "Separar problemas de configuración B2B legítimos frente a intentos de apertura no autorizados tras exfiltración o revocación.",
+        "Correlacionar usuarios con >5 denegaciones diarias sobre activos críticos con alertas de identidad en Entra ID."
+      ],
+      "rolResponsable": "SOC L2 / Platform Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-01",
+      "mitreTactic": "Collection (T1213)",
+      "evidenciaAuditable": "Verificación diaria de disponibilidad RMS/DKE y análisis de accesos denegados anómalos.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Combina monitoreo de salud oficial con heurística consultiva (>5 denegaciones/24h) para detección de abuso.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/azure-rights-management-learn-about"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Supervisión de interacciones de Microsoft 365 Copilot y agentes con contenido etiquetado",
+      "objetivo": "Auditar el acceso y resumen por IA generativa sobre archivos Confidential y Highly Confidential verificando cumplimiento de derechos.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Information Protection > Activity explorer (Copilot interaction) y DSPM for AI",
+      "procedimiento": [
+        "Filtrar Activity Explorer y CloudAppEvents por CopilotInteraction donde los recursos accedidos posean etiquetas de sensibilidad altas.",
+        "Identificar patrones anómalos de consulta masiva de repositorios sensibles mediante prompts de usuario o agentes.",
+        "Verificar que ningún elemento con BlockContentAnalysisServices o sin derecho EXTRACT haya sido devuelto a no propietarios.",
+        "Canalizar sitios con sobreexposición detectada hacia la auditoría semanal de contenedores S-04."
+      ],
+      "rolResponsable": "SOC L2 / AI Data Security Analyst",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Collection (T1005)",
+      "evidenciaAuditable": "Reporte diario de interacciones de Copilot y agentes sobre información etiquetada.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Basado en el registro oficial de CopilotInteraction y el control de derechos VIEW/EXTRACT en Purview.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/ai-m365-copilot-considerations"
+    },
+    {
+      "codigo": "D-08",
+      "cadencia": "Diaria",
+      "actividad": "Control de SLAs de incidentes de datos abiertos y actualización del tablero diario",
+      "objetivo": "Asegurar el cumplimiento de ventanas de atención/contención y emitir el estado operativo RAG al cierre de la guardia.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts > Incidents y Workbook SOC en Sentinel",
+      "procedimiento": [
+        "Inspeccionar todos los incidentes abiertos de protección de datos verificando tiempo consumido frente a metas MTTA/MTTC.",
+        "Escalar al SOC Manager todo incidente con menos del 20% de margen SLA restante.",
+        "Actualizar el semáforo diario RAG (salud de ingesta, cambios admin, alertas críticas, downgrades, oversharing y disponibilidad RMS)."
+      ],
+      "rolResponsable": "SOC Shift Lead",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MA-01",
+      "mitreTactic": "Exfiltration (T1048)",
+      "evidenciaAuditable": "Snapshot diario del tablero RAG y registro de entrega de turno.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Práctica recomendada de gobierno operativo del SOC; los umbrales RAG y SLAs son definidos por la organización.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/soc-optimization/soc-optimization-reference"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Afinamiento (tuning) de SITs personalizados, EDM y clasificadores entrenables",
+      "objetivo": "Incrementar la precisión del motor de clasificación y reducir falsos positivos detectados en operación diaria.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Information Protection > Classifiers",
+      "procedimiento": [
+        "Analizar los falsos positivos registrados durante la semana agrupados por SIT, entidad nombrada, EDM o clasificador entrenable.",
+        "Refinar niveles de confianza, proximidad, palabras clave corroborativas y operadores AND en SITs personalizados.",
+        "Comprobar la correcta ejecución y hash de las cargas programadas de Exact Data Match (hasta 100 millones de filas).",
+        "Validar los clasificadores ajustados con muestras positivas y negativas antes de promoverlos."
+      ],
+      "rolResponsable": "Information Protection Admin / SOC L3",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.IM-03",
+      "mitreTactic": "Collection (T1005)",
+      "evidenciaAuditable": "Bitácora semanal de tuning de clasificadores y log de refresco exitoso de esquemas EDM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Alineado con las prácticas recomendadas de reducción de falsos positivos en Secure by Default Step 3 y EDM.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/sit-learn-about-exact-data-match-based-sits"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Evaluación de políticas de auto-etiquetado en simulación y pestaña Insights",
+      "objetivo": "Validar con dueños de datos la precisión de políticas en simulación y corregir errores de procesamiento en políticas activas.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Information Protection > Auto-labeling",
+      "procedimiento": [
+        "Revisar muestras de elementos coincidentes en políticas en modo simulación junto a los Data Owners antes de activar la aplicación real.",
+        "Inspeccionar la pestaña Insights de las políticas en producción registrando archivos etiquetados, fallidos y las 3 causas principales de fallo.",
+        "Monitorear el caudal diario frente al límite máximo de 500.000 archivos/día por tenant en SharePoint y OneDrive.",
+        "Verificar que el soporte de etiquetado PDF continúe activo para no excluir documentos PDF."
+      ],
+      "rolResponsable": "Information Protection Admin + Data Owners",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-01",
+      "mitreTactic": "Collection (T1213)",
+      "evidenciaAuditable": "Actas de aprobación de simulación y capturas semanales de la pestaña Insights.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "La pestaña Insights, el modo simulación y el límite de 500.000 archivos/día están documentados en Microsoft Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/auto-label-insights-tab"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Revisión de tendencias de clasificación, adopción y justificaciones de downgrade",
+      "objetivo": "Medir evolución de etiquetado manual vs. automático y corregir fricciones o abusos en bajadas de sensibilidad.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Information Protection > Reports y PowerShell Export-ActivityExplorerData",
+      "procedimiento": [
+        "Exportar incrementalmente los últimos 7 días de Activity Explorer con Export-ActivityExplorerData hacia repositorio histórico.",
+        "Evaluar distribución porcentual entre etiquetas aplicadas automáticamente, por defecto y manualmente por área.",
+        "Consolidar las 10 justificaciones más frecuentes de bajada de etiqueta y acordar ajustes de política o refuerzo formativo."
+      ],
+      "rolResponsable": "Information Protection Analyst",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "Defense Evasion (T1562)",
+      "evidenciaAuditable": "Archivo JSON/CSV exportado e informe semanal de adopción y downgrades.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "El uso de Export-ActivityExplorerData permite superar la ventana nativa de 30 días del portal.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/export-activityexplorerdata"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría de sitios SharePoint y equipos Teams sin etiqueta de contenedor o desalineados",
+      "objetivo": "Detectar contenedores colaborativos sin clasificar o con incongruencias frente a etiquetas predeterminadas de biblioteca.",
+      "consolaRuta": "SharePoint Admin Center, admin.teams.microsoft.com y Microsoft Graph PowerShell",
+      "procedimiento": [
+        "Consultar vía Microsoft Graph el listado de sitios SharePoint, Teams y M365 Groups sin sensitivityLabel asignada.",
+        "Identificar sitios Confidential / Highly Confidential cuyas bibliotecas carezcan de etiqueta predeterminada coherente.",
+        "Exigir remediación a propietarios o aplicar etiqueta de contenedor por defecto conforme a la política de gobierno."
+      ],
+      "rolResponsable": "SharePoint / Teams Admin + Information Protection Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Exfiltration (T1567)",
+      "evidenciaAuditable": "Inventario semanal de contenedores sin etiqueta y reporte de alineación sitio-biblioteca.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Práctica explícitamente recomendada en el Paso 4 del modelo Secure by Default de Microsoft Purview.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-secure-by-default-step4"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Supervisión de ciclos y resultados del Information Protection Scanner on-premises",
+      "objetivo": "Asegurar la cobertura continua de descubrimiento y cifrado sobre file shares SMB, NFS (Preview) y SharePoint Server.",
+      "consolaRuta": "purview.microsoft.com > Settings > Information Protection > Information protection scanner",
+      "procedimiento": [
+        "Comprobar estado activo, versión del cliente MPIP 3.2.x y conectividad SQL/Entra de todos los nodos del clúster Scanner.",
+        "Analizar informes de cada Content scan job (archivos escaneados, etiquetados, omitidos o con error de permisos).",
+        "Agregar nuevos repositorios compartidos locales detectados inicialmente en modo descubrimiento."
+      ],
+      "rolResponsable": "Information Protection Admin / Hybrid Infrastructure Engineer",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-02",
+      "mitreTactic": "Collection (T1039)",
+      "evidenciaAuditable": "Logs e informes semanales de ejecución de Content scan jobs por repositorio local.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Arquitectura y operación de ciclos del Scanner verificada en Microsoft Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/deploy-scanner"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría del rol Super User de Azure RMS y accesos a Content/Data Explorer",
+      "objetivo": "Verificar que el descifrado administrativo y la visualización directa de contenido sensible cumplan controles de mínimo privilegio.",
+      "consolaRuta": "PowerShell AIPService, Purview Audit y entra.microsoft.com > Privileged Identity Management",
+      "procedimiento": [
+        "Ejecutar Get-AipServiceSuperUserFeature para confirmar que permanezca Disabled fuera de excepciones documentadas.",
+        "Revisar logs administrativos (Get-AipServiceAdminLog) y activaciones PIM del rol Data Classification Content Viewer.",
+        "Validar aprobación dual y número de expediente para cada acceso al contenido."
+      ],
+      "rolResponsable": "SOC L2 / GRC Lead",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Valid Accounts (T1078)",
+      "evidenciaAuditable": "Informe semanal de auditoría de Super User y accesos privilegiados a Content Explorer.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Cmdlets de auditoría y estado Disabled por defecto verificados; aprobación dual es control consultivo.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/encryption-super-users"
+    },
+    {
+      "codigo": "S-07",
+      "cadencia": "Semanal",
+      "actividad": "Ajuste de reglas analíticas de correlación en Defender XDR / Microsoft Sentinel",
+      "objetivo": "Optimizar la relación señal-ruido de las detecciones que combinan eventos de etiquetas Purview con identidad y endpoint.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Analytics",
+      "procedimiento": [
+        "Revisar métricas de verdaderos vs. falsos positivos de las reglas KQL sobre degradación de etiquetas y oversharing.",
+        "Incorporar exclusiones acotadas para cuentas de servicio verificadas (ej. Scanner on-premises restringido por IP/host).",
+        "Versionar los ajustes KQL en control de código fuente."
+      ],
+      "rolResponsable": "SOC L3 / Detection Engineer",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-04",
+      "mitreTactic": "Exfiltration (T1567)",
+      "evidenciaAuditable": "Registro de versiones de reglas analíticas y evolución semanal de tasa VP.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Cadencia semanal de tuning alineada a buenas prácticas de ingeniería de detección SOC.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Exportación histórica de postura, cobertura de etiquetado y control FinOps PAYG",
+      "objetivo": "Resguardar evidencia mensual antes del vencimiento de 30 días de los reportes en preview y auditar cargos Pay-As-You-Go.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Information Protection > Reports, Usage center y Export-ContentExplorerData",
+      "procedimiento": [
+        "Guardar en PDF los informes de postura de Information Protection y ejecutar Export-ContentExplorerData por carga de trabajo.",
+        "Capturar el informe de etiquetas en Unified Catalog si existen activos etiquetados en Purview Data Map.",
+        "Conciliar en Usage center y Azure Cost Management el consumo mensual PAYG contra presupuesto."
+      ],
+      "rolResponsable": "Information Protection Admin + FinOps Analyst",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Collection (T1213)",
+      "evidenciaAuditable": "Paquete mensual de reportes PDF/CSV de cobertura y conciliación financiera PAYG.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Los Posture Reports tienen ventana móvil de 30 días en preview; exportar es indispensable para auditoría anual.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-reports"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Pruebas integrales de efectividad de cifrado persistente, Dynamic Watermarking y Copilot",
+      "objetivo": "Comprobar extremo a extremo que el cifrado RMS, las marcas de agua dinámicas y los derechos VIEW/EXTRACT frente a Copilot funcionan sin brechas.",
+      "consolaRuta": " Clientes M365 Apps (Windows/macOS/Web/Mobile) y Microsoft 365 Copilot con cuentas de prueba",
+      "procedimiento": [
+        "Validar denegación de apertura sobre archivos cifrados copiados fuera del tenant usando identidades no autorizadas.",
+        "Comprobar visualización del UPN dinámico en documentos con Dynamic Watermarking e imposibilidad de edición sin permiso.",
+        "Probar prompts en Microsoft 365 Copilot verificando bloqueo sin derecho EXTRACT, respeto a BlockContentAnalysisServices y herencia de etiqueta en archivos creados."
+      ],
+      "rolResponsable": "Information Protection Admin / QA Security Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-01",
+      "mitreTactic": "Collection (T1005)",
+      "evidenciaAuditable": "Matriz mensual firmada de pruebas sintéticas de cifrado, marcas dinámicas y enforcement en IA.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Comportamientos técnicos de cifrado, Dynamic Watermarks y Copilot verificados; frecuencia mensual es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/encryption-sensitivity-labels"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Revisión de higiene de clientes Office Built-in Labeling, MPIP Client y coautoría",
+      "objetivo": "Garantizar versiones soportadas de Microsoft 365 Apps y del cliente MPIP sin presencia del retirado complemento AIP add-in.",
+      "consolaRuta": "intune.microsoft.com > Apps y purview.microsoft.com > Settings > Information Protection > Co-authoring",
+      "procedimiento": [
+        "Auditar en Intune la ausencia total del retirado Azure Information Protection Unified Labeling add-in y versiones mínimas de M365 Apps.",
+        "Validar actualización de la rama 3.2.x del cliente MPIP en equipos con etiquetador Explorer y servidores Scanner.",
+        "Confirmar estado activo de coautoría para documentos cifrados e integración con Fabric/Power BI."
+      ],
+      "rolResponsable": "Endpoint Engineer (Intune) + Information Protection Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-02",
+      "mitreTactic": "Defense Evasion (T1562)",
+      "evidenciaAuditable": "Reporte mensual de cumplimiento de versiones de aplicaciones desde Microsoft Intune.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Basado en el retiro oficial del add-in AIP y tablas de versiones mínimas de capacidades Built-in.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/sensitivity-labels-versions"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Seguimiento de migración desde File Policies de Defender for Cloud Apps (Hito 2027-01-06)",
+      "objetivo": "Completar la transición hacia políticas nativas de auto-etiquetado en Purview antes del retiro de File Policies el 6 de enero de 2027.",
+      "consolaRuta": "security.microsoft.com > Cloud apps > Policies > Policy management y asistente DLP to Purview migration",
+      "procedimiento": [
+        "Revisar inventario de File Policies clasificadas como Can migrate, Partial migration o Cannot migrate.",
+        "Ejecutar migración de reglas de auto-labeling en SharePoint y OneDrive hacia Purview en modo simulación y validar resultados.",
+        "Descomisionar las File Policies heredadas una vez confirmada la cobertura equivalente en Purview."
+      ],
+      "rolResponsable": "Information Protection Admin + Cloud Security Engineer",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-02",
+      "mitreTactic": "Collection (T1530)",
+      "evidenciaAuditable": "Registro de avance de migración y actas de baja de File Policies en Defender for Cloud Apps.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Fecha oficial de retiro verificada en Microsoft Learn: 6 de enero de 2027.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/migrate-file-policies-to-purview"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Revisión ejecutiva de KPIs operacionales (MTTA, MTTC, Cobertura) y comité de datos",
+      "objetivo": "Evaluar junto al CISO y dueños de datos la salud de los 8 KPIs maestros, incidentes relevantes y hoja de ruta de expansión.",
+      "consolaRuta": "Tablero ejecutivo Power BI / Sentinel Workbook y What's new in Microsoft Purview",
+      "procedimiento": [
+        "Presentar evolución trimestral de KPI-01 a KPI-08 e indicadores tempranos de degradación.",
+        "Revisar casos del mes donde el cifrado persistente evitó fuga efectiva de datos.",
+        "Evaluar impactos de novedades en What's new in Microsoft Purview y Message Center."
+      ],
+      "rolResponsable": "SOC Manager + Data Security Lead",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-01",
+      "mitreTactic": "Exfiltration (T1048)",
+      "evidenciaAuditable": "Informe ejecutivo mensual y minuta aprobada del comité de gobierno de seguridad de datos.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Práctica de gobierno ejecutivo CISO alineada a NIST CSF 2.0 Govern.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/whats-new"
+    },
+    {
+      "codigo": "M-06",
+      "cadencia": "Mensual",
+      "actividad": "Conciliación mensual de cambios administrativos, excepciones y cumplimiento RBAC",
+      "objetivo": "Auditar desviaciones de configuración (drift) respecto al mes previo y depurar exclusiones temporales vencidas.",
+      "consolaRuta": "purview.microsoft.com > Settings > Roles and scopes y PowerShell (Get-Label / Get-LabelPolicy)",
+      "procedimiento": [
+        "Exportar configuración íntegra de etiquetas, políticas de publicación y auto-labeling.",
+        "Ejecutar comparación diferencial contra el snapshot certificado del mes anterior.",
+        "Revocar excepciones temporales expiradas en políticas obligatorias o de auto-etiquetado."
+      ],
+      "rolResponsable": "GRC / Internal Audit Liaison",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Valid Accounts (T1078)",
+      "evidenciaAuditable": "Snapshot mensual versionado de políticas y certificado de conciliación de cambios.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Usa la capacidad nativa Export policy configuration y cmdlets oficiales de auditoría.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/create-sensitivity-labels"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Revisión de taxonomía, esquema moderno Label Groups y compatibilidad de derechos",
+      "objetivo": "Alinear la taxonomía, la migración a Label groups y la matriz de derechos VIEW/EXTRACT con cambios de negocio, IA y leyes de privacidad.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Information Protection > Sensitivity labels y Compliance Manager",
+      "procedimiento": [
+        "Planificar o validar en preproducción la migración irreversible de etiquetas padre clásicas al esquema moderno de Label groups.",
+        "Auditar todas las etiquetas cifrantes confirmando cuáles conceden derecho EXTRACT a Microsoft 365 Copilot y agentes.",
+        "Actualizar junto a Legal y Privacidad el mapeo de normativas vigentes (GDPR, Ley 21.719 Chile, LFPDPPP México, etc.) en Compliance Manager."
+      ],
+      "rolResponsable": "Data Security Architect + Legal & Privacy + Data Owners",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-01",
+      "mitreTactic": "Collection (T1005)",
+      "evidenciaAuditable": "Acta trimestral de comité de taxonomía y matriz auditada de derechos RMS para IA.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Migración a Label groups y evaluación de derechos EXTRACT documentadas en Microsoft Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/migrate-sensitivity-label-scheme"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Certificación de accesos (Access Reviews) sobre Role Groups de Purview y Super Users",
+      "objetivo": "Recertificar formalmente los miembros elegibles en roles administrativos, investigadores, Content Viewers y Super Users.",
+      "consolaRuta": "entra.microsoft.com > Identity governance > Access reviews",
+      "procedimiento": [
+        "Ejecutar campañas trimestrales de Access Reviews sobre los grupos asignados a Information Protection Admins, Investigators, Content Viewers y Super Users.",
+        "Aplicar remoción automática a usuarios no recertificados o transferidos de rol.",
+        "Auditar custodios de claves en Azure Key Vault y servicio DKE."
+      ],
+      "rolResponsable": "Identity Governance Admin + CISO Delegate",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Valid Accounts (T1078.004)",
+      "evidenciaAuditable": "Reporte cerrado de campañas Access Reviews en Microsoft Entra ID Governance.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Integra nativamente Purview Role Groups respaldados por grupos Entra con Entra Access Reviews.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-permissions"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Simulacro práctico (Tabletop & Live Drill) de contención y revocación criptográfica",
+      "objetivo": "Poner a prueba la ejecución real y los tiempos de respuesta del SOC ante exfiltración de documentos cifrados e inspección forense.",
+      "consolaRuta": "security.microsoft.com, purview.microsoft.com y PowerShell AIPService",
+      "procedimiento": [
+        "Ejecutar escenario controlado de fuga externa de documentos Highly Confidential y compromiso de cuenta.",
+        "Medir tiempos reales de revocación RMS, corte de sesiones Entra ID y verificación de denegación de acceso.",
+        "Validar en paralelo búsqueda autorizada de eDiscovery sobre elementos cifrados confirmando continuidad forense."
+      ],
+      "rolResponsable": "SOC Manager + Incident Response Lead + Legal",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.IM-02",
+      "mitreTactic": "Exfiltration (T1567)",
+      "evidenciaAuditable": "Informe de simulacro semestral con cronometraje MTTC y acciones correctivas.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Ejercicio semestral recomendado para garantizar destreza operativa en revocación y forense.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/track-and-revoke-admin"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Auditoría criptográfica anual de claves raíz (BYOK, Customer Key y Double Key Encryption)",
+      "objetivo": "Certificar la integridad, respaldos HSM, soberanía geográfica y continuidad de las claves criptográficas del tenant.",
+      "consolaRuta": "portal.azure.com (Key Vault / Managed HSM), infraestructura DKE y PowerShell AIPService",
+      "procedimiento": [
+        "Auditar clave raíz de Azure RMS (Get-AipServiceKeys), políticas de acceso e inmutabilidad en Key Vault / Managed HSM para BYOK y Customer Key.",
+        "Verificar certificados TLS, resiliencia, respaldos offline y segregación administrativa de los servidores Double Key Encryption (DKE).",
+        "Comprobar preservación íntegra en el catálogo de todas las etiquetas cifrantes históricas para lectura de archivos legados."
+      ],
+      "rolResponsable": "Lead Enterprise Security Architect + Key Custodian + CISO",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-01",
+      "mitreTactic": "Impact (T1486)",
+      "evidenciaAuditable": "Dictamen anual de auditoría criptográfica firmado por Key Custodian y CISO.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Controles técnicos de claves raíz, Customer Key y DKE documentados oficialmente en Microsoft Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/rights-management-tenant-key"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Investigación forense ante remoción o degradación masiva de etiquetas",
+      "objetivo": "Determinar alcance, intencionalidad y posible exfiltración cuando un usuario o cuenta comprometida desprotege múltiples activos sensibles.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts + Advanced hunting y purview.microsoft.com > Activity explorer",
+      "procedimiento": [
+        "Reconstruir mediante KQL los últimos 30 días de actividad del usuario (accesos, descargas, remoción de etiquetas, correos y cargas web).",
+        "Correlacionar con SigninLogs y eventos de riesgo Entra ID para distinguir intrusión externa frente a insider.",
+        "Cruzar con el perfil del usuario en Insider Risk Management y actividad en dispositivos Endpoint.",
+        "Escalar inmediatamente a contención criptográfica AH-02 y preservación legal si se confirma riesgo real."
+      ],
+      "rolResponsable": "SOC L2 / Information Protection Investigator",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "Defense Evasion (T1562)",
+      "evidenciaAuditable": "Línea de tiempo forense exportada y expediente de investigación en Defender XDR.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo soportado por Activity Explorer, CloudAppEvents y correlación XDR.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-search"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Contención criptográfica inmediata (revocación RMS, bloqueo de cuenta y Hold forense)",
+      "objetivo": "Cortar el acceso efectivo a documentos y mensajes cifrados compartidos o exfiltrados y asegurar la cadena de custodia.",
+      "consolaRuta": "PowerShell AIPService / ExchangeOnlineManagement, entra.microsoft.com y Purview eDiscovery",
+      "procedimiento": [
+        "Bloquear inicio de sesión y revocar todos los refresh tokens en Microsoft Entra ID si existe compromiso de credenciales.",
+        "Revocar acceso a documentos rastreados protegidos con RMS o revocar mensajes externos en Purview Advanced Message Encryption.",
+        "Documentar en la evaluación de riesgo la vigencia remanente de caché offline (Use License) según la configuración de la etiqueta.",
+        "Colocar Hold de preservación en Purview eDiscovery sobre buzón y OneDrive de la identidad investigada."
+      ],
+      "rolResponsable": "SOC L2/L3 + Information Protection Admin + Identity Admin",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Exfiltration (T1567)",
+      "evidenciaAuditable": "Registros de revocación RMS/AME, revocación de sesión Entra ID y constancia de Hold en eDiscovery.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Mecanismos de revocación, revocación AME y consideración de caché de Use License verificados en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/track-and-revoke-admin"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Remediación de urgencia por oversharing crítico en contenedores o exposición en Copilot",
+      "objetivo": "Clausurar de inmediato la exposición amplia o externa de un sitio SharePoint / Teams que contiene información altamente sensible.",
+      "consolaRuta": "SharePoint Admin Center, purview.microsoft.com y PowerShell SharePoint Online",
+      "procedimiento": [
+        "Restringir acceso al sitio y aplicar etiqueta de contenedor Highly Confidential que bloquee invitados y enlaces anónimos.",
+        "Establecer etiqueta predeterminada cifrante en la biblioteca afectada y ejecutar auto-labeling focalizado sobre archivos existentes.",
+        "Revocar vínculos compartidos externos activos desde SharePoint o acciones de remediación en Defender XDR.",
+        "Auditar en Activity Explorer todos los usuarios e interacciones Copilot que accedieron a los archivos durante la ventana de exposición."
+      ],
+      "rolResponsable": "Collaboration Security Admin + Information Protection Admin",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-02",
+      "mitreTactic": "Collection (T1213.002)",
+      "evidenciaAuditable": "Evidencia de cambio de etiqueta de contenedor, revocación de enlaces y auditoría de accesos previos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Aplica controles nativos de Container Labels, Default Library Labels y auditoría de CopilotInteraction.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/sensitivity-labels-sharepoint-default-label"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Reversión de emergencia ante auto-etiquetado erróneo masivo o cambio no autorizado",
+      "objetivo": "Detener el impacto operativo de una política mal calibrada o revertir un cambio administrativo ilegítimo sin corromper acceso a datos cifrados.",
+      "consolaRuta": "purview.microsoft.com > Information Protection > Auto-labeling y Security & Compliance PowerShell",
+      "procedimiento": [
+        "Pasar de inmediato la política de auto-labeling a modo simulación (TestWithoutNotifications) o desactivarla.",
+        "Ante cambio no autorizado, revocar sesión/PIM del administrador ejecutor y restaurar parámetros desde el snapshot certificado M-06.",
+        "Identificar mediante Activity Explorer el conjunto exacto de archivos impactados y ejecutar re-etiquetado controlado sin borrar jamás la etiqueta cifrante."
+      ],
+      "rolResponsable": "Information Protection Admin + SOC Incident Commander",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-01",
+      "mitreTactic": "Impact (T1499)",
+      "evidenciaAuditable": "Log de reversión de política, inventario de archivos normalizados y análisis de causa raíz.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Incluye la regla crítica de Microsoft Learn de no eliminar etiquetas cifrantes para evitar pérdida de acceso a archivos.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/apply-sensitivity-label-automatically"
+    },
+    {
+      "codigo": "AH-05",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Escalamiento regulatorio y extracción de evidencia ante brecha confirmada de datos",
+      "objetivo": "Proveer evidencia forense y criptográfica precisa a Legal y DPO para evaluar y cumplir obligaciones de notificación regulatoria.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit, eDiscovery y Data Explorer",
+      "procedimiento": [
+        "Cuantificar titulares, categorías de SITs/EDM y documentos afectados mediante Purview Audit y eDiscovery.",
+        "Demostrar técnicamente si los archivos exfiltrados contaban con cifrado persistente Azure RMS o DKE inaccesible al atacante.",
+        "Entregar paquete probatorio con cadena de custodia a Legal y Privacidad dentro de las primeras 24 horas del hallazgo confirmado."
+      ],
+      "rolResponsable": "CISO + DPO / Legal & Privacy + SOC Manager",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.CO-02",
+      "mitreTactic": "Exfiltration (T1041)",
+      "evidenciaAuditable": "Dossier forense certificado para autoridades/DPO y plan post-mortem.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Integra capacidades probatorias de Purview con tiempos consultivos de coordinación ejecutiva y legal.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/ediscovery"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Caza de remoción masiva y bajadas de etiquetas de sensibilidad",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "CloudAppEvents",
+      "consulta": "CloudAppEvents\n| where Timestamp > ago(24h)\n| where ActionType in (\"SensitivityLabelRemoved\", \"SensitivityLabelUpdated\", \"FileSensitivityLabelChanged\")\n| extend Raw = parse_json(RawEventData)\n| extend LabelEvent = Raw.SensitivityLabelEventData\n| extend OldLabelId = tostring(coalesce(LabelEvent.OldSensitivityLabelId, Raw.OldSensitivityLabelId))\n| extend Justification = tostring(LabelEvent.JustificationText)\n| where ActionType == \"SensitivityLabelRemoved\" or isnotempty(OldLabelId)\n| summarize TotalCambios = count(), Remociones = countif(ActionType == \"SensitivityLabelRemoved\"), ArchivosAfectados = dcount(tostring(Raw.ObjectId)), Justificaciones = make_set(Justification, 5) by AccountDisplayName, AccountObjectId, IPAddress\n| where TotalCambios >= 5 or Remociones >= 3\n| order by Remociones desc, TotalCambios desc",
+      "proposito": "Identificar cuentas que remueven o degradan repetidamente etiquetas de sensibilidad en un periodo de 24 horas (D-04 / AH-01).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Correlación de desprotección de datos con inicio de sesión riesgoso en Entra ID",
+      "plataforma": "Microsoft Sentinel (Defender Portal)",
+      "tablaPrincipal": "OfficeActivity + SigninLogs",
+      "consulta": "let Ventana = 24h;\nlet SesionesRiesgosas = SigninLogs\n| where TimeGenerated > ago(Ventana)\n| where RiskLevelDuringSignIn in (\"high\", \"medium\")\n| project UserPrincipalName, SignInTime = TimeGenerated, RiskLevelDuringSignIn, SignInIP = IPAddress;\nOfficeActivity\n| where TimeGenerated > ago(Ventana)\n| where Operation in (\"SensitivityLabelRemoved\", \"FileSensitivityLabelRemoved\", \"RMSProtectionDisabled\")\n| join kind=inner SesionesRiesgosas on $left.UserId == $right.UserPrincipalName\n| where OperationTime >= SignInTime - 1h\n| project TimeGenerated, UserId, Operation, OfficeWorkload, SourceFileName, ClientIP, SignInIP, RiskLevelDuringSignIn\n| order by TimeGenerated desc",
+      "proposito": "Detectar exfiltración en curso donde un atacante con sesión riesgosa remueve etiquetas o cifrado RMS sobre archivos corporativos (D-03 / S-07).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Monitoreo de Oversharing Documento vs. Contenedor (FileSensitivityLabelMismatch)",
+      "plataforma": "Microsoft Sentinel / Unified Audit Log",
+      "tablaPrincipal": "OfficeActivity",
+      "consulta": "OfficeActivity\n| where TimeGenerated > ago(24h)\n| where Operation == \"FileSensitivityLabelMismatch\"\n| summarize EventosMismatch = count(), Archivos = make_set(SourceFileName, 10) by Site_Url, UserId, OfficeWorkload\n| order by EventosMismatch desc",
+      "proposito": "Localizar sitios SharePoint y equipos Teams donde se almacenan documentos con mayor sensibilidad que la etiqueta del contenedor (D-05).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría de consumo de archivos etiquetados por Microsoft 365 Copilot",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "CloudAppEvents",
+      "consulta": "CloudAppEvents\n| where Timestamp > ago(24h)\n| where ActionType == \"CopilotInteraction\"\n| extend Raw = parse_json(RawEventData)\n| mv-expand Resource = Raw.CopilotEventData.AccessedResources\n| where isnotempty(Resource.SensitivityLabelId)\n| summarize Interacciones = count(), RecursosUnicos = dcount(tostring(Resource.Id)), EtiquetasUsadas = make_set(tostring(Resource.SensitivityLabelId), 10) by AccountDisplayName, Application\n| order by Interacciones desc",
+      "proposito": "Supervisar qué usuarios y aplicaciones de Copilot acceden y resumen información protegida con etiquetas de sensibilidad (D-07).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Trazabilidad diaria de cambios administrativos en etiquetas y políticas Purview",
+      "plataforma": "Microsoft Sentinel / Purview Audit",
+      "tablaPrincipal": "OfficeActivity",
+      "consulta": "OfficeActivity\n| where TimeGenerated > ago(24h)\n| where Operation in (\"New-Label\", \"Set-Label\", \"Remove-Label\", \"New-LabelPolicy\", \"Set-LabelPolicy\", \"Remove-LabelPolicy\", \"New-AutoSensitivityLabelPolicy\", \"Set-AutoSensitivityLabelPolicy\")\n| project TimeGenerated, UserId, Operation, Parameters, ClientIP\n| order by TimeGenerated desc",
+      "proposito": "Auditar el 100% de cambios administrativos realizados sobre taxonomía, publicación y auto-labeling para conciliación ITSM (D-02 / M-06).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Exportación paginada de Activity Explorer para retención histórica (>30 días)",
+      "plataforma": "Security & Compliance PowerShell (ExchangeOnlineManagement)",
+      "tablaPrincipal": "Export-ActivityExplorerData",
+      "consulta": "Connect-IPPSSession\n$End = Get-Date; $Start = $End.AddDays(-7)\n$Result = Export-ActivityExplorerData -StartTime $Start -EndTime $End -PageSize 5000 -OutputFormat Json\n$AllRecords = @($Result.ResultData)\nwhile (-not $Result.LastPage) {\n    $Result = Export-ActivityExplorerData -StartTime $Start -EndTime $End -PageSize 5000 -PageCookie $Result.WaterMark -OutputFormat Json\n    $AllRecords += $Result.ResultData\n}\n$AllRecords | Out-File -FilePath \".\\MIP_ActivityExplorer_$($End.ToString('yyyyMMdd')).json\" -Encoding utf8",
+      "proposito": "Construir series históricas de métricas de etiquetado superando la ventana móvil de 30 días del portal de Purview (S-03 / M-01).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Verificación Proof-of-Life de SharePoint MIP, soporte PDF, Super User y derechos RMS",
+      "plataforma": "SharePoint Online Management Shell & AIPService PowerShell",
+      "tablaPrincipal": "Get-SPOTenant / Get-AipServiceSuperUserFeature / Get-Label",
+      "consulta": "Get-SPOTenant | Select-Object EnableAIPIntegration, EnableSensitivityLabelforPDF, DisableDocumentLibraryDefaultLabeling\nConnect-AipService; Get-AipServiceSuperUserFeature\nGet-Label | Where-Object { $_.EncryptionEnabled -eq $true } | Select-Object DisplayName, ImmutableId, Priority, EncryptionRightsDefinitions, Settings",
+      "proposito": "Comprobar que la integración en SharePoint y PDF esté activa, que Super User permanezca deshabilitado y auditar derechos EXTRACT/Copilot (M-02 / T-01).",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Cobertura de Clasificación sobre Datos Sensibles",
+      "definicion": "Porcentaje de archivos y correos con información confidencial detectada que cuentan efectivamente con una etiqueta de sensibilidad aplicada.",
+      "formula": "(Elementos etiquetados en SharePoint, OneDrive y Exchange / Total de elementos con SITs detectados) * 100",
+      "metaSugerida": ">= 85 % en entornos Microsoft 365 E5 (>= 70 % en E3)",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO, Comité de Riesgos, Reguladores",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Calculado con Export-ContentExplorerData / Posture Reports; el umbral numérico es benchmark consultivo."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Tasa de Automatización y Etiquetado por Defecto",
+      "definicion": "Proporción de etiquetas aplicadas sin intervención manual directa (auto-labeling en cliente/servicio y etiquetas predeterminadas).",
+      "formula": "(Etiquetas aplicadas automáticamente + predeterminadas / Total de etiquetas aplicadas en el periodo) * 100",
+      "metaSugerida": ">= 65 % con tendencia trimestral creciente",
+      "frecuencia": "Mensual",
+      "audiencia": "Data Security Architect, Dirección de Operaciones",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mide reducción de dependencia humana conforme al modelo Secure by Default."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Cobertura de Etiquetas de Contenedor en Sitios y Teams",
+      "definicion": "Porcentaje de sitios de SharePoint, Microsoft 365 Groups y equipos de Teams activos gobernados con una etiqueta de contenedor.",
+      "formula": "(Contenedores activos con sensitivityLabel asignada / Total de contenedores activos) * 100",
+      "metaSugerida": ">= 95 % general y 100 % en sitios habilitados para Microsoft 365 Copilot",
+      "frecuencia": "Semanal",
+      "audiencia": "CISO, Collaboration Lead, Gobierno de IA",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Control crítico contra oversharing previo y durante el despliegue de Copilot."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Tiempo Medio de Reconocimiento (MTTA) en Incidentes Críticos de Datos",
+      "definicion": "Tiempo transcurrido desde la generación de una alerta crítica de desprotección o exposición hasta el inicio formal del triaje SOC.",
+      "formula": "Promedio(Timestamp Reconocimiento SOC - Timestamp Creación Alerta)",
+      "metaSugerida": "< 60 minutos (severidad Critical) / < 4 horas (severidad High)",
+      "frecuencia": "Mensual",
+      "audiencia": "SOC Manager, Auditoría Externa, Aseguradoras",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "SLA consultivo para operaciones de datos integradas en security.microsoft.com."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Tiempo Medio de Contención Criptográfica (MTTC)",
+      "definicion": "Tiempo medio requerido desde el reconocimiento del incidente hasta revocar acceso RMS, revocar sesiones Entra ID o clausurar compartición.",
+      "formula": "Promedio(Timestamp Contención Confirmada - Timestamp Reconocimiento SOC)",
+      "metaSugerida": "< 4 horas (severidad Critical) / < 8 horas (severidad High)",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO, SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Evalúa efectividad real del playbook ad-hoc AH-02."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Tasa de Éxito de Auto-Labeling en Servicio",
+      "definicion": "Porcentaje de archivos evaluados por políticas de auto-etiquetado en SharePoint y OneDrive que se etiquetan sin fallo técnico.",
+      "formula": "(Archivos etiquetados exitosamente en pestaña Insights / Total de archivos procesados por auto-labeling) * 100",
+      "metaSugerida": ">= 98 %",
+      "frecuencia": "Semanal",
+      "audiencia": "Information Protection Admin",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "La fuente es la pestaña oficial Insights; el umbral >=98% es criterio operativo consultivo."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Tasa de Justificación Válida en Bajadas de Etiqueta (Downgrades)",
+      "definicion": "Porcentaje de reducciones de sensibilidad auditadas cuya justificación cumple criterios válidos de negocio y sin abuso confirmado.",
+      "formula": "(Eventos de downgrade con justificación válida verificada / Muestra o total auditado de downgrades) * 100",
+      "metaSugerida": ">= 95 % y 100 % de remociones masivas investigadas",
+      "frecuencia": "Semanal",
+      "audiencia": "SOC L2, Insider Risk Management",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Detecta fricción de diseño de etiquetas o evasión deliberada de controles."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Cumplimiento de Gestión de Cambios Administrativos",
+      "definicion": "Porcentaje de cambios sobre etiquetas, políticas de publicación y auto-labeling respaldados por ticket ITSM aprobado y elevación PIM.",
+      "formula": "(Operaciones administrativas con ticket aprobado / Total de operaciones administrativas registradas en Audit Log) * 100",
+      "metaSugerida": "100 % (tolerancia cero a cambios no autorizados)",
+      "frecuencia": "Mensual",
+      "audiencia": "GRC, Auditoría Interna y Regulatoria",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Control esencial de gobierno para SOC2, ISO 27001 y NIST CSF 2.0 Govern."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.OC-01",
+      "descripcionResultado": "La misión organizacional y el contexto de criticidad de los activos de información se definen y comunican como base del riesgo cibernético.",
+      "capacidadMicrosoft": "Taxonomía corporativa implementada en Modern Label Groups y Sensitivity Labels con descripciones visibles en M365 Apps, Teams y Fabric.",
+      "evidenciaAuditoria": "Exportación oficial de configuración de etiquetas y documento aprobado de clasificación corporativa.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RM-01",
+      "descripcionResultado": "Los objetivos y la estrategia de tratamiento del riesgo cibernético son establecidos y acordados por los líderes organizacionales.",
+      "capacidadMicrosoft": "Vinculación directa entre clasificación y cifrado persistente (Azure RMS, Customer Key y Double Key Encryption para activos ultraconfidenciales).",
+      "evidenciaAuditoria": "Matriz aprobada de niveles de sensibilidad vs. controles criptográficos y dictamen anual A-01.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.OV-03",
+      "descripcionResultado": "El desempeño de la gestión de riesgos cibernéticos se evalúa continuamente para verificar cumplimiento y aplicar ajustes.",
+      "capacidadMicrosoft": "Auditoría inmutable de cambios administrativos (Set-Label, Set-LabelPolicy) en Unified Audit Log e informes mensuales de postura.",
+      "evidenciaAuditoria": "Conciliación diaria/mensual (D-02 y M-06) al 100% entre Audit Log y sistema ITSM.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-02",
+      "descripcionResultado": "Los activos de datos, software y servicios gestionados por la organización se inventarían y mantienen actualizados.",
+      "capacidadMicrosoft": "Descubrimiento continuo con SITs, Named Entities, Exact Data Match (hasta 100M filas), Trainable Classifiers, Data Explorer e Information Protection Scanner local.",
+      "evidenciaAuditoria": "Exportaciones mensuales Export-ContentExplorerData y reportes de ciclos del Scanner on-premises (S-05).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-01",
+      "descripcionResultado": "Las vulnerabilidades y exposiciones sobre activos de información son identificadas, validadas y registradas.",
+      "capacidadMicrosoft": "Identificación de contenedores sin etiqueta, archivos sensibles no protegidos y simulaciones de auto-labeling previas a despliegues de IA.",
+      "evidenciaAuditoria": "Inventario Graph semanal de sitios sin etiqueta (S-04) y actas de simulación de auto-labeling (S-02).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Los permisos de acceso, derechos y autorizaciones se definen, gestionan y revisan conforme al principio de mínimo privilegio.",
+      "capacidadMicrosoft": "Derechos de uso Azure RMS (VIEW, EXTRACT, PRINT, EXPORT), etiquetas de contenedor con Entra Conditional Access y PIM sobre Role Groups.",
+      "evidenciaAuditoria": "Matriz trimestral de derechos EXTRACT para Copilot (T-01), campañas Access Reviews (T-02) y auditoría de Super User (S-06).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.DS-01",
+      "descripcionResultado": "La confidencialidad, integridad y disponibilidad de los datos en reposo están protegidas.",
+      "capacidadMicrosoft": "Cifrado persistente Azure RMS en SharePoint/OneDrive (Office y PDFs), Default Library Labels, Scanner SMB/SharePoint Server y DKE.",
+      "evidenciaAuditoria": "Pruebas mensuales de persistencia fuera del tenant (M-02) y verificación EnableSensitivityLabelforPDF = True.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.DS-02",
+      "descripcionResultado": "La confidencialidad, integridad y disponibilidad de los datos en tránsito y uso colaborativo están protegidas.",
+      "capacidadMicrosoft": "Auto-labeling en tránsito en Exchange Online, Purview Advanced Message Encryption, S/MIME por etiqueta y Dynamic Watermarking.",
+      "evidenciaAuditoria": "Configuración activa de políticas en tránsito y evidencias mensuales de marcas de agua dinámicas (M-02).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-01",
+      "descripcionResultado": "Las redes, plataformas y servicios colaborativos se monitorean continuamente para detectar eventos potencialmente adversos.",
+      "capacidadMicrosoft": "Monitoreo diario de SensitivityLabelRemoved, bajadas de nivel, FileSensitivityLabelMismatch y CopilotInteraction.",
+      "evidenciaAuditoria": "Ejecución documentada de controles diarios D-04, D-05 y D-07 con consultas KQL reproducibles.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.AE-02",
+      "descripcionResultado": "Los eventos potencialmente adversos se correlacionan y analizan para comprender tácticas e impacto.",
+      "capacidadMicrosoft": "Correlación de eventos de etiquetas e identidad riesgosa en Microsoft Sentinel y Microsoft Defender XDR (security.microsoft.com).",
+      "evidenciaAuditoria": "Reglas analíticas versionadas (S-07) y expedientes de triaje en cola unificada (D-03).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Los incidentes de seguridad son contenidos oportunamente para impedir la propagación y acotar el daño.",
+      "capacidadMicrosoft": "Revocación de documentos RMS y mensajes AME, revocación de sesiones Entra ID y bloqueo de compartición externa en SharePoint.",
+      "evidenciaAuditoria": "Registros de ejecución de playbooks AH-02 / AH-03 y cumplimiento del indicador MTTC (KPI-05).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.IM-02",
+      "descripcionResultado": "Los planes de recuperación y controles operativos se mejoran incorporando lecciones aprendidas de incidentes y ejercicios.",
+      "capacidadMicrosoft": "Inspección continua autorizada sobre datos cifrados (eDiscovery / reasoning over data), reversión controlada AH-04 y simulacros semestrales.",
+      "evidenciaAuditoria": "Informe post-ejercicio semestral SM-01 y registro de ajustes posteriores a incidentes.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Consolidación integral del corpus local MSEOP-MD\\Purview IP (Version Consolidada, 11 bloques auditados, licenciamiento y NIST CSF 2.0) enriquecida con Ninja Training 2026 (05_Purview_Information_Protection) y revalidada contra Microsoft Learn MCP al 11 de noviembre de 2026. Se depuraron afirmaciones consultivas previas que carecían de sustento normativo y se incorporaron todos los cambios arquitectónicos 2025-2027.",
+    "correccionesAplicadas": [
+      "Incorporación del esquema moderno de Label groups (automático para nuevos tenants desde el 1 de octubre de 2025) y del flujo irreversible de migración desde etiquetas padre clásicas.",
+      "Eliminación de referencias operativas al retirado Azure Information Protection Unified Labeling add-in en favor de Built-in labeling en Microsoft 365 Apps y el cliente MPIP 3.2.x.",
+      "Actualización del techo máximo agregado de Service-side auto-labeling a 500.000 archivos etiquetados por día por tenant en SharePoint y OneDrive (simulación hasta 20M) y requisito obligatorio de habilitar PDF labeling (Learn actualizado el 2026-11-06).",
+      "Incorporación del modelo de control de Microsoft 365 Copilot y agentes sobre contenido etiquetado: exigencia de derechos VIEW + EXTRACT, herencia de etiqueta de mayor prioridad y bloqueo explícito vía BlockContentAnalysisServices.",
+      "Inclusión del hito obligatorio de migración de File Policies de etiquetado en Microsoft Defender for Cloud Apps antes de su retiro definitivo el 6 de enero de 2027.",
+      "Corrección de la arquitectura de ingesta SIEM/XDR: precisión de que los eventos de etiquetas y RMS fluyen primariamente por Unified Audit Log (OfficeActivity) y CloudAppEvents en security.microsoft.com.",
+      "Incorporación de la ventana móvil de 30 días de los Posture Reports (preview), automatización con Export-ActivityExplorerData / Export-ContentExplorerData y separación entre Data Classification List Viewer y Content Viewer.",
+      "Actualización de nomenclatura comercial oficial a Microsoft Purview Suite (antes M365 E5 Compliance, octubre de 2025), EDM hasta 100 millones de filas y Microsoft 365 E7 / Agent 365 (mayo de 2026)."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Calendario estructurado de 30 actividades operacionales (8 diarias, 7 semanales, 6 mensuales, 2 trimestrales, 1 semestral, 1 anual y 5 ad-hoc)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Convierte capacidades técnicas de Microsoft Purview en rutinas verificables y repetibles para el SOC y el equipo de seguridad de datos."
+      },
+      {
+        "elemento": "SLAs objetivos (MTTA < 60 min y MTTC < 4 h en incidentes críticos) y umbrales de anomalía (>20% caída de logs, >=5 bajadas/24h)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Establece parámetros operativos medibles de detección temprana y contención; deben calibrarse según la línea base de cada organización."
+      },
+      {
+        "elemento": "Metas numéricas de los 8 KPIs maestros (>=85% cobertura E5, >=98% éxito auto-labeling, 100% cambios con ticket)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Permite evidenciar madurez y retorno de inversión ante Directorio y auditores externos aclarando explícitamente que no son metas prescritas por Microsoft."
+      },
+      {
+        "elemento": "Ventanas de elevación JIT en Entra PIM (2h Content Viewer con aprobación dual, 4h IP Admin)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Refuerza la segregación de funciones y la privacidad por diseño sobre datos altamente sensibles."
+      },
+      {
+        "elemento": "Modelo de Madurez de 5 niveles y mapeo probatorio de 12 subcategorías en las 6 funciones de NIST CSF 2.0",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Traduce outcomes normativos de NIST CSWP 29 en artefactos concretos y reproducibles durante auditorías."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Learn about sensitivity labels",
+      "url": "https://learn.microsoft.com/en-us/purview/sensitivity-labels",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Referencia base de capacidades de Sensitivity Labels, ámbitos, grupos de etiquetas y soporte para Microsoft 365 Copilot.",
+      "verificacion": "Verificado contra Microsoft Learn (actualizado oct-2026)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Migrate parent sensitivity labels to sensitivity label groups",
+      "url": "https://learn.microsoft.com/en-us/purview/migrate-sensitivity-label-scheme",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Documenta el esquema moderno de Label groups (automático desde oct-2025) y el proceso irreversible de migración con scripts PowerShell.",
+      "verificacion": "Verificado contra Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Automatically apply a sensitivity label to Microsoft 365 data",
+      "url": "https://learn.microsoft.com/en-us/purview/apply-sensitivity-label-automatically",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Detalla auto-labeling en cliente vs. servicio, límite máximo de 500.000 archivos/día en SPO/OD, simulación hasta 20M y requisito de PDF labeling.",
+      "verificacion": "Verificado contra Microsoft Learn (actualizado 2026-11-06)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Restrict access to content by using sensitivity labels to apply encryption",
+      "url": "https://learn.microsoft.com/en-us/purview/encryption-sensitivity-labels",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Especifica cifrado Azure RMS, User-Defined Permissions (UDP), Rights Management issuer/owner y Dynamic Watermarks.",
+      "verificacion": "Verificado contra Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "What is Double Key Encryption (DKE)?",
+      "url": "https://learn.microsoft.com/en-us/purview/double-key-encryption",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Arquitectura de doble clave para activos ultraconfidenciales regulados y restricciones funcionales con coautoría, búsqueda y Copilot.",
+      "verificacion": "Verificado mediante lectura íntegra en Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Learn about exact data match based sensitive information types",
+      "url": "https://learn.microsoft.com/en-us/purview/sit-learn-about-exact-data-match-based-sits",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Confirma soporte de bases EDM de hasta 100 millones de filas con refresco diario y hash seguro.",
+      "verificacion": "Verificado contra Microsoft Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Configure a default sensitivity label for a SharePoint document library",
+      "url": "https://learn.microsoft.com/en-us/purview/sensitivity-labels-sharepoint-default-label",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Reglas de precedencia, requisitos de PDF/integración, limitaciones (UDP, expiración, DKE) y evento ActionSourceDetails = 6.",
+      "verificacion": "Verificado mediante lectura íntegra en Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Use sensitivity labels with Microsoft Teams, Microsoft 365 Groups, and SharePoint sites",
+      "url": "https://learn.microsoft.com/en-us/purview/sensitivity-labels-teams-groups-sites",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Controles de etiquetas de contenedor, no herencia sobre archivos internos y auditoría FileSensitivityLabelMismatch.",
+      "verificacion": "Verificado contra Microsoft Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Learn about the Microsoft Purview Information Protection scanner",
+      "url": "https://learn.microsoft.com/en-us/purview/deploy-scanner",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Descubrimiento, clasificación y protección en repositorios locales SMB, NFS (Preview) y SharePoint Server sobre Windows Server.",
+      "verificacion": "Verificado contra Microsoft Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Considerations for Microsoft Purview to manage Microsoft 365 Copilot and Channel Agent in Teams",
+      "url": "https://learn.microsoft.com/en-us/purview/ai-m365-copilot-considerations",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Explica la evaluación de derechos VIEW y Copy and extract content (EXTRACT), rol de RMS owner y comportamiento de contenedores en Copilot.",
+      "verificacion": "Verificado contra Microsoft Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Introduction to secure by default with Microsoft Purview",
+      "url": "https://learn.microsoft.com/en-us/purview/deploymentmodels/depmod-secure-by-default-intro",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Engineering",
+      "comentario": "Modelo prescriptivo en 4 pasos (etiquetado predeterminado, sitios críticos, auto-labeling a escala y operación continua).",
+      "verificacion": "Verificado contra Microsoft Learn (nov-2026)"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Microsoft Purview service description",
+      "url": "https://learn.microsoft.com/en-us/office365/servicedescriptions/microsoft-365-service-descriptions/microsoft-365-tenantlevel-services-licensing-guidance/microsoft-purview-service-description",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft 365 Service Descriptions",
+      "comentario": "Fuente autoritativa de licenciamiento E3 vs. E5 / Microsoft Purview Suite y cargas agénticas.",
+      "verificacion": "Verificado contra Microsoft Learn (actualizado 2026-11-09)"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Migrate file policies to Microsoft Purview",
+      "url": "https://learn.microsoft.com/en-us/defender-cloud-apps/migrate-file-policies-to-purview",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Defender for Cloud Apps Team",
+      "comentario": "Confirma el retiro de File Policies el 6 de enero de 2027 y el asistente de migración hacia Purview Auto-labeling y DLP.",
+      "verificacion": "Verificado contra Microsoft Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Sensitivity labels in Power BI and Microsoft Fabric",
+      "url": "https://learn.microsoft.com/en-us/fabric/enterprise/powerbi/service-security-sensitivity-label-overview",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Fabric Governance Team",
+      "comentario": "Detalla herencia de etiquetas, visibilidad en OneLake catalog y protección en exportación desde Power BI / Fabric.",
+      "verificacion": "Verificado contra Microsoft Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "Retirement notification for the Azure Information Protection Unified Labeling add-in for Office",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-security-blog/retirement-notification-for-the-azure-information-protection-unified-labeling-ad/3791908",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Aashish Ramdas (Microsoft)",
+      "comentario": "Anuncio oficial de retiro del complemento AIP para Office y transición a etiquetado nativo Built-in y cliente MPIP.",
+      "verificacion": "Verificado en Microsoft Tech Community"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "What's new in Microsoft Security — August 2026",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/08/27/whats-new-in-microsoft-security-august-2026/",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Alym Rayani (VP Microsoft Security Marketing)",
+      "comentario": "Resumen oficial de mejoras de escala e innovaciones de seguridad de datos en Microsoft Purview durante 2026.",
+      "verificacion": "Verificado en Microsoft Security Blog"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "Microsoft Information Protection Archives — Office 365 for IT Pros",
+      "url": "https://office365itpros.com/category/microsoft-information-protection/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Tony Redmond (Microsoft MVP)",
+      "comentario": "Análisis técnico profundo sobre cambios del Message Center, licenciamiento premium, bibliotecas SharePoint y PowerShell.",
+      "verificacion": "Verificado en repositorio Ninja Training 2026 y web (nov-2026)"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "Purview Lightning Talks: Container Sensitivity Labels That Fix Oversharing Fast",
+      "url": "https://nikkichapple.com/purview-lightning-talks-microsoft-security-community/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Nikki Chapple (Dual Microsoft MVP, M365 & Security)",
+      "comentario": "Guía práctica de etiquetas de contenedor para mitigar sobreexposición antes y durante despliegues de Microsoft 365 Copilot.",
+      "verificacion": "Verificado en web (mayo-junio 2026)"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "Things to Know About Microsoft Purview — September 2026",
+      "url": "https://alberthoitingh.com/2026/09/04/things-to-know-about-microsoft-purview-september-2026/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Albert Hoitingh (Microsoft MVP)",
+      "comentario": "Síntesis ejecutiva para CISO/CDO sobre mayor throughput de etiquetado, DLP y gobierno de agentes en Purview.",
+      "verificacion": "Verificado en repositorio Ninja Training 2026"
+    },
+    {
+      "id": "REF-20",
+      "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)",
+      "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Marco normativo oficial de las 6 funciones (Govern, Identify, Protect, Detect, Respond, Recover) empleado para el mapeo de auditoría.",
+      "verificacion": "Publicación oficial NIST CSWP 29"
+    }
+  ]
+}

@@ -1,0 +1,1270 @@
+{
+  "schemaVersion": "2.0",
+  "id": "01_Microsoft_Entra_ID",
+  "orden": 1,
+  "slug": "Microsoft_Entra_ID",
+  "nombre": "Microsoft Entra ID (Plan 1 / Plan 2 — Core IAM, Conditional Access e Identity Protection / ITDR)",
+  "nombreCorto": "Microsoft Entra ID",
+  "categoria": "Identidad y Acceso (Microsoft Entra)",
+  "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://entra.microsoft.com",
+    "https://security.microsoft.com",
+    "https://portal.azure.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "Identity & Access Management (IAM) Lead",
+    "Conditional Access Architect",
+    "SOC Manager",
+    "SOC L1 / L2 / L3 (ITDR)",
+    "Threat Hunter",
+    "Hybrid Identity Engineer",
+    "AI & Agent Governance Lead",
+    "GRC & Internal/External Auditors"
+  ],
+  "relacionM365E5": {
+    "estado": "Incluido en Microsoft 365 E5",
+    "licencias": [
+      "Microsoft 365 E5 / Microsoft 365 E7 (incluyen nativamente Microsoft Entra ID Plan 2; E7 añade además Microsoft Entra Suite y Microsoft Agent 365)",
+      "Microsoft Defender Suite (antes Microsoft 365 E5 Security) y Enterprise Mobility + Security (EMS) E5 (incluyen Microsoft Entra ID Plan 2)",
+      "Microsoft Entra ID Plan 2 (licencia standalone por usuario/mes)",
+      "Microsoft 365 E3 / Business Premium / EMS E3 (incluyen únicamente Microsoft Entra ID Plan 1: Conditional Access base, Authentication Strengths y CAE estándar, sin ID Protection, Token Protection ni PIM)",
+      "Complementos por escenario: Microsoft Entra Workload ID Premium (principales de servicio/apps), Microsoft Agent 365 (políticas CA e ID Protection para agentes IA) y Microsoft Entra ID Governance / Entra Suite (Módulo 02)"
+    ],
+    "prerrequisitos": [
+      "Atributo UsageLocation configurado en cada objeto de usuario en Entra ID para aprovisionamiento efectivo de planes de servicio M365 E5/P2",
+      "Migración completada a la directiva unificada Authentication Methods (estado Migration Complete obligatorio tras el 30 de septiembre de 2025 y tamaño de política inferior a 20 KB)",
+      "Al menos dos cuentas de acceso de emergencia (Break-Glass) cloud-only (*.onmicrosoft.com) con MFA resistente a phishing obligatorio (Passkey FIDO2 o CBA) y alerta Severidad 0",
+      "Integración de registros SigninLogs, NonInteractiveUserSignInLogs, ServicePrincipalSignInLogs, AuditLogs y RiskyUsers/RiskDetections con Microsoft Sentinel y activación de Defender XDR (tabla nativa EntraIdSignInEvents)",
+      "En entornos híbridos, Password Hash Synchronization (PHS) activo y Microsoft Entra Connect Sync v2.6.x mantenido dentro de la ventana rodante de soporte de 12 meses o agentes Microsoft Entra Cloud Sync en alta disponibilidad"
+    ],
+    "notaLicenciamiento": "Declaración crítica de auditoría: Microsoft Purview Suite (antes Microsoft 365 E5 Compliance) NO incluye Microsoft Entra ID Plan 2 ni habilita Entra ID Protection, Risk-based Conditional Access, Token Protection ni Privileged Identity Management (PIM). Dichas capacidades exigen Microsoft 365 E5, Microsoft 365 E7, Microsoft Defender Suite, EMS E5 o Entra ID P2 standalone. Asimismo, la protección avanzada de principales de servicio requiere Microsoft Entra Workload ID Premium y la extensión de Conditional Access e ID Protection hacia agentes autónomos creados en Entra Agent ID requiere licencia Microsoft Agent 365 (incluida en M365 E7 o disponible como add-on sobre M365 E5). El gobierno avanzado de ciclo de vida JML (Lifecycle Workflows) y Entitlement Management se documenta en el Módulo 02_Microsoft_Entra_ID_Governance."
+  },
+  "resumenEjecutivo": "Microsoft Entra ID (Plan 1 y Plan 2) opera como el plano de control primario Zero Trust de identidad, acceso adaptativo y detección/respuesta ante amenazas de identidad (ITDR) en entornos Microsoft 365 E5. A noviembre de 2026, su excelencia operacional se sustenta en cinco pilares verificados: (1) gestión unificada en la directiva Authentication Methods (obligatoria post 30-sep-2025) impulsando Passkeys (FIDO2) device-bound y synced junto con External MFA en GA (reemplazando Custom Controls); (2) motor Conditional Access endurecido con Authentication Strengths resistentes a phishing, Token Protection vinculado a PRT y Continuous Access Evaluation (CAE) en modo Strictly enforce location policies; (3) convergencia ITDR nativa entre Entra ID Protection y Microsoft Defender XDR con Automatic Attack Disruption (>=99% SNR) ante ataques AiTM y caza sobre EntraIdSignInEvents (reemplazo oficial de AADSignInEventsBeta desde el 19-oct-2026); (4) cero privilegios permanentes humanos vía PIM y cuentas Break-Glass protegidas con FIDO2/CBA probadas cada <=90 días; y (5) extensión del plano de identidad hacia cargas de trabajo, sincronización híbrida v2.6.x/Cloud Sync y agentes autónomos mediante Microsoft Entra Agent ID.",
+  "principiosRectores": [
+    {
+      "principio": "Autenticación resistente a phishing por diseño (Passkeys FIDO2, WHfB y CBA)",
+      "descripcion": "Eliminar progresivamente factores vulnerables a phishing e intercepción (SMS, voz, OTP y push simple) exigiendo Authentication Strengths resistentes a phishing al 100% de administradores y blindando la acción Register security information con TAP o dispositivos conformes.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-passkeys-fido2"
+    },
+    {
+      "principio": "Verificación continua de sesión y mitigación de robo de tokens (Token Protection + CAE Estricto)",
+      "descripcion": "Vincular criptográficamente los tokens de sesión al dispositivo mediante Primary Refresh Tokens (PRT) en Token Protection y cortar sesiones en tiempo real con CAE Strictly enforce location policies cuando cambie la IP vista por el recurso.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/concept-token-protection"
+    },
+    {
+      "principio": "Cero privilegio permanente humano (PIM JIT) y resiliencia Break-Glass con FIDO2/CBA",
+      "descripcion": "Asignar el 100% de roles administrativos humanos como Eligible en PIM (<5 Global Admins elegibles, cuentas cloud-only dedicadas) y resguardar al menos dos cuentas Break-Glass permanentes con Passkey FIDO2 o CBA probadas cada <=90 días.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-emergency-access"
+    },
+    {
+      "principio": "Defensa ITDR unificada con Microsoft Defender XDR y Automatic Attack Disruption",
+      "descripcion": "Correlacionar detecciones de Entra ID Protection con telemetría de endpoint, correo y SaaS en security.microsoft.com (tabla EntraIdSignInEvents) para suspender cuentas y revocar sesiones automáticamente ante ataques AiTM con >=99% de confianza.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-xdr/automatic-attack-disruption"
+    },
+    {
+      "principio": "Gobernanza equivalente sobre identidades no humanas (Workloads y Entra Agent ID)",
+      "descripcion": "Erradicar secretos estáticos de larga vida en aplicaciones mediante Workload Identity Federation y gobernar agentes de IA con Agent Identity Blueprints, Conditional Access for agents e ID Protection for agents.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/entra/agent-id/what-is-microsoft-entra-agent-id"
+    },
+    {
+      "principio": "Aislamiento Tier-0 e integridad continua del plano híbrido (PHS y Connect Sync v2.6.x / Cloud Sync)",
+      "descripcion": "Mantener Password Hash Synchronization (PHS) activo para detección de credenciales filtradas y resiliencia ante caídas on-premises, actualizando Entra Connect Sync dentro de su ciclo estricto de 12 meses.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/reference-connect-version-history"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Directiva Unificada Authentication Methods, Passkeys (FIDO2) y External MFA (EAM)",
+      "funcionOperativa": "Control centralizado post 30-sep-2025 de métodos de inicio de sesión y SSPR por grupos (<20 KB), Passkeys device-bound (con atestación FIDO MDS) y synced, más proveedores externos OIDC en GA reemplazando Custom Controls.",
+      "portalRuta": "https://entra.microsoft.com > Protection > Authentication methods > Policies",
+      "integraciones": [
+        "Microsoft Authenticator (iOS / Android)",
+        "FIDO2 Metadata Service (MDS) & Windows Hello for Business",
+        "External MFA Providers (OIDC)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Motor Microsoft Entra Conditional Access (Authentication Strengths & Managed Policies)",
+      "funcionOperativa": "Motor Zero Trust de políticas if-then que evalúa identidad, riesgo, dispositivo, aplicación y red para exigir fortalezas específicas de autenticación, incluyendo ciclo Report-only y Microsoft-managed policies (ventana >=45 días).",
+      "portalRuta": "https://entra.microsoft.com > Protection > Conditional Access > Policies",
+      "integraciones": [
+        "Microsoft Intune Device Compliance",
+        "Microsoft Purview Adaptive Protection",
+        "Global Secure Access (Microsoft Entra Suite)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Controles Avanzados de Sesión: Token Protection y Continuous Access Evaluation (CAE)",
+      "funcionOperativa": "Mitigación de robo y replay de tokens vinculando sesiones a PRT en Windows/iOS/macOS (GA apps nativas, Preview web ARM) y revocando acceso inmediatamente en modo CAE Strictly enforce location policies.",
+      "portalRuta": "https://entra.microsoft.com > Protection > Conditional Access > Session controls / Workbooks",
+      "integraciones": [
+        "Exchange Online, SharePoint Online & Microsoft Teams",
+        "Azure Virtual Desktop, Windows 365 & ARM (Preview)",
+        "Continuous Access Evaluation Insights Workbook"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Entra ID Protection (ITDR para Usuarios, Workloads y Agentes)",
+      "funcionOperativa": "Motor ML y heurístico en tiempo real y offline que detecta credenciales filtradas, AiTM, tokens anómalos, Password Spray y comportamientos maliciosos en usuarios, service principals y agentes autónomos.",
+      "portalRuta": "https://entra.microsoft.com > ID Protection > Dashboard / Risky users / Risky workload identities / Risky agents",
+      "integraciones": [
+        "Conditional Access Risk Policies",
+        "Microsoft Defender XDR & Microsoft Sentinel",
+        "Microsoft Graph Identity Protection API"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Integración Defender XDR: Automatic Attack Disruption y Esquema EntraIdSignInEvents",
+      "funcionOperativa": "Contención autónoma (>=99% SNR) que suspende usuarios en Entra ID, revoca sesiones y deshabilita cuentas en AD durante ataques activos, respaldada por caza KQL en EntraIdSignInEvents (GA post 19-oct-2026).",
+      "portalRuta": "https://security.microsoft.com > Incidents / Action center / Advanced hunting",
+      "integraciones": [
+        "Microsoft Defender for Endpoint (PRT protection)",
+        "Microsoft Defender for Identity (App ID 60ca1954-583c-4d1f-86de-39d835f3e452)",
+        "Microsoft Defender for Office 365 & Cloud Apps"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Privileged Identity Management (PIM) Operativo para Roles Privilegiados",
+      "funcionOperativa": "Elevación Just-In-Time con límite horario, aprobación dual, justificación, Authentication Context resistente a phishing y alertas de higiene sobre roles Entra, Azure y grupos privilegiados.",
+      "portalRuta": "https://entra.microsoft.com > Identity governance > Privileged Identity Management",
+      "integraciones": [
+        "Conditional Access Authentication Context",
+        "Microsoft Entra Audit Logs",
+        "Módulo 02_Microsoft_Entra_ID_Governance (Access Reviews)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Arquitectura de Acceso de Emergencia (Cuentas Break-Glass) y PAW",
+      "funcionOperativa": "Redundancia administrativa ante fallos catastróficos mediante >=2 cuentas cloud-only (*.onmicrosoft.com) permanentes activas con Passkey FIDO2 o CBA, custodia ignífuga y monitoreo Severidad 0.",
+      "portalRuta": "https://entra.microsoft.com > Users / https://portal.azure.com > Monitor > Alerts",
+      "integraciones": [
+        "Azure Monitor & Microsoft Sentinel Alerts",
+        "Privileged Access Workstations (PAW)",
+        "FIDO2 Hardware Security Keys / PKI CBA"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Sincronización Híbrida (Connect Sync v2.6.x / Cloud Sync) y Microsoft Entra Agent ID",
+      "funcionOperativa": "Sincronización segura AD-Entra con autenticación por identidad de aplicación y PHS, junto con la plataforma Entra Agent ID (Agent Blueprints, OBO, Autonomous y Agent Users) conectada con Agent 365.",
+      "portalRuta": "https://entra.microsoft.com > Hybrid management > Microsoft Entra Connect / Agent ID",
+      "integraciones": [
+        "Active Directory Domain Services & Connect Health",
+        "Microsoft Agent 365 (Módulo 22)",
+        "Model Context Protocol (MCP) & OAuth 2.0"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "Global Administrator (Restringido a Break-Glass y <5 Elegibles)",
+      "nivelSOC": "Tier-0 Emergencia Extrema",
+      "permisosClave": "Control total e irrestricto sobre Microsoft Entra ID y capacidad de elevar acceso sobre todas las suscripciones Azure.",
+      "asignacionPIM": "0 humanos permanentes (solo >=2 Break-Glass activas con FIDO2/CBA); humanos (<5) Eligible máximo 1-2h con aprobación dual y FIDO2.",
+      "responsabilidadOperativa": "Intervención exclusiva ante escenarios de emergencia crítica o configuraciones raíz que carezcan de rol delegado específico.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Privileged Role Administrator",
+      "nivelSOC": "Tier-0 Gobierno RBAC y PIM",
+      "permisosClave": "Gestión de asignaciones de roles en Entra ID, directivas de PIM, alertas de privilegios y consentimiento administrativo de permisos API.",
+      "asignacionPIM": "Eligible en PIM (máximo 2 horas, aprobación por par distinto, ticket de cambio y Phishing-resistant MFA).",
+      "responsabilidadOperativa": "Configurar políticas PIM, resolver alertas mensuales de higiene privilegiada y aprobar concesiones críticas de permisos Graph.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Conditional Access Administrator",
+      "nivelSOC": "Ingeniería Zero Trust (PR.AA)",
+      "permisosClave": "Administración completa de políticas Conditional Access, Named Locations, Authentication Strengths, Token Protection y CAE.",
+      "asignacionPIM": "Eligible en PIM (máximo 4 horas, ticket CAB aprobado y MFA resistente a phishing).",
+      "responsabilidadOperativa": "Diseñar, probar en Report-only, promover a producción y mantener las políticas de acceso adaptativo para usuarios, workloads y agentes.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Authentication Policy Administrator",
+      "nivelSOC": "Ingeniería de Autenticación",
+      "permisosClave": "Configuración de la directiva unificada Authentication Methods, perfiles de Passkeys (FIDO2), External MFA y campañas de registro.",
+      "asignacionPIM": "Eligible en PIM (máximo 4 horas con MFA resistente a phishing).",
+      "responsabilidadOperativa": "Gobernar métodos habilitados por grupo (<20 KB), expandir adopción passwordless y retirar métodos heredados vulnerables.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Security Operator / Security Administrator",
+      "nivelSOC": "SOC L1 / L2 / L3 — Operaciones ITDR (DE / RS)",
+      "permisosClave": "Lectura e investigación de Risky users, Risky sign-ins, Risky workload identities y Risky agents; ejecución de Confirm compromise / Dismiss risk.",
+      "asignacionPIM": "Security Operator Eligible 8h por turno para SOC L2; Security Administrator Eligible 4h para SOC Lead/L3.",
+      "responsabilidadOperativa": "Ejecutar triaje diario de riesgos de identidad, contener ataques AiTM/Password Spray y supervisar Automatic Attack Disruption.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Authentication Administrator vs Privileged Authentication Administrator",
+      "nivelSOC": "Soporte Seguro / Respuesta a Incidentes",
+      "permisosClave": "Emisión de Temporary Access Pass (TAP), restablecimiento de credenciales y ejecución de Require re-register MFA.",
+      "asignacionPIM": "Authentication Admin Eligible 8h acotado por Administrative Units para Helpdesk; Privileged Auth Admin Eligible 2h con aprobación solo para IR.",
+      "responsabilidadOperativa": "Onboarding seguro sin contraseña mediante TAP para usuarios no privilegiados y recuperación controlada post-incidente.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Cloud Application Administrator",
+      "nivelSOC": "Gobierno de Aplicaciones y Workloads",
+      "permisosClave": "Administración de App Registrations, Enterprise Applications, certificados/federación de credenciales y bloqueo de inicio de sesión de apps.",
+      "asignacionPIM": "Eligible en PIM (máximo 4 horas con MFA resistente a phishing).",
+      "responsabilidadOperativa": "Mantener higiene de credenciales OAuth, auditar Redirect URIs y deshabilitar aplicaciones maliciosas durante incidentes.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Hybrid Identity Administrator",
+      "nivelSOC": "Ingeniería de Infraestructura Híbrida Tier-0",
+      "permisosClave": "Administración de Microsoft Entra Connect Sync v2.6.x, Cloud Sync, Password Hash Synchronization (PHS) y Connect Health.",
+      "asignacionPIM": "Eligible en PIM (máximo 4 horas desde PAW con MFA resistente a phishing).",
+      "responsabilidadOperativa": "Asegurar salud diaria de sincronización, mantener versiones dentro de la ventana de 12 meses y proteger servidores Tier-0.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Triaje y remediación prioritaria de usuarios e inicios de sesión en riesgo alto (Entra ID Protection)",
+      "objetivo": "Investigar y contener en menos de 4 horas toda cuenta humana marcada en riesgo High que no haya completado auto-remediación.",
+      "consolaRuta": "https://entra.microsoft.com > ID Protection > Risky users / Risky sign-ins",
+      "procedimiento": [
+        "Filtrar Risky users con Risk state == At risk y Risk level == High ordenando por última detección.",
+        "Analizar en Risk detections el evento disparador (leakedCredentials, anomalousToken, attackerInTheMiddle, attemptedPrtAccess).",
+        "Correlacionar actividad subsiguiente en Sign-in logs (interactivos y no interactivos) y Audit logs buscando persistencia MFA o reglas de buzón.",
+        "Ejecutar Confirm user compromised y Revoke sessions ante compromiso real (activando AH-02) o Confirm safe documentado tras validación fuera de banda."
+      ],
+      "rolResponsable": "SOC L1 / L2 (Security Operator)",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Credential Access / Valid Accounts",
+      "evidenciaAuditable": "Reporte diario exportado de Risky users con cero cuentas High abiertas sin acción > 4 horas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo oficial de investigación de riesgo en Entra ID Protection; SLA < 4h es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-protection/howto-identity-protection-investigate-risk"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo diario de identidades no humanas en riesgo (Workload Identities y Agentes IA)",
+      "objetivo": "Contener credenciales comprometidas de principales de servicio y comportamientos anómalos en agentes autónomos.",
+      "consolaRuta": "https://entra.microsoft.com > ID Protection > Risky workload identities / Risky agents",
+      "procedimiento": [
+        "Inspeccionar alertas abiertas en Risky workload identities (secretos filtrados, IPs maliciosas o cambios sospechosos).",
+        "Revisar Risky agents y la pestaña Agent detections buscando earlyLifeMaliciousActivity, entraDirectoryReconnaissance, suspiciousCredentialUsage o signInSpike.",
+        "Ejecutar Confirm compromise o Disable para activar bloqueo inmediato en Conditional Access y notificar al propietario o Sponsor."
+      ],
+      "rolResponsable": "SOC L2 + App/Agent Security Analyst",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Valid Accounts / Discovery",
+      "evidenciaAuditable": "Colas Risky workload identities y Risky agents conciliadas diariamente sin eventos High pendientes.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Detecciones y acciones sobre Risky workload identities y Risky agents verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-protection/concept-risky-agents"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Vigilancia de cuentas Break-Glass y asignaciones directas de roles fuera de PIM",
+      "objetivo": "Confirmar ausencia total de inicios de sesión no autorizados en cuentas de emergencia y detectar elevaciones que eludan PIM.",
+      "consolaRuta": "https://entra.microsoft.com > Identity > Monitoring & health > Sign-in logs / Audit logs",
+      "procedimiento": [
+        "Verificar cero disparos en la alerta Severidad 0 de Azure Monitor / Sentinel asociada a los ObjectId de las cuentas Break-Glass.",
+        "Consultar Audit logs (Category == RoleManagement) validando que todo Add member to role provenga de MS-PIM.",
+        "Auditar cualquier registro administrativo de credenciales o reseteo de contraseña sobre titulares de roles privilegiados."
+      ],
+      "rolResponsable": "SOC L2",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Privilege Escalation / Persistence",
+      "evidenciaAuditable": "Bitácora diaria de AuditLogs y estado limpio de alertas Severidad 0 de acceso de emergencia.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Prácticas oficiales de monitoreo de cuentas de emergencia y PIM en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-emergency-access"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Caza diaria de Password Spray (50126), bloqueos MFA con contraseña válida (500121) y Legacy Auth",
+      "objetivo": "Identificar campañas de fuerza bruta distribuida y contraseñas ya comprometidas que fueron detenidas por MFA.",
+      "consolaRuta": "https://security.microsoft.com > Hunting > Advanced hunting (EntraIdSignInEvents)",
+      "procedimiento": [
+        "Detectar picos de ErrorCode 50126 desde una misma IP/ASN contra múltiples cuentas distintas.",
+        "Investigar prioritariamente todo evento ErrorCode 500121 o alerta de fraude MFA forzando cambio inmediato de contraseña.",
+        "Confirmar que todo intento de protocolo heredado (IMAP, POP3, SMTP, ActiveSync) haya sido bloqueado con código 53003."
+      ],
+      "rolResponsable": "SOC L1 / L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "Credential Access (Brute Force / Password Spraying T1110.003)",
+      "evidenciaAuditable": "Resultado diario de consulta KQL sobre EntraIdSignInEvents y tickets de remediación de contraseñas expuestas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Códigos de error 50126, 500121 y 53003 y tabla EntraIdSignInEvents verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/incident-response-playbook-password-spray"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Supervisión de contenciones de identidad ejecutadas por Automatic Attack Disruption",
+      "objetivo": "Validar la erradicación forense completa de cuentas suspendidas automáticamente por Defender XDR ante ataques AiTM o BEC.",
+      "consolaRuta": "https://security.microsoft.com > Incidents / Action center > History",
+      "procedimiento": [
+        "Filtrar incidentes con etiqueta Attack Disruption que ejecutaron Suspend user in Entra, Revoke user session o Disable user.",
+        "Determinar el vector inicial de robo de sesión e identificar dispositivos, métodos MFA o reglas de correo inyectadas.",
+        "Ejecutar limpieza total y exigir re-registro de Passkey FIDO2 con TAP verificado antes de levantar la suspensión."
+      ],
+      "rolResponsable": "SOC L2 / L3",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Lateral Movement / Collection",
+      "evidenciaAuditable": "Historial del Action Center conciliado con el expediente de cierre forense del incidente.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Acciones automáticas de identidad en Automatic Attack Disruption verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/automatic-attack-disruption"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Auditoría diaria de activaciones PIM fuera de horario o desde ubicaciones atípicas",
+      "objetivo": "Detectar elevaciones sospechosas de roles privilegiados aunque cuenten con credenciales válidas.",
+      "consolaRuta": "https://entra.microsoft.com > Identity governance > Privileged Identity Management > Resource audit",
+      "procedimiento": [
+        "Revisar eventos Add member to role completed (PIM activation) ocurridos entre las 20:00 y las 07:00 o en días no laborables.",
+        "Validar correlación entre la justificación ingresada, el sistema de tickets ITSM y la dirección IP/dispositivo PAW empleado.",
+        "Revocar sesión e iniciar investigación inmediata ante cualquier elevación no reconocida por el titular."
+      ],
+      "rolResponsable": "SOC L2 + Identity Security Analyst",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Privilege Escalation",
+      "evidenciaAuditable": "Bitácora diaria de auditoría de activaciones PIM fuera de horario conciliada.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Monitoreo operativo de PIM documentado en Microsoft Entra SecOps Guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/architecture/security-operations-privileged-identity-management"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Vigilancia de consentimientos OAuth de alto riesgo, nuevos secretos de apps y Redirect URIs",
+      "objetivo": "Impedir persistencia adversaria mediante Illicit Consent Grants o puertas traseras en registros de aplicaciones.",
+      "consolaRuta": "https://entra.microsoft.com > Monitoring & health > Audit logs / https://security.microsoft.com > Cloud apps > OAuth apps",
+      "procedimiento": [
+        "Auditar concesiones de permisos Mail.*, Files.*, Directory.ReadWrite.All, RoleManagement.ReadWrite.Directory y Application.ReadWrite.All.",
+        "Revisar todo evento Update application – Certificates and secrets management fuera de pipelines autorizados.",
+        "Verificar modificaciones en Redirect URIs para descartar dominios externos no controlados."
+      ],
+      "rolResponsable": "SOC L2 + Application Security Analyst",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Persistence (Account Manipulation: Additional Cloud Credentials T1098.001)",
+      "evidenciaAuditable": "Registro diario auditado de eventos ApplicationManagement en AuditLogs.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Eventos críticos de aplicaciones documentados en Entra SecOps for Applications.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/architecture/security-operations-applications"
+    },
+    {
+      "codigo": "D-08",
+      "cadencia": "Diaria",
+      "actividad": "Verificación de salud de sincronización híbrida (Entra Connect Sync / Cloud Sync y PHS)",
+      "objetivo": "Garantizar replicación oportuna de bajas de personal, atributos de seguridad y hashes de contraseñas (PHS).",
+      "consolaRuta": "https://entra.microsoft.com > Hybrid management > Microsoft Entra Connect > Connect Health",
+      "procedimiento": [
+        "Comprobar que los ciclos delta de sincronización (<30 min) y PHS (<2 min) operen sin errores de exportación.",
+        "Confirmar propagación efectiva del bloqueo de cuentas dadas de baja en Active Directory hacia Entra ID.",
+        "Auditar eventos administrativos locales en servidores Entra Connect buscando cambios no autorizados en reglas de sincronización."
+      ],
+      "rolResponsable": "Hybrid Identity Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-01",
+      "mitreTactic": "Defense Evasion / Persistence",
+      "evidenciaAuditable": "Dashboard Connect Health en estado Healthy y registro de errores de sincronización en cero.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Monitoreo híbrido verificado en Entra SecOps for Infrastructure y Connect Health.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/architecture/security-operations-infrastructure"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Análisis de cobertura Conditional Access, políticas Report-Only y Microsoft-managed policies",
+      "objetivo": "Cerrar brechas donde no aplica ninguna política CA y gobernar la ventana de 45 días de políticas administradas por Microsoft.",
+      "consolaRuta": "https://entra.microsoft.com > Protection > Conditional Access > Insights and reporting",
+      "procedimiento": [
+        "Investigar en el Workbook Conditional Access Insights todos los inicios de sesión con estado Not applied.",
+        "Evaluar telemetría de al menos 7 días sobre políticas en Report-only antes de promoverlas a estado On.",
+        "Revisar políticas creadas por Microsoft en Report-only antes de su auto-activación (>=45 días) y sugerencias del agente de optimización CA."
+      ],
+      "rolResponsable": "Conditional Access Administrator",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.PO-02",
+      "mitreTactic": "Initial Access / Valid Accounts",
+      "evidenciaAuditable": "Snapshot semanal del Workbook Insights and Reporting y respaldo JSON de políticas CA.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Ciclo Report-only y auto-habilitación >=45 días de Microsoft-managed policies verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/managed-policies"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Seguimiento de adopción de Passkeys (FIDO2) y protección de Register security information",
+      "objetivo": "Expandir credenciales resistentes a phishing asegurando que ningún atacante pueda registrar una passkey con solo una contraseña.",
+      "consolaRuta": "https://entra.microsoft.com > Protection > Authentication methods > Activity",
+      "procedimiento": [
+        "Medir evolución semanal de usuarios registrados y autenticando con Passkeys (FIDO2), WHfB y CBA frente a SMS/Voz.",
+        "Verificar que la política CA sobre la acción Register security information exija TAP, dispositivo conforme o red confiable (mitigación MC1450133).",
+        "Revisar campañas activas de registro (Registration campaign) y tasas de éxito en usuarios finales."
+      ],
+      "rolResponsable": "Authentication Policy Administrator",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-02",
+      "mitreTactic": "Modify Authentication Process (T1556)",
+      "evidenciaAuditable": "Reporte semanal de Activity de métodos de autenticación y validación de política CA de registro seguro.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Adopción de passkeys verificada en MS Learn; blindaje de Register security info ante MC1450133 validado con mejores prácticas MVP.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-passkeys-fido2"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Validación semanal de CAE (Strictly enforce location) y expansión de Token Protection",
+      "objetivo": "Prevenir falsos bloqueos por diferencias de IP vista por el recurso y ampliar cobertura de tokens vinculados a PRT.",
+      "consolaRuta": "https://entra.microsoft.com > Monitoring & health > Workbooks (Continuous Access Evaluation Insights)",
+      "procedimiento": [
+        "Inspeccionar en el Workbook CAE Insights discrepancias entre la IP vista por Entra ID y la columna IP address (seen by resource).",
+        "Conciliar rangos de egreso conocidos en Named locations antes de activar Strictly enforce location policies en nuevos grupos.",
+        "Revisar logs interactivos y no interactivos de grupos piloto con Token Protection en Windows, macOS e iOS/iPadOS para ampliar despliegue."
+      ],
+      "rolResponsable": "Conditional Access Admin + Network Security Lead",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-03",
+      "mitreTactic": "Use Alternate Authentication Material: Application Access Token (T1550.001)",
+      "evidenciaAuditable": "Reporte semanal del Workbook CAE Insights y registro de expansión de Token Protection.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Procedimiento oficial de validación con CAE Insights Workbook y Token Protection en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/concept-continuous-access-evaluation-strict-enforcement"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría semanal de patrones de activación PIM en roles administrativos y del SOC",
+      "objetivo": "Ajustar sobre-privilegios y confirmar exigencia universal de MFA resistente a phishing al activar roles.",
+      "consolaRuta": "https://entra.microsoft.com > Identity governance > Privileged Identity Management > Assignments",
+      "procedimiento": [
+        "Identificar usuarios con alta frecuencia diaria de activación de roles elevados para reasignarles roles operativos de menor privilegio.",
+        "Confirmar que ningún rol crítico permita activación sin Authentication Context resistente a phishing ni justificación.",
+        "Revocar elegibilidad PIM de personal que cambió de funciones durante la semana."
+      ],
+      "rolResponsable": "Privileged Role Administrator",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Valid Accounts",
+      "evidenciaAuditable": "Exportación semanal de historial de activaciones y ajustes de elegibilidad en PIM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Buenas prácticas de operación semanal de PIM verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Higiene de credenciales de App Registrations, Dangling Redirect URIs y Agent Identity Blueprints",
+      "objetivo": "Eliminar secretos estáticos próximos a vencer o excesivos, URIs huérfanas y agentes IA sin política CA.",
+      "consolaRuta": "https://entra.microsoft.com > Identity > Applications > App registrations / Agent ID",
+      "procedimiento": [
+        "Identificar secretos de cliente que expiren en <30 días o tengan vigencia >180 días impulsando Workload Identity Federation.",
+        "Auditar Redirect URIs eliminando dominios expirados (dangling URIs), esquemas no HTTPS o comodines.",
+        "Verificar que todos los Agent Identity Blueprints y cuentas Agent User tengan políticas específicas de Conditional Access for agents."
+      ],
+      "rolResponsable": "Cloud Application Admin + AI & Agent Governance Lead",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-02",
+      "mitreTactic": "Steal Application Access Token (T1528)",
+      "evidenciaAuditable": "Inventario semanal depurado de credenciales de aplicaciones y Agent Blueprints.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Buenas prácticas de Redirect URIs y Conditional Access for agents verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/agent-id"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Ejecución automatizada de pruebas de seguridad como código sobre Entra ID (Maester)",
+      "objetivo": "Detectar automáticamente regresiones de seguridad, exclusiones huérfanas o desviaciones de línea base Zero Trust.",
+      "consolaRuta": "Pipeline CI/CD (GitHub Actions / Azure DevOps) ejecutando Maester contra Microsoft Graph",
+      "procedimiento": [
+        "Ejecutar suite automatizada semanal de Maester validando políticas CA, configuración de tenant, Break-Glass y roles privilegiados.",
+        "Comparar resultados contra la línea base anterior para identificar regresiones inmediatas.",
+        "Generar tickets automáticos de corrección para toda prueba fallida."
+      ],
+      "rolResponsable": "Identity Security Engineer",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Defense Evasion",
+      "evidenciaAuditable": "Reporte HTML/JSON semanal firmado de pruebas Maester archivado en repositorio GRC.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Uso del framework open-source Maester (mantenido por PMs de Microsoft Entra y comunidad) como control continuo.",
+      "urlSoporte": "https://maester.dev"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Resolución mensual de alertas de seguridad PIM y verificación de <5 Global Administrators",
+      "objetivo": "Mantener cero alertas abiertas en PIM y garantizar estricto aislamiento de cuentas privilegiadas.",
+      "consolaRuta": "https://entra.microsoft.com > Identity governance > Privileged Identity Management > Alerts",
+      "procedimiento": [
+        "Resolver el 100% de las alertas nativas de PIM (roles sin MFA, demasiados Global Admins, asignaciones fuera de PIM, cuentas inactivas).",
+        "Confirmar menos de 5 usuarios humanos elegibles en Global Administrator y 0 permanentes humanos.",
+        "Articular resultados con las campañas formales de Access Reviews del Módulo 02_Microsoft_Entra_ID_Governance."
+      ],
+      "rolResponsable": "Privileged Role Administrator + GRC Auditor",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Privilege Escalation",
+      "evidenciaAuditable": "Exportación mensual CSV de alertas PIM en cero y nómina auditada de Global Administrators.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Alertas oficiales de PIM y recomendación de máximo 5 Global Admins verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-how-to-configure-security-alerts"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría mensual de directiva Authentication Methods (<20 KB) y retiro de Custom Controls",
+      "objetivo": "Garantizar salud técnica de la directiva unificada post-migración y completar salida de controles obsoletos.",
+      "consolaRuta": "https://entra.microsoft.com > Protection > Authentication methods > Policies",
+      "procedimiento": [
+        "Verificar estado Migration Complete, tamaño de política holgadamente inferior a 20 KB y ausencia de usuarios individuales asignados.",
+        "Reducir mensualmente los grupos con permiso residual para SMS, llamadas de voz o Email OTP.",
+        "Confirmar migración total hacia External MFA (EAM) sin ningún Custom Control activo antes de su retiro definitivo a inicios de 2027."
+      ],
+      "rolResponsable": "Authentication Policy Administrator",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-02",
+      "mitreTactic": "Credential Access",
+      "evidenciaAuditable": "Exportación JSON mensual de authenticationMethodsPolicy y conteo cero de Custom Controls.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Límite de 20 KB, estado Migration Complete y retiro de Custom Controls verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/how-to-migrate-custom-controls-external-mfa"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Control de versión (ciclo 12 meses) y endurecimiento Tier-0 de Entra Connect Sync v2.6.x / Cloud Sync",
+      "objetivo": "Impedir que los motores híbridos entren en fin de soporte y auditar su postura como activos Tier-0.",
+      "consolaRuta": "https://entra.microsoft.com > Hybrid management > Microsoft Entra Connect",
+      "procedimiento": [
+        "Comparar la versión en ejecución de Entra Connect Sync contra la tabla oficial de versiones (rama 2.6.92.0+ a nov-2026) asegurando >=3 meses de margen antes del retiro a 12 meses.",
+        "Confirmar autenticación basada en identidad de aplicación hacia Entra ID y recolección de logs de auditoría de administrador en Sentinel.",
+        "Planificar actualización primero en servidor Staging Mode o migración progresiva hacia Cloud Sync."
+      ],
+      "rolResponsable": "Hybrid Identity Administrator",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-02",
+      "mitreTactic": "Identity Synchronization Abuse",
+      "evidenciaAuditable": "Informe mensual de versión instalada vs calendario oficial de fin de soporte Microsoft.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Política oficial de retiro a 12 meses y build 2.6.92.0 verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/reference-connect-version-history"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Evaluación mensual de Identity Secure Score y aislamiento de cuentas privilegiadas cloud-only",
+      "objetivo": "Incrementar sistemáticamente la postura preventiva de identidad y eliminar privilegios híbridos cruzados.",
+      "consolaRuta": "https://entra.microsoft.com > Identity > Identity Secure Score / https://security.microsoft.com > Exposure management",
+      "procedimiento": [
+        "Revisar el puntaje en Identity Secure Score e incorporar las recomendaciones pendientes de mayor impacto al sprint mensual.",
+        "Identificar en Exposure Management cualquier cuenta sincronizada desde Active Directory que posea roles administrativos en Entra ID.",
+        "Migrar de inmediato cualquier rol privilegiado detectado hacia cuentas dedicadas 100% cloud-only."
+      ],
+      "rolResponsable": "IAM Lead + Cybersecurity Architect",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-05",
+      "mitreTactic": "Lateral Movement (Hybrid Pivot)",
+      "evidenciaAuditable": "Reporte mensual de Identity Secure Score y conteo cero de administradores sincronizados desde AD.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Aislamiento de cuentas privilegiadas cloud-only documentado en Microsoft Entra SecOps.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/architecture/security-operations-privileged-accounts"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Conciliación mensual de licenciamiento Entra ID P2, Workload ID Premium y Agent 365",
+      "objetivo": "Garantizar cumplimiento contractual estricto sobre todas las identidades humanas, de servicio y agentes protegidos.",
+      "consolaRuta": "https://entra.microsoft.com > Billing > Licenses",
+      "procedimiento": [
+        "Validar que el 100% de usuarios bajo políticas de riesgo, Token Protection o PIM cuenten con Entra ID P2 (M365 E5/E7, Defender Suite, EMS E5 o standalone) y UsageLocation válido.",
+        "Confirmar licenciamiento Microsoft Entra Workload ID Premium para service principals cubiertos por políticas CA o monitoreo de riesgo.",
+        "Verificar cobertura de Microsoft Agent 365 o M365 E7 para agentes sujetos a Conditional Access e ID Protection for agents."
+      ],
+      "rolResponsable": "IAM Lead + FinOps Analyst",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "Gobierno de Licenciamiento (N/A)",
+      "evidenciaAuditable": "Informe mensual auditado de conciliación de licencias de identidad sin errores de asignación.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Requisitos de licenciamiento P2, Workload ID y Agent 365 verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/fundamentals/licensing"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Simulacro obligatorio de cuentas Break-Glass (cada <=90 días) con llaves FIDO2 / CBA",
+      "objetivo": "Validar cada 90 días la operatividad de acceso de emergencia, la custodia física y el disparo de alertas Severidad 0.",
+      "consolaRuta": "Estación PAW + https://entra.microsoft.com + https://portal.azure.com > Monitor > Alerts",
+      "procedimiento": [
+        "Avisar formalmente al SOC la ventana controlada de validación trimestral.",
+        "Extraer las llaves FIDO2 o credenciales CBA de las bóvedas ignífugas separadas y autenticar ambas cuentas *.onmicrosoft.com desde una PAW.",
+        "Confirmar acceso exitoso sin bloqueo por nuevas políticas CA, ausencia de métodos personales registrados y recepción inmediata de la alerta Severidad 0.",
+        "Revisar nómina de custodios autorizados y rotar combinaciones de bóveda si hubo bajas o cambios de puesto."
+      ],
+      "rolResponsable": "IAM Lead + SOC Manager + Custodios Break-Glass",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-01",
+      "mitreTactic": "Initial Access / Persistence",
+      "evidenciaAuditable": "Acta trimestral firmada (<=90 días) con traza en SigninLogs y captura de alerta Severidad 0 recibida.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Frecuencia máxima de 90 días y pasos exactos verificados en documentación oficial de Microsoft Entra.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-emergency-access"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Ejercicio Purple Team de identidad (emulación AiTM, replay de tokens y abuso OAuth)",
+      "objetivo": "Probar en condiciones reales la resistencia de Passkeys FIDO2, Token Protection, CAE estricto y detección XDR.",
+      "consolaRuta": "https://security.microsoft.com / https://entra.microsoft.com",
+      "procedimiento": [
+        "Ejecutar emulación controlada de phishing AiTM, intento de uso de token fuera del dispositivo PRT/IP permitida y solicitud OAuth maliciosa.",
+        "Verificar generación de eventos en Risk detections, EntraIdSignInEvents y respuesta de Automatic Attack Disruption.",
+        "Afinar políticas de Conditional Access y reglas analíticas KQL a partir de las brechas detectadas."
+      ],
+      "rolResponsable": "SOC L3 / Purple Team + Conditional Access Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.IM-02",
+      "mitreTactic": "Steal Web Session Cookie (T1539) / AiTM (T1557)",
+      "evidenciaAuditable": "Informe trimestral Identity Purple Team con resultados de bloqueo y mejoras implementadas.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Validación empírica recomendada sobre controles oficiales Zero Trust.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/token-theft-playbook"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Prueba semestral de políticas CA de contingencia, resiliencia PHS y auditoría Cross-Tenant B2B",
+      "objetivo": "Garantizar continuidad de autenticación ante fallas externas y depurar confianzas B2B con terceros.",
+      "consolaRuta": "https://entra.microsoft.com > Protection > Conditional Access / External Identities > Cross-tenant access settings",
+      "procedimiento": [
+        "Validar en modo Report-only las políticas de Conditional Access de contingencia diseñadas para escenarios de degradación.",
+        "Probar procedimiento de conmutación rápida hacia PHS en caso de subsistir dominios federados.",
+        "Auditar todas las relaciones inbound/outbound en Cross-tenant access settings eliminando organizaciones inactivas."
+      ],
+      "rolResponsable": "IAM Lead + Cybersecurity Architect",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.IR-01",
+      "mitreTactic": "Trusted Relationship",
+      "evidenciaAuditable": "Acta semestral de resiliencia de autenticación e inventario depurado de organizaciones Cross-tenant.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Estrategia oficial de controles resilientes y Cross-tenant access verificada en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-resilient-controls"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Auditoría anual Microsoft Zero Trust Assessment (Pilar Identidad) y recertificación NIST CSF 2.0",
+      "objetivo": "Evaluar de extremo a extremo la configuración del tenant contra estándares oficiales de Microsoft y evidencias PR.AA.",
+      "consolaRuta": "Herramienta Microsoft Zero Trust Assessment + https://entra.microsoft.com",
+      "procedimiento": [
+        "Ejecutar evaluación automatizada Microsoft Zero Trust Assessment sobre el pilar de Identidad.",
+        "Auditar configuraciones globales de User settings, consentimiento de aplicaciones, B2B, PIM y Authentication Methods.",
+        "Consolidar el paquete anual de evidencia reproducible para auditoría interna/externa NIST CSF 2.0 y actualizar el roadmap anual."
+      ],
+      "rolResponsable": "IAM Lead + Enterprise Cybersecurity Architect + GRC Lead",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-01",
+      "mitreTactic": "Gobierno Anual de Identidad (N/A)",
+      "evidenciaAuditable": "Reporte anual Microsoft Zero Trust Assessment y dossier probatorio NIST CSF 2.0 firmado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Herramienta oficial Microsoft Zero Trust Assessment verificada en MS Learn SAF.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/zero-trust/assessment/overview"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de respuesta ante Robo de Token / Adversary-in-the-Middle (AiTM)",
+      "objetivo": "Invalidar sesiones robadas post-MFA en minutos, erradicar persistencia y migrar al usuario afectado a Passkey FIDO2.",
+      "consolaRuta": "https://security.microsoft.com > Incidents / https://entra.microsoft.com > ID Protection",
+      "procedimiento": [
+        "Ejecutar de inmediato Revoke sessions / POST /v1.0/users/{id}/revokeSignInSessions para invalidar tokens de actualización y disparar CAE.",
+        "Marcar Confirm user compromised en Entra ID Protection elevando el riesgo a High.",
+        "Investigar en AuditLogs y EntraIdSignInEvents si el atacante registró métodos MFA, dispositivos o apps OAuth durante el secuestro.",
+        "Purgar reglas maliciosas de reenvío en Exchange Online y restablecer acceso únicamente con TAP + registro de Passkey FIDO2."
+      ],
+      "rolResponsable": "SOC L2 / L3 (ITDR)",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Adversary-in-the-Middle (T1557) / Steal Web Session Cookie (T1539)",
+      "evidenciaAuditable": "Traza de revokeSignInSessions, evento Confirm user compromised y registro limpio de credencial FIDO2.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Alineado al Token Theft Incident Response Playbook oficial de Microsoft.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/token-theft-playbook"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de contención en secuencia estricta ante compromiso de cuenta de usuario o administrador",
+      "objetivo": "Ejecutar contención hermética sin dejar tokens activos en vuelo ni métodos de persistencia residuales.",
+      "consolaRuta": "https://entra.microsoft.com > Identity > Users > All users",
+      "procedimiento": [
+        "Deshabilitar el inicio de sesión (Account enabled = No) en Entra ID y en Active Directory si es híbrida.",
+        "Ejecutar inmediatamente Revoke sessions (deshabilitar la cuenta por sí solo no revoca tokens ya emitidos sin este paso).",
+        "Ejecutar Require re-register multifactor authentication y eliminar dispositivos/métodos MFA sospechosos.",
+        "Auditar 72 horas de actividad previa (incluyendo activaciones PIM, buzón y SharePoint) y recuperar con TAP verificado por identidad."
+      ],
+      "rolResponsable": "SOC L2 + Privileged Authentication Admin (si afecta admin)",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Valid Accounts (T1078)",
+      "evidenciaAuditable": "Secuencia completa auditada en AuditLogs y expediente forense de alcance cerrado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Secuencia oficial de remediación de cuentas comprometidas verificada en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/incident-response-playbook-compromised-malicious-app"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de investigación y contención ante Password Spray / Credential Stuffing",
+      "objetivo": "Identificar rápidamente si un ataque volumétrico logró adivinar contraseñas válidas (códigos 0 o 500121) y contenerlas.",
+      "consolaRuta": "https://security.microsoft.com > Advanced hunting (EntraIdSignInEvents)",
+      "procedimiento": [
+        "Mapear IPs, ASNs y clientes empleados en el ataque consultando EntraIdSignInEvents.",
+        "Identificar toda cuenta con ErrorCode == 0 (compromiso efectivo) o ErrorCode == 500121 (contraseña vulnerada detenida por MFA).",
+        "Ejecutar AH-02 sobre cuentas con código 0 y cambio obligatorio inmediato de contraseña sobre cuentas con código 500121.",
+        "Confirmar operación de Smart Lockout, Entra Password Protection y bloqueo total de Legacy Auth."
+      ],
+      "rolResponsable": "SOC L2 / L3",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "Brute Force: Password Spraying (T1110.003)",
+      "evidenciaAuditable": "Listado forense de cuentas alcanzadas, reseteos aplicados y bloqueos de red/CA.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Basado en el Password Spray Investigation Playbook oficial de Microsoft.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/incident-response-playbook-password-spray"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de erradicación de Illicit Consent Grant, aplicación OAuth o agente malicioso",
+      "objetivo": "Cortar acceso persistente basado en tokens OAuth sin contraseña y determinar datos exfiltrados.",
+      "consolaRuta": "https://entra.microsoft.com > Identity > Applications > Enterprise applications",
+      "procedimiento": [
+        "Establecer Enabled for users to sign-in = No en el Service Principal malicioso (sin eliminarlo inicialmente para evitar re-consentimiento).",
+        "Revocar todos los OAuth2PermissionGrants y AppRoleAssignments asociados vía Microsoft Graph PowerShell.",
+        "Investigar accesos ejecutados en EntraIdSpnSignInEvents, CloudAppEvents y Purview Audit.",
+        "Restringir políticas de consentimiento de usuario hacia Admin Consent Workflow."
+      ],
+      "rolResponsable": "SOC L2/L3 + Cloud Application Administrator",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Steal Application Access Token (T1528)",
+      "evidenciaAuditable": "Service Principal deshabilitado, log de revocación de permisos e informe forense de datos accedidos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Alineado al App Consent Grant Investigation Playbook oficial de Microsoft.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/incident-response-playbook-app-consent"
+    },
+    {
+      "codigo": "AH-05",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de emergencia por bloqueo administrativo o caída de federación (uso Break-Glass)",
+      "objetivo": "Restablecer la administración del tenant de forma controlada y auditar cada comando mediante revisión Post-Mortem.",
+      "consolaRuta": "Bóveda ignífuga + PAW + https://entra.microsoft.com",
+      "procedimiento": [
+        "Obtener autorización fuera de banda del CISO y avisar al SOC antes de disparar la alerta Severidad 0.",
+        "Extraer bajo custodia dual la llave FIDO2 o credencial CBA e iniciar sesión desde una estación PAW.",
+        "Revertir exclusivamente la configuración causante del bloqueo y verificar recuperación de acceso administrativo nominal.",
+        "Cerrar sesión, preservar SigninLogs/AuditLogs y ejecutar comité Post-Mortem obligatorio en <=48 horas."
+      ],
+      "rolResponsable": "IAM Lead + CISO + Equipo Post-Mortem",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-01",
+      "mitreTactic": "Impact / Access Restoration",
+      "evidenciaAuditable": "Logs completos de sesión de emergencia y acta firmada de revisión Post-Mortem.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Procedimiento oficial de uso y revisión post-mortem de cuentas de emergencia en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-emergency-access"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Detección de Password Spray y contraseñas vulneradas contenidas por MFA en EntraIdSignInEvents",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "EntraIdSignInEvents",
+      "consulta": "EntraIdSignInEvents\n| where Timestamp > ago(4h)\n| where ErrorCode in (0, 50126, 500121, 50053)\n| summarize FailedSpray = countif(ErrorCode == 50126),\n            LockedAccounts = countif(ErrorCode == 50053),\n            ValidPwdBlockedByMFA = countif(ErrorCode == 500121),\n            SuccessfulLogons = countif(ErrorCode == 0),\n            TargetedUsers = dcountif(AccountUpn, ErrorCode == 50126),\n            CompromisedCandidates = make_set_if(AccountUpn, ErrorCode in (0, 500121), 25)\n            by IPAddress, Country\n| where TargetedUsers >= 8 and FailedSpray >= 20\n| order by ValidPwdBlockedByMFA desc, SuccessfulLogons desc, FailedSpray desc",
+      "proposito": "Identificar IPs ejecutando Password Spray sobre la tabla nativa vigente post 19-oct-2026 y resaltar cuentas donde el atacante adivinó la contraseña (0 o 500121).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Caza de posible robo de token (AiTM) por cambio abrupto de IP/país en misma sesión",
+      "plataforma": "Microsoft Sentinel",
+      "tablaPrincipal": "SigninLogs",
+      "consulta": "union SigninLogs, AADNonInteractiveUserSignInLogs\n| where TimeGenerated > ago(24h)\n| where ResultType == \"0\"\n| extend Country = tostring(LocationDetails.countryOrRegion)\n| summarize DistinctIPs = dcount(IPAddress),\n            DistinctCountries = dcount(Country),\n            IPList = make_set(IPAddress, 10),\n            Countries = make_set(Country, 5),\n            MaxRisk = make_set(RiskLevelDuringSignIn, 5)\n            by UserPrincipalName, CorrelationId, AppDisplayName\n| where DistinctCountries > 1 or (DistinctIPs >= 3 and tostring(MaxRisk) has_any (\"medium\", \"high\"))\n| order by DistinctCountries desc, DistinctIPs desc",
+      "proposito": "Detectar reproducción de tokens de sesión desde infraestructuras geográficas distintas tras completar autenticación inicial.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Alerta crítica Severidad 0 de cuentas Break-Glass y asignaciones de rol fuera de PIM",
+      "plataforma": "Microsoft Sentinel",
+      "tablaPrincipal": "SigninLogs",
+      "consulta": "let BreakGlassObjectIds = dynamic([\"00aa00aa-bb11-cc22-dd33-44ee44ee44ee\", \"11bb11bb-cc22-dd33-ee44-55ff55ff55ff\"]);\nlet BreakGlassSignIns = SigninLogs\n| where TimeGenerated > ago(24h)\n| where UserId in (BreakGlassObjectIds) or UserPrincipalName has_any (\"bg-admin\", \"emergency\")\n| project TimeGenerated, AlertType = \"USO CUENTA BREAK-GLASS (SEV-0)\", Actor = UserPrincipalName, Target = AppDisplayName, Detail = strcat(\"IP: \", IPAddress, \" | Result: \", ResultType);\nlet DirectRoleAssignments = AuditLogs\n| where TimeGenerated > ago(24h)\n| where Category == \"RoleManagement\" and OperationName == \"Add member to role\"\n| where tostring(InitiatedBy.app.displayName) != \"MS-PIM\"\n| project TimeGenerated, AlertType = \"ROL ASIGNADO FUERA DE PIM\", Actor = tostring(InitiatedBy.user.userPrincipalName), Target = tostring(TargetResources[0].displayName), Detail = tostring(TargetResources[1].userPrincipalName);\nunion BreakGlassSignIns, DirectRoleAssignments\n| order by TimeGenerated desc",
+      "proposito": "Disparar alerta crítica ante cualquier actividad en cuentas de acceso de emergencia o asignaciones permanentes directas de roles.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Medición de adopción de métodos resistentes a phishing (Passkeys FIDO2, WHfB, CBA) vs métodos heredados",
+      "plataforma": "Microsoft Sentinel",
+      "tablaPrincipal": "SigninLogs",
+      "consulta": "SigninLogs\n| where TimeGenerated > ago(30d) and ResultType == \"0\"\n| mv-expand AuthDetail = parse_json(AuthenticationDetails)\n| extend AuthMethod = tostring(AuthDetail.authenticationMethod)\n| where isnotempty(AuthMethod) and AuthMethod != \"Previously satisfied\"\n| extend StrengthTier = case(\n    AuthMethod in (\"FIDO2 security key\", \"Passkey (device-bound)\", \"Passkey (synced)\", \"Windows Hello for Business\", \"X.509 Certificate (Multi-Factor)\"), \"1 - Phishing-Resistant\",\n    AuthMethod in (\"PhoneAppNotification\", \"Passwordless phone sign-in\", \"Microsoft Authenticator app\"), \"2 - Strong App MFA\",\n    AuthMethod in (\"Text message\", \"SMS\", \"Voice call\", \"One-time passcode\"), \"3 - Phishable MFA (Migrar)\",\n    \"4 - Single Factor / Otro\")\n| summarize SignInCount = count(), DistinctUsers = dcount(UserPrincipalName) by StrengthTier, AuthMethod\n| order by StrengthTier asc, SignInCount desc",
+      "proposito": "Generar evidencia cuantitativa mensual para KPI-01 y auditoría NIST CSF 2.0 (PR.AA-02 / PR.AA-03).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección de consentimientos OAuth peligrosos e inyección de secretos en aplicaciones",
+      "plataforma": "Microsoft Sentinel",
+      "tablaPrincipal": "AuditLogs",
+      "consulta": "AuditLogs\n| where TimeGenerated > ago(7d)\n| where Category == \"ApplicationManagement\"\n| where OperationName in (\"Consent to application\", \"Add app role assignment to service principal\", \"Add OAuth2PermissionGrant\", \"Update application – Certificates and secrets management\")\n| extend Actor = coalesce(tostring(InitiatedBy.user.userPrincipalName), tostring(InitiatedBy.app.displayName)),\n         TargetApp = tostring(TargetResources[0].displayName),\n         ModifiedProps = tostring(TargetResources[0].modifiedProperties)\n| where OperationName has \"Certificates and secrets\" or ModifiedProps has_any (\"Mail.ReadWrite\", \"Files.ReadWrite.All\", \"Directory.ReadWrite.All\", \"RoleManagement.ReadWrite.Directory\", \"Application.ReadWrite.All\")\n| project TimeGenerated, OperationName, Actor, TargetApp, Result, ModifiedProps\n| order by TimeGenerated desc",
+      "proposito": "Detectar ataques Illicit Consent Grant y creación no autorizada de credenciales secundarias en registros de aplicaciones.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría de cobertura Conditional Access y bloqueo efectivo de protocolos legacy",
+      "plataforma": "Microsoft Sentinel",
+      "tablaPrincipal": "SigninLogs",
+      "consulta": "SigninLogs\n| where TimeGenerated > ago(14d)\n| extend IsLegacyClient = ClientAppUsed !in (\"Browser\", \"Mobile Apps and Desktop clients\", \"\")\n| summarize TotalEvents = count(),\n            DistinctUsers = dcount(UserPrincipalName),\n            BlockedByCA_53003 = countif(ResultType == \"53003\"),\n            SuccessfulSignIns = countif(ResultType == \"0\")\n            by ConditionalAccessStatus, IsLegacyClient, ClientAppUsed\n| order by IsLegacyClient desc, TotalEvents desc",
+      "proposito": "Verificar que el 100% de autenticaciones legacy sean bloqueadas (53003) e identificar escapes con estado notApplied.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Verificación vía Microsoft Graph PowerShell de estado Migration Complete y Global Admins activos/elegibles",
+      "plataforma": "Microsoft Graph PowerShell",
+      "tablaPrincipal": "policies/authenticationMethodsPolicy",
+      "consulta": "Connect-MgGraph -Scopes \"Policy.Read.All\", \"RoleManagement.Read.Directory\" -NoWelcome\n$authPolicy = Invoke-MgGraphRequest -Method GET -Uri \"https://graph.microsoft.com/v1.0/policies/authenticationMethodsPolicy\"\nWrite-Output (\"Estado Migración Auth Methods: \" + $authPolicy.policyMigrationState)\n$gaRoleId = \"62e90394-69f5-4237-9190-012177145e10\"\n$activeGA = (Invoke-MgGraphRequest -Method GET -Uri \"https://graph.microsoft.com/v1.0/roleManagement/directory/roleAssignmentScheduleInstances?`$filter=roleDefinitionId eq '$gaRoleId'\").value\n$eligibleGA = (Invoke-MgGraphRequest -Method GET -Uri \"https://graph.microsoft.com/v1.0/roleManagement/directory/roleEligibilityScheduleInstances?`$filter=roleDefinitionId eq '$gaRoleId'\").value\nWrite-Output (\"Global Admins Activos: \" + $activeGA.Count + \" | Elegibles PIM: \" + $eligibleGA.Count)",
+      "proposito": "Extraer evidencia directa de configuración para auditoría demostrando migración completada de métodos y control de privilegios en PIM.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Adopción de MFA Resistente a Phishing (Passkeys FIDO2 / WHfB / CBA)",
+      "definicion": "Porcentaje de usuarios activos que autentican utilizando métodos criptográficos resistentes a phishing (AAL3 / Phishing-resistant MFA strength).",
+      "formula": "(Usuarios activos autenticando con Passkeys FIDO2, WHfB o CBA / Total usuarios activos) * 100",
+      "metaSugerida": "100% en Roles Administrativos; >= 85% en Usuarios Generales",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO, IAM Lead y Auditoría",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Medido en Authentication methods > Activity y SigninLogs; metas numéricas editoriales."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Cobertura Efectiva de Conditional Access sobre Inicios Exitosos",
+      "definicion": "Proporción de inicios de sesión interactivos y no interactivos evaluados exitosamente por al menos una política de Conditional Access.",
+      "formula": "(Inicios exitosos con ConditionalAccessStatus == 'success' / Total inicios exitosos) * 100",
+      "metaSugerida": ">= 99% (única excepción documentada: cuentas Break-Glass sin actividad normal)",
+      "frecuencia": "Semanal / Mensual",
+      "audiencia": "IAM Lead y Conditional Access Administrator",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Elimina puntos ciegos de aplicaciones o poblaciones sin política aplicada."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Tiempo Medio de Remediación de Identidades en Riesgo Alto (MTTR-Identity)",
+      "definicion": "Tiempo mediano transcurrido desde la detección de riesgo High en usuario, workload o agente hasta su remediación o contención efectiva.",
+      "formula": "Mediana(RemediationTimestamp - RiskDetectionTimestamp) para entidades con RiskLevel == High",
+      "metaSugerida": "<= 15 minutos vía auto-remediación CA/XDR; <= 4 horas en casos que requieran triaje manual",
+      "frecuencia": "Diaria / Semanal",
+      "audiencia": "SOC Manager y Analistas ITDR",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Calculado sobre AADUserRiskEvents / RiskyUsers y reportes de agentes."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Índice de Elevación Just-In-Time (Zero Standing Admin Ratio)",
+      "definicion": "Porcentaje de sesiones administrativas en Microsoft Entra ID ejecutadas mediante activación temporal PIM sin privilegios permanentes humanos.",
+      "formula": "(Sesiones administrativas vía activación PIM JIT / Total sesiones administrativas humanas) * 100",
+      "metaSugerida": "100% humanos vía PIM JIT (< 5 Global Administrators elegibles)",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO, IAM Lead y GRC",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Alineado a la recomendación oficial de Microsoft de menos de 5 Global Admins y uso de PIM."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Tasa Residual de Autenticación Heredada y MFA Telefónico (SMS/Voz)",
+      "definicion": "Porcentaje de autenticaciones exitosas que emplean protocolos legacy o métodos telefónicos vulnerables a SIM-swapping/phishing.",
+      "formula": "(Inicios exitosos con protocolos Legacy o SMS/Voz / Total inicios exitosos) * 100",
+      "metaSugerida": "0.0% Legacy Auth; < 2% SMS/Voz en fase final de retiro",
+      "frecuencia": "Mensual",
+      "audiencia": "IAM Lead y Cybersecurity Architect",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Respalda la erradicación total de vectores clásicos de Password Spray y downgrade MFA."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Higiene de Credenciales de Aplicaciones y Agentes IA Gobernados",
+      "definicion": "Porcentaje de aplicaciones empresariales y Agent Identity Blueprints sin secretos expirados, con federación/certificados <=180 días y Sponsor activo.",
+      "formula": "(Identidades no humanas conformes con federación/certificados <=180d y Sponsor / Total identidades no humanas) * 100",
+      "metaSugerida": ">= 95% de conformidad sin secretos eternos ni agentes huérfanos",
+      "frecuencia": "Semanal / Mensual",
+      "audiencia": "Cloud Application Admin y AI & Agent Governance Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mitiga compromisos de cadena de suministro y proliferación descontrolada de agentes."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Salud y Vigencia de Soporte de Sincronización Híbrida",
+      "definicion": "Tasa de éxito de ciclos de sincronización/PHS y margen de tiempo antes del vencimiento de soporte de 12 meses de Entra Connect Sync.",
+      "formula": "% ciclos exitosos en Connect Health y (EndOfSupportDate - CurrentDate) en meses",
+      "metaSugerida": ">= 99.9% ciclos exitosos; >= 3 meses de margen antes del fin de soporte de la versión",
+      "frecuencia": "Mensual",
+      "audiencia": "Hybrid Identity Lead e Infraestructura TI",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en la regla oficial de Microsoft de fin de soporte a 12 meses para builds 2.x."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Identity Secure Score y Cumplimiento de Simulacro Break-Glass",
+      "definicion": "Porcentaje alcanzado en Microsoft Entra Identity Secure Score combinado con la antigüedad máxima del último ejercicio Break-Glass.",
+      "formula": "Puntaje Identity Secure Score (%) y Días transcurridos desde última validación Break-Glass",
+      "metaSugerida": "Identity Secure Score >= 88%; Validación Break-Glass <= 90 días",
+      "frecuencia": "Mensual / Trimestral",
+      "audiencia": "CISO y Comité de Riesgos",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "El intervalo <= 90 días corresponde a la recomendación explícita de Microsoft Learn."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.PO-01",
+      "descripcionResultado": "Se establecen, comunican y aplican políticas, procesos y procedimientos para gestionar riesgos de ciberseguridad.",
+      "capacidadMicrosoft": "Motor Microsoft Entra Conditional Access, directiva unificada Authentication Methods (Migration Complete) y pruebas continuas como código.",
+      "evidenciaAuditoria": "Exportación JSON/Maester fechada de políticas Conditional Access y authenticationMethodsPolicy activas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles, responsabilidades y autoridades de ciberseguridad son establecidos, comunicados, aplicados y revisados.",
+      "capacidadMicrosoft": "Delegación de mínimo privilegio con Microsoft Entra RBAC, Administrative Units y Privileged Identity Management (PIM).",
+      "evidenciaAuditoria": "Reporte CSV de asignaciones PIM demostrando separación de funciones, <5 Global Admins elegibles y 0 admins humanos permanentes.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-02",
+      "descripcionResultado": "Se mantienen inventarios de software, servicios, sistemas e identidades de aplicaciones y agentes.",
+      "capacidadMicrosoft": "Inventario nativo de Enterprise Applications, App Registrations, Service Principals y Microsoft Entra Agent ID (Agent Blueprints).",
+      "evidenciaAuditoria": "Exportación auditada de aplicaciones OAuth, workload identities y agentes IA con propietario o Sponsor registrado.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-05",
+      "descripcionResultado": "Amenazas, vulnerabilidades, probabilidades e impactos se integran para priorizar el riesgo.",
+      "capacidadMicrosoft": "Microsoft Entra ID Protection, Identity Secure Score y análisis de rutas de ataque híbridas en Exposure Management.",
+      "evidenciaAuditoria": "Reporte mensual de Identity Secure Score e informe de cierre de rutas de ataque hacia cuentas privilegiadas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-01",
+      "descripcionResultado": "Las identidades y credenciales para usuarios, servicios y hardware autorizados son gestionadas, verificadas y revocadas.",
+      "capacidadMicrosoft": "Emisión sin contraseña con Temporary Access Pass (TAP), Passkeys (FIDO2), sincronización Entra Connect v2.6.x / Cloud Sync y cuentas Break-Glass.",
+      "evidenciaAuditoria": "Registros AuditLogs de emisión/revocación de credenciales y actas trimestrales (<=90 días) de validación Break-Glass.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-02",
+      "descripcionResultado": "Las identidades son comprobadas y vinculadas a credenciales acordes al contexto de riesgo.",
+      "capacidadMicrosoft": "Passkey profiles con atestación FIDO MDS, CBA, WHfB y protección en Conditional Access sobre la acción Register security information.",
+      "evidenciaAuditoria": "Configuración exportada de perfiles FIDO2 y política CA exigiendo TAP o dispositivo conforme para registrar métodos.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-03",
+      "descripcionResultado": "Los usuarios, servicios y hardware son autenticados de manera robusta y continua.",
+      "capacidadMicrosoft": "Authentication Strengths (Phishing-resistant MFA), Token Protection (PRT) y Continuous Access Evaluation (Strictly enforce location).",
+      "evidenciaAuditoria": "Registros SigninLogs / EntraIdSignInEvents evidenciando MFA resistente a phishing, bloqueo Legacy Auth (53003) y evaluación CAE.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Los permisos de acceso, derechos y autorizaciones aplican los principios de mínimo privilegio y segregación de funciones.",
+      "capacidadMicrosoft": "PIM Just-In-Time con aprobación dual y expiración horaria, restricciones de consentimiento OAuth y Conditional Access for agents.",
+      "evidenciaAuditoria": "Historial PIM Resource audit, alertas de seguridad PIM en cero y configuración de Admin Consent Workflow.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-03",
+      "descripcionResultado": "La actividad del personal y el uso de accesos se monitorean para encontrar eventos potencialmente adversos.",
+      "capacidadMicrosoft": "Detecciones de riesgo en Entra ID Protection (Risky users, workload identities y agents) y telemetría continua en EntraIdSignInEvents.",
+      "evidenciaAuditoria": "Reportes de Risk detections (90 días) y reglas analíticas KQL activas sobre AiTM, Password Spray y activaciones PIM anómalas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Los incidentes de ciberseguridad son contenidos oportunamente.",
+      "capacidadMicrosoft": "Políticas CA basadas en riesgo (High -> Block), Automatic Attack Disruption en Defender XDR (Suspend user in Entra + Revoke session) y API revokeSignInSessions.",
+      "evidenciaAuditoria": "Bitácora del Action Center en Defender XDR y AuditLogs confirmando suspensión y revocación inmediata ante compromisos.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-05",
+      "descripcionResultado": "Se verifica la integridad de los activos restaurados y se confirma la reanudación segura de operaciones.",
+      "capacidadMicrosoft": "Flujo Require re-register MFA, reaprovisionamiento controlado con TAP, desbloqueo auditado y revisión Post-Mortem Break-Glass.",
+      "evidenciaAuditoria": "Registros AuditLogs de re-registro limpio de credenciales resistentes a phishing y actas firmadas de cierre de recuperación.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Guía compilada desde los bloques operativos y de auditoría de Entra ID en MSEOP-MD y Ninja Training 2026, revalidada técnicamente al 11 de noviembre de 2026 contra Microsoft Learn MCP, incorporando los hitos obligatorios de 2025-2026 en autenticación, acceso condicional, ITDR y agentes autónomos.",
+    "correccionesAplicadas": [
+      "Confirmación del fin de administración en directivas heredadas MFA y SSPR desde el 30 de septiembre de 2025: se exige estado Migration Complete en Authentication Methods, vigilancia del límite de 20 KB y uso exclusivo de grupos.",
+      "Corrección crítica en cuentas Break-Glass: frente a documentos previos que sugerían solo contraseñas largas, se alineó a la exigencia oficial de Microsoft Learn de registrar MFA resistente a phishing sin contraseña (Passkey FIDO2 o CBA), operar desde PAW y probar cada <=90 días.",
+      "Incorporación de External MFA (External Authentication Methods - EAM) en GA y cronograma oficial de retiro de Custom Controls (bloqueo de creación/edición desde septiembre de 2026 y retiro definitivo a inicios de 2027).",
+      "Actualización del esquema de caza avanzada en Microsoft Defender XDR tras la deprecación el 19 de octubre de 2026 de AADSignInEventsBeta en favor de la tabla en GA EntraIdSignInEvents (y columna EntraIdDeviceId).",
+      "Documentación detallada de Passkeys (FIDO2) distinguiendo device-bound passkeys (con atestación FIDO MDS) vs synced passkeys (14x más rápidas, sin atestación) y mitigación del cambio MC1450133 (nov-2026) protegiendo Register security information.",
+      "Precisión de alcance de Token Protection (GA en apps nativas Windows/iOS/macOS para Exchange/SharePoint/Teams y AVD/W365; Preview web ARM) y del modo CAE Strictly enforce location policies basado en IP address (seen by resource).",
+      "Incorporación de la política estricta de fin de soporte a 12 meses de Microsoft Entra Connect Sync v2.x (build vigente 2.6.92.0 de sep-2026; retiro de 2.5.79.0 en oct-2026) y autenticación por identidad de aplicación en GA.",
+      "Integración de Microsoft Entra Agent ID, Conditional Access for agents (OBO, autónomo y Agent User), ID Protection for agents (Risky agents) y renombre contractual de Microsoft Defender Suite y Microsoft Purview Suite (aclarando que Purview Suite no incluye Entra ID P2)."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Deslinde modular limpio entre 01_Microsoft_Entra_ID (Core IAM, CA & ITDR) y 02_Microsoft_Entra_ID_Governance (IGA)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Concentra este módulo en autenticación, acceso condicional, ITDR, PIM táctico de privilegios y sincronización híbrida, enlazando ordenadamente Lifecycle Workflows, Access Packages y campañas amplias de Access Reviews al Módulo 02."
+      },
+      {
+        "elemento": "Exigencia obligatoria de Conditional Access sobre la acción Register security information (TAP / Dispositivo Conforme)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Mitiga el riesgo de persistencia adversaria derivado de la facilidad de registrar passkeys directamente como primer factor MFA introducida en noviembre de 2026."
+      },
+      {
+        "elemento": "Ventanas máximas de elevación PIM (1-2h Tier-0 con aprobación dual, 4h Ingeniería, 8h Turno SOC) y SLAs de remediación",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Traduce las capacidades configurables de PIM e ID Protection en parámetros concretos y auditables de mínimo privilegio y respuesta rápida (<4h para riesgo alto manual)."
+      },
+      {
+        "elemento": "Adopción de pruebas semanales automatizadas de postura como código mediante Maester",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Añade verificación continua e independiente sobre la configuración de Conditional Access y roles privilegiados para detectar deriva en menos de 7 días."
+      },
+      {
+        "elemento": "Modelo evolutivo de madurez en cinco niveles culminando en operación passwordless y gobierno agéntico",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Guía la transición ordenada desde entornos híbridos heredados hacia Passkeys FIDO2, Token Protection y protección integral de agentes en Entra Agent ID."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Microsoft Entra Security Operations (SecOps) Guide",
+      "url": "https://learn.microsoft.com/en-us/entra/architecture/security-operations-introduction",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Architecture Team",
+      "comentario": "Serie oficial de operaciones de seguridad para cuentas de usuario, cuentas privilegiadas, PIM, aplicaciones, dispositivos e infraestructura híbrida.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Manage authentication methods for Microsoft Entra ID & Legacy MFA/SSPR Migration",
+      "url": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-methods-manage",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation",
+      "comentario": "Confirma el retiro de gestión en políticas heredadas el 30 de septiembre de 2025, estado Migration Complete y límite técnico de 20 KB.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Authentication methods in Microsoft Entra ID - Passkeys (FIDO2)",
+      "url": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-passkeys-fido2",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation",
+      "comentario": "Documenta device-bound passkeys (Authenticator y llaves FIDO2 con atestación MDS) y synced passkeys (14x más rápidas).",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Migrate from custom controls to external MFA in Conditional Access",
+      "url": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/how-to-migrate-custom-controls-external-mfa",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation",
+      "comentario": "Establece External MFA en GA, prohibición de crear/editar Custom Controls desde septiembre de 2026 y retiro total a inicios de 2027.",
+      "verificacion": "Verificado vía búsqueda oficial Microsoft Learn (actualizado ago-2026)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Token Protection in Microsoft Entra Conditional Access",
+      "url": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/concept-token-protection",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation",
+      "comentario": "Detalla disponibilidad GA en apps nativas Windows/iOS/macOS y Preview para aplicaciones web hacia Azure Resource Manager.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Strictly enforce location policies using Continuous Access Evaluation (CAE)",
+      "url": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/concept-continuous-access-evaluation-strict-enforcement",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation",
+      "comentario": "Explica el bloqueo inmediato basado en IP address (seen by resource), requisitos de topología y uso del CAE Insights Workbook.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Conditional Access authentication strengths & Microsoft-managed Conditional Access policies",
+      "url": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-authentication-strengths",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation",
+      "comentario": "Define las fortalezas integradas (MFA, Passwordless MFA, Phishing-resistant MFA) y reglas de evaluación.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Manage emergency access accounts in Microsoft Entra ID (Break-Glass)",
+      "url": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-emergency-access",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation",
+      "comentario": "Guía obligatoria de >=2 cuentas cloud-only con Passkey FIDO2 o CBA, uso desde PAW, alerta Severidad 0 y pruebas cada <=90 días.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Automatic attack disruption in Microsoft Defender & EntraIdSignInEvents Table",
+      "url": "https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-aadsignineventsbeta-table",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Defender XDR Documentation",
+      "comentario": "Documenta la suspensión automática de cuentas comprometidas y el reemplazo el 19 de octubre de 2026 de AADSignInEventsBeta por EntraIdSignInEvents.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Microsoft Entra Connect Sync: Version release history & Cloud Sync",
+      "url": "https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/reference-connect-version-history",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Hybrid Team",
+      "comentario": "Registra versiones hasta 2.6.92.0 (23-sep-2026), política de fin de soporte a 12 meses y autenticación por aplicación en GA.",
+      "verificacion": "Verificado vía búsqueda oficial Microsoft Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Conditional Access for agents & ID Protection for agents (Microsoft Entra Agent ID)",
+      "url": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/agent-id",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Agent ID Team",
+      "comentario": "Cubre patrones OBO, autónomo y Agent User, Agent Identity Blueprints, detecciones riskyAgents y requisito de licencia Agent 365 / M365 E7.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Microsoft Incident Response Playbooks: Token Theft, Password Spray & App Consent",
+      "url": "https://learn.microsoft.com/en-us/security/operations/token-theft-playbook",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Incident Response (DART)",
+      "comentario": "Procedimientos tácticos paso a paso de investigación forense y contención ante robo de tokens AiTM, fuerza bruta y abuso OAuth.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Subscription Suites Licensing Guidance & Microsoft Entra Licensing Fundamentals",
+      "url": "https://www.microsoft.com/licensing/guidance/subscription-suites",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Licensing",
+      "comentario": "Confirma inclusión de Entra ID P2 en M365 E5/E7 y Microsoft Defender Suite, y su exclusión de Microsoft Purview Suite.",
+      "verificacion": "Verificado vía búsqueda web oficial microsoft.com (2026-11-11)"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Announcing Microsoft Entra Agent ID & Identity Innovations Blog",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-entra-blog/announcing-microsoft-entra-agent-id-secure-and-manage-your-ai-agents/3827392",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Alex Simons (CVP, Microsoft Identity & Network Access)",
+      "comentario": "Visión oficial de evolución del perímetro de identidad hacia Passkeys y agentes autónomos.",
+      "verificacion": "Verificado vía Tech Community (2026-11-11)"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "Entra.News Weekly Digest & Maester Security Testing Framework",
+      "url": "https://entra.news/archive",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Merill Fernando (Principal Product Manager, Microsoft Entra)",
+      "comentario": "Seguimiento semanal de lanzamientos Entra (nov-2026 #174) y automatización open-source de pruebas de Conditional Access.",
+      "verificacion": "Verificado vía búsqueda web noviembre 2026"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "Microsoft Cybersecurity Reference Architectures (MCRA) — Identity & Adaptive Access",
+      "url": "https://learn.microsoft.com/en-us/security/adoption/mcra",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Mark Simos (Principal Lead Cybersecurity Architect, Microsoft)",
+      "comentario": "Arquitectura oficial de referencia Zero Trust para acceso adaptativo, Passkeys y aislamiento administrativo.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "How to secure passkey registration in Entra ID (MC1450133) & Practical Entra Guides",
+      "url": "https://janbakker.tech/how-to-secure-passkey-registration-in-entra-id/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Jan Bakker (Microsoft Security & Entra MVP)",
+      "comentario": "Análisis de noviembre de 2026 sobre registro directo de passkeys y endurecimiento de la acción Register security information.",
+      "verificacion": "Verificado vía búsqueda web (publicado 3-nov-2026)"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "Enterprise-Scale Identity Tiering, Workload Identities & Conditional Access Baselines",
+      "url": "https://www.cloud-architekt.net",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Thomas Naunheim & Daniel Chronlund (Microsoft Security MVPs)",
+      "comentario": "Guías avanzadas de comunidad sobre clasificación Tier-0/1/2 en Microsoft Entra ID y protección de identidades de carga de trabajo.",
+      "verificacion": "Verificado vía comunidad MVP Microsoft Security"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (CSWP 29) & NIST SP 800-63B",
+      "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Base normativa de la categoría PR.AA y definición de autenticadores resistentes a phishing AAL2/AAL3.",
+      "verificacion": "Verificado contra publicaciones oficiales NIST"
+    },
+    {
+      "id": "REF-20",
+      "titulo": "MITRE ATT&CK Enterprise Matrix v18 — Identity & Credential Access Techniques",
+      "url": "https://attack.mitre.org",
+      "tipoFuente": "Marco Normativo",
+      "autor": "MITRE Corporation",
+      "comentario": "Referencia táctica para Valid Accounts (T1078), Password Spraying (T1110.003), AiTM (T1557) y Steal Application Access Token (T1528).",
+      "verificacion": "Verificado contra matriz MITRE ATT&CK vigente"
+    }
+  ]
+}

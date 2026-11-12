@@ -1,0 +1,1223 @@
+{
+  "schemaVersion": "2.0",
+  "id": "04_Microsoft_Defender_for_Endpoint",
+  "orden": 4,
+  "slug": "Microsoft_Defender_for_Endpoint",
+  "nombre": "Microsoft Defender for Endpoint (P1/P2) y Vulnerability Management",
+  "nombreCorto": "Defender for Endpoint",
+  "categoria": "SecOps, XDR y SIEM",
+  "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://security.microsoft.com",
+    "https://intune.microsoft.com",
+    "https://admin.microsoft.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "SOC Manager",
+    "SOC L1",
+    "SOC L2",
+    "SOC L3",
+    "Incident Responder",
+    "Endpoint Security Admin",
+    "Intune / VDI Admin",
+    "Security Architect",
+    "GRC"
+  ],
+  "relacionM365E5": {
+    "estado": "Incluido en M365 E5 (Plan 2 + MDVM Core)",
+    "licencias": [
+      "Microsoft 365 E5 (incluye MDE Plan 2 + MDVM Core)",
+      "Microsoft Defender Suite (antes M365 E5 Security)",
+      "Microsoft 365 E7",
+      "Windows 10/11 Enterprise E5",
+      "Microsoft 365 E3 / Windows Enterprise E3 (incluyen únicamente MDE Plan 1)",
+      "Complementos separados: Defender Vulnerability Management Add-on / Standalone y Microsoft Defender for Servers Plan 1/Plan 2"
+    ],
+    "prerrequisitos": [
+      "Conectividad HTTPS 443 directa o vía proxy sin autenticación ni inspección SSL hacia los endpoints del servicio (preferentemente Streamlined connectivity *.endpoint.security.microsoft.com)",
+      "Microsoft Defender Antivirus en Active mode con Real-time protection y Cloud-delivered protection habilitados (requisito obligatorio para las 19 reglas ASR; si coexiste un AV primario de terceros en modo pasivo, habilitar EDR in block mode)",
+      "Versiones de Platform y Engine de Microsoft Defender Antivirus con antigüedad máxima de 2 lanzamientos mensuales",
+      "Conexión activa con Microsoft Intune para despliegue de políticas Endpoint Security, flujo de Security Tasks desde MDVM y señales de riesgo hacia Acceso Condicional en Entra ID",
+      "En entornos VDI no persistentes: uso obligatorio del paquete VDI (Single entry con Onboard-NonPersistentMachine.ps1 tras hostname definitivo), exclusiones FSLogix (*.VHD/*.VHDX) y prohibición absoluta de incorporar la imagen maestra"
+    ],
+    "notaLicenciamiento": "Microsoft 365 E5, Microsoft Defender Suite y Windows Enterprise E5 incluyen MDE Plan 2 completo y las capacidades núcleo (Core) de Defender Vulnerability Management para hasta 5 dispositivos cliente por usuario licenciado. Las 6 capacidades premium de MDVM (baselines CIS/STIG, bloqueo de apps vulnerables, extensiones de navegador, certificados digitales, recursos compartidos de red y hardware/firmware) requieren el complemento MDVM Add-on (o Defender for Servers Plan 2 en servidores). Las licencias de usuario M365 E3/E5 no cubren servidores Windows/Linux, que deben licenciarse aparte."
+  },
+  "resumenEjecutivo": "Microsoft Defender for Endpoint (MDE) unifica protección preventiva pre-brecha (Next-Generation Protection, las 19 reglas Attack Surface Reduction en Windows, Device Control y Tamper Protection / Controlled Configuration), detección y respuesta de endpoints post-brecha (EDR con 6 meses de línea de tiempo de dispositivo y 30 días en Advanced Hunting), remediación automatizada integrada en la pila antivirus, investigación forense interactiva en tiempo real (Live Response) y gestión continua de vulnerabilidades basada en riesgo (Defender Vulnerability Management — MDVM) dentro del portal Microsoft Defender (security.microsoft.com). Revalidada en noviembre de 2026 contra Microsoft Learn, esta guía corrige el catálogo oficial a 19 reglas ASR (3 Standard protection rules + 16 Other ASR rules, incluyendo aprobación de administrador para Unblock en modo Warn desde plataforma 4.18.26060), incorpora el cambio arquitectónico del 1 de septiembre de 2026 mediante el cual AIR opera integrado automáticamente en la pila antivirus predeterminada, delimita con precisión MDVM Core vs. Add-on y establece la arquitectura operativa para escritorios virtuales VDI no persistentes (AVD, Citrix MCS/PVS y VMware Horizon).",
+  "principiosRectores": [
+    {
+      "principio": "Defensa Better Together (Antivirus en modo activo + EDR + Remediación automática)",
+      "descripcion": "Mantener Microsoft Defender Antivirus en modo activo con protección en la nube (MAPS) habilitada maximiza el intercambio de señales con el sensor EDR, habilita las 19 reglas ASR y ejecuta automáticamente las capacidades integradas de AIR.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-endpoint/why-use-microsoft-defender-antivirus"
+    },
+    {
+      "principio": "Verificación explícita del riesgo del dispositivo en Zero Trust",
+      "descripcion": "Integrar MDE con Microsoft Intune y Microsoft Entra Conditional Access para bloquear en tiempo real el acceso a aplicaciones corporativas desde dispositivos no conformes o con nivel de riesgo elevado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-endpoint/zero-trust-with-microsoft-defender-endpoint"
+    },
+    {
+      "principio": "Las defensas permanecen encendidas bajo ataque (Anti-Tampering por diseño)",
+      "descripcion": "Exigir Tamper Protection / Controlled Configuration habilitado en toda la flota y tratar cualquier intento de manipulación (TamperingAttempt) o reinicio en modo seguro no autorizado como incidente de alta prioridad.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-endpoint/prevent-changes-to-security-settings-with-tamper-protection"
+    },
+    {
+      "principio": "Reducción progresiva de superficie de ataque con exclusiones estrictamente por regla",
+      "descripcion": "Desplegar las 3 reglas ASR estándar en Block y madurar las 16 reglas restantes mediante ciclos Audit -> Warn -> Block usando exclusivamente exclusiones por regla ASR específica, nunca exclusiones globales de carpeta.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction-rules-overview"
+    },
+    {
+      "principio": "Priorización de vulnerabilidades guiada por explotabilidad real y exposición",
+      "descripcion": "Sustituir el parcheo lineal por puntaje CVSS aislado mediante la priorización continua en MDVM de CVEs con código de exploit disponible, amenazas activas en Threat Analytics y presencia en activos críticos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-vulnerability-management/defender-vulnerability-management-capabilities"
+    },
+    {
+      "principio": "Inmutabilidad de imágenes maestras y preservación forense inmediata en VDI efímero",
+      "descripcion": "Jamás incorporar imágenes maestras VDI (evitar duplicación de senseGuid), emplear el modelo Single entry tras hostname final y recolectar evidencia vía Live Response e Investigation Package antes del reciclado de sesión.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-endpoint/configure-endpoints-vdi"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Sensor EDR y Device Timeline (6 meses)",
+      "funcionOperativa": "Captura continua de procesos, red, sistema de archivos, registro, cargas de imágenes y eventos de kernel con retención histórica de 6 meses en la línea de tiempo y enriquecimiento con etiquetas de sensibilidad de Purview.",
+      "portalRuta": "security.microsoft.com > Assets > Devices > [Dispositivo] > Timeline",
+      "integraciones": [
+        "Microsoft Defender XDR",
+        "Microsoft Purview Information Protection",
+        "Microsoft Sentinel"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Next-Generation Protection + AIR integrado en pila Antivirus",
+      "funcionOperativa": "Protección antimalware conductual y en la nube (MAPS) con capacidades de investigación y remediación automática integradas nativamente desde el 1 de septiembre de 2026, gobernadas por niveles Full/Semi en Device groups.",
+      "portalRuta": "security.microsoft.com > System > Settings > Endpoints > Rules > Device groups / Action center",
+      "integraciones": [
+        "Action Center",
+        "Cloud-delivered protection (MAPS)",
+        "Indicadores IoC"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Attack Surface Reduction (19 Reglas ASR) y Network/Web Protection",
+      "funcionOperativa": "19 controles de endurecimiento en Windows (3 Standard protection rules + 16 Other ASR rules) en modos Disabled, Block, Audit, Not configured y Warn (con aprobación de admin para Unblock desde plataforma 4.18.26060).",
+      "portalRuta": "intune.microsoft.com > Endpoint security > Attack surface reduction / security.microsoft.com > Reports > Endpoints > ASR rules",
+      "integraciones": [
+        "Microsoft Intune",
+        "Microsoft Defender Portal",
+        "Group Policy",
+        "Microsoft Configuration Manager"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Tamper Protection y Controlled Configuration",
+      "funcionOperativa": "Protección contra desactivación de defensas críticas y modificación no autorizada de exclusiones AV (Windows activo/pasivo, macOS Audit/Block y Linux Audit en Preview), gestionable con Troubleshooting mode temporal.",
+      "portalRuta": "security.microsoft.com > System > Settings > Endpoints > General > Advanced features",
+      "integraciones": [
+        "Microsoft Intune",
+        "Defender Vulnerability Management",
+        "Advanced Hunting (DeviceEvents)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Live Response y Collect Investigation Package",
+      "funcionOperativa": "Shell remoto interactivo auditado para análisis forense en vivo, descarga de muestras en segundo plano (getfile &), ejecución de scripts desde Library management y extracción del paquete forense completo.",
+      "portalRuta": "security.microsoft.com > Assets > Devices > [Dispositivo] > Initiate live response session",
+      "integraciones": [
+        "Microsoft Defender Unified RBAC",
+        "Live Response Library management",
+        "Action Center"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Acciones de Contención de Endpoint, Red e Identidad",
+      "funcionOperativa": "Isolate device (Full/Selective + Isolation exclusions), Contain device/IP (para equipos no incorporados), Contain user / Proactive user containment, Restrict app execution y EDR in block mode.",
+      "portalRuta": "security.microsoft.com > Assets > Devices > [Dispositivo] > Actions",
+      "integraciones": [
+        "Automatic Attack Disruption",
+        "Predictive Shielding",
+        "Defender for Identity",
+        "Microsoft Entra ID"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Defender Vulnerability Management (MDVM Core y Add-on)",
+      "funcionOperativa": "Inventario de software y EOS, evaluación continua de CVEs, Exposure Score (0-100), Security Tasks hacia Intune (Core) y líneas base CIS/STIG, bloqueo de apps vulnerables, certificados, extensiones y firmware (Add-on).",
+      "portalRuta": "security.microsoft.com > Exposure management > Vulnerability management > Dashboard",
+      "integraciones": [
+        "Microsoft Security Exposure Management",
+        "Microsoft Intune",
+        "Microsoft Defender for Servers"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Standard Device Discovery y Arquitectura VDI No Persistente",
+      "funcionOperativa": "Descubrimiento activo/pasivo en red de activos no gestionados (Can be onboarded) y paquete especializado Single entry (Onboard-NonPersistentMachine.ps1) para escritorios virtuales efímeros.",
+      "portalRuta": "security.microsoft.com > System > Settings > Device discovery / Settings > Endpoints > Onboarding",
+      "integraciones": [
+        "Azure Virtual Desktop",
+        "Citrix MCS/PVS",
+        "VMware Horizon",
+        "Windows 365"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "Endpoint SOC Operator (Rol custom URBAC: MDE-Tier1-Operator)",
+      "nivelSOC": "Tier 1 / L1",
+      "permisosClave": "Security operations > Security data basics (Read), Alerts (Manage), Vulnerability management (Read), Execute query/soft actions.",
+      "asignacionPIM": "Permanente sobre grupo Entra ID con alcance restringido a los Device groups asignados",
+      "responsabilidadOperativa": "Triaje diario de incidentes y alertas de endpoint, clasificación inicial, recolección de paquetes de investigación y escalamiento sin capacidad de aislar servidores críticos ni usar Live Response.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "rol": "Endpoint Incident Responder (Rol custom URBAC: MDE-Tier2-Responder)",
+      "nivelSOC": "Tier 2 / L2",
+      "permisosClave": "Suma Response (Manage), Execute hard actions, Basic live response (Manage) y File collection (Manage).",
+      "asignacionPIM": "Elegible en Entra ID PIM (activación JIT máx. 8 horas por turno con MFA resistente a phishing)",
+      "responsabilidadOperativa": "Aislamiento y contención de dispositivos, aprobación de acciones pendientes en Action Center, Live Response básico (inspección y getfile) y envío de muestras a Microsoft.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "rol": "Senior DFIR & Endpoint Threat Hunter (Rol custom URBAC: MDE-Tier3-DFIR)",
+      "nivelSOC": "Tier 3 / L3",
+      "permisosClave": "Suma Advanced live response (Manage) y Custom detections (Manage); administración controlada de scripts firmados vía Library management.",
+      "asignacionPIM": "Elegible en Entra ID PIM (activación JIT máx. 4 horas vinculada a ticket de incidente crítico)",
+      "responsabilidadOperativa": "Forensia avanzada en vivo con ejecución de scripts firmados (run) y remediación directa (remediate), caza KQL sobre tablas Device* y validación Purple Team.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Endpoint Security Administrator (URBAC Core security settings + Intune Endpoint Security Manager)",
+      "nivelSOC": "Ingeniería y Administración de Plataforma",
+      "permisosClave": "Authorization and settings > Core security settings (Manage) en Defender + rol Endpoint Security Manager en Microsoft Intune.",
+      "asignacionPIM": "Estricto JIT en Entra ID PIM (máx. 4 horas con cambio aprobado en CAB)",
+      "responsabilidadOperativa": "Onboarding/offboarding (físico y VDI), configuración de NGAV, las 19 reglas ASR, Tamper Protection / Troubleshooting mode, Device Control, Device groups e indicadores IoC.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Vulnerability & Exposure Lead (URBAC Vulnerability & Exposure Management Manage)",
+      "nivelSOC": "Gestión de Vulnerabilidades y Postura",
+      "permisosClave": "Security posture > Vulnerability management (Read & Manage) y Exposure Management (Manage).",
+      "asignacionPIM": "Asignación controlada por rol; aprobación formal del CISO/Risk Owner para excepciones CVE",
+      "responsabilidadOperativa": "Priorización semanal de CVEs con exploit activo, generación de Security Tasks hacia Intune, seguimiento de Exposure Score, EOS y baselines CIS/STIG.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Auditor GRC / Compliance (Entra Security Reader / URBAC Read-Only)",
+      "nivelSOC": "Gobierno, Riesgo y Cumplimiento (GRC)",
+      "permisosClave": "Security data basics (Read), Security posture (Read) y Authorization (Read-only), sin permisos de Live Response ni descarga de archivos.",
+      "asignacionPIM": "Asignación de solo lectura revisada trimestralmente",
+      "responsabilidadOperativa": "Auditoría independiente de cobertura de endpoints, estado de Tamper Protection, reglas ASR, exclusiones y evidencias NIST CSF 2.0.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Triaje de incidentes y alertas EDR/AV priorizando datos sensibles y hosts VDI efímeros",
+      "objetivo": "Identificar compromisos post-brecha en endpoints antes de movimiento lateral o pérdida de evidencia volátil.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts > Incidents",
+      "procedimiento": [
+        "Filtrar últimas 24 horas con Service source = Microsoft Defender for Endpoint y Severity = High, Medium.",
+        "Priorizar dispositivos etiquetados como VDI=NonPersistent, activos críticos o con etiquetas confidenciales en la columna Data sensitivity (Purview).",
+        "Analizar árbol de procesos y pestaña Timeline del dispositivo asignando analista y pasando a In progress."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09 / DE.AE-02",
+      "mitreTactic": "Execution / Credential Access (TA0002 / TA0006)",
+      "evidenciaAuditable": "Incidentes MDE asignados con análisis inicial registrado en Comments & history.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tarea diaria oficial en MDE Security Operations Guide; SLAs internos son propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Revisión y aprobación de remediaciones en Action Center (pila AV/AIR y acciones manuales)",
+      "objetivo": "Ejecutar oportunamente remediaciones pendientes en grupos Semi-automation y auditar acciones automáticas.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Actions & submissions > Action center",
+      "procedimiento": [
+        "Revisar la pestaña Pending para servidores o grupos con aprobación requerida antes del vencimiento de 7 días.",
+        "Aprobar remediaciones confirmadas como maliciosas o rechazar falsos positivos documentando causa.",
+        "Auditar la pestaña History confirmando que los grupos en Full automation estén remediando amenazas sin impacto operativo."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01 / RS.MI-02",
+      "mitreTactic": "Execution / Persistence (TA0002 / TA0003)",
+      "evidenciaAuditable": "Exportación de Action Center con cero acciones críticas pendientes > 4 horas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Desde el 1-sep-2026 AIR corre integrado automáticamente en la pila antivirus predeterminada de Defender.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/automation-levels"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Detección y respuesta inmediata ante intentos de evasión en Tamper Protection",
+      "objetivo": "Bloquear e investigar intentos de apagar el sensor EDR, protección en tiempo real o modificar exclusiones.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts > Alerts / Advanced hunting (DeviceEvents)",
+      "procedimiento": [
+        "Investigar con prioridad crítica toda alerta de Tamper Protection bypass o manipulación del sensor MDE.",
+        "Ejecutar consulta diaria sobre DeviceEvents | where ActionType == 'TamperingAttempt' para detectar intentos silenciosos.",
+        "Validar contra tickets aprobados de Troubleshooting mode; si no está autorizado, aislar el host e investigar credenciales."
+      ],
+      "rolResponsable": "SOC L2 / SOC L3",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-05 / DE.CM-09",
+      "mitreTactic": "Defense Evasion - Impair Defenses (T1562.001)",
+      "evidenciaAuditable": "Resultados diarios de consulta KQL TamperingAttempt conciliados con cambios autorizados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Consulta KQL y flujo oficial documentados en la guía de Tamper Protection de Microsoft Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/prevent-changes-to-security-settings-with-tamper-protection"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Control diario de salud de sensores EDR y actualización de motor/plataforma Defender Antivirus",
+      "objetivo": "Eliminar puntos ciegos por sensores detenidos/mal configurados o firmas desactualizadas.",
+      "consolaRuta": "security.microsoft.com > Reports > Endpoints > Device health (Sensor health & OS / Antivirus health)",
+      "procedimiento": [
+        "Identificar equipos Misconfigured, Impaired communications o sin telemetría en >24h y ejecutar diagnóstico con MDE Client Analyzer.",
+        "Verificar en Antivirus health que Platform, Engine y Security intelligence estén actualizados (máx. N-2 versiones).",
+        "Confirmar que las estaciones corporativas operen con Defender Antivirus en Active mode."
+      ],
+      "rolResponsable": "Endpoint Security Admin",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09 / PR.PS-02",
+      "mitreTactic": "Defense Evasion",
+      "evidenciaAuditable": "Tarjetas de Device health >95% activas y tickets generados para sensores degradados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Actividad diaria explícita para el equipo de administración en MDE Security Operations Guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Gestión estructurada de falsos positivos/negativos en endpoint y envíos WDSI",
+      "objetivo": "Mantener alta fidelidad analítica aplicando el marco oficial de 5 pasos sin abrir brechas con exclusiones amplias.",
+      "consolaRuta": "security.microsoft.com > Actions & submissions > Submissions / microsoft.com/wdsi/filesubmission",
+      "procedimiento": [
+        "Identificar fuente exacta de detección (AV, EDR, ASR, IoC custom o regla KQL).",
+        "Enviar binarios, hashes o paquetes MpSupport.cab (para detecciones fileless) para reanálisis de Microsoft.",
+        "Cuando se requiera excepción temporal validada, usar Allow Indicator por SHA-256 o exclusión per-ASR rule en lugar de exclusiones de carpeta AV."
+      ],
+      "rolResponsable": "SOC L2 / Endpoint Security Admin",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "Multi-tactic",
+      "evidenciaAuditable": "Historial en Submissions y registro justificado de indicadores Allow temporales.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Marco oficial de 5 partes para FP/FN en Defender for Endpoint.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/defender-endpoint-false-positives-negatives"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Revisión de amenazas de alto impacto en Threat Analytics y saltos en Exposure Score",
+      "objetivo": "Detectar campañas activas que afecten endpoints propios o incrementos bruscos de superficie vulnerable.",
+      "consolaRuta": "security.microsoft.com > Threat intelligence > Threat analytics / Exposure management > Vulnerability management",
+      "procedimiento": [
+        "Revisar la sección High-impact threats en Threat analytics verificando dispositivos con alertas activas o configuración vulnerable.",
+        "Monitorear el Exposure Score organizacional identificando incrementos súbitos por publicación de CVEs 0-day.",
+        "Notificar de inmediato a Vulnerability Management e IT ante exposición crítica activa."
+      ],
+      "rolResponsable": "SOC L2 / Vulnerability & Exposure Lead",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "Exploitation for Client Execution (T1203)",
+      "evidenciaAuditable": "Bitácora diaria de revisión de Threat Analytics y evolución de Exposure Score.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Revisión diaria de High-impact threats incluida en MDE Security Operations Guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Supervisión de bloqueos ASR y solicitudes de aprobación de administrador en modo Warn",
+      "objetivo": "Garantizar aplicación continua de las reglas ASR críticas y gobernar overrides temporales de usuarios.",
+      "consolaRuta": "security.microsoft.com > Reports > Endpoints > Attack surface reduction rules",
+      "procedimiento": [
+        "Revisar eventos de bloqueo ASR y evaluar solicitudes de Unblock en modo Warn (sujetas a aprobación de administrador desde plataforma 4.18.26060).",
+        "Confirmar que las 3 Standard protection rules permanezcan en Block sin regresión por conflictos GPO.",
+        "Registrar procesos legítimos recurrentes para evaluación semanal de exclusión específica por regla."
+      ],
+      "rolResponsable": "Endpoint Security Admin / SOC L1",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-05",
+      "mitreTactic": "Credential Access / Execution (T1003.001 / T1059)",
+      "evidenciaAuditable": "Consulta diaria de eventos ASR y registro de aprobaciones/rechazos de Unblock.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Refleja el requisito vigente de aprobación de administrador para Unblock en modo Warn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction-rules-overview"
+    },
+    {
+      "codigo": "D-08",
+      "cadencia": "Diaria",
+      "actividad": "Conciliación diaria de dispositivos aislados/contenidos y handover de turno",
+      "objetivo": "Evitar que equipos queden aislados indefinidamente sin seguimiento o se liberen sin validación forense.",
+      "consolaRuta": "security.microsoft.com > Actions & submissions > Action center > History",
+      "procedimiento": [
+        "Listar todos los endpoints actualmente bajo Isolate device, Contain device o Restrict app execution.",
+        "Verificar avance de erradicación y ETA de retorno a producción con el analista asignado y propietario del activo.",
+        "Documentar estado completo en el traspaso formal de guardia."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.CO-02 / RC.RP-05",
+      "mitreTactic": "Command and Control / Lateral Movement",
+      "evidenciaAuditable": "Acta diaria de handover con inventario conciliado de dispositivos contenidos.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Control operativo consultivo para gobernar el ciclo de contención-liberación.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/respond-machine-alerts"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Priorización semanal de CVEs críticos con exploit activo y emisión de Security Tasks a Intune",
+      "objetivo": "Reducir drásticamente la ventana de exposición sobre vulnerabilidades explotadas activamente.",
+      "consolaRuta": "security.microsoft.com > Exposure management > Vulnerability management > Weaknesses / Recommendations",
+      "procedimiento": [
+        "Filtrar vulnerabilidades Critical y High con Exploit available = Yes y amenazas asociadas.",
+        "Generar solicitudes formales de remediación (Request remediation) creando Security Tasks en Microsoft Intune con SLA diferenciado.",
+        "Aplicar mitigaciones compensatorias (ASR o bloqueo de apps vulnerables con MDVM Add-on) cuando el parche requiera ventana extendida."
+      ],
+      "rolResponsable": "Vulnerability & Exposure Lead",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01 / RS.MI-03",
+      "mitreTactic": "Exploit Public-Facing Application / LPE (T1190 / T1068)",
+      "evidenciaAuditable": "Listado de Remediation activities creadas en MDVM y Security Tasks sincronizadas en Intune.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Actividad semanal oficial en MDE Security Operations Guide; SLAs específicos son propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-vulnerability-management/defender-vulnerability-management-capabilities"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Análisis semanal de reportes de las 19 reglas ASR y eventos de Web Protection",
+      "objetivo": "Diseñar exclusiones quirúrgicas basadas en telemetría para avanzar reglas de Audit/Warn a Block y bloquear C2/phishing.",
+      "consolaRuta": "security.microsoft.com > Reports > Endpoints > Attack surface reduction rules / Web protection",
+      "procedimiento": [
+        "Analizar en el reporte ASR las aplicaciones de negocio que generaron eventos Audited durante los últimos 7 días.",
+        "Configurar exclusiones por regla ASR específica en Intune y promover reglas validadas de Audit a Warn o Block.",
+        "Revisar dominios e IPs maliciosos bloqueados en el reporte de Web protection."
+      ],
+      "rolResponsable": "Endpoint Security Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "Execution / Command and Control (TA0002 / TA0011)",
+      "evidenciaAuditable": "Reporte semanal de progresión de las 19 reglas ASR y eventos de protección web.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tareas semanales explícitas en MDE Security Operations Guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Threat Hunting semanal sobre procesos, red, archivos y persistencia en endpoints y VDI",
+      "objetivo": "Descubrir abusos de LOLBins, persistencia encubierta y movimiento lateral no alertado.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Hunting > Advanced hunting",
+      "procedimiento": [
+        "Ejecutar consultas KQL por hipótesis sobre DeviceProcessEvents, DeviceNetworkEvents, DeviceFileEvents, DeviceRegistryEvents y DeviceImageLoadEvents.",
+        "Incluir filtros específicos sobre hosts etiquetados VDI=NonPersistent para detectar actividad adversaria en sesiones efímeras.",
+        "Convertir patrones maliciosos recurrentes en Custom detection rules."
+      ],
+      "rolResponsable": "SOC L3 / Threat Hunter",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02 / DE.CM-09",
+      "mitreTactic": "Persistence / Defense Evasion / Lateral Movement",
+      "evidenciaAuditable": "Bitácora de cacería semanal con consultas KQL y detecciones creadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Esquema oficial Device* en Advanced Hunting.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-schema-tables"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría de cobertura con Standard Device Discovery, limpieza de inactivos e higiene VDI",
+      "objetivo": "Asegurar incorporación de dispositivos no gestionados y evitar contaminación del inventario con clones VDI duplicados.",
+      "consolaRuta": "security.microsoft.com > System > Settings > Device discovery / Assets > Devices",
+      "procedimiento": [
+        "Verificar modo Standard discovery activo (con subredes OT sensibles en Ignore) y exportar equipos Can be onboarded hacia Intune/ConfigMgr.",
+        "Cruzar equipos Inactive (>30 días) con bajas en AD/CMDB para ejecutar offboarding.",
+        "Validar ausencia de registros duplicados en pools VDI no persistentes confirmando uso correcto del modelo Single entry."
+      ],
+      "rolResponsable": "Endpoint Security Admin / VDI Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-01",
+      "mitreTactic": "Unmanaged Assets / Lateral Movement",
+      "evidenciaAuditable": "Exportación semanal de brechas de onboarding y auditoría de unicidad de entradas VDI.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Integra Device Discovery oficial y controles de onboarding VDI no persistente.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/configure-endpoints-vdi"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Revisión de Threat Protection Report, niveles de automatización por grupo e indicadores IoC",
+      "objetivo": "Detectar infecciones recurrentes, maximizar adopción de Full automation y mantener limpia la tabla de indicadores.",
+      "consolaRuta": "security.microsoft.com > Reports > Endpoints > Threat protection / Settings > Endpoints > Indicators",
+      "procedimiento": [
+        "Identificar en Threat protection report dispositivos con detecciones repetidas que sugieran persistencia activa.",
+        "Revisar Device groups evaluando migrar grupos estables de Semi a Full automation.",
+        "Eliminar indicadores IoC caducos manteniendo el inventario bajo el límite de 15.000 indicadores."
+      ],
+      "rolResponsable": "SOC L2 / Endpoint Security Admin",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.IM-01 / DE.CM-01",
+      "mitreTactic": "Persistence / Command and Control",
+      "evidenciaAuditable": "Informe semanal de tendencias de amenazas e inventario depurado de IoCs.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Revisión semanal de Threat reporting está en MDE Security Operations Guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Revisión semanal del Microsoft 365 Message Center y verificación de firmas compartidas VDI",
+      "objetivo": "Anticipar cambios funcionales del servicio MDE y asegurar rendimiento óptimo en granjas VDI.",
+      "consolaRuta": "admin.microsoft.com > Health > Message center / Servidor UNC de firmas VDI",
+      "procedimiento": [
+        "Revisar anuncios de M365 Message Center relativos a Microsoft Defender for Endpoint y convertirlos en tareas operativas.",
+        "Comprobar ejecución horaria de la descarga y extracción de Security intelligence en el recurso compartido UNC para clientes VDI.",
+        "Verificar que todo sellado semanal de imagen maestra VDI haya ejecutado Windows Defender Cache Maintenance sin onboardear la imagen."
+      ],
+      "rolResponsable": "Endpoint Security Admin / VDI Admin",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-02 / PR.PS-02",
+      "mitreTactic": "N/A (Mantenimiento preventivo)",
+      "evidenciaAuditable": "Registro de anuncios Message Center procesados y checklist de sellado VDI.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Message Center es tarea semanal oficial en MDE SecOps Guide; verificación UNC VDI consolidada de guías VDI.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría mensual de dispositivos excluidos de políticas, exclusiones AV/ASR y Troubleshooting Mode",
+      "objetivo": "Cerrar brechas de protección causadas por exclusiones excesivas o temporales olvidadas.",
+      "consolaRuta": "intune.microsoft.com > Endpoint security / security.microsoft.com > Endpoints > Configuration management",
+      "procedimiento": [
+        "Revisar todos los dispositivos excluidos de políticas de seguridad MDE validando si aún requieren excepción.",
+        "Auditar todas las exclusiones de Defender Antivirus y reglas ASR eliminando rutas amplias o comodines riesgosos y conservando solo exclusiones técnicas documentadas (ej. FSLogix *.VHD/*.VHDX).",
+        "Auditar en registros el uso mensual de Troubleshooting mode verificando restablecimiento íntegro de Tamper Protection."
+      ],
+      "rolResponsable": "Endpoint Security Admin / Security Architect",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01 / PR.PS-05",
+      "mitreTactic": "Defense Evasion - Impair Defenses (T1562.001)",
+      "evidenciaAuditable": "Matriz mensual certificada de exclusiones AV/ASR y registro auditado de Troubleshooting mode.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tarea mensual oficial en MDE Security Operations Guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Evaluación mensual completa en MDVM: Exposure Score, software End-of-Support y líneas base CIS/STIG",
+      "objetivo": "Gobernar la reducción estructural de deuda técnica, software obsoleto y desviaciones de configuración.",
+      "consolaRuta": "security.microsoft.com > Exposure management > Vulnerability management > Dashboard / Software inventory",
+      "procedimiento": [
+        "Evaluar tendencia mensual de Exposure Score, Secure Score for Devices y tiempos medios de parcheo.",
+        "Extraer inventario de sistemas operativos y aplicaciones en End of Support (EOS) o próximos a vencer (<12 meses) para plan de retiro.",
+        "Recertificar CVE exceptions activas y, con MDVM Add-on / Defender for Servers P2, auditar Security baselines assessment (CIS/STIG), certificados y firmware."
+      ],
+      "rolResponsable": "Vulnerability & Exposure Lead / Security Architect",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-02 / PR.PS-02",
+      "mitreTactic": "Exploitation / Initial Access",
+      "evidenciaAuditable": "Informe mensual de gestión de vulnerabilidades, roadmap EOS y cumplimiento de baselines.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Separa explícitamente capacidades MDVM Core (E5/P2) y capacidades Premium (Add-on / Servers P2).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-vulnerability-management/defender-vulnerability-management-capabilities"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Revisión de What's New in MDE, conformidad de versiones de motor/plataforma y resolución de conflictos GPO/Intune",
+      "objetivo": "Asegurar soporte técnico oficial del agente y eliminar colisiones de directivas que degraden protecciones.",
+      "consolaRuta": "security.microsoft.com > Endpoints > Configuration management > Endpoint security policies",
+      "procedimiento": [
+        "Revisar las publicaciones mensuales What's new in MDE y Microsoft Defender for Endpoint versions.",
+        "Resolver cualquier política con estado Conflict o Error verificando precedencia GPO vs. MDM (MDMWinsOverGP o Controlled configuration).",
+        "Confirmar habilitación activa de EDR in block mode en todo equipo que aún opere con un antivirus primario de terceros."
+      ],
+      "rolResponsable": "Endpoint Security Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01 / PR.PS-02",
+      "mitreTactic": "Defense Evasion",
+      "evidenciaAuditable": "Reporte mensual de versiones de plataforma/motor y cero políticas de endpoint en conflicto.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Revisión mensual de What's new y versiones es tarea explícita en MDE SecOps Guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría de permisos Live Response, Command Logs de sesiones forenses y biblioteca de scripts",
+      "objetivo": "Garantizar trazabilidad forense y prevenir abuso interno del shell remoto en endpoints y servidores.",
+      "consolaRuta": "security.microsoft.com > Permissions > Microsoft Defender XDR > Roles / Library management",
+      "procedimiento": [
+        "Revisar asignaciones de Basic live response y Advanced live response en Unified RBAC.",
+        "Auditar el Command log de todas las sesiones Live Response iniciadas en el mes validando vínculo con incidente autorizado.",
+        "Verificar que Allow unsigned script execution continúe deshabilitado y auditar integridad/firma de todos los scripts en Library management."
+      ],
+      "rolResponsable": "Endpoint Security Admin / GRC",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05 / RS.AN-07",
+      "mitreTactic": "Remote Services / Execution",
+      "evidenciaAuditable": "Bitácora mensual auditada de sesiones Live Response e inventario firmado de scripts en biblioteca.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Controles y permisos verificados en la documentación oficial de Live Response.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/live-response"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Prueba sintética mensual de extremo a extremo del pipeline de detección, alerta y remediación",
+      "objetivo": "Confirmar empíricamente tiempos de detección del sensor, generación de incidente, remediación automática y envío a SIEM.",
+      "consolaRuta": "security.microsoft.com > Evaluation & tutorials > Tutorials & simulations",
+      "procedimiento": [
+        "Ejecutar simulación oficial controlada sobre una máquina de validación dedicada.",
+        "Cronometrar aparición de alerta en el portal Defender (<5 min), registro de acción automática en Action Center y sincronización en Microsoft Sentinel (<15 min).",
+        "Corregir de inmediato cualquier retraso o fallo de notificación."
+      ],
+      "rolResponsable": "SOC L2 / Endpoint Security Admin",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09 / RS.MA-01",
+      "mitreTactic": "Validation & Testing",
+      "evidenciaAuditable": "Acta mensual de prueba end-to-end con marcas de tiempo verificadas.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Usa simulaciones oficiales del portal Defender con cadencia mensual consultiva.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide"
+    },
+    {
+      "codigo": "M-06",
+      "cadencia": "Mensual",
+      "actividad": "Generación del Monthly Security Summary y conciliación de licenciamiento cliente, VDI y servidores",
+      "objetivo": "Entregar visibilidad ejecutiva al CISO y asegurar pleno cumplimiento contractual en estaciones y servidores.",
+      "consolaRuta": "security.microsoft.com > Reports > Endpoints > Monthly Security Summary / admin.microsoft.com > Billing",
+      "procedimiento": [
+        "Exportar el reporte PDF Monthly Security Summary complementado con KPIs de MTTC, cobertura ASR y reducción de CVEs críticos.",
+        "Conciliar total de clientes físicos/VDI contra licencias de usuario (M365 E5 / Defender Suite / Windows E5) y servidores contra Defender for Servers Plan 1/Plan 2.",
+        "Presentar hallazgos y necesidades de capacidad al CISO y Procurement."
+      ],
+      "rolResponsable": "SOC Manager / Endpoint Security Admin / CISO",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-01 / ID.AM-01",
+      "mitreTactic": "N/A (Gobierno Ejecutivo)",
+      "evidenciaAuditable": "PDF Monthly Security Summary archivado y tabla mensual de conciliación de licencias.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Reporte nativo de MDE combinado con control de licenciamiento cliente vs. servidor.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/threat-protection-reports"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Ejercicio práctico trimestral de investigación forense en endpoint y respuesta en VDI efímero",
+      "objetivo": "Entrenar al SOC en recolección forense sin pérdida de evidencia volátil y contención quirúrgica.",
+      "consolaRuta": "security.microsoft.com > Evaluation & tutorials > Evaluation lab + pool piloto VDI",
+      "procedimiento": [
+        "Desplegar escenario realista (ataque fileless, robo de credenciales o ransomware) en Evaluation lab y en un host piloto VDI no persistente.",
+        "Evaluar uso de Device Timeline, Live Response (incluyendo getfile en segundo plano), Collect investigation package previo a logoff y aislamiento selectivo.",
+        "Documentar brechas de procedimiento y actualizar runbooks de respuesta."
+      ],
+      "rolResponsable": "SOC L2 / SOC L3 / SOC Manager",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-07 / RS.MA-04",
+      "mitreTactic": "Execution / Defense Evasion / Impact",
+      "evidenciaAuditable": "After-Action Report (AAR) trimestral con tiempos medidos y actualizaciones de SOP.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en Evaluation Lab oficial de MDE aplicado a cadencia trimestral de preparación IR.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/live-response"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Ingeniería semestral del perímetro de las 19 reglas ASR y políticas de Device Control",
+      "objetivo": "Maximizar la cobertura preventiva en modo Block y auditar vectores físicos de exfiltración o infección.",
+      "consolaRuta": "intune.microsoft.com > Endpoint security > Attack surface reduction / Device control",
+      "procedimiento": [
+        "Auditar el estado efectivo de las 19 reglas ASR en todos los grupos de dispositivos cruzándolo con incidentes ocurridos en el semestre.",
+        "Planificar transición de reglas restantes en Audit hacia Warn/Block y recertificar cada exclusión per-ASR rule.",
+        "Revisar políticas de Device Control confirmando bloqueo de almacenamiento USB no autorizado o sin cifrado BitLocker."
+      ],
+      "rolResponsable": "Security Architect / Endpoint Security Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01 / PR.DS-05",
+      "mitreTactic": "Initial Access / Execution / Exfiltration over Physical Medium (T1052)",
+      "evidenciaAuditable": "Informe semestral de postura ASR (sobre las 19 reglas oficiales) y políticas Device Control certificadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Revisión periódica recomendada en MDE SecOps Guide actualizada al catálogo real de 19 reglas ASR.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction-rules-reference"
+    },
+    {
+      "codigo": "SM-02",
+      "cadencia": "Semestral",
+      "actividad": "Revisión semestral de Custom Detections de endpoint, reglas de Alert Tuning y auditoría de privilegios",
+      "objetivo": "Depurar reglas obsoletas y certificar integridad del control de acceso administrativo en MDE e Intune.",
+      "consolaRuta": "security.microsoft.com > Hunting > Custom detection rules / Settings > Alert tuning",
+      "procedimiento": [
+        "Evaluar tasa de verdaderos/falsos positivos de todas las reglas KQL personalizadas sobre tablas Device* retirando reglas sin vigencia.",
+        "Revisar todas las reglas activas en Alert tuning confirmando que no enmascaren TTPs críticas.",
+        "Realizar recertificación formal semestral de miembros en Unified RBAC e Intune Endpoint Security Manager."
+      ],
+      "rolResponsable": "Detection Engineer / GRC",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-04 / GV.RR-02",
+      "mitreTactic": "Multi-tactic",
+      "evidenciaAuditable": "Catálogo actualizado de detecciones personalizadas y acta semestral de recertificación RBAC.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Alineado a la sección Periodically de MDE Security Operations Guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Revisión anual integral del programa MDE multiplataforma, arquitectura VDI y simulacro Full-Scale",
+      "objetivo": "Validar la madurez estratégica del pilar Endpoint en Zero Trust y alinear el presupuesto anual al roadmap Microsoft.",
+      "consolaRuta": "security.microsoft.com + intune.microsoft.com + Microsoft Defender for Cloud",
+      "procedimiento": [
+        "Evaluar cobertura, salud y paridad de controles en Windows, Windows Server, macOS, Linux, iOS, Android y granjas VDI/AVD.",
+        "Revisar necesidades de retención forense extendida en Microsoft Sentinel Data Lake más allá de los 30 días de Advanced Hunting.",
+        "Conducir ejercicio anual de respuesta a incidentes de escala completa con participación ejecutiva y presentar informe anual al CISO."
+      ],
+      "rolResponsable": "CISO / Security Architect / SOC Manager",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03 / RC.IM-02",
+      "mitreTactic": "Full Kill Chain Simulation",
+      "evidenciaAuditable": "Informe anual de arquitectura y madurez MDE aprobado por la dirección.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Práctica anual de gobierno alineada a NIST CSF 2.0 y Zero Trust.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/zero-trust/deploy/endpoints"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Contención quirúrgica y forensia en tiempo real con Isolate Device, Investigation Package y Live Response",
+      "objetivo": "Cortar comando y control / movimiento lateral de inmediato preservando la cadena de custodia digital.",
+      "consolaRuta": "security.microsoft.com > Assets > Devices > [Dispositivo] > Collect investigation package / Isolate device / Live response",
+      "procedimiento": [
+        "Disparar Collect investigation package y aplicar Isolate device (Full o Selective) sin apagar el equipo para preservar memoria volátil.",
+        "Iniciar sesión Live Response ejecutando reconocimiento (processes, connections, persistence, fileinfo) y descargando evidencias en segundo plano (getfile &).",
+        "Con rol Tier 3, erradicar artefactos maliciosos (remediate -auto o script firmado vía run), ejecutar escaneo AV completo y liberar aislamiento solo tras validación."
+      ],
+      "rolResponsable": "SOC L2 / SOC L3 (DFIR)",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01 / RS.AN-07",
+      "mitreTactic": "Command and Control / Execution / Persistence",
+      "evidenciaAuditable": "ZIP de Investigation package con hash, Command log completo de Live Response e historial de aislamiento/liberación.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Procedimiento oficial de respuesta y Live Response en Microsoft Defender for Endpoint.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/live-response"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Contención de red sobre activos no gestionados (Contain Device / Contain IP) y cuentas comprometidas (Contain User)",
+      "objetivo": "Frenar ataques originados desde dispositivos sin agente MDE o credenciales abusadas lateralmente.",
+      "consolaRuta": "security.microsoft.com > Incidents / Assets > Devices > Contain device / Contain IP",
+      "procedimiento": [
+        "Ejecutar Contain device o Contain IP sobre el dispositivo no incorporado malicioso para que toda la flota MDE bloquee tráfico hacia/desde ese origen.",
+        "Aplicar o verificar Contain user cuando exista abuso lateral de credenciales por RDP, SMB o RPC.",
+        "Coordinar localización física/red del equipo rogue con IT Operations para desconexión de puerto switch/VLAN e incorporación obligatoria."
+      ],
+      "rolResponsable": "SOC L2 / Network & IT Ops",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Lateral Movement (TA0008 - T1021)",
+      "evidenciaAuditable": "Acción de contención registrada en Action Center y ticket de aislamiento en capa de red.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Capacidades oficiales de contención de red y usuario en MDE Plan 2.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/respond-machine-alerts"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Bloqueo de emergencia multi-motor de indicadores IoC y activación de Restrict App Execution",
+      "objetivo": "Impedir ejecución de payloads de campañas emergentes en toda la flota en minutos.",
+      "consolaRuta": "security.microsoft.com > System > Settings > Endpoints > Rules > Indicators / Device page > Restrict app execution",
+      "procedimiento": [
+        "Cargar hashes SHA-256, IPs, URLs/dominios o certificados confirmados con acción Alert and block, alcance organizacional y fecha de expiración.",
+        "Activar temporalmente Restrict app execution en servidores o segmentos bajo ataque activo permitiendo solo binarios firmados por Microsoft.",
+        "Verificar propagación y telemetría de bloqueos en Advanced Hunting."
+      ],
+      "rolResponsable": "Endpoint Security Admin / SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01 / PR.PS-05",
+      "mitreTactic": "Execution / Command and Control (T1204 / T1071)",
+      "evidenciaAuditable": "Registro de indicadores creados y acciones Restrict app execution en Action Center.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Enforcement multi-motor de indicadores y restricción de aplicaciones documentados en MDE Plan 2.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/indicators-overview"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Respuesta forense acelerada ante incidentes en escritorios virtuales VDI no persistentes",
+      "objetivo": "Capturar artefactos volátiles antes de que el pool VDI destruya la máquina virtual y verificar integridad de imagen/FSLogix.",
+      "consolaRuta": "security.microsoft.com > Assets > Devices (tag VDI=NonPersistent) + Consola Citrix/Horizon/AVD",
+      "procedimiento": [
+        "Solicitar de inmediato al equipo VDI colocar la VM afectada en modo mantenimiento evitando reciclado automático al cerrar sesión.",
+        "Ejecutar sin demora Collect investigation package e iniciar Live Response para extraer artefactos residentes en disco temporal.",
+        "Investigar en DeviceFileEvents/DeviceProcessEvents si hubo contaminación del contenedor de perfil FSLogix (*.VHDX) o de la imagen maestra, aislando el perfil y revocando sesiones del usuario."
+      ],
+      "rolResponsable": "SOC L2 / SOC L3 / VDI Admin",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-07 / RS.MI-02",
+      "mitreTactic": "Execution / Persistence in Virtualized Environments",
+      "evidenciaAuditable": "Paquete forense recolectado antes del reciclado de VM y validación de integridad de imagen base y perfil FSLogix.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Playbook operativo derivado de las restricciones técnicas de entornos VDI efímeros y capacidades Live Response de MDE.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/configure-endpoints-vdi"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Detección de fallos silenciosos de sensores EDR y endpoints sin reporte en 24h",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "DeviceInfo",
+      "consulta": "DeviceInfo | summarize arg_max(Timestamp, *) by DeviceId | where OnboardingStatus == 'Onboarded' | where Timestamp < ago(24h) or SensorHealthState != 'Active' | project DeviceName, OSPlatform, OSVersion, SensorHealthState, ExposureLevel, Timestamp, PublicIP | extend HorasSinSenal = datetime_diff('hour', now(), Timestamp) | order by HorasSinSenal desc",
+      "proposito": "Identificar dispositivos incorporados con sensor degradado o sin telemetría reciente para remediación inmediata.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Caza de procesos hijos sospechosos desde Office/PDF y comandos PowerShell ofuscados",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "DeviceProcessEvents",
+      "consulta": "DeviceProcessEvents | where Timestamp > ago(7d) | where (InitiatingProcessFileName in~ ('winword.exe','excel.exe','powerpnt.exe','outlook.exe','acrord32.exe') and FileName in~ ('powershell.exe','pwsh.exe','cmd.exe','wscript.exe','cscript.exe','mshta.exe','rundll32.exe','regsvr32.exe')) or (FileName in~ ('powershell.exe','pwsh.exe') and ProcessCommandLine has_any ('-enc','-EncodedCommand','FromBase64String','DownloadString','comsvcs.dll')) | project Timestamp, DeviceName, AccountName, InitiatingProcessFileName, FileName, ProcessCommandLine, SHA256 | order by Timestamp desc",
+      "proposito": "Detectar técnicas de ejecución inicial, abuso de LOLBins, scripts codificados y volcado de memoria.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección de barrido de movimiento lateral interno por SMB, RDP y WinRM",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "DeviceNetworkEvents",
+      "consulta": "DeviceNetworkEvents | where Timestamp > ago(7d) | where ActionType == 'ConnectionSuccess' and RemotePort in (445, 3389, 5985, 5986, 135) and RemoteIPType == 'Private' | summarize DestinosUnicos = dcount(RemoteIP), ListaIPs = make_set(RemoteIP, 15) by DeviceId, DeviceName, InitiatingProcessAccountName, InitiatingProcessFileName, bin(Timestamp, 1h) | where DestinosUnicos >= 10 | order by DestinosUnicos desc",
+      "proposito": "Identificar estaciones comprometidas que enumeran o se conectan lateralmente a múltiples hosts internos en una ventana corta.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Rastreo de creación de ejecutables y scripts en carpetas temporales desde navegadores o correo",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "DeviceFileEvents",
+      "consulta": "DeviceFileEvents | where Timestamp > ago(7d) and ActionType == 'FileCreated' | where FileName endswith '.exe' or FileName endswith '.dll' or FileName endswith '.ps1' or FileName endswith '.vbs' or FileName endswith '.hta' | where FolderPath has_any ('\\\\AppData\\\\Local\\\\Temp\\\\','\\\\Downloads\\\\','\\\\Users\\\\Public\\\\') and InitiatingProcessFileName in~ ('msedge.exe','chrome.exe','firefox.exe','outlook.exe','teams.exe') | project Timestamp, DeviceName, InitiatingProcessFileName, FolderPath, FileName, SHA256, FileOriginUrl | order by Timestamp desc",
+      "proposito": "Auditar el ingreso de payloads descargados por usuarios antes o durante fases iniciales de intrusión.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría de intentos de TamperingAttempt y eventos de las 19 reglas ASR",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "DeviceEvents",
+      "consulta": "DeviceEvents | where Timestamp > ago(14d) | where ActionType == 'TamperingAttempt' or ActionType startswith 'Asr' | summarize TotalEventos = count(), DispositivosAfectados = dcount(DeviceId), ProcesosOrigen = make_set(InitiatingProcessFileName, 10) by ActionType | order by TotalEventos desc",
+      "proposito": "Monitorear intentos de desactivar defensas y medir eventos Audit/Block/WarnBypassed de las reglas ASR para tuning.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Priorización de dispositivos afectados por CVEs críticos con código de exploit público",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "DeviceTvmSoftwareVulnerabilities / DeviceTvmSoftwareVulnerabilitiesKB",
+      "consulta": "DeviceTvmSoftwareVulnerabilities | where VulnerabilitySeverityLevel == 'Critical' | join kind=inner (DeviceTvmSoftwareVulnerabilitiesKB | where IsExploitAvailable == 1 | project CveId, CvssScore, PublishedDate) on CveId | summarize DispositivosExpuestos = dcount(DeviceId), EjemplosHosts = make_set(DeviceName, 10), ParchesRecomendados = make_set(RecommendedSecurityUpdate) by CveId, CvssScore, SoftwareVendor, SoftwareName | order by DispositivosExpuestos desc, CvssScore desc",
+      "proposito": "Enfocar las campañas semanales de parcheo e Intune Security Tasks sobre vulnerabilidades críticas explotables.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Validación de frescura de escaneo de inventario de vulnerabilidades por endpoint",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "DeviceTvmSoftwareInventory",
+      "consulta": "DeviceInfo | summarize arg_max(Timestamp, *) by DeviceId | where OnboardingStatus == 'Onboarded' and SensorHealthState == 'Active' | join kind=leftanti (DeviceTvmSoftwareInventory | distinct DeviceId) on DeviceId | project DeviceName, OSPlatform, Timestamp",
+      "proposito": "Detectar dispositivos activos que no están reportando inventario de software hacia Defender Vulnerability Management.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Cobertura efectiva de incorporación MDE (Onboarding Coverage)",
+      "definicion": "Porcentaje de endpoints y servidores elegibles descubiertos en la red que cuentan con el sensor MDE incorporado.",
+      "formula": "(Dispositivos Onboarded / (Onboarded + Can be onboarded)) * 100 en Assets > Devices",
+      "metaSugerida": ">= 98% en estaciones de trabajo/VDI y 100% en servidores críticos",
+      "frecuencia": "Semanal",
+      "audiencia": "Endpoint Security Admin / IT Operations / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Calculado con Standard Device Discovery habilitado; el umbral del 98% es propuesta editorial."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Tasa de salud activa de sensores EDR y actualidad antimalware",
+      "definicion": "Porcentaje de dispositivos activos con SensorHealthState == 'Active' y definiciones Security Intelligence menores a 48 horas.",
+      "formula": "(Equipos activos saludables y actualizados / Total equipos activos) * 100",
+      "metaSugerida": ">= 96% sostenido",
+      "frecuencia": "Diaria",
+      "audiencia": "Endpoint Security Admin / SOC Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en los reportes oficiales Sensor health & OS y Microsoft Defender Antivirus health."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Tiempo hasta aislamiento o contención de endpoint comprometido (MTTC-EP p50 / p90)",
+      "definicion": "Tiempo transcurrido desde la detección de un incidente Crítico/Alto en endpoint hasta la ejecución de Isolate/Contain device.",
+      "formula": "percentiles(Timestamp_Contencion - CreatedTime, 50, 90) cruzando incidentes con Action Center",
+      "metaSugerida": "p50 < 15 minutos; p90 < 45 minutos",
+      "frecuencia": "Semanal",
+      "audiencia": "SOC Lead / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mide velocidad real de corte de movimiento lateral y C2 en la flota de endpoints."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Cobertura de las 19 reglas ASR en modo Block",
+      "definicion": "Proporción de las reglas Attack Surface Reduction aplicables que operan efectivamente en modo Block (código 1) en producción.",
+      "formula": "Reglas ASR en modo Block / Total reglas ASR aplicables (18 en estaciones Windows, 19 incluyendo Exchange)",
+      "metaSugerida": "3/3 Standard protection rules en Block y >= 14 reglas totales en Block en estaciones corporativas",
+      "frecuencia": "Mensual",
+      "audiencia": "Security Architect / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Indicador interno de madurez preventiva sobre el catálogo real de 19 reglas ASR de Microsoft Learn."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Cobertura efectiva de Tamper Protection / Controlled Configuration",
+      "definicion": "Porcentaje de dispositivos elegibles protegidos activamente contra desactivación de controles y modificación de exclusiones.",
+      "formula": "(Dispositivos con Tamper Protection Enabled o Block / Total dispositivos elegibles) * 100",
+      "metaSugerida": ">= 99% (permitiendo únicamente ventanas temporales auditadas en Troubleshooting mode)",
+      "frecuencia": "Semanal",
+      "audiencia": "Endpoint Security Admin / GRC",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Verificable mediante la recomendación 'Turn on Tamper Protection' en MDVM e Intune."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Organizational Exposure Score en Defender Vulnerability Management",
+      "definicion": "Puntaje global continuo de exposición a vulnerabilidades de dispositivos calculado por MDVM (escala 0 a 100, donde menor es mejor).",
+      "formula": "Métrica nativa en Exposure management > Vulnerability management > Dashboard",
+      "metaSugerida": "Exposure Score < 30 (Low exposure) o reducción neta trimestral sostenida",
+      "frecuencia": "Semanal",
+      "audiencia": "Vulnerability Lead / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "La escala 0-100 es oficial de MDVM; el objetivo < 30 corresponde al tramo Low exposure."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Cumplimiento de SLA de remediación en CVEs Críticos con exploit activo",
+      "definicion": "Porcentaje de exposiciones críticas con código de exploit público remediadas dentro del plazo objetivo.",
+      "formula": "(Instancias CVE Críticas con exploit cerradas en plazo / Total detectadas en el período) * 100",
+      "metaSugerida": ">= 90% en <= 7 días (<= 48 horas para activos expuestos o críticos)",
+      "frecuencia": "Semanal",
+      "audiencia": "IT Operations / Vulnerability Lead / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Medido sobre DeviceTvmSoftwareVulnerabilities cruzado con IsExploitAvailable == 1."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Adopción del nivel Full Automation en grupos de dispositivos",
+      "definicion": "Porcentaje de endpoints estándar cubiertos por Device groups configurados en 'Full - remediate threats automatically'.",
+      "formula": "(Dispositivos en grupos Full automation / Total dispositivos incorporados) * 100",
+      "metaSugerida": ">= 90% en estaciones de usuario (manteniendo supervisión Semi solo donde sea estrictamente necesario)",
+      "frecuencia": "Mensual",
+      "audiencia": "SOC Manager / Endpoint Security Admin",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Microsoft Learn recomienda explícitamente Full automation para maximizar remoción automática de malware."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles, responsabilidades y autoridades relacionados con la gestión de riesgos de ciberseguridad están establecidos, comunicados y aplicados.",
+      "capacidadMicrosoft": "Segregación granular en Unified RBAC (Basic vs. Advanced live response, Core security settings) e Intune Endpoint Security Manager, junto con niveles de automatización por Device group.",
+      "evidenciaAuditoria": "Exportación de roles URBAC, configuración de Device groups y bitácora auditada de sesiones Live Response.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.OV-01",
+      "descripcionResultado": "Los resultados de la estrategia de gestión de riesgos de ciberseguridad se revisan para informar y ajustar la estrategia y dirección.",
+      "capacidadMicrosoft": "Monthly Security Summary de MDE, evolución de Exposure Score y Microsoft Secure Score for Devices.",
+      "evidenciaAuditoria": "Reportes PDF mensuales de los últimos 90 días y actas de revisión del CISO.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-01",
+      "descripcionResultado": "Se mantienen inventarios de hardware gestionado por la organización.",
+      "capacidadMicrosoft": "Device Inventory multiplataforma (Windows, Server, macOS, Linux, iOS, Android, VDI) complementado por Standard Device Discovery.",
+      "evidenciaAuditoria": "Exportación CSV de Assets > Devices y reportes de salud y cobertura de sensores.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-02",
+      "descripcionResultado": "Se mantienen inventarios de software, servicios y sistemas.",
+      "capacidadMicrosoft": "Inventario continuo de software, versiones, estado End-of-Support (EOS) y uso real en Defender Vulnerability Management (DeviceTvmSoftwareInventory).",
+      "evidenciaAuditoria": "Exportación de inventario de software instalado y plan de mitigación de activos EOS.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-01",
+      "descripcionResultado": "Se identifican, validan y registran las vulnerabilidades en los activos.",
+      "capacidadMicrosoft": "Evaluación continua de CVEs y configuraciones en MDVM Core (DeviceTvmSoftwareVulnerabilities) más evaluación CIS/STIG, certificados, extensiones y firmware en MDVM Add-on.",
+      "evidenciaAuditoria": "Listado priorizado de Weaknesses, Security Tasks en Intune y registro de CVE exceptions.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.PS-01",
+      "descripcionResultado": "Se establecen y aplican prácticas de gestión de configuración.",
+      "capacidadMicrosoft": "Endpoint Security Policies (Intune/Defender), catálogo de 19 reglas Attack Surface Reduction y vista Effective settings por dispositivo.",
+      "evidenciaAuditoria": "Exportación de políticas ASR activas, consulta KQL de eventos Asr*Blocked y matriz firmada de exclusiones por regla.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.PS-05",
+      "descripcionResultado": "Se previene la instalación y ejecución de software no autorizado.",
+      "capacidadMicrosoft": "Next-Generation Protection, Tamper Protection / Controlled Configuration, Device Control (USB/periféricos), Restrict app execution y Block vulnerable applications (MDVM Add-on).",
+      "evidenciaAuditoria": "Reporte de estado de Tamper Protection, políticas y eventos de Device Control e historial del Action Center.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-09",
+      "descripcionResultado": "El hardware, software, entornos de ejecución y sus datos se monitorean para encontrar eventos potencialmente adversos.",
+      "capacidadMicrosoft": "Telemetría continua del sensor EDR (procesos, red, archivos, registro, DLLs, kernel) con 6 meses en Device Timeline y 30 días en tablas KQL de Advanced Hunting.",
+      "evidenciaAuditoria": "Evidencia de retención en Device Timeline, consultas de caza guardadas y alertas EDR.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.AE-02",
+      "descripcionResultado": "Los eventos potencialmente adversos se analizan para comprender mejor las actividades asociadas.",
+      "capacidadMicrosoft": "Árbol de procesos EDR, correlación de alertas en incidentes XDR con etiquetas de sensibilidad de datos e informes contextuales de Threat Analytics.",
+      "evidenciaAuditoria": "Muestra de incidentes de endpoint cerrados con análisis técnico y técnicas MITRE ATT&CK documentadas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Los incidentes son contenidos.",
+      "capacidadMicrosoft": "Isolate device (Full/Selective), Contain device, Contain IP, Contain user, indicadores IoC Alert and block y EDR in block mode.",
+      "evidenciaAuditoria": "Exportación CSV de Action Center > History registrando acciones y tiempos de aislamiento/contención.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.AN-07",
+      "descripcionResultado": "Los datos y metadatos del incidente se recolectan preservando su integridad y procedencia.",
+      "capacidadMicrosoft": "Collect investigation package (ZIP forense integral) y consola interactiva Live Response con Command log inmutable.",
+      "evidenciaAuditoria": "Registro de paquetes de investigación recolectados y auditoría del Command log por sesión Live Response.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-05",
+      "descripcionResultado": "Se verifica la integridad de los activos restaurados, se restauran los sistemas y servicios y se confirma el funcionamiento normal.",
+      "capacidadMicrosoft": "Escaneo completo de validación, restauración o liberación controlada desde Action Center (Undo / Release from isolation) y reaprovisionamiento limpio en VDI.",
+      "evidenciaAuditoria": "Trazabilidad completa en Action Center del ciclo aislamiento -> remediación -> verificación -> liberación.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "El módulo 04_Microsoft_Defender_for_Endpoint fue consolidado desde los documentos fuente de MSEOP-MD (incluyendo el anexo empresarial para VDI no persistente) y auditado exhaustivamente contra Microsoft Learn MCP en noviembre de 2026. Se corrigió el conteo erróneo de '13 reglas ASR' al catálogo oficial vigente de 19 reglas ASR (junto con sus GUIDs exactos, reglas sin soporte Warn y el requisito 2026 de aprobación de administrador en modo Warn), se incorporó el cambio arquitectónico del 1 de septiembre de 2026 sobre la integración de AIR en la pila predeterminada de Defender Antivirus, se precisaron los alcances de licenciamiento MDVM Core vs. Add-on y servidores, y se validaron límites técnicos de Live Response, Tamper Protection / Controlled Configuration y tablas KQL.",
+    "correccionesAplicadas": [
+      "Corrección del catálogo de reglas Attack Surface Reduction (ASR): se reemplazó la referencia desactualizada a '13 reglas ASR' del borrador previo por las 19 reglas ASR oficiales vigentes en Microsoft Learn (3 Standard protection rules + 16 Other ASR rules), incorporando las 6 reglas omitidas (Adobe Reader, prevalencia/edad/lista confiable, Outlook child process, Safe Mode reboot, herramientas de sistema copiadas/suplantadas y Webshell para Exchange), corrigiendo la errata del GUID de LSASS a 9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2 y eliminando porcentajes de eficacia ('80-90%' / '95%') no publicados por Microsoft.",
+      "Actualización de modos, precedencia y controles 2026 en reglas ASR: se documentaron los 5 códigos de modo (0 Disabled, 1 Block, 2 Audit, 5 Not configured, 6 Warn), las 2 reglas que no soportan modo Warn (LSASS e inyección Office), el requisito de aprobación de administrador para usar Unblock en modo Warn introducido en la plataforma 4.18.26060, la precedencia predeterminada de GPO sobre MDM salvo MDMWinsOverGP y la exigencia de Defender Antivirus en Active mode.",
+      "Incorporación del cambio oficial de Automated Investigation and Response (AIR) del 1 de septiembre de 2026: se precisó que en MDE AIR ya no corre como experiencia separada ni con disparo manual, sino integrada automáticamente dentro de la pila predeterminada de Microsoft Defender Antivirus (usando escaneo AV completo para inspecciones bajo demanda), manteniendo niveles por Device group y gestión en Action Center.",
+      "Delimitación rigurosa de Microsoft Defender Vulnerability Management (MDVM) y licenciamiento de servidores: se actualizó la ruta bajo Exposure management en security.microsoft.com, separando las 9 capacidades Core incluidas en MDE P2 / M365 E5 de las 6 capacidades Premium del MDVM Add-on / Standalone (y Defender for Servers Plan 2), aclarando además que las licencias de usuario M365 E5 no cubren servidores y que el escaneo autenticado de Windows fue retirado.",
+      "Actualización de Tamper Protection y Controlled Configuration multiplataforma: se incorporó el renombre en experiencias de gestión hacia Controlled configuration, la protección de listas de exclusiones AV administradas, el uso de Troubleshooting mode, los modos Disabled/Audit/Block en macOS, el modo Audit (Preview) en Linux y la consulta KQL oficial ActionType == 'TamperingAttempt'.",
+      "Revalidación de capacidades y límites de Live Response: se añadió soporte para descargas en segundo plano (getfile <path> & y fg <command_id>), administración desde Library management y límites vigentes (50 sesiones por tenant, 5 por usuario, 1 por dispositivo, timeout 30 min, getfile 3 GB, library 250 MB, putfile 300 MB en Windows / 10 MB otras plataformas).",
+      "Validación técnica del anexo para VDI no persistente contra configure-endpoints-vdi: confirmación del modelo Single entry (Onboard-NonPersistentMachine.ps1 ejecutado tras hostname definitivo), secuencia oficial de limpieza de senseGuid como SYSTEM con PsExec.exe en imágenes maestras, exclusiones FSLogix (*.VHD/*.VHDX) y protocolo forense inmediato antes del reciclado de sesiones."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Acuerdos de nivel de servicio (SLA) para triaje, aislamiento (MTTC < 15-45 min) y remediación de CVEs (<= 7 días / <= 48 h)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft Learn provee severidades, puntaje de exposición y explotabilidad, dejando a cada organización fijar sus objetivos de tiempo según criticidad y ventanas de cambio."
+      },
+      {
+        "elemento": "Métrica interna de madurez 'N/19 reglas ASR en modo Block' (meta >= 14 en estaciones)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft recomienda las 3 reglas estándar en Block y pruebas en Audit para el resto; la fracción sobre 19 reglas es un indicador consultivo interno de endurecimiento, no un score oficial."
+      },
+      {
+        "elemento": "Parámetros específicos de ajuste de rendimiento en VDI de alta densidad (ScanAvgCPULoadFactor 25-30% y aleatorización de 30 min)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Valores recomendados por experiencia de arquitectura empresarial y guías de la comunidad técnica sobre cmdlets soportados de Microsoft Defender Antivirus."
+      },
+      {
+        "elemento": "Perfiles de roles personalizados URBAC por nivel SOC (Tier 1, Tier 2, Tier 3 DFIR, SecAdmin, VM) y duraciones JIT en PIM",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Agrupación organizacional de mínimo privilegio construida sobre los permisos granulares oficiales de Microsoft Defender Unified RBAC y Microsoft Intune."
+      },
+      {
+        "elemento": "Modelo de madurez de 4 estadios y mapeo detallado de capacidades MDE/MDVM a subcategorías NIST CSF 2.0",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Mapeo auditable que vincula outcomes oficiales de NIST CSWP 29 con evidencias técnicas verificables generadas por MDE y MDVM."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Microsoft Defender for Endpoint Security Operations Guide",
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Guía oficial de actividades operativas diarias, semanales, mensuales y periódicas para equipos SecOps y SecAdmin sobre MDE.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Attack surface reduction (ASR) rules reference",
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction-rules-reference",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Referencia técnica canónica de las 19 reglas ASR, GUIDs, soporte por SO, métodos de despliegue y eventos Advanced Hunting.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Attack surface reduction (ASR) rules overview",
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction-rules-overview",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Modos ASR (0, 1, 2, 5, 6), aprobación de admin para Unblock en modo Warn (plataforma 4.18.26060), precedencia GPO vs. MDM y exclusiones por regla.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Automation levels in automated investigation and remediation capabilities",
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/automation-levels",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Documenta la integración de AIR en la pila antivirus predeterminada desde el 1 de septiembre de 2026 y los niveles Full/Semi por Device group.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Tamper protection overview",
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/prevent-changes-to-security-settings-with-tamper-protection",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Modos de Tamper Protection en Windows, macOS y Linux (Preview), Controlled configuration, protección de exclusiones y caza con TamperingAttempt.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Investigate entities on devices using live response",
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/live-response",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Comandos básicos y avanzados de Live Response, descargas en segundo plano, Library management, permisos y límites de sesión.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Compare Microsoft Defender Vulnerability Management plans and capabilities",
+      "url": "https://learn.microsoft.com/en-us/defender-vulnerability-management/defender-vulnerability-management-capabilities",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Matriz oficial comparativa entre capacidades MDVM Core (MDE Plan 2 / E5), MDVM Add-on / Standalone y Defender for Servers Plan 1/2.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Onboard non-persistent VDI devices to Microsoft Defender for Endpoint",
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/configure-endpoints-vdi",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Guía oficial para incorporación de escritorios VDI no persistentes (modelo Single entry y limpieza de senseGuid con PsExec).",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Take response actions on a device in Microsoft Defender for Endpoint",
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/respond-machine-alerts",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Detalle operativo de Isolate device, Contain device/IP/user, Restrict app execution, Collect investigation package y Predictive Shielding.",
+      "verificacion": "Verificado vía Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Endpoint detection and response (EDR) in block mode",
+      "url": "https://learn.microsoft.com/en-us/defender-endpoint/edr-in-block-mode",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Protección post-brecha activa cuando Microsoft Defender Antivirus opera en modo pasivo junto a un antivirus primario de terceros.",
+      "verificacion": "Verificado vía Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Become a Microsoft Defender for Endpoint Ninja",
+      "url": "https://techcommunity.microsoft.com/blog/microsoftdefenderatpblog/become-a-microsoft-defender-for-endpoint-ninja/1515647",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Heike Ritter (Microsoft)",
+      "comentario": "Ruta oficial Ninja Training para roles SecOps y SecAdmin en Microsoft Defender for Endpoint (versión 45 actualizada en 2026).",
+      "verificacion": "Verificado en directorio curado Ninja Training (Nov 2026)"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "MDE for Non-Persistent VDI — Implementation Guide & Best Practices",
+      "url": "https://techcommunity.microsoft.com/blog/coreinfrastructureandsecurityblog/mde-for-non%E2%80%91persistent-vdi-%E2%80%94-implementation-guide--best-practices-/4470439",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Microsoft Core Infrastructure and Security Blog",
+      "comentario": "Mejores prácticas de campo de Microsoft para exclusiones FSLogix, ajuste de CPU y despliegue a gran escala en VDI no persistente.",
+      "verificacion": "Verificado en anexo técnico VDI y Microsoft Tech Community"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Microsoft Defender XDR demonstrates 100% detection coverage in the 2024 MITRE ATT&CK Evaluations: Enterprise",
+      "url": "https://www.microsoft.com/en-us/security/blog/2024/12/11/microsoft-defender-xdr-demonstrates-100-detection-coverage-across-all-cyberattack-stages-in-the-2024-mitre-attck-evaluations-enterprise/",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Microsoft Security",
+      "comentario": "Evidencia pública de evaluación independiente sobre cobertura de detección en toda la cadena de ataque.",
+      "verificacion": "Verificado en fuentes consolidadas y Microsoft Security Blog"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Jeffrey Appel Technical Blog — Defender for Endpoint, ASR, VDI & Vulnerability Management",
+      "url": "https://jeffreyappel.nl/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Jeffrey Appel (Microsoft Security MVP)",
+      "comentario": "Guías profundas de configuración, optimización de firmas VDI, reglas ASR y arquitectura MDE mantenidas por un MVP de Seguridad.",
+      "verificacion": "Verificado en directorio de referentes Ninja Training (Nov 2026)"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "FalconFriday — Detection Engineering & KQL Queries for MDE",
+      "url": "https://github.com/FalconForceTeam/FalconFriday/blob/main/README.md",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Olaf Hartong (Microsoft Security MVP, FalconForce)",
+      "comentario": "Repositorio técnico de ingeniería de detecciones KQL sobre telemetría de endpoint mapeado a MITRE ATT&CK.",
+      "verificacion": "Verificado en directorio de referentes Ninja Training (Nov 2026)"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (CSWP 29)",
+      "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Marco normativo oficial de resultados (outcomes) sobre las 6 funciones GV, ID, PR, DE, RS y RC.",
+      "verificacion": "Verificado contra publicación oficial NIST"
+    }
+  ]
+}

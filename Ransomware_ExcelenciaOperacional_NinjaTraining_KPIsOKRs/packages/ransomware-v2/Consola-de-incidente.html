@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Consola local de incidente · ransomware v2.0 (DD10–DD18 y PB-01..07)</title>
+  <script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--cp-bg); color: var(--cp-text);
+      font: 16px/1.5 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif; }
+    button, input, select, textarea { font: inherit; }
+    input, select, textarea, button { background: var(--cp-surface); color: var(--cp-text);
+      border: 1px solid var(--cp-border-strong); border-radius: 0.625rem; padding: 0.55rem 0.7rem; }
+    input[type="checkbox"] { width: 1.15rem; height: 1.15rem; accent-color: var(--cp-accent); padding: 0; }
+    textarea { min-height: 5rem; resize: vertical; }
+    button { cursor: pointer; }
+    button:hover { border-color: var(--cp-accent); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    button.primary { color: var(--cp-accent-fg); background: var(--cp-accent); border-color: var(--cp-accent); }
+    button.primary:hover { background: var(--cp-accent-hover); }
+    :focus-visible { outline: 3px solid var(--cp-accent); outline-offset: 2px; }
+    a { color: var(--cp-link); }
+    .wrap { max-width: 1240px; margin: auto; padding: 0 1.2rem 2rem; }
+    header { background: var(--cp-bg-elevated); border-bottom: 1px solid var(--cp-border); padding: 1.8rem 0; }
+    h1 { font-size: clamp(1.7rem, 3vw, 2.4rem); line-height: 1.17; margin: 0.25rem 0; }
+    h2 { font-size: 1.35rem; margin: 0 0 0.7rem; }
+    h3 { font-size: 1rem; margin: 0 0 0.4rem; }
+    p { margin: 0.4rem 0 0.9rem; }
+    .eyebrow { color: var(--cp-accent); letter-spacing: 0.09em; font-weight: 700; font-size: 0.8rem; }
+    .muted, small { color: var(--cp-text-muted); }
+    .alert { padding: 0.9rem 1rem; background: var(--cp-surface); border: 1px solid var(--cp-border);
+      border-left: 4px solid var(--cp-warning); border-radius: 0.625rem; margin: 1.25rem 0; }
+    .alert.error { border-left-color: var(--cp-danger); }
+    .panel, .stage { background: var(--cp-surface); border: 1px solid var(--cp-border);
+      border-radius: 16px; box-shadow: 0 0 2px var(--cp-border), 0 1px 2px var(--cp-border); }
+    .panel { padding: 1.2rem; margin: 1.2rem 0; }
+    .stage { padding: 1rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1rem; }
+    .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(225px, 1fr)); gap: 0.8rem; }
+    label.field { display: grid; gap: 0.25rem; font-size: 0.92rem; font-weight: 600; }
+    .wide { grid-column: 1 / -1; }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.65rem; margin-top: 0.85rem; align-items: center; }
+    .stats { display: flex; flex-wrap: wrap; gap: 0.65rem; }
+    .stats span { display: inline-block; padding: 0.35rem 0.6rem; border: 1px solid var(--cp-border);
+      border-radius: 0.625rem; background: var(--cp-surface-soft); }
+    .check { display: flex; gap: 0.6rem; align-items: flex-start; margin: 0.6rem 0; }
+    .check strong { display: block; font-size: 0.94rem; }
+    .check small { display: block; }
+    .table-scroll { overflow-x: auto; border: 1px solid var(--cp-border); border-radius: 0.625rem; }
+    table { border-collapse: collapse; width: 100%; min-width: 780px; }
+    th { text-align: left; background: var(--cp-surface-soft); }
+    th, td { padding: 0.65rem; border-bottom: 1px solid var(--cp-border); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    code { font: 0.93em Consolas, "Courier New", Courier, monospace; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+    footer { padding: 1.5rem 0; color: var(--cp-text-muted); }
+    @media (max-width: 640px) { .wrap { padding-inline: 0.8rem; } .panel { padding: 0.8rem; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div style="margin-bottom:0.4rem;"><a href="../../index.html" style="font-weight:700;">← Volver al portal principal del ecosistema</a></div>
+      <div class="eyebrow">BITÁCORA LOCAL · SIN RED NI AUTOMATIZACIÓN</div>
+      <h1>Consola de incidente · v2.0 integrada</h1>
+      <p>Guía interactiva de decisiones y custodia. <strong>No aísla equipos, revoca sesiones, contacta destinatarios ni conserva datos automáticamente.</strong></p>
+      <span class="muted">Solo memoria de esta pestaña. Exporte JSON a un repositorio aprobado para conservar trabajo; evite secretos y datos personales.</span>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="alert" role="note">Una casilla marcada indica que <strong>una persona lo registró</strong>, no que el sistema ejecutó o verificó la acción. Para producción, seguir autoridad y herramientas aprobadas. Seguridad de las personas y continuidad de servicios esenciales primero.</div>
+    <div id="status" role="status" aria-live="polite"></div>
+    <section class="panel" aria-labelledby="case-title">
+      <h2 id="case-title">1. Abrir o identificar el caso</h2>
+      <form id="case-form">
+        <div class="fields">
+          <label class="field">INC-ID (3–48 caracteres, sin datos personales)
+            <input id="case-id" required maxlength="48" autocomplete="off" placeholder="INC-2026-001">
+          </label>
+          <label class="field">Modo
+            <select id="mode"><option>Simulación</option><option>Incidente real</option></select>
+          </label>
+          <label class="field">Nivel provisional
+            <select id="level"><option>Sospecha</option><option>Incidente mayor</option><option>Crisis de negocio</option></select>
+          </label>
+          <label class="field">CI / referente (identificador interno)
+            <input id="commander" maxlength="80" autocomplete="off" placeholder="Rol o alias aprobado">
+          </label>
+          <label class="field">Canal fuera de banda (referencia, no contraseña)
+            <input id="channel" maxlength="100" autocomplete="off" placeholder="Registro seguro de contactos">
+          </label>
+          <label class="field wide">Resumen factual inicial (sin secretos)
+            <textarea id="summary" maxlength="1500" placeholder="Qué se confirmó y qué sigue sin conocerse"></textarea>
+          </label>
+        </div>
+        <div class="actions"><button type="submit" class="primary">Abrir / actualizar caso</button><span class="muted">Un cambio de INC-ID requiere reiniciar o importar otro caso.</span></div>
+      </form>
+      <p id="case-label" class="muted">Sin caso abierto. Abra uno para habilitar registros y checklist.</p>
+      <div class="stats">
+        <span id="steps-count">0 pasos registrados</span>
+        <span id="events-count">0 hitos</span>
+        <span id="evidence-count">0 evidencias</span>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="check-title">
+      <h2 id="check-title">2. Procedimiento por rol</h2>
+      <p class="muted">Marque solo pasos realizados o decididos por personal autorizado; cada acción material debe tener un hito, responsable y referencia de evidencia. Las etapas pueden superponerse.</p>
+      <div class="grid" id="checklist"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="log-title">
+      <h2 id="log-title">3. Cronología de hechos y decisiones</h2>
+      <p>No convierta hipótesis en hechos. “Efecto verificado” exige referencia a evidencia independiente; “Decisión” exige autorizador. UTC se sella al registrar, no sustituye la hora del evento si fue anterior.</p>
+      <form id="event-form">
+        <div class="fields">
+          <label class="field">Tipo
+            <select id="event-type">
+              <option>Hecho</option><option>Hipótesis</option><option>Decisión</option>
+              <option>Efecto verificado</option><option>Continuidad</option><option>Restauración</option>
+              <option>Relevo</option><option>Corrección</option>
+            </select>
+          </label>
+          <label class="field">Operador / autor
+            <input id="event-actor" required maxlength="80" autocomplete="off">
+          </label>
+          <label class="field">Autorizador y derecho DD## (DD10/11/12/13/14/18 en decisión)
+            <input id="event-approver" maxlength="80" autocomplete="off" placeholder="p. ej. CEO / CISO · DD11">
+          </label>
+          <label class="field">EV-ID o acta (obligatorio en efecto verificado)
+            <input id="event-ref" maxlength="100" autocomplete="off">
+          </label>
+          <label class="field wide">Descripción; incluir hora UTC original si difiere del registro
+            <textarea id="event-note" required maxlength="2000"></textarea>
+          </label>
+        </div>
+        <div class="actions"><button type="submit">Registrar hito</button></div>
+      </form>
+      <div class="table-scroll">
+        <table><thead><tr><th scope="col">Registro UTC</th><th scope="col">Tipo</th><th scope="col">Detalle</th><th scope="col">Operador / autorización</th><th scope="col">Referencia</th></tr></thead>
+          <tbody id="events-body"></tbody></table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="evidence-title">
+      <h2 id="evidence-title">4. Evidencia y transferencias</h2>
+      <p>Guarde bytes de evidencia <strong>fuera</strong> de esta consola. Si no puede calcular hash, explique la limitación; un hash por sí solo no demuestra autenticidad de origen.</p>
+      <form id="evidence-form">
+        <div class="fields">
+          <label class="field">EV-ID único <input id="ev-id" required maxlength="60" autocomplete="off" placeholder="EV-001"></label>
+          <label class="field">Fuente y ventana UTC <input id="ev-source" required maxlength="200" autocomplete="off"></label>
+          <label class="field">Captura (UTC, no hora local) <input id="ev-time" required type="datetime-local"></label>
+          <label class="field">Operador / custodio <input id="ev-operator" required maxlength="80" autocomplete="off"></label>
+          <label class="field">SHA-256, 64 caracteres hexadecimales (si aplica)
+            <input id="ev-hash" maxlength="64" autocomplete="off" placeholder="Si no aplica, explique a la derecha">
+          </label>
+          <label class="field">Limitación o método de integridad sin hash
+            <input id="ev-limit" maxlength="200" autocomplete="off" placeholder="Obligatorio si no hay hash">
+          </label>
+          <label class="field wide">Depósito restringido (referencia, no enlace público)
+            <input id="ev-store" required maxlength="200" autocomplete="off">
+          </label>
+        </div>
+        <div class="actions"><button type="submit">Registrar objeto</button></div>
+      </form>
+      <form id="transfer-form" style="margin-top: 1.25rem;">
+        <h3>Transferencia de custodia (no modifica el original)</h3>
+        <div class="fields">
+          <label class="field">EV-ID existente <select id="transfer-id"><option value="">Primero registre evidencia</option></select></label>
+          <label class="field">Transferencia efectuada (UTC, no hora local) <input id="transfer-time" required type="datetime-local"></label>
+          <label class="field">De → a (identificadores internos) <input id="transfer-parties" required maxlength="160" autocomplete="off"></label>
+          <label class="field">Motivo y verificación de integridad <input id="transfer-reason" required maxlength="240" autocomplete="off"></label>
+        </div>
+        <div class="actions"><button type="submit">Registrar transferencia UTC</button></div>
+      </form>
+      <div class="table-scroll">
+        <table><thead><tr><th scope="col">EV-ID</th><th scope="col">Fuente / UTC captura</th><th scope="col">Integridad / límite</th><th scope="col">Custodio y depósito</th><th scope="col">Transferencias</th></tr></thead>
+          <tbody id="evidence-body"></tbody></table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="comms-title">
+      <h2 id="comms-title">5. Borrador de comunicación, sin envío</h2>
+      <p>Legal verifica jurisdicción, disparador, reloj y datos que pueden comunicarse; Comunicaciones y el portavoz aprueban el texto exacto. Registrar un borrador <strong>no</strong> es aprobarlo ni enviarlo.</p>
+      <div class="fields">
+        <label class="field">Audiencia
+          <select id="audience">
+            <option>Empleados</option><option>Junta y accionistas</option><option>Prensa</option>
+            <option>Fuerzas de la ley</option><option>Reguladores</option><option>Socios</option><option>Clientes</option>
+          </select>
+        </label>
+        <label class="field">Autor del borrador <input id="draft-author" maxlength="80" autocomplete="off"></label>
+        <label class="field wide">Texto exacto para revisión; sustituir todos los marcadores antes de aprobar
+          <textarea id="draft-text" maxlength="3000"></textarea>
+        </label>
+      </div>
+      <div class="actions"><button id="draft-add" type="button">Agregar borrador a cronología</button><span class="muted">No hay botón de enviar ni conexión de red.</span></div>
+    </section>
+
+    <section class="panel" aria-labelledby="backup-title">
+      <h2 id="backup-title">6. Exportar, retomar o reiniciar</h2>
+      <p>Exportar tras cada relevo; el archivo JSON puede contener detalles confidenciales introducidos por usted y requiere clasificación, cifrado, retención y repositorio aprobados. Al cerrar/recargar la pestaña se pierde todo lo no exportado.</p>
+      <div class="actions">
+        <button id="export" class="primary" type="button">Descargar registro JSON</button>
+        <label class="field">Retomar desde JSON <input id="import" type="file" accept=".json,application/json"></label>
+      </div>
+      <div class="actions">
+        <label class="field">Para borrar toda la sesión escriba BORRAR
+          <input id="reset-phrase" autocomplete="off" aria-label="Confirmación de borrado">
+        </label>
+        <button id="reset" type="button">Reiniciar en memoria</button>
+      </div>
+    </section>
+  </main>
+  <footer class="wrap">Navegación v2.0: <a href="Mapa-de-correlacion-y-prioridades.html">Mapa 360°</a> · <a href="Panel-de-resiliencia.html">Panel</a> · Guías: <a href="01-Gobierno.md">gobierno</a> · <a href="05-Respuesta-y-repudio.md">contención</a> · <a href="06-Evidencia-y-forense.md">custodia</a> · <a href="07-Continuidad-y-recuperacion.md">recuperación</a> · <a href="08-Comunicaciones.md">comunicaciones</a>.</footer>
+  <script>
+    "use strict";
+    const CHECKS = [
+      ["Gobierno", "go-1", "Abrir incidente y confirmar CI/suplente", "CI", "Mandato, ID y hora UTC"],
+      ["Gobierno", "go-2", "Validar canal fuera de banda y seguridad de personas", "CI", "Canal y dependencias críticas"],
+      ["Gobierno", "go-3", "Definir hechos, hipótesis y próxima decisión", "CI", "Ficha factual versionada"],
+      ["Detección", "de-1", "Preservar alerta y verificar salud de telemetría", "SOC", "Evento e ingesta UTC"],
+      ["Detección", "de-2", "Delimitar activos confirmados, posibles y no revisados", "SOC", "Fuentes y lagunas"],
+      ["Detección", "de-3", "Escalar identidad, copias, exfiltración y negocio", "SOC", "Registro de contacto"],
+      ["Contención", "co-1", "Aprobar perímetro e impacto de acción mínima", "CI / negocio", "Autorización y reversión"],
+      ["Contención", "co-2", "Aislar/bloquear mediante control autorizado", "Operador", "ID de tarea y alcance"],
+      ["Contención", "co-3", "Invalidar ámbitos adicionales: cookies, apps y secretos", "Identidad", "Límites y propietarios"],
+      ["Contención", "co-4", "Verificar efecto por señal independiente", "SOC", "EV-ID y observación"],
+      ["Evidencia", "ev-1", "Definir hold, fuente volátil y plazo de expiración", "Legal / custodio", "Método y ventana UTC"],
+      ["Evidencia", "ev-2", "Capturar copia con integridad y custodio", "Forense", "EV-ID/hash o limitación"],
+      ["Evidencia", "ev-3", "Registrar transferencias y depósito restringido", "Custodio", "Acuse e integridad"],
+      ["Continuidad", "re-1", "Activar modo degradado y registrar transacciones", "Negocio", "RTO y compensaciones"],
+      ["Continuidad", "re-2", "Elegir punto limpio y zona confiable", "Backup / IR", "RPO e identidad"],
+      ["Continuidad", "re-3", "Restaurar y verificar servicio extremo a extremo", "Plataforma / negocio", "RTO/RPO medidos"],
+      ["Continuidad", "re-4", "Aprobar reconexión con observación y reversión", "CI / negocio", "Acta de aceptación"],
+      ["Comunicación", "cm-1", "Validar jurisdicción, destinatarios y reloj", "Legal", "Fundamento y disparador"],
+      ["Comunicación", "cm-2", "Revisar texto exacto por audiencia y portavoz", "Comms / Legal", "Versión y aprobadores"],
+      ["Comunicación", "cm-3", "Confirmar canal/destinatario por vía independiente", "Emisor", "Acuse fuera de esta app"],
+      ["Cierre", "cl-1", "Confirmar que no hay propagación observada en el alcance", "IR", "Límites de investigación"],
+      ["Cierre", "cl-2", "Cerrar solo con aceptación de negocio y plan de brechas", "CI", "Decisión y riesgo residual"],
+      ["IA y Agentes", "ia-1", "Identificar agentes, copilotos o conectores MCP implicados (DE-13)", "IA / SOC", "Inventario Entra Agent ID / Agent 365"],
+      ["IA y Agentes", "ia-2", "Suspender identidad del agente y preservar trazas Purview Audit (PB-07)", "Identidad / Forense", "DD18 y EV-ID"],
+      ["IA y Agentes", "ia-3", "Activar operación degradada sin IA en el proceso crítico (K56)", "Dueño negocio", "Procedimiento manual validado"],
+      ["Cierre", "cl-3", "Hacer relevo / informe posincidente (R51) y retest", "CI", "Dueños, decisiones K06 y fechas"]
+    ];
+    const GROUPS = [...new Set(CHECKS.map(item => item[0]))];
+    const LEVELS = ["Sospecha", "Incidente mayor", "Crisis de negocio"];
+    const MODES = ["Simulación", "Incidente real"];
+    const EVENT_TYPES = ["Hecho", "Hipótesis", "Decisión", "Efecto verificado", "Continuidad",
+      "Restauración", "Relevo", "Corrección", "Borrador de comunicación", "Transferencia"];
+    const TEMPLATE = "Estamos investigando [hecho confirmado]. Aún no sabemos [alcance pendiente]. Hemos adoptado [medida verificada]. El siguiente contacto será [canal y hora aprobados].";
+    const $ = id => document.getElementById(id);
+    const empty = () => ({ schema: "ransomware-incidente-1", id: "", mode: "Simulación",
+      level: "Sospecha", commander: "", channel: "", summary: "", openedUtc: "",
+      checks: {}, events: [], evidence: [] });
+    let data = empty();
+    $("draft-text").value = TEMPLATE;
+
+    function notice(message, error = false) {
+      $("status").textContent = message;
+      $("status").classList.toggle("alert", Boolean(message));
+      $("status").classList.toggle("error", error);
+    }
+    function td(row, text) {
+      const el = document.createElement("td");
+      el.textContent = String(text); row.append(el);
+    }
+    function render() {
+      $("case-id").value = data.id; $("mode").value = data.mode; $("level").value = data.level;
+      $("commander").value = data.commander; $("channel").value = data.channel;
+      $("summary").value = data.summary;
+      $("case-label").textContent = data.id ?
+        `${data.id} · ${data.mode} · ${data.level} · abierto ${data.openedUtc} · el estado lo verifica el CI, no este HTML.` :
+        "Sin caso abierto. Abra uno para habilitar registros y checklist.";
+      $("steps-count").textContent = `${Object.values(data.checks).filter(item => item.checked).length} / ${CHECKS.length} pasos marcados (no verificados)`;
+      $("events-count").textContent = `${data.events.length} ${data.events.length === 1 ? "hito" : "hitos"}`;
+      $("evidence-count").textContent = `${data.evidence.length} ${data.evidence.length === 1 ? "objeto" : "objetos"} de evidencia`;
+      $("checklist").replaceChildren();
+      for (const group of GROUPS) {
+        const card = document.createElement("article"); card.className = "stage";
+        const title = document.createElement("h3"); title.textContent = group; card.append(title);
+        for (const [, id, text, actor, gate] of CHECKS.filter(item => item[0] === group)) {
+          const label = document.createElement("label"); label.className = "check";
+          const input = document.createElement("input"); input.type = "checkbox"; input.disabled = !data.id;
+          input.checked = Boolean(data.checks[id]?.checked);
+          input.setAttribute("aria-label", `${group}: ${text}`);
+          input.addEventListener("change", () => {
+            data.checks[id] = { checked: input.checked, atUtc: new Date().toISOString() };
+            $("steps-count").textContent = `${Object.values(data.checks).filter(item => item.checked).length} / ${CHECKS.length} pasos marcados (no verificados)`;
+          });
+          const content = document.createElement("span");
+          const strong = document.createElement("strong"); strong.textContent = text;
+          const small = document.createElement("small"); small.textContent = `${actor} · ${gate}`;
+          content.append(strong, small); label.append(input, content); card.append(label);
+        }
+        $("checklist").append(card);
+      }
+      $("events-body").replaceChildren();
+      for (const event of [...data.events].reverse()) {
+        const row = document.createElement("tr");
+        td(row, event.utc); td(row, event.type); td(row, event.note);
+        td(row, `${event.actor}${event.approver ? " · autorizó: " + event.approver : ""}`);
+        td(row, event.ref || "—"); $("events-body").append(row);
+      }
+      $("evidence-body").replaceChildren();
+      $("transfer-id").replaceChildren(new Option("Seleccione EV-ID", ""));
+      for (const ev of data.evidence) {
+        $("transfer-id").add(new Option(ev.id, ev.id));
+        const row = document.createElement("tr");
+        td(row, ev.id); td(row, `${ev.source} · ${ev.utc}`);
+        td(row, ev.sha256 || `Sin hash: ${ev.integrityNote}`);
+        td(row, `${ev.operator} · ${ev.store}`);
+        td(row, ev.transfers.length ?
+          ev.transfers.map(item => `${item.utc}: ${item.parties}; ${item.reason}`).join(" | ") : "Sin transferencias registradas");
+        $("evidence-body").append(row);
+      }
+    }
+    function requireCase() {
+      if (!data.id) throw new Error("Abra un caso antes de registrar acciones.");
+    }
+    function record(type, note, actor, approver = "", ref = "") {
+      requireCase();
+      data.events.push({ utc: new Date().toISOString(), type, note, actor, approver, ref });
+      render();
+    }
+    $("case-form").addEventListener("submit", event => {
+      event.preventDefault();
+      try {
+        const id = $("case-id").value.trim();
+        if (!/^[A-Za-z0-9._-]{3,48}$/.test(id)) throw new Error("INC-ID: use entre 3 y 48 letras, números, puntos, guiones o guiones bajos.");
+        if (data.id && data.id !== id) throw new Error("No cambie INC-ID durante un caso; exporte y reinicie para crear otro.");
+        data.id = id; data.mode = $("mode").value; data.level = $("level").value;
+        data.commander = $("commander").value.trim(); data.channel = $("channel").value.trim();
+        data.summary = $("summary").value.trim();
+        if (!data.openedUtc) data.openedUtc = new Date().toISOString();
+        render(); notice(`${id} abierto/actualizado en memoria. Exporte JSON para conservarlo.`);
+      } catch (error) { notice(error.message, true); }
+    });
+    $("event-form").addEventListener("submit", event => {
+      event.preventDefault();
+      try {
+        requireCase();
+        const type = $("event-type").value, note = $("event-note").value.trim();
+        const actor = $("event-actor").value.trim(), approver = $("event-approver").value.trim();
+        const ref = $("event-ref").value.trim();
+        if (!note || !actor) throw new Error("Hito: indique descripción y operador.");
+        if (type === "Decisión" && !approver) throw new Error("Una decisión requiere autorizador identificado.");
+        if (type === "Efecto verificado" && !ref) throw new Error("Un efecto verificado exige EV-ID o acta.");
+        record(type, note, actor, approver, ref);
+        $("event-note").value = ""; $("event-ref").value = ""; $("event-approver").value = "";
+        notice(`Hito ${type} registrado en UTC; no se ejecutó ninguna acción.`);
+      } catch (error) { notice(error.message, true); }
+    });
+    $("evidence-form").addEventListener("submit", event => {
+      event.preventDefault();
+      try {
+        requireCase();
+        const id = $("ev-id").value.trim(), source = $("ev-source").value.trim();
+        const time = $("ev-time").value, operator = $("ev-operator").value.trim();
+        const sha256 = $("ev-hash").value.trim(), integrityNote = $("ev-limit").value.trim();
+        const store = $("ev-store").value.trim();
+        if (!id || !source || !time || !operator || !store) throw new Error("EV-ID, fuente, captura UTC, operador y depósito son obligatorios.");
+        if (data.evidence.some(item => item.id === id)) throw new Error(`EV-ID duplicado: ${id}.`);
+        if (sha256 && !/^[a-f0-9]{64}$/i.test(sha256)) throw new Error("SHA-256 debe contener exactamente 64 caracteres hexadecimales.");
+        if (!sha256 && !integrityNote) throw new Error("Si falta hash, registre limitación o método de integridad.");
+        const utc = new Date(`${time}Z`);
+        if (Number.isNaN(utc.getTime())) throw new Error("Capture la hora UTC en formato válido.");
+        data.evidence.push({ id, source, utc: utc.toISOString(), operator,
+          sha256: sha256.toLowerCase(), integrityNote, store, transfers: [] });
+        $("evidence-form").reset(); render();
+        notice(`${id} registrado en memoria; compruebe el objeto real en el depósito seguro.`);
+      } catch (error) { notice(error.message, true); }
+    });
+    $("transfer-form").addEventListener("submit", event => {
+      event.preventDefault();
+      try {
+        requireCase();
+        const id = $("transfer-id").value;
+        const ev = data.evidence.find(item => item.id === id);
+        if (!ev) throw new Error("Seleccione un EV-ID existente.");
+        const parties = $("transfer-parties").value.trim(), reason = $("transfer-reason").value.trim();
+        const time = $("transfer-time").value;
+        if (!parties || !reason || !time) throw new Error("La transferencia exige hora UTC, emisor/receptor y motivo con integridad.");
+        const occurred = new Date(`${time}Z`);
+        if (Number.isNaN(occurred.getTime())) throw new Error("Hora UTC de transferencia inválida.");
+        const utc = occurred.toISOString(), loggedUtc = new Date().toISOString();
+        ev.transfers.push({ utc, loggedUtc, parties, reason });
+        data.events.push({ utc: loggedUtc, type: "Transferencia", note: `${id}: efectuada ${utc}; ${reason}`,
+          actor: parties, approver: "", ref: id });
+        $("transfer-time").value = ""; $("transfer-parties").value = ""; $("transfer-reason").value = ""; render();
+        notice(`Transferencia ${id} registrada; verifique acuse e integridad en repositorio oficial.`);
+      } catch (error) { notice(error.message, true); }
+    });
+    $("draft-add").addEventListener("click", () => {
+      try {
+        requireCase();
+        const audience = $("audience").value, text = $("draft-text").value.trim();
+        const author = $("draft-author").value.trim();
+        if (!text || !author) throw new Error("Indique borrador y autor; no se envía.");
+        record("Borrador de comunicación", `${audience}: ${text} [pendiente de revisión/aprobación]`, author);
+        notice(`Borrador para ${audience} registrado SIN envío, aprobación ni verificación legal.`);
+      } catch (error) { notice(error.message, true); }
+    });
+    function download(content) {
+      const url = URL.createObjectURL(new Blob([content], { type: "application/json;charset=utf-8" }));
+      const link = document.createElement("a");
+      link.href = url; link.download = `${data.id}-ransomware-incidente.json`;
+      document.body.append(link); link.click(); link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+    $("export").addEventListener("click", () => {
+      try {
+        requireCase();
+        download(JSON.stringify({ ...data, exportedUtc: new Date().toISOString(),
+          disclaimer: "Registro manual no validado por sistemas de seguridad" }, null, 2));
+        notice("Archivo generado localmente. Clasifique, cifre y deposite según política; el navegador no conserva otra copia.");
+      } catch (error) { notice(error.message, true); }
+    });
+    function validateImport(value) {
+      const isUtc = text => typeof text === "string" &&
+        /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d\.\d{3}Z$/.test(text) &&
+        !Number.isNaN(Date.parse(text)) && new Date(text).toISOString() === text;
+      if (!value || value.schema !== "ransomware-incidente-1" ||
+          !/^[A-Za-z0-9._-]{3,48}$/.test(value.id) ||
+          !MODES.includes(value.mode) || !LEVELS.includes(value.level) ||
+          !isUtc(value.openedUtc) ||
+          ["commander", "channel", "summary"].some(key => typeof value[key] !== "string") ||
+          value.commander.length > 80 || value.channel.length > 100 || value.summary.length > 1500 ||
+          !Array.isArray(value.events) || !Array.isArray(value.evidence) ||
+          !value.checks || typeof value.checks !== "object" || Array.isArray(value.checks)) {
+        throw new Error("Formato de registro incompatible o campos obligatorios ausentes.");
+      }
+      if (value.events.length > 500 || value.evidence.length > 100) throw new Error("Registro excede el límite de importación.");
+      for (const event of value.events) {
+        if (!EVENT_TYPES.includes(event.type) ||
+            !isUtc(event.utc) ||
+            ["note", "actor", "approver", "ref"].some(key => typeof event[key] !== "string") ||
+            !event.note || !event.actor || event.note.length > 3500 ||
+            event.actor.length > 160 || event.approver.length > 80 || event.ref.length > 100 ||
+            (event.type === "Decisión" && !event.approver) ||
+            (event.type === "Efecto verificado" && !event.ref)) {
+          throw new Error("Hito del registro inválido.");
+        }
+      }
+      const ids = new Set();
+      for (const ev of value.evidence) {
+        if (["id", "source", "utc", "operator", "sha256", "integrityNote", "store"]
+            .some(key => typeof ev[key] !== "string") ||
+            !ev.id || !ev.source || !ev.operator || !ev.store || !isUtc(ev.utc) ||
+            ids.has(ev.id) || (ev.sha256 && !/^[a-f0-9]{64}$/i.test(ev.sha256)) ||
+            (!ev.sha256 && !ev.integrityNote) ||
+            !Array.isArray(ev.transfers) || ev.transfers.length > 100 ||
+            ev.transfers.some(t => !isUtc(t.utc) || !isUtc(t.loggedUtc) ||
+              typeof t.parties !== "string" || !t.parties ||
+              typeof t.reason !== "string" || !t.reason)) {
+          throw new Error("Objeto de evidencia o transferencia inválido.");
+        }
+        ids.add(ev.id);
+      }
+      for (const [id, check] of Object.entries(value.checks)) {
+        if (!CHECKS.some(item => item[1] === id) || typeof check?.checked !== "boolean" ||
+            !isUtc(check.atUtc)) throw new Error("Casilla de checklist inválida.");
+      }
+      return { schema: value.schema, id: value.id, mode: value.mode, level: value.level,
+        commander: value.commander, channel: value.channel, summary: value.summary,
+        openedUtc: value.openedUtc, checks: value.checks,
+        events: value.events, evidence: value.evidence };
+    }
+    $("import").addEventListener("change", async event => {
+      const file = event.target.files[0]; event.target.value = "";
+      if (!file) return;
+      try {
+        if (!/\.json$/i.test(file.name)) throw new Error("Seleccione un archivo .json exportado por esta consola.");
+        if (file.size > 2_000_000) throw new Error("Archivo superior a 2 MB; use el repositorio oficial.");
+        if (data.id) {
+          throw new Error("Exporte y reinicie el caso actual antes de importar otro; no se sobrescribió nada.");
+        }
+        data = validateImport(JSON.parse(await file.text()));
+        render(); notice(`Caso ${data.id} recuperado desde ${file.name}; confirme integridad y alcance antes de continuar.`);
+      } catch (error) { notice(`No se importó ${file.name}: ${error.message}`, true); }
+    });
+    $("reset").addEventListener("click", () => {
+      if ($("reset-phrase").value !== "BORRAR") {
+        notice("Para borrar la sesión escriba BORRAR exactamente. Exporte el caso si necesita conservarlo.", true);
+        return;
+      }
+      data = empty(); $("reset-phrase").value = ""; $("event-form").reset();
+      $("evidence-form").reset(); $("transfer-form").reset(); $("draft-text").value = TEMPLATE;
+      render(); notice("Sesión local borrada de memoria; los archivos JSON ya descargados no se alteraron.");
+    });
+    render();
+  </script>
+</body>
+</html>

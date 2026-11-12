@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Purview eDiscovery Premium — Guía Operacional (Configuración, Rutinas y Playbooks)</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.72;
+}
+code, pre, .mono {
+  font-family: Consolas, "Courier New", Courier, monospace;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 0.88em;
+  color: var(--cp-text);
+  word-break: break-word;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Sticky Top Navigation */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--cp-panel-strong);
+  border-bottom: 1px solid var(--cp-border);
+  backdrop-filter: blur(10px);
+  padding: 12px 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.topbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border-strong);
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.btn-primary:hover {
+  background: var(--cp-accent-hover);
+  border-color: var(--cp-accent-hover);
+  color: var(--cp-accent-fg);
+}
+.btn-sm {
+  padding: 5px 11px;
+  font-size: 12.5px;
+}
+.select-input, .search-input {
+  padding: 9px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+}
+.search-input { min-width: 260px; flex: 1; }
+
+/* Two-Column Spacious App Layout */
+.app-shell {
+  max-width: 1520px;
+  margin: 0 auto;
+  padding: 28px 32px 56px 32px;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+.sidebar {
+  position: sticky;
+  top: 76px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 20px 16px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+}
+.nav-section-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cp-text-soft);
+  padding: 12px 12px 6px 12px;
+}
+.nav-section-label:first-child { padding-top: 2px; }
+.nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border-radius: 0.625rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.nav-item:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border);
+}
+.nav-item.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.nav-subitem {
+  padding-left: 24px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.nav-count {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--cp-surface-soft);
+  color: var(--cp-text-muted);
+  border: 1px solid var(--cp-border);
+}
+.nav-item.active .nav-count {
+  background: var(--cp-panel-strong);
+  color: var(--cp-text);
+  border-color: transparent;
+}
+.sidebar-progress {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cp-border);
+}
+.prog-row { margin-bottom: 12px; }
+.prog-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--cp-text-muted);
+  font-weight: 600;
+}
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--cp-accent);
+  width: 0%;
+  transition: width 0.25s ease;
+}
+
+/* Main Reading Area */
+.main-area {
+  max-width: 1080px;
+  width: 100%;
+}
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+
+/* Hero & Section Headers */
+.hero-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 32px 36px;
+  margin-bottom: 28px;
+}
+.hero-card h1 {
+  margin: 10px 0 14px 0;
+  font-size: 28px;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+}
+.hero-lead {
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: var(--cp-text-muted);
+  margin: 0;
+}
+.section-banner {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-left: 5px solid var(--cp-accent);
+  border-radius: 16px;
+  padding: 26px 32px;
+  margin-bottom: 28px;
+}
+.section-banner h2 {
+  margin: 0 0 8px 0;
+  font-size: 23px;
+  line-height: 1.3;
+}
+.section-banner p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15.5px;
+}
+
+/* Mode Selector Cards on Overview */
+.modes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.mode-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+}
+.mode-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cp-accent);
+}
+.mode-card h3 {
+  margin: 6px 0 10px 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+.mode-card p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15px;
+}
+
+/* Badges & Inline Tags */
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 0.625rem;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface-soft);
+  color: var(--cp-text);
+}
+.badge-accent {
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border-color: var(--cp-accent);
+}
+.badge-learn {
+  border-color: var(--cp-success);
+  color: var(--cp-success);
+  background: var(--cp-surface-soft);
+}
+.badge-editorial {
+  border-color: var(--cp-warning);
+  color: var(--cp-warning);
+  background: var(--cp-surface-soft);
+}
+.inline-tag {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 6px;
+  margin-left: 4px;
+  vertical-align: middle;
+  border: 1px solid var(--cp-border);
+}
+.tag-learn { color: var(--cp-success); border-color: var(--cp-success); background: var(--cp-surface-soft); }
+.tag-edit { color: var(--cp-warning); border-color: var(--cp-warning); background: var(--cp-surface-soft); }
+
+/* Sub-navigation Switcher */
+.subnav-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.subnav-pill {
+  padding: 10px 18px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.subnav-pill:hover { border-color: var(--cp-border-strong); background: var(--cp-surface-soft); }
+.subnav-pill.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.filter-toolbar {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Spacious Operational, Setup & Playbook Cards */
+.spacious-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 30px 34px;
+  margin-bottom: 24px;
+}
+.spacious-card.is-done {
+  border-color: var(--cp-success);
+  background: var(--cp-bg-elevated);
+}
+.adhoc-card {
+  border-left: 5px solid var(--cp-accent);
+}
+.card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.card-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 280px;
+}
+.task-checkbox {
+  width: 22px;
+  height: 22px;
+  margin-top: 4px;
+  accent-color: var(--cp-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.card-code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border: 1px solid var(--cp-accent);
+  display: inline-block;
+  margin-bottom: 6px;
+}
+.card-heading {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+/* Info Callout Boxes inside Cards */
+.info-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.info-box {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+.info-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-soft);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.info-content {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.trigger-banner {
+  background: var(--cp-accent-soft);
+  border: 1px solid var(--cp-accent);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+}
+.trigger-banner .info-label {
+  color: var(--cp-accent);
+}
+
+/* Step-by-Step Spacious List */
+.steps-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-muted);
+  margin: 0 0 12px 0;
+}
+.steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.step-row:hover { border-color: var(--cp-border-strong); }
+.step-row.step-checked {
+  border-color: var(--cp-success);
+  opacity: 0.88;
+}
+.step-num {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border-strong);
+  color: var(--cp-text);
+  font-weight: 700;
+  font-size: 13.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-row.step-checked .step-num {
+  background: var(--cp-success);
+  border-color: var(--cp-success);
+  color: var(--cp-accent-fg);
+}
+.step-body {
+  font-size: 15.5px;
+  line-height: 1.72;
+  flex: 1;
+}
+
+/* Validation & Evidence Footer Box */
+.validation-footer {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.validation-footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--cp-border);
+  font-size: 13.5px;
+  color: var(--cp-text-muted);
+}
+
+/* Grids & Tables for Secondary Views */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.subsection-heading {
+  font-size: 20px;
+  margin: 34px 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cp-border);
+}
+pre.code-block {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 14px 0 0 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.table-wrap {
+  overflow-x: auto;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th, td { padding: 16px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--cp-border); line-height: 1.6; }
+th { background: var(--cp-bg-elevated); font-weight: 700; }
+tr:last-child td { border-bottom: none; }
+.muted { color: var(--cp-text-muted); }
+
+.footer {
+  margin-top: 48px;
+  padding: 24px 0;
+  border-top: 1px solid var(--cp-border);
+  color: var(--cp-text-muted);
+  font-size: 13.5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 1080px) {
+  .app-shell { grid-template-columns: 1fr; padding: 18px; gap: 20px; }
+  .sidebar { position: static; max-height: none; }
+  .grid-2, .info-pair { grid-template-columns: 1fr; }
+  .spacious-card, .hero-card { padding: 22px; }
+}
+@media print {
+  .topbar, .sidebar, .filter-toolbar, .subnav-bar { display: none !important; }
+  .app-shell { display: block; padding: 0; }
+  .view-panel { display: block !important; margin-bottom: 32px; }
+  body { background: var(--cp-surface); font-size: 13px; }
+}
+</style></head>
+<body>
+<header class="topbar">
+  <div class="topbar-group">
+    <a class="btn btn-primary" href="../index.html">← Portal Maestro (23 Módulos)</a>
+    <a class="btn" id="prevModBtn" href="#">Anterior</a>
+    <select class="select-input" id="modJumpSelect" aria-label="Cambiar de módulo"></select>
+    <a class="btn" id="nextModBtn" href="#">Siguiente</a>
+  </div>
+  <div class="topbar-group">
+    <a class="btn" id="xlsxLink" href="#" download>Libro .XLSX</a>
+    <a class="btn" id="mdLink" href="#">Guía .MD</a>
+    <button class="btn" type="button" id="exportCsvBtn">Exportar CSV</button>
+    <button class="btn" type="button" id="printBtn">Imprimir / PDF</button>
+    <button class="btn" type="button" id="themeToggleBtn">Tema Claro / Oscuro</button>
+  </div>
+</header>
+
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Navegación de la guía operativa">
+    <div class="nav-section-label">Introducción</div>
+    <button class="nav-item active" type="button" data-view="view-overview">
+      <span>Visión General y Mapa</span>
+    </button>
+
+    <div class="nav-section-label">1 · Configuración Puntual</div>
+    <button class="nav-item" type="button" data-view="view-config">
+      <span>Configuración y Validaciones</span>
+      <span class="nav-count" id="navCntConfig">0</span>
+    </button>
+
+    <div class="nav-section-label">2 · Acciones Periódicas</div>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Diaria">
+      <span>Rutinas Diarias</span>
+      <span class="nav-count" id="navCntDiaria">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Semanal">
+      <span>Rutinas Semanales</span>
+      <span class="nav-count" id="navCntSemanal">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Mensual">
+      <span>Rutinas Mensuales</span>
+      <span class="nav-count" id="navCntMensual">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="CICLOS_LARGOS">
+      <span>Trimestral · Semestral · Anual</span>
+      <span class="nav-count" id="navCntLargos">0</span>
+    </button>
+
+    <div class="nav-section-label">3 · Respuesta a Señales</div>
+    <button class="nav-item" type="button" data-view="view-adhoc">
+      <span>Playbooks Ad-Hoc (Alertas)</span>
+      <span class="nav-count" id="navCntAdhoc">0</span>
+    </button>
+
+    <div class="nav-section-label">Verificación y Gobierno</div>
+    <button class="nav-item" type="button" data-view="view-queries">
+      <span>Consultas KQL / Graph / PS</span>
+      <span class="nav-count" id="navCntQueries">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-kpis">
+      <span>KPIs, Madurez y Formación</span>
+      <span class="nav-count" id="navCntKpis">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-nist">
+      <span>Auditoría NIST 2.0 y Fuentes</span>
+      <span class="nav-count" id="navCntNist">0</span>
+    </button>
+
+    <div class="sidebar-progress" id="sidebarProgress"></div>
+  </aside>
+
+  <main class="main-area">
+    <!-- VISTA 0: OVERVIEW & MAPA DE LOS 3 MODOS -->
+    <section class="view-panel active" id="view-overview">
+      <div class="hero-card">
+        <div class="pill-row" id="heroBadges"></div>
+        <h1 id="heroTitle"></h1>
+        <p class="hero-lead" id="heroSummary"></p>
+      </div>
+
+      <h2 class="subsection-heading" style="margin-top:0;">Cómo operar esta tecnología: Los 3 Niveles de Acción</h2>
+      <div class="modes-grid" id="modesSummaryGrid"></div>
+
+      <div class="spacious-card" id="licensingOverviewCard"></div>
+
+      <h2 class="subsection-heading">Principios Rectores Oficiales (Zero Trust)</h2>
+      <div class="grid-2" id="principlesGrid"></div>
+    </section>
+
+    <!-- VISTA 1: ACCIONES PUNTUALES DE CONFIGURACIÓN Y VALIDACIONES -->
+    <section class="view-panel" id="view-config">
+      <div class="section-banner">
+        <h2>1. Acciones Puntuales de Configuración y Validaciones sobre la Plataforma</h2>
+        <p>Controles que se ejecutan al desplegar la tecnología, activar nuevas capacidades o auditar su línea base. Distingue qué debes configurar una sola vez y cómo validar técnicamente ("Proof of Life") que cada ajuste está activo y protegiendo el entorno.</p>
+      </div>
+
+      <div class="subnav-bar" id="configSubnav">
+        <a class="subnav-pill" href="#cfg-prereqs">1A. Puesta en Marcha Inicial</a>
+        <a class="subnav-pill" href="#cfg-validations">1B. Validaciones de Configuración ("Proof of Life")</a>
+        <a class="subnav-pill" href="#cfg-components">1C. Configuración por Componente</a>
+        <a class="subnav-pill" href="#cfg-rbac">1D. Privilegio Mínimo RBAC y PIM</a>
+      </div>
+
+      <h3 class="subsection-heading" id="cfg-prereqs">1A. Checklist de Puesta en Marcha y Prerrequisitos Puntuales</h3>
+      <div id="prereqsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-validations">1B. Validaciones Técnicas sobre las Configuraciones ("Proof of Life")</h3>
+      <p class="muted" style="margin-top:-8px;margin-bottom:20px;">Comprueba cada uno de estos indicadores en consola o mediante consulta para confirmar que la configuración no quedó solo en papel o en modo auditoría incompleta.</p>
+      <div id="validationsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-components">1C. Configuración Base por Componente e Integraciones</h3>
+      <div id="componentsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-rbac">1D. Configuración Puntual de Roles Administrativos y Estrategia PIM / JIT</h3>
+      <div id="rbacContainer"></div>
+    </section>
+
+    <!-- VISTA 2: ACCIONES PERIÓDICAS PROGRAMADAS -->
+    <section class="view-panel" id="view-periodic">
+      <div class="section-banner">
+        <h2 id="periodicTitle">2. Acciones Periódicas Programadas</h2>
+        <p id="periodicSubtitle">Rutinas recurrentes preventivas, de higiene operativa, tuning y gobierno. Selecciona la frecuencia deseada para leer cómodamente solo las actividades de ese ciclo.</p>
+      </div>
+
+      <div class="subnav-bar" id="periodicCadBar">
+        <button class="subnav-pill active" type="button" data-pcad="Diaria">Diarias</button>
+        <button class="subnav-pill" type="button" data-pcad="Semanal">Semanales</button>
+        <button class="subnav-pill" type="button" data-pcad="Mensual">Mensuales</button>
+        <button class="subnav-pill" type="button" data-pcad="CICLOS_LARGOS">Trimestrales · Semestrales · Anuales</button>
+        <button class="subnav-pill" type="button" data-pcad="ALL_PERIODIC">Ver Todas las Periódicas</button>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="perSearch" placeholder="Buscar acción periódica, consola, tabla KQL, control a validar o rol...">
+        <select class="select-input" id="perRole"><option value="ALL">Rol Responsable: Todos</option></select>
+        <select class="select-input" id="perOrigin">
+          <option value="ALL">Origen: Todos</option>
+          <option value="Verificado MS Learn">Verificado MS Learn</option>
+          <option value="Propuesta Editorial">Propuesta Editorial</option>
+        </select>
+        <button class="btn btn-sm" type="button" id="resetChecksBtn">Reiniciar Progreso</button>
+      </div>
+
+      <p class="muted" id="perCountLabel" style="margin-bottom:18px;"></p>
+      <div id="periodicCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 3: ACCIONES AD-HOC ANTE SEÑALES, ALERTAS E INCIDENTES -->
+    <section class="view-panel" id="view-adhoc">
+      <div class="section-banner">
+        <h2>3. Acciones Ad-Hoc ante Señales, Alertas e Incidentes (Playbooks del Analista)</h2>
+        <p>Procedimientos reactivos bajo demanda. A diferencia de las rutinas periódicas, estos playbooks se activan únicamente cuando una señal de riesgo, alerta de detección, anomalía o emergencia exige la intervención inmediata de un analista.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="adhocSearch" placeholder="Filtrar playbooks por alerta disparadora, síntoma, técnica MITRE o acción de contención...">
+      </div>
+
+      <div id="adhocCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 4: CONSULTAS KQL / GRAPH / POWERSHELL -->
+    <section class="view-panel" id="view-queries">
+      <div class="section-banner">
+        <h2>4. Consultas Técnicas de Validación, Monitoreo y Threat Hunting</h2>
+        <p>Consultas KQL, llamadas Microsoft Graph API y scripts PowerShell listos para auditar configuraciones puntuales, medir salud periódica o investigar alertas ad-hoc.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="kqlSearch" placeholder="Buscar consulta por nombre, tabla (SigninLogs, DeviceEvents, SentinelHealth...), comando o propósito...">
+        <select class="select-input" id="kqlUsageFilter">
+          <option value="ALL">Momento de Uso: Todos</option>
+          <option value="Validación de Configuración y Postura">1. Validación de Configuración y Postura</option>
+          <option value="Control Periódico de Salud, Auditoría y KPIs">2. Control Periódico de Salud y KPIs</option>
+          <option value="Investigación Ad-Hoc y Threat Hunting">3. Investigación Ad-Hoc y Hunting</option>
+        </select>
+      </div>
+
+      <div id="queriesContainer"></div>
+    </section>
+
+    <!-- VISTA 5: KPIs, MADUREZ Y FORMACIÓN -->
+    <section class="view-panel" id="view-kpis">
+      <div class="section-banner">
+        <h2>5. Indicadores Clave (KPIs), Modelo de Madurez y Ruta de Formación</h2>
+        <p>Métricas objetivas para medir eficacia operativa ante el CISO, evolución en 5 niveles de madurez y habilitación técnica recomendada por rol.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Indicadores Clave de Desempeño (KPIs)</h3>
+      <div class="grid-2" id="kpiContainer"></div>
+
+      <h3 class="subsection-heading">Modelo de Madurez Operacional (Niveles 1 a 5)</h3>
+      <div id="maturityContainer"></div>
+
+      <h3 class="subsection-heading">Ruta de Habilitación y Formación por Rol</h3>
+      <div id="trainingContainer"></div>
+    </section>
+
+    <!-- VISTA 6: AUDITORÍA NIST CSF 2.0, TRANSPARENCIA Y REFERENCIAS -->
+    <section class="view-panel" id="view-nist">
+      <div class="section-banner">
+        <h2>6. Mapeo de Auditoría NIST CSF 2.0, Revalidación (Nov 2026) y Referencias</h2>
+        <p>Evidencia auditable reproducible para las seis funciones de NIST CSF 2.0 (CSWP 29), registro transparente de verificaciones en Microsoft Learn frente a propuestas editoriales y fuentes públicas.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Matriz de Evidencia Auditable NIST CSF 2.0</h3>
+      <div class="filter-toolbar">
+        <select class="select-input" id="nistFuncSelect">
+          <option value="ALL">Función NIST CSF 2.0: Todas (6 Funciones)</option>
+          <option value="GOVERN">GOVERN (GV)</option>
+          <option value="IDENTIFY">IDENTIFY (ID)</option>
+          <option value="PROTECT">PROTECT (PR)</option>
+          <option value="DETECT">DETECT (DE)</option>
+          <option value="RESPOND">RESPOND (RS)</option>
+          <option value="RECOVER">RECOVER (RC)</option>
+        </select>
+      </div>
+      <div id="nistCardsContainer"></div>
+
+      <h3 class="subsection-heading">Registro de Revalidación Técnica (Noviembre 2026) y Decisiones Editoriales</h3>
+      <div class="spacious-card" id="auditSummaryBox"></div>
+      <div class="grid-2">
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Hallazgos y Actualizaciones Verificadas en MS Learn</h3>
+          <div id="corrContainer"></div>
+        </div>
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Decisiones y Propuestas Editoriales Explícitas</h3>
+          <div id="decContainer"></div>
+        </div>
+      </div>
+
+      <h3 class="subsection-heading">Directorio de Referencias Públicas Verificadas</h3>
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="refSearch" placeholder="Filtrar referencias por título, autor, MVP o URL...">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Recurso Oficial / Comunitario</th>
+              <th>Tipo</th>
+              <th>Autor / Entidad</th>
+              <th>Comentario de Alcance</th>
+            </tr>
+          </thead>
+          <tbody id="refTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>Guía Maestra de Excelencia Operacional Microsoft — Edición Espaciada v3.0 (Validación: 2026-11-11)</div>
+      <div>Configuración Puntual · Rutinas Periódicas · Playbooks Ad-Hoc · NIST CSF 2.0</div>
+    </footer>
+  </main>
+</div>
+
+<script>
+const MODULE_DATA = {"schemaVersion": "2.0", "id": "20_Purview_eDiscovery_Premium", "orden": 20, "slug": "Purview_eDiscovery_Premium", "nombre": "Microsoft Purview eDiscovery (Experiencia Moderna Unificada y Capacidades Premium en M365 E5)", "nombreCorto": "Purview eDiscovery Premium", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "bloqueOrigen": "Nuevo desde Microsoft Learn MCP (Nov 2026)", "fechaValidacion": "2026-11-11", "portalesPrincipales": ["https://purview.microsoft.com", "https://portal.azure.com", "https://developer.microsoft.com/graph/graph-explorer"], "audiencia": ["CISO", "General Counsel / Legal Operations", "Data Protection Officer (DPO)", "Compliance Officer", "eDiscovery Administrator", "eDiscovery Manager", "Insider Risk Lead", "SOC L3 / Forensics", "Revisores Legales Internos y Externos"], "relacionM365E5": {"estado": "Incluido en Microsoft 365 E5 / Microsoft Purview Suite", "licencias": ["Microsoft 365 E5 / A5 / G5 (incluye capacidades completas de eDiscovery Premium para custodios licenciados)", "Office 365 E5 / A5 / G5 (incluye capacidades de eDiscovery Premium)", "Microsoft Purview Suite (anteriormente Microsoft 365 E5 Compliance, renombrado el 1 de octubre de 2025) sobre base M365 E3", "Microsoft 365 E5 / A5 / F5 / G5 eDiscovery and Audit Add-on sobre licencia base elegible", "Microsoft 365 E5 + Microsoft 365 Copilot (o M365 E3 + Microsoft Purview Suite / E5 eDiscovery & Audit + M365 Copilot) para búsqueda Premium de interacciones Copilot", "Suscripción Azure Pay-As-You-Go vinculada a Purview (requerida únicamente para almacenamiento en casos de datos de IA no-Microsoft 365 y para uso de Graph Export API bajo licencias E3)"], "prerrequisitos": ["Asignación de licencia elegible a cada custodio cuyos datos sean puestos en Hold o analizados en Review sets (suscripciones F1/F3 base sin add-on no cubren ser objetivo de eDiscovery Hold; Shared Mailboxes en Hold requieren Exchange Online Plan 2 o Plan 1 + Archiving)", "Asignación de licencia Microsoft 365 E3/E5 con plan SharePoint E3 (Plan 2) a las cuentas administradoras e investigadoras para evitar limitaciones al exportar contenido de sitios SharePoint", "Verificación en Microsoft Entra ID (Enterprise Applications) de inicio de sesión habilitado para las 4 apps requeridas: Built-in security add-on (00000007-0000-0ff1-ce00-000000000000), ComplianceWorkbenchApp (92876b03-76a3-4da8-ad6a-0511ffdf8647), MicrosoftPurviewEDiscovery (b26e684c-5068-4120-a679-64a5d2c909d9) y Office365Zoom (0d38933a-0bbd-41ca-9ebd-28c4b5ba7cb7)", "Configuración de etiqueta de retención con auto-aplicación a cloud attachments en Data Lifecycle Management para preservar la versión exacta de archivos en el momento de ser compartidos", "Habilitación de Set-IRMConfiguration -EnablePdfEncryption $true en Exchange Online PowerShell para permitir el descifrado en eDiscovery de archivos PDF generados desde documentos Office con etiquetas de sensibilidad", "Aprovisionamiento de Microsoft Security Copilot (con dotación de SCUs) y habilitación del origen Purview para utilizar NL2KQL (Draft a query with Copilot) y resúmenes contextuales embebidos"], "notaLicenciamiento": "Tras el retiro global el 31 de agosto de 2025 de las experiencias clásicas separadas (Content Search, eDiscovery Standard y eDiscovery Premium clásicos), todos los casos operan en una experiencia unificada en purview.microsoft.com donde las capacidades avanzadas (Review sets, Advanced indexing JIT, OCR de caso, reconstrucción de conversaciones de 12 h, Cloud attachments, Near-duplicates, Email threading, Themes, Attorney-client privilege detection, KQL Explorer y Graph API app-only) se gobiernan por licenciamiento E5 / Microsoft Purview Suite. El almacenamiento de datos nativos M365 y de interacciones Microsoft 365 Copilot está incluido en la suscripción empresarial sin costo adicional; en cambio, exportar o agregar a un Review set datos de IA no-Microsoft 365 (Fabric Copilot, Security Copilot, ConnectedAIApp, CloudAIApp.SaaS) genera cobro diario Azure Pay-As-You-Go mientras el caso permanezca activo o cerrado, cesando únicamente al eliminar el caso."}, "resumenEjecutivo": "Microsoft Purview eDiscovery proporciona el flujo de extremo a extremo del modelo EDRM para identificar, preservar in-place, recolectar, procesar, analizar, censurar y exportar evidencia electrónica en Exchange Online, SharePoint Online, OneDrive, Microsoft Teams, Microsoft 365 Groups, Viva Engage, contenedores SharePoint Embedded y experiencias de IA generativa como Microsoft 365 Copilot y Copilot Studio. A partir de los hitos de mayo y agosto de 2025, Microsoft retiró las tres consolas clásicas y los parámetros heredados de exportación por PowerShell (-Export), consolidando la operación en una arquitectura moderna centrada en casos dentro de purview.microsoft.com. Su excelencia operacional en entornos Microsoft 365 E5 exige segregar rigurosamente los roles eDiscovery Manager y eDiscovery Administrator con Compliance Boundaries, asegurar la preservación diferenciada de prompts Copilot, Copilot Pages (.page en SharePoint Embedded) y versiones compartidas de Cloud attachments, acelerar el triaje probatorio con analítica ML, Advanced review set explorer (KQL) y Security Copilot, y automatizar flujos exclusivamente mediante Microsoft Graph API.", "principiosRectores": [{"principio": "Preservación defensible In-Place antes de la recolección (Hold-First Architecture)", "descripcion": "Asegurar la evidencia directamente en Recoverable Items y Preservation Hold Library mediante políticas de retención legal verificadas antes de copiar subconjuntos filtrados hacia Review sets.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/edisc-workflow"}, {"principio": "Segregación estricta por caso, frontera jurisdiccional y mínimo privilegio", "descripcion": "Aislar cada investigación mediante membresía explícita por caso, separación entre eDiscovery Manager y eDiscovery Administrator, Compliance Boundaries (New-ComplianceSecurityFilter) y unidades administrativas restringidas.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/edisc-permissions"}, {"principio": "Integridad contextual en colaboración moderna, Cloud Attachments e IA generativa", "descripcion": "Capturar hilos conversacionales completos (+/- 12 horas en Teams, Viva Engage y Copilot), versiones exactas al momento de compartirse en Cloud attachments y contenedores SharePoint Embedded (.page/.loop).", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/edisc-cloud-attachments"}, {"principio": "Reducción probatoria asistida por analítica ML, KQL e IA defensiva", "descripcion": "Minimizar el volumen de revisión humana combinando Advanced indexing JIT, Near-duplicates, Email threading (Is Inclusive), Attorney-client privilege detection, KQL en ReviewSetTable y Security Copilot.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/edisc-settings-search-analytics"}, {"principio": "Modernización programática exclusiva sobre Microsoft Graph API", "descripcion": "Reemplazar scripts heredados tras el retiro de -Export en PowerShell (mayo 2025) y el desoporte de CBA en IPPS por integraciones soportadas en Microsoft.Graph.Security y Microsoft Purview eDiscovery API.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/edisc-ref-api-guide"}, {"principio": "Trazabilidad forense con IP cliente y disciplina FinOps sobre datos IA", "descripcion": "Auditar toda búsqueda, vista previa, purga y exportación con IP cliente en Purview Audit y excluir por defecto clases Non M365 AI activity cuando no sean requeridas para evitar cargos Pay-As-You-Go.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/edisc-billing"}], "arquitecturaYComponentes": [{"componente": "Experiencia Moderna Unificada de Cases y Caso Sistema Content Search", "funcionOperativa": "Unidad central de gobierno en purview.microsoft.com que agrupa fuentes de datos, búsquedas, Holds, Review sets, exportaciones y el caso sistema Content search tras el retiro clásico del 31-ago-2025.", "portalRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases / Content Search", "integraciones": ["Microsoft Purview Insider Risk Management (escalación directa de casos)", "Microsoft Security Copilot (Summarize this case)", "Microsoft Purview Audit"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Mapeo Unificado de Data Sources y Contenedores SharePoint Embedded", "funcionOperativa": "Descubrimiento y sincronización de buzones Exchange, sitios OneDrive/SharePoint, Teams, M365 Groups, Viva Engage y contenedores SharePoint Embedded de usuario/tenant (Loop, Copilot Pages y Notebooks).", "portalRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases > [Caso] > Data sources", "integraciones": ["Exchange Online (incluyendo Inactive Mailboxes con prefijo '.')", "SharePoint Online & OneDrive for Business", "SharePoint Embedded (Loop / Copilot Pages .page)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Motor de Preservación In-Place (Hold Policies & Hold Report)", "funcionOperativa": "Aplicación de retenciones infinitas o basadas en consultas KeyQL/fechas (UniH, cld) con monitoreo centralizado en el Hold report (preview) y diagnóstico mediante Invoke-HoldRemovalAssistant.", "portalRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases > [Caso] > Hold policies / Dashboards > Hold report", "integraciones": ["Exchange Recoverable Items & SubstrateHolds", "SharePoint Preservation Hold Library (PHL)", "Purview Data Lifecycle Management"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Motor de Búsqueda KeyQL, Advanced Indexing JIT y Search & Purge IA", "funcionOperativa": "Ejecución de consultas case-insensitive con operadores booleanos en mayúsculas, reindexación automática de ítems parcialmente indexados, estadísticas/muestras y purga vía Graph de hasta 10 ítems/buzón.", "portalRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases > [Caso] > Searches", "integraciones": ["Microsoft Security Copilot (Draft a query with Copilot NL2KQL)", "Microsoft Graph purgeData API", "Compliance Boundaries (New-ComplianceSecurityFilter)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Extractor de Cloud Attachments y Reconstructor de Hilos Conversacionales", "funcionOperativa": "Recolección de archivos vinculados en mensajes (hasta 50 enlaces por mensaje, versión viva y versión exacta compartida mediante etiquetas de retención) y transcripciones HTML de +/- 12 h para Teams/Copilot.", "portalRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases > [Caso] > Searches > Add to review set / Export", "integraciones": ["Purview Retention Labels (auto-apply to cloud attachments)", "Microsoft Teams & Viva Engage", "Microsoft 365 Copilot & Facilitator Agent"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Review Sets, Analítica ML, Attorney-Client Privilege y Redacción en Línea", "funcionOperativa": "Repositorio estático seguro en Azure Storage administrado por Microsoft con OCR de caso, descifrado MIP/RMS, Near-duplicates, Email threading, Themes, privilegio abogado-cliente y censura PDF ({itemId}_burn.pdf).", "portalRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases > [Caso] > Review sets", "integraciones": ["Microsoft Purview Information Protection (RMS Decrypt)", "Settings > eDiscovery > Analytics (Attorney list CSV)", "Guest Reviewer Access (Microsoft Entra B2B)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Advanced Review Set Explorer (KQL) y Security Copilot Embebido", "funcionOperativa": "Motor analítico KQL en tiempo real sobre ReviewSetTable (hasta 10.000 filas, mv-expand, extract_all, gráficos) y generación de resúmenes contextuales de documentos de 100 a 15.000 palabras con Security Copilot.", "portalRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases > [Caso] > Review sets > Advanced review set explorer", "integraciones": ["Motor Kusto Query Language (ReviewSetTable)", "Microsoft Security Copilot (experiencia embebida Purview)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Process Manager, Exportación Moderna con CMK y APIs de Microsoft Graph", "funcionOperativa": "Seguimiento transparente en 3 fases (Assessment, In progress, Catch-up), exportación particionada PST/ZIP (14 días búsqueda / 30 días review set), CMK en preview y descarga vía Microsoft Purview eDiscovery API.", "portalRuta": "purview.microsoft.com > Solutions > eDiscovery > Process report / Cases > [Caso] > Exports", "integraciones": ["Microsoft Graph Security API (/v1.0/security/cases/ediscoveryCases)", "MicrosoftPurviewEDiscovery API (eDiscovery.Download.Read)", "Microsoft Purview Customer Key (MDEP)"], "estadoValidacion": "Verificado MS Learn"}], "rbacYRoles": [{"rol": "eDiscovery Manager (Subgrupo)", "nivelSOC": "Legal Investigator / Case Lead", "permisosClave": "Case Management, Compliance Search, Custodian, Hold, Preview, Review, Manage review set tags, Export, RMS Decrypt y Communication únicamente sobre los casos que crea o de los que es miembro.", "asignacionPIM": "Elegible vía grupo de seguridad habilitado para correo (mail-enabled security group) o asignación con expiración en Purview (ventanas de 8 horas).", "responsabilidadOperativa": "Crear y gestionar casos asignados, aplicar Holds, ejecutar búsquedas KeyQL, administrar Review sets y producir evidencia sin visibilidad sobre casos de otros pares ni capacidad de remover miembros.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "eDiscovery Administrator (Subgrupo)", "nivelSOC": "Compliance Lead / Senior Legal Ops (Tier 0 Compliance)", "permisosClave": "Todos los permisos de eDiscovery Manager más visibilidad de todos los casos del tenant, configuración global (Settings > eDiscovery), reportes globales y facultad exclusiva para remover miembros de casos.", "asignacionPIM": "Solo usuarios nominales individuales (máximo 2-3 cuentas; no soporta grupos ni debe asignarse a Service Principals), activación JIT con aprobación dual y MFA phishing-resistant.", "responsabilidadOperativa": "Gobernar parámetros globales (Premium features, Attorney-client privilege CSV, Guest users), auditar casos huérfanos, remover miembros de casos y supervisar el uso ético de búsquedas.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Reviewer (Interno / Guest B2B)", "nivelSOC": "Abogado Revisor Interno o Estudio Jurídico Externo", "permisosClave": "Rol unitario Review: visualización, búsqueda, filtrado, anotación/redacción y descarga unitaria en Review sets de casos asignados (los invitados B2B no reciben Manage review set tags).", "asignacionPIM": "Asignación temporal vinculada al ciclo de vida del caso; para invitados externos requiere aprobación previa en dos pasos por eDiscovery Administrator con rol Role Management.", "responsabilidadOperativa": "Examinar documentos en Review sets, aplicar censuras en visor Annotate y registrar notas de análisis sin acceso a búsquedas in-place ni Holds.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Custom Role Group: Search & Hold Operator", "nivelSOC": "Operador de Preservación Legal / Paralegal", "permisosClave": "Combinación oficial personalizada: Case Management + Compliance Search + Custodian + Hold (excluyendo Preview, Review, RMS Decrypt y Export).", "asignacionPIM": "Elegible con alcance restringido mediante Compliance Boundary (New-ComplianceSecurityFilter) por subsidiaria o país.", "responsabilidadOperativa": "Ejecutar preservaciones legales tempranas y estimaciones estadísticas de volumen sin leer el contenido desencriptado ni extraer paquetes fuera de Microsoft 365.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Custom Role Group: Production & Export Officer", "nivelSOC": "Especialista Forense de Producción Legal", "permisosClave": "Combinación oficial personalizada: Case Management + Review + Export (agregando RMS Decrypt solo bajo autorización expresa).", "asignacionPIM": "Elevación JIT por ticket de entrega regulatoria o judicial aprobado por General Counsel.", "responsabilidadOperativa": "Generar y descargar paquetes de exportación desde búsquedas o Review sets verificando censuras confirmadas (_burn.pdf), conversión HTML de .page/.loop y hashes de cadena de custodia.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Data Spillage Responder (Search And Purge)", "nivelSOC": "SOC L3 / Incident Responder", "permisosClave": "Rol Search And Purge (incluido por defecto en Data Investigator y Organization Management) combinado con permisos Graph eDiscovery.ReadWrite.All.", "asignacionPIM": "Elevación JIT estricta (máximo 2 horas) bajo aprobación conjunta de CISO y DPO para respuesta a incidentes.", "responsabilidadOperativa": "Ejecutar purgas quirúrgicas de correos maliciosos, mensajes Teams o prompts/respuestas sensibles de Copilot e IA (hasta 10 ítems por buzón por ejecución) mediante Graph purgeData.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Purview Role Management Administrator", "nivelSOC": "Identity & Compliance Governance Admin", "permisosClave": "Rol Role Management en Microsoft Purview para administrar grupos de roles, asignar Administrative Units y aprobar invitados externos en eDiscovery.", "asignacionPIM": "Elegible en Microsoft Entra PIM (máximo 1 hora, justificación obligatoria, sin membresía en casos de eDiscovery).", "responsabilidadOperativa": "Administrar la estructura RBAC, configurar filtros de seguridad jurisdiccionales y recertificar membresías mensualmente manteniendo segregación frente a la revisión de evidencia.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "eDiscovery Graph Automation Service Principal", "nivelSOC": "Identidad de Carga de Trabajo / Automatización LegalOps", "permisosClave": "Permisos de aplicación Microsoft Graph (eDiscovery.Read.All / eDiscovery.ReadWrite.All) + MicrosoftPurviewEDiscovery (eDiscovery.Download.Read) y membresía en grupo eDiscoveryManager.", "asignacionPIM": "Credencial basada exclusivamente en certificado X.509 custodiado en Azure Key Vault; prohibido asignarlo a eDiscovery Administrator.", "responsabilidadOperativa": "Automatizar creación de casos, estimaciones estadísticas, monitoreo de operaciones y descarga segura de paquetes en casos donde el Service Principal sea miembro explícito.", "estadoValidacion": "Verificado MS Learn"}], "actividadesOperacionales": [{"codigo": "D-01", "cadencia": "Diaria", "actividad": "Supervisión de procesos largos y reintento de ubicaciones fallidas en Process Manager", "objetivo": "Garantizar la continuidad de búsquedas, cargas a Review sets, analítica y exportaciones evitando cancelaciones automáticas por superar el límite de 7 días.", "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Process report / Cases > [Caso] > Process manager", "procedimiento": ["Revisar los procesos en estado In progress identificando su fase actual (Assessment, In progress o Catch-up) y tiempo restante estimado.", "Detectar búsquedas con ubicaciones temporalmente inaccesibles y ejecutar 'Retry failed locations' para reprocesar solo los fallos agregándolos al resultado original.", "Identificar exportaciones que superen 5 días de ejecución y particionar su alcance por fechas o lotes antes de alcanzar la cancelación automática de los 7 días."], "rolResponsable": "eDiscovery Manager / eDiscovery Administrator", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-09", "mitreTactic": "Collection", "evidenciaAuditable": "Paquete ZIP de reporte descargado desde Process manager (Summary.csv, Locations.csv y Settings.csv).", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Fases del Process manager, límite de 7 días en exportaciones y función Retry failed locations verificados en Learn y blog oficial de producto.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-process-managers", "pasosDetallados": ["Abrir el **Process report** global y los **Process managers** de casos prioritarios marcados como favoritos `[Verificado MS Learn]`.", "Filtrar procesos en estado `In progress` (fases *Assessment*, *In progress* o *Catch-up*) y verificar que ninguna exportación supere 5 días de ejecución continua (el servicio cancela automáticamente toda exportación que exceda **7 días**) `[Verificado MS Learn]`.", "Identificar búsquedas con ubicaciones fallidas transitorias y ejecutar la acción **Retry failed locations** para reprocesar solo las ubicaciones con error sin reiniciar toda la búsqueda `[Verificado MS Learn]`.", "Si una exportación masiva presenta riesgo de timeout, dividir la consulta por rangos de fechas o lotes de custodios `[Verificado MS Learn]`."], "disparadorAlerta": "Garantizar la continuidad de búsquedas, cargas a Review sets, analítica y exportaciones evitando cancelaciones automáticas por superar el límite de 7 días.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-02", "cadencia": "Diaria", "actividad": "Verificación de propagación efectiva de Hold policies nuevas o modificadas", "objetivo": "Confirmar que toda retención legal creada hace más de 24 horas esté en estado On al 100 % incluyendo contenedores SharePoint Embedded aplicables.", "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases > [Caso] > Hold policies > [Política] > Details", "procedimiento": ["Inspeccionar las políticas de Hold creadas en las últimas 24 horas y comprobar en la pestaña Details que todas las ubicaciones figuren en estado On.", "Remediar errores de listas de distribución mayores a 100/1.000 miembros, sitios SharePoint sin título o sitios bloqueados (NoAccess) y ejecutar Policy actions > Retry policy.", "Confirmar para custodios usuarios de Copilot Pages o Loop que la URL de su contenedor SharePoint Embedded esté incluida explícitamente en la política de Hold."], "rolResponsable": "eDiscovery Manager / Search & Hold Operator", "funcionNIST": "PR", "subcategoriaNIST": "PR.DS-01", "mitreTactic": "Impact (T1485 Data Destruction)", "evidenciaAuditable": "Archivo CSV exportado desde Hold policies > Download list sin errores de ubicación.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Ventana de 24 h, errores de Hold y no extensión automática del Hold de buzón hacia SharePoint Embedded verificados en Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-hold-manage", "pasosDetallados": ["Revisar todas las *Hold policies* creadas o editadas hace >= 24 horas (ventana oficial de propagación) `[Verificado MS Learn]`.", "Abrir la pestaña **Details** de cada política y verificar que `Hold status` sea `On` en el 100 % de buzones (`Mailbox`) y sitios (`Site`) `[Verificado MS Learn]`.", "Ante errores `Distribution group has too many members` (> 1.000 direcciones en motor de hold o > 100 en expansión inicial de lista), `Site inaccessible` (sitio en solo lectura/`NoAccess`) o sitio SharePoint sin título, corregir la causa raíz y ejecutar `Policy actions > Retry policy` `[Verificado MS Learn]`.", "Verificar si el custodio utiliza **Copilot Pages** o **Loop** y confirmar que la URL de su contenedor **SharePoint Embedded** esté explícitamente incluida en el Hold `[Verificado MS Learn]`."], "disparadorAlerta": "Confirmar que toda retención legal creada hace más de 24 horas esté en estado On al 100 % incluyendo contenedores SharePoint Embedded aplicables.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-03", "cadencia": "Diaria", "actividad": "Triaje y constitución formal de casos escalados desde Insider Risk Management o incidentes DLP", "objetivo": "Formalizar en menos de 4 horas hábiles la preservación probatoria y el aislamiento de acceso de casos escalados por riesgo interno.", "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Cases / eDiscovery > Cases", "procedimiento": ["Revisar las escalaciones recibidas desde Insider Risk Management hacia nuevos casos de eDiscovery.", "Validar en Case settings > Access and permissions que solo figuren los investigadores y abogados autorizados para el expediente.", "Vincular en Data sources las ubicaciones del custodio y activar de inmediato el Hold preventivo antes de cualquier entrevista disciplinaria."], "rolResponsable": "Insider Risk Lead / eDiscovery Manager", "funcionNIST": "RS", "subcategoriaNIST": "RS.MA-02", "mitreTactic": "Exfiltration (T1567)", "evidenciaAuditable": "Registro de creación de caso escalado en Purview Audit y política de Hold activa.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "La escalación nativa IRM -> eDiscovery está verificada en MS Learn; el SLA interno de 4 horas es propuesta editorial.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-workflow", "pasosDetallados": ["Validar las escalaciones recibidas desde *Insider Risk Management* o tickets del SOC por derrame de información confidencial en prompts de IA `[Verificado MS Learn]`.", "Verificar que el caso creado en eDiscovery tenga asignados exclusivamente los miembros autorizados en `Case settings > Access and permissions` y el número de expediente (*Docket Number*) `[Verificado MS Learn]`.", "Mapear en la pestaña **Data sources** al custodio investigado, incluyendo opcionalmente colaboradores frecuentes, manager o grupos propietarios si el mandato legal lo autoriza `[Verificado MS Learn]`.", "Activar de inmediato la *Hold policy* preventiva antes de notificar o entrevistar al sujeto `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Formalizar en menos de 4 horas hábiles la preservación probatoria y el aislamiento de acceso de casos escalados por riesgo interno.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-04", "cadencia": "Diaria", "actividad": "Control de caducidad de exportaciones (14 y 30 días) y borrado de paquetes obsoletos", "objetivo": "Descargar oportunamente evidencias antes de su expiración irreversible y eliminar exportaciones de búsqueda innecesarias.", "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases > [Caso] > Exports", "procedimiento": ["Identificar exportaciones directas desde búsqueda con antigüedad >= 10 días (expiran y se borran automáticamente a los 14 días) y exportaciones de Review set >= 25 días (ventana de descarga de 30 días).", "Ejecutar la descarga segura hacia almacenamiento forense custodiado o mediante Microsoft Purview eDiscovery API validando hashes.", "Eliminar mediante Delete search export los paquetes temporales de búsqueda ya resguardados para reducir exposición de datos sensibles."], "rolResponsable": "Production & Export Officer", "funcionNIST": "PR", "subcategoriaNIST": "PR.DS-01", "mitreTactic": "Collection", "evidenciaAuditable": "Registro de transferencia con hash SHA-256, Summary.csv e historial limpio en pestaña Exports.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Ventanas exactas de 14 días (búsqueda) y 30 días (Review set) y borrado de exportaciones verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-search-export", "pasosDetallados": ["Revisar la pestaña **Exports** de los casos activos e identificar paquetes completados próximos a cumplir 10 días (para exportaciones de búsqueda, que se autodestruyen al día 14) o 25 días (para exportaciones de *Review set*, cuya ventana de descarga vence al día 30) `[Verificado MS Learn]` `[Decisión / Propuesta Editorial]`.", "Descargar los paquetes requeridos hacia el repositorio forense cifrado o ejecutar descarga automatizada vía `Microsoft Purview eDiscovery API` (`exportFileMetadata`) `[Verificado MS Learn]`.", "Utilizar la función **Delete search export** sobre exportaciones de búsqueda ya transferidas o innecesarias para minimizar la superficie de exposición de datos sensibles `[Verificado MS Learn]`."], "disparadorAlerta": "Descargar oportunamente evidencias antes de su expiración irreversible y eliminar exportaciones de búsqueda innecesarias.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-05", "cadencia": "Diaria", "actividad": "Auditoría SIEM de búsquedas, vistas previas, descargas PDF y purgas en eDiscovery", "objetivo": "Detectar uso indebido de privilegios de investigación sobre buzones ejecutivos o extracción no autorizada de evidencia.", "consolaRuta": "purview.microsoft.com > Solutions > Audit > Search / security.microsoft.com (Sentinel OfficeActivity)", "procedimiento": ["Consultar diariamente los eventos de 'eDiscovery activities' y 'eDiscovery cmdlet activities' verificando la columna IP Address.", "Revisar en detalle toda operación de Export, descarga unitaria de PDF en Review set, Add-eDiscoveryCaseAdmin y purgeData.", "Cruzar los eventos contra expedientes legales vigentes y escalar como incidente cualquier consulta sin respaldo documental."], "rolResponsable": "SOC L2 / Compliance Officer", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-03", "mitreTactic": "Collection (T1114.002)", "evidenciaAuditable": "Bitácora diaria de revisión de alertas SIEM sobre telemetría de Purview Audit.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "El registro de actividades con IP cliente está verificado en MS Learn; la conciliación diaria contra expedientes es práctica editorial recomendada.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-ref-audit-log", "pasosDetallados": ["Consultar eventos diarios bajo el grupo **eDiscovery activities** y **eDiscovery cmdlet activities**, verificando la columna **IP Address** (presente en toda actividad de la experiencia moderna) `[Verificado MS Learn]`.", "Auditar específicamente ejecuciones de exportación, descarga individual de PDF en *Review set*, adición de miembros a casos (`Add-eDiscoveryCaseAdmin`) e invocaciones de `purgeData` `[Verificado MS Learn]`.", "Correlacionar cada evento con un número de expediente o ticket de cambio válido; escalar como incidente de seguridad cualquier búsqueda sobre buzones VIP/Ejecutivos sin mandato registrado `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Detectar uso indebido de privilegios de investigación sobre buzones ejecutivos o extracción no autorizada de evidencia.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-06", "cadencia": "Diaria", "actividad": "Seguimiento de notificaciones legales y acuses de recibo de custodios (flujo complementario)", "objetivo": "Asegurar trazabilidad jurídica de avisos de preservación, recordatorios y escalaciones tras el retiro del módulo clásico de comunicaciones.", "consolaRuta": "Flujo corporativo Legal Hold (Power Automate / SharePoint / Solución GRC integrada con Graph legalHolds)", "procedimiento": ["Verificar que todo custodio incorporado a una Hold policy no confidencial haya recibido su aviso escrito de preservación (Issuance notice).", "Disparar recordatorios automáticos a custodios sin acuse al quinto día hábil y escalar a su línea gerencial al décimo día hábil.", "Archivar los registros inmutables de aceptación junto al identificador del caso y Hold ID."], "rolResponsable": "Legal Operations / Paralegal", "funcionNIST": "GV", "subcategoriaNIST": "GV.OC-03", "mitreTactic": "Defense Evasion", "evidenciaAuditable": "Matriz de acuses firmados electrónicamente con marca de tiempo UTC.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Sustituye de forma gobernable la pestaña clásica Communications retirada fuera de 21Vianet el 31 de agosto de 2025.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/ediscovery-create-hold-notification", "pasosDetallados": ["Conciliar los nuevos custodios agregados hoy en `Hold policies` contra el registro de avisos legales emitidos (*Issuance notices*) `[Decisión / Propuesta Editorial]`.", "Verificar custodios sin acuse tras 5 días hábiles para disparar recordatorios automáticos y escalar al manager directo al día 10 si persiste la falta de respuesta `[Decisión / Propuesta Editorial]`.", "Archivar los comprobantes firmados con marca de tiempo UTC dentro del expediente legal del caso `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Asegurar trazabilidad jurídica de avisos de preservación, recordatorios y escalaciones tras el retiro del módulo clásico de comunicaciones.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-07", "cadencia": "Diaria", "actividad": "Revisión y aprobación controlada de solicitudes de Guest Users en casos", "objetivo": "Autorizar de forma segura la participación de asesores jurídicos externos únicamente bajo rol Reviewer y justificación válida.", "consolaRuta": "purview.microsoft.com > Settings > eDiscovery > Guest users", "procedimiento": ["Evaluar las invitaciones pendientes verificando identidad, firma jurídica externa y justificación del caso.", "Ejecutar la aprobación en dos etapas para invitados nuevos en el tenant (creación de cuenta Entra B2B seguida de autorización al caso tras hasta 24 h).", "Verificar que el grupo Reviewer no contenga cuentas eliminadas de Entra ID que bloqueen el flujo de aprobación."], "rolResponsable": "eDiscovery Administrator (con Role Management)", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Initial Access (T1078.004)", "evidenciaAuditable": "Registro de aprobación/denegación en Settings > eDiscovery > Guest users.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Flujo de aprobación en dos pasos y restricción al rol Reviewer sin Manage review set tags verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-settings-access-permissions", "pasosDetallados": ["Revisar solicitudes pendientes en `Settings > eDiscovery > Guest users` verificando nombre completo, correo corporativo, firma legal y justificación documentada `[Verificado MS Learn]`.", "Si es la primera vez que el invitado ingresa al tenant, ejecutar el **Paso 1 de aprobación** (creación de cuenta guest en Entra ID, hasta 24 h) y programar el **Paso 2 de aprobación** al caso tras completarse el aprovisionamiento `[Verificado MS Learn]`.", "Confirmar que no existan cuentas eliminadas en Entra ID dentro del grupo de roles `Reviewer` (causa oficial de fallo al aprobar invitados) `[Verificado MS Learn]`."], "disparadorAlerta": "Autorizar de forma segura la participación de asesores jurídicos externos únicamente bajo rol Reviewer y justificación válida.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-08", "cadencia": "Diaria", "actividad": "Control preventivo de facturación Pay-As-You-Go sobre datos de IA no-Microsoft 365", "objetivo": "Evitar cargos diarios acumulados en Azure por incorporar sin necesidad datos de Fabric Copilot, Security Copilot o SaaS AI a Review sets o exportaciones.", "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases > [Caso] > Searches / portal.azure.com > Cost Management", "procedimiento": ["Validar que las búsquedas estándar excluyan el filtro 'Non M365 AI activity' salvo requerimiento probatorio expreso.", "Inspeccionar la sección Consumption summary del archivo Summary.csv tras cada exportación o carga a Review set.", "Monitorear las alertas presupuestarias del medidor de almacenamiento Purview eDiscovery en Azure Cost Management."], "rolResponsable": "eDiscovery Administrator / FinOps", "funcionNIST": "GV", "subcategoriaNIST": "GV.RM-02", "mitreTactic": "Collection", "evidenciaAuditable": "Sección Consumption summary en Summary.csv y reporte diario de costos Azure.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Clases ItemClass facturables y cálculo diario sobre casos activos y cerrados verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-billing", "pasosDetallados": ["Inspeccionar las búsquedas en preparación para *Add to review set* o exportación directa y confirmar que, salvo requerimiento explícito del caso, apliquen el filtro `Type > Contains none of > Non M365 AI activity` `[Verificado MS Learn]`.", "Revisar la sección *Consumption summary* dentro del archivo `Summary.csv` de los procesos completados en las últimas 24 horas para auditar el volumen exacto en GB de datos IA no-M365 `[Verificado MS Learn]`.", "Verificar alertas de presupuesto diario del medidor Purview PAYG en Azure Cost Management `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Evitar cargos diarios acumulados en Azure por incorporar sin necesidad datos de Fabric Copilot, Security Copilot o SaaS AI a Review sets o exportaciones.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-01", "cadencia": "Semanal", "actividad": "Conciliación global del Hold Report (preview) y saneamiento de políticas fallidas", "objetivo": "Auditar a escala de tenant todas las políticas de retención legal y corregir estados Applied Partially o Policy failed.", "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Dashboards > Hold report (preview)", "procedimiento": ["Descargar el CSV íntegro del Hold report (considerando su ventana de sincronización de 3 a 7 días).", "Filtrar ubicaciones con Policy status 'Applied Partially', 'Released partially' o 'Policy failed', o con 'Rule not available'.", "Corregir las ubicaciones afectadas directamente en cada caso y ejecutar Retry policy hasta confirmar estado Applied successfully."], "rolResponsable": "eDiscovery Administrator", "funcionNIST": "ID", "subcategoriaNIST": "ID.IM-02", "mitreTactic": "Impact", "evidenciaAuditable": "Archivo CSV semanal del Hold report y bitácora de remediación.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Columnas, estados y latencia máxima de 7 días del Hold report verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-hold-report", "pasosDetallados": ["Acceder a `Hold report (preview)` (que sincroniza estado global cada 3 a 7 días) y descargar el CSV completo mediante **Download report** `[Verificado MS Learn]`.", "Filtrar filas con `Policy status` igual a `Applied Partially`, `Released partially` o `Policy failed`, o donde `Rule ID` muestre `Rule not available` `[Verificado MS Learn]`.", "Para cada ubicación con `Location error` distinto de `None`, abrir el caso correspondiente, corregir la identidad de buzón/sitio y ejecutar `Retry policy` `[Verificado MS Learn]`."], "disparadorAlerta": "Auditar a escala de tenant todas las políticas de retención legal y corregir estados Applied Partially o Policy failed.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-02", "cadencia": "Semanal", "actividad": "Sincronización de Data Sources y re-expansión de membresía de grupos en Holds", "objetivo": "Incorporar canales privados nuevos y actualizar la instantánea estática de miembros de listas de distribución y grupos en Holds.", "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases > [Caso] > Data sources / Hold policies", "procedimiento": ["Ejecutar la opción Sync en el panel Data sources de los casos activos para detectar nuevas ubicaciones (ej. canales privados de Teams).", "Re-agregar grupos estáticos o grupos sombra sincronizados en las Hold policies cuyos equipos tuvieron altas de personal y pulsar Apply hold.", "Verificar cambios de UPN o URLs de OneDrive/SharePoint de custodios y re-estampar la política."], "rolResponsable": "eDiscovery Manager", "funcionNIST": "ID", "subcategoriaNIST": "ID.AM-07", "mitreTactic": "Defense Evasion", "evidenciaAuditable": "Historial de actualización en el Process manager de Holds.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Comportamiento de point-in-time snapshot en grupos para Holds frente a re-resolución en Searches verificado en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-data-sources", "pasosDetallados": ["En cada caso activo con alta rotación organizacional, ejecutar el control **Sync** en la barra de comandos de fuentes de datos para descubrir nuevos sitios de canales privados de Teams o contenedores asociados `[Verificado MS Learn]`.", "Dado que las listas de distribución y grupos M365/Teams en una *Hold policy* capturan su membresía como instantánea estática al crearse, volver a agregar los grupos actualizados (o grupos sombra estáticos sincronizados desde grupos dinámicos Entra) y seleccionar **Apply hold** para re-estampar las ubicaciones `[Verificado MS Learn]`.", "Verificar cambios de UPN o renombrado de URLs de OneDrive/SharePoint de custodios y actualizar la política `[Verificado MS Learn]`."], "disparadorAlerta": "Incorporar canales privados nuevos y actualizar la instantánea estática de miembros de listas de distribución y grupos en Holds.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-03", "cadencia": "Semanal", "actividad": "Ejecución de analítica de Review Sets y triaje de privilegio abogado-cliente", "objetivo": "Agrupar cuasi-duplicados, reconstruir hilos inclusivos y proteger documentos cubiertos por secreto profesional antes de revisar.", "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases > [Caso] > Review sets > Manage review set > Run analytics", "procedimiento": ["Confirmar en Case settings > Search & analytics la activación de Near duplicates/email threading, Themes, Ignore text y consulta automática 'For Review'.", "Ejecutar Run analytics sobre los datos recién cargados a Review sets.", "Priorizar revisión con Is Inclusive = True / Has Unique Attachments = True y clasificar alertas del Smart tag group Attorney-client privilege (IsPrivilege)."], "rolResponsable": "eDiscovery Manager / Lead Reviewer", "funcionNIST": "RS", "subcategoriaNIST": "RS.AN-03", "mitreTactic": "Collection", "evidenciaAuditable": "Proceso de analítica completado y métricas de consulta guardada 'For Review'.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Propiedades Is Inclusive, Has Unique Attachments, AttorneyClientPrivilegeScore e IsPrivilege verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-settings-analytics", "pasosDetallados": ["Verificar en `Case settings > Search & analytics` que estén activos `Near duplicates/email threading`, `Themes`, `Ignore text` (para disclaimers corporativos) y la creación automática de la consulta guardada **For Review** `[Verificado MS Learn]`.", "Ejecutar analítica sobre los nuevos lotes incorporados a *Review sets* durante la semana `[Verificado MS Learn]`.", "Filtrar por `Is Inclusive = True` o `Has Unique Attachments = True` para priorizar correos inclusivos, y revisar el *Smart tag group* de **Attorney-client privilege** (`AttorneyClientPrivilegeScore`, `HasAttorney`, `IsPrivilege`) para segregar material protegido por secreto profesional antes de cualquier producción `[Verificado MS Learn]`."], "disparadorAlerta": "Agrupar cuasi-duplicados, reconstruir hilos inclusivos y proteger documentos cubiertos por secreto profesional antes de revisar.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-04", "cadencia": "Semanal", "actividad": "Evaluación de ítems parcialmente indexados y errores de procesamiento", "objetivo": "Garantizar exhaustividad probatoria sobre archivos complejos, adjuntos cifrados o elementos parcialmente indexados.", "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases > [Caso] > Searches > Statistics", "procedimiento": ["Ejecutar Generate statistics con 'Investigate partially indexed items' en búsquedas de litigios relevantes.", "Configurar explícitamente en tiempo de exportación o carga a Review set las opciones de Advanced indexing y exclusión de ubicaciones sin hits.", "Revisar la columna 'Added by' (IndexedQuery, UnindexedQuery, AdvancedIndex) en Items.csv para sustentar la defendibilidad técnica."], "rolResponsable": "eDiscovery Manager", "funcionNIST": "DE", "subcategoriaNIST": "DE.AE-02", "mitreTactic": "Defense Evasion (T1027)", "evidenciaAuditable": "Reporte estadístico de ítems parcialmente indexados e Items.csv.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Independencia entre ajustes de búsqueda y exportación para ítems parcialmente indexados verificada en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-search-query", "pasosDetallados": ["Ejecutar `Generate statistics` marcando `Investigate partially indexed items` en búsquedas de litigios o investigaciones regulatorias de alto impacto `[Verificado MS Learn]`.", "Evaluar si se requiere marcar `Perform advanced indexing on partially indexed items` y `Exclude partially indexed items in locations without search hits` al exportar o enviar a *Review set*, recordando que las opciones de tiempo de búsqueda y tiempo de exportación son independientes `[Verificado MS Learn]`.", "Identificar archivos con errores de procesamiento (ej. protegidos por contraseña) para ejecutar remediación controlada según protocolo forense `[Verificado MS Learn]`."], "disparadorAlerta": "Garantizar exhaustividad probatoria sobre archivos complejos, adjuntos cifrados o elementos parcialmente indexados.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-05", "cadencia": "Semanal", "actividad": "Cierre ordenado de casos concluidos, liberación de Holds y eliminación de casos PAYG vencidos", "objetivo": "Liberar almacenamiento retenido innecesariamente en M365 y detener cargos diarios Azure por datos IA no-M365 en casos finalizados.", "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases", "procedimiento": ["Validar autorización escrita de Legal para cerrar expedientes finalizados y notificar liberación a los custodios.", "Ejecutar Actions > Close case verificando que transicione a Closed sin quedar en 'Closed with errors'.", "Para casos cerrados con datos IA no-M365 cuyo periodo de archivo expiró, respaldar reportes y ejecutar Delete case para detener la facturación diaria."], "rolResponsable": "Legal Operations / eDiscovery Administrator", "funcionNIST": "GV", "subcategoriaNIST": "GV.OC-03", "mitreTactic": "Collection", "evidenciaAuditable": "Listado exportado de casos cerrados/eliminados y orden legal de liberación.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Comportamiento de liberación automática de Holds al cerrar/borrar y cese de cobro PAYG solo al eliminar el caso verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-cases-manage", "pasosDetallados": ["Obtener autorización escrita de *General Counsel* para los asuntos legalmente concluidos en la semana `[Decisión / Propuesta Editorial]`.", "Emitir notificación formal de liberación (*Release notice*) a los custodios y ejecutar `Actions > Close case` (verificando que no quede en estado `Closed with errors` por Holds no liberados) `[Verificado MS Learn]`.", "Identificar casos cerrados que contengan datos de IA no-Microsoft 365 (los cuales siguen generando cobro diario PAYG mientras el caso exista en estado *Active* o *Closed*) y, si expiró el plazo de preservación probatoria, respaldar reportes y ejecutar `Delete case` para cesar el cargo de almacenamiento `[Verificado MS Learn]`."], "disparadorAlerta": "Liberar almacenamiento retenido innecesariamente en M365 y detener cargos diarios Azure por datos IA no-M365 en casos finalizados.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-06", "cadencia": "Semanal", "actividad": "Verificación de las 4 Enterprise Apps requeridas y diagnóstico Diag:edisRBACdiag", "objetivo": "Prevenir fallos silenciosos en visores, analítica o descargas por cambios de identidad o permisos.", "consolaRuta": "portal.azure.com > Enterprise Applications / purview.microsoft.com > Help > Diag:edisRBACdiag", "procedimiento": ["Confirmar en Entra ID que Built-in security add-on, ComplianceWorkbenchApp, MicrosoftPurviewEDiscovery y Office365Zoom tengan Enabled for users to sign-in = Yes.", "Ejecutar el diagnóstico integrado Diag:edisRBACdiag ante cualquier alerta de permisos en cuentas de investigadores.", "Validar compatibilidad de políticas de Acceso Condicional con sesiones de revisión y exportación."], "rolResponsable": "eDiscovery Administrator", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-01", "mitreTactic": "Persistence", "evidenciaAuditable": "Resultado exitoso de Diag:edisRBACdiag y captura de estado de Enterprise Apps.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tabla de 4 App IDs y diagnóstico Diag:edisRBACdiag verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-get-started", "pasosDetallados": ["Verificar en Microsoft Entra ID que las cuatro aplicaciones (`00000007-...`, `92876b03-...`, `b26e684c-...`, `0d38933a-...`) permanezcan habilitadas para inicio de sesión `[Verificado MS Learn]`.", "Ejecutar el diagnóstico integrado `Diag:edisRBACdiag` sobre cuentas operativas que hayan reportado incidencias en búsqueda, vista previa o exportación `[Verificado MS Learn]`.", "Validar que ninguna nueva política de Acceso Condicional bloquee flujos de descarga o visores de Office Web en *Review sets* `[Verificado MS Learn]`."], "disparadorAlerta": "Prevenir fallos silenciosos en visores, analítica o descargas por cambios de identidad o permisos.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-01", "cadencia": "Mensual", "actividad": "Recertificación de eDiscovery Administrators, miembros de casos y limpieza de Guest Users", "objetivo": "Asegurar mínimo privilegio estricto, rescatar casos huérfanos y revocar revisores externos inactivos.", "consolaRuta": "purview.microsoft.com > Settings > Role groups > eDiscovery Manager / Settings > eDiscovery > Guest users", "procedimiento": ["Auditar Get-RoleGroupMember -Identity 'eDiscoveryManager' y confirmar que el subgrupo eDiscovery Administrator tenga <= 3 personas nominales.", "Detectar casos cuyo único miembro haya dejado la empresa y reasignar titularidad mediante un eDiscovery Administrator.", "Remover accesos de invitados externos finalizados en Settings > eDiscovery > Guest users y depurar sus cuentas guest en Microsoft Entra ID."], "rolResponsable": "Purview Role Management Admin / eDiscovery Administrator", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Privilege Escalation (T1098)", "evidenciaAuditable": "Acta mensual de recertificación de roles, miembros de casos e invitados B2B.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Persistencia de la cuenta guest en Entra ID tras removerla de eDiscovery y rescate de casos huérfanos verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-permissions", "pasosDetallados": ["Ejecutar `Get-RoleGroupMember -Identity \"eDiscoveryManager\"` y auditar la lista nominal de *eDiscovery Administrators*, confirmando que no supere el mínimo indispensable (2-3 cuentas) y que no incluya principales de servicio `[Verificado MS Learn]`.", "Auditar casos activos cuyo único miembro haya causado baja en la organización; usar un *eDiscovery Administrator* para asignar un nuevo *eDiscovery Manager* responsable y remover al ex-empleado `[Verificado MS Learn]`.", "En `Settings > eDiscovery > Guest users`, ejecutar **Remove** sobre abogados externos cuyos casos hayan concluido y limpiar sus cuentas B2B residuales en Microsoft Entra ID `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar mínimo privilegio estricto, rescatar casos huérfanos y revocar revisores externos inactivos.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-02", "cadencia": "Mensual", "actividad": "Actualización del archivo CSV de abogados para Attorney-Client Privilege Detection", "objetivo": "Mantener actualizada la identificación automática de participantes legales internos y externos en todos los Review sets.", "consolaRuta": "purview.microsoft.com > Settings > eDiscovery > Analytics", "procedimiento": ["Consolidar con General Counsel las altas y bajas de abogados internos y asesores externos acreditados.", "Construir el archivo CSV sin fila de encabezado con una dirección SMTP por línea.", "Cargar el archivo en Settings > eDiscovery > Analytics asegurando que el interruptor Attorney-client privilege detection permanezca en On."], "rolResponsable": "eDiscovery Administrator / General Counsel Ops", "funcionNIST": "ID", "subcategoriaNIST": "ID.RA-05", "mitreTactic": "Collection", "evidenciaAuditable": "Archivo CSV versionado y registro de actualización en Purview Audit.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Formato CSV sin encabezado y configuración organizacional verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-settings-analytics", "pasosDetallados": ["Solicitar a Legal Operations el listado actualizado de direcciones SMTP de abogados internos y externos autorizados `[Decisión / Propuesta Editorial]`.", "Generar el archivo `.csv` **sin fila de encabezado** (una dirección SMTP por línea) según especificación oficial `[Verificado MS Learn]`.", "En `Settings > eDiscovery > Analytics`, verificar que `Attorney-client privilege detection` esté en `On`, cargar el nuevo archivo `.csv` y guardar los cambios `[Verificado MS Learn]`."], "disparadorAlerta": "Mantener actualizada la identificación automática de participantes legales internos y externos en todos los Review sets.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-03", "cadencia": "Mensual", "actividad": "Auditoría de Compliance Boundaries (ComplianceSecurityFilter) y Administrative Units", "objetivo": "Confirmar el aislamiento multi-subsidiaria/regional de las búsquedas e investigaciones.", "consolaRuta": "Security & Compliance PowerShell (Get-ComplianceSecurityFilter) / purview.microsoft.com > Settings > Roles and scopes", "procedimiento": ["Ejecutar Get-ComplianceSecurityFilter y verificar que todos los grupos de roles asociados tengan al menos un rol asignado (grupos vacíos no soportados).", "Validar que todo filtro con SiteContent_Path de SharePoint incluya también la ruta OneDrive (-or SiteContent_Path -like 'https://*-my.sharepoint.com/personal*') cuando aplique.", "Ejecutar prueba cruzada controlada verificando bloqueo de búsqueda entre agencias y documentar la excepción de SharePoint Embedded y Cloud attachments."], "rolResponsable": "Purview Role Management Admin", "funcionNIST": "GV", "subcategoriaNIST": "GV.RR-02", "mitreTactic": "Lateral Movement", "evidenciaAuditable": "Salida firmada de Get-ComplianceSecurityFilter y evidencia de prueba cruzada negativa.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Desoporte de empty role groups, regla OneDrive SiteContent_Path y excepción SharePoint Embedded verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-compliance-boundaries", "pasosDetallados": ["Listar todos los filtros activos con `Get-ComplianceSecurityFilter` y verificar que ningún grupo de roles asociado sea un \"grupo de roles vacío\" (configuración ya no soportada; todo grupo con filtro debe tener al menos un rol asignado) `[Verificado MS Learn]`.", "Confirmar que los filtros que incluyen reglas SharePoint (`SiteContent_Path`) incluyan explícitamente con operador `-or` el dominio OneDrive (`https://<tenant>-my.sharepoint.com/personal*`) cuando se requiera buscar OneDrive dentro de la agencia `[Verificado MS Learn]`.", "Documentar y mitigar la limitación vigente de que las *Compliance Boundaries* no se aplican aún a contenedores **SharePoint Embedded** ni a *Cloud attachments* vinculados desde mensajes dentro del alcance `[Verificado MS Learn]`."], "disparadorAlerta": "Confirmar el aislamiento multi-subsidiaria/regional de las búsquedas e investigaciones.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-04", "cadencia": "Mensual", "actividad": "Conciliación de licencias de custodios, Shared Mailboxes y retención de Cloud Attachments", "objetivo": "Asegurar cumplimiento de licenciamiento en ubicaciones bajo Hold/Review set y preservación continua de versiones compartidas.", "consolaRuta": "admin.microsoft.com > Billing > Licenses / purview.microsoft.com > Data Lifecycle Management > Label policies", "procedimiento": ["Cruzar las ubicaciones activas del Hold report contra licencias Entra ID confirmando ausencia de usuarios F1/F3 sin add-on elegible bajo Hold.", "Verificar que los Shared Mailboxes bajo Hold cuenten con Exchange Online Plan 2 o Plan 1 + Exchange Online Archiving y que las cuentas admin tengan SharePoint E3.", "Comprobar que la política de etiqueta de retención auto-aplicada a cloud attachments permanezca activa sin errores de distribución."], "rolResponsable": "Compliance Officer / Licensing Admin", "funcionNIST": "GV", "subcategoriaNIST": "GV.OC-03", "mitreTactic": "Impact", "evidenciaAuditable": "Informe mensual de conciliación de licenciamiento y captura de política de auto-etiquetado activa.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Requisitos de licencia F1/F3, Shared Mailboxes, SharePoint E3 y etiquetas para cloud attachments verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/office365/servicedescriptions/microsoft-365-service-descriptions/microsoft-365-tenantlevel-services-licensing-guidance/microsoft-purview-service-description", "pasosDetallados": ["Cruzar el inventario de ubicaciones activas del *Hold report* contra las licencias asignadas en Entra ID, verificando que ningún usuario F1/F3 sin add-on elegible ni ningún *Shared Mailbox* sin Exchange Online Plan 2 (o Plan 1 + Archiving) figure bajo Hold `[Verificado MS Learn]`.", "Confirmar que los custodios en casos con funciones Premium posean Microsoft 365 E5, Purview Suite o E5 eDiscovery & Audit `[Verificado MS Learn]`.", "Verificar que la política de auto-aplicación de etiqueta de retención para *cloud attachments* siga activa y procesando sitios SharePoint/OneDrive `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar cumplimiento de licenciamiento en ubicaciones bajo Hold/Review set y preservación continua de versiones compartidas.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-05", "cadencia": "Mensual", "actividad": "Depuración del caso sistema Content search y gobierno de Tag templates", "objetivo": "Mantener higiene sobre búsquedas históricas migradas y estandarizar taxonomías de etiquetado entre casos.", "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Content Search / Settings > eDiscovery > Tag templates", "procedimiento": ["Auditar los miembros con acceso al caso sistema Content search y remover cuentas que solo deban operar en casos específicos.", "Eliminar búsquedas puntuales antiguas o de prueba empleando la acción Delete search.", "Revisar y actualizar las Tag templates globales para clasificación uniforme (Responsive, Non-responsive, Privileged, Redact)."], "rolResponsable": "eDiscovery Administrator", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-01", "mitreTactic": "Collection", "evidenciaAuditable": "Inventario actualizado del caso Content search y plantillas de etiquetas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Funcionamiento del caso sistema Content search y eliminación de búsquedas verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc", "pasosDetallados": ["Revisar los miembros del caso generado por el sistema `Content search` en `Case settings > Access and permissions`, restringiendo el acceso si no todos los *eDiscovery Managers* deben ver búsquedas operativas transversales `[Verificado MS Learn]`.", "Eliminar búsquedas obsoletas o de prueba usando la función **Delete search** para mantener higiene operativa `[Verificado MS Learn]`.", "Revisar y actualizar en `Settings > eDiscovery > Tag templates` las plantillas reutilizables de revisión (`Responsive`, `Non-Responsive`, `Privileged`, `PII/Redaction Required`) `[Verificado MS Learn]`."], "disparadorAlerta": "Mantener higiene sobre búsquedas históricas migradas y estandarizar taxonomías de etiquetado entre casos.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-01", "cadencia": "Trimestral", "actividad": "Simulacro integral EDRM incluyendo prompts M365 Copilot, Copilot Pages y censura PDF", "objetivo": "Comprobar de extremo a extremo la recolección, revisión KQL, redacción (_burn.pdf) y exportación defendible de cargas modernas.", "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases", "procedimiento": ["Ejecutar en un caso controlado la recolección de prompts Copilot (IPM.SkypeTeams.Message.Copilot.*), páginas .page en SharePoint Embedded y enlaces modernos en Teams.", "Cargar al Review set con transcripciones HTML e hilos de 12 h, consultar en Advanced review set explorer (KQL) y resumir ítems con Security Copilot.", "Aplicar censura en visor Annotate, ejecutar Commit redactions ({itemId}_burn.pdf) y exportar con Export redaction y Convert supported file formats to HTML."], "rolResponsable": "Legal Operations / eDiscovery Administrator / SOC L3", "funcionNIST": "RC", "subcategoriaNIST": "RC.RP-04", "mitreTactic": "Collection", "evidenciaAuditable": "Acta trimestral de ejercicio EDRM con validación de PDFs censurados y conversión HTML.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Capacidades técnicas verificadas en MS Learn; la cadencia trimestral de simulacro es propuesta editorial.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-review-set-export", "pasosDetallados": ["Crear un caso de simulacro sobre cuentas de prueba con interacciones reales de Microsoft 365 Copilot (`IPM.SkypeTeams.Message.Copilot.*`), archivos `.page` en SharePoint Embedded y enlaces compartidos en Teams `[Verificado MS Learn]`.", "Ejecutar búsqueda con **Draft a query with Copilot**, cargar resultados a un *Review set* con `Access links (cloud attachments)` e hilos de 12 horas, y ejecutar consultas en **Advanced review set explorer (KQL)** `[Verificado MS Learn]`.", "Aplicar una redacción de área en el visor **Annotate**, ejecutar **Commit redactions** para generar `{itemId}_burn.pdf` y exportar marcando `Export redaction` y `Convert supported file formats to HTML`, verificando que el nativo individual sea reemplazado por el PDF censurado `[Verificado MS Learn]`."], "disparadorAlerta": "Comprobar de extremo a extremo la recolección, revisión KQL, redacción (_burn.pdf) y exportación defendible de cargas modernas.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-02", "cadencia": "Trimestral", "actividad": "Auditoría de integraciones Microsoft Graph API y rotación de certificados App-Only", "objetivo": "Garantizar que las automatizaciones operen exclusivamente sobre Graph API con certificados vigentes y rol mínimo eDiscoveryManager.", "consolaRuta": "portal.azure.com > App registrations / Microsoft Purview Role groups", "procedimiento": ["Revisar todas las aplicaciones con permisos eDiscovery.Read.All, eDiscovery.ReadWrite.All y eDiscovery.Download.Read.", "Confirmar que ningún Service Principal esté en eDiscovery Administrator y que no existan scripts desatendidos usando CBA no soportada en Connect-IPPSSession.", "Verificar vencimiento de certificados X.509 y rotar aquellos con vigencia menor a 60 días."], "rolResponsable": "Cloud Security Architect / eDiscovery Administrator", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Credential Access", "evidenciaAuditable": "Inventario auditado de App registrations y membresía de eDiscoveryManager.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Arquitectura dual Graph + Purview eDiscovery API y desoporte de CBA en IPPS verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-ref-api-guide", "pasosDetallados": ["Auditar las aplicaciones registradas con permisos `eDiscovery.Read.All`, `eDiscovery.ReadWrite.All` y `eDiscovery.Download.Read` `[Verificado MS Learn]`.", "Confirmar que el Service Principal en Purview pertenezca únicamente a `eDiscoveryManager` y nunca a `eDiscovery Administrator`, y que no existan scripts residuales usando `Connect-IPPSSession` con autenticación *app-only* no soportada `[Verificado MS Learn]`.", "Rotar preventivamente certificados próximos a vencer (< 60 días) en Azure Key Vault `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Garantizar que las automatizaciones operen exclusivamente sobre Graph API con certificados vigentes y rol mínimo eDiscoveryManager.", "tipoAccion": "Periódica Programada"}, {"codigo": "SM-01", "cadencia": "Semestral", "actividad": "Validación de descifrado MIP/RMS, depuración de Inactive Mailboxes y evaluación CMK", "objetivo": "Asegurar acceso forense a documentos etiquetados, limpiar retenciones huérfanas en buzones inactivos y validar cifrado CMK en exportaciones.", "consolaRuta": "Exchange Online PowerShell / purview.microsoft.com > Solutions > eDiscovery", "procedimiento": ["Comprobar Get-IRMConfiguration | fl EnablePdfEncryption ($true) y validar el descifrado en Review set de archivos Office y PDF con etiquetas MIP.", "Ejecutar Invoke-HoldRemovalAssistant sobre buzones inactivos antiguos para liberar aquellos cuyo litigio haya concluido legalmente.", "En tenants con Customer Key (MDEP PolicyAssigned), validar el estado de CMK for direct exports."], "rolResponsable": "Information Protection Lead / eDiscovery Administrator", "funcionNIST": "PR", "subcategoriaNIST": "PR.DS-01", "mitreTactic": "Defense Evasion", "evidenciaAuditable": "Reporte semestral de pruebas de descifrado, inventario de buzones inactivos y estado CMK.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Requisitos de Set-IRMConfiguration, Invoke-HoldRemovalAssistant y CMK for direct exports verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-decryption", "pasosDetallados": ["Verificar `Get-IRMConfiguration | fl EnablePdfEncryption` (`$true`) y probar en un *Review set* la visualización de documentos Word/Excel/PDF protegidos con etiquetas de sensibilidad corporativas `[Verificado MS Learn]`.", "Auditar buzones inactivos retenidos por antiguos `UniH` o `DelayHoldApplied` usando `Invoke-HoldRemovalAssistant` para depurar aquellos sin obligación legal vigente `[Verificado MS Learn]`.", "Si la organización opera con Customer Key (MDEP `PolicyAssigned`), revisar la habilitación de **CMK for direct exports** para proteger paquetes de exportación en reposo `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar acceso forense a documentos etiquetados, limpiar retenciones huérfanas en buzones inactivos y validar cifrado CMK en exportaciones.", "tipoAccion": "Periódica Programada"}, {"codigo": "A-01", "cadencia": "Anual", "actividad": "Revisión ejecutiva del protocolo corporativo de eDiscovery, privacidad e IA generativa", "objetivo": "Alinear el marco de gobierno interno a nuevas regulaciones de protección de datos, reglas procesales y capacidades de Microsoft Purview.", "consolaRuta": "purview.microsoft.com > Solutions > Compliance Manager", "procedimiento": ["Presentar al comité CISO / General Counsel / DPO el desempeño anual de KPI-01 a KPI-08 y resultados de auditorías externas.", "Actualizar políticas de retención legal, protocolo de Search & Purge sobre IA y matriz de autorización para investigaciones sensibles.", "Aprobar el plan anual de acreditación técnica del personal (Applied Skills APL-5007 y certificación SC-401)."], "rolResponsable": "CISO / General Counsel / DPO", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-03", "mitreTactic": "Collection", "evidenciaAuditable": "Política anual firmada y cargada como evidencia en Microsoft Purview Compliance Manager.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Práctica anual de gobierno ejecutivo recomendada sobre herramientas oficiales de Purview.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc", "pasosDetallados": ["Evaluar las métricas anuales de desempeño (`KPI-01` a `KPI-08`), hallazgos de auditoría externa y costos acumulados PAYG `[Decisión / Propuesta Editorial]`.", "Actualizar las matrices de autorización para búsquedas sobre VIPs, uso de `Search And Purge` en IA generativa y flujos de notificación legal a custodios `[Decisión / Propuesta Editorial]`.", "Aprobar el plan anual de formación y recertificación técnica del equipo legal y de cumplimiento (`APL-5007` y `SC-401`) `[Verificado MS Learn]`."], "disparadorAlerta": "Alinear el marco de gobierno interno a nuevas regulaciones de protección de datos, reglas procesales y capacidades de Microsoft Purview.", "tipoAccion": "Periódica Programada"}, {"codigo": "AH-01", "cadencia": "Ad-Hoc", "actividad": "Playbook Search & Purge ante derrame de datos sensibles en prompts/respuestas de Copilot e IA", "objetivo": "Localizar y eliminar quirúrgicamente hasta 10 interacciones sensibles por buzón en aplicaciones de IA reaplicando retenciones al finalizar.", "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases + developer.microsoft.com/graph/graph-explorer", "procedimiento": ["Crear un caso de incidente y una búsqueda precisa con condición Item class = Copilot activity, rango horario y términos exactos, verificando que retorne <= 10 ítems por buzón.", "Documentar con Invoke-HoldRemovalAssistant y remover temporalmente los Holds y políticas de retención del buzón afectado.", "Con el rol Search And Purge y permiso eDiscovery.ReadWrite.All, ejecutar POST /v1.0/security/cases/ediscoveryCases/{caseId}/searches/{searchId}/purgeData.", "Eliminar por separado cualquier Copilot Memory derivada (IPM.Contact) o Copilot Page (.page en SharePoint Embedded) y reaplicar todos los Holds al confirmar el paso a SubstrateHolds."], "rolResponsable": "Data Spillage Responder / eDiscovery Manager", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Impact (Data Spillage Containment)", "evidenciaAuditable": "Respuesta HTTP 202 de Graph purgeData, verificación de ausencia en búsqueda y log de reaplicación de Holds.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Procedimiento oficial de 7 pasos, límite de 10 ítems/buzón y carpeta SubstrateHolds verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-search-copilot-data", "pasosDetallados": ["Con cuenta miembro de `eDiscovery Manager`, crear un caso dedicado al incidente y una búsqueda acotada al buzón afectado usando la condición `Item class > Copilot activity` (o clase específica como `IPM.SkypeTeams.Message.Copilot.BizChat`), rango horario exacto y palabras clave del derrame `[Verificado MS Learn]`.", "Revisar estadísticas (*Top Locations*) y muestra para confirmar que la consulta devuelva **únicamente** los ítems a purgar (límite estricto de **hasta 10 ítems por buzón por ejecución**) `[Verificado MS Learn]`.", "Identificar con `Invoke-HoldRemovalAssistant -Identity <UPN>` toda retención o Hold activo sobre el buzón, documentarlos rigurosamente y excluir/suspender temporalmente el Hold (de lo contrario la purga es retenida) `[Verificado MS Learn]`.", "Con una cuenta autorizada con el rol `Search And Purge` y permisos Graph `eDiscovery.ReadWrite.All`, obtener `ediscoveryCaseID` y `ediscoverySearchID` e invocar `POST https://graph.microsoft.com/v1.0/security/cases/ediscoveryCases/{ediscoveryCaseID}/searches/{ediscoverySearchID}/purgeData` `[Verificado MS Learn]`.", "Verificar si el incidente generó una **Copilot Memory** (`IPM.Contact` en `CopilotMemory`) o una **Copilot Page** (`.page` en SharePoint Embedded), eliminándolas por separado dado que borrar el prompt/respuesta no elimina memorias derivadas ni páginas `[Verificado MS Learn]`.", "Confirmar que los ítems pasaron a la carpeta oculta `SubstrateHolds` (donde el *timer job* los purga permanentemente en 1 a 7 días) y **reaplicar de inmediato todos los Holds y políticas de retención** documentados en el paso 3 `[Verificado MS Learn]`."], "disparadorAlerta": "Alerta de Purview DLP / DSPM for AI / usuario reportando introducción accidental o maliciosa de secretos industriales, credenciales o datos regulados en Microsoft 365 Copilot, Copilot Studio o apps de IA conectadas `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-02", "cadencia": "Ad-Hoc", "actividad": "Playbook de congelamiento legal inmediato (Emergency Litigation Hold)", "objetivo": "Preservar de forma inmediata e inmutable todas las fuentes custodiadas y colaborativas ante notificación judicial o regulatoria.", "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases > [Caso] > Hold policies", "procedimiento": ["Verificar licencias elegibles E5/Purview Suite en los custodios objetivo (asignando add-on previo si algún involucrado tuviera licencia F1/F3).", "Crear caso restringido e importar en Data sources buzones Exchange, cuentas OneDrive, URLs de contenedores SharePoint Embedded (.page/.loop) y equipos Teams completos.", "Aplicar Hold policy de alcance completo, emitir notificación legal formal al custodio y confirmar estado On y prefijo UniH en InPlaceHolds."], "rolResponsable": "eDiscovery Manager / General Counsel Ops", "funcionNIST": "PR", "subcategoriaNIST": "PR.DS-01", "mitreTactic": "Impact (T1485)", "evidenciaAuditable": "Reporte Details de la Hold policy en estado On y salida de Get-Mailbox | fl InPlaceHolds.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Prerrequisito estricto de licencia antes de aplicar Hold y alcance sobre Teams/SharePoint Embedded verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-hold-create", "pasosDetallados": ["Crear el caso en menos de 1 hora, restringir `Access and permissions` exclusivamente al equipo legal designado y verificar licencias elegibles E5/Purview Suite en todos los custodios objetivo `[Verificado MS Learn]` `[Decisión / Propuesta Editorial]`.", "En la pestaña **Data sources**, importar los custodios (buzón Exchange, cuenta OneDrive y contenedores **SharePoint Embedded** del usuario para proteger *Copilot Pages* y *Loop*) más los equipos Microsoft Teams (buzón de grupo + sitio SharePoint + sitios de canales privados/compartidos) `[Verificado MS Learn]`.", "Crear una **Hold policy** de alcance completo (infinito) sobre dichas ubicaciones y ejecutar **Apply hold** `[Verificado MS Learn]`.", "Emitir en paralelo la notificación formal de preservación legal al custodio (salvo orden de investigación silenciosa) y verificar en Exchange PowerShell la presencia del GUID `UniH` en `InPlaceHolds` tras la ventana de propagación `[Verificado MS Learn]`."], "disparadorAlerta": "Notificación judicial, requerimiento de ente regulador o investigación de fraude ejecutivo con riesgo inminente de destrucción de evidencia (*spoliation*) `[Decisión / Propuesta Editorial]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-03", "cadencia": "Ad-Hoc", "actividad": "Playbook de atención de solicitudes DSR (GDPR / Ley 21.719 / LFPDPPP) con censura en línea", "objetivo": "Localizar, depurar duplicados, censurar datos personales de terceros y exportar evidencia válida dentro del plazo regulatorio.", "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases > [Caso DSR] > Review sets", "procedimiento": ["Crear caso DSR dedicado tras la integración oficial de la retirada herramienta User Data Search dentro de eDiscovery.", "Ejecutar búsqueda acotada al titular, enviar resultados relevantes a un Review set y ejecutar Near-duplicate detection.", "Aplicar Area redactions o borrado de texto sobre PII de terceros en el visor Annotate, pulsar Commit redactions ({itemId}_burn.pdf) y exportar marcando Export redaction."], "rolResponsable": "DPO / eDiscovery Manager", "funcionNIST": "GV", "subcategoriaNIST": "GV.OC-03", "mitreTactic": "Collection", "evidenciaAuditable": "Paquete exportado con PDFs censurados (_burn.pdf) y Summary.csv del proceso.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Fusión de User Data Search en eDiscovery y flujo Commit redactions -> Export redaction verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-review-set-view", "pasosDetallados": ["Crear un caso DSR estandarizado (`DSR-YYYY-NNNN`) asignando solo al equipo de Privacidad/DPO `[Verificado MS Learn]` `[Decisión / Propuesta Editorial]`.", "Configurar búsqueda usando identificadores exactos del titular, SITs regionales y rango de fechas aplicable; evaluar estadísticas y refinar para minimizar datos de terceros `[Verificado MS Learn]`.", "Cargar los resultados pertinentes en un **Review set** para ejecutar *Near-duplicate detection* y utilizar el visor **Annotate** para aplicar **Area redactions** o supresión de texto sobre datos personales de terceras personas involucradas en los mismos documentos `[Verificado MS Learn]`.", "Ejecutar **Commit redactions** (`{itemId}_burn.pdf`) y exportar marcando **Export redaction** para entregar únicamente copias censuradas legalmente válidas dentro del plazo legal regulatorio `[Verificado MS Learn]`."], "disparadorAlerta": "Solicitud formal de acceso o portabilidad de datos personales presentada por un empleado, ex-empleado o cliente tras la fusión de la antigua herramienta *User Data Search* dentro de eDiscovery `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-04", "cadencia": "Ad-Hoc", "actividad": "Playbook de rescate de caso huérfano o remoción urgente de miembro de un caso", "objetivo": "Restablecer la gobernanza de un caso cuyo único miembro causó baja o revocar inmediatamente a un investigador.", "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases > [Caso] > Case settings > Access and permissions", "procedimiento": ["Elevar sesión JIT de un eDiscovery Administrator (único rol autorizado para ver casos ajenos y remover miembros de casos).", "Abrir el caso afectado, agregar al nuevo eDiscovery Manager responsable y ejecutar Remove sobre el usuario desvinculado.", "Cerrar la sesión privilegiada y registrar el evento auditado en el expediente."], "rolResponsable": "eDiscovery Administrator", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Persistence (T1098)", "evidenciaAuditable": "Evento de cambio de membresía de caso en Purview Audit.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Regla exclusiva de remoción de miembros por eDiscovery Administrator verificada en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-settings-access-permissions", "pasosDetallados": ["Activar mediante flujo JIT aprobado una cuenta nominal perteneciente al subgrupo **eDiscovery Administrator** (único rol con visibilidad universal y facultad exclusiva para remover miembros de un caso) `[Verificado MS Learn]`.", "Localizar el caso en el dashboard global **Cases**, acceder a `Case settings > Access and permissions` y agregarse temporalmente o agregar al nuevo *eDiscovery Manager* titular `[Verificado MS Learn]`.", "Seleccionar **Remove** sobre el usuario desvinculado o revocado y guardar los cambios `[Verificado MS Learn]`.", "Desactivar la sesión privilegiada del *eDiscovery Administrator* y auditar el cambio en Purview Audit `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Desvinculación abrupta del único *eDiscovery Manager* creador de un caso crítico, o necesidad urgente de retirar a un investigador de un caso sensible `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-05", "cadencia": "Ad-Hoc", "actividad": "Playbook de diagnóstico forense de retenciones activas (Invoke-HoldRemovalAssistant)", "objetivo": "Identificar exactamente qué política o Delay Hold impide purgar elementos, borrar sitios o depurar buzones inactivos.", "consolaRuta": "Exchange Online PowerShell", "procedimiento": ["Ejecutar Invoke-HoldRemovalAssistant -Identity <UPN o URL> para obtener todas las fuentes de retención aplicables en una sola consulta.", "Inspeccionar prefijos en InPlaceHolds (UniH, cld, mbx, skp, grp), LitigationHoldEnabled, ComplianceTagHoldApplied y DelayHoldApplied.", "Gestionar la exclusión en la solución origen correspondiente respetando la ventana de replicación de 240 min a 24 h y el Delay Hold automático de 30 días."], "rolResponsable": "eDiscovery Administrator / Exchange Admin", "funcionNIST": "RC", "subcategoriaNIST": "RC.RP-04", "mitreTactic": "Defense Evasion", "evidenciaAuditable": "Salida técnica de Invoke-HoldRemovalAssistant documentada en el ticket de cambio.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Secuencia oficial de 4 cmdlets y tabla de prefijos verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/edisc-hold-manage", "pasosDetallados": ["Ejecutar en Exchange Online PowerShell el asistente oficial `Invoke-HoldRemovalAssistant -Identity <UPN o siteUrl>` para inventariar en una sola llamada todas las fuentes de retención activas `[Verificado MS Learn]`.", "Inspeccionar `Get-OrganizationConfig | FL InPlaceHolds` y `Get-Mailbox <user> | FL LitigationHoldEnabled,InPlaceHolds,ComplianceTagHoldApplied,DelayHoldApplied,DelayReleaseHoldApplied` `[Verificado MS Learn]`.", "Traducir el prefijo identificado a su origen exacto: `UniH` (Hold de caso eDiscovery), `cld` (Cloud attachment hold), `mbx` (política de retención de buzón), `skp` (retención Teams) o `grp` (retención grupo M365) `[Verificado MS Learn]`.", "Tener presente que tras retirar un Hold se esperan hasta **240 minutos** de replicación (o hasta 24 h para exclusiones de política `mbx`) y se activa automáticamente un **Delay Hold de 30 días** (`DelayHoldApplied`) que debe gestionarse explícitamente si la eliminación inmediata está autorizada `[Verificado MS Learn]`."], "disparadorAlerta": "Imposibilidad de purgar ítems maliciosos, eliminar un sitio SharePoint/OneDrive o depurar un buzón inactivo pese a haber apagado el Hold visible en el caso `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}], "consultasKQLyVerificacion": [{"nombre": "Auditoría SIEM de operaciones sensibles en Purview eDiscovery moderno", "plataforma": "Microsoft Sentinel / Microsoft Defender XDR", "tablaPrincipal": "OfficeActivity", "consulta": "OfficeActivity\n| where TimeGenerated > ago(7d)\n| where RecordType in ('Discovery', 'ComplianceDLPExchange', 'ExchangeAdmin')\n    or Operation has_any ('eDiscovery', 'ComplianceSearch', 'CaseHold', 'ReviewSet', 'PurgeData', 'Add-eDiscoveryCaseAdmin', 'New-ComplianceSecurityFilter')\n| project TimeGenerated, UserId, Operation, ClientIP, ResultStatus, ObjectId, Parameters\n| sort by TimeGenerated desc", "proposito": "Monitorear quién ejecuta búsquedas, exportaciones, purgas o cambios RBAC en eDiscovery verificando la IP cliente registrada por la experiencia moderna.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Advanced Review Set Explorer: Detección de comunicaciones hacia dominios externos", "plataforma": "Purview eDiscovery Review Set (Advanced review set explorer preview)", "tablaPrincipal": "ReviewSetTable", "consulta": "ReviewSetTable\n| where isnotempty(Recipients)\n| extend Emails = extract_all(@'<([^>]+)>', tostring(Recipients))\n| mv-expand Email = Emails\n| extend Email = tostring(Email)\n| where Email !contains '@contoso.com'\n| summarize ExternalRecipients = make_set(Email), ItemCount = count() by ImmutableId, SubjectTitle, Custodian\n| sort by ItemCount desc", "proposito": "Identificar rápidamente dentro de un Review set todos los mensajes enviados a destinatarios externos durante investigaciones de fuga de información.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Advanced Review Set Explorer: Clasificación de actividad Copilot y privilegio legal", "plataforma": "Purview eDiscovery Review Set (Advanced review set explorer preview)", "tablaPrincipal": "ReviewSetTable", "consulta": "ReviewSetTable\n| where ItemClass startswith 'IPM.SkypeTeams.Message.Copilot' or tostring(IsPrivilege) =~ 'true'\n| summarize TotalItems = count(), TotalBytes = sum(Size) by ItemClass, tostring(IsPrivilege), tostring(HasAttorney), SensitivityLabel\n| sort by TotalItems desc", "proposito": "Cuantificar interacciones de Microsoft 365 Copilot / agentes IA y documentos marcados por el modelo ML de privilegio abogado-cliente.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "KeyQL FinOps: Exclusión de clases de IA no-Microsoft 365 sujetas a cobro Pay-As-You-Go", "plataforma": "Purview eDiscovery Search (Keyword Query Language - KeyQL)", "tablaPrincipal": "KeyQL Search Index", "consulta": "(NOT((ItemClass:IPM.SkypeTeams.Message.Copilot.Fabric.*) OR (ItemClass:IPM.SkypeTeams.Message.Copilot.Security.SecurityCopilot) OR (ItemClass:IPM.SkypeTeams.Message.Copilot.BAP*) OR (ItemClass:IPM.SkypeTeams.Message.ConnectedAIApp.*) OR (ItemClass:IPM.SkypeTeams.Message.CloudAIApp.SaaS.*) OR (ItemClass:IPM.SkypeTeams.Message.Copilot.sql.*)))", "proposito": "Excluir de cargas a Review sets y exportaciones las interacciones de IA no-M365 que generan facturación diaria de almacenamiento Azure PAYG.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Microsoft Graph PowerShell: Inventario de casos eDiscovery y paquetes de exportación", "plataforma": "Microsoft Graph PowerShell (v1.0)", "tablaPrincipal": "security/cases/ediscoveryCases", "consulta": "Connect-MgGraph -Scopes 'eDiscovery.Read.All'\n$cases = (Invoke-MgGraphRequest -Method GET -Uri 'https://graph.microsoft.com/v1.0/security/cases/ediscoveryCases').value\nforeach ($c in $cases) {\n    $ops = (Invoke-MgGraphRequest -Method GET -Uri \"https://graph.microsoft.com/v1.0/security/cases/ediscoveryCases/$($c.id)/operations\").value\n    $exports = $ops | Where-Object { $_.action -in @('exportResult','contentExport') }\n    [PSCustomObject]@{ CaseName = $c.displayName; CaseId = $c.id; Status = $c.status; ExportCount = ($exports | Measure-Object).Count }\n}", "proposito": "Auditar programáticamente vía Graph todos los casos y operaciones de exportación reemplazando los parámetros retirados de PowerShell clásico.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Validación de Configuración y Postura"}, {"nombre": "Microsoft Graph PowerShell: Purga quirúrgica de derrame de datos en Copilot e IA", "plataforma": "Microsoft Graph PowerShell (v1.0)", "tablaPrincipal": "security/cases/ediscoveryCases/{id}/searches/{id}/purgeData", "consulta": "Connect-MgGraph -Scopes 'eDiscovery.ReadWrite.All'\n$caseId = '00000000-0000-0000-0000-000000000000'\n$searchId = '11111111-1111-1111-1111-111111111111'\nInvoke-MgGraphRequest -Method POST -Uri \"https://graph.microsoft.com/v1.0/security/cases/ediscoveryCases/$caseId/searches/$searchId/purgeData\"", "proposito": "Eliminar hasta 10 elementos por buzón de prompts/respuestas sensibles en Copilot o apps IA tras retirar temporalmente Holds del buzón.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Validación de Configuración y Postura"}, {"nombre": "PowerShell Forense: Diagnóstico unificado de Holds y filtros de Compliance Boundaries", "plataforma": "Exchange Online & Security & Compliance PowerShell", "tablaPrincipal": "Invoke-HoldRemovalAssistant / ComplianceSecurityFilter", "consulta": "Invoke-HoldRemovalAssistant -Identity 'custodio@contoso.com'\nGet-Mailbox 'custodio@contoso.com' | Format-List LitigationHoldEnabled,InPlaceHolds,ComplianceTagHoldApplied,DelayHoldApplied,DelayReleaseHoldApplied\nGet-ComplianceSecurityFilter | Format-Table FilterName,Users,Filters -AutoSize", "proposito": "Identificar todas las retenciones activas sobre un custodio y auditar las fronteras jurisdiccionales de búsqueda configuradas en el tenant.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Validación de Configuración y Postura"}], "kpisYMetricas": [{"id": "KPI-01", "nombre": "Efectividad de Aplicación de Holds Legales", "definicion": "Porcentaje de ubicaciones (buzones y sitios) incluidas en Hold policies activas que se encuentran en estado Applied successfully sin errores.", "formula": "(Ubicaciones en estado On sin error / Total de ubicaciones en Hold policies activas) * 100", "metaSugerida": ">= 99.5 % (remediación de errores en < 24 h)", "frecuencia": "Semanal", "audiencia": "General Counsel / Compliance Officer", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Basado en estados oficiales del Hold report y pestaña Details de Hold policies."}, {"id": "KPI-02", "nombre": "Tiempo Medio de Congelamiento Probatorio (MTTH)", "definicion": "Tiempo transcurrido desde la recepción de una orden formal de preservación legal hasta que la Hold policy queda aplicada en el caso.", "formula": "Promedio(Timestamp Hold Aplicado - Timestamp Orden Legal)", "metaSugerida": "<= 4 horas en investigaciones críticas", "frecuencia": "Mensual", "audiencia": "CISO / General Counsel", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Considera el inicio inmediato de la política más seguimiento dentro de la ventana técnica de propagación de hasta 24 h."}, {"id": "KPI-03", "nombre": "Tasa de Acuse de Notificación Legal por Custodios", "definicion": "Porcentaje de custodios bajo retención legal no silenciosa que firman su acuse de recibo dentro del plazo establecido.", "formula": "(Custodios con acuse registrado / Total de custodios notificados) * 100", "metaSugerida": ">= 98 % dentro de 10 días hábiles", "frecuencia": "Semanal", "audiencia": "Legal Operations / DPO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Medido sobre el flujo complementario de notificaciones legales adoptado tras agosto de 2025."}, {"id": "KPI-04", "nombre": "Ratio de Reducción Documental por Analítica (Culling Rate)", "definicion": "Porcentaje de reducción del volumen bruto ingresado a Review sets tras aplicar deduplicación cercana e identificación de correos inclusivos.", "formula": "(1 - (Ítems únicos e inclusivos para revisión / Total de ítems añadidos al Review Set)) * 100", "metaSugerida": ">= 45 % en casos con más de 10.000 ítems", "frecuencia": "Mensual", "audiencia": "General Counsel / FinOps Legal", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Mide el retorno directo de inversión de las funciones analíticas de Microsoft 365 E5 / Purview Suite."}, {"id": "KPI-05", "nombre": "Tiempo de Contención ante Derrame de Datos en IA (Search & Purge)", "definicion": "Tiempo total requerido para buscar, suspender Holds, ejecutar purgeData vía Graph y reaplicar Holds ante un incidente de fuga en Copilot/IA.", "formula": "Promedio(Timestamp Reaplicación Holds post-purgeData - Timestamp Detección Spillage)", "metaSugerida": "<= 2 horas", "frecuencia": "Por incidente / Mensual", "audiencia": "CISO / SOC Manager", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Alineado al flujo oficial de 7 pasos de edisc-search-copilot-data."}, {"id": "KPI-06", "nombre": "Cumplimiento de Segregación eDiscovery Administrator", "definicion": "Número total de identidades asignadas al subgrupo global eDiscovery Administrator y ausencia total de Service Principals en dicho rol.", "formula": "Conteo(Miembros en eDiscovery Administrator)", "metaSugerida": "<= 3 cuentas nominales humanas y 0 Service Principals", "frecuencia": "Mensual", "audiencia": "CISO / Auditoría Interna", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Sustentado en la advertencia oficial de MS Learn sobre acceso universal a todos los casos del tenant."}, {"id": "KPI-07", "nombre": "Cumplimiento en Plazo de Solicitudes Regulatorias y DSR", "definicion": "Porcentaje de solicitudes de derechos de titulares (DSR) y requerimientos regulatorios entregados dentro del plazo legal con redacción PDF validada.", "formula": "(Solicitudes entregadas en plazo con _burn.pdf validado / Total solicitudes recibidas) * 100", "metaSugerida": "100 %", "frecuencia": "Mensual", "audiencia": "DPO / Comité de Riesgos", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Cubre exigencias de GDPR, Ley 21.719 (Chile) y LFPDPPP (México)."}, {"id": "KPI-08", "nombre": "Higiene de Exportaciones y Control de Desvío PAYG", "definicion": "Conteo de exportaciones directas expiradas sin descargar (> 14 días) y desviación porcentual no aprobada del gasto mensual PAYG de datos IA no-M365.", "formula": "Exportaciones vencidas sin descarga + Variación presupuestaria PAYG Purview eDiscovery", "metaSugerida": "0 paquetes perdidos y <= 5 % de desvío mensual PAYG", "frecuencia": "Mensual", "audiencia": "FinOps / eDiscovery Administrator", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Controla el vencimiento estricto de 14 días y el medidor diario Azure de datos IA no-M365."}], "mapeoNISTCSF20": [{"funcion": "GOVERN (GV)", "subcategoria": "GV.OC-03", "descripcionResultado": "Los requisitos legales, regulatorios y contractuales relativos a privacidad, litigios y preservación probatoria son comprendidos y gestionados.", "capacidadMicrosoft": "Gestión centralizada de casos de litigio, investigaciones regulatorias y solicitudes DSR en la experiencia unificada de Microsoft Purview eDiscovery.", "evidenciaAuditoria": "Listado exportado de casos activos (Cases > Download list) vinculado a expedientes jurídicos y mandatos DSR.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "GOVERN (GV)", "subcategoria": "GV.RR-02", "descripcionResultado": "Los roles, responsabilidades y autoridades de ciberseguridad e investigación digital están establecidos, comunicados y aplicados.", "capacidadMicrosoft": "Segregación RBAC entre eDiscovery Manager, eDiscovery Administrator y Reviewer junto con Compliance Boundaries (New-ComplianceSecurityFilter).", "evidenciaAuditoria": "Salidas firmadas de Get-RoleGroupMember, Get-ComplianceSecurityFilter y diagnóstico Diag:edisRBACdiag.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.AM-07", "descripcionResultado": "Se mantienen inventarios de datos y metadatos designados a lo largo de las plataformas de colaboración e IA.", "capacidadMicrosoft": "Mapeo unificado en Data sources de buzones Exchange, sitios SharePoint/OneDrive, Teams, Viva Engage y contenedores SharePoint Embedded (.page/.loop).", "evidenciaAuditoria": "Inventario exportado de Data sources por caso y archivo Locations.csv de reportes de procesos.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.RA-05", "descripcionResultado": "Las amenazas, vulnerabilidades, probabilidad e impacto se utilizan para comprender el riesgo y priorizar la respuesta documental.", "capacidadMicrosoft": "Estadísticas previas de búsqueda, modelo ML Attorney-client privilege detection (IsPrivilege) y consultas KQL en Advanced review set explorer.", "evidenciaAuditoria": "Reportes Summary.csv, Query Reports y metadatos calculados AttorneyClientPrivilegeScore / HasAttorney.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.AA-05", "descripcionResultado": "Los permisos de acceso, derechos y autorizaciones se definen e imponen conforme al principio de mínimo privilegio y separación de funciones.", "capacidadMicrosoft": "Membresía explícita por caso, auto-remoción de grupos de roles modificados, unidades administrativas y aprobación en dos pasos para Guest reviewers.", "evidenciaAuditoria": "Configuración de Access and permissions por caso y bitácora de aprobaciones en Settings > eDiscovery > Guest users.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.DS-01", "descripcionResultado": "La confidencialidad, integridad y disponibilidad de los datos en reposo están protegidas contra destrucción o divulgación indebida.", "capacidadMicrosoft": "Preservación in-place mediante Hold policies (UniH, cld), censura irreversible en PDF ({itemId}_burn.pdf) y CMK para exportaciones directas.", "evidenciaAuditoria": "Hold report (preview), verificación de InPlaceHolds y paquetes exportados con opción Export redaction.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.CM-03", "descripcionResultado": "Las actividades del personal y el uso de herramientas privilegiadas se monitorean para detectar eventos potencialmente adversos.", "capacidadMicrosoft": "Registro detallado en Purview Audit (con dirección IP cliente) de búsquedas, vistas previas, exportaciones, purgas y cambios de membresía.", "evidenciaAuditoria": "Consultas KQL en Microsoft Sentinel sobre OfficeActivity y alertas activas sobre operaciones de eDiscovery.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.AE-02", "descripcionResultado": "Los eventos potencialmente adversos se analizan para comprender las actividades asociadas y el contexto completo.", "capacidadMicrosoft": "Integración de casos escalados desde Insider Risk Management con reconstrucción de hilos de 12 h en Teams/Copilot y extracción de Cloud attachments.", "evidenciaAuditoria": "Expedientes escalados con transcripciones HTML conversacionales y visor Copilot activity en Review sets.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.AN-03", "descripcionResultado": "Se ejecuta análisis forense para establecer qué ocurrió durante un incidente y determinar su alcance probatorio.", "capacidadMicrosoft": "Análisis en Review sets con OCR de caso, descifrado MIP/RMS (RMS Decrypt), Email threading, Near-duplicates y resúmenes contextuales de Security Copilot.", "evidenciaAuditoria": "Conjuntos de revisión etiquetados, reportes Items.csv (columna Added by) y notas forenses documentadas.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.MI-01", "descripcionResultado": "Los incidentes de exposición o derrame de información confidencial son contenidos eficazmente.", "capacidadMicrosoft": "Flujo Search & Purge mediante Microsoft Graph (purgeData) para erradicar hasta 10 mensajes o interacciones de Copilot/IA por buzón.", "evidenciaAuditoria": "Registro HTTP 202 de invocación de purgeData y comprobación de movimiento a carpeta oculta SubstrateHolds.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RECOVER (RC)", "subcategoria": "RC.RP-04", "descripcionResultado": "Las funciones críticas y controles de preservación se restauran y verifican tras ejecutar acciones correctivas de emergencia.", "capacidadMicrosoft": "Reaplicación obligatoria y verificada de Hold policies y políticas de retención tras completar una purga quirúrgica de datos en buzones.", "evidenciaAuditoria": "Salida posterior de Invoke-HoldRemovalAssistant y estado On confirmado en Hold policies > Details.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RECOVER (RC)", "subcategoria": "RC.CO-03", "descripcionResultado": "Las actividades de recuperación, resultados forenses y producciones legales se comunican de manera verificable a reguladores y partes autorizadas.", "capacidadMicrosoft": "Paquetes de producción estandarizados desde Review sets con informes íntegros (Summary.csv, Items.csv, Export report) y cierre auditado de casos.", "evidenciaAuditoria": "Actas de entrega regulatoria con hashes de integridad y registro de cierre de caso sin errores.", "estadoValidacion": "Propuesta Editorial"}], "validacionYDecisionesEditoriales": {"fechaRevalidacion": "2026-11-11", "resumenAuditoria": "Módulo construido íntegramente desde cero contra Microsoft Learn MCP y fuentes oficiales actualizadas a noviembre de 2026, reflejando el retiro definitivo de las experiencias clásicas en mayo/agosto de 2025, la consolidación en purview.microsoft.com, el gobierno forense de Microsoft 365 Copilot / Memories / Pages (SharePoint Embedded), el modelo híbrido de facturación PAYG para IA no-M365, Advanced review set explorer (KQL) y Security Copilot en eDiscovery.", "correccionesAplicadas": ["Verificado el retiro el 26 de mayo de 2025 (MC1055528) de la vista clásica de Content Search y de los parámetros PowerShell -Export y -ChangeExportKey en New/Get/Set-ComplianceSearchAction.", "Verificado el retiro global el 31 de agosto de 2025 de todas las experiencias clásicas (Content Search, eDiscovery Standard y eDiscovery Premium clásicos), quedando la guía legada solo para 21Vianet China.", "Documentado el retiro del flujo clásico integrado de Custodian Communications / Hold Notifications en agosto de 2025 y su reemplazo operativo mediante Hold policies + Hold report (preview) y flujos complementarios de acuse legal.", "Incorporada la arquitectura forense diferenciada de IA (junio 2026): prompts/respuestas en buzón (IPM.SkypeTeams.Message.Copilot.*), Copilot Memories (IPM.Contact no cubierto por Holds) y Copilot Pages (.page en contenedores SharePoint Embedded que requieren URL explícita en el Hold).", "Documentado el modelo híbrido de facturación Pay-As-You-Go para datos de IA no-Microsoft 365 en Review sets/exportaciones (que persiste en casos cerrados y solo cesa al eliminar el caso) y para Graph Export API en licencias E3.", "Añadido el uso de Advanced review set explorer (preview) con consultas KQL sobre ReviewSetTable y el flujo exacto Commit redactions ({itemId}_burn.pdf) + Export redaction.", "Reflejado el desoporte oficial de autenticación app-only (CBA) para cmdlets de eDiscovery en Security & Compliance PowerShell y el renombre de M365 E5 Compliance a Microsoft Purview Suite (octubre 2025)."], "decisionesEditoriales": [{"elemento": "Flujo complementario de notificaciones y acuses legales a custodios (D-06)", "tipo": "Propuesta Editorial", "justificacion": "Cubre la obligación procesal de notificar y recabar acuse de custodios tras el retiro en agosto de 2025 de la herramienta clásica integrada de comunicaciones en Purview."}, {"elemento": "Límite máximo de <= 3 cuentas nominales en eDiscovery Administrator y cero Service Principals (KPI-06)", "tipo": "Propuesta Editorial", "justificacion": "Mitiga el riesgo de acceso irrestricto a todos los casos confidenciales del tenant advertido expresamente en la documentación oficial de permisos."}, {"elemento": "SLAs internos anticipados (MTTH <= 4 h, Search & Purge <= 2 h, descarga a los 10/25 días)", "tipo": "Propuesta Editorial", "justificacion": "Introduce márgenes operativos de seguridad antes de alcanzar los límites duros de la plataforma (propagación de 24 h y autodestrucción de exportaciones de búsqueda a los 14 días)."}, {"elemento": "Exclusión sistemática por defecto de Non M365 AI activity en búsquedas generales (D-08)", "tipo": "Propuesta Editorial", "justificacion": "Evita cargos diarios acumulativos en Azure Pay-As-You-Go cuando el objeto de la investigación abarca únicamente comunicaciones corporativas de Microsoft 365."}, {"elemento": "Mapeo de evidencia a las 6 funciones de NIST CSF 2.0 y modelo de madurez de 5 niveles", "tipo": "Propuesta Editorial", "justificacion": "Estandariza la evaluación de auditoría interna y externa del programa de eDiscovery dentro del marco transversal CISO/GRC de la colección."}]}, "referenciasVerificadas": [{"id": "REF-01", "titulo": "Learn about eDiscovery", "url": "https://learn.microsoft.com/en-us/purview/edisc", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Documentación canónica de la experiencia moderna unificada de eDiscovery, cambios frente a versiones previas y matriz Standard vs. Premium.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-10-15)"}, {"id": "REF-02", "titulo": "Microsoft Purview eDiscovery legacy solutions", "url": "https://learn.microsoft.com/en-us/purview/ediscovery", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Confirma oficialmente el retiro el 31 de agosto de 2025 de todas las experiencias clásicas de Content Search, Standard y Premium.", "verificacion": "Verificado vía Microsoft Learn (revalidado 2026-11-11)"}, {"id": "REF-03", "titulo": "Get started with eDiscovery", "url": "https://learn.microsoft.com/en-us/purview/edisc-get-started", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Detalla prerrequisitos de licencias (incluyendo SharePoint E3), las 4 Enterprise Applications requeridas en Entra ID y ajustes iniciales.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-11)"}, {"id": "REF-04", "titulo": "Assign permissions in eDiscovery", "url": "https://learn.microsoft.com/en-us/purview/edisc-permissions", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Define subgrupos eDiscovery Manager vs. Administrator, 11 roles RBAC, diagnóstico Diag:edisRBACdiag y desoporte de CBA en IPPS.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-09-18)"}, {"id": "REF-05", "titulo": "Search for and delete AI application data in eDiscovery", "url": "https://learn.microsoft.com/en-us/purview/edisc-search-copilot-data", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Tabla completa de ItemClass de Copilot e IA, encabezados From/To, límite de 10 ítems por buzón y procedimiento Graph purgeData.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-29)"}, {"id": "REF-06", "titulo": "Create a search for a case in eDiscovery", "url": "https://learn.microsoft.com/en-us/purview/edisc-search-query", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Reglas sintácticas KeyQL, contenedores SharePoint Embedded en preview y generación NL2KQL con Microsoft Security Copilot.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-09-22)"}, {"id": "REF-07", "titulo": "Create holds in eDiscovery", "url": "https://learn.microsoft.com/en-us/purview/edisc-hold-create", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Licenciamiento obligatorio en usuarios objetivo de Hold (exclusión F1/F3 base), snapshot puntual de grupos y preservación en Teams.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-25)"}, {"id": "REF-08", "titulo": "Manage hold policies for eDiscovery cases", "url": "https://learn.microsoft.com/en-us/purview/edisc-hold-manage", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Secuencia oficial de diagnóstico con Invoke-HoldRemovalAssistant, prefijos UniH/cld/mbx/skp/grp y DelayHoldApplied.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-25)"}, {"id": "REF-09", "titulo": "Use the hold report in eDiscovery", "url": "https://learn.microsoft.com/en-us/purview/edisc-hold-report", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Documenta el reporte global en preview de políticas de retención legal y su ciclo de sincronización de hasta 7 días.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-11)"}, {"id": "REF-10", "titulo": "Cloud attachments in eDiscovery", "url": "https://learn.microsoft.com/en-us/purview/edisc-cloud-attachments", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Límites técnicos de extracción (50 enlaces, 2.048 caracteres) y preservación de la versión compartida vía etiquetas de retención.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-11)"}, {"id": "REF-11", "titulo": "Group and view items in a review set in eDiscovery", "url": "https://learn.microsoft.com/en-us/purview/edisc-review-set-view", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Agrupación por GroupID/ThreadID, visor Copilot activity, Commit redactions ({itemId}_burn.pdf) y resúmenes con Security Copilot.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-29)"}, {"id": "REF-12", "titulo": "Search content in a review set with the Advanced review set explorer (preview)", "url": "https://learn.microsoft.com/en-us/purview/edisc-review-set-explorer", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Motor KQL en tiempo real sobre ReviewSetTable, operadores admitidos y escenarios forenses avanzados.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-29)"}, {"id": "REF-13", "titulo": "Configure analytics settings in eDiscovery", "url": "https://learn.microsoft.com/en-us/purview/edisc-settings-analytics", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Configuración del modelo ML Attorney-client privilege detection, carga de CSV de abogados y Smart tag groups.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-29)"}, {"id": "REF-14", "titulo": "Export search results & Export items from a review set in eDiscovery", "url": "https://learn.microsoft.com/en-us/purview/edisc-search-export", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Caducidad de 14 días en búsquedas vs. 30 días en Review sets, CMK en preview para exportaciones directas y tamaños PST/ZIP.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-10-15)"}, {"id": "REF-15", "titulo": "Billing in eDiscovery & Use Microsoft Purview APIs for eDiscovery", "url": "https://learn.microsoft.com/en-us/purview/edisc-billing", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Reglas de facturación Pay-As-You-Go para datos IA no-M365 y Graph Export API en E3, más arquitectura Microsoft.Graph.Security.", "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-09-19)"}, {"id": "REF-16", "titulo": "Collecting Microsoft 365 Copilot Data with Microsoft Purview eDiscovery", "url": "https://techcommunity.microsoft.com/blog/microsoft-security-blog/collecting-microsoft-365-copilot-data-with-microsoft-purview-ediscovery/4516489", "tipoFuente": "Blog Oficial Microsoft", "autor": "Microsoft Security Blog", "comentario": "Guía técnica oficial sobre recolección de Prompts, Copilot Memories (IPM.Contact), Copilot Pages (.page) y agente Facilitator.", "verificacion": "Verificado en Microsoft Tech Community (publicado 2026-05-04)"}, {"id": "REF-17", "titulo": "What's New in Microsoft Purview eDiscovery", "url": "https://techcommunity.microsoft.com/blog/microsoft-security-blog/what%E2%80%99s-new-in-microsoft-purview-ediscovery/4441676", "tipoFuente": "Empleado Microsoft", "autor": "Aaron Thorp (Microsoft)", "comentario": "Explica reportes mejorados (Added by, Summary.csv), creación de Holds desde búsquedas y Retry failed locations.", "verificacion": "Verificado en Microsoft Tech Community (publicado 2025-08-11)"}, {"id": "REF-18", "titulo": "Important Purview eDiscovery Changes Take Effect in May 2025", "url": "https://office365itpros.com/2025/04/17/purview-ediscovery-may2025/", "tipoFuente": "MVP Seguridad", "autor": "Tony Redmond (Microsoft 365 MVP)", "comentario": "Documenta el retiro de parámetros -Export en PowerShell desde el 26 de mayo de 2025 (MC1055528) y el caso único Content Search.", "verificacion": "Verificado en Office 365 for IT Pros (revalidado 2026-11-11)"}, {"id": "REF-19", "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)", "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf", "tipoFuente": "Marco Normativo", "autor": "National Institute of Standards and Technology (NIST)", "comentario": "Estándar rector para el mapeo de subcategorías GV, ID, PR, DE, RS y RC sobre el ciclo probatorio EDRM.", "verificacion": "Verificado contra publicación oficial NIST CSWP 29"}], "validacionesConfiguracion": [{"control": "**Aplicaciones Entra ID Requeridas**", "comoValidar": "`portal.azure.com > Enterprise Applications` (4 App IDs oficiales) `[Verificado MS Learn]`", "estadoEsperado": "Las 4 aplicaciones existen con `Enabled for users to sign-in = Yes` `[Verificado MS Learn]`", "origen": "Verificado MS Learn"}, {"control": "**Capacidades Premium y Attorney-Client Privilege**", "comoValidar": "`purview.microsoft.com > Settings > eDiscovery > General / Analytics` `[Verificado MS Learn]`", "estadoEsperado": "Capacidades Premium activas y modelo `Attorney-client privilege detection = On` con CSV cargado `[Verificado MS Learn]`", "origen": "Verificado MS Learn"}, {"control": "**Salud RBAC de Cuentas Investigadoras**", "comoValidar": "`purview.microsoft.com > Help > Diag:edisRBACdiag` `[Verificado MS Learn]`", "estadoEsperado": "Prueba `eDiscovery RBAC Check` superada sin roles faltantes `[Verificado MS Learn]`", "origen": "Verificado MS Learn"}, {"control": "**Aplicación Efectiva de Holds In-Place**", "comoValidar": "`Hold policies > Details` + `Get-Mailbox \\", "estadoEsperado": "fl InPlaceHolds` `[Verificado MS Learn]`", "origen": "Verificado MS Learn"}, {"control": "**Preservación de Versión Compartida Cloud Attachments**", "comoValidar": "`Data Lifecycle Management > Label policies` + `Items.csv` (`Is modern attachment = True`) `[Verificado MS Learn]`", "estadoEsperado": "Se recolectan tanto la versión viva como la versión compartida bajo el mismo `GroupID` `[Verificado MS Learn]`", "origen": "Verificado MS Learn"}, {"control": "**Trazabilidad Moderna con IP en Purview Audit**", "comoValidar": "`Purview > Audit > eDiscovery activities` `[Verificado MS Learn]`", "estadoEsperado": "Eventos registrados con dirección IP del cliente poblada en la columna `IP Address` `[Verificado MS Learn]`", "origen": "Verificado MS Learn"}], "modeloMadurez": [{"nivel": "**Nivel 1**", "estadio": "**Inicial / Reactivo**", "descripcion": "Uso improvisado del caso `Content search` sin gestión estructurada de casos; exceso de usuarios en `Organization Management` o `eDiscovery Administrator`; sin cobertura de contenedores *SharePoint Embedded* ni exclusión de costos PAYG."}, {"nivel": "**Nivel 2**", "estadio": "**Repetible / Básico**", "descripcion": "Creación de casos individuales y aplicación de *Hold policies*, pero sin auto-etiquetado de retención para versiones compartidas de *Cloud attachments*, sin seguimiento formal de acuses de custodios post-agosto 2025 ni validación sistemática del *Hold report*."}, {"nivel": "**Nivel 3**", "estadio": "**Definido / Estandarizado**", "descripcion": "Segregación estricta `eDiscovery Manager` vs. `eDiscovery Administrator`, *Compliance Boundaries* activas, uso estándar de *Review sets* con OCR, hilos de 12 h, *Near-duplicates*, *Email threading* y censura PDF confirmada (`_burn.pdf`)."}, {"nivel": "**Nivel 4**", "estadio": "**Gestionado / Cuantificado**", "descripcion": "Cobertura forense integral de M365 Copilot, Copilot Pages y `Search & Purge` vía Graph; modelo *Attorney-client privilege* entrenado con lista mensual de abogados; consultas avanzadas KQL en *Advanced review set explorer* y monitoreo SIEM de actividades eDiscovery."}, {"nivel": "**Nivel 5**", "estadio": "**Optimizado / Asistido por IA y Código**", "descripcion": "Automatización segura mediante `Microsoft.Graph.Security` con certificados en Key Vault, adopción de **Security Copilot** (NL2KQL y resúmenes contextuales), CMK habilitado en exportaciones directas y simulacros trimestrales auditados bajo NIST CSF 2.0."}], "rutaFormacion": {"headers": ["Rol Operativo", "Ruta Oficial Microsoft Learn / Credenciales Vigentes (Nov 2026)", "Recursos Ninja Training y Comunidad MVP", "Práctica de Laboratorio Exigida `[Decisión / Propuesta Editorial]`"], "rows": [["**eDiscovery Manager / Investigador Legal**", "Módulo *Search for content with Microsoft Purview eDiscovery* + Credencial **Microsoft Applied Skills: Implement retention, eDiscovery, and Communication Compliance in Microsoft Purview (`APL-5007`)** `[Verificado MS Learn]`", "**Microsoft Purview eDiscovery Ninja Guide** (`https://aka.ms/ediscoveryninja`) + Guías interactivas CloudGuides de diseño de búsqueda y exportación `[Verificado MS Learn]`", "Ejecutar un caso completo con *Condition builder*, KeyQL, *Cloud attachments* y *Review set* con censura `_burn.pdf`."], ["**eDiscovery Administrator / Compliance Architect**", "Certificación **Microsoft Certified: Information Security Administrator Associate (`SC-401`)** + Documentación oficial de `Compliance Boundaries`, RBAC y `Hold Removal Assistant` `[Verificado MS Learn]`", "Análisis técnicos de transición moderna 2025-2026 por **Tony Redmond** (*Office 365 for IT Pros*) y **Joanne Klein** (retención y versiones compartidas) `[Verificado MS Learn]`", "Configurar `New-ComplianceSecurityFilter` para dos agencias, diagnosticar con `Diag:edisRBACdiag` y auditar `Invoke-HoldRemovalAssistant`."], ["**Analista SecOps / Data Spillage Responder**", "Guía oficial *Search for and delete AI application data in eDiscovery* + *Use Microsoft Purview APIs for eDiscovery* `[Verificado MS Learn]`", "Blog oficial de Ingeniería Microsoft *Collecting Microsoft 365 Copilot Data with Microsoft Purview eDiscovery* (mayo 2026) `[Verificado MS Learn]`", "Simular un derrame en Copilot Chat, ejecutar `purgeData` vía Graph en entorno de pruebas y reaplicar Holds verificando `SubstrateHolds`."], ["**Revisor Legal Interno / Externo (Reviewer)**", "Guía oficial *Group and view items in a review set* + *Search content with Advanced review set explorer (KQL)* + *Security Copilot in Purview* `[Verificado MS Learn]`", "Podcast y briefings *All Things M365 Compliance* (**Nikki Chapple** y **Ryan John Murphy**) sobre flujos EDRM en M365 `[Verificado MS Learn]`", "Revisar lotes usando `Is Inclusive`, *Smart tags* de privilegio abogado-cliente, resúmenes de Security Copilot y consultas básicas en `ReviewSetTable`."]]}};
+const NAV_INDEX = [{"id": "00_Marco_Maestro_CISO_SOC_y_NIST", "orden": 0, "folder": "00_Marco_Maestro_CISO_SOC_y_NIST", "slug": "Marco_Maestro_CISO_SOC_y_NIST", "nombreCorto": "Marco Maestro CISO, SOC y NIST", "categoria": "Marco Transversal CISO, SOC y NIST", "htmlRel": "../00_Marco_Maestro_CISO_SOC_y_NIST/Marco_Maestro_CISO_SOC_y_NIST_Guia_Excelencia_Operacional.html"}, {"id": "01_Microsoft_Entra_ID", "orden": 1, "folder": "01_Microsoft_Entra_ID", "slug": "Microsoft_Entra_ID", "nombreCorto": "Microsoft Entra ID", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../01_Microsoft_Entra_ID/Microsoft_Entra_ID_Guia_Excelencia_Operacional.html"}, {"id": "02_Microsoft_Entra_ID_Governance", "orden": 2, "folder": "02_Microsoft_Entra_ID_Governance", "slug": "Microsoft_Entra_ID_Governance", "nombreCorto": "Microsoft Entra ID Governance", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../02_Microsoft_Entra_ID_Governance/Microsoft_Entra_ID_Governance_Guia_Excelencia_Operacional.html"}, {"id": "03_Microsoft_Defender_XDR", "orden": 3, "folder": "03_Microsoft_Defender_XDR", "slug": "Microsoft_Defender_XDR", "nombreCorto": "Defender XDR", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../03_Microsoft_Defender_XDR/Microsoft_Defender_XDR_Guia_Excelencia_Operacional.html"}, {"id": "04_Microsoft_Defender_for_Endpoint", "orden": 4, "folder": "04_Microsoft_Defender_for_Endpoint", "slug": "Microsoft_Defender_for_Endpoint", "nombreCorto": "Defender for Endpoint", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../04_Microsoft_Defender_for_Endpoint/Microsoft_Defender_for_Endpoint_Guia_Excelencia_Operacional.html"}, {"id": "05_Microsoft_Defender_for_Office_365", "orden": 5, "folder": "05_Microsoft_Defender_for_Office_365", "slug": "Microsoft_Defender_for_Office_365", "nombreCorto": "Defender for Office 365", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../05_Microsoft_Defender_for_Office_365/Microsoft_Defender_for_Office_365_Guia_Excelencia_Operacional.html"}, {"id": "06_Microsoft_Defender_for_Identity", "orden": 6, "folder": "06_Microsoft_Defender_for_Identity", "slug": "Microsoft_Defender_for_Identity", "nombreCorto": "Defender for Identity", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../06_Microsoft_Defender_for_Identity/Microsoft_Defender_for_Identity_Guia_Excelencia_Operacional.html"}, {"id": "07_Microsoft_Defender_for_Cloud_Apps", "orden": 7, "folder": "07_Microsoft_Defender_for_Cloud_Apps", "slug": "Microsoft_Defender_for_Cloud_Apps", "nombreCorto": "Defender for Cloud Apps", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../07_Microsoft_Defender_for_Cloud_Apps/Microsoft_Defender_for_Cloud_Apps_Guia_Excelencia_Operacional.html"}, {"id": "08_Microsoft_Sentinel", "orden": 8, "folder": "08_Microsoft_Sentinel", "slug": "Microsoft_Sentinel", "nombreCorto": "Microsoft Sentinel", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../08_Microsoft_Sentinel/Microsoft_Sentinel_Guia_Excelencia_Operacional.html"}, {"id": "09_Microsoft_Security_Copilot", "orden": 9, "folder": "09_Microsoft_Security_Copilot", "slug": "Microsoft_Security_Copilot", "nombreCorto": "Microsoft Security Copilot", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../09_Microsoft_Security_Copilot/Microsoft_Security_Copilot_Guia_Excelencia_Operacional.html"}, {"id": "10_Microsoft_Intune_Plan_1", "orden": 10, "folder": "10_Microsoft_Intune_Plan_1", "slug": "Microsoft_Intune_Plan_1", "nombreCorto": "Microsoft Intune Plan 1", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../10_Microsoft_Intune_Plan_1/Microsoft_Intune_Plan_1_Guia_Excelencia_Operacional.html"}, {"id": "11_Microsoft_Intune_Suite", "orden": 11, "folder": "11_Microsoft_Intune_Suite", "slug": "Microsoft_Intune_Suite", "nombreCorto": "Microsoft Intune Suite", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../11_Microsoft_Intune_Suite/Microsoft_Intune_Suite_Guia_Excelencia_Operacional.html"}, {"id": "12_Windows_Enterprise_Security_y_Cifrado", "orden": 12, "folder": "12_Windows_Enterprise_Security_y_Cifrado", "slug": "Windows_Enterprise_Security_y_Cifrado", "nombreCorto": "Windows Enterprise Security y Cifrado", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../12_Windows_Enterprise_Security_y_Cifrado/Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.html"}, {"id": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "orden": 13, "folder": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "slug": "Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "nombreCorto": "Microsoft Purview Suite", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno/Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.html"}, {"id": "14_Purview_Information_Protection", "orden": 14, "folder": "14_Purview_Information_Protection", "slug": "Purview_Information_Protection", "nombreCorto": "Purview Information Protection", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../14_Purview_Information_Protection/Purview_Information_Protection_Guia_Excelencia_Operacional.html"}, {"id": "15_Purview_Data_Loss_Prevention", "orden": 15, "folder": "15_Purview_Data_Loss_Prevention", "slug": "Purview_Data_Loss_Prevention", "nombreCorto": "Purview Data Loss Prevention", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../15_Purview_Data_Loss_Prevention/Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.html"}, {"id": "16_Purview_Data_Lifecycle_y_Records_Management", "orden": 16, "folder": "16_Purview_Data_Lifecycle_y_Records_Management", "slug": "Purview_Data_Lifecycle_y_Records_Management", "nombreCorto": "Purview DLCM y Records Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../16_Purview_Data_Lifecycle_y_Records_Management/Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.html"}, {"id": "17_Purview_Insider_Risk_Management", "orden": 17, "folder": "17_Purview_Insider_Risk_Management", "slug": "Purview_Insider_Risk_Management", "nombreCorto": "Purview Insider Risk Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../17_Purview_Insider_Risk_Management/Purview_Insider_Risk_Management_Guia_Excelencia_Operacional.html"}, {"id": "18_Purview_Communication_Compliance", "orden": 18, "folder": "18_Purview_Communication_Compliance", "slug": "Purview_Communication_Compliance", "nombreCorto": "Purview Communication Compliance", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../18_Purview_Communication_Compliance/Purview_Communication_Compliance_Guia_Excelencia_Operacional.html"}, {"id": "19_Purview_Audit_Premium", "orden": 19, "folder": "19_Purview_Audit_Premium", "slug": "Purview_Audit_Premium", "nombreCorto": "Purview Audit (Premium)", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../19_Purview_Audit_Premium/Purview_Audit_Premium_Guia_Excelencia_Operacional.html"}, {"id": "20_Purview_eDiscovery_Premium", "orden": 20, "folder": "20_Purview_eDiscovery_Premium", "slug": "Purview_eDiscovery_Premium", "nombreCorto": "Purview eDiscovery Premium", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../20_Purview_eDiscovery_Premium/Purview_eDiscovery_Premium_Guia_Excelencia_Operacional.html"}, {"id": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "orden": 21, "folder": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "slug": "Customer_Lockbox_Customer_Key_y_M365_PAM", "nombreCorto": "Customer Lockbox, Customer Key y M365 PAM", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../21_Customer_Lockbox_Customer_Key_y_M365_PAM/Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.html"}, {"id": "22_Microsoft_Agent_365", "orden": 22, "folder": "22_Microsoft_Agent_365", "slug": "Microsoft_Agent_365", "nombreCorto": "Microsoft Agent 365", "categoria": "Gobierno y Seguridad de Agentes IA", "htmlRel": "../22_Microsoft_Agent_365/Microsoft_Agent_365_Guia_Excelencia_Operacional.html"}];
+
+(() => {
+  const memStore = {};
+  const storageKey = "mseop_v3_state_" + MODULE_DATA.id;
+  function loadState() {
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      return raw ? JSON.parse(raw) : { tasks: {}, steps: {} };
+    } catch (_) {
+      return memStore[storageKey] || { tasks: {}, steps: {} };
+    }
+  }
+  function saveState(st) {
+    memStore[storageKey] = st;
+    try { window.localStorage.setItem(storageKey, JSON.stringify(st)); } catch (_) {}
+  }
+
+  let uiState = loadState();
+  if (!uiState.tasks) uiState.tasks = {};
+  if (!uiState.steps) uiState.steps = {};
+  let activeView = "view-overview";
+  let activePeriodicCad = "Diaria";
+
+  function esc(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // Converts inline Markdown (**bold**, `code`, [Verificado MS Learn], [Decisión / Propuesta Editorial]) into clean readable HTML
+  function richText(str) {
+    let s = esc(str);
+    s = s.replace(/`\[Verificado MS Learn\]`|\[Verificado MS Learn\]/g, '<span class="inline-tag tag-learn">Verificado MS Learn</span>');
+    s = s.replace(/`\[Decisión \/ Propuesta Editorial\]`|\[Decisión \/ Propuesta Editorial\]|`\[Propuesta Editorial\]`|\[Propuesta Editorial\]/g, '<span class="inline-tag tag-edit">Propuesta Editorial</span>');
+    s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    return s;
+  }
+
+  function valBadge(status) {
+    const isLearn = String(status).indexOf("Verificado") !== -1;
+    return '<span class="' + (isLearn ? "badge badge-learn" : "badge badge-editorial") + '">' + esc(status) + '</span>';
+  }
+
+  // Partition activities cleanly into Periodic vs Ad-Hoc
+  const allActs = MODULE_DATA.actividadesOperacionales || [];
+  const periodicActs = allActs.filter((a) => a.cadencia !== "Ad-Hoc");
+  const adhocActs = allActs.filter((a) => a.cadencia === "Ad-Hoc");
+  const prereqs = (MODULE_DATA.relacionM365E5 && MODULE_DATA.relacionM365E5.prerrequisitos) || [];
+  const validations = MODULE_DATA.validacionesConfiguracion || [];
+  const components = MODULE_DATA.arquitecturaYComponentes || [];
+  const rbacRoles = MODULE_DATA.rbacYRoles || [];
+
+  const dailyActs = periodicActs.filter((a) => a.cadencia === "Diaria");
+  const weeklyActs = periodicActs.filter((a) => a.cadencia === "Semanal");
+  const monthlyActs = periodicActs.filter((a) => a.cadencia === "Mensual");
+  const longCycleActs = periodicActs.filter((a) => ["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) !== -1);
+
+  // Topbar links & module switcher
+  const baseName = MODULE_DATA.slug + "_Guia_Excelencia_Operacional";
+  document.getElementById("xlsxLink").href = "./" + baseName + ".xlsx";
+  document.getElementById("mdLink").href = "./" + baseName + ".md";
+
+  const jumpSel = document.getElementById("modJumpSelect");
+  NAV_INDEX.forEach((m) => {
+    const opt = document.createElement("option");
+    opt.value = m.htmlRel;
+    opt.textContent = String(m.orden).padStart(2, "0") + " — " + m.nombreCorto;
+    if (m.id === MODULE_DATA.id) opt.selected = true;
+    jumpSel.appendChild(opt);
+  });
+  jumpSel.addEventListener("change", (e) => { if (e.target.value) window.location.href = e.target.value; });
+
+  const curIdx = NAV_INDEX.findIndex((m) => m.id === MODULE_DATA.id);
+  const prevBtn = document.getElementById("prevModBtn");
+  const nextBtn = document.getElementById("nextModBtn");
+  if (curIdx > 0) prevBtn.href = NAV_INDEX[curIdx - 1].htmlRel;
+  else { prevBtn.style.opacity = "0.4"; prevBtn.style.pointerEvents = "none"; }
+  if (curIdx >= 0 && curIdx < NAV_INDEX.length - 1) nextBtn.href = NAV_INDEX[curIdx + 1].htmlRel;
+  else { nextBtn.style.opacity = "0.4"; nextBtn.style.pointerEvents = "none"; }
+
+  document.getElementById("themeToggleBtn").addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+  });
+  document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+  // Sidebar counters
+  const totalConfigChecks = prereqs.length + validations.length;
+  document.getElementById("navCntConfig").textContent = totalConfigChecks;
+  document.getElementById("navCntDiaria").textContent = dailyActs.length;
+  document.getElementById("navCntSemanal").textContent = weeklyActs.length;
+  document.getElementById("navCntMensual").textContent = monthlyActs.length;
+  document.getElementById("navCntLargos").textContent = longCycleActs.length;
+  document.getElementById("navCntAdhoc").textContent = adhocActs.length;
+  document.getElementById("navCntQueries").textContent = (MODULE_DATA.consultasKQLyVerificacion || []).length;
+  document.getElementById("navCntKpis").textContent = (MODULE_DATA.kpisYMetricas || []).length;
+  document.getElementById("navCntNist").textContent = (MODULE_DATA.mapeoNISTCSF20 || []).length;
+
+  function switchView(viewId, periodicCadOverride) {
+    activeView = viewId;
+    if (periodicCadOverride) activePeriodicCad = periodicCadOverride;
+
+    document.querySelectorAll(".view-panel").forEach((p) => p.classList.remove("active"));
+    const target = document.getElementById(viewId);
+    if (target) target.classList.add("active");
+
+    document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+      const bv = btn.getAttribute("data-view");
+      const bc = btn.getAttribute("data-cad");
+      if (bv === viewId && (!bc || bc === activePeriodicCad)) btn.classList.add("active");
+      else btn.classList.remove("active");
+    });
+
+    if (viewId === "view-periodic") {
+      syncPeriodicSubnav();
+      renderPeriodicCards();
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      switchView(btn.getAttribute("data-view"), btn.getAttribute("data-cad") || null);
+    });
+  });
+
+  // Handle incoming URL hash (#config, #periodic-diaria, #adhoc, etc.)
+  function applyInitialHash() {
+    const h = (window.location.hash || "").replace("#", "");
+    if (h === "config") switchView("view-config");
+    else if (h === "periodic-diaria") switchView("view-periodic", "Diaria");
+    else if (h === "periodic-semanal") switchView("view-periodic", "Semanal");
+    else if (h === "periodic-mensual") switchView("view-periodic", "Mensual");
+    else if (h === "periodic-largos") switchView("view-periodic", "CICLOS_LARGOS");
+    else if (h === "adhoc") switchView("view-adhoc");
+    else if (h === "queries") switchView("view-queries");
+    else if (h === "nist") switchView("view-nist");
+  }
+
+  function updateProgressTracker() {
+    let cfgDone = 0;
+    prereqs.forEach((_, i) => { if (uiState.tasks["CFG-" + (i + 1)]) cfgDone++; });
+    validations.forEach((_, i) => { if (uiState.tasks["VAL-" + (i + 1)]) cfgDone++; });
+    const cfgPct = totalConfigChecks ? Math.round((cfgDone / totalConfigChecks) * 100) : 0;
+
+    const perDone = periodicActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const perPct = periodicActs.length ? Math.round((perDone / periodicActs.length) * 100) : 0;
+
+    const ahDone = adhocActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const ahPct = adhocActs.length ? Math.round((ahDone / adhocActs.length) * 100) : 0;
+
+    document.getElementById("sidebarProgress").innerHTML =
+      '<div class="nav-section-label" style="padding-left:0;">Tu Progreso de Revisión</div>' +
+      '<div class="prog-row"><div class="prog-head"><span>1. Configuración y Validación</span><span>' + cfgDone + '/' + totalConfigChecks + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + cfgPct + '%"></div></div></div>' +
+      '<div class="prog-row"><div class="prog-head"><span>2. Rutinas Periódicas</span><span>' + perDone + '/' + periodicActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + perPct + '%"></div></div></div>' +
+      '<div class="prog-row" style="margin-bottom:0;"><div class="prog-head"><span>3. Playbooks Ad-Hoc</span><span>' + ahDone + '/' + adhocActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + ahPct + '%"></div></div></div>';
+  }
+
+  // VISTA 0: OVERVIEW
+  document.getElementById("heroTitle").textContent = MODULE_DATA.nombre;
+  document.getElementById("heroSummary").textContent = MODULE_DATA.resumenEjecutivo;
+  document.getElementById("heroBadges").innerHTML = [
+    '<span class="badge badge-accent">Módulo ' + String(MODULE_DATA.orden).padStart(2, "0") + ' de 22</span>',
+    '<span class="badge">' + esc(MODULE_DATA.categoria) + '</span>',
+    '<span class="badge badge-learn">' + esc(MODULE_DATA.relacionM365E5.estado) + '</span>',
+    '<span class="badge">Validación: ' + esc(MODULE_DATA.fechaValidacion) + '</span>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").innerHTML = [
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 1 · Acciones Puntuales</div>' +
+        '<h3>Configuración Base y Validaciones</h3>' +
+        '<p>Qué debes habilitar al inicio (' + prereqs.length + ' prerrequisitos, ' + components.length + ' componentes y ' + rbacRoles.length + ' roles RBAC/PIM) y <strong>' + validations.length + ' validaciones "Proof of Life"</strong> para comprobar que todo quedó bien configurado.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-config">Ir a Configuración y Validaciones →</button></div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 2 · Operación Programada</div>' +
+        '<h3>Rutinas Periódicas por Frecuencia</h3>' +
+        '<p><strong>' + periodicActs.length + ' procedimientos preventivos</strong> separados con claridad en ciclos Diarios (' + dailyActs.length + '), Semanales (' + weeklyActs.length + '), Mensuales (' + monthlyActs.length + ') y Trimestrales/Anuales (' + longCycleActs.length + ').</p>' +
+      '</div>' +
+      '<div class="pill-row">' +
+        '<button class="btn btn-primary btn-sm" type="button" data-goto="view-periodic" data-gocad="Diaria">Diarias (' + dailyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Semanal">Semanales (' + weeklyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Mensual">Mensuales (' + monthlyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="CICLOS_LARGOS">Trim./Anual (' + longCycleActs.length + ')</button>' +
+      '</div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 3 · Reacción del Analista</div>' +
+        '<h3>Playbooks Ad-Hoc ante Alertas</h3>' +
+        '<p><strong>' + adhocActs.length + ' playbooks tácticos</strong> que no siguen calendario: se disparan cuando una alerta, señal de compromiso o incidente requiere contención e investigación del analista.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-adhoc">Abrir Playbooks Ad-Hoc →</button></div>' +
+    '</div>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-goto]");
+    if (!b) return;
+    switchView(b.getAttribute("data-goto"), b.getAttribute("data-gocad") || null);
+  });
+
+  const rel = MODULE_DATA.relacionM365E5;
+  document.getElementById("licensingOverviewCard").innerHTML =
+    '<h3 style="margin-top:0;font-size:20px;">Encaje de Licenciamiento en Microsoft 365 E5 y Portales Oficiales</h3>' +
+    '<p style="margin-bottom:16px;">' + richText(rel.notaLicenciamiento) + '</p>' +
+    '<div class="info-pair" style="margin-bottom:0;">' +
+      '<div class="info-box"><div class="info-label">Licencias y SKUs Aplicables</div><ul style="margin:6px 0 0 0;padding-left:20px;">' +
+        (rel.licencias || []).map((l) => '<li style="margin-bottom:6px;">' + richText(l) + '</li>').join("") +
+      '</ul></div>' +
+      '<div class="info-box"><div class="info-label">Consolas Oficiales de Administración y SOC</div><div class="pill-row" style="margin-top:10px;">' +
+        (MODULE_DATA.portalesPrincipales || []).map((u) => '<a class="btn" href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + ' ↗</a>').join("") +
+      '</div><div style="margin-top:16px;"><div class="info-label">Roles Involucrados</div><div class="pill-row" style="margin-top:6px;">' +
+        (MODULE_DATA.audiencia || []).map((au) => '<span class="badge">' + esc(au) + '</span>').join("") +
+      '</div></div></div>' +
+    '</div>';
+
+  document.getElementById("principlesGrid").innerHTML = (MODULE_DATA.principiosRectores || []).map((p) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:10px;">' +
+        '<h3 style="margin:0;font-size:17.5px;">' + esc(p.principio) + '</h3>' +
+        valBadge(p.estadoValidacion) +
+      '</div>' +
+      '<p class="muted" style="margin:0 0 12px 0;">' + richText(p.descripcion) + '</p>' +
+      (p.fuenteUrl ? '<a href="' + esc(p.fuenteUrl) + '" target="_blank" rel="noopener noreferrer">Consultar referencia en Microsoft Learn ↗</a>' : '') +
+    '</div>'
+  )).join("");
+
+  // VISTA 1: CONFIGURACIÓN PUNTUAL Y VALIDACIONES
+  function renderConfigView() {
+    document.getElementById("prereqsContainer").innerHTML = prereqs.map((pr, idx) => {
+      const code = "CFG-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '" style="padding:22px 28px;margin-bottom:16px;">' +
+          '<div class="card-title-group">' +
+            '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+            '<div style="flex:1;">' +
+              '<div class="pill-row" style="margin-bottom:6px;">' +
+                '<span class="card-code" style="margin-bottom:0;">' + code + '</span>' +
+                '<span class="badge">Acción Puntual de Puesta en Marcha</span>' +
+              '</div>' +
+              '<div style="font-size:16px;font-weight:600;">' + richText(pr) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("validationsContainer").innerHTML = validations.map((v, idx) => {
+      const code = "VAL-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + code + ' · Validación de Configuración</span>' +
+                '<h4 class="card-heading">' + richText(v.control) + '</h4>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' + valBadge(v.origen || "Verificado MS Learn") + '</div>' +
+          '</div>' +
+          '<div class="info-pair" style="margin-bottom:0;">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Dónde y Cómo Validar la Configuración</div>' +
+              '<div class="info-content">' + richText(v.comoValidar) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label">Estado / Resultado Esperado ("Proof of Life")</div>' +
+              '<div class="info-content">' + richText(v.estadoEsperado) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("componentsContainer").innerHTML = components.map((c, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">COMP-' + String(idx + 1).padStart(2, "0") + ' · Subsistema Técnico</span>' +
+            '<h4 class="card-heading">' + esc(c.componente) + '</h4>' +
+          '</div>' +
+          valBadge(c.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Qué Configurar y Habilitar en este Componente</div>' +
+            '<div class="info-content">' + richText(c.funcionOperativa) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Ruta Exacta en Consola</div>' +
+            '<div class="info-content"><code>' + esc(c.portalRuta) + '</code></div>' +
+            '<div class="info-label" style="margin-top:14px;">Integraciones que Validar</div>' +
+            '<div class="pill-row" style="margin-top:6px;">' + (c.integraciones || []).map((i) => '<span class="badge">' + esc(i) + '</span>').join("") + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+
+    document.getElementById("rbacContainer").innerHTML = rbacRoles.map((r) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">RBAC / PIM · ' + esc(r.nivelSOC) + '</span>' +
+            '<h4 class="card-heading">' + esc(r.rol) + '</h4>' +
+          '</div>' +
+          valBadge(r.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair" style="margin-bottom:14px;">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Configuración Puntual en PIM / Asignación</div>' +
+            '<div class="info-content">' + richText(r.asignacionPIM) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Alcance de Permisos a Validar</div>' +
+            '<div class="info-content">' + richText(r.permisosClave) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="validation-footer">' +
+          '<div><strong>Uso operativo autorizado:</strong> ' + richText(r.responsabilidadOperativa) + '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+
+  // Helper to render step-by-step lists with clickable step checkmarks
+  function renderStepRows(actCode, steps) {
+    return '<ol class="steps-list">' + (steps || []).map((st, idx) => {
+      const stepKey = actCode + "_S" + (idx + 1);
+      const isChecked = !!uiState.steps[stepKey];
+      return (
+        '<li class="step-row ' + (isChecked ? "step-checked" : "") + '" data-step="' + esc(stepKey) + '" title="Haz clic para marcar o desmarcar este paso">' +
+          '<span class="step-num">' + (isChecked ? "✓" : (idx + 1)) + '</span>' +
+          '<div class="step-body">' + richText(st) + '</div>' +
+        '</li>'
+      );
+    }).join("") + '</ol>';
+  }
+
+  // VISTA 2: ACCIONES PERIÓDICAS
+  const roleSet = new Set();
+  periodicActs.forEach((a) => {
+    String(a.rolResponsable || "").split(/[\/+,]/).forEach((r) => {
+      const clean = r.trim();
+      if (clean) roleSet.add(clean);
+    });
+  });
+  const perRoleSel = document.getElementById("perRole");
+  Array.from(roleSet).sort().forEach((r) => {
+    const o = document.createElement("option");
+    o.value = r; o.textContent = "Rol: " + r;
+    perRoleSel.appendChild(o);
+  });
+
+  function syncPeriodicSubnav() {
+    document.querySelectorAll("#periodicCadBar .subnav-pill").forEach((b) => {
+      b.classList.toggle("active", b.getAttribute("data-pcad") === activePeriodicCad);
+    });
+    const titles = {
+      "Diaria": ["2. Acciones Periódicas — Rutinas Diarias", "Controles diarios del turno SOC y administración para asegurar salud de plataforma, triaje a tiempo y cero caídas silenciosas."],
+      "Semanal": ["2. Acciones Periódicas — Rutinas Semanales", "Actividades semanales de tuning de falsos positivos, caza proactiva, revisión de postura e higiene operativa."],
+      "Mensual": ["2. Acciones Periódicas — Rutinas Mensuales", "Gobierno mensual de privilegios RBAC/PIM, optimización financiera/retención, pruebas de automatización y reporte ejecutivo al CISO."],
+      "CICLOS_LARGOS": ["2. Acciones Periódicas — Ciclos Trimestrales, Semestrales y Anuales", "Ejercicios Tabletop/Purple Team, análisis de cobertura MITRE ATT&CK, simulacros de continuidad y auditoría estratégica anual."],
+      "ALL_PERIODIC": ["2. Todas las Acciones Periódicas Programadas", "Listado consolidado de todas las rutinas preventivas y de gobierno del módulo (excluyendo playbooks reactivos Ad-Hoc)."]
+    };
+    const pair = titles[activePeriodicCad] || titles["ALL_PERIODIC"];
+    document.getElementById("periodicTitle").textContent = pair[0];
+    document.getElementById("periodicSubtitle").textContent = pair[1];
+  }
+
+  document.getElementById("periodicCadBar").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-pcad]");
+    if (!b) return;
+    activePeriodicCad = b.getAttribute("data-pcad");
+    syncPeriodicSubnav();
+    switchView("view-periodic", activePeriodicCad);
+  });
+
+  function getFilteredPeriodic() {
+    const q = document.getElementById("perSearch").value.trim().toLowerCase();
+    const rol = document.getElementById("perRole").value;
+    const orig = document.getElementById("perOrigin").value;
+
+    return periodicActs.filter((a) => {
+      if (activePeriodicCad === "CICLOS_LARGOS") {
+        if (["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) === -1) return false;
+      } else if (activePeriodicCad !== "ALL_PERIODIC") {
+        if (a.cadencia !== activePeriodicCad) return false;
+      }
+      if (rol !== "ALL" && String(a.rolResponsable).indexOf(rol) === -1) return false;
+      if (orig !== "ALL" && a.estadoValidacion !== orig) return false;
+      if (q) {
+        const hay = [a.codigo, a.cadencia, a.actividad, a.objetivo, a.consolaRuta, a.rolResponsable, a.evidenciaAuditable, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderPeriodicCards() {
+    const list = getFilteredPeriodic();
+    document.getElementById("perCountLabel").textContent =
+      "Mostrando " + list.length + " acciones periódicas en esta vista (haz clic en cada paso numerado para llevar control de lectura o ejecución).";
+
+    const box = document.getElementById("periodicCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay actividades periódicas que coincidan con los filtros seleccionados.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + ' aria-label="Completar ' + esc(a.codigo) + '">' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Rutina ' + esc(a.cadencia) + '</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge">' + esc(a.rolResponsable) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Objetivo de la Rutina</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Consola y Ruta Exacta</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Acciones Paso a Paso a Ejecutar y Validar (' + steps.length + ' pasos)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación de cierre y evidencia auditable:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<span>MITRE ATT&amp;CK: ' + esc(a.mitreTactic) + ' · ' + esc(a.notaValidacion) + '</span>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Ver guía oficial en MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+
+  ["perSearch", "perRole", "perOrigin"].forEach((id) => {
+    document.getElementById(id).addEventListener("input", renderPeriodicCards);
+    document.getElementById(id).addEventListener("change", renderPeriodicCards);
+  });
+
+  // VISTA 3: PLAYBOOKS AD-HOC (ALERTAS Y SEÑALES)
+  function renderAdhocCards() {
+    const q = document.getElementById("adhocSearch").value.trim().toLowerCase();
+    const list = adhocActs.filter((a) => {
+      if (!q) return true;
+      const hay = [a.codigo, a.actividad, a.disparadorAlerta, a.objetivo, a.consolaRuta, a.rolResponsable, a.mitreTactic, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+      return hay.indexOf(q) !== -1;
+    });
+
+    const box = document.getElementById("adhocCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay playbooks Ad-Hoc que coincidan con la búsqueda.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card adhoc-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Playbook Reactivo del Analista (Ad-Hoc)</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge badge-accent">MITRE: ' + esc(a.mitreTactic) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="trigger-banner">' +
+            '<div class="info-label">Señal, Alerta o Evento Disparador (Cuándo debe actuar el analista)</div>' +
+            '<div class="info-content" style="font-weight:600;">' + richText(a.disparadorAlerta) + '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Meta de Contención y Erradicación</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Analista Ejecutor y Consola de Intervención</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><strong>Rol:</strong> ' + esc(a.rolResponsable) + '<br><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Secuencia Táctica del Analista (' + steps.length + ' pasos de respuesta)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación post-contención y evidencia forense:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<button class="btn btn-sm go-queries-btn" type="button">Abrir Consultas KQL / Scripts de Apoyo →</button>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Documentación oficial de respuesta MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+  document.getElementById("adhocSearch").addEventListener("input", renderAdhocCards);
+
+  // Global delegation for task checkboxes, step rows, copy buttons & query jumps
+  document.addEventListener("change", (e) => {
+    const chk = e.target.closest(".task-checkbox");
+    if (!chk) return;
+    const key = chk.getAttribute("data-task");
+    uiState.tasks[key] = chk.checked;
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  document.addEventListener("click", (e) => {
+    const stepEl = e.target.closest(".step-row");
+    if (stepEl && !e.target.closest("a")) {
+      const sk = stepEl.getAttribute("data-step");
+      uiState.steps[sk] = !uiState.steps[sk];
+      saveState(uiState);
+      renderPeriodicCards();
+      renderAdhocCards();
+      return;
+    }
+    const copyBtn = e.target.closest(".copy-text-btn");
+    if (copyBtn) {
+      const txt = copyBtn.getAttribute("data-copy") || "";
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(() => {
+          const prev = copyBtn.textContent;
+          copyBtn.textContent = "¡Copiado!";
+          setTimeout(() => { copyBtn.textContent = prev; }, 1400);
+        });
+      }
+      return;
+    }
+    if (e.target.closest(".go-queries-btn")) {
+      switchView("view-queries");
+    }
+  });
+
+  document.getElementById("resetChecksBtn").addEventListener("click", () => {
+    uiState = { tasks: {}, steps: {} };
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  // Export CSV (all activities with action type distinction)
+  document.getElementById("exportCsvBtn").addEventListener("click", () => {
+    const hdr = ["TipoAccion", "Codigo", "Cadencia", "Actividad", "Disparador_u_Objetivo", "ConsolaRuta", "RolResponsable", "FuncionNIST", "SubcategoriaNIST", "MITRE", "EstadoValidacion", "Completado", "EvidenciaAuditable"];
+    const lines = [hdr.join(",")];
+    allActs.forEach((a) => {
+      const vals = [
+        a.tipoAccion, a.codigo, a.cadencia, a.actividad,
+        a.cadencia === "Ad-Hoc" ? a.disparadorAlerta : a.objetivo,
+        a.consolaRuta, a.rolResponsable, a.funcionNIST, a.subcategoriaNIST,
+        a.mitreTactic, a.estadoValidacion, uiState.tasks[a.codigo] ? "Si" : "No", a.evidenciaAuditable
+      ].map((v) => '"' + String(v || "").replace(/"/g, '""') + '"');
+      lines.push(vals.join(","));
+    });
+    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url; link.download = MODULE_DATA.slug + "_Guia_Operacional.csv";
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  });
+
+  // VISTA 4: QUERIES
+  function renderQueries() {
+    const q = document.getElementById("kqlSearch").value.trim().toLowerCase();
+    const uf = document.getElementById("kqlUsageFilter").value;
+    const list = (MODULE_DATA.consultasKQLyVerificacion || []).filter((it) => {
+      if (uf !== "ALL" && it.usoOperativo !== uf) return false;
+      if (q && [it.nombre, it.plataforma, it.tablaPrincipal, it.proposito, it.consulta, it.usoOperativo].join(" ").toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+
+    document.getElementById("queriesContainer").innerHTML = list.map((it, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">Q-' + String(idx + 1).padStart(2, "0") + ' · ' + esc(it.usoOperativo) + '</span>' +
+            '<h3 class="card-heading">' + esc(it.nombre) + '</h3>' +
+          '</div>' +
+          '<div class="pill-row">' +
+            '<span class="badge badge-accent">' + esc(it.plataforma) + '</span>' +
+            '<span class="badge mono">' + esc(it.tablaPrincipal) + '</span>' +
+            valBadge(it.estadoValidacion) +
+            '<button class="btn btn-sm copy-kql-btn" type="button" data-qidx="' + idx + '">Copiar consulta</button>' +
+          '</div>' +
+        '</div>' +
+        '<p style="margin:0 0 12px 0;"><strong>Qué valida o detecta:</strong> ' + richText(it.proposito) + '</p>' +
+        '<pre class="code-block">' + esc(it.consulta) + '</pre>' +
+      '</div>'
+    )).join("");
+
+    document.querySelectorAll(".copy-kql-btn").forEach((b) => {
+      b.addEventListener("click", () => {
+        const item = list[Number(b.getAttribute("data-qidx"))];
+        if (item && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(item.consulta).then(() => {
+            b.textContent = "¡Consulta copiada!";
+            setTimeout(() => { b.textContent = "Copiar consulta"; }, 1500);
+          });
+        }
+      });
+    });
+  }
+  document.getElementById("kqlSearch").addEventListener("input", renderQueries);
+  document.getElementById("kqlUsageFilter").addEventListener("change", renderQueries);
+
+  // VISTA 5: KPIs, MATURITY & TRAINING
+  document.getElementById("kpiContainer").innerHTML = (MODULE_DATA.kpisYMetricas || []).map((k) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:12px;">' +
+        '<div><span class="card-code">' + esc(k.id) + '</span><h4 class="card-heading" style="font-size:18px;">' + esc(k.nombre) + '</h4></div>' +
+        valBadge(k.estadoValidacion) +
+      '</div>' +
+      '<p style="margin:0 0 12px 0;">' + richText(k.definicion) + '</p>' +
+      '<pre class="code-block" style="margin:0 0 14px 0;">Fórmula: ' + esc(k.formula) + '</pre>' +
+      '<div class="pill-row">' +
+        '<span class="badge badge-accent">Meta: ' + esc(k.metaSugerida) + '</span>' +
+        '<span class="badge">Medición: ' + esc(k.frecuencia) + '</span>' +
+        '<span class="badge">' + esc(k.audiencia) + '</span>' +
+      '</div>' +
+      '<p class="muted" style="font-size:13px;margin:10px 0 0 0;">' + richText(k.notaValidacion) + '</p>' +
+    '</div>'
+  )).join("");
+
+  const mat = MODULE_DATA.modeloMadurez || [];
+  document.getElementById("maturityContainer").innerHTML = mat.map((m) => (
+    '<div class="spacious-card" style="padding:22px 28px;margin-bottom:14px;">' +
+      '<div class="pill-row" style="margin-bottom:6px;">' +
+        '<span class="card-code" style="margin-bottom:0;">' + richText(m.nivel) + '</span>' +
+        (m.estadio ? '<strong style="font-size:17px;">' + richText(m.estadio) + '</strong>' : '') +
+        '<span class="badge badge-editorial">Propuesta Editorial</span>' +
+      '</div>' +
+      '<div style="font-size:15.5px;">' + richText(m.descripcion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  const tr = MODULE_DATA.rutaFormacion || { headers: [], rows: [] };
+  if (tr.rows && tr.rows.length) {
+    document.getElementById("trainingContainer").innerHTML =
+      '<div class="table-wrap"><table><thead><tr>' +
+      tr.headers.map((h) => '<th>' + richText(h) + '</th>').join("") +
+      '</tr></thead><tbody>' +
+      tr.rows.map((row) => '<tr>' + row.map((cell, ci) => '<td>' + (ci === 0 ? '<strong>' + richText(cell) + '</strong>' : richText(cell)) + '</td>').join("") + '</tr>').join("") +
+      '</tbody></table></div>';
+  }
+
+  // VISTA 6: NIST CSF 2.0, AUDIT & REFS
+  function renderNist() {
+    const fn = document.getElementById("nistFuncSelect").value;
+    const rows = (MODULE_DATA.mapeoNISTCSF20 || []).filter((n) => fn === "ALL" || String(n.funcion).indexOf(fn) !== -1);
+    document.getElementById("nistCardsContainer").innerHTML = rows.map((n) => (
+      '<div class="spacious-card" style="padding:24px 30px;margin-bottom:16px;">' +
+        '<div class="card-top" style="margin-bottom:14px;">' +
+          '<div class="pill-row">' +
+            '<span class="card-code" style="margin-bottom:0;">' + esc(n.subcategoria) + '</span>' +
+            '<strong style="font-size:17px;">' + esc(n.funcion) + '</strong>' +
+          '</div>' +
+          valBadge(n.estadoValidacion) +
+        '</div>' +
+        '<p style="margin:0 0 14px 0;"><strong>Outcome NIST CSWP 29:</strong> ' + richText(n.descripcionResultado) + '</p>' +
+        '<div class="info-pair" style="margin-bottom:0;">' +
+          '<div class="info-box"><div class="info-label">Capacidad Habilitadora en Microsoft</div><div class="info-content">' + richText(n.capacidadMicrosoft) + '</div></div>' +
+          '<div class="info-box"><div class="info-label">Evidencia Auditable Reproducible</div><div class="info-content">' + richText(n.evidenciaAuditoria) + '</div></div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+  document.getElementById("nistFuncSelect").addEventListener("change", renderNist);
+
+  const vd = MODULE_DATA.validacionYDecisionesEditoriales || {};
+  document.getElementById("auditSummaryBox").innerHTML =
+    '<h4 style="margin:0 0 8px 0;font-size:18px;">Resumen de Auditoría Documental (' + esc(vd.fechaRevalidacion) + ')</h4>' +
+    '<p style="margin:0;">' + richText(vd.resumenAuditoria) + '</p>';
+
+  document.getElementById("corrContainer").innerHTML = '<ol style="padding-left:20px;margin:0;">' +
+    (vd.correccionesAplicadas || []).map((c) => '<li style="margin-bottom:12px;">' + richText(c) + '</li>').join("") + '</ol>';
+
+  document.getElementById("decContainer").innerHTML = (vd.decisionesEditoriales || []).map((d) => (
+    '<div class="info-box" style="margin-bottom:12px;">' +
+      '<div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;"><strong>' + esc(d.elemento) + '</strong>' + valBadge(d.tipo) + '</div>' +
+      '<div class="muted" style="font-size:14.5px;">' + richText(d.justificacion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  function renderRefs() {
+    const q = document.getElementById("refSearch").value.trim().toLowerCase();
+    const list = (MODULE_DATA.referenciasVerificadas || []).filter((r) => {
+      if (!q) return true;
+      return [r.id, r.titulo, r.tipoFuente, r.autor, r.comentario, r.url].join(" ").toLowerCase().indexOf(q) !== -1;
+    });
+    document.getElementById("refTableBody").innerHTML = list.map((r) => (
+      '<tr>' +
+        '<td class="mono"><strong>' + esc(r.id) + '</strong></td>' +
+        '<td><a href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer"><strong>' + esc(r.titulo) + ' ↗</strong></a><br><span class="mono muted" style="font-size:12px;">' + esc(r.url) + '</span></td>' +
+        '<td><span class="badge">' + esc(r.tipoFuente) + '</span></td>' +
+        '<td>' + esc(r.autor) + '</td>' +
+        '<td>' + richText(r.comentario) + '</td>' +
+      '</tr>'
+    )).join("");
+  }
+  document.getElementById("refSearch").addEventListener("input", renderRefs);
+
+  // Initial render
+  updateProgressTracker();
+  renderConfigView();
+  syncPeriodicSubnav();
+  renderPeriodicCards();
+  renderAdhocCards();
+  renderQueries();
+  renderNist();
+  renderRefs();
+  applyInitialHash();
+})();
+</script>
+</body>
+</html>

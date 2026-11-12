@@ -1,0 +1,1271 @@
+{
+  "schemaVersion": "2.0",
+  "id": "02_Microsoft_Entra_ID_Governance",
+  "orden": 2,
+  "slug": "Microsoft_Entra_ID_Governance",
+  "nombre": "Microsoft Entra ID Governance (Gobierno de Ciclo de Vida JML, Derechos, Recertificación IA y Agentes)",
+  "nombreCorto": "Microsoft Entra ID Governance",
+  "categoria": "Identidad y Acceso (Microsoft Entra)",
+  "bloqueOrigen": "Nuevo desde Microsoft Learn MCP (Nov 2026)",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://entra.microsoft.com",
+    "https://myaccess.microsoft.com",
+    "https://myaccount.microsoft.com",
+    "https://portal.azure.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "Identity Architect",
+    "Identity Governance Administrator",
+    "Lifecycle Workflows Administrator",
+    "Privileged Role Administrator",
+    "SOC L2",
+    "SOC L3",
+    "HRIS Integration Lead",
+    "Application Owners",
+    "GRC",
+    "FinOps"
+  ],
+  "relacionM365E5": {
+    "estado": "Complemento / Add-on sobre M365 E5 (Incluido en Microsoft Entra Suite / M365 E7)",
+    "licencias": [
+      "Microsoft Entra ID Governance Step Up for Microsoft Entra ID P2 (complemento recomendado para clientes con Microsoft 365 E5 / E5 Security / EMS E5)",
+      "Microsoft Entra ID Governance (User SL standalone sobre prerrequisito Entra ID P1 o Microsoft 365 E3/E5)",
+      "Microsoft Entra Suite / Microsoft Entra Suite Add-on for Microsoft Entra ID P2 (incluye Entra ID Governance, Private Access, Internet Access, ID Protection y Verified ID)",
+      "Microsoft 365 E7 - The Frontier Suite (GA 1 de mayo de 2026; unifica Microsoft 365 E5, Microsoft Copilot, Microsoft Entra Suite y Microsoft Agent 365)",
+      "Microsoft Agent 365 (sobre prerrequisito Entra ID P1 o M365 E3 para gobierno específico de identidades de agentes IA y service principals)",
+      "Suscripción Azure vinculada al tenant para facturación Monthly Active Users (MAU) del complemento Microsoft Entra ID Governance for guests"
+    ],
+    "prerrequisitos": [
+      "Suscripción activa en el tenant con plan de servicio AAD_PREMIUM_P2 para el SKU Step-Up P2 (ej. Microsoft 365 E5) o AAD_PREMIUM para el SKU completo Entra ID Governance",
+      "Cantidad de licencias adquiridas suficiente para cubrir a todos los usuarios miembros gobernados o que configuran capacidades de Entra ID Governance en el tenant",
+      "Atributos autoritativos poblados desde HRIS en objetos de usuario (employeeHireDate, employeeLeaveDateTime, department, mail y referencia jerárquica manager)",
+      "Suscripción y grupo de recursos de Azure vinculados en ID Governance > Dashboard > Guest governance (rol Azure Owner) para gobernar usuarios Guest B2B fuera de MTO",
+      "Configuración de Diagnostic Settings en Microsoft Entra ID enviando AuditLogs y ProvisioningLogs hacia Azure Monitor Log Analytics / Microsoft Sentinel para retención superior a 30 días"
+    ],
+    "notaLicenciamiento": "Microsoft 365 E5 incluye Microsoft Entra ID P2, el cual conserva todas las capacidades IGA previamente GA (Access Reviews básicos, Entitlement Management básico con Separation of Duties elemental de paquetes/grupos incompatibles, portal My Access y PIM para roles Entra, recursos Azure y grupos), pero Microsoft Learn establece explícitamente que ninguna nueva capacidad IGA se añade ni se añadirá al SKU Entra ID P2. Las capacidades avanzadas —Lifecycle Workflows (hasta 100 workflows y 100 Custom Task Extensions en Logic Apps), revisiones de acceso asistidas por ML (User-to-Group Affiliation e inactivos puros), Access Review Agent (con SCUs de Security Copilot), Verified ID + Face Check en Access Packages, Auto-assignment policies, aprobaciones condicionadas por ID Protection / Insider Risk, Account Discovery de cuentas huérfanas y cuota API /bulkUpload ampliada a 300K registros/24h— exigen Microsoft Entra ID Governance (o Step-Up for P2 / Entra Suite / M365 E7). Los invitados B2B (userType Guest) solo generan cobro MAU en Azure cuando ejecutan acciones exclusivas de ID Governance (GovernanceLicenseFeatureUsed = True, máximo un cargo por huésped/mes; exento en Multi-Tenant Organizations). El gobierno de identidades Microsoft Entra Agent ID en Access Packages y tareas de sponsor exige Microsoft Agent 365 o Microsoft 365 E7."
+  },
+  "resumenEjecutivo": "Microsoft Entra ID Governance constituye el plano cloud-native avanzado de Identity Governance and Administration (IGA) dentro del ecosistema Microsoft Entra, diseñado para asegurar de forma automatizada y verificable que las identidades correctas —empleados, colaboradores externos B2B, administradores privilegiados e identidades autónomas de agentes IA— posean únicamente el acceso necesario a los recursos adecuados durante el tiempo estrictamente requerido. Construido como capa de evolución sobre Microsoft Entra ID P2 (incluido en M365 E5) e integrado de serie en Microsoft Entra Suite y Microsoft 365 E7, unifica aprovisionamiento autoritativo desde RR. HH. (Workday, SuccessFactors y API /bulkUpload de hasta 300.000 registros/día), automatización Joiner-Mover-Leaver con Lifecycle Workflows y Azure Logic Apps, paquetes de derechos delegados en Entitlement Management con Separation of Duties y pruebas criptográficas/biométricas Verified ID + Face Check, recertificaciones inteligentes asistidas por ML y por el Access Review Agent en Microsoft Teams, elevación Just-In-Time en PIM y gobierno integral de Microsoft Entra Agent ID con patrocinadores humanos obligatorios.",
+  "principiosRectores": [
+    {
+      "principio": "Fuente autoritativa única impulsada por RR. HH. (HR-Driven Source of Truth)",
+      "descripcion": "Vincular el nacimiento, movilidad y baja de identidades corporativas directamente a sistemas HCM como Workday, SAP SuccessFactors o API-driven inbound provisioning (/bulkUpload) hacia Active Directory y Microsoft Entra ID sin altas manuales.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/entra/id-governance/identity-governance-overview"
+    },
+    {
+      "principio": "Automatización determinista Joiner-Mover-Leaver (Zero-Touch JML)",
+      "descripcion": "Ejecutar incorporación día-1 con Temporary Access Pass (TAP), reajuste de accesos por cambio departamental y revocación inmediata de tokens, paquetes, grupos y licencias en bajas mediante Lifecycle Workflows y Custom Task Extensions en Logic Apps.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/entra/id-governance/what-are-lifecycle-workflows"
+    },
+    {
+      "principio": "Acceso empaquetado por rol de negocio, temporal y delegado (Entitlement-by-Design)",
+      "descripcion": "Agrupar grupos, Teams, aplicaciones, sitios SharePoint, roles Entra y roles SAP IAG en Access Packages dentro de catálogos delegados al negocio, imponiendo expiración, Separation of Duties y credenciales Verified ID + Face Check.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-delegate"
+    },
+    {
+      "principio": "Recertificación inteligente asistida por ML e IA (Anti-Rubber-Stamping)",
+      "descripcion": "Erradicar aprobaciones mecánicas en campañas de Access Reviews integrando señales de inactividad (>30 días), afiliación organizacional ML (User-to-Group Affiliation) y asistencia conversacional del Access Review Agent en Microsoft Teams.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/entra/id-governance/review-recommendations-access-reviews"
+    },
+    {
+      "principio": "Cero privilegios permanentes (Zero Standing Privileges en PIM)",
+      "descripcion": "Convertir toda asignación privilegiada sobre Microsoft Entra roles, recursos Azure y PIM for Groups en elegible Just-In-Time (JIT), exigiendo Conditional Access Authentication Context y MFA resistente al phishing al activar.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure"
+    },
+    {
+      "principio": "Paridad de gobierno para externos B2B e identidades de Agentes IA",
+      "descripcion": "Someter cuentas Guest B2B e identidades Microsoft Entra Agent ID (agent blueprints, agent identities y agent users) a patrocinadores humanos responsables, transferencia automática de patrocinio al gerente y expiración determinista.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/entra/id-governance/agent-id-governance-overview"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "HR-Driven & API-Driven Inbound Provisioning",
+      "funcionOperativa": "Sincronización entrante autoritativa desde Workday, SAP SuccessFactors o endpoint Graph /bulkUpload (hasta 300.000 registros/24h y 20 jobs AD + 20 jobs Entra con licencia ID Governance).",
+      "portalRuta": "entra.microsoft.com > Entra ID > Enterprise apps > Provisioning",
+      "integraciones": [
+        "Workday & SAP SuccessFactors",
+        "Microsoft Graph synchronization bulkUpload API",
+        "Active Directory on-premises & Microsoft Entra Cloud Sync"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Lifecycle Workflows (LCW) y Custom Task Extensions",
+      "funcionOperativa": "Motor JML con hasta 100 workflows por tenant, 25 tareas por workflow, más de 30 tareas nativas, disparadores por tiempo (V1/V2), atributo, grupo o inactividad y hasta 100 extensiones en Azure Logic Apps.",
+      "portalRuta": "entra.microsoft.com > ID Governance > Lifecycle workflows",
+      "integraciones": [
+        "Azure Logic Apps (Managed Identity)",
+        "Temporary Access Pass (TAP) & Microsoft Teams",
+        "Microsoft Security Copilot en Entra (creación NL)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Entitlement Management (Catálogos, Access Packages y My Access)",
+      "funcionOperativa": "Gobierno delegado con hasta 7.500 catálogos, 20.000 paquetes, 300.000 asignaciones, Auto-assignment policies (15.000/política), aprobaciones multietapa con riesgo y portal de autoservicio My Access.",
+      "portalRuta": "entra.microsoft.com > ID Governance > Entitlement management / myaccess.microsoft.com",
+      "integraciones": [
+        "Grupos M365/Seguridad, Enterprise Apps, SharePoint Online",
+        "SAP Cloud Identity Access Governance (IAG) & Entra Roles (Preview)",
+        "Microsoft Entra ID Protection & Purview Insider Risk Management"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Controles de Separation of Duties (SoD) y Verified ID + Face Check",
+      "funcionOperativa": "Prevención de acumulación de privilegios mediante paquetes/grupos incompatibles y exigencia de credenciales verificables W3C y selfie biométrico en tiempo real (Face Check) antes de solicitar acceso.",
+      "portalRuta": "entra.microsoft.com > ID Governance > Entitlement management > Access packages > Separation of duties / Requests",
+      "integraciones": [
+        "Microsoft Entra Verified ID Network",
+        "Socios IDV en Microsoft Security Store",
+        "Microsoft Authenticator (presentación QR y Face Check)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Access Reviews Inteligentes y Access Review Agent",
+      "funcionOperativa": "Campañas recurrentes de recertificación con foco en inactivos puros, recomendaciones ML User-to-Group Affiliation (grupos <=600 miembros), Catalog Access Reviews y asistente conversacional IA en Teams.",
+      "portalRuta": "entra.microsoft.com > ID Governance > Access reviews / Agents > Access Review Agent",
+      "integraciones": [
+        "Microsoft Security Copilot",
+        "Microsoft Teams (flujo conversacional para revisores)",
+        "My Access Portal"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Privileged Identity Management (PIM para Roles, Azure y Grupos)",
+      "funcionOperativa": "Activación Just-In-Time (JIT) acotada en el tiempo con aprobación, MFA/Authentication Context, alertas de asignaciones fuera de banda y Custom Extensions al activar roles (Preview).",
+      "portalRuta": "entra.microsoft.com > ID Governance > Privileged Identity Management",
+      "integraciones": [
+        "Microsoft Entra Conditional Access Authentication Context",
+        "Azure Resource Manager RBAC",
+        "Azure Logic Apps (PIM Custom Extensions)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Outbound App Provisioning y Account Discovery",
+      "funcionOperativa": "Aprovisionamiento y desaprovisionamiento automático SCIM 2.0, LDAP, SQL y REST/SOAP hacia aplicaciones SaaS y on-premises, descubriendo cuentas locales existentes y cuentas huérfanas.",
+      "portalRuta": "entra.microsoft.com > Entra ID > Enterprise apps > Provisioning > Account Discovery",
+      "integraciones": [
+        "Aplicaciones SaaS SCIM 2.0 (ServiceNow, Salesforce, AWS, Google)",
+        "Microsoft Entra Provisioning Agent (LDAP, SQL, REST/SOAP)",
+        "Active Directory Group Writeback"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Gobierno de Identidades de Agentes IA (Microsoft Entra Agent ID)",
+      "funcionOperativa": "Ciclo de vida y gobierno de acceso para agent identity blueprints, agent identities y agent users con human sponsor obligatorio, paquetes de acceso con expiración y transferencia automática de patrocinio.",
+      "portalRuta": "entra.microsoft.com > Entra ID > Agent ID / myaccount.microsoft.com",
+      "integraciones": [
+        "Microsoft Agent 365 & Microsoft 365 E7",
+        "Microsoft Foundry & Microsoft Copilot Studio",
+        "Azure App Service / Functions & Conditional Access for Agents"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "Identity Governance Administrator",
+      "nivelSOC": "IAM / IGA Lead",
+      "permisosClave": "Crear y administrar catálogos, Access Packages, políticas EM, Connected Organizations, Access Reviews y paneles de ID Governance.",
+      "asignacionPIM": "Elegible en PIM (máximo 4 horas, MFA resistente al phishing + justificación + ticket ITSM; cero asignaciones permanentes).",
+      "responsabilidadOperativa": "Gobierno central de Entitlement Management, políticas SoD y campañas de recertificación; segregado de Privileged Role Administrator.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Lifecycle Workflows Administrator",
+      "nivelSOC": "IAM Automation Engineer",
+      "permisosClave": "Crear, modificar, versionar, programar, ejecutar on-demand y consultar reportes de Lifecycle Workflows y Custom Task Extensions (LifecycleWorkflows.ReadWrite.All).",
+      "asignacionPIM": "Elegible en PIM (máximo 4 horas, MFA resistente al phishing y aprobación par para flujos Leaver productivos).",
+      "responsabilidadOperativa": "Diseño y operación diaria de automatizaciones Joiner-Mover-Leaver y remediación de tareas fallidas en My Feed.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Privileged Role Administrator",
+      "nivelSOC": "Tier-0 Identity Custodian",
+      "permisosClave": "Administrar configuraciones PIM para roles Entra y PIM for Groups, asignaciones elegibles/activas, alertas PIM y Access Reviews de roles privilegiados.",
+      "asignacionPIM": "Elegible en PIM (máximo 2 horas, aprobación dual + Conditional Access Authentication Context con FIDO2/Passkey desde PAW).",
+      "responsabilidadOperativa": "Custodia de privilegios administrativos y cumplimiento Zero Standing Privileges sin autoaprobación.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Groups Administrator + Catalog Owner",
+      "nivelSOC": "IAM Resource Integrator",
+      "permisosClave": "Permite incorporar grupos de seguridad y grupos Microsoft 365 dentro de un catálogo específico de Entitlement Management sin requerir Global Administrator.",
+      "asignacionPIM": "Groups Administrator elegible en PIM (máximo 2 horas); Catalog owner asignado a grupo de seguridad gobernado.",
+      "responsabilidadOperativa": "Onboarding controlado de grupos corporativos en catálogos departamentales respetando mínimo privilegio.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Application Administrator + Catalog Owner",
+      "nivelSOC": "App & HRIS Integration Engineer",
+      "permisosClave": "Configurar conectores HR inbound, API /bulkUpload, aprovisionamiento SCIM saliente, Account Discovery y agregar Enterprise Apps a catálogos EM.",
+      "asignacionPIM": "Application Administrator elegible en PIM (máximo 4 horas, MFA resistente al phishing + control de cambios).",
+      "responsabilidadOperativa": "Integración de fuentes autoritativas HCM, conectores SCIM/on-premises y saneamiento de cuentas huérfanas.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Catalog Creator & Catalog Owner (Delegado EM)",
+      "nivelSOC": "Business Unit Resource Owner",
+      "permisosClave": "Crear catálogos propios (ba92d953-d8e0-4e39-a797-0cbedb0a89e8) y administrar recursos/delegados dentro de su catálogo (ae79f266-94d4-4dab-b730-feca7e132178) sin visibilidad transversal.",
+      "asignacionPIM": "Asignado mediante grupo de seguridad gobernado sujeto a Access Review trimestral (sin rol de directorio Entra).",
+      "responsabilidadOperativa": "Gobierno descentralizado de recursos por unidad de negocio (Finanzas, Legal, Ingeniería, Operaciones).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Access Package Manager & Assignment Manager (Delegado EM)",
+      "nivelSOC": "Business Access Operations",
+      "permisosClave": "Access package manager (7f480852-...) crea/edita paquetes y políticas en el catálogo; Assignment manager (e2182095-...) gestiona asignaciones directas y reprocesa entregas fallidas.",
+      "asignacionPIM": "Asignación delegada acotada al catálogo con expiración semestral revisada por el Catalog owner.",
+      "responsabilidadOperativa": "Mantenimiento operativo de paquetes de negocio, soporte a solicitudes y resolución de errores de entrega.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Security Reader / Reports Reader + Log Analytics Reader",
+      "nivelSOC": "SOC L2 / SOC L3 / GRC Auditor",
+      "permisosClave": "Lectura sin mutación sobre AuditLogs, AADProvisioningLogs, reportes de Lifecycle Workflows, alertas PIM y Workbooks en Azure Monitor / Sentinel.",
+      "asignacionPIM": "Activo acotado para monitoreo SOC continuo o elegible PIM (8 horas) para auditores internos/externos.",
+      "responsabilidadOperativa": "Detección de desvíos de gobierno, caza de asignaciones fuera de banda y verificación forense de cumplimiento.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Supervisión y remediación de ejecuciones fallidas en Lifecycle Workflows (JML)",
+      "objetivo": "Detectar y corregir en menos de 4 horas cualquier tarea fallida en flujos Joiner, Mover y especialmente Leaver.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Lifecycle workflows > Overview (My Feed) / Workflow history",
+      "procedimiento": [
+        "Revisar en My Feed las métricas Processed users with failures y Failed tasks de las últimas 24 horas.",
+        "Filtrar Workflow history (pestañas Runs y Tasks) por estado Failed priorizando workflows de categoría Leaver.",
+        "Inspeccionar Status Reason en Audit logs (ej. atributo manager/mail vacío o fallo en Logic App) y corregir la causa raíz.",
+        "Ejecutar Run on demand sobre los usuarios afectados (hasta 10 por lote) confirmando Status = Succeeded."
+      ],
+      "rolResponsable": "Lifecycle Workflows Administrator",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-01",
+      "mitreTactic": "Persistence / Valid Accounts (T1078.004)",
+      "evidenciaAuditable": "Eventos en AuditLogs (LoggedByService = Lifecycle Workflows) con reprocesamiento exitoso documentado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujos y límites verificados en understanding-lifecycle-workflows; SLA de 4 h propuesto editorialmente.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/understanding-lifecycle-workflows"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo de salud y cuarentenas en HR-Driven / API-Driven Inbound Provisioning",
+      "objetivo": "Asegurar que altas, movimientos y bajas desde Workday, SuccessFactors o API /bulkUpload sincronicen sin errores ni cuarentena.",
+      "consolaRuta": "entra.microsoft.com > Entra ID > Enterprise apps > Provisioning > Provisioning logs",
+      "procedimiento": [
+        "Comprobar que ningún job de aprovisionamiento entrante esté en estado Quarantine ni detenido.",
+        "Filtrar Provisioning logs por Status = Failure en las últimas 24 horas identificando colisiones de atributos o errores de directorio.",
+        "Verificar consumo diario de llamadas API /bulkUpload frente al límite de 300.000 registros/24h (6.000 llamadas).",
+        "Escalar correcciones de datos maestros al equipo HRIS preservando la fuente autoritativa."
+      ],
+      "rolResponsable": "Application Administrator (HRIS Integration Lead)",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-01",
+      "mitreTactic": "Initial Access / Valid Accounts (T1078)",
+      "evidenciaAuditable": "Tabla AADProvisioningLogs sin fallos críticos abiertos >24 horas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Cuota de 300K registros y 20 jobs verificada en licensing-fundamentals.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/licensing-fundamentals"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Resolución de solicitudes de Access Packages en estado DeliveryFailed o por expirar",
+      "objetivo": "Garantizar la entrega completa de recursos asignados en paquetes y evitar interrupciones por aprobadores ausentes.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Entitlement management > Access packages > Requests",
+      "procedimiento": [
+        "Filtrar Requests por estados DeliveryFailed, PartiallyDelivered y PendingApproval próximos a expirar.",
+        "Diagnosticar el fallo en el recurso subyacente (conector SCIM, grupo o SharePoint Online) y subsanar el bloqueo.",
+        "Ejecutar la acción Reprocess sobre la solicitud afectada hasta alcanzar estado Delivered.",
+        "Confirmar el enrutamiento oportuno hacia Alternate approvers en aprobaciones multietapa estancadas."
+      ],
+      "rolResponsable": "Identity Governance Administrator / Access Package Assignment Manager",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Privilege Escalation / Account Manipulation (T1098)",
+      "evidenciaAuditable": "Registros en AuditLogs (Category = EntitlementManagement) reflejando transición a Delivered.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Acción Reprocess y roles delegados verificados en entitlement-management-delegate.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-delegate"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Revisión de alertas PIM y auditoría de activaciones JIT en roles Tier-0",
+      "objetivo": "Verificar correspondencia entre activaciones de roles críticos y tickets autorizados, manteniendo cero alertas PIM sin mitigar.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Privileged Identity Management > Microsoft Entra roles > Alerts",
+      "procedimiento": [
+        "Revisar todas las PIM Alerts activas (asignaciones fuera de PIM, exceso de Global Admins, roles sin MFA).",
+        "Contrastar las activaciones de las últimas 24 horas en Audit history contra tickets de cambio/incidente válidos.",
+        "Escalar a SOC L2 cualquier activación fuera de ventana horaria habitual o sin justificación verificable."
+      ],
+      "rolResponsable": "Privileged Role Administrator / SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Privilege Escalation / Additional Cloud Roles (T1098.003)",
+      "evidenciaAuditable": "Vista de PIM Alerts limpia y bitácora diaria de correlación en AuditLogs (Category = RoleManagement).",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Alertas nativas PIM verificadas en documentación oficial de Microsoft Entra PIM.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Verificación de bajas inmediatas y revocación de sesiones/tokens (Emergency Leaver Check)",
+      "objetivo": "Confirmar que toda desvinculación urgente del día completó bloqueo de cuenta, revocación de refresh tokens y retiro de accesos en <15 min.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Lifecycle workflows > Workflow history",
+      "procedimiento": [
+        "Cruzar listado diario de bajas inmediatas de RR. HH. contra ejecuciones del workflow de terminación en tiempo real.",
+        "Verificar éxito de las tareas Disable user account, Revoke all refresh tokens for user y Remove all access package assignments.",
+        "Confirmar transferencia automática de patrocinio (Transfer agent identity sponsorships to manager) si el usuario patrocinaba agentes IA."
+      ],
+      "rolResponsable": "Lifecycle Workflows Administrator / SOC L1",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Defense Evasion / Use Alternate Authentication Material (T1550.001)",
+      "evidenciaAuditable": "Trazas completas por usuario en Workflow history con accountEnabled = false y tokens revocados.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Tareas LCW verificadas en lifecycle-workflow-tasks; SLA de 15 minutos definido como criterio operativo.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/lifecycle-workflow-tasks"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Triaje de solicitudes de acceso escaladas por riesgo (ID Protection / Insider Risk)",
+      "objetivo": "Evaluar con contexto de seguridad las solicitudes de Access Packages condicionadas por nivel de riesgo de identidad o riesgo interno.",
+      "consolaRuta": "myaccess.microsoft.com > Approvals / entra.microsoft.com > Protection > Identity Protection",
+      "procedimiento": [
+        "Revisar en My Access las solicitudes retenidas en etapas de aprobación activadas por señal de ID Protection o Purview Insider Risk.",
+        "Consultar en Entra Copilot chat el historial de inicios de sesión riesgosos y alertas recientes del usuario solicitante.",
+        "Rechazar la solicitud e iniciar remediación de cuenta si persiste riesgo activo no justificado."
+      ],
+      "rolResponsable": "SOC L2 / Identity Governance Administrator",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "Credential Access / Valid Accounts (T1078)",
+      "evidenciaAuditable": "Decisión de aprobación/rechazo documentada en AuditLogs y expediente de riesgo cerrado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Integración de ID Protection e Insider Risk en políticas EM verificada en licensing-fundamentals.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/licensing-fundamentals"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Supervisión operativa de Custom Task Extensions en Azure Logic Apps",
+      "objetivo": "Asegurar disponibilidad, autenticación Managed Identity y tiempos de respuesta óptimos en Logic Apps invocadas por LCW, EM y PIM.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Lifecycle workflows > Custom extensions / portal.azure.com > Logic apps",
+      "procedimiento": [
+        "Inspeccionar el historial de ejecuciones de Logic Apps vinculadas a Custom Extensions buscando estados Failed o TimedOut.",
+        "Comprobar que las tareas asíncronas respondan dentro del rango configurado durationBeforeTimeout (30 min a 3 h).",
+        "Remediar fallos de conectores downstream (ITSM, bases de datos o Active Directory) y relanzar las tareas pendientes."
+      ],
+      "rolResponsable": "Lifecycle Workflows Administrator / Platform Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-01",
+      "mitreTactic": "Execution / Cloud Administration Command (T1651)",
+      "evidenciaAuditable": "Métricas de Azure Monitor para Logic Apps con 0 ejecuciones fallidas sin resolver.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Límite durationBeforeTimeout (30m-3h) y tope de 100 extensiones verificados en governance-service-limits.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/governance-service-limits"
+    },
+    {
+      "codigo": "D-08",
+      "cadencia": "Diaria",
+      "actividad": "Detección de asignaciones directas de privilegios o roles de aplicación fuera de banda",
+      "objetivo": "Identificar y revertir asignaciones directas hechas por administradores al margen de Entitlement Management o PIM.",
+      "consolaRuta": "entra.microsoft.com > Entra ID > Monitoring & health > Workbooks > Application role assignment activity",
+      "procedimiento": [
+        "Revisar el workbook Application role assignment activity y ejecutar consulta KQL sobre AuditLogs de las últimas 24 horas.",
+        "Identificar asignaciones a aplicaciones críticas o roles Entra que no provengan del servicio EntitlementManagement o PIM.",
+        "Remover la asignación directa no autorizada y encauzar el requerimiento por su Access Package o elegibilidad PIM."
+      ],
+      "rolResponsable": "SOC L2 / Identity Governance Administrator",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Persistence / Account Manipulation (T1098)",
+      "evidenciaAuditable": "Resultado diario de workbook/KQL y registro de reversión en AuditLogs.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Workbook Application role assignment activity verificado en entitlement-management-logs-and-reporting.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-logs-and-reporting"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Control de progreso de Access Reviews activas y supervisión del Access Review Agent",
+      "objetivo": "Asegurar tasas de revisión humana superiores al 95 % antes del cierre y auditar recomendaciones conversacionales en Teams.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Access reviews / Agents > Access Review Agent",
+      "procedimiento": [
+        "Listar campañas de Access Reviews en curso con cierre previsto en los próximos 7 días.",
+        "Revisar el Agent summary y el mapa de actividad de 30 días del Access Review Agent validando adopción de revisores en Teams.",
+        "Gestionar delegación de revisiones o escalamiento a gerentes cuando existan revisores sin avance."
+      ],
+      "rolResponsable": "Identity Governance Administrator",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Privilege Escalation / Valid Accounts (T1078)",
+      "evidenciaAuditable": "Panel de seguimiento semanal de campañas activas y métricas de 30 días del Access Review Agent.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Access Review Agent en Entra/Teams verificado en blog oficial Microsoft Entra y documentación Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Saneamiento de cuentas Guest B2B inactivas y sin patrocinador interno",
+      "objetivo": "Eliminar accesos externos obsoletos mediante Inactive guest insights, campañas solo de inactivos y políticas de expiración.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Dashboard > Inactive guest accounts",
+      "procedimiento": [
+        "Consultar el reporte Inactive guest accounts (exclusivo de ID Governance) para invitados sin actividad >60/90 días.",
+        "Auditar alertas y correos enviados por la tarea LCW Send email about unsponsored guest removal (Preview).",
+        "Confirmar bloqueo y posterior eliminación automática de invitados que llevan 30 días sin asignaciones de Access Packages."
+      ],
+      "rolResponsable": "Identity Governance Administrator",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "Initial Access / Trusted Relationship (T1199)",
+      "evidenciaAuditable": "Reporte semanal de huéspedes depurados y registros Guest user disabled/deleted by lifecycle policy.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Informe Inactive guest accounts y tarea de invitados sin sponsor verificados en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/microsoft-entra-id-governance-licensing-for-guest-users"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría de conflictos preexistentes en Separation of Duties (SoD)",
+      "objetivo": "Garantizar cero asignaciones simultáneas no autorizadas entre paquetes o grupos incompatibles y validar reciprocidad bidireccional.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Entitlement management > Access packages > Separation of duties",
+      "procedimiento": [
+        "Inspeccionar el contador Additional access en paquetes críticos con reglas de incompatibilidad configuradas.",
+        "Verificar que cada par de paquetes mutuamente excluyentes tenga declarada la regla en ambas direcciones.",
+        "Descargar CSV de solapamientos existentes o ejecutar script Graph PowerShell para revocar el acceso redundante."
+      ],
+      "rolResponsable": "Identity Governance Administrator / GRC",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-02",
+      "mitreTactic": "Privilege Escalation / Valid Accounts (T1078.004)",
+      "evidenciaAuditable": "Exportación CSV semanal con Additional access = 0 fuera de paquetes de excepción documentados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Unidireccionalidad de reglas SoD y columna Additional access verificadas en entitlement-management-access-package-incompatible.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-access-package-incompatible"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Revisión de Account Discovery y remediación de cuentas huérfanas en aplicaciones",
+      "objetivo": "Descubrir y cerrar cuentas locales en aplicaciones conectadas que no correspondan a identidades activas gobernadas en Entra ID.",
+      "consolaRuta": "entra.microsoft.com > Entra ID > Enterprise apps > Provisioning > Account Discovery",
+      "procedimiento": [
+        "Revisar los reportes de Account Discovery generados sobre aplicaciones SaaS y on-premises críticas.",
+        "Separar cuentas de servicio inventariadas de cuentas huérfanas de ex-colaboradores o altas manuales no autorizadas.",
+        "Correlacionar con identidades Entra válidas o deshabilitar/eliminar las cuentas huérfanas en la aplicación destino."
+      ],
+      "rolResponsable": "Application Administrator / Identity Governance Administrator",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-05",
+      "mitreTactic": "Persistence / Local Account (T1078.003)",
+      "evidenciaAuditable": "Listado conciliado de Account Discovery con tickets de baja de cuentas huérfanas cerrados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Account Discovery confirmado como exclusivo de Entra ID Governance / Entra Suite en licensing-fundamentals.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/licensing-fundamentals"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Gobierno semanal de identidades de agentes IA (Microsoft Entra Agent ID) y patrocinadores",
+      "objetivo": "Asegurar que cada agente IA tenga un sponsor humano activo, políticas Conditional Access heredadas de su blueprint y accesos temporales.",
+      "consolaRuta": "entra.microsoft.com > Entra ID > Agent ID / myaccess.microsoft.com",
+      "procedimiento": [
+        "Inventariar nuevos agent identity blueprints, agent identities y agent users originados en Foundry, Copilot Studio, Teams o Agent 365.",
+        "Validar que cada agent identity cuente con un sponsor humano vigente y políticas Conditional Access aplicadas al blueprint.",
+        "Auditar los Access Packages asignados a agentes (grupos, permisos OAuth Graph y roles Entra) verificando fecha de expiración."
+      ],
+      "rolResponsable": "Identity Governance Administrator / AI Governance Lead",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-01",
+      "mitreTactic": "Persistence / Additional Cloud Credentials (T1098.001)",
+      "evidenciaAuditable": "Reporte semanal de identidades de agentes con 100 % de cobertura de sponsor y expiración activa.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Arquitectura de 4 objetos de agente, blueprints y sponsors verificada en agent-id-governance-overview (nov-2026).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/agent-id-governance-overview"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría de verificaciones criptográficas Verified ID y Face Check en Access Packages",
+      "objetivo": "Detectar anomalías o intentos de suplantación durante la presentación de credenciales verificables en solicitudes de alto impacto.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Entitlement management > Access packages > Requests",
+      "procedimiento": [
+        "Filtrar solicitudes de paquetes protegidos con Required Verified IDs y Require Face Check.",
+        "Analizar rechazos repetidos de coincidencia biométrica Face Check escalando posibles intentos de impersonación al SOC.",
+        "Comprobar operatividad de los emisores en Microsoft Entra Verified ID Network y socios IDV de Security Store."
+      ],
+      "rolResponsable": "Identity Governance Administrator / SOC L2",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-02",
+      "mitreTactic": "Defense Evasion / Impersonation (T1656)",
+      "evidenciaAuditable": "Bitácora semanal de validaciones Verified ID / Face Check sin incidentes de fraude pendientes.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Configuración de Verified ID Network, socios Security Store y Face Check verificada en entitlement-management-verified-id-settings.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-verified-id-settings"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Reconciliación FinOps de licencias Entra ID Governance, Agent 365 y facturación MAU de Guests",
+      "objetivo": "Garantizar suficiencia de licencias para miembros gobernados y optimizar cargos MAU de huéspedes B2B en la suscripción Azure.",
+      "consolaRuta": "entra.microsoft.com > Billing > Licenses / ID Governance > Dashboard > Guest governance",
+      "procedimiento": [
+        "Comparar licencias activas de Entra ID Governance / Step-Up P2 / Entra Suite / M365 E7 y Agent 365 contra usuarios y agentes gobernados.",
+        "Ejecutar consulta KQL mensual filtrando TargetUserType = Guest y GovernanceLicenseFeatureUsed = True en AuditLogs.",
+        "Evaluar conversión de tenants socios con alto volumen de huéspedes hacia Multi-Tenant Organization (MTO) exenta de cobro MAU."
+      ],
+      "rolResponsable": "Identity Governance Administrator / FinOps",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Resource Development",
+      "evidenciaAuditable": "Informe mensual FinOps conciliando asientos licenciados y conteo exacto de MAU facturados en Azure.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Propiedad GovernanceLicenseFeatureUsed = True y exención MTO verificadas en microsoft-entra-id-governance-licensing-for-guest-users.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/microsoft-entra-id-governance-licensing-for-guest-users"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Calibración de recomendaciones ML (User-to-Group Affiliation) y cobertura del atributo manager",
+      "objetivo": "Maximizar la efectividad del motor ML en revisiones de grupos asegurando jerarquía organizacional poblada y grupos <=600 miembros.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Access reviews > Review history",
+      "procedimiento": [
+        "Medir porcentaje de revocaciones efectivas impulsadas por señales de baja afiliación organizacional e inactividad (>30 días).",
+        "Detectar grupos gobernados que superen el límite técnico de 600 usuarios para subdividirlos funcionalmente.",
+        "Auditar usuarios internos sin atributo manager poblado y gestionar su saneamiento en el sistema HRIS."
+      ],
+      "rolResponsable": "Identity Governance Administrator",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "Privilege Escalation / Valid Accounts (T1078)",
+      "evidenciaAuditable": "Reporte mensual de higiene jerárquica (manager poblado) y efectividad de recomendaciones ML.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Requisito del atributo manager y tope de 600 miembros por grupo verificados en review-recommendations-access-reviews.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/review-recommendations-access-reviews"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Optimización de cuotas, intervalos horarios y versionado de Lifecycle Workflows",
+      "objetivo": "Mantener el inventario de workflows limpio dentro del tope de 100 flujos y ajustar la frecuencia de ejecución (1 a 24 h) a los SLAs.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Lifecycle workflows > Workflow settings / Versions",
+      "procedimiento": [
+        "Auditar uso actual respecto a los límites del tenant (100 workflows, 25 tareas/workflow, 100 custom task extensions).",
+        "Revisar el intervalo global de programación (por defecto 3 h, reducible a 1 h) según métricas de tiempo de alta y baja.",
+        "Documentar nuevas versiones (Workflow versions) y evaluar adopción de comparaciones relativas en Time based attribute V2."
+      ],
+      "rolResponsable": "Lifecycle Workflows Administrator",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Persistence",
+      "evidenciaAuditable": "Registro mensual de cuotas consumidas e historial de versiones aprobadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Límites de 100 workflows y horario 1-24 h verificados en governance-service-limits.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/governance-service-limits"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría de Auto-Assignment Policies y sugerencias de paquetes en My Access",
+      "objetivo": "Confirmar precisión de reglas dinámicas de asignación/remoción en paquetes y vigilar el límite de 15.000 asignaciones por política.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Entitlement management > Access packages > Policies",
+      "procedimiento": [
+        "Revisar el conteo de asignaciones por cada Auto-assignment policy asegurando margen frente al límite de 15.000.",
+        "Verificar que el retiro automático al cambiar el atributo del usuario esté habilitado en todas las políticas dinámicas.",
+        "Depurar la visibilidad de Suggested access packages en My Access para mostrar solo paquetes relevantes al usuario final."
+      ],
+      "rolResponsable": "Identity Governance Administrator / Catalog Owners",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Privilege Escalation",
+      "evidenciaAuditable": "Inventario mensual exportado de Auto-assignment policies y conteo de asignaciones activas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tope de 15.000 asignaciones por política automática verificado en governance-service-limits.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/governance-service-limits"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Verificación de archivo continuo y retención >30 días de logs IGA en Azure Monitor / Sentinel",
+      "objetivo": "Asegurar preservación forense multianual de AuditLogs y AADProvisioningLogs superando la ventana nativa de 30 días de Entra.",
+      "consolaRuta": "entra.microsoft.com > Entra ID > Monitoring & health > Diagnostic settings / Workbooks",
+      "procedimiento": [
+        "Comprobar salud de exportación en Diagnostic settings hacia el workspace corporativo de Log Analytics / Microsoft Sentinel.",
+        "Ejecutar el workbook Archived Log Date Range y Access Package Activity validando ausencia de brechas de ingesta.",
+        "Confirmar aplicación del Data Grant de 5 MB/usuario/día de Microsoft 365 E5 para registros de auditoría de Entra ID en Sentinel."
+      ],
+      "rolResponsable": "Platform Engineer / Security Reader",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "Defense Evasion / Impair Defenses (T1562)",
+      "evidenciaAuditable": "Evidencia de rango min/max de TimeGenerated en Log Analytics conforme a política regulatoria (>=365 días).",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Retención nativa de 30 días y workbook Archived Log Date Range verificados en entitlement-management-logs-and-reporting.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-logs-and-reporting"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Campaña trimestral de recertificación de roles privilegiados PIM, grupos críticos y agentes IA",
+      "objetivo": "Recertificar el 100 % de roles Entra, Azure RBAC, PIM for Groups y paquetes de agentes con revocación automática ante no respuesta.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Privileged Identity Management > Access reviews",
+      "procedimiento": [
+        "Confirmar ejecución de campañas trimestrales con Auto-apply results to resource = Enabled e If reviewers don't respond = Remove access.",
+        "Verificar que ningún titular privilegiado realice auto-revisión (Self-review prohibido en Tier-0 y Tier-1).",
+        "Descargar evidencias cerradas y verificar en AuditLogs la remoción efectiva de accesos denegados."
+      ],
+      "rolResponsable": "Privileged Role Administrator / Identity Governance Administrator",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Privilege Escalation / Valid Accounts (T1078.004)",
+      "evidenciaAuditable": "Paquetes CSV/PDF de Access Reviews trimestrales firmados y archivados para auditoría SOX / ISO 27001.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Capacidad técnica verificada en Learn; periodicidad trimestral y prohibición de self-review definidas como política de referencia.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Onboarding trimestral de aplicaciones empresariales a catálogos EM, SCIM y Account Discovery",
+      "objetivo": "Incrementar sostenidamente el porcentaje de aplicaciones SaaS y on-premises gobernadas bajo Access Packages y aprovisionamiento automático.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Entitlement management > Catalogs > Resources",
+      "procedimiento": [
+        "Priorizar aplicaciones Tier-1/Tier-2 incorporadas al tenant en el último trimestre.",
+        "Habilitar conector SCIM 2.0, conector on-premises (LDAP/SQL/REST) o SAP IAG e integrar sus roles en Access Packages.",
+        "Importar asignaciones existentes al paquete gobernado y bloquear asignaciones manuales directas."
+      ],
+      "rolResponsable": "Identity Architect / Application Administrator",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-05",
+      "mitreTactic": "Persistence / Account Manipulation (T1098)",
+      "evidenciaAuditable": "Inventario actualizado de cobertura IGA de aplicaciones empresariales.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo oficial de preparación e integración de aplicaciones existente en identity-governance-overview.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/identity-governance-overview"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Recertificación arquitectónica de Connected Organizations, roles delegados EM y matriz SoD",
+      "objetivo": "Depurar organizaciones externas B2B sin contrato vigente, recertificar Catalog owners y actualizar reglas corporativas de separación de funciones.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Entitlement management > Connected organizations / Catalogs",
+      "procedimiento": [
+        "Cruzar inventario de Connected organizations contra contratos activos en Compras/Legal y dar de baja terceros inactivos.",
+        "Ejecutar Catalog Access Reviews y revisar membresías en Catalog creators, Catalog owners y Access package managers.",
+        "Actualizar junto a Auditoría Interna y Finanzas la matriz bidireccional de paquetes incompatibles (SoD)."
+      ],
+      "rolResponsable": "Identity Architect / GRC Lead",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.SC-07",
+      "mitreTactic": "Initial Access / Trusted Relationship (T1199)",
+      "evidenciaAuditable": "Acta semestral firmada con catálogo depurado de Connected Organizations y matriz SoD vigente.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Funciones verificadas en MS Learn; cadencia semestral y gobierno conjunto con Legal/GRC definidos editorialmente.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-delegate"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Simulacro anual de resiliencia IGA, respaldo declarativo Graph y evaluación automatizada Maester",
+      "objetivo": "Validar recuperación ante desastres de configuraciones IGA/PIM y auditar extremo a extremo la postura Zero Trust de identidad.",
+      "consolaRuta": "entra.microsoft.com > ID Governance / Microsoft Graph PowerShell / Maester",
+      "procedimiento": [
+        "Ejecutar suite completa de pruebas Maester y Zero Trust Assessment documentando desviaciones y planes de cierre.",
+        "Exportar respaldo JSON completo de workflows LCW, catálogos EM, paquetes, políticas y configuraciones PIM vía Microsoft Graph.",
+        "Simular en tenant de prueba la recuperación de políticas ante eventual caducidad de licencia o borrado accidental y muestrear 90 casos JML."
+      ],
+      "rolResponsable": "CISO / Identity Architect / Internal Audit",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-03",
+      "mitreTactic": "Impact / Inhibit System Recovery (T1490)",
+      "evidenciaAuditable": "Informe anual de auditoría IGA, respaldo versionado en repositorio seguro y resultados de Maester.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Comportamiento ante expiración de licencia PIM verificado en licensing-fundamentals; simulacro anual propuesto editorialmente.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/licensing-fundamentals"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de desvinculación hostil o compromiso crítico de identidad empleada/privilegiada",
+      "objetivo": "Cortar en menos de 15 minutos todo acceso activo, tokens, paquetes, membresías, elegibilidades PIM y agentes patrocinados.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Lifecycle workflows / Privileged Identity Management",
+      "procedimiento": [
+        "Disparar Run on demand del workflow de terminación inmediata (omite condiciones de alcance y ejecuta tareas al instante).",
+        "Confirmar ejecución de Disable user account, Revoke all refresh tokens, Remove all access package assignments y Remove users from all groups.",
+        "Revocar asignaciones elegibles y activas en PIM para Entra roles, Azure RBAC y PIM for Groups.",
+        "Ejecutar Transfer agent identity sponsorships to manager y auditar/deshabilitar agentes creados por el usuario."
+      ],
+      "rolResponsable": "Lifecycle Workflows Administrator / SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Valid Accounts (T1078) / Application Access Token (T1550.001)",
+      "evidenciaAuditable": "Expediente de incidente con marcas de tiempo <15 min en AuditLogs para revocación integral.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Comportamiento de Run on demand y tareas de revocación/transferencia de sponsor verificados en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/understanding-lifecycle-workflows"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook Kill-Switch sobre identidad de Agente IA o Agent Identity Blueprint comprometido",
+      "objetivo": "Contener de inmediato una instancia o familia completa de agentes IA revocando permisos OAuth, paquetes y acceso condicional.",
+      "consolaRuta": "entra.microsoft.com > Entra ID > Agent ID / ID Governance > Entitlement management",
+      "procedimiento": [
+        "Identificar el agent identity anómalo y su agent identity blueprint padre en el centro de administración de Entra.",
+        "Bloquear acceso mediante Conditional Access o revocar permisos heredables en el agent identity blueprint para contener toda la clase de agentes en un paso.",
+        "Remover todas las asignaciones activas de Access Packages del agent identity / agent user involucrado.",
+        "Notificar al sponsor humano responsable y preservar evidencias en AuditLogs y Purview Audit."
+      ],
+      "rolResponsable": "Identity Governance Administrator / SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Execution / Exploitation for Client Execution",
+      "evidenciaAuditable": "Registro en AuditLogs de bloqueo de blueprint y revocación de paquetes sobre el agente IA.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Modelo de contención centralizada por agent identity blueprint verificado en identity-governance-overview y agent-id-governance-overview.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/agent-id-governance-overview"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de desconexión de emergencia de proveedor externo B2B comprometido (Supply Chain Cutoff)",
+      "objetivo": "Aislar un tenant socio o proveedor vulnerado revocando políticas de solicitud externa, paquetes entregados y sesiones Guest.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Entitlement management > Connected organizations",
+      "procedimiento": [
+        "Ubicar la Connected organization del proveedor afectado y listar todos los Access Packages vinculados.",
+        "Deshabilitar políticas de solicitud externas para dicho proveedor y remover todas las asignaciones Delivered de sus usuarios Guest.",
+        "Bloquear inicio de sesión y revocar refresh tokens de todas las cuentas Guest pertenecientes al dominio comprometido.",
+        "Ejecutar Access Review de emergencia sobre sitios SharePoint y Teams compartidos con ese tercero."
+      ],
+      "rolResponsable": "Identity Governance Administrator / SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Initial Access / Trusted Relationship (T1199)",
+      "evidenciaAuditable": "Cero asignaciones Delivered y cero sesiones activas para cuentas del dominio externo aislado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Controles de Connected organizations y ciclo de vida externo verificados en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/identity-governance-overview"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Onboarding masivo controlado por fusión o adquisición (M&A) con MTO y API /bulkUpload",
+      "objetivo": "Incorporar grandes volúmenes de identidades de empresas adquiridas con acceso día-1 gobernado y exención de cargos MAU entre tenants propios.",
+      "consolaRuta": "entra.microsoft.com > Entra ID > External Identities > Cross-tenant synchronization / Enterprise apps",
+      "procedimiento": [
+        "Establecer relación Multi-Tenant Organization (MTO) y Cross-tenant sync de usuarios y grupos (evitando facturación MAU de Guests).",
+        "Ejecutar ingesta autoritativa mediante API-driven inbound provisioning (/bulkUpload hasta 300.000 registros/24h).",
+        "Aplicar Auto-assignment policies en Entitlement Management para otorgar paquetes iniciales trazables con revisión a 90 días."
+      ],
+      "rolResponsable": "Identity Architect / Application Administrator",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-01",
+      "mitreTactic": "Valid Accounts (T1078)",
+      "evidenciaAuditable": "Logs de sincronización /bulkUpload exitosos y asignaciones de paquetes trazadas en AuditLogs.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Cross-tenant sync de grupos, MTO sin cobro MAU y cuota de 300K /bulkUpload verificados en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/licensing-fundamentals"
+    },
+    {
+      "codigo": "AH-05",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Contención y reversión ante corrupción masiva de datos desde HRIS (Mass Leaver / Feed Poisoning)",
+      "objetivo": "Frenar bajas masivas accidentales originadas por errores de carga en RR. HH. y restaurar cuentas afectadas con trazabilidad completa.",
+      "consolaRuta": "entra.microsoft.com > Entra ID > Enterprise apps > Provisioning / ID Governance > Lifecycle workflows",
+      "procedimiento": [
+        "Detener inmediatamente (Stop provisioning) el job HR-driven inbound y desactivar el Schedule de los workflows Leaver/Mover.",
+        "Extraer de AADProvisioningLogs y Workflow history el universo exacto de usuarios impactados antes del corte.",
+        "Validada la corrección en Workday/SuccessFactors, ejecutar workflow on-demand de rehabilitación (Enable user account + paquetes + licencias) y reanudar el calendario."
+      ],
+      "rolResponsable": "Application Administrator / Lifecycle Workflows Administrator",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-03",
+      "mitreTactic": "Impact / Account Access Removal (T1531)",
+      "evidenciaAuditable": "Línea de tiempo forense de contención y 100 % de cuentas impactadas restablecidas en AuditLogs.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Controles de pausa de provisioning y tarea Enable user account verificados en Learn; playbook integrado como práctica de resiliencia.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/lifecycle-workflow-tasks"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Políticas de Access Packages creadas o modificadas sin requerir aprobación",
+      "plataforma": "Azure Monitor Log Analytics / Microsoft Sentinel",
+      "tablaPrincipal": "AuditLogs",
+      "consulta": "AuditLogs\n| where TimeGenerated > ago(30d)\n| where Category == 'EntitlementManagement' and Result == 'success'\n| where AADOperationType in ('CreateEntitlementGrantPolicy', 'UpdateEntitlementGrantPolicy')\n| mv-expand TargetResources\n| where tostring(TargetResources.type) == 'AccessPackageAssignmentPolicy'\n| extend PolicyId = tostring(TargetResources.id), PolicyName = tostring(TargetResources.displayName)\n| mv-expand ModifiedProp = TargetResources.modifiedProperties\n| where tostring(ModifiedProp.displayName) == 'IsApprovalRequiredForAdd' and tostring(ModifiedProp.newValue) has 'False'\n| project TimeGenerated, OperationName, Actor = tostring(InitiatedBy.user.userPrincipalName), PolicyName, PolicyId\n| order by TimeGenerated desc",
+      "proposito": "Detectar debilitamiento de controles preventivos cuando se habilita autoaprobación en paquetes de acceso.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Monitoreo de ejecuciones y tareas fallidas en Lifecycle Workflows (JML)",
+      "plataforma": "Azure Monitor Log Analytics / Microsoft Sentinel",
+      "tablaPrincipal": "AuditLogs",
+      "consulta": "AuditLogs\n| where TimeGenerated > ago(7d)\n| where LoggedByService == 'Lifecycle Workflows'\n| where Category in ('WorkflowManagement', 'TaskManagement', 'Other')\n| where Result != 'success'\n| mv-expand TargetResources\n| project TimeGenerated, Category, OperationName, Result, ResultReason, TargetName = tostring(TargetResources.displayName), TargetId = tostring(TargetResources.id), CorrelationId\n| order by TimeGenerated desc",
+      "proposito": "Identificar rápidamente errores en automatizaciones Joiner, Mover y Leaver o fallos de Custom Task Extensions.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría FinOps de huéspedes B2B que generan cobro MAU en Entra ID Governance",
+      "plataforma": "Azure Monitor Log Analytics / Microsoft Sentinel",
+      "tablaPrincipal": "AuditLogs",
+      "consulta": "AuditLogs\n| where TimeGenerated > ago(30d)\n| mv-expand AdditionalDetails\n| where tostring(AdditionalDetails.key) == 'GovernanceLicenseFeatureUsed' and tostring(AdditionalDetails.value) =~ 'True'\n| mv-expand TargetResources\n| extend TargetId = tostring(TargetResources.id), TargetUPN = tostring(TargetResources.userPrincipalName)\n| summarize EventosGobernados = count(), Operaciones = make_set(OperationName, 10), PrimeraAccion = min(TimeGenerated) by TargetId, TargetUPN\n| order by EventosGobernados desc",
+      "proposito": "Contabilizar con precisión los invitados únicos facturables en el mes (GovernanceLicenseFeatureUsed = True).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Seguimiento de decisiones y revocaciones aplicadas por Access Reviews",
+      "plataforma": "Azure Monitor Log Analytics / Microsoft Sentinel",
+      "tablaPrincipal": "AuditLogs",
+      "consulta": "AuditLogs\n| where TimeGenerated > ago(90d)\n| where LoggedByService == 'Access Reviews' or Category == 'AccessReviews'\n| summarize TotalEventos = count(), Exitosos = countif(Result == 'success'), Fallidos = countif(Result != 'success') by OperationName, bin(TimeGenerated, 7d)\n| order by TimeGenerated desc",
+      "proposito": "Generar evidencia trimestral de ejecución y auto-aplicación de campañas de recertificación de acceso.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección de asignaciones permanentes de roles Entra realizadas fuera de PIM",
+      "plataforma": "Azure Monitor Log Analytics / Microsoft Sentinel",
+      "tablaPrincipal": "AuditLogs",
+      "consulta": "AuditLogs\n| where TimeGenerated > ago(7d)\n| where Category == 'RoleManagement'\n| where OperationName has 'Add member to role' and OperationName !has 'PIM' and LoggedByService != 'PIM'\n| extend Actor = coalesce(tostring(InitiatedBy.user.userPrincipalName), tostring(InitiatedBy.app.displayName))\n| mv-expand TargetResources\n| project TimeGenerated, OperationName, Actor, Target = tostring(TargetResources.userPrincipalName), Result\n| order by TimeGenerated desc",
+      "proposito": "Alertar ante violaciones de Zero Standing Privileges cuando se otorgan roles administrativos estáticos.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Diagnóstico de fallos en conectores HR Inbound y aprovisionamiento SCIM saliente",
+      "plataforma": "Azure Monitor Log Analytics / Microsoft Sentinel",
+      "tablaPrincipal": "AADProvisioningLogs",
+      "consulta": "AADProvisioningLogs\n| where TimeGenerated > ago(24h)\n| where ResultType != 'Success' and ResultType != 'Skipped'\n| summarize Fallos = count(), ErroresMuestra = make_set(ResultDescription, 5) by ServicePrincipalName, Action, ResultType\n| order by Fallos desc",
+      "proposito": "Supervisar errores diarios de sincronización desde Workday/SuccessFactors/API o hacia aplicaciones SaaS.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección de asignaciones incompatibles preexistentes (SoD) vía Microsoft Graph PowerShell",
+      "plataforma": "Microsoft Graph PowerShell (Microsoft.Graph.Identity.Governance)",
+      "tablaPrincipal": "identityGovernance/entitlementManagement/assignments",
+      "consulta": "Connect-MgGraph -Scopes 'EntitlementManagement.Read.All'\n$apA = '00aa00aa-bb11-cc22-dd33-44ee44ee44ee'\n$apB = '11bb11bb-cc22-dd33-ee44-55ff55ff55ff'\n$listA = @(Get-MgEntitlementManagementAssignment -Filter \"accessPackage/id eq '$apA' and state eq 'Delivered'\" -ExpandProperty target -All)\n$listB = @(Get-MgEntitlementManagementAssignment -Filter \"accessPackage/id eq '$apB' and state eq 'Delivered'\" -ExpandProperty target -All)\n$idxB = @{}; foreach ($b in $listB) { if ($null -ne $b.Target.Id) { $idxB[$b.Target.Id] = $b } }\nforeach ($a in $listA) { if ($null -ne $a.Target.Id -and $idxB.ContainsKey($a.Target.Id)) { Write-Output $a.Target.Email } }",
+      "proposito": "Identificar usuarios que ya poseían asignaciones entregadas simultáneas en dos paquetes declarados incompatibles.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "SLA de Revocación Integral Leaver (Offboarding Time-to-Revoke)",
+      "definicion": "Tiempo transcurrido desde la efectividad de baja en HRIS o disparo urgente hasta el bloqueo de cuenta y revocación de refresh tokens en Lifecycle Workflows.",
+      "formula": "Mediana/P95(Timestamp_TareaRevocacionCompletada - Timestamp_EventoBaja)",
+      "metaSugerida": "< 15 min (bajas urgentes) / < 3 h (bajas programadas)",
+      "frecuencia": "Diaria / Mensual",
+      "audiencia": "CISO, SOC Manager, Internal Audit",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Alineado al intervalo mínimo/defecto de LCW (1-3 h) y ejecución Run on demand inmediata."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Tasa de Onboarding Día-1 Automatizado sin Intervención Manual",
+      "definicion": "Porcentaje de nuevos ingresos que reciben cuenta activa, TAP al gerente y paquetes de acceso base de forma totalmente automatizada antes de su primer turno.",
+      "formula": "(Altas Joiner exitosas en LCW sin ticket manual / Total de ingresos del mes) * 100",
+      "metaSugerida": ">= 98 %",
+      "frecuencia": "Mensual",
+      "audiencia": "CIO, Identity Architect, RR. HH.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mide retorno directo de inversión de HR-driven provisioning + Lifecycle Workflows."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Tasa de Decisión Explícita en Access Reviews (Efectividad Anti-Rubber-Stamping)",
+      "definicion": "Porcentaje de ítems de revisión decididos explícitamente por revisores humanos asistidos por ML o por el Access Review Agent antes del vencimiento.",
+      "formula": "(Ítems aprobados o denegados explícitamente por revisor / Total de ítems en campaña) * 100",
+      "metaSugerida": ">= 95 %",
+      "frecuencia": "Trimestral",
+      "audiencia": "CISO, GRC, Dueños de Negocio",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Evita depender únicamente del cierre forzoso por inacción del revisor."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Índice de Cero Privilegios Permanentes (ZSP Ratio en Roles Críticos)",
+      "definicion": "Proporción de asignaciones administrativas sobre roles críticos de Entra ID gestionadas como elegibles JIT en PIM frente al total (excluyendo 2 cuentas break-glass).",
+      "formula": "(Asignaciones elegibles PIM / (Asignaciones elegibles PIM + Asignaciones permanentes no break-glass)) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Semanal",
+      "audiencia": "CISO, Privileged Role Administrator",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Meta estricta Zero Trust para erradicar privilegios administrativos permanentes."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Cobertura de Aplicaciones Tier-1 y Tier-2 bajo Entitlement Management",
+      "definicion": "Porcentaje de aplicaciones críticas del negocio cuyos permisos se solicitan, aprueban y revocan mediante Access Packages.",
+      "formula": "(Aplicaciones Tier-1/Tier-2 integradas en catálogos EM / Total de aplicaciones Tier-1/Tier-2 inventariadas) * 100",
+      "metaSugerida": ">= 90 %",
+      "frecuencia": "Trimestral",
+      "audiencia": "Identity Architect, GRC",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Indicador estructural de adopción del modelo de gobierno de acceso."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Higiene de Cuentas Huérfanas (Account Discovery Remediation Rate)",
+      "definicion": "Porcentaje de cuentas locales no correlacionadas descubiertas en aplicaciones destino que son eliminadas o vinculadas en menos de 7 días.",
+      "formula": "(Cuentas no correlacionadas remediadas en <= 7 días / Total de cuentas no correlacionadas detectadas) * 100",
+      "metaSugerida": ">= 99 %",
+      "frecuencia": "Semanal",
+      "audiencia": "Identity Governance Administrator, Internal Audit",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mide eficacia operativa de Account Discovery exclusivo de Entra ID Governance."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Cobertura de Patrocinio Humano sobre Guests B2B y Agentes IA",
+      "definicion": "Porcentaje de usuarios Guest gobernados e identidades Microsoft Entra Agent ID que cuentan con sponsor humano activo y expiración definida.",
+      "formula": "((Guests gobernados + Agent IDs con sponsor activo y expiración) / Total de Guests + Agent IDs) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Semanal",
+      "audiencia": "CISO, AI Governance Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Previene proliferación de agentes huérfanos (shadow AI) y cuentas externas permanentes."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Cumplimiento de Separation of Duties (SoD Zero-Conflict Rate)",
+      "definicion": "Porcentaje de usuarios con paquetes de acceso libres de combinaciones tóxicas de permisos declaradas incompatibles.",
+      "formula": "(1 - (Usuarios con Additional access incompatible no exento / Total de usuarios con Access Packages)) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Semanal",
+      "audiencia": "GRC, CFO / SOX Compliance",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Control clave para auditorías financieras SOX ITGC e ISO 27001 A.5.3."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles, responsabilidades y autoridades relacionados con la gestión de riesgos de ciberseguridad se establecen, comunican, comprenden y aplican.",
+      "capacidadMicrosoft": "Delegación granular en catálogos EM (Catalog owner, Access package manager), segregación RBAC en PIM y reglas de Separation of Duties (SoD).",
+      "evidenciaAuditoria": "Exportación Graph de asignaciones delegadas por catálogo e informe semanal con Additional access = 0.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.SC-07",
+      "descripcionResultado": "Los riesgos planteados por un proveedor, sus productos y sus servicios se comprenden, registran, priorizan, evalúan, responden y monitorean a lo largo de la relación.",
+      "capacidadMicrosoft": "Gobierno de Connected Organizations, conversión Mark guest as governed, expiración automática B2B y trazabilidad MAU en AuditLogs.",
+      "evidenciaAuditoria": "Inventario semestral recertificado de Connected Organizations y decisiones de Access Reviews sobre invitados.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-05",
+      "descripcionResultado": "Los recursos se priorizan según su clasificación, criticidad, recursos y valor comercial.",
+      "capacidadMicrosoft": "Clasificación de aplicaciones SaaS/on-premises, grupos, SharePoint y roles SAP IAG en catálogos segmentados y detección de cuentas locales con Account Discovery.",
+      "evidenciaAuditoria": "Inventario de catálogos por nivel de criticidad y reportes semanales conciliados de Account Discovery.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-01",
+      "descripcionResultado": "Las vulnerabilidades en los activos se identifican, validan y registran.",
+      "capacidadMicrosoft": "Detección de privilegios anómalos mediante ML User-to-Group Affiliation, Inactive guest insights, Access Review Agent y evaluaciones Maester.",
+      "evidenciaAuditoria": "Reportes mensuales de outliers organizacionales en Access Reviews e informes automatizados de Maester.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-01",
+      "descripcionResultado": "Las identidades y credenciales para usuarios, servicios y hardware autorizados son gestionadas por la organización.",
+      "capacidadMicrosoft": "HR-driven / API-driven inbound provisioning, Lifecycle Workflows JML (emisión TAP día-1, baja automática) y gobierno de Microsoft Entra Agent ID con sponsors humanos.",
+      "evidenciaAuditoria": "Registros exitosos en AADProvisioningLogs, Workflow history e inventario de sponsors de identidades de agentes.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-02",
+      "descripcionResultado": "Las identidades son verificadas (identity proofing) y vinculadas a credenciales basadas en el contexto de las interacciones.",
+      "capacidadMicrosoft": "Exigencia de credenciales verificables Microsoft Entra Verified ID (red Entra o socios IDV en Security Store) y selfie biométrico Face Check en Access Packages.",
+      "evidenciaAuditoria": "Políticas de solicitud EM con Required Verified IDs + Require Face Check habilitados y trazas de validación.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Los permisos de acceso, derechos y autorizaciones se definen en una política, se gestionan, aplican y revisan incorporando los principios de mínimo privilegio y separación de funciones.",
+      "capacidadMicrosoft": "Access Packages con expiración obligatoria, Auto-assignment policies, elevación JIT en PIM y Access Reviews periódicos con auto-aplicación.",
+      "evidenciaAuditoria": "Historial trimestral de Access Reviews al 100 % y reporte de 0 asignaciones permanentes no break-glass en PIM.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-03",
+      "descripcionResultado": "Las actividades del personal y el uso de tecnología se monitorean para encontrar eventos potencialmente adversos.",
+      "capacidadMicrosoft": "PIM Alerts nativas, workbook Application role assignment activity y evaluación de riesgo en solicitudes EM con Entra ID Protection e Insider Risk Management.",
+      "evidenciaAuditoria": "Reglas analíticas KQL en Microsoft Sentinel sobre AuditLogs (EntitlementManagement, RoleManagement, AccessReviews).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.AE-02",
+      "descripcionResultado": "Los eventos potencialmente adversos se analizan para comprender mejor las actividades asociadas.",
+      "capacidadMicrosoft": "Correlación SIEM entre tareas Leaver fallidas, intentos repetidos fallidos de Face Check y alertas de inicio de sesión riesgoso en Entra ID.",
+      "evidenciaAuditoria": "Incidentes correlacionados en security.microsoft.com integrando AuditLogs, AADProvisioningLogs y SigninLogs.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Los incidentes son contenidos.",
+      "capacidadMicrosoft": "Ejecución Run on demand de workflows de terminación inmediata (bloqueo de cuenta, revocación de refresh tokens y retiro total de paquetes/grupos) y bloqueo central por Agent Identity Blueprint.",
+      "evidenciaAuditoria": "Trazas de ejecución en <15 minutos en AuditLogs (LoggedByService = Lifecycle Workflows) durante respuesta a incidentes.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.AN-03",
+      "descripcionResultado": "Se realiza un análisis para establecer qué tuvo lugar durante un incidente y la causa raíz del incidente.",
+      "capacidadMicrosoft": "Archivo extendido (>365 días) de AuditLogs y AADProvisioningLogs en Azure Monitor / Sentinel Data Lake reconstruyendo solicitante, aprobador y entrega de cada permiso.",
+      "evidenciaAuditoria": "Workbook Access Package Activity y consultas forenses KQL sobre el historial completo de una identidad comprometida.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-03",
+      "descripcionResultado": "La integridad de las copias de seguridad y otros activos de restauración se verifica antes de utilizarlos para la recuperación.",
+      "capacidadMicrosoft": "Exportación declarativa vía Microsoft Graph de definiciones LCW, catálogos EM y políticas PIM, combinada con Entra Backup and Recovery y flujos de rehabilitación ante errores masivos HRIS.",
+      "evidenciaAuditoria": "Artefactos JSON respaldados en control de versiones y acta de prueba exitosa en simulacro anual A-01.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Módulo construido íntegramente desde cero y verificado contra la documentación viva de Microsoft Learn a corte 11 de noviembre de 2026 (incluyendo actualizaciones de octubre y noviembre de 2026 sobre licenciamiento Entra ID Governance vs. Entra ID P2, Microsoft 365 E7 Frontier Suite, Microsoft Agent 365, gobierno de Microsoft Entra Agent ID, límites ampliados de Lifecycle Workflows, Access Review Agent, Verified ID + Face Check y facturación MAU para Guests B2B).",
+    "correccionesAplicadas": [
+      "Verificado en licensing-fundamentals.md (oct-2026) que todas las capacidades GA previas de Entra ID P2 se mantienen en M365 E5, pero ninguna nueva función IGA se añadirá al SKU P2; el acceso a LCW, ML User-to-Group Affiliation, Verified ID en EM y Account Discovery exige Entra ID Governance / Step-Up for P2 / Entra Suite / M365 E7.",
+      "Resuelta discrepancia documental interna en Learn sobre el límite de Lifecycle Workflows: governance-service-limits.md y what-are-lifecycle-workflows.md confirman el tope vigente de 100 workflows por tenant, 25 tareas por workflow y 100 Custom Task Extensions (frente a un párrafo heredado de 50 workflows en licensing-fundamentals.md).",
+      "Documentada la coexistencia temporal en preview de 'Time based attribute' y 'Time based attribute V2 (Preview)' con comparaciones relativas en Lifecycle Workflows, advirtiendo que V2 Preview no aplica el comportamiento catch-up de 3 días ante retrasos de RR. HH.",
+      "Precisado que Separation of Duties básico (paquetes y grupos incompatibles, unidireccionales por regla) está soportado desde Entra ID P2, mientras que las aprobaciones condicionadas por ID Protection / Insider Risk, Auto-assignment policies, Verified ID + Face Check, Entra Roles (Preview) y SAP IAG (Preview) requieren Entra ID Governance.",
+      "Incorporado el marco oficial de gobierno de identidades de agentes IA (agent-id-governance-overview.md, actualizado el 2026-11-07): objetos agent identity blueprint, agent identity y agent user, patrocinio humano obligatorio con transferencia automática al manager y licenciamiento mediante Microsoft Agent 365 o Microsoft 365 E7 (GA 1 de mayo de 2026).",
+      "Verificado el modelo MAU en Azure para Guests B2B (oct-2026): solo genera cargo cuando GovernanceLicenseFeatureUsed = True sobre funciones exclusivas de ID Governance (máximo una vez por mes por invitado) y quedan exentos los invitados miembros de una Multi-Tenant Organization (MTO).",
+      "Incorporado el cambio de seguridad en delegación EM (entitlement-management-delegate.md, ago-2026) por el cual User Administrator ya no puede crear catálogos ni gestionar paquetes en catálogos ajenos, debiendo migrarse a Identity Governance Administrator y roles delegados de catálogo."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "SLAs operativos JML (< 15 min baja urgente, < 3 h baja programada, < 4 h remediación de fallos en LCW)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft Learn provee intervalos técnicos de evaluación (1-24 h, defecto 3 h) y ejecución Run on demand, pero los compromisos de tiempo de respuesta dependen del estándar operativo del SOC e IAM."
+      },
+      {
+        "elemento": "Duración máxima de activación JIT en PIM (2 h para Privileged Role / Groups Admin y 4 h para Identity Governance / LCW Admin)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Equilibra la reducción de ventana de exposición de sesiones administrativas con la continuidad operativa diaria sin fatiga de reautenticación."
+      },
+      {
+        "elemento": "Metas cuantitativas de los 8 KPIs (>= 98 % onboarding día-1, >= 95 % revisión explícita, 100 % ZSP, SoD y patrocinio)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Establece umbrales auditables de referencia ejecutiva para comités de riesgo, SOX ITGC e ISO/IEC 27001."
+      },
+      {
+        "elemento": "Modelo de Madurez Operacional de 5 niveles desde operación manual hasta gobierno agéntico Frontier",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Permite trazar una hoja de ruta progresiva desde el aprovechamiento base de Entra ID P2 en M365 E5 hasta el despliegue completo de Entra ID Governance y Agent 365."
+      },
+      {
+        "elemento": "Mapeo estructurado de 12 subcategorías sobre las 6 funciones de NIST CSF 2.0 y tácticas MITRE ATT&CK v18",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Conecta la telemetría técnica nativa (AuditLogs, AADProvisioningLogs, Workbooks) con resultados verificables de auditoría regulatoria."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Microsoft Entra ID Governance overview",
+      "url": "https://learn.microsoft.com/en-us/entra/id-governance/identity-governance-overview",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation Team (OWinfreyATL / Mark Wahl)",
+      "comentario": "Arquitectura integral de ciclo de vida de identidades, ciclo de vida de acceso, acceso privilegiado y gobierno de identidades de agentes.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-10-29)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Microsoft Entra ID Governance licensing fundamentals",
+      "url": "https://learn.microsoft.com/en-us/entra/id-governance/licensing-fundamentals",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation Team",
+      "comentario": "Matriz oficial comparativa entre Free, P1, P2, Entra ID Governance (6 SKUs), Entra Suite, Agent 365 y Microsoft 365 E7, más cuotas /bulkUpload.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-10-16)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Microsoft Entra ID Governance licensing for guest users",
+      "url": "https://learn.microsoft.com/en-us/entra/id-governance/microsoft-entra-id-governance-licensing-for-guest-users",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation Team",
+      "comentario": "Modelo de facturación MAU en Azure, tabla de acciones facturables (GovernanceLicenseFeatureUsed = True) y exención en Multi-Tenant Organizations.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-10-06)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Governing Agent Identities - Microsoft Entra ID Governance",
+      "url": "https://learn.microsoft.com/en-us/entra/id-governance/agent-id-governance-overview",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation Team",
+      "comentario": "Gobierno de agent identity blueprints, agent identities y agent users con sponsors humanos, Access Packages y Conditional Access.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-11-07)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "What are lifecycle workflows? - Microsoft Entra ID Governance",
+      "url": "https://learn.microsoft.com/en-us/entra/id-governance/what-are-lifecycle-workflows",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation Team",
+      "comentario": "Fundamentos del modelo Joiner-Mover-Leaver, integración con HR provisioning, Logic Apps y Microsoft Security Copilot.",
+      "verificacion": "Verificado 2026-11-11"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Understanding lifecycle workflows",
+      "url": "https://learn.microsoft.com/en-us/entra/id-governance/understanding-lifecycle-workflows",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation Team",
+      "comentario": "Disparadores programados (incluyendo Time based attribute V2 Preview), intervalo por defecto de 3 horas, Run on demand y versionado.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-08-24)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Lifecycle Workflows tasks and definitions",
+      "url": "https://learn.microsoft.com/en-us/entra/id-governance/lifecycle-workflow-tasks",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation Team",
+      "comentario": "Catálogo completo de taskDefinitionId para Joiner, Mover y Leaver, incluyendo revocación de refresh tokens y transferencia de patrocinio de agentes.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-08-19)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Microsoft Entra ID Governance service limits",
+      "url": "https://learn.microsoft.com/en-us/entra/id-governance/governance-service-limits",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation Team",
+      "comentario": "Límites autoritativos de Entitlement Management (20K paquetes, 300K asignaciones, 15K auto-assignment) y Lifecycle Workflows (100 workflows, 25 tareas, 100 custom extensions).",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-05-18)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Delegation and roles in entitlement management",
+      "url": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-delegate",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation Team",
+      "comentario": "Roles delegados de catálogo, GUIDs oficiales de definición de rol y combinaciones de mínimo privilegio para añadir grupos, apps y sitios SharePoint.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-08-13)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Configure separation of duties for an access package in entitlement management",
+      "url": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-access-package-incompatible",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation Team",
+      "comentario": "Configuración de paquetes y grupos incompatibles, carácter unidireccional de reglas y scripts Microsoft Graph PowerShell para auditar solapamientos.",
+      "verificacion": "Verificado 2026-11-11"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Configure Verified ID settings for an access package in entitlement management",
+      "url": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-verified-id-settings",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation Team",
+      "comentario": "Integración de Microsoft Entra Verified ID Network, socios IDV en Security Store y verificación biométrica Face Check en solicitudes My Access.",
+      "verificacion": "Verificado 2026-11-11"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Review recommendations for Access reviews",
+      "url": "https://learn.microsoft.com/en-us/entra/id-governance/review-recommendations-access-reviews",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation Team",
+      "comentario": "Funcionamiento técnico de recomendaciones por inactividad (30 días) y Machine Learning User-to-Group Affiliation (jerarquía manager, <=600 miembros).",
+      "verificacion": "Verificado 2026-11-11"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Archive & report with Azure Monitor - entitlement management",
+      "url": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-logs-and-reporting",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation Team",
+      "comentario": "Retención extendida en Log Analytics más allá de 30 días, Workbooks oficiales y consultas KQL sobre Category == EntitlementManagement.",
+      "verificacion": "Verificado 2026-11-11"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Auditing Lifecycle Workflows",
+      "url": "https://learn.microsoft.com/en-us/entra/id-governance/lifecycle-workflow-audits",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation Team",
+      "comentario": "Categorías de auditoría de Lifecycle Workflows (WorkflowManagement, TaskManagement, Other) y campos de diagnóstico.",
+      "verificacion": "Verificado 2026-11-11"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "The Microsoft Entra agent for smarter access governance: Access Review Agent",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-entra-blog/the-microsoft-entra-agent-for-smarter-access-governance-access-review-agent/4279689",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Manmeet Bawa (Partner Director Product Management, Microsoft)",
+      "comentario": "Arquitectura operativa del Access Review Agent en Microsoft Entra y experiencia conversacional guiada para revisores en Microsoft Teams.",
+      "verificacion": "Verificado 2026-11-11"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "Maester: Open-Source Microsoft Entra & M365 Security Testing Framework",
+      "url": "https://maester.dev/",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Merill Fernando & Comunidad Maester",
+      "comentario": "Automatización continua de pruebas de postura sobre Entra ID, Conditional Access, PIM y gobierno de identidad.",
+      "verificacion": "Verificado 2026-11-11"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "Cloudbrothers - Identity, Conditional Access & Entra Governance Research",
+      "url": "https://cloudbrothers.info/en/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Fabian Bader (Microsoft Security MVP)",
+      "comentario": "Investigación técnica profunda sobre protección de tokens, detección en registros de actividad Graph y endurecimiento de Entra ID.",
+      "verificacion": "Verificado 2026-11-11"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "Cloud-Architekt - Enterprise Identity Governance & Workload Identities",
+      "url": "https://www.cloud-architekt.net/blog/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Thomas Naunheim (Microsoft Security MVP)",
+      "comentario": "Patrones de arquitectura empresarial para gobierno de identidades humanas, identidades de carga de trabajo, agentes y privilegios Tier-0.",
+      "verificacion": "Verificado 2026-11-11"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)",
+      "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Marco normativo de referencia para las seis funciones (GV, ID, PR, DE, RS, RC) y subcategorías de gestión de identidad y control de acceso.",
+      "verificacion": "Verificado 2026-11-11"
+    }
+  ]
+}

@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Panel de resiliencia ante ransomware · v2.0 integrada</title>
+  <script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--cp-bg); color: var(--cp-text);
+      font: 16px/1.5 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    button, input, select { font: inherit; }
+    button, select, input[type="search"], input[type="file"] {
+      border: 1px solid var(--cp-border-strong); border-radius: 0.625rem;
+      background: var(--cp-surface); color: var(--cp-text); padding: 0.55rem 0.75rem;
+    }
+    button { cursor: pointer; }
+    button:hover { border-color: var(--cp-accent); }
+    button.primary { background: var(--cp-accent); border-color: var(--cp-accent); color: var(--cp-accent-fg); }
+    button.primary:hover { background: var(--cp-accent-hover); }
+    :focus-visible { outline: 3px solid var(--cp-accent); outline-offset: 2px; }
+    a { color: var(--cp-link); }
+    .wrap { max-width: 1320px; margin: auto; padding: 0 1.25rem 3rem; }
+    header { background: var(--cp-bg-elevated); border-bottom: 1px solid var(--cp-border); padding: 1.85rem 0; }
+    h1 { font-size: clamp(1.7rem, 3vw, 2.4rem); line-height: 1.17; margin: 0.25rem 0 0.65rem; }
+    h2 { font-size: 1.32rem; margin: 0 0 0.75rem; }
+    h3 { font-size: 1.05rem; margin: 0; }
+    p { margin: 0.5rem 0 1rem; }
+    .eyebrow { color: var(--cp-accent); letter-spacing: 0.09em; font-weight: 700; font-size: 0.78rem; }
+    .muted { color: var(--cp-text-muted); }
+    .notice {
+      border-left: 4px solid var(--cp-warning); background: var(--cp-surface);
+      border: 1px solid var(--cp-border); border-left-width: 4px;
+      border-radius: 0.625rem; padding: 0.85rem 1rem; margin: 1.2rem 0;
+    }
+    .notice.error { border-left-color: var(--cp-danger); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(195px, 1fr)); gap: 1rem; }
+    .card, section.panel {
+      background: var(--cp-surface); border: 1px solid var(--cp-border);
+      border-radius: 16px; box-shadow: 0 0 2px var(--cp-border), 0 1px 2px var(--cp-border);
+    }
+    .card { padding: 1.05rem; }
+    .card strong { display: block; font-size: 1.85rem; line-height: 1.25; }
+    .card span { font-size: 0.88rem; color: var(--cp-text-muted); }
+    section.panel { margin-top: 1.2rem; padding: 1.2rem; }
+    .controls { display: flex; flex-wrap: wrap; align-items: end; gap: 0.75rem; }
+    .controls label { display: grid; gap: 0.25rem; min-width: 150px; font-size: 0.88rem; font-weight: 600; }
+    .controls input[type="search"] { min-width: min(300px, 80vw); }
+    .bars { display: flex; width: 100%; height: 22px; background: var(--cp-surface-soft);
+      border: 1px solid var(--cp-border); overflow: hidden; border-radius: 0.625rem; margin-top: 0.5rem; }
+    .bar { min-width: 0; }
+    .bar.unknown { background: var(--cp-border-strong); }
+    .bar.absent { background: var(--cp-danger); }
+    .bar.partial { background: var(--cp-warning); }
+    .bar.done { background: var(--cp-link); }
+    .bar.tested { background: var(--cp-success); }
+    .legend { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 0.75rem; font-size: 0.85rem; }
+    .dot { display: inline-block; vertical-align: middle; width: 0.75rem; height: 0.75rem;
+      margin-right: 0.3rem; border-radius: 0.25rem; }
+    .dot.unknown { background: var(--cp-border-strong); }
+    .dot.absent { background: var(--cp-danger); }
+    .dot.partial { background: var(--cp-warning); }
+    .dot.done { background: var(--cp-link); }
+    .dot.tested { background: var(--cp-success); }
+    .table-scroll { overflow-x: auto; border: 1px solid var(--cp-border); border-radius: 0.625rem; margin-top: 0.65rem; }
+    table { border-collapse: collapse; width: 100%; min-width: 900px; font-size: 0.92rem; }
+    th { text-align: left; background: var(--cp-surface-soft); white-space: nowrap; }
+    th, td { padding: 0.62rem; border-bottom: 1px solid var(--cp-border); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--cp-accent-soft); }
+    code { font: 0.9em Consolas, "Courier New", Courier, monospace; }
+    .badge { display: inline-block; padding: 0.2rem 0.48rem; border: 1px solid var(--cp-border);
+      border-radius: 0.625rem; white-space: nowrap; }
+    .badge.unknown { border-color: var(--cp-border-strong); }
+    .badge.absent { color: var(--cp-danger); }
+    .badge.partial { color: var(--cp-warning); }
+    .badge.tested { color: var(--cp-success); }
+    .badge.done { color: var(--cp-link); }
+    .files { display: flex; flex-wrap: wrap; gap: 1rem; }
+    .file-label { display: grid; gap: 0.3rem; max-width: 420px; font-weight: 600; font-size: 0.9rem; }
+    footer { padding: 2rem 0; color: var(--cp-text-muted); font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div style="margin-bottom:0.4rem;"><a href="../../index.html" style="font-weight:700;">← Volver al portal principal del ecosistema</a></div>
+      <div class="eyebrow">EVALUACIÓN Y BIA · V2.0 CON TRAZABILIDAD CANÓNICA</div>
+      <h1>Panel de resiliencia ante ransomware</h1>
+      <p>Explorador local de los <strong>21 controles (CT-01 a CT-21, incluye IA y agentes)</strong> y del BIA, conectado a fases CISO 365, preguntas del Directorio (Q1–Q6), capas Full Microsoft y módulos Ninja. Inicia con 21 controles sin evaluar.</p>
+      <span class="muted">Sin red, almacenamiento persistente ni automatización sobre el entorno productivo.</span>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="notice" role="note">Una licencia Microsoft o una referencia formativa no prueba implantación. Los recuentos reflejan únicamente las <strong>filas cargadas</strong>. No importe secretos ni datos forenses.</div>
+
+    <section class="panel" aria-labelledby="data-title">
+      <h2 id="data-title">1. Importación local desde Excel (CSV UTF-8)</h2>
+      <p>Exporte solo la hoja <code>Controles</code> o <code>BIA</code> de <code>01-Evaluacion-y-controles.xlsx</code> como CSV UTF-8.</p>
+      <div class="files">
+        <label class="file-label">Importar hoja Controles (.csv)
+          <input id="controls-file" type="file" accept=".csv,text/csv">
+        </label>
+        <label class="file-label">Importar hoja BIA (.csv)
+          <input id="bia-file" type="file" accept=".csv,text/csv">
+        </label>
+      </div>
+      <div class="controls" style="margin-top:0.75rem;">
+        <button id="reset" type="button">Restaurar catálogo sin evaluar (21 CT)</button>
+        <button id="export" class="primary" type="button">Descargar resumen JSON</button>
+      </div>
+      <p id="data-source" class="muted" aria-live="polite"></p>
+      <div id="status" role="status" aria-live="polite"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="summary-title">
+      <h2 id="summary-title">2. Estado de las filas cargadas</h2>
+      <div class="grid">
+        <div class="card"><strong id="total">21</strong><span>Controles en catálogo</span></div>
+        <div class="card"><strong id="unevaluated">21</strong><span>No evaluados</span></div>
+        <div class="card"><strong id="tested">0</strong><span>Marcados “Probado” (validar acta)</span></div>
+        <div class="card"><strong id="critical">Sin datos</strong><span>Procesos críticos en BIA</span></div>
+      </div>
+      <h3 style="margin-top:1.2rem;">Distribución de estados (no equivale a porcentaje de madurez)</h3>
+      <div id="bars" class="bars" role="img" aria-label="Estados de controles"></div>
+      <div id="legend" class="legend"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="catalog-title">
+      <h2 id="catalog-title">3. Catálogo CT-01..CT-21 y filtros</h2>
+      <div class="controls">
+        <label>Buscar <input id="search" type="search" placeholder="CT-21, K28, Sentinel, IA, respaldos"></label>
+        <label>Dominio <select id="domain"><option value="">Todos</option></select></label>
+        <label>Fase CISO 365 <select id="phase">
+          <option value="">Todas</option><option value="F1">F1 (H30)</option><option value="F2">F2 (H60)</option>
+          <option value="F3">F3 (H100)</option><option value="F4">F4 (H180)</option><option value="F5">F5 (H270)</option><option value="F6">F6 (H365)</option>
+        </select></label>
+        <label>Directorio <select id="boardq">
+          <option value="">Todas</option><option value="Q1">Q1</option><option value="Q2">Q2</option>
+          <option value="Q3">Q3</option><option value="Q4">Q4</option><option value="Q5">Q5</option><option value="Q6">Q6</option>
+        </select></label>
+        <label>Estado <select id="state">
+          <option value="">Todos</option><option>No evaluado</option><option>No implementado</option>
+          <option>Parcial</option><option>Implementado</option><option>Probado</option>
+        </select></label>
+      </div>
+      <p id="filtered" class="muted"></p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>ID y dominio</th>
+              <th>Criterio verificable</th>
+              <th>Estado y prioridad</th>
+              <th>Fase CISO 365 y KPIs</th>
+              <th>Capas Full MS y entrenamiento Ninja</th>
+            </tr>
+          </thead>
+          <tbody id="controls-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="bia-title">
+      <h2 id="bia-title">4. BIA: RTO/RPO y operación sin TI / sin IA (K29, K30, K56)</h2>
+      <p id="bia-note"></p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Proceso</th><th>Criticidad</th><th>Dependencia IA</th>
+              <th>RTO obj / med (h)</th><th>RPO obj / med (h)</th><th>Lectura</th>
+            </tr>
+          </thead>
+          <tbody id="bia-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <footer class="wrap">
+    Ir a: <a href="Mapa-de-correlacion-y-prioridades.html">Mapa 360° de correlación y prioridades</a> ·
+    <a href="Consola-de-incidente.html">Consola de incidente</a> ·
+    <a href="02-Evaluaciones.md">02-Evaluaciones.md</a> ·
+    <a href="11-Fuentes-y-cobertura.md">11-Fuentes-y-cobertura.md</a>.
+  </footer>
+  <script>
+    "use strict";
+    const CATALOG = [["CT-01", "Gobierno", "Ola 1 · Recuperación e Identidad Crítica (D1–100)", "Todo proceso crítico inventariado tiene dueño de riesgo, impacto, RTO/RPO aprobados y dependencias de identidad, red, datos, nube y tercero.", "F1/H30 → F2/H60 (rev. F5/H270)", "Q1;Q4;Q5", "K09;K21;K39", "MS-CAP-03;MS-CAP-12", "NT-02 02_Defender_XDR [M6,S7] (10h) · NT-14 14_Defender_for_Cloud [B6,M2,A7] (17h) · NT-11 11_Purview_Compliance_Manager [I3,M4] (7h)", "MS-02;EXT-02"], ["CT-02", "Respaldos", "Ola 1 · Recuperación e Identidad Crítica (D1–100)", "Datos, configuraciones y procedimientos críticos tienen copias protegidas contra borrado, separadas del mismo plano administrativo y restaurables contra RTO/RPO por servicio.", "F1/H30 → F3/H100 → F5/H270", "Q4", "K28;K30;K47", "MS-CAP-12", "NT-14 14_Defender_for_Cloud [M1,M6,M7,A3,W2,W4] (39h) · NT-09 09_Purview_Ciclo_de_vida_y_Registros [I1,A4] (7h)", "MS-02;MS-07;INT-01"], ["CT-03", "Identidad", "Ola 1 · Recuperación e Identidad Crítica (D1–100)", "Existe ruta de recuperación del plano de identidad (AD DS y Microsoft Entra) y cuentas de emergencia separadas del dominio sospechoso, ensayadas sin dependencia circular.", "F1/H30 → F4/H180 → F5/H270", "Q1;Q4", "K28;K30;K33;K34", "MS-CAP-01;MS-CAP-04;MS-CAP-12", "NT-03 03_Entra_Identidad_y_Agentes [I2,I5,M6,A3,A4,A5] (57h) · NT-02 02_Defender_XDR [I5,M4] (13h)", "MS-02;MS-03;INT-04"], ["CT-04", "Identidad", "Ola 1 · Recuperación e Identidad Crítica (D1–100)", "Privilegios minimizados, segregados y elevados justo a tiempo (JIT); MFA resistente al phishing, estaciones administrativas confiables (PAW) y accesos de emergencia auditados.", "F1/H30 → F3/H100 → F4/H270", "Q1", "K33;K34", "MS-CAP-01;MS-CAP-02;MS-CAP-04", "NT-03 03_Entra_Identidad_y_Agentes [I2,I3,I4,M1,M2,M3,M7,A4] (69h) · NT-02 02_Defender_XDR [I5,I6,M4,M5] (26h)", "MS-03"], ["CT-05", "Endpoint", "Ola 1 · Recuperación e Identidad Crítica (D1–100)", "Activos soportados (clientes y servidores) tienen EDR/antimalware sano, protección contra manipulación y cobertura medida sobre inventario; exclusiones justificadas y con vencimiento.", "F2/H60 → F4/H180", "Q1;Q2", "K35;K39;K41;K63", "MS-CAP-03;MS-CAP-06", "NT-02 02_Defender_XDR [I4,M3,M6] (20h) · NT-14 14_Defender_for_Cloud [B3,B4,M3,M4] (26h)", "MS-03;MS-05"], ["CT-06", "Exposición", "Ola 2 · Reducción de Alcance y Detección/Respuesta (D101–270)", "Exposición de acceso remoto, perímetro y vulnerabilidades explotadas inventariada; remediaciones priorizadas por explotación e impacto en activos críticos, con excepciones expirables.", "F2/H60 → F4/H180 → F6/H365", "Q1", "K46;K35;K63", "MS-CAP-03;MS-CAP-06", "NT-02 02_Defender_XDR [M6] (6h) · NT-14 14_Defender_for_Cloud [B2,M2,M4,W5,A7] (32h) · NT-04 04_Security_Copilot [M4] (4h)", "MS-04;EXT-01"], ["CT-07", "Red", "Ola 2 · Reducción de Alcance y Detección/Respuesta (D101–270)", "Segmentación verificada limita movimiento lateral entre usuarios, administración, OT, respaldos y servicios críticos; egreso desde zonas críticas y de recuperación restringido.", "F2/H60 → F4/H270 → F6/H365", "Q1", "K36;K40", "MS-CAP-01;MS-CAP-06", "NT-03 03_Entra_Identidad_y_Agentes [M8,A4] (18h) · NT-14 14_Defender_for_Cloud [M1,M4,M7] (19h) · NT-15 15_Seguridad_de_agentes_de_IA_en_Foundry [M5] (8h)", "MS-03;MS-07"], ["CT-08", "Identidad", "Ola 2 · Reducción de Alcance y Detección/Respuesta (D101–270)", "Cuentas de servicio, service principals, aplicaciones OAuth, certificados y secretos tienen dueño humano, privilegio mínimo, inventario, expiración y rotación ensayada en incidente.", "F1/H30 → F4/H180 → F6/H365", "Q5", "K34;K38;K50", "MS-CAP-02;MS-CAP-06", "NT-03 03_Entra_Identidad_y_Agentes [M5,A1,A3] (28h) · NT-14 14_Defender_for_Cloud [M7,M8,W4,W6] (24h)", "MS-03;MS-10"], ["CT-09", "Entrada", "Ola 2 · Reducción de Alcance y Detección/Respuesta (D101–270)", "Protecciones de correo, colaboración, navegador y ejecución reducen entrega inicial de phishing/malware y miden conducta segura de reporte sin bloquear operación autorizada.", "F2/H60 → F4/H180 → F5/H270", "Q1;Q2", "K11;K35", "MS-CAP-03;MS-CAP-05", "NT-02 02_Defender_XDR [I3,M2,M3] (22h) · NT-04 04_Security_Copilot [M6] (6h)", "MS-04"], ["CT-10", "Datos", "Ola 3 · Resistencia Continua, Datos, Terceros e IA (D181–365)", "Permisos amplios de escritura/borrado sobre datos críticos descubiertos y reducidos; clasificación, cifrado, retención inmutable y recuperación de muestra verificados.", "F2/H60 → F4/H270", "Q4;Q5", "K37;K28", "MS-CAP-10;MS-CAP-11", "NT-05 05_Purview_Information_Protection [I2,I3,M1,M2,M3] (29h) · NT-09 09_Purview_Ciclo_de_vida_y_Registros [I1,I2,A4] (11h) · NT-12 12_Purview_DSPM_y_Seguridad_de_datos_para_IA [I3,M4] (9h)", "MS-02;MS-08"], ["CT-11", "Telemetría", "Ola 2 · Reducción de Alcance y Detección/Respuesta (D101–270)", "Telemetría de identidad, endpoint, híbrido, red, respaldos, nube, datos e IA llega en UTC con retención aprobada y denominador medido; la caída de sensor dispara alerta independiente.", "F2/H60 → F4/H270", "Q2", "K41;K53", "MS-CAP-07;MS-CAP-08", "NT-01 01_Sentinel [M1,M2,M3,M12,A1,A8] (38h) · NT-02 02_Defender_XDR [M8] (8h) · NT-03 03_Entra_Identidad_y_Agentes [M6] (8h)", "MS-03;MS-05"], ["CT-12", "SOC", "Ola 2 · Reducción de Alcance y Detección/Respuesta (D101–270)", "Casos de uso DE-01 a DE-13 tienen fuente activa, lógica validada contra técnicas adversarias, guardia 24×7 o acordada, umbral de escalamiento, tuning de falsos positivos y prueba periódica.", "F2/H60 → F4/H270", "Q2", "K42;K43;K44", "MS-CAP-07;MS-CAP-08;MS-CAP-09", "NT-01 01_Sentinel [I4,M7,M9,M10,M11,A2,A3,A4] (59h) · NT-02 02_Defender_XDR [I7,M1,M9,M10,A3,A5,S5] (56h) · NT-04 04_Security_Copilot [M1,M2] (11h)", "MS-03;MS-05;INT-02"], ["CT-13", "Respuesta", "Ola 1 · Recuperación e Identidad Crítica (D1–100)", "Aislamiento de hosts, bloqueo de cuentas, revocación de sesiones/refresh tokens, contención de aplicaciones/agentes y reversión se ejecutan bajo autoridad definida con verificación independiente del efecto.", "F1/H30 → F3/H100 → F4/H270", "Q2;Q4", "K05;K32;K45;K55", "MS-CAP-01;MS-CAP-07;MS-CAP-08;MS-CAP-09", "NT-02 02_Defender_XDR [M7,A1,A2,A8,S2,S6] (52h) · NT-03 03_Entra_Identidad_y_Agentes [M1,A2,A5] (32h) · NT-01 01_Sentinel [M13,X1,X3] (21h) · NT-14 14_Defender_for_Cloud [A3,A5] (15h)", "MS-05;MS-06;MS-10;INT-03"], ["CT-14", "Evidencia", "Ola 2 · Reducción de Alcance y Detección/Respuesta (D101–270)", "Evidencia digital relevante se preserva con hora UTC, origen, integridad (SHA-256 o constancia verificable), acceso restringido, legal hold, retención y transferencias trazables.", "F2/H60 → F4/H270", "Q5", "K03;K57;K60", "MS-CAP-03;MS-CAP-11", "NT-10 10_Purview_eDiscovery_y_Audit [I1,I2,I3,M1,M2,M3,M4,A3,A4] (43h) · NT-09 09_Purview_Ciclo_de_vida_y_Registros [A3,A4] (6h)", "MS-05;EXT-02"], ["CT-15", "Continuidad", "Ola 2 · Reducción de Alcance y Detección/Respuesta (D101–270)", "Cada proceso crítico dispone de modo degradado (sin TI o sin IA) o parada segura, con umbral de activación, numeración/reconciliación de transacciones y aceptación de retorno por negocio.", "F2/H60 → F5/H270 → F6/H365", "Q1;Q4", "K21;K26;K29;K30;K47;K56", "MS-CAP-12", "NT-14 14_Defender_for_Cloud [M1,A3,O4] (20h) · NT-03 03_Entra_Identidad_y_Agentes [X4] (5h) · NT-11 11_Purview_Compliance_Manager [I3,A3] (8h)", "MS-02;MS-07"], ["CT-16", "Comunicación", "Ola 2 · Reducción de Alcance y Detección/Respuesta (D101–270)", "Matriz de interesados y obligaciones por jurisdicción/contrato, gates de aprobación Legal/ejecutiva, canales fuera de banda, vocería y plantillas por audiencia están preparadas y ensayadas sin envío real.", "F2/H60 → F3/H100 → F5/H270", "Q4;Q5", "K05;K14;K23;K57;K58;K61;K64", "MS-CAP-10;MS-CAP-11", "NT-08 08_Purview_Communication_Compliance [I2,M2,A2,O3] (19h) · NT-11 11_Purview_Compliance_Manager [I2,M4,A4,O3] (17h) · NT-05 05_Purview_Information_Protection [M2,M3] (12h)", "EXT-01;EXT-02"], ["CT-17", "Ejercicios", "Ola 2 · Reducción de Alcance y Detección/Respuesta (D101–270)", "Assessment inicial, revisión trimestral de deriva, ejercicio anual ejecutivo/técnico (E1/E3), restauración técnica extremo a extremo (E2) y evaluación sin pistas de titulares y suplentes ejecutados con retest de fallos.", "F2/H60 → F4/H180 → F5/H270 → F6/H365", "Q2;Q3;Q4;Q6", "K06;K12;K15;K16;K30;K32;K48;K60;KSG01;KSG05", "MS-CAP-02;MS-CAP-07;MS-CAP-11;MS-CAP-12", "NT-02 02_Defender_XDR [A5,S1,S3,S4] (28h) · NT-03 03_Entra_Identidad_y_Agentes [M4] (12h) · NT-11 11_Purview_Compliance_Manager [I3,A3] (8h)", "MS-02;EXT-02;INT-01;INT-04"], ["CT-18", "Terceros", "Ola 3 · Resistencia Continua, Datos, Terceros e IA (D181–365)", "Accesos remotos de proveedores, MSP, integraciones B2B/API y concentración en terceros críticos inventariados, con cláusulas de notificación, monitoreo y ruta probada de suspensión y reconexión.", "F1/H30 → F4/H180 → F5/H270", "Q4", "K27;K31;K62", "MS-CAP-01;MS-CAP-02;MS-CAP-08", "NT-03 03_Entra_Identidad_y_Agentes [M4,M5,M8] (30h) · NT-01 01_Sentinel [M4,A9] (10h) · NT-02 02_Defender_XDR [A7] (6h)", "EXT-01"], ["CT-19", "Datos", "Ola 3 · Resistencia Continua, Datos, Terceros e IA (D181–365)", "Exfiltración masiva, descarga inusual y compartición externa anómala son visibles y bloqueables proporcionalmente, con línea de investigación propia aunque no exista cifrado (extorsión pura).", "F2/H60 → F4/H270", "Q1;Q5", "K37;K42;K45;K52;K64", "MS-CAP-07;MS-CAP-10", "NT-06 06_Purview_DLP [I2,I3,M2,M4,A2] (31h) · NT-07 07_Purview_Insider_Risk [I2,M1,M2,M3,A2] (31h) · NT-14 14_Defender_for_Cloud [M6,W2] (12h)", "MS-02;MS-05;EXT-01"], ["CT-20", "M365", "Ola 1 · Recuperación e Identidad Crítica (D1–100)", "Recuperación en Microsoft 365 (versionado/Files Restore de OneDrive y SharePoint, buzones Exchange y, cuando se requiera escala/velocidad empresarial, Microsoft 365 Backup) configurada y ensayada sin registrarla como sustituto de respaldos de aplicaciones/identidad.", "F2/H60 → F3/H100 → F5/H270", "Q4", "K28;K30;K47", "MS-CAP-11;MS-CAP-12", "NT-09 09_Purview_Ciclo_de_vida_y_Registros [I2,M4,A4] (12h) · NT-10 10_Purview_eDiscovery_y_Audit [M1,A3] (11h) · NT-12 12_Purview_DSPM_y_Seguridad_de_datos_para_IA [M4] (5h)", "MS-02;MS-08"], ["CT-21", "IA y Agentes", "Ola 3 · Resistencia Continua, Datos, Terceros e IA (D181–365)", "Sistemas de IA, copilotos y agentes autónomos inventariados con dueño humano, identidad y autoridad delegada acotada, protección contra prompt injection/fuga de datos, telemetría en el SOC y botón de desconexión con operación sin IA probada.", "F2/H60 → F4/H180 → F5/H270 → F6/H365", "Q4;Q5", "K49;K50;K51;K52;K53;K54;K56", "MS-CAP-12;MS-CAP-10", "NT-03 03_Entra_Identidad_y_Agentes [X1,X2,X3,X4,X6] (26h) · NT-12 12_Purview_DSPM_y_Seguridad_de_datos_para_IA [I2,M1,M2,M3,A1] (32h) · NT-13 13_Seguridad_de_Copilot_y_Copilot_Studio [I3,I4,M5,M6,A4,A7,A8,O3] (49h) · NT-15 15_Seguridad_de_agentes_de_IA_en_Foundry [F3,F4,M3,M5,A1,A5,O2] (45h)", "MS-03;MS-10"]];
+    const BY_ID = Object.fromEntries(CATALOG.map(r => [r[0], r]));
+    const STATES = ["No evaluado", "No implementado", "Parcial", "Implementado", "Probado"];
+    const PRIORITIES = ["Por definir", "Crítica", "Alta", "Media", "Baja"];
+    const CLASSES = ["unknown", "absent", "partial", "done", "tested"];
+    const baseRows = () => CATALOG.map(([id, domain, wave, criterion, phase, boardQ, kpis, msLayer, ninja, sources]) => ({
+      id, domain, wave, criterion, state: "No evaluado", priority: "Por definir",
+      phase, boardQ, kpis, msLayer, ninja, sources
+    }));
+    let controls = baseRows(), bia = [], origin = "catálogo de plantilla v2.0, no assessment";
+    const $ = id => document.getElementById(id);
+    const normalize = t => String(t ?? "").trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
+
+    function parseCsv(input) {
+      const text = input.replace(/^\uFEFF/, "");
+      const sample = text.split(/\r?\n/).slice(0, 12).find(l => /id/i.test(l) && /(estado|criticidad)/i.test(l)) || text.split(/\r?\n/)[0] || "";
+      const delimiter = (sample.match(/;/g) || []).length > (sample.match(/,/g) || []).length ? ";" : ",";
+      let quoted = false, field = "", row = [], result = [];
+      for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        if (quoted) {
+          if (c === '"' && text[i + 1] === '"') { field += '"'; i++; }
+          else if (c === '"') quoted = false;
+          else field += c;
+        } else if (c === '"') {
+          if (field.trim()) throw new Error("CSV mal formado: comillas internas.");
+          quoted = true;
+        } else if (c === delimiter) { row.push(field); field = ""; }
+        else if (c === "\n" || c === "\r") {
+          if (c === "\r" && text[i + 1] === "\n") i++;
+          row.push(field); result.push(row); field = ""; row = [];
+        } else field += c;
+      }
+      if (quoted) throw new Error("CSV incompleto: faltan comillas de cierre.");
+      if (field || row.length) result.push([...row, field]);
+      return result;
+    }
+
+    function dataRows(text, required) {
+      const rows = parseCsv(text);
+      const index = rows.findIndex(r => required.every(k => r.some(col => normalize(col) === k)));
+      if (index < 0) throw new Error("No se encontró encabezado requerido: " + required.join(", "));
+      const headers = rows[index].map(normalize);
+      const get = (r, k) => { const idx = headers.indexOf(k); return idx >= 0 ? String(r[idx] ?? "").trim() : ""; };
+      return rows.slice(index + 1).filter(r => r.some(col => String(col).trim()))
+        .map((row, i) => ({ line: index + i + 2, get: k => get(row, k) }));
+    }
+
+    function importControls(text) {
+      const seen = new Set();
+      const parsed = dataRows(text, ["id", "dominio", "criterio", "estado"]).map(({ line, get }) => {
+        const id = get("id").toUpperCase(), domain = get("dominio"), criterion = get("criterio"), state = get("estado");
+        if (!id || !domain || !criterion || !state) throw new Error(`Fila ${line}: ID, Dominio, Criterio y Estado son obligatorios.`);
+        if (!/^CT-\d+$/i.test(id)) throw new Error(`Fila ${line}: ID no válido (${id}).`);
+        if (seen.has(id)) throw new Error(`ID duplicado: ${id}.`);
+        if (!STATES.includes(state)) throw new Error(`Fila ${line}: Estado no reconocido (${state}).`);
+        const priority = get("criticidad") || "Por definir";
+        if (!PRIORITIES.includes(priority)) throw new Error(`Fila ${line}: Criticidad no reconocida (${priority}).`);
+        seen.add(id);
+        const ref = BY_ID[id] || [];
+        return {
+          id, domain, wave: get("olaprioridad") || ref[2] || "—", criterion, state, priority,
+          phase: get("faseciso365") || ref[4] || "—",
+          boardQ: ref[5] || "—",
+          kpis: get("kpisokrs") || ref[6] || "—",
+          msLayer: get("capafullms") || ref[7] || "—",
+          ninja: get("entrenamientoninja") || ref[8] || "—",
+          sources: get("fuentes") || ref[9] || ""
+        };
+      });
+      if (!parsed.length) throw new Error("La hoja Controles no contiene registros.");
+      return parsed;
+    }
+
+    function numberOrNull(text, name, line) {
+      if (!text) return null;
+      const v = Number(text.replace(",", "."));
+      if (!Number.isFinite(v) || v < 0) throw new Error(`Fila ${line}: ${name} debe ser un número >= 0.`);
+      return v;
+    }
+
+    function importBia(text) {
+      const seen = new Set();
+      const parsed = dataRows(text, ["id", "proceso", "criticidad"]).map(({ line, get }) => {
+        const id = get("id"), process = get("proceso"), criticality = get("criticidad");
+        if (!id || !process || !criticality) throw new Error(`Fila ${line}: ID, Proceso y Criticidad son obligatorios.`);
+        if (!PRIORITIES.includes(criticality)) throw new Error(`Fila ${line}: Criticidad no reconocida (${criticality}).`);
+        if (seen.has(id)) throw new Error(`ID BIA duplicado: ${id}.`);
+        seen.add(id);
+        return {
+          id, process, criticality,
+          aiDep: get("usaiaoagentes") || "No evaluado",
+          rtoTarget: numberOrNull(get("rtoobjh"), "RTO_obj_h", line),
+          rpoTarget: numberOrNull(get("rpoobjh"), "RPO_obj_h", line),
+          rtoActual: numberOrNull(get("rtomedidoh"), "RTO_medido_h", line),
+          rpoActual: numberOrNull(get("rpomedidoh"), "RPO_medido_h", line)
+        };
+      });
+      if (!parsed.length) throw new Error("La hoja BIA está vacía; registre al menos un proceso antes de importar.");
+      return parsed;
+    }
+
+    function show(msg, err = false) {
+      $("status").textContent = msg;
+      $("status").classList.toggle("notice", Boolean(msg));
+      $("status").classList.toggle("error", err);
+    }
+
+    function td(row, text) {
+      const el = document.createElement("td"); el.textContent = String(text); row.append(el); return el;
+    }
+
+    function render() {
+      const counts = STATES.map(st => controls.filter(i => i.state === st).length);
+      $("total").textContent = String(controls.length);
+      $("unevaluated").textContent = String(counts[0]);
+      $("tested").textContent = String(counts[4]);
+      $("critical").textContent = bia.length ? String(bia.filter(i => normalize(i.criticality) === "critica").length) : "Sin datos";
+      $("data-source").textContent = `Origen: ${origin}. BIA: ${bia.length ? bia.length + " procesos cargados" : "no cargado"}.`;
+
+      $("bars").replaceChildren(); $("legend").replaceChildren();
+      $("bars").setAttribute("aria-label", counts.map((c, i) => `${STATES[i]}: ${c}`).join("; "));
+      counts.forEach((c, i) => {
+        if (c) {
+          const b = document.createElement("div");
+          b.className = "bar " + CLASSES[i]; b.style.width = `${100 * c / controls.length}%`;
+          b.title = `${STATES[i]}: ${c}`; $("bars").append(b);
+        }
+        const sp = document.createElement("span"), d = document.createElement("span");
+        d.className = "dot " + CLASSES[i]; d.setAttribute("aria-hidden", "true");
+        sp.append(d, document.createTextNode(`${STATES[i]}: ${c}`)); $("legend").append(sp);
+      });
+
+      const priorDomain = $("domain").value;
+      $("domain").replaceChildren(new Option("Todos", ""));
+      [...new Set(controls.map(i => i.domain))].sort((a, b) => a.localeCompare(b, "es"))
+        .forEach(dom => $("domain").add(new Option(dom, dom)));
+      if ([...$("domain").options].some(o => o.value === priorDomain)) $("domain").value = priorDomain;
+
+      const q = normalize($("search").value), dom = $("domain").value, ph = $("phase").value, bq = $("boardq").value, st = $("state").value;
+      const subset = controls.filter(i =>
+        (!dom || i.domain === dom) &&
+        (!ph || i.phase.includes(ph)) &&
+        (!bq || i.boardQ.split(";").includes(bq)) &&
+        (!st || i.state === st) &&
+        (!q || normalize([i.id, i.domain, i.criterion, i.kpis, i.msLayer, i.ninja, i.sources].join(" ")).includes(q))
+      );
+      $("filtered").textContent = `${subset.length} de ${controls.length} filas visibles.`;
+      $("controls-body").replaceChildren();
+      subset.forEach(item => {
+        const r = document.createElement("tr");
+        const c1 = document.createElement("td");
+        const stg = document.createElement("strong"); stg.textContent = `${item.id} · ${item.domain}`;
+        const w = document.createElement("div"); w.className = "muted"; w.textContent = item.wave;
+        c1.append(stg, w); r.append(c1);
+        td(r, item.criterion);
+        const c3 = document.createElement("td");
+        const badge = document.createElement("span");
+        badge.className = "badge " + CLASSES[STATES.indexOf(item.state)]; badge.textContent = item.state;
+        const pr = document.createElement("div"); pr.className = "muted"; pr.textContent = `Prioridad: ${item.priority}`;
+        c3.append(badge, pr); r.append(c3);
+        const c4 = document.createElement("td");
+        const d1 = document.createElement("div"); d1.textContent = item.phase;
+        const d2 = document.createElement("div"); d2.className = "muted"; d2.textContent = `KPIs: ${item.kpis} (${item.boardQ})`;
+        c4.append(d1, d2); r.append(c4);
+        const c5 = document.createElement("td");
+        const m1 = document.createElement("div"); m1.textContent = `Full MS: ${item.msLayer}`;
+        const m2 = document.createElement("div"); m2.className = "muted"; m2.textContent = item.ninja;
+        c5.append(m1, m2); r.append(c5);
+        $("controls-body").append(r);
+      });
+
+      $("bia-body").replaceChildren();
+      $("bia-note").textContent = bia.length ? `${bia.length} procesos importados.` : "Sin BIA importado: no se evalúan RTO/RPO ni dependencia de IA.";
+      bia.forEach(item => {
+        const r = document.createElement("tr");
+        const fmt = v => v === null ? "—" : String(v);
+        const res = item.rtoTarget === null || item.rpoTarget === null ? "No evaluable: falta objetivo" :
+          item.rtoActual === null || item.rpoActual === null ? "Sin prueba: faltan tiempos medidos" :
+          item.rtoActual <= item.rtoTarget && item.rpoActual <= item.rpoTarget ? "Dentro de objetivo ingresado (validar acta E2)" : "Fuera de objetivo; abrir brecha";
+        td(r, item.id); td(r, item.process); td(r, item.criticality); td(r, item.aiDep);
+        td(r, `${fmt(item.rtoTarget)} / ${fmt(item.rtoActual)}`);
+        td(r, `${fmt(item.rpoTarget)} / ${fmt(item.rpoActual)}`);
+        td(r, res);
+        $("bia-body").append(r);
+      });
+    }
+
+    async function readFile(file, kind) {
+      if (!file) return;
+      try {
+        if (!/\.csv$/i.test(file.name)) throw new Error("Seleccione un archivo .csv exportado desde Excel.");
+        if (file.size > 3_000_000) throw new Error("CSV mayor a 3 MB.");
+        const text = await file.text();
+        if (kind === "controls") {
+          controls = importControls(text); origin = `CSV ${file.name} (${controls.length} filas)`;
+        } else bia = importBia(text);
+        show(`Importación válida: ${file.name}. Permanece solo en memoria local.`);
+        render();
+      } catch (e) { show(`No se importó ${file.name}: ${e.message}`, true); }
+    }
+
+    $("controls-file").addEventListener("change", e => { readFile(e.target.files[0], "controls"); e.target.value = ""; });
+    $("bia-file").addEventListener("change", e => { readFile(e.target.files[0], "bia"); e.target.value = ""; });
+    $("reset").addEventListener("click", () => {
+      controls = baseRows(); bia = []; origin = "catálogo de plantilla v2.0, no assessment";
+      ["search", "domain", "phase", "boardq", "state"].forEach(id => $(id).value = "");
+      show("Catálogo restaurado a 21 controles sin evaluar."); render();
+    });
+    $("export").addEventListener("click", () => {
+      const url = URL.createObjectURL(new Blob([JSON.stringify({
+        schema: "ransomware-panel-v2", exportedUTC: new Date().toISOString(),
+        origin, disclaimer: "Recuentos de filas cargadas, no assessment auditado", controls, bia
+      }, null, 2)], { type: "application/json;charset=utf-8" }));
+      const a = document.createElement("a"); a.href = url; a.download = "ransomware-panel-resumen-v2.json";
+      document.body.append(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      show("Resumen JSON descargado localmente; etiquete según sensibilidad antes de compartir.");
+    });
+    ["search", "domain", "phase", "boardq", "state"].forEach(id => $(id).addEventListener(id === "search" ? "input" : "change", render));
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Purview Data Loss Prevention — Guía Operacional (Configuración, Rutinas y Playbooks)</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.72;
+}
+code, pre, .mono {
+  font-family: Consolas, "Courier New", Courier, monospace;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 0.88em;
+  color: var(--cp-text);
+  word-break: break-word;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Sticky Top Navigation */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--cp-panel-strong);
+  border-bottom: 1px solid var(--cp-border);
+  backdrop-filter: blur(10px);
+  padding: 12px 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.topbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border-strong);
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.btn-primary:hover {
+  background: var(--cp-accent-hover);
+  border-color: var(--cp-accent-hover);
+  color: var(--cp-accent-fg);
+}
+.btn-sm {
+  padding: 5px 11px;
+  font-size: 12.5px;
+}
+.select-input, .search-input {
+  padding: 9px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+}
+.search-input { min-width: 260px; flex: 1; }
+
+/* Two-Column Spacious App Layout */
+.app-shell {
+  max-width: 1520px;
+  margin: 0 auto;
+  padding: 28px 32px 56px 32px;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+.sidebar {
+  position: sticky;
+  top: 76px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 20px 16px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+}
+.nav-section-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cp-text-soft);
+  padding: 12px 12px 6px 12px;
+}
+.nav-section-label:first-child { padding-top: 2px; }
+.nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border-radius: 0.625rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.nav-item:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border);
+}
+.nav-item.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.nav-subitem {
+  padding-left: 24px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.nav-count {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--cp-surface-soft);
+  color: var(--cp-text-muted);
+  border: 1px solid var(--cp-border);
+}
+.nav-item.active .nav-count {
+  background: var(--cp-panel-strong);
+  color: var(--cp-text);
+  border-color: transparent;
+}
+.sidebar-progress {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cp-border);
+}
+.prog-row { margin-bottom: 12px; }
+.prog-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--cp-text-muted);
+  font-weight: 600;
+}
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--cp-accent);
+  width: 0%;
+  transition: width 0.25s ease;
+}
+
+/* Main Reading Area */
+.main-area {
+  max-width: 1080px;
+  width: 100%;
+}
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+
+/* Hero & Section Headers */
+.hero-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 32px 36px;
+  margin-bottom: 28px;
+}
+.hero-card h1 {
+  margin: 10px 0 14px 0;
+  font-size: 28px;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+}
+.hero-lead {
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: var(--cp-text-muted);
+  margin: 0;
+}
+.section-banner {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-left: 5px solid var(--cp-accent);
+  border-radius: 16px;
+  padding: 26px 32px;
+  margin-bottom: 28px;
+}
+.section-banner h2 {
+  margin: 0 0 8px 0;
+  font-size: 23px;
+  line-height: 1.3;
+}
+.section-banner p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15.5px;
+}
+
+/* Mode Selector Cards on Overview */
+.modes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.mode-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+}
+.mode-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cp-accent);
+}
+.mode-card h3 {
+  margin: 6px 0 10px 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+.mode-card p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15px;
+}
+
+/* Badges & Inline Tags */
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 0.625rem;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface-soft);
+  color: var(--cp-text);
+}
+.badge-accent {
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border-color: var(--cp-accent);
+}
+.badge-learn {
+  border-color: var(--cp-success);
+  color: var(--cp-success);
+  background: var(--cp-surface-soft);
+}
+.badge-editorial {
+  border-color: var(--cp-warning);
+  color: var(--cp-warning);
+  background: var(--cp-surface-soft);
+}
+.inline-tag {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 6px;
+  margin-left: 4px;
+  vertical-align: middle;
+  border: 1px solid var(--cp-border);
+}
+.tag-learn { color: var(--cp-success); border-color: var(--cp-success); background: var(--cp-surface-soft); }
+.tag-edit { color: var(--cp-warning); border-color: var(--cp-warning); background: var(--cp-surface-soft); }
+
+/* Sub-navigation Switcher */
+.subnav-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.subnav-pill {
+  padding: 10px 18px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.subnav-pill:hover { border-color: var(--cp-border-strong); background: var(--cp-surface-soft); }
+.subnav-pill.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.filter-toolbar {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Spacious Operational, Setup & Playbook Cards */
+.spacious-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 30px 34px;
+  margin-bottom: 24px;
+}
+.spacious-card.is-done {
+  border-color: var(--cp-success);
+  background: var(--cp-bg-elevated);
+}
+.adhoc-card {
+  border-left: 5px solid var(--cp-accent);
+}
+.card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.card-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 280px;
+}
+.task-checkbox {
+  width: 22px;
+  height: 22px;
+  margin-top: 4px;
+  accent-color: var(--cp-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.card-code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border: 1px solid var(--cp-accent);
+  display: inline-block;
+  margin-bottom: 6px;
+}
+.card-heading {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+/* Info Callout Boxes inside Cards */
+.info-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.info-box {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+.info-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-soft);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.info-content {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.trigger-banner {
+  background: var(--cp-accent-soft);
+  border: 1px solid var(--cp-accent);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+}
+.trigger-banner .info-label {
+  color: var(--cp-accent);
+}
+
+/* Step-by-Step Spacious List */
+.steps-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-muted);
+  margin: 0 0 12px 0;
+}
+.steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.step-row:hover { border-color: var(--cp-border-strong); }
+.step-row.step-checked {
+  border-color: var(--cp-success);
+  opacity: 0.88;
+}
+.step-num {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border-strong);
+  color: var(--cp-text);
+  font-weight: 700;
+  font-size: 13.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-row.step-checked .step-num {
+  background: var(--cp-success);
+  border-color: var(--cp-success);
+  color: var(--cp-accent-fg);
+}
+.step-body {
+  font-size: 15.5px;
+  line-height: 1.72;
+  flex: 1;
+}
+
+/* Validation & Evidence Footer Box */
+.validation-footer {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.validation-footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--cp-border);
+  font-size: 13.5px;
+  color: var(--cp-text-muted);
+}
+
+/* Grids & Tables for Secondary Views */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.subsection-heading {
+  font-size: 20px;
+  margin: 34px 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cp-border);
+}
+pre.code-block {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 14px 0 0 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.table-wrap {
+  overflow-x: auto;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th, td { padding: 16px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--cp-border); line-height: 1.6; }
+th { background: var(--cp-bg-elevated); font-weight: 700; }
+tr:last-child td { border-bottom: none; }
+.muted { color: var(--cp-text-muted); }
+
+.footer {
+  margin-top: 48px;
+  padding: 24px 0;
+  border-top: 1px solid var(--cp-border);
+  color: var(--cp-text-muted);
+  font-size: 13.5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 1080px) {
+  .app-shell { grid-template-columns: 1fr; padding: 18px; gap: 20px; }
+  .sidebar { position: static; max-height: none; }
+  .grid-2, .info-pair { grid-template-columns: 1fr; }
+  .spacious-card, .hero-card { padding: 22px; }
+}
+@media print {
+  .topbar, .sidebar, .filter-toolbar, .subnav-bar { display: none !important; }
+  .app-shell { display: block; padding: 0; }
+  .view-panel { display: block !important; margin-bottom: 32px; }
+  body { background: var(--cp-surface); font-size: 13px; }
+}
+</style></head>
+<body>
+<header class="topbar">
+  <div class="topbar-group">
+    <a class="btn btn-primary" href="../index.html">← Portal Maestro (23 Módulos)</a>
+    <a class="btn" id="prevModBtn" href="#">Anterior</a>
+    <select class="select-input" id="modJumpSelect" aria-label="Cambiar de módulo"></select>
+    <a class="btn" id="nextModBtn" href="#">Siguiente</a>
+  </div>
+  <div class="topbar-group">
+    <a class="btn" id="xlsxLink" href="#" download>Libro .XLSX</a>
+    <a class="btn" id="mdLink" href="#">Guía .MD</a>
+    <button class="btn" type="button" id="exportCsvBtn">Exportar CSV</button>
+    <button class="btn" type="button" id="printBtn">Imprimir / PDF</button>
+    <button class="btn" type="button" id="themeToggleBtn">Tema Claro / Oscuro</button>
+  </div>
+</header>
+
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Navegación de la guía operativa">
+    <div class="nav-section-label">Introducción</div>
+    <button class="nav-item active" type="button" data-view="view-overview">
+      <span>Visión General y Mapa</span>
+    </button>
+
+    <div class="nav-section-label">1 · Configuración Puntual</div>
+    <button class="nav-item" type="button" data-view="view-config">
+      <span>Configuración y Validaciones</span>
+      <span class="nav-count" id="navCntConfig">0</span>
+    </button>
+
+    <div class="nav-section-label">2 · Acciones Periódicas</div>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Diaria">
+      <span>Rutinas Diarias</span>
+      <span class="nav-count" id="navCntDiaria">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Semanal">
+      <span>Rutinas Semanales</span>
+      <span class="nav-count" id="navCntSemanal">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Mensual">
+      <span>Rutinas Mensuales</span>
+      <span class="nav-count" id="navCntMensual">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="CICLOS_LARGOS">
+      <span>Trimestral · Semestral · Anual</span>
+      <span class="nav-count" id="navCntLargos">0</span>
+    </button>
+
+    <div class="nav-section-label">3 · Respuesta a Señales</div>
+    <button class="nav-item" type="button" data-view="view-adhoc">
+      <span>Playbooks Ad-Hoc (Alertas)</span>
+      <span class="nav-count" id="navCntAdhoc">0</span>
+    </button>
+
+    <div class="nav-section-label">Verificación y Gobierno</div>
+    <button class="nav-item" type="button" data-view="view-queries">
+      <span>Consultas KQL / Graph / PS</span>
+      <span class="nav-count" id="navCntQueries">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-kpis">
+      <span>KPIs, Madurez y Formación</span>
+      <span class="nav-count" id="navCntKpis">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-nist">
+      <span>Auditoría NIST 2.0 y Fuentes</span>
+      <span class="nav-count" id="navCntNist">0</span>
+    </button>
+
+    <div class="sidebar-progress" id="sidebarProgress"></div>
+  </aside>
+
+  <main class="main-area">
+    <!-- VISTA 0: OVERVIEW & MAPA DE LOS 3 MODOS -->
+    <section class="view-panel active" id="view-overview">
+      <div class="hero-card">
+        <div class="pill-row" id="heroBadges"></div>
+        <h1 id="heroTitle"></h1>
+        <p class="hero-lead" id="heroSummary"></p>
+      </div>
+
+      <h2 class="subsection-heading" style="margin-top:0;">Cómo operar esta tecnología: Los 3 Niveles de Acción</h2>
+      <div class="modes-grid" id="modesSummaryGrid"></div>
+
+      <div class="spacious-card" id="licensingOverviewCard"></div>
+
+      <h2 class="subsection-heading">Principios Rectores Oficiales (Zero Trust)</h2>
+      <div class="grid-2" id="principlesGrid"></div>
+    </section>
+
+    <!-- VISTA 1: ACCIONES PUNTUALES DE CONFIGURACIÓN Y VALIDACIONES -->
+    <section class="view-panel" id="view-config">
+      <div class="section-banner">
+        <h2>1. Acciones Puntuales de Configuración y Validaciones sobre la Plataforma</h2>
+        <p>Controles que se ejecutan al desplegar la tecnología, activar nuevas capacidades o auditar su línea base. Distingue qué debes configurar una sola vez y cómo validar técnicamente ("Proof of Life") que cada ajuste está activo y protegiendo el entorno.</p>
+      </div>
+
+      <div class="subnav-bar" id="configSubnav">
+        <a class="subnav-pill" href="#cfg-prereqs">1A. Puesta en Marcha Inicial</a>
+        <a class="subnav-pill" href="#cfg-validations">1B. Validaciones de Configuración ("Proof of Life")</a>
+        <a class="subnav-pill" href="#cfg-components">1C. Configuración por Componente</a>
+        <a class="subnav-pill" href="#cfg-rbac">1D. Privilegio Mínimo RBAC y PIM</a>
+      </div>
+
+      <h3 class="subsection-heading" id="cfg-prereqs">1A. Checklist de Puesta en Marcha y Prerrequisitos Puntuales</h3>
+      <div id="prereqsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-validations">1B. Validaciones Técnicas sobre las Configuraciones ("Proof of Life")</h3>
+      <p class="muted" style="margin-top:-8px;margin-bottom:20px;">Comprueba cada uno de estos indicadores en consola o mediante consulta para confirmar que la configuración no quedó solo en papel o en modo auditoría incompleta.</p>
+      <div id="validationsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-components">1C. Configuración Base por Componente e Integraciones</h3>
+      <div id="componentsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-rbac">1D. Configuración Puntual de Roles Administrativos y Estrategia PIM / JIT</h3>
+      <div id="rbacContainer"></div>
+    </section>
+
+    <!-- VISTA 2: ACCIONES PERIÓDICAS PROGRAMADAS -->
+    <section class="view-panel" id="view-periodic">
+      <div class="section-banner">
+        <h2 id="periodicTitle">2. Acciones Periódicas Programadas</h2>
+        <p id="periodicSubtitle">Rutinas recurrentes preventivas, de higiene operativa, tuning y gobierno. Selecciona la frecuencia deseada para leer cómodamente solo las actividades de ese ciclo.</p>
+      </div>
+
+      <div class="subnav-bar" id="periodicCadBar">
+        <button class="subnav-pill active" type="button" data-pcad="Diaria">Diarias</button>
+        <button class="subnav-pill" type="button" data-pcad="Semanal">Semanales</button>
+        <button class="subnav-pill" type="button" data-pcad="Mensual">Mensuales</button>
+        <button class="subnav-pill" type="button" data-pcad="CICLOS_LARGOS">Trimestrales · Semestrales · Anuales</button>
+        <button class="subnav-pill" type="button" data-pcad="ALL_PERIODIC">Ver Todas las Periódicas</button>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="perSearch" placeholder="Buscar acción periódica, consola, tabla KQL, control a validar o rol...">
+        <select class="select-input" id="perRole"><option value="ALL">Rol Responsable: Todos</option></select>
+        <select class="select-input" id="perOrigin">
+          <option value="ALL">Origen: Todos</option>
+          <option value="Verificado MS Learn">Verificado MS Learn</option>
+          <option value="Propuesta Editorial">Propuesta Editorial</option>
+        </select>
+        <button class="btn btn-sm" type="button" id="resetChecksBtn">Reiniciar Progreso</button>
+      </div>
+
+      <p class="muted" id="perCountLabel" style="margin-bottom:18px;"></p>
+      <div id="periodicCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 3: ACCIONES AD-HOC ANTE SEÑALES, ALERTAS E INCIDENTES -->
+    <section class="view-panel" id="view-adhoc">
+      <div class="section-banner">
+        <h2>3. Acciones Ad-Hoc ante Señales, Alertas e Incidentes (Playbooks del Analista)</h2>
+        <p>Procedimientos reactivos bajo demanda. A diferencia de las rutinas periódicas, estos playbooks se activan únicamente cuando una señal de riesgo, alerta de detección, anomalía o emergencia exige la intervención inmediata de un analista.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="adhocSearch" placeholder="Filtrar playbooks por alerta disparadora, síntoma, técnica MITRE o acción de contención...">
+      </div>
+
+      <div id="adhocCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 4: CONSULTAS KQL / GRAPH / POWERSHELL -->
+    <section class="view-panel" id="view-queries">
+      <div class="section-banner">
+        <h2>4. Consultas Técnicas de Validación, Monitoreo y Threat Hunting</h2>
+        <p>Consultas KQL, llamadas Microsoft Graph API y scripts PowerShell listos para auditar configuraciones puntuales, medir salud periódica o investigar alertas ad-hoc.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="kqlSearch" placeholder="Buscar consulta por nombre, tabla (SigninLogs, DeviceEvents, SentinelHealth...), comando o propósito...">
+        <select class="select-input" id="kqlUsageFilter">
+          <option value="ALL">Momento de Uso: Todos</option>
+          <option value="Validación de Configuración y Postura">1. Validación de Configuración y Postura</option>
+          <option value="Control Periódico de Salud, Auditoría y KPIs">2. Control Periódico de Salud y KPIs</option>
+          <option value="Investigación Ad-Hoc y Threat Hunting">3. Investigación Ad-Hoc y Hunting</option>
+        </select>
+      </div>
+
+      <div id="queriesContainer"></div>
+    </section>
+
+    <!-- VISTA 5: KPIs, MADUREZ Y FORMACIÓN -->
+    <section class="view-panel" id="view-kpis">
+      <div class="section-banner">
+        <h2>5. Indicadores Clave (KPIs), Modelo de Madurez y Ruta de Formación</h2>
+        <p>Métricas objetivas para medir eficacia operativa ante el CISO, evolución en 5 niveles de madurez y habilitación técnica recomendada por rol.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Indicadores Clave de Desempeño (KPIs)</h3>
+      <div class="grid-2" id="kpiContainer"></div>
+
+      <h3 class="subsection-heading">Modelo de Madurez Operacional (Niveles 1 a 5)</h3>
+      <div id="maturityContainer"></div>
+
+      <h3 class="subsection-heading">Ruta de Habilitación y Formación por Rol</h3>
+      <div id="trainingContainer"></div>
+    </section>
+
+    <!-- VISTA 6: AUDITORÍA NIST CSF 2.0, TRANSPARENCIA Y REFERENCIAS -->
+    <section class="view-panel" id="view-nist">
+      <div class="section-banner">
+        <h2>6. Mapeo de Auditoría NIST CSF 2.0, Revalidación (Nov 2026) y Referencias</h2>
+        <p>Evidencia auditable reproducible para las seis funciones de NIST CSF 2.0 (CSWP 29), registro transparente de verificaciones en Microsoft Learn frente a propuestas editoriales y fuentes públicas.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Matriz de Evidencia Auditable NIST CSF 2.0</h3>
+      <div class="filter-toolbar">
+        <select class="select-input" id="nistFuncSelect">
+          <option value="ALL">Función NIST CSF 2.0: Todas (6 Funciones)</option>
+          <option value="GOVERN">GOVERN (GV)</option>
+          <option value="IDENTIFY">IDENTIFY (ID)</option>
+          <option value="PROTECT">PROTECT (PR)</option>
+          <option value="DETECT">DETECT (DE)</option>
+          <option value="RESPOND">RESPOND (RS)</option>
+          <option value="RECOVER">RECOVER (RC)</option>
+        </select>
+      </div>
+      <div id="nistCardsContainer"></div>
+
+      <h3 class="subsection-heading">Registro de Revalidación Técnica (Noviembre 2026) y Decisiones Editoriales</h3>
+      <div class="spacious-card" id="auditSummaryBox"></div>
+      <div class="grid-2">
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Hallazgos y Actualizaciones Verificadas en MS Learn</h3>
+          <div id="corrContainer"></div>
+        </div>
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Decisiones y Propuestas Editoriales Explícitas</h3>
+          <div id="decContainer"></div>
+        </div>
+      </div>
+
+      <h3 class="subsection-heading">Directorio de Referencias Públicas Verificadas</h3>
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="refSearch" placeholder="Filtrar referencias por título, autor, MVP o URL...">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Recurso Oficial / Comunitario</th>
+              <th>Tipo</th>
+              <th>Autor / Entidad</th>
+              <th>Comentario de Alcance</th>
+            </tr>
+          </thead>
+          <tbody id="refTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>Guía Maestra de Excelencia Operacional Microsoft — Edición Espaciada v3.0 (Validación: 2026-11-11)</div>
+      <div>Configuración Puntual · Rutinas Periódicas · Playbooks Ad-Hoc · NIST CSF 2.0</div>
+    </footer>
+  </main>
+</div>
+
+<script>
+const MODULE_DATA = {"schemaVersion": "2.0", "id": "15_Purview_Data_Loss_Prevention", "orden": 15, "slug": "Purview_Data_Loss_Prevention", "nombre": "Microsoft Purview Data Loss Prevention (Cloud, Teams, Endpoint DLP, Adaptive Protection y DLP para IA)", "nombreCorto": "Purview Data Loss Prevention", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn", "fechaValidacion": "2026-11-11", "portalesPrincipales": ["https://purview.microsoft.com", "https://security.microsoft.com", "https://intune.microsoft.com", "https://portal.azure.com"], "audiencia": ["CISO", "Data Security Architect", "DLP Engineer / Admin", "SOC Manager", "SOC L1", "SOC L2", "SOC L3 / Detection Engineer", "Endpoint Security Engineer", "Insider Risk Analyst", "GRC"], "relacionM365E5": {"estado": "Incluido en Microsoft 365 E5", "licencias": ["Microsoft 365 E5 / A5 / G5 (incluye cobertura completa: Exchange, SharePoint, OneDrive, Teams DLP, Endpoint DLP, Adaptive Protection, DLP para Microsoft 365 Copilot/GenAI, Fabric/Power BI y triaje en Defender XDR)", "Microsoft Purview Suite (denominación oficial desde octubre de 2025 para Microsoft 365 E5 Compliance sobre Microsoft 365 E3)", "Microsoft 365 E5 Information Protection and Governance (incluye DLP Cloud, Teams DLP y Endpoint DLP; Adaptive Protection requiere además licencia de Insider Risk Management)", "Office 365 E5 / A5 / G5 (incluye DLP para Exchange, SharePoint, OneDrive, Teams DLP y alertas en Defender XDR, pero NO incluye Endpoint DLP)", "Microsoft 365 E3 / Office 365 E3 (limitado exclusivamente a Exchange Online, SharePoint Online y OneDrive for Business, incluyendo archivos en Teams respaldados en SPO/OD, con Single-event alerts)", "Suscripción Azure (para almacenamiento Customer-managed Azure Blob Storage en Evidence Collection, capacidades Microsoft Fabric F2+/P1+ y escenarios PAYG de red/no-M365)"], "prerrequisitos": ["Taxonomía de Sensitivity Labels, SITs, EDM y clasificadores entrenables publicada desde Microsoft Purview Information Protection (Módulo 14)", "Onboarding unificado de dispositivos Windows 10/11, Windows Server soportado y macOS (3 últimas versiones mayores) mediante Microsoft Defender for Endpoint / Microsoft Intune / Purview Device Onboarding", "Revisión explícita en security.microsoft.com > Settings > Microsoft Defender XDR > Alert tuning de la regla integrada (vigente desde inicios de octubre de 2026) que reclasifica señales DLP como behaviors", "Configuración de Evidence Collection (Azure Blob Storage propio o almacenamiento administrado por Microsoft) y habilitación de Advanced classification scanning para Adaptive Protection en dispositivos", "Gestión por Intune de dispositivos Windows 10/11 (sin Multi-admin approval activo) para aplicar DLP inline en Microsoft Edge for Business hacia aplicaciones IA no gestionadas", "Migración de File Policies de Microsoft Defender for Cloud Apps antes de su retiro definitivo el 6 de enero de 2027 mediante el asistente DLP to Purview migration"], "notaLicenciamiento": "La diferencia operativa entre Microsoft 365 E3 y Microsoft 365 E5 / Microsoft Purview Suite es estructural: M365 E3 se detiene en el perímetro documental de Exchange, SharePoint y OneDrive con alertas simples. M365 E5 / Microsoft Purview Suite extiende la prevención al canal efímero (Teams chat y canales privados/compartidos), más allá del límite de descarga en el sistema operativo (Endpoint DLP sin agente adicional con Just-in-Time protection y captura de archivos de evidencia), a la capa de IA empresarial y Shadow AI (Microsoft 365 Copilot, Copilot Chat, Cowork y bloqueo inline en Microsoft Edge for Business) y al ajuste dinámico por riesgo conductual (Adaptive Protection con Insider Risk Management)."}, "resumenEjecutivo": "Microsoft Purview Data Loss Prevention (DLP) es el motor unificado de prevención en tiempo real que ejecuta controles sobre información clasificada o sensible en aplicaciones empresariales, endpoints, navegadores, repositorios analíticos e interacciones de IA generativa. A noviembre de 2026, Purview DLP articula defensa sin agentes adicionales en Windows 10/11 y macOS (con Just-in-Time protection, controles sobre USB, impresoras, portapapeles, red SMB, RDP y recolección íntegra de archivos de evidencia), protección nativa en Microsoft 365 Copilot, Copilot Chat y Cowork (bloqueando SITs en prompts, restringiendo grounding por etiquetas de sensibilidad e impidiendo búsquedas web externas con datos sensibles), bloqueo inline en Microsoft Edge for Business frente a sitios GenAI no administrados (ChatGPT, Gemini, DeepSeek), mitigación dinámica Adaptive Protection acoplada a Insider Risk Management y absorción de las File Policies de Defender for Cloud Apps antes de su retiro el 6 de enero de 2027. Su operación SOC converge en security.microsoft.com exigiendo gobernar la regla integrada de Alert Tuning introducida en octubre de 2026 y correlacionar telemetría en CloudAppEvents, DeviceEvents, DataSecurityEvents y BehaviorInfo bajo marcos auditables NIST CSF 2.0.", "principiosRectores": [{"principio": "Defensa multicapa sin fisuras más allá del límite de descarga (Cloud + Endpoint + Browser)", "descripcion": "Coordinar políticas coherentes entre correo/colaboración M365, Endpoint DLP nativo en Windows/macOS y protección inline en Microsoft Edge for Business para cubrir todo canal de egreso.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/dlp-learn-about-dlp"}, {"principio": "Clasificación unificada como señal y DLP como plano de enforcement", "descripcion": "Reutilizar Sensitivity Labels, SITs personalizados, Exact Data Match (hasta 100M filas) y Trainable Classifiers de Information Protection como condiciones nativas de decisión en DLP.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/dlp-policy-reference"}, {"principio": "Protección proporcional y dinámica guiada por riesgo (Adaptive Protection)", "descripcion": "Vincular políticas DLP a los niveles dinámicos Elevated, Moderate y Minor de Insider Risk Management para aplicar bloqueo estricto solo a identidades riesgosas y preservar productividad general.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/dlp-adaptive-protection-learn"}, {"principio": "Cero ventana de exposición en evaluación local (Endpoint DLP Just-in-Time Protection)", "descripcion": "Bloquear o auditar preventivamente egresos de archivos aún no evaluados o con clasificación obsoleta mientras concluye el escaneo local de políticas en Windows y macOS.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about-jit"}, {"principio": "Despliegue progresivo en modo Simulación con Policy Tips educativos", "descripcion": "Validar toda regla nueva en modo simulación evaluando impacto y falsos positivos con dueños de procesos antes de activar bloqueo duro en producción.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/dlp-policy-design"}, {"principio": "Triaje convergente XDR y cadena de custodia forense sobre evidencias", "descripcion": "Investigar alertas y comportamientos DLP correlacionados con señales de endpoint e identidad en security.microsoft.com, custodiando copias de evidencia bajo doble aprobación RBAC.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/defender-xdr/dlp-investigate-alerts-defender"}], "arquitecturaYComponentes": [{"componente": "Motor Cloud DLP para Exchange, SharePoint, OneDrive y Microsoft Teams", "funcionOperativa": "Inspecciona en profundidad correos, archivos colaborativos y mensajes de Teams (1:1, grupales y canales estándar, privados y compartidos) bloqueando en segundos y mostrando Policy Tips.", "portalRuta": "purview.microsoft.com > Solutions > Data Loss Prevention > Policies", "integraciones": ["Exchange Online", "SharePoint Online & OneDrive for Business", "Microsoft Teams (Chats, Private & Shared Channels)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Endpoint DLP Built-in (Windows 10/11, Windows Server y macOS)", "funcionOperativa": "Supervisa y restringe sin agente adicional copia a USB extraíble, impresión, portapapeles, recursos de red SMB, RDP, Bluetooth, acceso por apps restringidas y subida en navegadores.", "portalRuta": "purview.microsoft.com > Settings > Data Loss Prevention > Endpoint settings", "integraciones": ["Microsoft Defender for Endpoint (MDE)", "Microsoft Intune", "Windows 10/11, Windows Server & macOS"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Endpoint DLP Just-in-Time (JIT) Protection", "funcionOperativa": "Retiene y bloquea intentos de egreso sobre JIT candidate files (archivos nuevos o con stale classification) mientras termina la evaluación de la política, con acción fallback configurable.", "portalRuta": "purview.microsoft.com > Settings > Data Loss Prevention > Endpoint settings > Just-in-time protection", "integraciones": ["Endpoint DLP en Windows 10/11 y macOS", "Microsoft Defender Antivirus (versión mínima requerida)", "Activity Explorer (JIT triggered = true)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Evidence Collection para Actividades de Archivos en Dispositivos", "funcionOperativa": "Almacena copia íntegra del archivo original coincidente (Windows GA y macOS Preview) más resumen contextual hacia Azure Storage del cliente o almacenamiento gestionado por Microsoft.", "portalRuta": "purview.microsoft.com > Settings > Data Loss Prevention > Endpoint settings > Setup evidence collection", "integraciones": ["Customer-managed Azure Blob Storage / Microsoft-managed Storage", "Activity Explorer", "Microsoft Purview Data Security Investigations"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "DLP para Microsoft 365 Copilot, Copilot Chat y Cowork", "funcionOperativa": "Bloquea prompts de usuario con SITs, impide que Copilot y Cowork procesen archivos/correos con etiquetas sensibles seleccionadas y desactiva búsquedas web externas ante datos sensibles.", "portalRuta": "purview.microsoft.com > Solutions > Data Loss Prevention > Policies (Microsoft 365 Copilot and Copilot Chat)", "integraciones": ["Microsoft 365 Copilot & Copilot Chat", "Cowork", "Purview Sensitivity Labels & SITs"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Browser DLP Inline en Microsoft Edge for Business (Protección Shadow AI)", "funcionOperativa": "Impide inline escribir, pegar o subir datos sensibles hacia apps GenAI no administradas (ChatGPT, Google Gemini, DeepSeek) y bloquea la ejecución de navegadores desprotegidos en equipos Intune.", "portalRuta": "purview.microsoft.com > Solutions > Data Loss Prevention + DSPM for AI", "integraciones": ["Microsoft Edge for Business", "Microsoft Intune", "Microsoft Purview Extension para Google Chrome"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Motor de Adaptive Protection (DLP + Insider Risk Management)", "funcionOperativa": "Evalúa dinámicamente la condición Insider risk level for Adaptive Protection is (Elevated, Moderate, Minor) en reglas dirigidas a Exchange Online, Teams y Devices.", "portalRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Adaptive protection", "integraciones": ["Microsoft Purview Insider Risk Management", "Exchange Online, Teams & Endpoint DLP"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "DLP para Microsoft Fabric, Power BI y Migración de Nubes Conectadas", "funcionOperativa": "Inspecciona espacios de trabajo Fabric/Power BI y consolida la protección de archivos SaaS (SharePoint, OneDrive, Google Workspace, Box, Dropbox, Salesforce) ante el retiro de File Policies de MDCA el 2027-01-06.", "portalRuta": "purview.microsoft.com > Solutions > Data Loss Prevention > Policies y asistente DLP to Purview migration", "integraciones": ["Microsoft Fabric & Power BI", "Google Workspace, Box, Dropbox, Salesforce", "Microsoft Defender for Cloud Apps"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Triaje Unificado de Incidentes, Alert Tuning y Caza Avanzada en Defender XDR", "funcionOperativa": "Correlaciona alertas y comportamientos DLP con alertas XDR/SIEM, ejecuta acciones in-situ (Unshare, Delete, Label, Isolate) y habilita caza en CloudAppEvents, DeviceEvents, DataSecurityEvents y BehaviorInfo.", "portalRuta": "security.microsoft.com > Incidents & alerts > Incidents y Settings > Microsoft Defender XDR > Alert tuning", "integraciones": ["Microsoft Defender XDR", "Microsoft Sentinel", "Microsoft Security Copilot"], "estadoValidacion": "Verificado MS Learn"}], "rbacYRoles": [{"rol": "DLP Compliance Management", "nivelSOC": "Ingeniería de Políticas DLP", "permisosClave": "Creación, edición, simulación y activación de políticas DLP, configuración de Endpoint DLP settings, JIT y gestión de alertas DLP.", "asignacionPIM": "Eligible en Entra PIM for Groups (elevación JIT máx. 4 horas con MFA phishing-resistant y ticket de cambio aprobado).", "responsabilidadOperativa": "Diseño, mantenimiento y afinamiento de políticas y exclusiones DLP sin permiso permanente para descargar evidencias.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "View-Only DLP Compliance Management", "nivelSOC": "SOC L1 / GRC / Auditoría", "permisosClave": "Lectura de políticas, reglas, configuración de Endpoint DLP, Adaptive Protection y alertas DLP en Purview y Defender XDR.", "asignacionPIM": "Asignación activa acotada o Eligible 8 horas.", "responsabilidadOperativa": "Verificación independiente de postura, conciliación de cambios y monitoreo sin capacidad de modificación.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Information Protection Analyst / Investigator", "nivelSOC": "SOC L1 / L2 — Triaje DLP", "permisosClave": "Acceso DLP-only a alertas en Purview y Microsoft Defender XDR para clasificación, investigación y cierre operativo.", "asignacionPIM": "Eligible en Entra PIM (turno SOC máx. 8 horas con MFA resistente a phishing).", "responsabilidadOperativa": "Triaje diario de alertas DLP, revisión de overrides de usuario y escalamiento de verdaderos positivos.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Security Operator / Manage Alerts (Defender Unified RBAC)", "nivelSOC": "SOC L2 / L3 — Respuesta Unificada XDR", "permisosClave": "Gestión conjunta de alertas DLP y de seguridad XDR, caza avanzada y ejecución de remediación sobre archivos, cuentas y dispositivos.", "asignacionPIM": "Eligible en Entra PIM (JIT máx. 8 horas por guardia).", "responsabilidadOperativa": "Correlación multi-dominio y contención rápida (Unshare, aislamiento de endpoint, revocación) en security.microsoft.com.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Data Classification Content Viewer", "nivelSOC": "Inspección Sensible Controlada", "permisosClave": "Previsualización en consola del fragmento de texto coincidente y vista previa de elementos capturados por Evidence Collection.", "asignacionPIM": "Eligible estricto (JIT máx. 2 horas con aprobación dual de Privacidad/Legal y SOC Lead).", "responsabilidadOperativa": "Validación puntual de verdaderos positivos sensibles sin descargar archivos al equipo local del analista.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Data Classification Content Download", "nivelSOC": "Custodia Forense Crítica", "permisosClave": "Descarga íntegra de los archivos originales capturados como evidencia desde dispositivos Windows y macOS.", "asignacionPIM": "Eligible excepcional (JIT máx. 1 hora con aprobación dual obligatoria y folio de investigación formal).", "responsabilidadOperativa": "Extracción forense con cadena de custodia para procesos disciplinarios o regulatorios.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Insider Risk Management Admin", "nivelSOC": "Gobierno de Riesgo Conductual", "permisosClave": "Definición de indicadores, umbrales de niveles Elevated/Moderate/Minor y activación de Adaptive Protection.", "asignacionPIM": "Eligible en Entra PIM (JIT máx. 4 horas segregado de TI general).", "responsabilidadOperativa": "Calibración con Legal y RR. HH. de los perfiles conductuales que gobiernan bloqueos dinámicos DLP.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Intune / Endpoint Security Administrator", "nivelSOC": "Ingeniería de Plataforma Endpoint", "permisosClave": "Onboarding de endpoints Windows/macOS, sincronización de políticas de Microsoft Edge for Business y requisitos antimalware JIT.", "asignacionPIM": "Eligible en Entra PIM (JIT máx. 4 horas).", "responsabilidadOperativa": "Asegurar cobertura de flota >=98%, salud de sincronización Edge y control de navegadores.", "estadoValidacion": "Verificado MS Learn"}], "actividadesOperacionales": [{"codigo": "D-01", "cadencia": "Diaria", "actividad": "Verificación diaria de onboarding de endpoints, salud de Evidence Collection y regla Alert Tuning en Defender XDR", "objetivo": "Garantizar que la flota Windows/macOS reporte telemetría activa, el almacenamiento de evidencias esté disponible y la regla Alert Tuning de oct-2026 no suprima alertas esperadas.", "consolaRuta": "purview.microsoft.com > Settings > Device onboarding / Endpoint settings y security.microsoft.com > Settings > Microsoft Defender XDR > Alert tuning", "procedimiento": ["Revisar el conteo de dispositivos activos y estado de sincronización de políticas en Purview Device onboarding.", "Confirmar que la regla integrada de Alert tuning para señales DLP en Defender XDR (octubre de 2026) mantenga el estado definido por el SOC.", "Verificar disponibilidad y espacio operativo del almacenamiento configurado en Setup evidence collection."], "rolResponsable": "SOC L1 / Endpoint Security Engineer", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-06", "mitreTactic": "Defense Evasion (T1562)", "evidenciaAuditable": "Check diario de salud de onboarding Endpoint DLP, estado Alert Tuning y cuota de evidencias.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Refleja el cambio oficial de Alert Tuning de octubre de 2026 y monitoreo de Evidence Collection en Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/dlp-investigate-alerts-defender", "pasosDetallados": ["Verificar en `Device onboarding` y `DeviceHealthStatus` que no existan caídas abruptas en el número de dispositivos Windows/macOS reportando políticas Endpoint DLP sincronizadas `[Verificado MS Learn]`.", "Comprobar que el estado de la regla integrada de *Alert tuning* para señales DLP en Defender XDR (vigente desde octubre de 2026) coincida con el diseño aprobado del SOC (deshabilitada si se triaja por incidentes/alertas, o monitoreada vía `BehaviorInfo` si se mantiene activa) `[Verificado MS Learn]`.", "Validar conectividad y uso diario del contenedor de **Evidence Collection** (Azure Storage propio o administrado por Microsoft) `[Verificado MS Learn]`."], "disparadorAlerta": "Garantizar que la flota Windows/macOS reporte telemetría activa, el almacenamiento de evidencias esté disponible y la regla Alert Tuning de oct-2026 no suprima alertas esperadas.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-02", "cadencia": "Diaria", "actividad": "Auditoría de cambios administrativos en políticas DLP, exclusiones y grupos restringidos", "objetivo": "Detectar cualquier desactivación de políticas, paso no autorizado a simulación o alta de exclusiones en rutas, USB o dominios cloud.", "consolaRuta": "purview.microsoft.com > Solutions > Audit > Search y Advanced Hunting (OfficeActivity)", "procedimiento": ["Buscar operaciones New/Set/Remove-DlpCompliancePolicy y New/Set/Remove-DlpComplianceRule de las últimas 24 horas.", "Conciliar cada cambio con un ticket aprobado en ITSM y elevación válida en Entra PIM.", "Inspeccionar cambios en exclusiones de rutas Windows/macOS, dispositivos USB permitidos y dominios cloud sin restricciones.", "Activar inmediatamente AH-04 / investigación de seguridad si aparece un cambio huérfano."], "rolResponsable": "SOC L1 / GRC Analyst", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-03", "mitreTactic": "Defense Evasion (T1562.001)", "evidenciaAuditable": "Exportación diaria de cambios administrativos DLP conciliada 1:1 contra tickets ITSM.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Operaciones auditadas nativas en Unified Audit Log; exigencia 100% ITSM es política de gobierno.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-log-activities", "pasosDetallados": ["Consultar operaciones administrativas de las últimas 24 horas: `New-DlpCompliancePolicy`, `Set-DlpCompliancePolicy`, `Remove-DlpCompliancePolicy`, `New-DlpComplianceRule`, `Set-DlpComplianceRule`, `Remove-DlpComplianceRule` y cambios en *Endpoint settings* `[Verificado MS Learn]`.", "Verificar que toda modificación cuente con ticket ITSM aprobado y sesión elegible en Entra PIM `[Decisión / Propuesta Editorial]`.", "Prestar atención crítica a exclusiones de rutas de carpetas, dominios cloud permitidos o dispositivos USB agregados a listas blancas `[Verificado MS Learn]`.", "Escalar cualquier cambio no autorizado al playbook `AH-04` `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Detectar cualquier desactivación de políticas, paso no autorizado a simulación o alta de exclusiones en rutas, USB o dominios cloud.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-03", "cadencia": "Diaria", "actividad": "Triaje unificado de incidentes y alertas DLP por severidad en Microsoft Defender XDR", "objetivo": "Analizar, correlacionar y contener dentro de SLA los incidentes de fuga potencial en la cola unificada del SOC.", "consolaRuta": "security.microsoft.com > Incidents & alerts > Incidents (Service source: Microsoft Data Loss Prevention)", "procedimiento": ["Filtrar incidentes con alertas de Microsoft Data Loss Prevention priorizando severidades High y correlaciones multi-dominio.", "Revisar resumen asistido por Security Copilot, Alert story, SITs detectados y consultas contextuales desde Go Hunt.", "Clasificar en Verdadero Positivo (escalar a AH-01/AH-02), Falso Positivo (documentar para S-01) o Excepción Autorizada.", "Registrar marcas temporales para seguimiento de MTTA."], "rolResponsable": "SOC L1 / SOC L2", "funcionNIST": "DE", "subcategoriaNIST": "DE.AE-02", "mitreTactic": "Exfiltration (T1048)", "evidenciaAuditable": "Cola de incidentes DLP triajada con clasificación, analista responsable y timestamps.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Flujo oficial de investigación DLP en Defender XDR incl. Summarize y Go Hunt.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/dlp-investigate-alerts-defender", "pasosDetallados": ["Filtrar la cola de incidentes por `Microsoft Data Loss Prevention` ordenando por severidad (`High`, `Medium`, `Low`) y priorizando incidentes multi-fuente correlacionados con Defender for Endpoint, Entra ID o Insider Risk `[Verificado MS Learn]`.", "Utilizar **Summarize** de Security Copilot (si está habilitado) e inspeccionar el *Alert story*, los SITs/etiquetas coincidentes y los eventos previos del usuario mediante el botón **Go Hunt** `[Verificado MS Learn]`.", "Clasificar cada alerta como Verdadero Positivo (ejecutar remediación o escalar a `AH-01`/`AH-02`), Falso Positivo (registrar regla y SIT causante para `S-01`) o Excepción de Negocio Válida `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Analizar, correlacionar y contener dentro de SLA los incidentes de fuga potencial en la cola unificada del SOC.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-04", "cadencia": "Diaria", "actividad": "Revisión diaria de eventos Block with Override y justificaciones de negocio declaradas", "objetivo": "Auditar todas las anulaciones ejecutadas por usuarios finales para detectar exfiltraciones encubiertas bajo justificaciones falsas.", "consolaRuta": "purview.microsoft.com > Solutions > Data Loss Prevention > Activity explorer", "procedimiento": ["Filtrar Activity Explorer (últimas 24h) por coincidencias DLP con override ejecutado por el usuario o reporte de falso positivo.", "Contrastar el texto de justificación con la sensibilidad del archivo y el destinatario/canal externo involucrado.", "Ejecutar Unshare o escalar a investigación cuando la anulación sea injustificada o reincidente."], "rolResponsable": "SOC L1 / DLP Analyst", "funcionNIST": "PR", "subcategoriaNIST": "PR.DS-05", "mitreTactic": "Exfiltration (T1567)", "evidenciaAuditable": "Bitácora diaria de overrides auditados y acciones de revocación aplicadas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Auditoría nativa de overrides en Activity Explorer; revisión del 100% en reglas críticas es propuesta editorial.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-activity-explorer", "pasosDetallados": ["Filtrar `Activity explorer` en las últimas 24 horas por actividades donde el usuario anuló un bloqueo (`Block with override`) o reportó falso positivo `[Verificado MS Learn]`.", "Evaluar la validez de la justificación escrita frente al destinatario externo, dominio web o medio USB utilizado `[Decisión / Propuesta Editorial]`.", "Revocar compartición (`Unshare` en SharePoint/OneDrive) o notificar al gerente directo cuando la anulación carezca de sustento de negocio válido, y evaluar al usuario para perfilado de riesgo `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Auditar todas las anulaciones ejecutadas por usuarios finales para detectar exfiltraciones encubiertas bajo justificaciones falsas.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-05", "cadencia": "Diaria", "actividad": "Monitoreo de intentos de exfiltración física y local en Endpoint DLP (USB, Impresión, Red, RDP, JIT)", "objetivo": "Identificar patrones reiterados de intento de copia local/física en Windows y macOS y supervisar eventos Just-in-Time.", "consolaRuta": "purview.microsoft.com > Data Loss Prevention > Activity explorer y security.microsoft.com > Advanced hunting (DeviceEvents)", "procedimiento": ["Analizar eventos bloqueados y auditados en Devices sobre USB extraíble, impresión, portapapeles, recursos SMB, RDP y Bluetooth.", "Revisar eventos con JIT triggered = true validando ausencia de errores sistemáticos de evaluación.", "Escalar a AH-01 usuarios con >=3 intentos bloqueados de extracción física o red en 24 horas."], "rolResponsable": "SOC L2", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-01", "mitreTactic": "Exfiltration Over Physical Medium (T1052)", "evidenciaAuditable": "Reporte diario de bloqueos Endpoint DLP y eventos JIT.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Acciones de egreso y telemetría JIT verificadas en Learn; umbral >=3 intentos/24h es consultivo.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about-jit", "pasosDetallados": ["Revisar eventos bloqueados y auditados en `Devices` correspondientes a copia en USB extraíble, impresión local/virtual, copia a recursos de red SMB, transferencia por RDP, Bluetooth y portapapeles `[Verificado MS Learn]`.", "Auditar eventos con `JIT triggered = true` verificando si ocurrieron fallos de evaluación que dispararon la acción *fallback* `[Verificado MS Learn]`.", "Identificar usuarios con >= 3 intentos bloqueados de egreso en 24 horas y cruzar con estado de desvinculación laboral o nivel en **Adaptive Protection** (`AH-01`) `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Identificar patrones reiterados de intento de copia local/física en Windows y macOS y supervisar eventos Just-in-Time.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-06", "cadencia": "Diaria", "actividad": "Supervisión de bloqueos en Microsoft 365 Copilot y pegado/subida hacia GenAI no gestionada (Shadow AI)", "objetivo": "Vigilar intentos de ingreso de SITs/archivos restringidos en Copilot/Cowork y transferencias hacia LLMs públicos en Microsoft Edge for Business.", "consolaRuta": "purview.microsoft.com > Data Loss Prevention > Activity explorer y Solutions > DSPM for AI", "procedimiento": ["Revisar eventos generados por la ubicación Microsoft 365 Copilot and Copilot Chat (prompts con SITs, etiquetas bloqueadas y búsquedas web restringidas).", "Inspeccionar intentos bloqueados o auditados en Edge for Business hacia ChatGPT, Gemini, DeepSeek y aperturas bloqueadas de navegadores no permitidos.", "Activar AH-03 si se detecta envío exitoso de secretos o datos regulados en políticas aún en simulación."], "rolResponsable": "SOC L2 / AI Security Analyst", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-09", "mitreTactic": "Exfiltration Over Web Service (T1567)", "evidenciaAuditable": "Informe diario de eventos preventivos sobre M365 Copilot y sitios GenAI externos.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Basado en las capacidades verificadas de DLP para Copilot/Cowork (oct-2026) y Edge for Business.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-microsoft365-copilot-location-learn-about", "pasosDetallados": ["Revisar coincidencias de políticas sobre la ubicación **Microsoft 365 Copilot and Copilot Chat** (prompts bloqueados con SITs, archivos con etiqueta restringida excluidos del *grounding* y búsquedas web bloqueadas) `[Verificado MS Learn]`.", "Inspeccionar eventos bloqueados o auditados en **Edge for Business** (y extensión de Chrome) hacia aplicaciones IA no administradas (ChatGPT, Gemini, DeepSeek, etc.) y bloqueos de apertura de navegadores no permitidos `[Verificado MS Learn]`.", "Escalar a `AH-03` cualquier carga exitosa detectada en reglas que aún estuvieran en auditoría/simulación involucrando código fuente, credenciales o PII masiva `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Vigilar intentos de ingreso de SITs/archivos restringidos en Copilot/Cowork y transferencias hacia LLMs públicos en Microsoft Edge for Business.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-07", "cadencia": "Diaria", "actividad": "Vigilancia de actividad DLP sobre usuarios en nivel Elevated de Adaptive Protection", "objetivo": "Asegurar atención prioritaria ante cualquier intento de compartición o extracción por parte de identidades calificadas en riesgo elevado.", "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Adaptive protection y DataSecurityEvents", "procedimiento": ["Consultar coincidencias de reglas con condición Insider risk level for Adaptive Protection is Elevated en Exchange, Teams y Devices.", "Confirmar aplicación efectiva del bloqueo sin override sobre dichas actividades.", "Notificar bajo protocolo de privacidad al analista de Insider Risk cuando exista reincidencia activa."], "rolResponsable": "SOC L2 + Insider Risk Analyst", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Exfiltration (T1048)", "evidenciaAuditable": "Registro diario de bloqueos adaptativos ejecutados sobre perfiles de alto riesgo.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Integración nativa de niveles Elevated/Moderate/Minor en Adaptive Protection verificada en Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-adaptive-protection-learn", "pasosDetallados": ["Revisar alertas DLP vinculadas a reglas con condición `Insider risk level for Adaptive Protection is Elevated` en Exchange, Teams y Devices `[Verificado MS Learn]`.", "Verificar que los bloqueos automáticos sin opción de *override* se hayan aplicado efectivamente ante intentos de compartición externa o copia local `[Verificado MS Learn]`.", "Coordinar con el analista autorizado de Insider Risk Management si la persistencia de intentos amerita apertura de caso formal (`AH-01`) `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar atención prioritaria ante cualquier intento de compartición o extracción por parte de identidades calificadas en riesgo elevado.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-08", "cadencia": "Diaria", "actividad": "Control de SLAs de incidentes DLP pendientes y cierre del tablero operativo diario", "objetivo": "Prevenir vencimiento de ventanas MTTA/MTTC en alertas de fuga y documentar el cierre operativo de turno.", "consolaRuta": "security.microsoft.com > Incidents & alerts > Incidents y tablero operativo SOC", "procedimiento": ["Revisar antigüedad y responsable de todos los incidentes DLP abiertos frente a metas internas (Críticos: MTTA <30m, MTTC <2h).", "Escalar de inmediato casos con riesgo de incumplimiento de SLA.", "Publicar resumen diario RAG de operaciones DLP para cambio de guardia."], "rolResponsable": "SOC Shift Lead", "funcionNIST": "RS", "subcategoriaNIST": "RS.MA-01", "mitreTactic": "Exfiltration (T1041)", "evidenciaAuditable": "Snapshot diario de incidentes en SLA y acta de cambio de turno.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Métricas SLA y ritual de cierre diario corresponden a mejores prácticas consultivas de gestión SOC.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide", "pasosDetallados": ["Auditar la antigüedad de todos los incidentes DLP en estado `Active` o `In progress` frente al SLA interno (Críticos: MTTA <30 min, MTTC <2 h; Altos: MTTA <2 h, MTTC <6 h) `[Decisión / Propuesta Editorial]`.", "Reasignar o escalar inmediatamente casos próximos a incumplimiento `[Decisión / Propuesta Editorial]`.", "Emitir reporte de cierre diario con conteo de bloqueos efectivos, *overrides*, alertas pendientes y salud de endpoints `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Prevenir vencimiento de ventanas MTTA/MTTC en alertas de fuga y documentar el cierre operativo de turno.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-01", "cadencia": "Semanal", "actividad": "Tuning semanal de reglas DLP, umbrales de instancia/confianza y reducción de falsos positivos", "objetivo": "Mantener la precisión de alertas por encima del 75% ajustando umbrales, proximidad y excepciones acotadas.", "consolaRuta": "purview.microsoft.com > Solutions > Data Loss Prevention > Policies", "procedimiento": ["Identificar las 5 reglas DLP con mayor tasa de falsos positivos u overrides legítimos durante la semana.", "Estructurar reglas escalonadas por volumen de instancias y nivel de confianza (High vs Medium).", "Aplicar excepciones documentadas con fecha de caducidad y validar en simulación."], "rolResponsable": "DLP Engineer / SOC L3", "funcionNIST": "ID", "subcategoriaNIST": "ID.IM-03", "mitreTactic": "Exfiltration (T1048)", "evidenciaAuditable": "Registro semanal de ajustes de reglas y evolución del ratio VP.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Proceso continuo de afinamiento basado en telemetría de Purview.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-policy-design", "pasosDetallados": ["Agrupar los falsos positivos documentados en `D-03` y `D-04` identificando las 5 reglas y SITs con mayor ruido semanal `[Decisión / Propuesta Editorial]`.", "Separar reglas en niveles graduados por volumen de registros (ej. 1–9 instancias: auditoría + *Policy Tip*; >=10 instancias o confianza *High*: bloqueo duro o alertas agregadas) `[Decisión / Propuesta Editorial]`.", "Ajustar dominios asociados de negocio legítimos o grupos de excepción temporal con fecha de caducidad `[Verificado MS Learn]`."], "disparadorAlerta": "Mantener la precisión de alertas por encima del 75% ajustando umbrales, proximidad y excepciones acotadas.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-02", "cadencia": "Semanal", "actividad": "Evaluación y graduación de políticas DLP en modo Simulación hacia Enforcement", "objetivo": "Promover de forma segura políticas validadas en simulación (incluida la política predeterminada de M365 Copilot) a bloqueo activo.", "consolaRuta": "purview.microsoft.com > Solutions > Data Loss Prevention > Policies", "procedimiento": ["Revisar eventos capturados por políticas en Run the policy in simulation mode junto a dueños de negocio.", "Habilitar Show policy tips while in simulation mode como etapa previa de sensibilización.", "Cambiar a modo Enable las políticas con precisión validada >90% y aprobación formal."], "rolResponsable": "DLP Engineer + Data Owners", "funcionNIST": "PR", "subcategoriaNIST": "PR.DS-05", "mitreTactic": "Exfiltration (T1567)", "evidenciaAuditable": "Actas de graduación de simulación a producción firmadas por Data Owners.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Flujo oficial de simulación con y sin Policy Tips documentado en Microsoft Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-create-deploy-policy", "pasosDetallados": ["Revisar coincidencias simuladas de los últimos 7 a 14 días verificando impacto sobre flujos críticos de negocio `[Verificado MS Learn]`.", "Activar primero `Show policy tips while in simulation mode` para educar a usuarios y medir reclamos de falsos positivos `[Verificado MS Learn]`.", "Promover a `Turn the policy on right away` aquellas políticas que alcancen precisión validada superior al 90% con aprobación del dueño del proceso `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Promover de forma segura políticas validadas en simulación (incluida la política predeterminada de M365 Copilot) a bloqueo activo.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-03", "cadencia": "Semanal", "actividad": "Revisión de higiene de Endpoint DLP, sincronización Edge for Business y listas de exclusión", "objetivo": "Asegurar que el 100% de endpoints elegibles apliquen políticas vigentes sin errores de sincronización Intune/Edge ni exclusiones abusivas.", "consolaRuta": "purview.microsoft.com > Settings > Data Loss Prevention > Endpoint settings e intune.microsoft.com", "procedimiento": ["Remediar equipos Windows/macOS con políticas desactualizadas o errores Resync en políticas de apps no gestionadas para Edge.", "Auditar grupos de dispositivos USB (VID/PID/Serial), grupos de impresoras, apps restringidas y exclusiones de carpetas.", "Confirmar vigencia de la extensión Microsoft Purview en navegadores Chrome autorizados."], "rolResponsable": "Endpoint Engineer (Intune/MDE) + DLP Admin", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-01", "mitreTactic": "Exfiltration Over Physical Medium (T1052)", "evidenciaAuditable": "Reporte semanal de cumplimiento de sincronización Endpoint DLP e inventario de exclusiones.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Incluye validación del requisito Resync en Edge for Business documentado en Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-create-policy-block-to-ai-via-edge", "pasosDetallados": ["Identificar endpoints incorporados en MDE/Intune cuyas políticas DLP presenten estado desactualizado o error de sincronización (incluyendo validación de errores `Resync` en políticas de apps no gestionadas para Edge) `[Verificado MS Learn]`.", "Auditar las listas de *File path exclusions*, *Unallowed apps*, *Unallowed browsers*, grupos de dispositivos USB (VID/PID/Serial) y grupos de impresoras autorizadas `[Verificado MS Learn]`.", "Confirmar despliegue actualizado de la *Microsoft Purview extension* en Google Chrome donde dicho navegador esté permitido `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar que el 100% de endpoints elegibles apliquen políticas vigentes sin errores de sincronización Intune/Edge ni exclusiones abusivas.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-04", "cadencia": "Semanal", "actividad": "Auditoría de gobernanza y accesos sobre archivos capturados en Evidence Collection", "objetivo": "Controlar cada previsualización o descarga de archivos originales recolectados desde endpoints y vigilar costos/cuota de almacenamiento.", "consolaRuta": "purview.microsoft.com > Settings > Data Loss Prevention > Endpoint settings > Setup evidence collection > View Usage y Audit", "procedimiento": ["Auditar el 100% de activaciones y usos de Data Classification Content Viewer y Data Classification Content Download en la semana.", "Confirmar que toda descarga tenga un caso abierto asociado en Defender XDR o Data Security Investigations.", "Revisar métricas de volumen en View Usage o en el Azure Storage Account del cliente."], "rolResponsable": "GRC Lead / Privacy Officer Liaison", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Valid Accounts (T1078)", "evidenciaAuditable": "Informe semanal de auditoría de custodia de evidencias y consumo de almacenamiento.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Roles Content Viewer / Content Download y panel View Usage verificados en Microsoft Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-copy-matched-items-get-started", "pasosDetallados": ["Auditar todas las activaciones PIM y eventos de los roles `Data Classification Content Viewer` y `Data Classification Content Download` ocurridos en la semana `[Verificado MS Learn]`.", "Cotejar cada descarga de evidencia contra un expediente de incidente o investigación en **Data Security Investigations** `[Verificado MS Learn]`.", "Revisar la gráfica de consumo en `View Usage` (almacenamiento administrado por Microsoft) o las métricas/políticas de retención lifecycle en el Azure Storage Account gestionado por el cliente `[Verificado MS Learn]`."], "disparadorAlerta": "Controlar cada previsualización o descarga de archivos originales recolectados desde endpoints y vigilar costos/cuota de almacenamiento.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-05", "cadencia": "Semanal", "actividad": "Calibración conjunta de perfiles Adaptive Protection con Insider Risk Management", "objetivo": "Asegurar que la asignación dinámica de usuarios a niveles Elevated, Moderate y Minor mantenga equilibrio óptimo entre prevención y fricción.", "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Adaptive protection", "procedimiento": ["Analizar distribución semanal de identidades por nivel de riesgo y volumen de bloqueos/auditorías DLP asociados.", "Comprobar que Advanced classification scanning and protection siga activo para reglas adaptativas en Devices.", "Ajustar indicadores y umbrales de puntuación en Insider Risk si se detectan desviaciones."], "rolResponsable": "Insider Risk Admin + DLP Engineer", "funcionNIST": "DE", "subcategoriaNIST": "DE.AE-04", "mitreTactic": "Insider Threat / Exfiltration (T1048)", "evidenciaAuditable": "Resumen semanal seudonimizado de efectividad de Adaptive Protection.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Requisitos técnicos de Adaptive Protection en Devices verificados en Microsoft Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-adaptive-protection-learn", "pasosDetallados": ["Revisar conteo semanal de usuarios asignados dinámicamente a cada nivel de riesgo y el volumen de reglas DLP disparadas por nivel `[Verificado MS Learn]`.", "Confirmar que en **Devices** se encuentre habilitado *Advanced classification scanning and protection* o condiciones válidas de tipo de archivo para que las reglas adaptativas actúen correctamente `[Verificado MS Learn]`.", "Ajustar umbrales de puntuación en Insider Risk si se observa exceso de falsas elevaciones operativas `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Asegurar que la asignación dinámica de usuarios a niveles Elevated, Moderate y Minor mantenga equilibrio óptimo entre prevención y fricción.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-06", "cadencia": "Semanal", "actividad": "Verificación de cobertura DLP en Teams (Shared Channels), Microsoft Fabric y Power BI", "objetivo": "Evitar puntos ciegos de alcance en canales de Teams y gestionar hallazgos DLP sobre modelos semánticos en Fabric/Power BI.", "consolaRuta": "purview.microsoft.com > Data Loss Prevention > Policies y portal Microsoft Fabric", "procedimiento": ["Auditar que todas las políticas de Teams orientadas a canales apunten a grupos M365 o de seguridad y no solo a cuentas individuales.", "Revisar alertas DLP generadas en workspaces de Microsoft Fabric y Power BI, verificando restricciones sobre usuarios Guest."], "rolResponsable": "DLP Engineer + Fabric/Teams Admin", "funcionNIST": "PR", "subcategoriaNIST": "PR.DS-05", "mitreTactic": "Exfiltration Over Web Service (T1567)", "evidenciaAuditable": "Reporte semanal de validación de alcance en Teams y coincidencias atendidas en Fabric/Power BI.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Refleja la regla oficial de alcance de grupos para canales en Teams DLP y soporte Fabric DLP.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-microsoft-teams", "pasosDetallados": ["Auditar las políticas que incluyen `Teams chat and channel messages` verificando que el alcance de canales utilice Microsoft 365 Groups o grupos de seguridad (ya que cuentas individuales solo cubren chats 1:1/grupales y no canales) `[Verificado MS Learn]`.", "Revisar alertas y *Policy Tips* disparados sobre *workspaces* de **Microsoft Fabric y Power BI**, confirmando restricción de acceso a usuarios `Guest` cuando corresponda `[Verificado MS Learn]`."], "disparadorAlerta": "Evitar puntos ciegos de alcance en canales de Teams y gestionar hallazgos DLP sobre modelos semánticos en Fabric/Power BI.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-01", "cadencia": "Mensual", "actividad": "Avance y decomiso en la migración obligatoria desde Defender for Cloud Apps File Policies (2027-01-06)", "objetivo": "Migrar todas las File Policies heredadas a Purview DLP antes de su retiro definitivo el 6 de enero de 2027.", "consolaRuta": "security.microsoft.com > Cloud apps > Policies > Policy management y asistente DLP to Purview migration", "procedimiento": ["Evaluar políticas existentes agrupadas como Can migrate, Partial migration o Cannot migrate en SharePoint, OneDrive y SaaS conectadas (Google Workspace, Box, Dropbox, Salesforce).", "Desplegar las políticas migradas por etapas en Purview DLP validando coincidencias en simulación.", "Desactivar las File Policies equivalentes en Defender for Cloud Apps tras verificar cobertura completa."], "rolResponsable": "DLP Engineer + Cloud App Security Admin", "funcionNIST": "GV", "subcategoriaNIST": "GV.RM-02", "mitreTactic": "Collection (T1530)", "evidenciaAuditable": "Tablero mensual de progreso de migración y actas de baja previa al 6 de enero de 2027.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Retiro oficial el 2027-01-06 y cobertura multi-SaaS del asistente verificados en Learn (ago-2026).", "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/migrate-file-policies-to-purview", "pasosDetallados": ["Ejecutar evaluación en el asistente *DLP to Purview migration*, clasificando las políticas activas en `Can migrate`, `Partial migration` y `Cannot migrate` para SharePoint, OneDrive y nubes no-Microsoft soportadas (Google Workspace, Box, Dropbox, Salesforce) `[Verificado MS Learn]`.", "Migrar y desplegar por fases en Purview DLP validando paridad de detección y remediación en modo simulación `[Verificado MS Learn]`.", "Desactivar y documentar la baja de las *File Policies* equivalentes en Defender for Cloud Apps para evitar alertas duplicadas `[Verificado MS Learn]`."], "disparadorAlerta": "Migrar todas las File Policies heredadas a Purview DLP antes de su retiro definitivo el 6 de enero de 2027.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-02", "cadencia": "Mensual", "actividad": "Pruebas sintéticas mensuales extremo a extremo de vectores de exfiltración (Purple Team DLP)", "objetivo": "Demostrar empíricamente la eficacia real de bloqueo, Policy Tips, Evidence Collection y alertamiento XDR en los 8 canales principales.", "consolaRuta": "Endpoints de prueba Windows 11 / macOS + cuentas de validación M365 E5 y Copilot", "procedimiento": ["Ejecutar pruebas controladas con datos sintéticos sobre Exchange externo, enlaces SharePoint, Teams externo, USB con JIT, impresión, pegado en GenAI vía Edge, apertura de navegador prohibido y prompt/etiqueta en M365 Copilot.", "Confirmar bloqueo en tiempo real, recolección del archivo de evidencia y aparición en CloudAppEvents/DeviceEvents/Incidents en <15 minutos."], "rolResponsable": "SOC L3 / QA Security Engineer + DLP Engineer", "funcionNIST": "ID", "subcategoriaNIST": "ID.IM-03", "mitreTactic": "Exfiltration (T1048 / T1052 / T1567)", "evidenciaAuditable": "Informe mensual de pruebas Purple Team DLP con evidencia de bloqueo y telemetría.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Metodología consultiva de validación continua sobre controles oficiales Purview DLP.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-learn-about-dlp", "pasosDetallados": ["Ejecutar batería controlada de 8 pruebas sintéticas: (a) correo externo con SIT/EDM, (b) vínculo externo en SharePoint/OneDrive, (c) mensaje en chat externo de Teams iniciado en el tenant, (d) copia a USB no autorizado con JIT activo, (e) impresión no autorizada, (f) pegado de datos sensibles en ChatGPT/Gemini vía Edge for Business, (g) intento de abrir navegador no permitido, y (h) prompt con SIT / archivo *Highly Confidential* en Microsoft 365 Copilot `[Verificado MS Learn]`.", "Confirmar bloqueo efectivo, aparición de *Policy Tip*, captura de archivo en *Evidence Collection* y llegada del evento a `CloudAppEvents` / `DeviceEvents` / `Incidents` en menos de 15 minutos `[Verificado MS Learn]`."], "disparadorAlerta": "Demostrar empíricamente la eficacia real de bloqueo, Policy Tips, Evidence Collection y alertamiento XDR en los 8 canales principales.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-03", "cadencia": "Mensual", "actividad": "Exportación histórica de métricas DLP, análisis de reincidencia y reporte ejecutivo CISO", "objetivo": "Preservar histórico mayor a 30 días, evaluar KPI-01 a KPI-08 y orientar acciones de concientización por área.", "consolaRuta": "PowerShell Export-ActivityExplorerData, purview.microsoft.com > DLP > Reports y Power BI", "procedimiento": ["Consolidar exportaciones históricas de Activity Explorer e incidentes XDR para calcular los 8 KPIs del módulo.", "Identificar departamentos con mayor tasa de overrides o intentos bloqueados hacia Shadow AI / USB.", "Presentar informe mensual al CISO y comité de seguridad de datos."], "rolResponsable": "SOC Manager + DLP Lead", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-01", "mitreTactic": "Exfiltration (T1048)", "evidenciaAuditable": "Dataset mensual archivado y presentación ejecutiva CISO.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Combina exportación oficial PowerShell con gobierno ejecutivo mensual.", "urlSoporte": "https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/export-activityexplorerdata", "pasosDetallados": ["Consolidar las exportaciones de `Activity explorer` y métricas de incidentes de Defender XDR para calcular `KPI-01` a `KPI-08` `[Decisión / Propuesta Editorial]`.", "Identificar las unidades de negocio con mayor tasa de *Policy Tips* ignorados o anulaciones (*overrides*) para dirigir campañas específicas de concientización `[Decisión / Propuesta Editorial]`.", "Presentar al CISO el volumen de exfiltraciones prevenidas y el estado de madurez por vector `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Preservar histórico mayor a 30 días, evaluar KPI-01 a KPI-08 y orientar acciones de concientización por área.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-04", "cadencia": "Mensual", "actividad": "Conciliación mensual de línea base de políticas DLP y auditoría de deriva (Configuration Drift)", "objetivo": "Verificar integridad de prioridades, estados Enable y exclusiones de todas las políticas DLP respecto al mes anterior.", "consolaRuta": "Security & Compliance PowerShell (Get-DlpCompliancePolicy / Get-DlpComplianceRule)", "procedimiento": ["Exportar a JSON/CSV la configuración completa de políticas, reglas, orden de prioridad y ajustes de endpoint.", "Ejecutar comparación diferencial frente al snapshot certificado del mes previo.", "Revocar excepciones temporales cuya vigencia haya caducado."], "rolResponsable": "GRC / Internal Audit Liaison", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-03", "mitreTactic": "Defense Evasion (T1562.001)", "evidenciaAuditable": "Snapshot mensual versionado de políticas DLP y certificado de conciliación.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Sustentado en cmdlets oficiales de Security & Compliance PowerShell.", "urlSoporte": "https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/get-dlpcompliancepolicy", "pasosDetallados": ["Exportar a JSON/XML todas las políticas, reglas, prioridades de ejecución y configuraciones de endpoint del tenant `[Verificado MS Learn]`.", "Comparar contra la línea base aprobada del mes previo verificando especialmente orden de prioridad de reglas y estado `Enable` `[Verificado MS Learn]`.", "Purgar exclusiones temporales de usuarios o dispositivos cuya vigencia haya expirado `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Verificar integridad de prioridades, estados Enable y exclusiones de todas las políticas DLP respecto al mes anterior.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-05", "cadencia": "Mensual", "actividad": "Actualización del catálogo de dominios GenAI / nube no gestionados y revisión de novedades Purview", "objetivo": "Incorporar nuevos sitios de Shadow AI o transferencia de archivos en controles inline de Edge for Business y Endpoint DLP.", "consolaRuta": "purview.microsoft.com > DSPM for AI, Endpoint settings > Restricted cloud service domains y What's new", "procedimiento": ["Cruzar hallazgos de descubrimiento Cloud Discovery en Defender for Cloud Apps y DSPM for AI contra dominios restringidos en DLP.", "Agregar nuevos dominios de LLMs públicos o almacenamiento no autorizado bajo gestión de cambios.", "Evaluar lanzamientos mensuales en What's new in Microsoft Purview."], "rolResponsable": "AI Data Security Architect + DLP Admin", "funcionNIST": "ID", "subcategoriaNIST": "ID.RA-01", "mitreTactic": "Exfiltration Over Web Service (T1567.002)", "evidenciaAuditable": "Catálogo actualizado de dominios GenAI restringidos y registro de novedades evaluadas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Integra descubrimiento Shadow AI con dominios restringidos en Endpoint/Browser DLP.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-browser-dlp-learn", "pasosDetallados": ["Cruzar el descubrimiento de *Shadow AI* de Defender for Cloud Apps y DSPM for AI con la lista de dominios restringidos en Endpoint DLP y políticas de colección en Edge for Business `[Verificado MS Learn]`.", "Incorporar nuevos dominios de LLMs públicos o repositorios de archivos anónimos detectados en la red `[Decisión / Propuesta Editorial]`.", "Evaluar anuncios mensuales en *What's new in Microsoft Purview* para planificar adopción de capacidades que pasen de Preview a GA `[Verificado MS Learn]`."], "disparadorAlerta": "Incorporar nuevos sitios de Shadow AI o transferencia de archivos en controles inline de Edge for Business y Endpoint DLP.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-01", "cadencia": "Trimestral", "actividad": "Racionalización arquitectónica de políticas DLP, rendimiento y alineación regulatoria", "objetivo": "Consolidar reglas superpuestas, sincronizar nuevas etiquetas/EDM del Módulo 14 y validar cumplimiento normativo.", "consolaRuta": "purview.microsoft.com > Solutions > Data Loss Prevention > Policies y Compliance Manager", "procedimiento": ["Revisar orden de prioridad y consolidar políticas fragmentadas para optimizar evaluación en endpoints y clientes Office.", "Confirmar inclusión de toda nueva Sensitivity Label o EDM en reglas de Cloud, Endpoint y Microsoft 365 Copilot.", "Validar cobertura regulatoria actualizada (PCI-DSS, GDPR, HIPAA, Ley 21.719 Chile, LFPDPPP México) junto a Legal."], "rolResponsable": "Data Security Architect + Legal & Privacy + DLP Lead", "funcionNIST": "GV", "subcategoriaNIST": "GV.PO-01", "mitreTactic": "Exfiltration (T1048)", "evidenciaAuditable": "Matriz trimestral de racionalización de políticas y cobertura normativa firmada.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Gobierno arquitectónico trimestral alineado a Compliance Manager.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-overview-plan-for-dlp", "pasosDetallados": ["Auditar la matriz global de políticas por ubicación consolidando reglas fragmentadas para optimizar rendimiento de evaluación en clientes Office y endpoints `[Verificado MS Learn]`.", "Validar que cada nueva etiqueta de sensibilidad o esquema EDM creado en el trimestre esté incorporado en las políticas DLP correspondientes (incluyendo la ubicación *Microsoft 365 Copilot and Copilot Chat*) `[Verificado MS Learn]`.", "Confirmar con Legal y Privacidad la cobertura de categorías regulatorias aplicables en Compliance Manager `[Verificado MS Learn]`."], "disparadorAlerta": "Consolidar reglas superpuestas, sincronizar nuevas etiquetas/EDM del Módulo 14 y validar cumplimiento normativo.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-02", "cadencia": "Trimestral", "actividad": "Certificación de accesos (Access Reviews) sobre roles DLP y descarga de evidencias", "objetivo": "Recertificar membresías elegibles en roles de administración DLP y custodia de evidencias sensibles.", "consolaRuta": "entra.microsoft.com > Identity governance > Access reviews y Azure Storage IAM", "procedimiento": ["Ejecutar campañas Access Reviews sobre DLP Compliance Management, Content Viewer, Content Download y Manage Alerts.", "Remover automáticamente usuarios no aprobados o con cambio de funciones.", "Auditar control de acceso RBAC e inmutabilidad en el Azure Storage Account de Evidence Collection."], "rolResponsable": "Identity Governance Admin + CISO Delegate", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Valid Accounts (T1078.004)", "evidenciaAuditable": "Actas cerradas de Access Reviews en Entra ID y auditoría RBAC de Azure Storage.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Usa Entra ID Access Reviews sobre Role Groups de Purview respaldados en Entra.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-permissions", "pasosDetallados": ["Ejecutar *Access Reviews* trimestrales sobre `DLP Compliance Management`, `Data Classification Content Viewer`, `Data Classification Content Download` y operadores con `Manage Alerts` `[Verificado MS Learn]`.", "Aplicar revocación automática ante falta de aprobación explícita del propietario del control `[Verificado MS Learn]`.", "Auditar permisos RBAC sobre el Azure Storage Account utilizado para *Customer-managed Evidence Collection* `[Verificado MS Learn]`."], "disparadorAlerta": "Recertificar membresías elegibles en roles de administración DLP y custodia de evidencias sensibles.", "tipoAccion": "Periódica Programada"}, {"codigo": "SM-01", "cadencia": "Semestral", "actividad": "Ejercicio integral de respuesta ante exfiltración multi-canal (Insider + GenAI + USB)", "objetivo": "Validar la coordinación operativa entre SOC, DLP, Insider Risk, Endpoint y Legal frente a una fuga compleja.", "consolaRuta": "security.microsoft.com y purview.microsoft.com (Data Security Investigations / Insider Risk)", "procedimiento": ["Simular intento encadenado de exfiltración por correo, Teams, navegador hacia GenAI y medio USB extraíble.", "Medir tiempo de correlación en Defender XDR, transición automática en Adaptive Protection, análisis en Data Security Investigations y contención.", "Incorporar mejoras detectadas a las reglas y playbooks."], "rolResponsable": "SOC Manager + Insider Risk Lead + Legal / RR. HH.", "funcionNIST": "RC", "subcategoriaNIST": "RC.IM-02", "mitreTactic": "Exfiltration (T1048 / T1052)", "evidenciaAuditable": "Informe semestral de ejercicio multi-canal con tiempos medidos y plan de mejora.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Ejercicio práctico recomendado para probar convergencia XDR + Purview.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-copy-matched-items-learn", "pasosDetallados": ["Ejecutar simulacro donde un usuario de prueba intenta extraer datos sensibles sucesivamente por correo, Teams externo, subida a IA no gestionada en navegador y USB extraíble `[Decisión / Propuesta Editorial]`.", "Medir tiempos de correlación en Defender XDR, elevación automática en **Adaptive Protection**, recolección e inspección de evidencia en **Data Security Investigations** y aislamiento/bloqueo `[Verificado MS Learn]`.", "Documentar brechas operativas y actualizar playbooks ad-hoc `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Validar la coordinación operativa entre SOC, DLP, Insider Risk, Endpoint y Legal frente a una fuga compleja.", "tipoAccion": "Periódica Programada"}, {"codigo": "A-01", "cadencia": "Anual", "actividad": "Revisión estratégica anual de arquitectura DLP, retención de evidencias y privacidad laboral", "objetivo": "Recertificar ante CISO, Legal/DPO y RR. HH. la proporcionalidad, retención de evidencias y evolución anual del programa DLP.", "consolaRuta": "Comité ejecutivo + purview.microsoft.com + Azure Storage Lifecycle Management", "procedimiento": ["Auditar plazos de purga automática de archivos en Evidence Collection conforme a leyes laborales y de datos personales.", "Revalidar controles de seudonimización y gobierno en Adaptive Protection / Insider Risk.", "Aprobar hoja de ruta anual (integración SASE/SSE de red, agentes IA con Agent 365 y presupuesto)."], "rolResponsable": "CISO + General Counsel / DPO + Data Security Architect", "funcionNIST": "GV", "subcategoriaNIST": "GV.PO-01", "mitreTactic": "Exfiltration (T1041)", "evidenciaAuditable": "Dictamen anual de privacidad, retención y arquitectura DLP firmado por CISO y DPO.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Alinea operación técnica con marcos legales y privacidad organizacional.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-overview-plan-for-dlp", "pasosDetallados": ["Revisar políticas de retención y purga automática de los archivos almacenados en **Evidence Collection** conforme a normativas laborales y de protección de datos personales de cada país `[Decisión / Propuesta Editorial]`.", "Revalidar el diseño de seudonimización e integración con Insider Risk Management y **Adaptive Protection** `[Verificado MS Learn]`.", "Aprobar el plan anual de evolución tecnológica (cobertura de red SASE/SSE, agentes IA con Agent 365 y optimización de costos) `[Verificado MS Learn]`."], "disparadorAlerta": "Recertificar ante CISO, Legal/DPO y RR. HH. la proporcionalidad, retención de evidencias y evolución anual del programa DLP.", "tipoAccion": "Periódica Programada"}, {"codigo": "AH-01", "cadencia": "Ad-Hoc", "actividad": "Contención e investigación ante exfiltración activa confirmada en Endpoint o Nube", "objetivo": "Frenar de inmediato una extracción maliciosa o comprometida de activos críticos preservando evidencia íntegra.", "consolaRuta": "security.microsoft.com > Incidents & alerts y purview.microsoft.com > Data Security Investigations", "procedimiento": ["Ejecutar acciones in-situ desde Defender XDR: Unshare/etiquetado en SharePoint o aislamiento/restricción del host en Defender for Endpoint.", "Activar JIT de Data Classification Content Viewer para inspeccionar elementos en Evidence Collection y correlacionar en Data Security Investigations.", "Revocar sesiones en Entra ID si hay compromiso externo o coordinar elevación inmediata a Elevated risk en Adaptive Protection si es insider."], "rolResponsable": "SOC L2/L3 + DLP Investigator", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Exfiltration (T1048)", "evidenciaAuditable": "Expediente de contención en Defender XDR y evidencia preservada en Data Security Investigations.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Acciones de remediación in-situ e integración con Data Security Investigations verificadas en Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/dlp-investigate-alerts-defender", "pasosDetallados": ["Abrir el incidente en Defender XDR y usar acciones de remediación nativas: si es archivo en SharePoint/OneDrive ejecutar **Unshare** o aplicar etiqueta cifrante; si es dispositivo comprometido o en fuga crítica, abrir la tarjeta del dispositivo y aislarlo o restringir ejecución de apps en Defender for Endpoint `[Verificado MS Learn]`.", "Solicitar elevación JIT de `Data Classification Content Viewer` para verificar en *Activity Explorer / Evidence Collection* el alcance exacto de los archivos involucrados, agregando el lote en **Purview Data Security Investigations** `[Verificado MS Learn]`.", "Si se trata de una cuenta comprometida externamente, revocar sesiones y bloquear cuenta en Microsoft Entra ID; si corresponde a empleado activo sospechoso, coordinar elevación inmediata a `Elevated risk` para aplicar bloqueo total vía **Adaptive Protection** `[Verificado MS Learn]`."], "disparadorAlerta": "Alerta DLP de severidad `High` con intentos reiterados de extracción de activos críticos (USB, subida web, correo personal) o coincidencia correlacionada en un incidente de Defender XDR con actividad maliciosa `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-02", "cadencia": "Ad-Hoc", "actividad": "Respuesta inmediata ante exposición accidental en Microsoft Teams o compartición externa en SharePoint", "objetivo": "Revocar al instante accesos externos no autorizados y neutralizar secretos o documentos expuestos en canales colaborativos.", "consolaRuta": "security.microsoft.com > Incidents y consolas SharePoint / Teams Admin", "procedimiento": ["Ejecutar acción Unshare desde la alerta DLP en Defender XDR para eliminar vínculos externos e invitados.", "Rotar de inmediato cualquier clave API, contraseña o token expuesto en chats externos (especialmente cuando otro tenant fue el iniciador del hilo).", "Aplicar etiqueta de sensibilidad cifrante Azure RMS al archivo involucrado."], "rolResponsable": "SOC L1/L2 + Collaboration Admin", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-02", "mitreTactic": "Exfiltration Over Web Service (T1567)", "evidenciaAuditable": "Registro de Unshare ejecutado, rotación de credenciales y aplicación de cifrado.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Considera el límite arquitectónico de hosting tenant en chats externos de Teams documentado en Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-microsoft-teams", "pasosDetallados": ["Ejecutar acción inmediata **Unshare** desde la página de alerta DLP en Defender XDR (o PowerShell SharePoint) para invalidar vínculos externos y accesos de invitados al archivo `[Verificado MS Learn]`.", "Si se expuso una credencial, clave API o secreto en un chat externo donde nuestro tenant no era el *hosting tenant* (o antes del bloqueo), rotar inmediatamente el secreto comprometido en el sistema origen `[Verificado MS Learn]`.", "Aplicar etiqueta de sensibilidad con cifrado Azure RMS al documento para revocar lectura futura fuera del perímetro `[Verificado MS Learn]`."], "disparadorAlerta": "Envío de credenciales, secretos o datos regulados en canales/chats con invitados externos (cuando la regla estaba solo en auditoría o hubo *override* indebido) o creación de enlace externo sobre documento sensible `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-03", "cadencia": "Ad-Hoc", "actividad": "Contención ante volcado de datos sensibles en herramientas GenAI públicas o prompts críticos", "objetivo": "Bloquear el servicio receptor no autorizado y evaluar el impacto regulatorio o intelectual de datos enviados a IA externa.", "consolaRuta": "purview.microsoft.com > DSPM for AI / Activity explorer y Defender for Endpoint Indicators", "procedimiento": ["Extraer de Activity Explorer y Evidence Collection el resumen contextual o archivo exacto enviado y el dominio GenAI involucrado.", "Elevar de inmediato el dominio a Block en políticas inline de Edge for Business / Endpoint DLP e indicadores de red MDE.", "Rotar secretos expuestos y notificar a Legal/DPO si el volcado contenía PII o propiedad intelectual regulada."], "rolResponsable": "SOC L2 / AI Security Analyst + Legal", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Exfiltration to Cloud / Web Service (T1567.002)", "evidenciaAuditable": "Evidencia del evento, bloqueo activo del dominio GenAI e informe de impacto.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Combina telemetría de DSPM for AI, Edge for Business DLP y bloqueo en MDE.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-create-policy-block-to-ai-via-edge", "pasosDetallados": ["Identificar en `Activity explorer` y `Evidence Collection` el texto contextual o archivo exacto transmitido, el usuario, el dispositivo y el dominio GenAI receptor `[Verificado MS Learn]`.", "Cambiar de inmediato la acción sobre ese dominio a **Block** en la política de **Edge for Business** / Endpoint DLP y bloquear el dominio en Defender for Endpoint Network Indicators (Web Content Filtering / Custom Indicators) si representa riesgo severo `[Verificado MS Learn]`.", "Si el volcado incluyó claves, tokens o código propietario, activar rotación de credenciales y evaluación de impacto con Legal/Privacidad `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Detección de carga de archivos confidenciales o pegado de PII/propiedad intelectual hacia un servicio GenAI no administrado (por ej. desde dispositivo recién incorporado o regla en modo auditoría) `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-04", "cadencia": "Ad-Hoc", "actividad": "Rollback operativo de emergencia ante bloqueo masivo por falso positivo crítico de negocio", "objetivo": "Restaurar continuidad operativa de un proceso crítico afectado por una regla mal calibrada sin desactivar la protección global del tenant.", "consolaRuta": "purview.microsoft.com > Solutions > Data Loss Prevention > Policies / Endpoint settings", "procedimiento": ["Pasar únicamente la regla causante a modo simulación o habilitar temporalmente override con justificación mientras se ajusta el clasificador.", "Si el bloqueo proviene de espera Just-in-Time sobre una carpeta de aplicación local verificada, añadir la ruta solo en JIT file path exclusions (conservando DLP estándar).", "Comunicar ventanas reales de sincronización (~1 hora en servicios cloud/Teams) y documentar análisis de causa raíz."], "rolResponsable": "DLP Engineer + SOC Incident Commander", "funcionNIST": "RC", "subcategoriaNIST": "RC.RP-01", "mitreTactic": "Impact (T1499)", "evidenciaAuditable": "Registro ITSM de cambio de emergencia, ajuste granular aplicado y post-mortem.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Aprovecha la diferencia oficial entre JIT file path exclusions y exclusiones globales de Endpoint DLP.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about-jit", "pasosDetallados": ["Cambiar la regla específica afectada (no toda la suite DLP del tenant) a `Run the policy in simulation mode` o habilitar temporalmente `Allow override with business justification` mientras se corrige la condición `[Verificado MS Learn]`.", "Si el bloqueo ocurre por latencia de **Endpoint DLP JIT protection** sobre una ruta de software transaccional local, agregar exclusivamente la ruta verificada a las exclusiones de JIT (*JIT file path exclusions*, que mantienen la protección DLP normal fuera de la espera JIT) `[Verificado MS Learn]`.", "Tener presente los tiempos de replicación (~1 hora hacia cargas cloud/Teams y ciclo de sincronización en endpoints) para comunicar expectativas reales a mesa de ayuda `[Verificado MS Learn]`."], "disparadorAlerta": "Regla DLP recién activada o modificada que bloquea erróneamente procesos transaccionales críticos (facturación masiva, intercambio regulatorio bancario, compilación de desarrollo en endpoint) `[Decisión / Propuesta Editorial]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}], "consultasKQLyVerificacion": [{"nombre": "Caza de coincidencias y anulaciones (Overrides) DLP en servicios Cloud y Copilot", "plataforma": "Microsoft Defender XDR Advanced Hunting", "tablaPrincipal": "CloudAppEvents", "consulta": "CloudAppEvents\n| where Timestamp > ago(24h)\n| where ActionType has \"DlpRuleMatch\" or ActionType in (\"DLPRuleUndo\", \"DlpInfo\")\n| extend Raw = parse_json(RawEventData)\n| extend PolicyName = tostring(Raw.PolicyDetails[0].PolicyName)\n| extend RuleName = tostring(Raw.PolicyDetails[0].Rules[0].RuleName)\n| extend OverrideReason = tostring(Raw.ExceptionInfo)\n| project Timestamp, AccountDisplayName, Application, ActionType, PolicyName, RuleName, OverrideReason, IPAddress\n| order by Timestamp desc", "proposito": "Auditar coincidencias DLP y justificaciones de override en Exchange, SharePoint, OneDrive, Teams y M365 Copilot (D-03 / D-04).", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Caza de señales DLP reclasificadas como Behaviors tras Alert Tuning de Octubre 2026", "plataforma": "Microsoft Defender XDR Advanced Hunting", "tablaPrincipal": "BehaviorInfo + BehaviorEntities", "consulta": "BehaviorInfo\n| where Timestamp > ago(24h)\n| where ServiceSource has \"Data Loss Prevention\" or DetectionSource has \"DLP\"\n| join kind=leftouter (\n    BehaviorEntities\n    | where Timestamp > ago(24h)\n    | project BehaviorId, EntityType, AccountUpn, FileName, FolderPath, RemoteUrl\n) on BehaviorId\n| project Timestamp, BehaviorId, Title, Category, Severity, AccountUpn, FileName, RemoteUrl, AttackTechniques\n| order by Timestamp desc", "proposito": "Monitorear señales DLP en Defender XDR cuando permanece activa la regla integrada de Alert Tuning introducida en octubre de 2026 (D-01 / D-03).", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Detección de intentos concentrados de exfiltración física y web en Endpoint DLP", "plataforma": "Microsoft Defender XDR Advanced Hunting", "tablaPrincipal": "DeviceEvents", "consulta": "DeviceEvents\n| where Timestamp > ago(24h)\n| where ActionType startswith \"Dlp\" or ActionType in (\"FileCopiedToRemovableMedia\", \"FilePrinted\", \"ClipBoardCopied\", \"FileCopiedToNetworkShare\", \"FileUploadedToCloud\", \"FileCopiedOverRdp\")\n| summarize TotalEventos = count(), Acciones = make_set(ActionType, 10), Archivos = make_set(FileName, 10), Destinos = make_set(RemoteUrl, 5) by InitiatingProcessAccountUpn, DeviceName\n| where TotalEventos >= 3\n| order by TotalEventos desc", "proposito": "Detectar usuarios o equipos Windows/macOS con múltiples eventos de extracción por USB, impresión, red, RDP o navegador (D-05 / AH-01).", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Correlación de actividades riesgosas de datos y uso de IA en DataSecurityEvents", "plataforma": "Microsoft Defender XDR / Microsoft Sentinel", "tablaPrincipal": "DataSecurityEvents", "consulta": "DataSecurityEvents\n| where Timestamp > ago(7d)\n| where isnotempty(RiskyAIUsageAppCategory) or isnotempty(SequenceCorrelationId)\n| project Timestamp, AccountUpn, ActionType, RiskyAIUsageAppCategory, RiskyAIUsageSensitivityLabelsInfo, FileName, SequenceCorrelationId\n| order by Timestamp desc", "proposito": "Investigar secuencias de exfiltración e interacciones riesgosas con apps IA enriquecidas con etiquetas de sensibilidad (D-06 / D-07).", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Control Periódico de Salud, Auditoría y KPIs"}, {"nombre": "Auditoría diaria de cambios administrativos en políticas y reglas DLP", "plataforma": "Microsoft Sentinel / Unified Audit Log", "tablaPrincipal": "OfficeActivity", "consulta": "OfficeActivity\n| where TimeGenerated > ago(24h)\n| where Operation in (\"New-DlpCompliancePolicy\", \"Set-DlpCompliancePolicy\", \"Remove-DlpCompliancePolicy\", \"New-DlpComplianceRule\", \"Set-DlpComplianceRule\", \"Remove-DlpComplianceRule\")\n| project TimeGenerated, UserId, Operation, Parameters, ClientIP\n| order by TimeGenerated desc", "proposito": "Garantizar trazabilidad del 100% de altas, bajas y modificaciones sobre políticas y reglas DLP (D-02 / M-04).", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Control Periódico de Salud, Auditoría y KPIs"}, {"nombre": "Inventario completo de políticas DLP, modo de aplicación y cobertura de ubicaciones", "plataforma": "Security & Compliance PowerShell (ExchangeOnlineManagement)", "tablaPrincipal": "Get-DlpCompliancePolicy", "consulta": "Connect-IPPSSession\nGet-DlpCompliancePolicy | Select-Object Name, Mode, Priority, ExchangeLocation, SharePointLocation, OneDriveLocation, TeamsLocation, EndpointDlpLocation, ThirdPartyAppDlpLocation, WhenChanged | Sort-Object Priority | Format-Table -AutoSize", "proposito": "Verificar orden de prioridad, políticas activas vs. en simulación y alcance de ubicaciones (M-04 / T-01).", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Validación de Configuración y Postura"}, {"nombre": "Auditoría de reglas DLP con Override permitido o sin generación de alertas", "plataforma": "Security & Compliance PowerShell (ExchangeOnlineManagement)", "tablaPrincipal": "Get-DlpComplianceRule", "consulta": "Get-DlpComplianceRule | Where-Object { $_.Disabled -eq $false } | Select-Object Name, ParentPolicyName, BlockAccess, BlockAccessScope, NotifyAllowOverride, ReportSeverityLevel | Export-Csv -Path \".\\DLP_Rules_Posture_$(Get-Date -Format 'yyyyMMdd').csv\" -NoTypeInformation -Encoding utf8", "proposito": "Detectar reglas activas que permiten anulación no deseada por el usuario o carecen de severidad de alerta configurada (S-01 / M-04).", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Validación de Configuración y Postura"}], "kpisYMetricas": [{"id": "KPI-01", "nombre": "Tasa de Verdaderos Positivos (Precisión de Alertas DLP)", "definicion": "Porcentaje de alertas DLP revisadas por el SOC que corresponden a eventos reales de riesgo y no a ruido de clasificación.", "formula": "(Alertas DLP clasificadas como Verdadero Positivo / Total de alertas DLP triajadas en el periodo) * 100", "metaSugerida": ">= 75 %", "frecuencia": "Semanal", "audiencia": "SOC Manager, DLP Engineer", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Mide calidad de reglas y clasificadores; el umbral >=75% es benchmark operativo consultivo."}, {"id": "KPI-02", "nombre": "Cobertura Efectiva de Flota en Endpoint DLP", "definicion": "Porcentaje de dispositivos corporativos Windows 10/11 y macOS elegibles incorporados y con políticas Endpoint DLP actualizadas.", "formula": "(Endpoints con estado de sincronización DLP saludable / Total de endpoints corporativos elegibles) * 100", "metaSugerida": ">= 98 %", "frecuencia": "Semanal", "audiencia": "CISO, Endpoint Security Lead", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Calculado desde Purview Device onboarding e Intune; meta consultiva para evitar puntos ciegos locales."}, {"id": "KPI-03", "nombre": "Tiempo Medio de Reconocimiento (MTTA) en Alertas DLP Críticas/Altas", "definicion": "Tiempo medio transcurrido desde que se dispara una alerta DLP de severidad crítica o alta hasta el inicio del triaje SOC.", "formula": "Promedio(Timestamp Inicio Triaje - Timestamp Generación Alerta DLP)", "metaSugerida": "< 30 minutos (Críticas) / < 2 horas (Altas)", "frecuencia": "Mensual", "audiencia": "SOC Manager, Auditoría Externa", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "SLA consultivo orientado a contener exfiltraciones en curso."}, {"id": "KPI-04", "nombre": "Tiempo Medio de Contención de Exfiltración (MTTC)", "definicion": "Tiempo promedio desde el reconocimiento de una alerta confirmada hasta ejecutar Unshare, bloqueo adaptativo o aislamiento del host.", "formula": "Promedio(Timestamp Contención Efectiva - Timestamp Reconocimiento SOC)", "metaSugerida": "< 2 horas (Críticas) / < 6 horas (Altas)", "frecuencia": "Mensual", "audiencia": "CISO, SOC Manager", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Mide velocidad real de ejecución de los playbooks AH-01 a AH-03."}, {"id": "KPI-05", "nombre": "Tasa de Anulación por Usuario (Override Rate)", "definicion": "Porcentaje de eventos con Policy Tip de bloqueo donde el usuario final ejerce la opción de anular el control.", "formula": "(Eventos DLP con User Override ejecutado / Total de eventos con bloqueo anulable) * 100", "metaSugerida": "< 5 % general y 100 % de overrides en reglas altas auditados en 24h", "frecuencia": "Semanal", "audiencia": "DLP Lead, Data Owners", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Tasas elevadas revelan reglas mal afinadas o cultura de evasión."}, {"id": "KPI-06", "nombre": "Proporción de Políticas en Enforcement Activo vs. Simulación", "definicion": "Porcentaje del catálogo de políticas DLP productivas que operan en bloqueo/restricción efectiva frente a políticas detenidas en simulación.", "formula": "(Políticas DLP en modo Enable / Total de políticas DLP diseñadas) * 100", "metaSugerida": ">= 85 % (cero políticas >30 días en simulación sin decisión)", "frecuencia": "Mensual", "audiencia": "Data Security Architect, CISO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Evita la falsa sensación de seguridad de mantener políticas permanentemente en modo auditoría."}, {"id": "KPI-07", "nombre": "Tasa de Prevención en Interacciones IA (Copilot y Shadow AI)", "definicion": "Porcentaje de intentos riesgosos con datos sensibles hacia Microsoft 365 Copilot o sitios GenAI no gestionados que son bloqueados inline.", "formula": "(Intentos riesgosos bloqueados en M365 Copilot + Edge for Business / Total de intentos riesgosos detectados en IA) * 100", "metaSugerida": ">= 95 % en políticas activas", "frecuencia": "Mensual", "audiencia": "CISO, Comité de Gobierno de IA", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Mide eficacia real de los controles DLP sobre IA empresarial y no administrada."}, {"id": "KPI-08", "nombre": "Cumplimiento de Migración MDCA (2027-01-06) y Control de Cambios", "definicion": "Avance porcentual de migración de File Policies heredadas hacia Purview DLP y porcentaje de cambios administrativos con ticket ITSM.", "formula": "Min(% File Policies migradas antes de 2027-01-06, % Cambios DLP con ticket ITSM aprobado)", "metaSugerida": "100 %", "frecuencia": "Mensual", "audiencia": "GRC, Cloud Security Lead, Auditoría", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Asegura continuidad antes del retiro del 6 de enero de 2027 y trazabilidad regulatoria."}], "mapeoNISTCSF20": [{"funcion": "GOVERN (GV)", "subcategoria": "GV.PO-01", "descripcionResultado": "La política para gestionar riesgos de ciberseguridad y protección contra fuga de información se establece con base en el contexto legal y de negocio.", "capacidadMicrosoft": "Definición centralizada de políticas Purview DLP multicanal alineadas a regulaciones, etiquetas de sensibilidad y clasificadores.", "evidenciaAuditoria": "Matriz trimestral de cobertura normativa (T-01) y exportación Get-DlpCompliancePolicy.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "GOVERN (GV)", "subcategoria": "GV.OV-03", "descripcionResultado": "El desempeño de la gestión de riesgos cibernéticos es evaluado y auditado continuamente para asegurar cumplimiento.", "capacidadMicrosoft": "Registro inmutable de cambios en políticas/reglas DLP en Unified Audit Log, análisis mensual de deriva y revisión anual de privacidad.", "evidenciaAuditoria": "Conciliaciones al 100% D-02 y M-04 contra tickets ITSM y dictamen anual A-01.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.RA-01", "descripcionResultado": "Las exposiciones, canales de fuga y riesgos emergentes sobre activos críticos se identifican y documentan.", "capacidadMicrosoft": "Modo simulación de políticas DLP, descubrimiento de Shadow AI para Edge for Business e inventario de migración de File Policies MDCA.", "evidenciaAuditoria": "Actas de evaluación en simulación (S-02), catálogo GenAI actualizado (M-05) y reporte de migración M-01.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.IM-03", "descripcionResultado": "Se identifican mejoras continuas a partir de la operación diaria, tuning y ejercicios de validación de controles.", "capacidadMicrosoft": "Tuning semanal guiado por falsos positivos y ejecución mensual de pruebas sintéticas Purple Team DLP en los 8 vectores.", "evidenciaAuditoria": "Registro semanal S-01 e informes mensuales de pruebas sintéticas M-02.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.AA-05", "descripcionResultado": "Las autorizaciones y restricciones de uso se aplican bajo mínimo privilegio y contexto dinámico de riesgo.", "capacidadMicrosoft": "Adaptive Protection ajustando controles DLP según nivel Elevated/Moderate/Minor y segregación PIM de Content Viewer / Download.", "evidenciaAuditoria": "Registros operativos D-07 / S-05, Access Reviews T-02 y auditoría semanal de evidencias S-04.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.DS-02", "descripcionResultado": "La confidencialidad e integridad de los datos en tránsito por correo, mensajería y web están protegidas.", "capacidadMicrosoft": "Bloqueo/cifrado en Exchange Online, remoción automática de mensajes en Teams DLP y bloqueo inline en Microsoft Edge for Business.", "evidenciaAuditoria": "Eventos de bloqueo en Activity Explorer y validaciones mensuales M-02.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.DS-05", "descripcionResultado": "Las fugas de datos (data leaks) se previenen activamente en endpoints, colaboración y asistentes de IA.", "capacidadMicrosoft": "Endpoint DLP nativo con Just-in-Time protection (USB, impresión, portapapeles, red, RDP) y DLP para Microsoft 365 Copilot / Cowork.", "evidenciaAuditoria": "Configuraciones activas en Endpoint/Copilot y cumplimiento de KPI-02 y KPI-07.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.CM-01", "descripcionResultado": "Las redes, servicios cloud, endpoints y navegadores se monitorean continuamente para detectar actividad anómala de exfiltración.", "capacidadMicrosoft": "Telemetría unificada en CloudAppEvents, DeviceEvents, DataSecurityEvents, BehaviorInfo y Purview Activity Explorer.", "evidenciaAuditoria": "Ejecución documentada de controles diarios D-04, D-05 y D-06 mediante consultas KQL verificadas.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.AE-02", "descripcionResultado": "Los eventos potencialmente adversos se correlacionan entre múltiples dominios para dimensionar incidentes.", "capacidadMicrosoft": "Correlación de alertas DLP con señales de Defender for Endpoint, Office 365, Entra ID y Sentinel en security.microsoft.com.", "evidenciaAuditoria": "Expedientes de incidentes correlacionados en D-03 y resúmenes de Security Copilot.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.AN-03", "descripcionResultado": "El análisis de incidentes se sustenta en evidencia íntegra para establecer hechos y alcance regulatorio.", "capacidadMicrosoft": "Captura del archivo original mediante Endpoint DLP Evidence Collection e investigación agregada en Data Security Investigations.", "evidenciaAuditoria": "Auditoría de custodia S-04 y expedientes forenses del playbook AH-01.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.MI-01", "descripcionResultado": "Los incidentes son contenidos con rapidez para frenar la exfiltración en origen y destino.", "capacidadMicrosoft": "Acciones in-situ en Defender XDR (Unshare, Delete, Apply label, aislamiento de dispositivo) y bloqueo inmediato de dominios GenAI.", "evidenciaAuditoria": "Registros de ejecución de AH-01, AH-02 y AH-03 dentro de la meta MTTC (KPI-04).", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RECOVER (RC)", "subcategoria": "RC.IM-02", "descripcionResultado": "Los procedimientos de respuesta y políticas preventivas se actualizan tras incidentes y simulacros.", "capacidadMicrosoft": "Procedimiento quirúrgico de rollback AH-04 (incl. JIT file path exclusions) y ejercicio semestral multi-canal SM-01.", "evidenciaAuditoria": "Informe del simulacro semestral SM-01 y cambios post-mortem documentados.", "estadoValidacion": "Propuesta Editorial"}], "validacionYDecisionesEditoriales": {"fechaRevalidacion": "2026-11-11", "resumenAuditoria": "Consolidación limpia y estructurada desde las subcarpetas válidas de MSEOP-MD\\Purview DLP (0427 Purview DLP Bloques SecOps\\Claude - Compilado final (Limpio), Actúa como Principal Cloud Security Architect v6, DLP NIST VC y Purview DLP - VC LIC), descartando íntegramente la carpeta obsoleta NO, cruzando autores y prácticas con Ninja Training 2026 (06_Purview_DLP) y revalidando todos los controles, límites y cambios 2026-2027 contra Microsoft Learn MCP al 11 de noviembre de 2026.", "correccionesAplicadas": ["Consolidación documental limpia desde las subcarpetas vigentes de MSEOP-MD\\Purview DLP (0427 Purview DLP Bloques SecOps, DLP NIST VC y Purview DLP - VC LIC), excluyendo por completo la carpeta descartada NO para eliminar desvíos previos.", "Incorporación del cambio crítico de inicios de octubre de 2026 en Microsoft Defender XDR: regla integrada de Alert Tuning que convierte señales DLP en behaviors (BehaviorInfo / BehaviorEntities) salvo desactivación explícita en Settings > Microsoft Defender XDR > Alert tuning.", "Actualización de la ubicación Microsoft 365 Copilot and Copilot Chat (Learn actualizado el 2026-10-27): soporte para Copilot, Copilot Chat y Cowork incluyendo bloqueo de búsquedas web externas con SITs, bloqueo de prompts con SITs y exclusión de archivos/correos por etiqueta.", "Incorporación de DLP inline en Microsoft Edge for Business (Windows 10/11 en Intune) frente a apps GenAI no administradas (ChatGPT, Google Gemini, DeepSeek), bloqueo de navegadores desprotegidos, prioridad de Endpoint DLP e incompatibilidad con Intune Multi-admin approval.", "Inclusión de la migración obligatoria desde File Policies de Microsoft Defender for Cloud Apps antes de su retiro el 6 de enero de 2027 usando DLP to Purview migration (con soporte para SharePoint, OneDrive, Google Workspace, Box, Dropbox y Salesforce).", "Precisión técnica de Endpoint DLP sin agentes en Windows 10/11 y macOS (3 últimas versiones): Just-in-Time protection (con distinción de JIT file path exclusions) y Evidence Collection hacia Azure Storage propio o Microsoft-managed storage integrada con Data Security Investigations.", "Clarificación de reglas arquitectónicas de Teams DLP: requerimiento de grupos (no cuentas sueltas) para cubrir canales, evaluación por tenant del remitente en Shared Channels y dependencia del hosting tenant iniciador en chats externos.", "Actualización de licenciamiento oficial a Microsoft Purview Suite (renombre oct-2025 de M365 E5 Compliance), distinción exacta E3 vs. O365 E5 vs. M365 E5 en Endpoint DLP y requisito de opt-in de Insider Risk para la tabla DataSecurityEvents."], "decisionesEditoriales": [{"elemento": "Exclusión deliberada de la carpeta NO en MSEOP-MD\\Purview DLP y estructuración de 27 actividades operacionales en 7 cadencias", "tipo": "Propuesta Editorial", "justificacion": "Garantiza trazabilidad sobre versiones limpias auditadas y dota al SOC de un modelo operativo ejecutable extremo a extremo."}, {"elemento": "SLAs operativos acelerados (MTTA < 30 min y MTTC < 2 h en severidad crítica) para alertas DLP confirmadas", "tipo": "Propuesta Editorial", "justificacion": "Refleja la urgencia de contención ante intentos activos de exfiltración frente a alertas puramente informativas."}, {"elemento": "Metas numéricas para los 8 KPIs (>=75% precisión VP, >=98% cobertura Endpoint DLP, <5% override rate)", "tipo": "Propuesta Editorial", "justificacion": "Establece referencias cuantitativas de madurez y salud operativa aclarando que no son umbrales oficiales de Microsoft."}, {"elemento": "Restricción en Entra PIM de Data Classification Content Download a ventanas JIT <= 1 hora con aprobación dual", "tipo": "Propuesta Editorial", "justificacion": "Protege la confidencialidad y cadena de custodia de archivos originales recolectados desde dispositivos de usuarios."}, {"elemento": "Programa mensual de 8 pruebas sintéticas Purple Team DLP (M-02), modelo de madurez de 5 niveles y mapeo de 12 subcategorías NIST CSF 2.0", "tipo": "Propuesta Editorial", "justificacion": "Transforma configuraciones de consola en garantías verificadas empíricamente y defendibles ante auditoría regulatoria."}]}, "referenciasVerificadas": [{"id": "REF-01", "titulo": "Learn about data loss prevention", "url": "https://learn.microsoft.com/en-us/purview/dlp-learn-about-dlp", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation Team", "comentario": "Arquitectura general de Purview DLP dividida en Enterprise applications & devices e Inline web traffic.", "verificacion": "Verificado contra Microsoft Learn (2026-11-11)"}, {"id": "REF-02", "titulo": "Learn about Endpoint data loss prevention", "url": "https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation Team", "comentario": "Cobertura nativa sin agente adicional sobre Windows 10/11, Windows Server y las tres últimas versiones mayores de macOS.", "verificacion": "Verificado contra Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-03", "titulo": "Learn about Endpoint DLP just-in-time protection", "url": "https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about-jit", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation Team", "comentario": "Funcionamiento de JIT candidate files, stale classification, acciones bloqueadas, fallback y JIT triggered en Activity Explorer.", "verificacion": "Verificado contra Microsoft Learn (actualizado jun-2026)"}, {"id": "REF-04", "titulo": "Get started with collecting files that match data loss prevention policies from devices", "url": "https://learn.microsoft.com/en-us/purview/dlp-copy-matched-items-get-started", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation Team", "comentario": "Configuración de Evidence Collection en Azure Storage propio o Microsoft-managed, roles Content Viewer/Download e integración con Data Security Investigations.", "verificacion": "Verificado contra Microsoft Learn (actualizado jun-2026)"}, {"id": "REF-05", "titulo": "Learn about using Microsoft Purview Data Loss Prevention to protect interactions with Microsoft 365 Copilot, Copilot Chat, and Cowork", "url": "https://learn.microsoft.com/en-us/purview/dlp-microsoft365-copilot-location-learn-about", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation Team", "comentario": "Controles sobre SITs en prompts, bloqueo de búsquedas web externas y exclusión de archivos/correos por etiqueta en Copilot y Cowork.", "verificacion": "Verificado contra Microsoft Learn (actualizado 2026-10-27)"}, {"id": "REF-06", "titulo": "Learn about Data Loss Prevention for Cloud Apps in Edge for Business", "url": "https://learn.microsoft.com/en-us/purview/dlp-browser-dlp-learn", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation Team", "comentario": "Protección inline en Edge for Business sobre Windows 10/11 en Intune, prioridad de Endpoint DLP y restricción de navegadores no protegidos.", "verificacion": "Verificado contra Microsoft Learn (actualizado 2026-09-15)"}, {"id": "REF-07", "titulo": "Help prevent sharing via Microsoft Edge for Business to unmanaged AI apps from managed devices", "url": "https://learn.microsoft.com/en-us/purview/dlp-create-policy-block-to-ai-via-edge", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation Team", "comentario": "Procedimiento paso a paso para bloquear pegado y subida hacia sitios GenAI no gestionados y bloqueo de Firefox/Chrome sin extensión.", "verificacion": "Verificado contra Microsoft Learn (2026-11-11)"}, {"id": "REF-08", "titulo": "Learn about Adaptive Protection in Data Loss Prevention", "url": "https://learn.microsoft.com/en-us/purview/dlp-adaptive-protection-learn", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation Team", "comentario": "Integración dinámica de niveles Elevated, Moderate y Minor de Insider Risk Management en Exchange, Teams y Devices.", "verificacion": "Verificado mediante lectura íntegra en Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-09", "titulo": "Data loss prevention and Microsoft Teams", "url": "https://learn.microsoft.com/en-us/purview/dlp-microsoft-teams", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation Team", "comentario": "Licenciamiento E5, reglas de alcance en canales, Shared Channels multi-tenant y chats con acceso externo.", "verificacion": "Verificado mediante lectura íntegra en Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-10", "titulo": "Get started with data loss prevention policies for Fabric and Power BI", "url": "https://learn.microsoft.com/en-us/purview/dlp-powerbi-get-started", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview & Fabric Documentation Team", "comentario": "Evaluación DLP de espacios de trabajo y artefactos soportados en Microsoft Fabric y Power BI.", "verificacion": "Verificado contra Microsoft Learn (actualizado jul-2026)"}, {"id": "REF-11", "titulo": "Investigate data loss prevention alerts with Microsoft Defender XDR", "url": "https://learn.microsoft.com/en-us/defender-xdr/dlp-investigate-alerts-defender", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Defender XDR Documentation Team", "comentario": "Documenta la regla integrada de Alert Tuning de inicios de octubre de 2026 (BehaviorInfo), roles RBAC, Go Hunt y acciones in-situ.", "verificacion": "Verificado mediante lectura íntegra en Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-12", "titulo": "DataSecurityEvents table in the advanced hunting schema", "url": "https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-datasecurityevents-table", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Defender XDR Documentation Team", "comentario": "Esquema oficial de caza avanzada para violaciones de políticas de datos y uso riesgoso de IA en Defender XDR y Sentinel.", "verificacion": "Verificado contra Microsoft Learn (actualizado 2026-09-01)"}, {"id": "REF-13", "titulo": "Migrate file policies to Microsoft Purview", "url": "https://learn.microsoft.com/en-us/defender-cloud-apps/migrate-file-policies-to-purview", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Defender for Cloud Apps Team", "comentario": "Guía oficial del retiro de File Policies el 6 de enero de 2027 y migración hacia Purview DLP para M365 y nubes de terceros.", "verificacion": "Verificado contra Microsoft Learn (actualizado 2026-08-28)"}, {"id": "REF-14", "titulo": "Microsoft Purview service description", "url": "https://learn.microsoft.com/en-us/office365/servicedescriptions/microsoft-365-service-descriptions/microsoft-365-tenantlevel-services-licensing-guidance/microsoft-purview-service-description", "tipoFuente": "Microsoft Learn", "autor": "Microsoft 365 Service Descriptions", "comentario": "Tabla oficial de elegibilidad de licencias para Purview DLP, Teams DLP, Endpoint DLP y Microsoft Purview Suite.", "verificacion": "Verificado contra Microsoft Learn (actualizado 2026-11-09)"}, {"id": "REF-15", "titulo": "Close the gaps: layered data protection with Microsoft Purview across endpoint, browser, and network", "url": "https://techcommunity.microsoft.com/blog/microsoft-purview-blog/close-the-gaps-layered-data-protection-with-microsoft-purview-across-endpoint-br/4550997", "tipoFuente": "Empleado Microsoft", "autor": "Nick-MSFT (Microsoft Purview Blog)", "comentario": "Arquitectura oficial en capas (Endpoint DLP + Edge for Business + Network DLP) publicada el 31 de agosto de 2026.", "verificacion": "Verificado en Microsoft Tech Community (ago-2026)"}, {"id": "REF-16", "titulo": "Safeguard sensitive data with Microsoft Purview ninja training scenarios", "url": "https://learn.microsoft.com/en-us/training/paths/purview-ninja-safeguard-data/", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Learn Training", "comentario": "Ruta oficial de formación práctica por escenarios para Information Protection y Data Loss Prevention.", "verificacion": "Verificado contra Microsoft Learn"}, {"id": "REF-17", "titulo": "Speaking Engagements 2026: Preventing Data Leakage from Generative AI Apps & Shadow AI", "url": "https://nikkichapple.com/speaking-engagements-2026/", "tipoFuente": "MVP Seguridad", "autor": "Nikki Chapple (Dual Microsoft MVP, M365 & Security)", "comentario": "Patrones prácticos de prevención de fuga de datos en aplicaciones de IA generativa y gobernanza Microsoft 365.", "verificacion": "Verificado en web (2026)"}, {"id": "REF-18", "titulo": "Microsoft Information Protection & DLP Archives — Office 365 for IT Pros", "url": "https://office365itpros.com/category/microsoft-information-protection/", "tipoFuente": "MVP Seguridad", "autor": "Tony Redmond (Microsoft MVP)", "comentario": "Cobertura técnica continua de novedades de políticas DLP, Copilot DLP y cambios del Message Center.", "verificacion": "Verificado en web (nov-2026)"}, {"id": "REF-19", "titulo": "Things to Know About Microsoft Purview — September 2026", "url": "https://alberthoitingh.com/2026/09/04/things-to-know-about-microsoft-purview-september-2026/", "tipoFuente": "MVP Seguridad", "autor": "Albert Hoitingh (Microsoft MVP)", "comentario": "Análisis ejecutivo sobre Network DLP, protección de agentes y cambios operativos de Purview para CISOs.", "verificacion": "Verificado en repositorio Ninja Training 2026"}, {"id": "REF-20", "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)", "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf", "tipoFuente": "Marco Normativo", "autor": "National Institute of Standards and Technology (NIST)", "comentario": "Referencia normativa oficial empleada para estructurar las evidencias de auditoría en las 6 funciones de CSF 2.0.", "verificacion": "Publicación oficial NIST CSWP 29"}], "validacionesConfiguracion": [{"control": "**Políticas Core (EXO, SPO, OD, Teams, Devices, Copilot)**", "comoValidar": "`Get-DlpCompliancePolicy` / `Data Loss Prevention > Policies`", "estadoEsperado": "Estado `Enable` (no estancadas indefinidamente en `TestWithoutNotifications`) `[Verificado MS Learn]` — Meta: `Mode = Enable`", "origen": "Verificado MS Learn"}, {"control": "**Regla Alert Tuning DLP en Defender XDR (Oct 2026)**", "comoValidar": "`security.microsoft.com > Settings > Microsoft Defender XDR > Alert tuning`", "estadoEsperado": "Configurada explícitamente según decisión del SOC `[Verificado MS Learn]` — Meta: Documentada / Validada", "origen": "Verificado MS Learn"}, {"control": "**Endpoint DLP Onboarding & JIT Protection**", "comoValidar": "`Settings > Device onboarding` + `Activity explorer`", "estadoEsperado": "Equipos Windows 10/11 y macOS reportando políticas activas y eventos `JIT triggered` `[Verificado MS Learn]` — Meta: `>= 98 %` flota activa `[Decisión / Propuesta Editorial]`", "origen": "Propuesta Editorial"}, {"control": "**Evidence Collection Storage**", "comoValidar": "`Endpoint settings > Setup evidence collection > View Usage`", "estadoEsperado": "Copia íntegra accesible para `Content Viewer` en pruebas sintéticas `[Verificado MS Learn]` — Meta: Operativo y dentro de cuota", "origen": "Verificado MS Learn"}, {"control": "**Microsoft Edge for Business Inline DLP**", "comoValidar": "Prueba sintética `M-02` + sincronización Intune sin error `Resync`", "estadoEsperado": "Bloqueo activo sobre sitios GenAI no gestionados y bloqueo de navegadores no permitidos `[Verificado MS Learn]` — Meta: `Synced / Enforced`", "origen": "Verificado MS Learn"}, {"control": "**Migración File Policies Defender for Cloud Apps**", "comoValidar": "Asistente *DLP to Purview migration*", "estadoEsperado": "Cero File Policies críticas pendientes tras transición a Purview antes de `2027-01-06` `[Verificado MS Learn]` — Meta: `100 %` migradas pre `2027-01-06` `[Decisión / Propuesta Editorial]`", "origen": "Propuesta Editorial"}], "modeloMadurez": [{"nivel": "**Nivel 1**", "estadio": "**Inicial / Solo Auditoría**", "descripcion": "Políticas creadas por plantilla predeterminada en modo simulación permanente; alcance limitado a correo o SharePoint básico; alto volumen de ruido no revisado por el SOC."}, {"nivel": "**Nivel 2**", "estadio": "**Base / Cloud Enforcement (E3)**", "descripcion": "Bloqueo activo con *Policy Tips* calibrados sobre Exchange Online, SharePoint Online y OneDrive; revisión periódica de alertas individuales y control básico de compartición externa."}, {"nivel": "**Nivel 3**", "estadio": "**Integrado / Omnicanal E5 (Teams + Endpoint DLP)**", "descripcion": "Cobertura activa en **Teams chats y canales** y **Endpoint DLP** sin agentes en Windows/macOS (USB, impresión, portapapeles, red, RDP), **JIT protection** habilitado, *Evidence Collection* operativo y migración de File Policies de MDCA completada."}, {"nivel": "**Nivel 4**", "estadio": "**Convergente / XDR + IA Protegida**", "descripcion": "Triaje unificado en **Microsoft Defender XDR** (con gobierno explícito de *Alert tuning* y caza KQL en `CloudAppEvents`/`DeviceEvents`/`BehaviorInfo`), políticas en **Microsoft 365 Copilot / Cowork** y bloqueo inline de **Shadow AI en Edge for Business** + **Microsoft Fabric / Power BI**."}, {"nivel": "**Nivel 5**", "estadio": "**Adaptativo / Zero Trust Dinámico**", "descripcion": "**Adaptive Protection** ajustando controles en tiempo real según niveles de **Insider Risk Management**, investigación asistida por IA en **Data Security Investigations** y **Security Copilot**, pruebas sintéticas Purple Team mensuales (`M-02`) y evidencia continua NIST CSF 2.0."}], "rutaFormacion": {"headers": ["Rol Destinatario", "Nivel", "Recursos Oficiales Microsoft Learn y Certificaciones (Nov 2026)", "Comunidad Técnica y Ninja Trainings", "Competencia Operativa Habilitada"], "rows": [["**SOC L1 / DLP Analyst**", "Nivel 1 (Fundamentos y Triaje)", "Ruta oficial *Safeguard sensitive data with Microsoft Purview ninja training scenarios* y módulo *Investigate data loss prevention alerts with Microsoft Defender XDR* `[Verificado MS Learn]`.", "Guías operativas de alertas y auditoría en M365.FM (Mirko Peters, MVP).", "Ejecución consistente de `D-01` a `D-04` (triaje en Defender XDR, auditoría de *overrides* y validación de telemetría)."], ["**DLP Engineer / Collaboration & Fabric Admin**", "Nivel 2 (Ingeniería de Políticas)", "Certificación oficial **Exam SC-401 (Information Security Administrator Associate)** + Credencial aplicada **SC-5003** + documentación de *Teams DLP*, *Fabric DLP* y migración MDCA `[Verificado MS Learn]`.", "Análisis técnico en *Office 365 for IT Pros* (Tony Redmond, MVP) y diseño de políticas Purview (Joanne Klein, MVP).", "Diseño, simulación, tuning y migración de políticas cloud, Teams, Fabric y salida de File Policies MDCA (`S-01`, `S-02`, `S-06`, `M-01`)."], ["**Endpoint Security / SOC L2-L3 Engineer**", "Nivel 3 (Endpoint, JIT, Forense y KQL)", "Módulos Learn *Implement endpoint data loss prevention with Microsoft Purview*, *Endpoint DLP JIT protection*, *Evidence collection* y *Edge for Business DLP* `[Verificado MS Learn]`.", "Referencia oficial *Layered data protection across endpoint, browser, and network* (`aka.ms/purviewlayeredprotection`, Nick-MSFT) y laboratorios KQL (Jorge Castañeda, MVP).", "Operación avanzada de Endpoint DLP, JIT, custodia de evidencias, caza en `DeviceEvents`/`BehaviorInfo` y playbooks `AH-01` a `AH-04`."], ["**CISO / Data & AI Security Architect**", "Nivel 4 (Gobierno Adaptativo e IA)", "Documentación oficial *Purview DLP for Microsoft 365 Copilot, Copilot Chat, and Cowork* (oct-2026) y *Adaptive Protection* `[Verificado MS Learn]`.", "Sesiones de *Shadow AI & Data Security* (Nikki Chapple, MVP) y resúmenes mensuales CISO/CDO (Albert Hoitingh, MVP).", "Gobierno de **Adaptive Protection**, protección de IA generativa y agentes, comité ejecutivo mensual (`M-03`) y revisión anual de privacidad (`A-01`)."]]}};
+const NAV_INDEX = [{"id": "00_Marco_Maestro_CISO_SOC_y_NIST", "orden": 0, "folder": "00_Marco_Maestro_CISO_SOC_y_NIST", "slug": "Marco_Maestro_CISO_SOC_y_NIST", "nombreCorto": "Marco Maestro CISO, SOC y NIST", "categoria": "Marco Transversal CISO, SOC y NIST", "htmlRel": "../00_Marco_Maestro_CISO_SOC_y_NIST/Marco_Maestro_CISO_SOC_y_NIST_Guia_Excelencia_Operacional.html"}, {"id": "01_Microsoft_Entra_ID", "orden": 1, "folder": "01_Microsoft_Entra_ID", "slug": "Microsoft_Entra_ID", "nombreCorto": "Microsoft Entra ID", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../01_Microsoft_Entra_ID/Microsoft_Entra_ID_Guia_Excelencia_Operacional.html"}, {"id": "02_Microsoft_Entra_ID_Governance", "orden": 2, "folder": "02_Microsoft_Entra_ID_Governance", "slug": "Microsoft_Entra_ID_Governance", "nombreCorto": "Microsoft Entra ID Governance", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../02_Microsoft_Entra_ID_Governance/Microsoft_Entra_ID_Governance_Guia_Excelencia_Operacional.html"}, {"id": "03_Microsoft_Defender_XDR", "orden": 3, "folder": "03_Microsoft_Defender_XDR", "slug": "Microsoft_Defender_XDR", "nombreCorto": "Defender XDR", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../03_Microsoft_Defender_XDR/Microsoft_Defender_XDR_Guia_Excelencia_Operacional.html"}, {"id": "04_Microsoft_Defender_for_Endpoint", "orden": 4, "folder": "04_Microsoft_Defender_for_Endpoint", "slug": "Microsoft_Defender_for_Endpoint", "nombreCorto": "Defender for Endpoint", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../04_Microsoft_Defender_for_Endpoint/Microsoft_Defender_for_Endpoint_Guia_Excelencia_Operacional.html"}, {"id": "05_Microsoft_Defender_for_Office_365", "orden": 5, "folder": "05_Microsoft_Defender_for_Office_365", "slug": "Microsoft_Defender_for_Office_365", "nombreCorto": "Defender for Office 365", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../05_Microsoft_Defender_for_Office_365/Microsoft_Defender_for_Office_365_Guia_Excelencia_Operacional.html"}, {"id": "06_Microsoft_Defender_for_Identity", "orden": 6, "folder": "06_Microsoft_Defender_for_Identity", "slug": "Microsoft_Defender_for_Identity", "nombreCorto": "Defender for Identity", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../06_Microsoft_Defender_for_Identity/Microsoft_Defender_for_Identity_Guia_Excelencia_Operacional.html"}, {"id": "07_Microsoft_Defender_for_Cloud_Apps", "orden": 7, "folder": "07_Microsoft_Defender_for_Cloud_Apps", "slug": "Microsoft_Defender_for_Cloud_Apps", "nombreCorto": "Defender for Cloud Apps", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../07_Microsoft_Defender_for_Cloud_Apps/Microsoft_Defender_for_Cloud_Apps_Guia_Excelencia_Operacional.html"}, {"id": "08_Microsoft_Sentinel", "orden": 8, "folder": "08_Microsoft_Sentinel", "slug": "Microsoft_Sentinel", "nombreCorto": "Microsoft Sentinel", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../08_Microsoft_Sentinel/Microsoft_Sentinel_Guia_Excelencia_Operacional.html"}, {"id": "09_Microsoft_Security_Copilot", "orden": 9, "folder": "09_Microsoft_Security_Copilot", "slug": "Microsoft_Security_Copilot", "nombreCorto": "Microsoft Security Copilot", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../09_Microsoft_Security_Copilot/Microsoft_Security_Copilot_Guia_Excelencia_Operacional.html"}, {"id": "10_Microsoft_Intune_Plan_1", "orden": 10, "folder": "10_Microsoft_Intune_Plan_1", "slug": "Microsoft_Intune_Plan_1", "nombreCorto": "Microsoft Intune Plan 1", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../10_Microsoft_Intune_Plan_1/Microsoft_Intune_Plan_1_Guia_Excelencia_Operacional.html"}, {"id": "11_Microsoft_Intune_Suite", "orden": 11, "folder": "11_Microsoft_Intune_Suite", "slug": "Microsoft_Intune_Suite", "nombreCorto": "Microsoft Intune Suite", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../11_Microsoft_Intune_Suite/Microsoft_Intune_Suite_Guia_Excelencia_Operacional.html"}, {"id": "12_Windows_Enterprise_Security_y_Cifrado", "orden": 12, "folder": "12_Windows_Enterprise_Security_y_Cifrado", "slug": "Windows_Enterprise_Security_y_Cifrado", "nombreCorto": "Windows Enterprise Security y Cifrado", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../12_Windows_Enterprise_Security_y_Cifrado/Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.html"}, {"id": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "orden": 13, "folder": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "slug": "Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "nombreCorto": "Microsoft Purview Suite", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno/Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.html"}, {"id": "14_Purview_Information_Protection", "orden": 14, "folder": "14_Purview_Information_Protection", "slug": "Purview_Information_Protection", "nombreCorto": "Purview Information Protection", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../14_Purview_Information_Protection/Purview_Information_Protection_Guia_Excelencia_Operacional.html"}, {"id": "15_Purview_Data_Loss_Prevention", "orden": 15, "folder": "15_Purview_Data_Loss_Prevention", "slug": "Purview_Data_Loss_Prevention", "nombreCorto": "Purview Data Loss Prevention", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../15_Purview_Data_Loss_Prevention/Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.html"}, {"id": "16_Purview_Data_Lifecycle_y_Records_Management", "orden": 16, "folder": "16_Purview_Data_Lifecycle_y_Records_Management", "slug": "Purview_Data_Lifecycle_y_Records_Management", "nombreCorto": "Purview DLCM y Records Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../16_Purview_Data_Lifecycle_y_Records_Management/Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.html"}, {"id": "17_Purview_Insider_Risk_Management", "orden": 17, "folder": "17_Purview_Insider_Risk_Management", "slug": "Purview_Insider_Risk_Management", "nombreCorto": "Purview Insider Risk Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../17_Purview_Insider_Risk_Management/Purview_Insider_Risk_Management_Guia_Excelencia_Operacional.html"}, {"id": "18_Purview_Communication_Compliance", "orden": 18, "folder": "18_Purview_Communication_Compliance", "slug": "Purview_Communication_Compliance", "nombreCorto": "Purview Communication Compliance", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../18_Purview_Communication_Compliance/Purview_Communication_Compliance_Guia_Excelencia_Operacional.html"}, {"id": "19_Purview_Audit_Premium", "orden": 19, "folder": "19_Purview_Audit_Premium", "slug": "Purview_Audit_Premium", "nombreCorto": "Purview Audit (Premium)", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../19_Purview_Audit_Premium/Purview_Audit_Premium_Guia_Excelencia_Operacional.html"}, {"id": "20_Purview_eDiscovery_Premium", "orden": 20, "folder": "20_Purview_eDiscovery_Premium", "slug": "Purview_eDiscovery_Premium", "nombreCorto": "Purview eDiscovery Premium", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../20_Purview_eDiscovery_Premium/Purview_eDiscovery_Premium_Guia_Excelencia_Operacional.html"}, {"id": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "orden": 21, "folder": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "slug": "Customer_Lockbox_Customer_Key_y_M365_PAM", "nombreCorto": "Customer Lockbox, Customer Key y M365 PAM", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../21_Customer_Lockbox_Customer_Key_y_M365_PAM/Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.html"}, {"id": "22_Microsoft_Agent_365", "orden": 22, "folder": "22_Microsoft_Agent_365", "slug": "Microsoft_Agent_365", "nombreCorto": "Microsoft Agent 365", "categoria": "Gobierno y Seguridad de Agentes IA", "htmlRel": "../22_Microsoft_Agent_365/Microsoft_Agent_365_Guia_Excelencia_Operacional.html"}];
+
+(() => {
+  const memStore = {};
+  const storageKey = "mseop_v3_state_" + MODULE_DATA.id;
+  function loadState() {
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      return raw ? JSON.parse(raw) : { tasks: {}, steps: {} };
+    } catch (_) {
+      return memStore[storageKey] || { tasks: {}, steps: {} };
+    }
+  }
+  function saveState(st) {
+    memStore[storageKey] = st;
+    try { window.localStorage.setItem(storageKey, JSON.stringify(st)); } catch (_) {}
+  }
+
+  let uiState = loadState();
+  if (!uiState.tasks) uiState.tasks = {};
+  if (!uiState.steps) uiState.steps = {};
+  let activeView = "view-overview";
+  let activePeriodicCad = "Diaria";
+
+  function esc(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // Converts inline Markdown (**bold**, `code`, [Verificado MS Learn], [Decisión / Propuesta Editorial]) into clean readable HTML
+  function richText(str) {
+    let s = esc(str);
+    s = s.replace(/`\[Verificado MS Learn\]`|\[Verificado MS Learn\]/g, '<span class="inline-tag tag-learn">Verificado MS Learn</span>');
+    s = s.replace(/`\[Decisión \/ Propuesta Editorial\]`|\[Decisión \/ Propuesta Editorial\]|`\[Propuesta Editorial\]`|\[Propuesta Editorial\]/g, '<span class="inline-tag tag-edit">Propuesta Editorial</span>');
+    s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    return s;
+  }
+
+  function valBadge(status) {
+    const isLearn = String(status).indexOf("Verificado") !== -1;
+    return '<span class="' + (isLearn ? "badge badge-learn" : "badge badge-editorial") + '">' + esc(status) + '</span>';
+  }
+
+  // Partition activities cleanly into Periodic vs Ad-Hoc
+  const allActs = MODULE_DATA.actividadesOperacionales || [];
+  const periodicActs = allActs.filter((a) => a.cadencia !== "Ad-Hoc");
+  const adhocActs = allActs.filter((a) => a.cadencia === "Ad-Hoc");
+  const prereqs = (MODULE_DATA.relacionM365E5 && MODULE_DATA.relacionM365E5.prerrequisitos) || [];
+  const validations = MODULE_DATA.validacionesConfiguracion || [];
+  const components = MODULE_DATA.arquitecturaYComponentes || [];
+  const rbacRoles = MODULE_DATA.rbacYRoles || [];
+
+  const dailyActs = periodicActs.filter((a) => a.cadencia === "Diaria");
+  const weeklyActs = periodicActs.filter((a) => a.cadencia === "Semanal");
+  const monthlyActs = periodicActs.filter((a) => a.cadencia === "Mensual");
+  const longCycleActs = periodicActs.filter((a) => ["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) !== -1);
+
+  // Topbar links & module switcher
+  const baseName = MODULE_DATA.slug + "_Guia_Excelencia_Operacional";
+  document.getElementById("xlsxLink").href = "./" + baseName + ".xlsx";
+  document.getElementById("mdLink").href = "./" + baseName + ".md";
+
+  const jumpSel = document.getElementById("modJumpSelect");
+  NAV_INDEX.forEach((m) => {
+    const opt = document.createElement("option");
+    opt.value = m.htmlRel;
+    opt.textContent = String(m.orden).padStart(2, "0") + " — " + m.nombreCorto;
+    if (m.id === MODULE_DATA.id) opt.selected = true;
+    jumpSel.appendChild(opt);
+  });
+  jumpSel.addEventListener("change", (e) => { if (e.target.value) window.location.href = e.target.value; });
+
+  const curIdx = NAV_INDEX.findIndex((m) => m.id === MODULE_DATA.id);
+  const prevBtn = document.getElementById("prevModBtn");
+  const nextBtn = document.getElementById("nextModBtn");
+  if (curIdx > 0) prevBtn.href = NAV_INDEX[curIdx - 1].htmlRel;
+  else { prevBtn.style.opacity = "0.4"; prevBtn.style.pointerEvents = "none"; }
+  if (curIdx >= 0 && curIdx < NAV_INDEX.length - 1) nextBtn.href = NAV_INDEX[curIdx + 1].htmlRel;
+  else { nextBtn.style.opacity = "0.4"; nextBtn.style.pointerEvents = "none"; }
+
+  document.getElementById("themeToggleBtn").addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+  });
+  document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+  // Sidebar counters
+  const totalConfigChecks = prereqs.length + validations.length;
+  document.getElementById("navCntConfig").textContent = totalConfigChecks;
+  document.getElementById("navCntDiaria").textContent = dailyActs.length;
+  document.getElementById("navCntSemanal").textContent = weeklyActs.length;
+  document.getElementById("navCntMensual").textContent = monthlyActs.length;
+  document.getElementById("navCntLargos").textContent = longCycleActs.length;
+  document.getElementById("navCntAdhoc").textContent = adhocActs.length;
+  document.getElementById("navCntQueries").textContent = (MODULE_DATA.consultasKQLyVerificacion || []).length;
+  document.getElementById("navCntKpis").textContent = (MODULE_DATA.kpisYMetricas || []).length;
+  document.getElementById("navCntNist").textContent = (MODULE_DATA.mapeoNISTCSF20 || []).length;
+
+  function switchView(viewId, periodicCadOverride) {
+    activeView = viewId;
+    if (periodicCadOverride) activePeriodicCad = periodicCadOverride;
+
+    document.querySelectorAll(".view-panel").forEach((p) => p.classList.remove("active"));
+    const target = document.getElementById(viewId);
+    if (target) target.classList.add("active");
+
+    document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+      const bv = btn.getAttribute("data-view");
+      const bc = btn.getAttribute("data-cad");
+      if (bv === viewId && (!bc || bc === activePeriodicCad)) btn.classList.add("active");
+      else btn.classList.remove("active");
+    });
+
+    if (viewId === "view-periodic") {
+      syncPeriodicSubnav();
+      renderPeriodicCards();
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      switchView(btn.getAttribute("data-view"), btn.getAttribute("data-cad") || null);
+    });
+  });
+
+  // Handle incoming URL hash (#config, #periodic-diaria, #adhoc, etc.)
+  function applyInitialHash() {
+    const h = (window.location.hash || "").replace("#", "");
+    if (h === "config") switchView("view-config");
+    else if (h === "periodic-diaria") switchView("view-periodic", "Diaria");
+    else if (h === "periodic-semanal") switchView("view-periodic", "Semanal");
+    else if (h === "periodic-mensual") switchView("view-periodic", "Mensual");
+    else if (h === "periodic-largos") switchView("view-periodic", "CICLOS_LARGOS");
+    else if (h === "adhoc") switchView("view-adhoc");
+    else if (h === "queries") switchView("view-queries");
+    else if (h === "nist") switchView("view-nist");
+  }
+
+  function updateProgressTracker() {
+    let cfgDone = 0;
+    prereqs.forEach((_, i) => { if (uiState.tasks["CFG-" + (i + 1)]) cfgDone++; });
+    validations.forEach((_, i) => { if (uiState.tasks["VAL-" + (i + 1)]) cfgDone++; });
+    const cfgPct = totalConfigChecks ? Math.round((cfgDone / totalConfigChecks) * 100) : 0;
+
+    const perDone = periodicActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const perPct = periodicActs.length ? Math.round((perDone / periodicActs.length) * 100) : 0;
+
+    const ahDone = adhocActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const ahPct = adhocActs.length ? Math.round((ahDone / adhocActs.length) * 100) : 0;
+
+    document.getElementById("sidebarProgress").innerHTML =
+      '<div class="nav-section-label" style="padding-left:0;">Tu Progreso de Revisión</div>' +
+      '<div class="prog-row"><div class="prog-head"><span>1. Configuración y Validación</span><span>' + cfgDone + '/' + totalConfigChecks + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + cfgPct + '%"></div></div></div>' +
+      '<div class="prog-row"><div class="prog-head"><span>2. Rutinas Periódicas</span><span>' + perDone + '/' + periodicActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + perPct + '%"></div></div></div>' +
+      '<div class="prog-row" style="margin-bottom:0;"><div class="prog-head"><span>3. Playbooks Ad-Hoc</span><span>' + ahDone + '/' + adhocActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + ahPct + '%"></div></div></div>';
+  }
+
+  // VISTA 0: OVERVIEW
+  document.getElementById("heroTitle").textContent = MODULE_DATA.nombre;
+  document.getElementById("heroSummary").textContent = MODULE_DATA.resumenEjecutivo;
+  document.getElementById("heroBadges").innerHTML = [
+    '<span class="badge badge-accent">Módulo ' + String(MODULE_DATA.orden).padStart(2, "0") + ' de 22</span>',
+    '<span class="badge">' + esc(MODULE_DATA.categoria) + '</span>',
+    '<span class="badge badge-learn">' + esc(MODULE_DATA.relacionM365E5.estado) + '</span>',
+    '<span class="badge">Validación: ' + esc(MODULE_DATA.fechaValidacion) + '</span>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").innerHTML = [
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 1 · Acciones Puntuales</div>' +
+        '<h3>Configuración Base y Validaciones</h3>' +
+        '<p>Qué debes habilitar al inicio (' + prereqs.length + ' prerrequisitos, ' + components.length + ' componentes y ' + rbacRoles.length + ' roles RBAC/PIM) y <strong>' + validations.length + ' validaciones "Proof of Life"</strong> para comprobar que todo quedó bien configurado.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-config">Ir a Configuración y Validaciones →</button></div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 2 · Operación Programada</div>' +
+        '<h3>Rutinas Periódicas por Frecuencia</h3>' +
+        '<p><strong>' + periodicActs.length + ' procedimientos preventivos</strong> separados con claridad en ciclos Diarios (' + dailyActs.length + '), Semanales (' + weeklyActs.length + '), Mensuales (' + monthlyActs.length + ') y Trimestrales/Anuales (' + longCycleActs.length + ').</p>' +
+      '</div>' +
+      '<div class="pill-row">' +
+        '<button class="btn btn-primary btn-sm" type="button" data-goto="view-periodic" data-gocad="Diaria">Diarias (' + dailyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Semanal">Semanales (' + weeklyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Mensual">Mensuales (' + monthlyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="CICLOS_LARGOS">Trim./Anual (' + longCycleActs.length + ')</button>' +
+      '</div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 3 · Reacción del Analista</div>' +
+        '<h3>Playbooks Ad-Hoc ante Alertas</h3>' +
+        '<p><strong>' + adhocActs.length + ' playbooks tácticos</strong> que no siguen calendario: se disparan cuando una alerta, señal de compromiso o incidente requiere contención e investigación del analista.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-adhoc">Abrir Playbooks Ad-Hoc →</button></div>' +
+    '</div>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-goto]");
+    if (!b) return;
+    switchView(b.getAttribute("data-goto"), b.getAttribute("data-gocad") || null);
+  });
+
+  const rel = MODULE_DATA.relacionM365E5;
+  document.getElementById("licensingOverviewCard").innerHTML =
+    '<h3 style="margin-top:0;font-size:20px;">Encaje de Licenciamiento en Microsoft 365 E5 y Portales Oficiales</h3>' +
+    '<p style="margin-bottom:16px;">' + richText(rel.notaLicenciamiento) + '</p>' +
+    '<div class="info-pair" style="margin-bottom:0;">' +
+      '<div class="info-box"><div class="info-label">Licencias y SKUs Aplicables</div><ul style="margin:6px 0 0 0;padding-left:20px;">' +
+        (rel.licencias || []).map((l) => '<li style="margin-bottom:6px;">' + richText(l) + '</li>').join("") +
+      '</ul></div>' +
+      '<div class="info-box"><div class="info-label">Consolas Oficiales de Administración y SOC</div><div class="pill-row" style="margin-top:10px;">' +
+        (MODULE_DATA.portalesPrincipales || []).map((u) => '<a class="btn" href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + ' ↗</a>').join("") +
+      '</div><div style="margin-top:16px;"><div class="info-label">Roles Involucrados</div><div class="pill-row" style="margin-top:6px;">' +
+        (MODULE_DATA.audiencia || []).map((au) => '<span class="badge">' + esc(au) + '</span>').join("") +
+      '</div></div></div>' +
+    '</div>';
+
+  document.getElementById("principlesGrid").innerHTML = (MODULE_DATA.principiosRectores || []).map((p) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:10px;">' +
+        '<h3 style="margin:0;font-size:17.5px;">' + esc(p.principio) + '</h3>' +
+        valBadge(p.estadoValidacion) +
+      '</div>' +
+      '<p class="muted" style="margin:0 0 12px 0;">' + richText(p.descripcion) + '</p>' +
+      (p.fuenteUrl ? '<a href="' + esc(p.fuenteUrl) + '" target="_blank" rel="noopener noreferrer">Consultar referencia en Microsoft Learn ↗</a>' : '') +
+    '</div>'
+  )).join("");
+
+  // VISTA 1: CONFIGURACIÓN PUNTUAL Y VALIDACIONES
+  function renderConfigView() {
+    document.getElementById("prereqsContainer").innerHTML = prereqs.map((pr, idx) => {
+      const code = "CFG-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '" style="padding:22px 28px;margin-bottom:16px;">' +
+          '<div class="card-title-group">' +
+            '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+            '<div style="flex:1;">' +
+              '<div class="pill-row" style="margin-bottom:6px;">' +
+                '<span class="card-code" style="margin-bottom:0;">' + code + '</span>' +
+                '<span class="badge">Acción Puntual de Puesta en Marcha</span>' +
+              '</div>' +
+              '<div style="font-size:16px;font-weight:600;">' + richText(pr) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("validationsContainer").innerHTML = validations.map((v, idx) => {
+      const code = "VAL-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + code + ' · Validación de Configuración</span>' +
+                '<h4 class="card-heading">' + richText(v.control) + '</h4>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' + valBadge(v.origen || "Verificado MS Learn") + '</div>' +
+          '</div>' +
+          '<div class="info-pair" style="margin-bottom:0;">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Dónde y Cómo Validar la Configuración</div>' +
+              '<div class="info-content">' + richText(v.comoValidar) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label">Estado / Resultado Esperado ("Proof of Life")</div>' +
+              '<div class="info-content">' + richText(v.estadoEsperado) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("componentsContainer").innerHTML = components.map((c, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">COMP-' + String(idx + 1).padStart(2, "0") + ' · Subsistema Técnico</span>' +
+            '<h4 class="card-heading">' + esc(c.componente) + '</h4>' +
+          '</div>' +
+          valBadge(c.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Qué Configurar y Habilitar en este Componente</div>' +
+            '<div class="info-content">' + richText(c.funcionOperativa) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Ruta Exacta en Consola</div>' +
+            '<div class="info-content"><code>' + esc(c.portalRuta) + '</code></div>' +
+            '<div class="info-label" style="margin-top:14px;">Integraciones que Validar</div>' +
+            '<div class="pill-row" style="margin-top:6px;">' + (c.integraciones || []).map((i) => '<span class="badge">' + esc(i) + '</span>').join("") + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+
+    document.getElementById("rbacContainer").innerHTML = rbacRoles.map((r) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">RBAC / PIM · ' + esc(r.nivelSOC) + '</span>' +
+            '<h4 class="card-heading">' + esc(r.rol) + '</h4>' +
+          '</div>' +
+          valBadge(r.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair" style="margin-bottom:14px;">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Configuración Puntual en PIM / Asignación</div>' +
+            '<div class="info-content">' + richText(r.asignacionPIM) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Alcance de Permisos a Validar</div>' +
+            '<div class="info-content">' + richText(r.permisosClave) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="validation-footer">' +
+          '<div><strong>Uso operativo autorizado:</strong> ' + richText(r.responsabilidadOperativa) + '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+
+  // Helper to render step-by-step lists with clickable step checkmarks
+  function renderStepRows(actCode, steps) {
+    return '<ol class="steps-list">' + (steps || []).map((st, idx) => {
+      const stepKey = actCode + "_S" + (idx + 1);
+      const isChecked = !!uiState.steps[stepKey];
+      return (
+        '<li class="step-row ' + (isChecked ? "step-checked" : "") + '" data-step="' + esc(stepKey) + '" title="Haz clic para marcar o desmarcar este paso">' +
+          '<span class="step-num">' + (isChecked ? "✓" : (idx + 1)) + '</span>' +
+          '<div class="step-body">' + richText(st) + '</div>' +
+        '</li>'
+      );
+    }).join("") + '</ol>';
+  }
+
+  // VISTA 2: ACCIONES PERIÓDICAS
+  const roleSet = new Set();
+  periodicActs.forEach((a) => {
+    String(a.rolResponsable || "").split(/[\/+,]/).forEach((r) => {
+      const clean = r.trim();
+      if (clean) roleSet.add(clean);
+    });
+  });
+  const perRoleSel = document.getElementById("perRole");
+  Array.from(roleSet).sort().forEach((r) => {
+    const o = document.createElement("option");
+    o.value = r; o.textContent = "Rol: " + r;
+    perRoleSel.appendChild(o);
+  });
+
+  function syncPeriodicSubnav() {
+    document.querySelectorAll("#periodicCadBar .subnav-pill").forEach((b) => {
+      b.classList.toggle("active", b.getAttribute("data-pcad") === activePeriodicCad);
+    });
+    const titles = {
+      "Diaria": ["2. Acciones Periódicas — Rutinas Diarias", "Controles diarios del turno SOC y administración para asegurar salud de plataforma, triaje a tiempo y cero caídas silenciosas."],
+      "Semanal": ["2. Acciones Periódicas — Rutinas Semanales", "Actividades semanales de tuning de falsos positivos, caza proactiva, revisión de postura e higiene operativa."],
+      "Mensual": ["2. Acciones Periódicas — Rutinas Mensuales", "Gobierno mensual de privilegios RBAC/PIM, optimización financiera/retención, pruebas de automatización y reporte ejecutivo al CISO."],
+      "CICLOS_LARGOS": ["2. Acciones Periódicas — Ciclos Trimestrales, Semestrales y Anuales", "Ejercicios Tabletop/Purple Team, análisis de cobertura MITRE ATT&CK, simulacros de continuidad y auditoría estratégica anual."],
+      "ALL_PERIODIC": ["2. Todas las Acciones Periódicas Programadas", "Listado consolidado de todas las rutinas preventivas y de gobierno del módulo (excluyendo playbooks reactivos Ad-Hoc)."]
+    };
+    const pair = titles[activePeriodicCad] || titles["ALL_PERIODIC"];
+    document.getElementById("periodicTitle").textContent = pair[0];
+    document.getElementById("periodicSubtitle").textContent = pair[1];
+  }
+
+  document.getElementById("periodicCadBar").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-pcad]");
+    if (!b) return;
+    activePeriodicCad = b.getAttribute("data-pcad");
+    syncPeriodicSubnav();
+    switchView("view-periodic", activePeriodicCad);
+  });
+
+  function getFilteredPeriodic() {
+    const q = document.getElementById("perSearch").value.trim().toLowerCase();
+    const rol = document.getElementById("perRole").value;
+    const orig = document.getElementById("perOrigin").value;
+
+    return periodicActs.filter((a) => {
+      if (activePeriodicCad === "CICLOS_LARGOS") {
+        if (["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) === -1) return false;
+      } else if (activePeriodicCad !== "ALL_PERIODIC") {
+        if (a.cadencia !== activePeriodicCad) return false;
+      }
+      if (rol !== "ALL" && String(a.rolResponsable).indexOf(rol) === -1) return false;
+      if (orig !== "ALL" && a.estadoValidacion !== orig) return false;
+      if (q) {
+        const hay = [a.codigo, a.cadencia, a.actividad, a.objetivo, a.consolaRuta, a.rolResponsable, a.evidenciaAuditable, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderPeriodicCards() {
+    const list = getFilteredPeriodic();
+    document.getElementById("perCountLabel").textContent =
+      "Mostrando " + list.length + " acciones periódicas en esta vista (haz clic en cada paso numerado para llevar control de lectura o ejecución).";
+
+    const box = document.getElementById("periodicCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay actividades periódicas que coincidan con los filtros seleccionados.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + ' aria-label="Completar ' + esc(a.codigo) + '">' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Rutina ' + esc(a.cadencia) + '</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge">' + esc(a.rolResponsable) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Objetivo de la Rutina</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Consola y Ruta Exacta</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Acciones Paso a Paso a Ejecutar y Validar (' + steps.length + ' pasos)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación de cierre y evidencia auditable:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<span>MITRE ATT&amp;CK: ' + esc(a.mitreTactic) + ' · ' + esc(a.notaValidacion) + '</span>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Ver guía oficial en MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+
+  ["perSearch", "perRole", "perOrigin"].forEach((id) => {
+    document.getElementById(id).addEventListener("input", renderPeriodicCards);
+    document.getElementById(id).addEventListener("change", renderPeriodicCards);
+  });
+
+  // VISTA 3: PLAYBOOKS AD-HOC (ALERTAS Y SEÑALES)
+  function renderAdhocCards() {
+    const q = document.getElementById("adhocSearch").value.trim().toLowerCase();
+    const list = adhocActs.filter((a) => {
+      if (!q) return true;
+      const hay = [a.codigo, a.actividad, a.disparadorAlerta, a.objetivo, a.consolaRuta, a.rolResponsable, a.mitreTactic, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+      return hay.indexOf(q) !== -1;
+    });
+
+    const box = document.getElementById("adhocCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay playbooks Ad-Hoc que coincidan con la búsqueda.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card adhoc-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Playbook Reactivo del Analista (Ad-Hoc)</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge badge-accent">MITRE: ' + esc(a.mitreTactic) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="trigger-banner">' +
+            '<div class="info-label">Señal, Alerta o Evento Disparador (Cuándo debe actuar el analista)</div>' +
+            '<div class="info-content" style="font-weight:600;">' + richText(a.disparadorAlerta) + '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Meta de Contención y Erradicación</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Analista Ejecutor y Consola de Intervención</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><strong>Rol:</strong> ' + esc(a.rolResponsable) + '<br><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Secuencia Táctica del Analista (' + steps.length + ' pasos de respuesta)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación post-contención y evidencia forense:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<button class="btn btn-sm go-queries-btn" type="button">Abrir Consultas KQL / Scripts de Apoyo →</button>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Documentación oficial de respuesta MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+  document.getElementById("adhocSearch").addEventListener("input", renderAdhocCards);
+
+  // Global delegation for task checkboxes, step rows, copy buttons & query jumps
+  document.addEventListener("change", (e) => {
+    const chk = e.target.closest(".task-checkbox");
+    if (!chk) return;
+    const key = chk.getAttribute("data-task");
+    uiState.tasks[key] = chk.checked;
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  document.addEventListener("click", (e) => {
+    const stepEl = e.target.closest(".step-row");
+    if (stepEl && !e.target.closest("a")) {
+      const sk = stepEl.getAttribute("data-step");
+      uiState.steps[sk] = !uiState.steps[sk];
+      saveState(uiState);
+      renderPeriodicCards();
+      renderAdhocCards();
+      return;
+    }
+    const copyBtn = e.target.closest(".copy-text-btn");
+    if (copyBtn) {
+      const txt = copyBtn.getAttribute("data-copy") || "";
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(() => {
+          const prev = copyBtn.textContent;
+          copyBtn.textContent = "¡Copiado!";
+          setTimeout(() => { copyBtn.textContent = prev; }, 1400);
+        });
+      }
+      return;
+    }
+    if (e.target.closest(".go-queries-btn")) {
+      switchView("view-queries");
+    }
+  });
+
+  document.getElementById("resetChecksBtn").addEventListener("click", () => {
+    uiState = { tasks: {}, steps: {} };
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  // Export CSV (all activities with action type distinction)
+  document.getElementById("exportCsvBtn").addEventListener("click", () => {
+    const hdr = ["TipoAccion", "Codigo", "Cadencia", "Actividad", "Disparador_u_Objetivo", "ConsolaRuta", "RolResponsable", "FuncionNIST", "SubcategoriaNIST", "MITRE", "EstadoValidacion", "Completado", "EvidenciaAuditable"];
+    const lines = [hdr.join(",")];
+    allActs.forEach((a) => {
+      const vals = [
+        a.tipoAccion, a.codigo, a.cadencia, a.actividad,
+        a.cadencia === "Ad-Hoc" ? a.disparadorAlerta : a.objetivo,
+        a.consolaRuta, a.rolResponsable, a.funcionNIST, a.subcategoriaNIST,
+        a.mitreTactic, a.estadoValidacion, uiState.tasks[a.codigo] ? "Si" : "No", a.evidenciaAuditable
+      ].map((v) => '"' + String(v || "").replace(/"/g, '""') + '"');
+      lines.push(vals.join(","));
+    });
+    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url; link.download = MODULE_DATA.slug + "_Guia_Operacional.csv";
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  });
+
+  // VISTA 4: QUERIES
+  function renderQueries() {
+    const q = document.getElementById("kqlSearch").value.trim().toLowerCase();
+    const uf = document.getElementById("kqlUsageFilter").value;
+    const list = (MODULE_DATA.consultasKQLyVerificacion || []).filter((it) => {
+      if (uf !== "ALL" && it.usoOperativo !== uf) return false;
+      if (q && [it.nombre, it.plataforma, it.tablaPrincipal, it.proposito, it.consulta, it.usoOperativo].join(" ").toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+
+    document.getElementById("queriesContainer").innerHTML = list.map((it, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">Q-' + String(idx + 1).padStart(2, "0") + ' · ' + esc(it.usoOperativo) + '</span>' +
+            '<h3 class="card-heading">' + esc(it.nombre) + '</h3>' +
+          '</div>' +
+          '<div class="pill-row">' +
+            '<span class="badge badge-accent">' + esc(it.plataforma) + '</span>' +
+            '<span class="badge mono">' + esc(it.tablaPrincipal) + '</span>' +
+            valBadge(it.estadoValidacion) +
+            '<button class="btn btn-sm copy-kql-btn" type="button" data-qidx="' + idx + '">Copiar consulta</button>' +
+          '</div>' +
+        '</div>' +
+        '<p style="margin:0 0 12px 0;"><strong>Qué valida o detecta:</strong> ' + richText(it.proposito) + '</p>' +
+        '<pre class="code-block">' + esc(it.consulta) + '</pre>' +
+      '</div>'
+    )).join("");
+
+    document.querySelectorAll(".copy-kql-btn").forEach((b) => {
+      b.addEventListener("click", () => {
+        const item = list[Number(b.getAttribute("data-qidx"))];
+        if (item && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(item.consulta).then(() => {
+            b.textContent = "¡Consulta copiada!";
+            setTimeout(() => { b.textContent = "Copiar consulta"; }, 1500);
+          });
+        }
+      });
+    });
+  }
+  document.getElementById("kqlSearch").addEventListener("input", renderQueries);
+  document.getElementById("kqlUsageFilter").addEventListener("change", renderQueries);
+
+  // VISTA 5: KPIs, MATURITY & TRAINING
+  document.getElementById("kpiContainer").innerHTML = (MODULE_DATA.kpisYMetricas || []).map((k) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:12px;">' +
+        '<div><span class="card-code">' + esc(k.id) + '</span><h4 class="card-heading" style="font-size:18px;">' + esc(k.nombre) + '</h4></div>' +
+        valBadge(k.estadoValidacion) +
+      '</div>' +
+      '<p style="margin:0 0 12px 0;">' + richText(k.definicion) + '</p>' +
+      '<pre class="code-block" style="margin:0 0 14px 0;">Fórmula: ' + esc(k.formula) + '</pre>' +
+      '<div class="pill-row">' +
+        '<span class="badge badge-accent">Meta: ' + esc(k.metaSugerida) + '</span>' +
+        '<span class="badge">Medición: ' + esc(k.frecuencia) + '</span>' +
+        '<span class="badge">' + esc(k.audiencia) + '</span>' +
+      '</div>' +
+      '<p class="muted" style="font-size:13px;margin:10px 0 0 0;">' + richText(k.notaValidacion) + '</p>' +
+    '</div>'
+  )).join("");
+
+  const mat = MODULE_DATA.modeloMadurez || [];
+  document.getElementById("maturityContainer").innerHTML = mat.map((m) => (
+    '<div class="spacious-card" style="padding:22px 28px;margin-bottom:14px;">' +
+      '<div class="pill-row" style="margin-bottom:6px;">' +
+        '<span class="card-code" style="margin-bottom:0;">' + richText(m.nivel) + '</span>' +
+        (m.estadio ? '<strong style="font-size:17px;">' + richText(m.estadio) + '</strong>' : '') +
+        '<span class="badge badge-editorial">Propuesta Editorial</span>' +
+      '</div>' +
+      '<div style="font-size:15.5px;">' + richText(m.descripcion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  const tr = MODULE_DATA.rutaFormacion || { headers: [], rows: [] };
+  if (tr.rows && tr.rows.length) {
+    document.getElementById("trainingContainer").innerHTML =
+      '<div class="table-wrap"><table><thead><tr>' +
+      tr.headers.map((h) => '<th>' + richText(h) + '</th>').join("") +
+      '</tr></thead><tbody>' +
+      tr.rows.map((row) => '<tr>' + row.map((cell, ci) => '<td>' + (ci === 0 ? '<strong>' + richText(cell) + '</strong>' : richText(cell)) + '</td>').join("") + '</tr>').join("") +
+      '</tbody></table></div>';
+  }
+
+  // VISTA 6: NIST CSF 2.0, AUDIT & REFS
+  function renderNist() {
+    const fn = document.getElementById("nistFuncSelect").value;
+    const rows = (MODULE_DATA.mapeoNISTCSF20 || []).filter((n) => fn === "ALL" || String(n.funcion).indexOf(fn) !== -1);
+    document.getElementById("nistCardsContainer").innerHTML = rows.map((n) => (
+      '<div class="spacious-card" style="padding:24px 30px;margin-bottom:16px;">' +
+        '<div class="card-top" style="margin-bottom:14px;">' +
+          '<div class="pill-row">' +
+            '<span class="card-code" style="margin-bottom:0;">' + esc(n.subcategoria) + '</span>' +
+            '<strong style="font-size:17px;">' + esc(n.funcion) + '</strong>' +
+          '</div>' +
+          valBadge(n.estadoValidacion) +
+        '</div>' +
+        '<p style="margin:0 0 14px 0;"><strong>Outcome NIST CSWP 29:</strong> ' + richText(n.descripcionResultado) + '</p>' +
+        '<div class="info-pair" style="margin-bottom:0;">' +
+          '<div class="info-box"><div class="info-label">Capacidad Habilitadora en Microsoft</div><div class="info-content">' + richText(n.capacidadMicrosoft) + '</div></div>' +
+          '<div class="info-box"><div class="info-label">Evidencia Auditable Reproducible</div><div class="info-content">' + richText(n.evidenciaAuditoria) + '</div></div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+  document.getElementById("nistFuncSelect").addEventListener("change", renderNist);
+
+  const vd = MODULE_DATA.validacionYDecisionesEditoriales || {};
+  document.getElementById("auditSummaryBox").innerHTML =
+    '<h4 style="margin:0 0 8px 0;font-size:18px;">Resumen de Auditoría Documental (' + esc(vd.fechaRevalidacion) + ')</h4>' +
+    '<p style="margin:0;">' + richText(vd.resumenAuditoria) + '</p>';
+
+  document.getElementById("corrContainer").innerHTML = '<ol style="padding-left:20px;margin:0;">' +
+    (vd.correccionesAplicadas || []).map((c) => '<li style="margin-bottom:12px;">' + richText(c) + '</li>').join("") + '</ol>';
+
+  document.getElementById("decContainer").innerHTML = (vd.decisionesEditoriales || []).map((d) => (
+    '<div class="info-box" style="margin-bottom:12px;">' +
+      '<div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;"><strong>' + esc(d.elemento) + '</strong>' + valBadge(d.tipo) + '</div>' +
+      '<div class="muted" style="font-size:14.5px;">' + richText(d.justificacion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  function renderRefs() {
+    const q = document.getElementById("refSearch").value.trim().toLowerCase();
+    const list = (MODULE_DATA.referenciasVerificadas || []).filter((r) => {
+      if (!q) return true;
+      return [r.id, r.titulo, r.tipoFuente, r.autor, r.comentario, r.url].join(" ").toLowerCase().indexOf(q) !== -1;
+    });
+    document.getElementById("refTableBody").innerHTML = list.map((r) => (
+      '<tr>' +
+        '<td class="mono"><strong>' + esc(r.id) + '</strong></td>' +
+        '<td><a href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer"><strong>' + esc(r.titulo) + ' ↗</strong></a><br><span class="mono muted" style="font-size:12px;">' + esc(r.url) + '</span></td>' +
+        '<td><span class="badge">' + esc(r.tipoFuente) + '</span></td>' +
+        '<td>' + esc(r.autor) + '</td>' +
+        '<td>' + richText(r.comentario) + '</td>' +
+      '</tr>'
+    )).join("");
+  }
+  document.getElementById("refSearch").addEventListener("input", renderRefs);
+
+  // Initial render
+  updateProgressTracker();
+  renderConfigView();
+  syncPeriodicSubnav();
+  renderPeriodicCards();
+  renderAdhocCards();
+  renderQueries();
+  renderNist();
+  renderRefs();
+  applyInitialHash();
+})();
+</script>
+</body>
+</html>

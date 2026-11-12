@@ -1,0 +1,1255 @@
+{
+  "schemaVersion": "2.0",
+  "id": "08_Microsoft_Sentinel",
+  "orden": 8,
+  "slug": "Microsoft_Sentinel",
+  "nombre": "Microsoft Sentinel (SIEM / SOAR Cloud-Native Asociado a M365 E5)",
+  "nombreCorto": "Microsoft Sentinel",
+  "categoria": "SecOps, XDR y SIEM",
+  "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://security.microsoft.com",
+    "https://portal.azure.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "SOC Manager",
+    "SOC L1",
+    "SOC L2",
+    "SOC L3 / Detection Engineer",
+    "Threat Hunter",
+    "Platform Engineer",
+    "SOAR Engineer",
+    "FinOps",
+    "GRC"
+  ],
+  "relacionM365E5": {
+    "estado": "Asociado a M365 E5 (Consumo en Azure + Beneficio Data Grant E5)",
+    "licencias": [
+      "Suscripción Azure (Pay-As-You-Go o Simplified Commitment Tiers desde 100 GB/día en Analytics + medidores Data Lake)",
+      "Microsoft 365 E5 / E7 / A5 / F5 / G5 (otorga Data Grant de hasta 5 MB/usuario/día)",
+      "Microsoft Defender Suite / Microsoft 365 E5/E7/A5/F5/G5 Security (otorga Data Grant de hasta 5 MB/usuario/día)",
+      "Microsoft Defender for Servers Plan 2 (beneficio complementario de 500 MB/nodo/día para logs de seguridad de servidores)"
+    ],
+    "prerrequisitos": [
+      "Suscripción activa de Azure con Log Analytics Workspace habilitado en Microsoft Sentinel e incorporado al portal de Microsoft Defender (https://security.microsoft.com)",
+      "Transición operativa planificada o completada hacia security.microsoft.com antes del retiro definitivo de la experiencia Sentinel en Azure Portal el 31 de marzo de 2027",
+      "Habilitación de Auditing and health monitoring (tablas SentinelHealth y SentinelAudit) y LAQueryLogs para trazabilidad operativa y de auditoría",
+      "Despliegue de Azure Monitor Agent (AMA) con Data Collection Rules (DCR), Logs Ingestion API o conectores CCF (reemplazando la retirada HTTP Data Collector API post 14-sep-2026)",
+      "Configuración de System-Assigned Managed Identity en playbooks de Azure Logic Apps y asignación de Microsoft Sentinel Automation Contributor al service account de Sentinel sobre el Resource Group de playbooks"
+    ],
+    "notaLicenciamiento": "Microsoft Sentinel NO se incluye como licencia per-user dentro de Microsoft 365 E5; se factura por consumo/compromiso en Azure. Está estrechamente asociado a M365 E5/E7 mediante: (1) el Microsoft 365 E5/E7 Data Grant automático de hasta 5 MB/usuario/día para ingesta elegible (Entra ID Sign-in y Audit logs, Defender for Cloud Apps Shadow IT discovery, Purview Information Protection y tablas de Advanced Hunting de Defender XDR); (2) fuentes siempre gratuitas (AzureActivity, SentinelHealth, OfficeActivity de Exchange/SharePoint/Teams y SecurityAlert/SecurityIncident de todo el stack Defender/Entra); (3) consulta interactiva gratuita durante 30 días de tablas crudas de Defender XDR en Advanced Hunting del portal unificado sin ingerirlas en Analytics; (4) conexión en preview de fuentes XDR hacia Sentinel UEBA en tenants E5 sin re-ingesta first-party; y (5) dotación base incluida de SCUs de Security Copilot en M365 E5."
+  },
+  "resumenEjecutivo": "Microsoft Sentinel es la plataforma cloud-native de SIEM, SOAR, Data Lake, Security Graph y capacidades agénticas (MCP) de Microsoft, operando de forma unificada con Microsoft Defender XDR en https://security.microsoft.com (único portal soportado tras el retiro de la experiencia en Azure Portal después del 31 de marzo de 2027). Aunque se factura en Azure por volumen y nivel de datos (Analytics tier para datos primarios con 90 días de retención interactiva gratuita y Data Lake tier integrado desde septiembre de 2026 con compresión 6:1 y retención de hasta 12 años), aprovecha directamente las inversiones en Microsoft 365 E5/E7 mediante el Data Grant de hasta 5 MB/usuario/día, fuentes M365 gratuitas y consulta unificada de telemetría XDR. Su excelencia operacional exige gobernar cadencias estructuradas de triaje e investigación en cola unificada, caza proactiva por hipótesis (Hunts), normalización ASIM, automatización mediante Automation Rules y Playbooks en Logic Apps autenticados con Managed Identity, cierre continuo de recomendaciones de SOC Optimization y generación automatizada de evidencia objetiva para las seis funciones de NIST CSF 2.0.",
+  "principiosRectores": [
+    {
+      "principio": "Operación centrada en incidentes unificados (Incidents-First en Defender Portal)",
+      "descripcion": "Consolidar alertas multi-dominio SIEM y XDR en un único expediente enriquecido con Attack Story, Blast Radius y Case Management en security.microsoft.com, completando la salida del portal de Azure antes del 31 de marzo de 2027.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal"
+    },
+    {
+      "principio": "SOC aumentado por automatización segura (Automation Rules + Managed Identity)",
+      "descripcion": "Orquestar triaje, tareas estandarizadas y contención mediante Automation Rules y Playbooks en Azure Logic Apps autenticados exclusivamente con Managed Identity y generador asistido por IA.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/azure/sentinel/automate-incident-handling-with-automation-rules"
+    },
+    {
+      "principio": "Arquitectura de datos por niveles y disciplina FinOps (Analytics vs. Data Lake + Grant E5)",
+      "descripcion": "Ubicar telemetría primaria de detección inmediata en el Analytics tier y datos secundarios verbosos o retención histórica (hasta 12 años) en el Sentinel Data Lake integrado, maximizando el Data Grant de 5 MB/usuario/día de M365 E5.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/azure/sentinel/log-plans"
+    },
+    {
+      "principio": "Defensa informada por amenazas y normalización agnóstica (MITRE ATT&CK v18 + ASIM)",
+      "descripcion": "Alinear reglas Scheduled, NRT, Custom Detections y campañas Hunts a la matriz MITRE ATT&CK v18 empleando esquemas normalizados ASIM para desacoplar la detección del fabricante de origen.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/azure/sentinel/normalization"
+    },
+    {
+      "principio": "Mínimo privilegio dual y trazabilidad total (Azure RBAC + Unified RBAC + Audit)",
+      "descripcion": "Segregar funciones en Resource Groups con Azure RBAC y en el Data Lake con Entra ID / Defender Unified RBAC, auditando toda modificación y consulta en SentinelAudit, AzureActivity y LAQueryLogs.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/azure/sentinel/roles"
+    },
+    {
+      "principio": "Optimización continua basada en métricas y valor de datos (SOC Optimization)",
+      "descripcion": "Medir sistemáticamente MTTA y MTTR/MTTC y ejecutar las recomendaciones de SOC Optimization para eliminar tablas sin cobertura analítica y cerrar brechas de riesgo de negocio.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/azure/sentinel/soc-optimization/soc-optimization-reference"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Unified SecOps Experience en Microsoft Defender Portal",
+      "funcionOperativa": "Superficie operativa primaria que unifica cola de incidentes, Case Management, Attack Story, Blast Radius, Advanced Hunting y Security Copilot (único portal tras el 31 de marzo de 2027).",
+      "portalRuta": "security.microsoft.com > Investigation & response / Microsoft Sentinel",
+      "integraciones": [
+        "Microsoft Defender XDR",
+        "Microsoft Security Copilot",
+        "Microsoft Security Exposure Management"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Sentinel Data Lake y Gestión de Niveles de Tablas",
+      "funcionOperativa": "Almacenamiento integrado (desde sep-2026) con espejo automático desde Analytics, compresión 6:1, retención de hasta 12 años, consultas KQL interactivas, KQL jobs, notebooks Spark y federación con Microsoft Fabric OneLake.",
+      "portalRuta": "security.microsoft.com > Microsoft Sentinel > Configuration / Data management > Tables",
+      "integraciones": [
+        "Azure Monitor Log Analytics (Analytics Tier)",
+        "Microsoft Fabric OneLake",
+        "Visual Studio Code / Spark Notebooks"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Content Hub, Data Connectors (CCF), AMA y Logs Ingestion API",
+      "funcionOperativa": "Catálogo de más de 350 soluciones empaquetadas (conectores, reglas, workbooks, hunting y playbooks) y recolección con DCRs y transformaciones pre-ingesta filter/split.",
+      "portalRuta": "security.microsoft.com > Microsoft Sentinel > Content management > Content hub / Configuration > Data connectors",
+      "integraciones": [
+        "Azure Monitor Agent (Windows, Linux, CEF/Syslog)",
+        "Logs Ingestion API & Data Collection Rules",
+        "Codeless Connector Framework (CCF)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Motor Analítico, Custom Detection Rules y Normalización ASIM",
+      "funcionOperativa": "Ejecución de reglas Scheduled, NRT, correlación ML/XDR y Custom Detection Rules (gestionables como código en Bicep vía Repositories) sobre esquemas normalizados ASIM.",
+      "portalRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Analytics / Hunting > Custom detection rules",
+      "integraciones": [
+        "MITRE ATT&CK Matrix (v18)",
+        "Sentinel Repositories (GitHub / Azure DevOps)",
+        "Parsers ASIM query-time e ingest-time"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "User and Entity Behavior Analytics (UEBA) y Threat Intelligence",
+      "funcionOperativa": "Perfilado conductual de identidades, hosts, IPs y firewalls/nubes (BehaviorAnalytics, Anomalies, BehaviorInfo) e ingesta/matching de IOCs STIX/TAXII y MDTI.",
+      "portalRuta": "security.microsoft.com > System > Settings > Microsoft Sentinel > UEBA / Threat intelligence > Intel management",
+      "integraciones": [
+        "Microsoft Entra ID & Active Directory",
+        "Fuentes Microsoft Defender XDR en E5 (extend-ueba)",
+        "Servidores TAXII/STIX, MISP e ISACs"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Orquestación SOAR: Automation Rules, Simple Flows y Playbooks (Logic Apps)",
+      "funcionOperativa": "Enrutamiento declarativo en creación/actualización de incidentes o alertas (incl. Enhanced Alert Trigger), inyección de checklists y ejecución de playbooks con Managed Identity y generador IA.",
+      "portalRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Automation",
+      "integraciones": [
+        "Azure Logic Apps (Consumption y Standard)",
+        "Microsoft Entra ID, Defender for Endpoint y Firewalls",
+        "ServiceNow, Jira y Microsoft Teams"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "SOC Optimization y Salud/Auditoría (SentinelHealth / SentinelAudit)",
+      "funcionOperativa": "Recomendaciones continuas de cobertura de amenazas y optimización de costos por tabla/columna, junto con telemetría interna de salud y auditoría de cambios.",
+      "portalRuta": "security.microsoft.com > Microsoft Sentinel > Optimization",
+      "integraciones": [
+        "SOC Optimization REST API",
+        "Tablas SentinelHealth, SentinelAudit y LAQueryLogs",
+        "Microsoft Cost Management"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Sentinel Graph y Model Context Protocol (MCP) Server",
+      "funcionOperativa": "Modelado relacional de rutas de ataque y exposición de herramientas gobernadas (data exploration, triage, entity analyzer, graph) para agentes de IA y Security Copilot.",
+      "portalRuta": "security.microsoft.com > Microsoft Sentinel (Graphs & Security Copilot)",
+      "integraciones": [
+        "Microsoft Security Copilot",
+        "Graph Query Language (GQL)",
+        "Agentes autónomos y personalizados"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "Microsoft Sentinel Reader (+ Security Reader en Entra ID / URBAC)",
+      "nivelSOC": "Tier 1 (Monitor) / Auditoría GRC",
+      "permisosClave": "Visualización de incidentes, workbooks, recomendaciones y ejecución de consultas KQL interactivas en el workspace y en el Data Lake sin permisos de escritura.",
+      "asignacionPIM": "Permanente sobre grupos de monitoreo o auditoría con MFA resistente a phishing",
+      "responsabilidadOperativa": "Seguimiento de paneles operativos, verificación independiente de controles y recolección de evidencias GRC.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Microsoft Sentinel Responder + Microsoft Sentinel Playbook Operator",
+      "nivelSOC": "Tier 1 / Tier 2 (SOC Analyst & Incident Responder)",
+      "permisosClave": "Permisos de Reader más gestión completa de incidentes (asignación, estado, severidad, tareas, bookmarks) y ejecución manual de playbooks autorizados en el Resource Group.",
+      "asignacionPIM": "Permanente para analistas de turno activo o elegible vía PIM (8 horas); invitados B2B requieren además Directory Reader en Entra ID",
+      "responsabilidadOperativa": "Triaje, investigación en cola unificada, documentación forense y disparo manual supervisado de playbooks de enriquecimiento o contención.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Microsoft Sentinel Contributor (+ Security Operator en Entra ID para jobs del Lago)",
+      "nivelSOC": "Tier 3 / Detection & Content Engineer",
+      "permisosClave": "Crear y editar reglas analíticas, automation rules, watchlists, desplegar soluciones del Content Hub y programar KQL/Notebook jobs en el Data Lake (sumar Workbook Contributor para editar workbooks).",
+      "asignacionPIM": "Elegible (JIT) en Azure PIM / Entra PIM (máximo 4 horas) con ticket de cambio y respaldo CI/CD",
+      "responsabilidadOperativa": "Ingeniería de detección KQL/ASIM, actualización del Content Hub, tuning de falsos positivos y gobierno de repositorios.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Logic App Contributor",
+      "nivelSOC": "Ingeniería SOAR",
+      "permisosClave": "Creación, edición, versionado e inspección de historial de ejecuciones de recursos Azure Logic Apps usados como playbooks.",
+      "asignacionPIM": "Elegible (JIT) en Azure PIM (máximo 4 horas) sobre el Resource Group dedicado de playbooks",
+      "responsabilidadOperativa": "Desarrollo seguro de playbooks, configuración de conexiones con Managed Identity y depuración de fallos.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Microsoft Sentinel Automation Contributor (Exclusivo Service Account)",
+      "nivelSOC": "Identidad de Servicio de Plataforma (No Humanos)",
+      "permisosClave": "Permite a la cuenta de servicio oficial Azure Security Insights adjuntar e invocar playbooks desde Automation Rules; nunca debe asignarse a cuentas de usuario.",
+      "asignacionPIM": "Permanente exclusivamente sobre el Service Principal de Microsoft Sentinel en el Resource Group de playbooks (configurado por un Owner)",
+      "responsabilidadOperativa": "Ejecución desatendida y segura de flujos SOAR disparados por reglas de automatización en arquitecturas single-tenant y multitenant.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "System-Assigned Managed Identity del Playbook (con Sentinel Responder/Reader)",
+      "nivelSOC": "Identidad No Humana por Playbook",
+      "permisosClave": "Asignación de Microsoft Sentinel Responder (si comenta/actualiza el incidente o watchlists) o Reader en el workspace, más el permiso Graph/MDE mínimo requerido en el sistema destino.",
+      "asignacionPIM": "Administrada automáticamente por Azure sin secretos ni rotación manual de credenciales",
+      "responsabilidadOperativa": "Autenticación sin contraseñas de cada playbook hacia Microsoft Sentinel y servicios de remediación.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Log Analytics Contributor / Custom Defender URBAC data (manage)",
+      "nivelSOC": "Sentinel Platform Engineer",
+      "permisosClave": "Escritura sobre el workspace para conectar fuentes, definir DCRs, configurar niveles y retención de tablas (Analytics vs. Data Lake) y tablas del sistema.",
+      "asignacionPIM": "Elegible (JIT) en PIM (máximo 4 horas) con aprobación de Arquitectura / FinOps",
+      "responsabilidadOperativa": "Onboarding de conectores, gobierno de retención y optimización financiera de ingesta.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Triaje, asignación e investigación profunda de incidentes en cola unificada",
+      "objetivo": "Detectar, priorizar, analizar y contener incidentes generados por reglas de Sentinel y Defender XDR manteniendo controlados el MTTA y MTTC.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts > Incidents",
+      "procedimiento": [
+        "Revisar incidentes New e In progress priorizando por severidad (Critical/High > Medium > Low) y criticidad de activos involucrados.",
+        "Asignar propietario, pasar estado a Active/In progress, ejecutar las Incident tasks e investigar Attack story, Blast radius, Watchlists y contexto UEBA.",
+        "Cerrar especificando clasificación exacta (True Positive, Benign Positive o False Positive) y comentario forense estructurado."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MA-02",
+      "mitreTactic": "Initial Access / Lateral Movement (TA0001 / TA0008)",
+      "evidenciaAuditable": "Registros en tabla SecurityIncident con tiempos de atención, tareas completadas y clasificación auditada.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Primera tarea diaria obligatoria en Microsoft Sentinel operational guide (Triage and investigate incidents).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Ejecución de consultas proactivas de Threat Hunting, campañas Hunts y gestión de Bookmarks",
+      "objetivo": "Descubrir actividad adversaria sigilosa en el Analytics tier y en el Data Lake que no disparó detecciones programadas.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Threat management > Hunting / Advanced hunting",
+      "procedimiento": [
+        "Ejecutar consultas integradas y campañas Hunts filtradas por tácticas MITRE ATT&CK prioritarias revisando variaciones en Results Delta.",
+        "Registrar hallazgos sospechosos como Bookmarks mapeando obligatoriamente entidades (Account, Host, IP, URL) y notas técnicas.",
+        "Promover hallazgos confirmados a incidentes nuevos o existentes y escalar patrones repetibles para creación de Custom Detection Rules."
+      ],
+      "rolResponsable": "Threat Hunter / SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-07",
+      "mitreTactic": "Persistence / Defense Evasion / Credential Access (TA0003 / TA0005 / TA0006)",
+      "evidenciaAuditable": "Entradas en HuntingBookmark, campañas registradas en Hunts e incidentes creados desde caza.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tarea diaria oficial Explore hunting queries and bookmarks en ops-guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo de salud, optimización y habilitación de reglas analíticas y Custom Detections",
+      "objetivo": "Asegurar que ninguna detección crítica haya sido deshabilitada automáticamente (AUTO DISABLED) ni presente errores de ejecución.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Analytics / Hunting > Custom detection rules",
+      "procedimiento": [
+        "Consultar SentinelHealth filtrando SentinelResourceType == 'Analytics Rule' y Status != 'Success', y verificar ausencia de reglas AUTO DISABLED.",
+        "Optimizar consultas KQL con timeouts o errores de esquema y confirmar ejecución saludable de reglas NRT y Custom Detection Rules.",
+        "Revisar y habilitar nuevas plantillas relevantes provenientes de soluciones instaladas."
+      ],
+      "rolResponsable": "SOC L3 / Platform Engineer",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Defense Evasion (TA0005)",
+      "evidenciaAuditable": "Resultados diarios de SentinelHealth sin fallos activos y registro de reglas habilitadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tarea diaria oficial Analytics rules en ops-guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Verificación de salud de Data Connectors y control diario de volumen de ingesta",
+      "objetivo": "Garantizar flujo continuo de logs desde todas las fuentes críticas y prevenir caídas silenciosas o excesos de presupuesto.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Data connectors",
+      "procedimiento": [
+        "Comprobar estado Connected y recepción reciente en conectores críticos (Defender XDR, Entra ID, M365, Azure Activity, CEF/Syslog, multicloud).",
+        "Ejecutar chequeo sobre SentinelHealth (Data fetch status change) y el workbook Data collection health monitoring buscando EPS = 0 o caídas >30%.",
+        "Revisar ingesta diaria frente al Commitment Tier evitando el uso de Daily Cap como mecanismo primario de corte."
+      ],
+      "rolResponsable": "Platform Engineer",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Defense Evasion / Impair Defenses (TA0005 / T1562)",
+      "evidenciaAuditable": "Registros de SentinelHealth y consulta diaria de volumen por conector en Usage.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tarea diaria oficial Data connectors en ops-guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Comprobación de conectividad activa de servidores y colectores con Azure Monitor Agent (AMA)",
+      "objetivo": "Detectar y remediar desconexiones de agentes en servidores Windows/Linux y reenviadores Syslog/CEF.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Hunting > Advanced hunting (Heartbeat)",
+      "procedimiento": [
+        "Ejecutar consulta KQL sobre Heartbeat filtrando Category == 'Azure Monitor Agent' con último latido mayor a 1 hora.",
+        "Priorizar de forma inmediata cualquier Log Forwarder de CEF/Syslog desconectado.",
+        "Coordinar reinicio de servicio (MonAgentCore / azuremonitoragent) o corrección de reglas DCR y red con Cloud/Infra Ops."
+      ],
+      "rolResponsable": "Platform Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-04",
+      "mitreTactic": "Impair Defenses (TA0005 / T1562)",
+      "evidenciaAuditable": "Reporte diario de latidos AMA y tickets de remediación de hosts silenciosos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tarea diaria oficial Azure Monitor Agent en ops-guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Verificación de ejecuciones de Playbooks SOAR y diagnóstico de fallos en Logic Apps",
+      "objetivo": "Confirmar que todas las automatizaciones de enriquecimiento, notificación y contención operen sin errores de permisos ni API.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Automation / portal.azure.com > Logic Apps",
+      "procedimiento": [
+        "Consultar SentinelHealth para recursos Playbook y Automation rule con Status Failure o PartiallySucceeded en las últimas 24 horas.",
+        "Inspeccionar Runs history de cualquier Logic App fallida corrigiendo permisos de Managed Identity, throttling 429 o condiciones sobre AccountName (prefijo UPN).",
+        "Re-ejecutar manualmente los playbooks críticos sobre incidentes afectados del turno."
+      ],
+      "rolResponsable": "SOAR Engineer / Platform Engineer",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Initial Access / Lateral Movement (TA0001 / TA0008)",
+      "evidenciaAuditable": "Consulta diaria de SentinelHealth para playbooks e historial Succeeded en Logic Apps.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tarea diaria oficial Playbook failures en ops-guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo de sincronización de feeds de Threat Intelligence y alertas de coincidencia de IOCs",
+      "objetivo": "Asegurar enriquecimiento actualizado con indicadores globales y sectoriales y priorizar cualquier match positivo.",
+      "consolaRuta": "security.microsoft.com > Threat intelligence > Intel management",
+      "procedimiento": [
+        "Confirmar recepción reciente de feeds TAXII/STIX, MISP y Microsoft Threat Intelligence en ThreatIntelIndicators.",
+        "Priorizar alertas generadas por coincidencia de indicadores de alta confianza sobre red, DNS, identidad o endpoints.",
+        "Incorporar nuevos IOCs validados durante investigaciones del turno hacia Watchlists o bloqueos preventivos."
+      ],
+      "rolResponsable": "SOC L2 / Threat Hunter",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-02",
+      "mitreTactic": "Command and Control (TA0011)",
+      "evidenciaAuditable": "Métricas diarias de ingesta TI y registro de alertas por IOC investigadas.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Capacidad nativa verificada en MS Learn; consolidada como control diario en el Modelo Operativo SecOps.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/threat-intelligence-integration"
+    },
+    {
+      "codigo": "D-08",
+      "cadencia": "Diaria",
+      "actividad": "Control de cumplimiento de SLA de casos activos y entrega estructurada de turno (Shift Handover)",
+      "objetivo": "Impedir brechas de seguimiento entre turnos 24x7 sobre incidentes abiertos, contenciones pendientes y salud del SIEM.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts",
+      "procedimiento": [
+        "Auditar al cierre de turno que ningún incidente High o Critical carezca de propietario ni tenga tareas vencidas en Case Management.",
+        "Documentar estado de incidentes en curso, playbooks en observación y reglas de supresión próximas a expirar.",
+        "Entregar acta formal al turno entrante."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.CO-02",
+      "mitreTactic": "Defense Evasion / Exfiltration (TA0005 / TA0010)",
+      "evidenciaAuditable": "Bitácora diaria de cambio de turno firmada por los líderes de guardia.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Disciplina operativa esencial de continuidad SOC sobre Case Management de Defender.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/siem-defender-case-management"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Revisión y actualización de soluciones empaquetadas y contenido en el Content Hub",
+      "objetivo": "Mantener actualizados conectores, reglas analíticas, parsers ASIM, workbooks, hunting queries y playbooks frente a amenazas emergentes.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Content management > Content hub",
+      "procedimiento": [
+        "Filtrar Content hub por Status = Update available y revisar ReleaseNotes.md de cada paquete antes de actualizar.",
+        "Confirmar que toda regla personalizada sea un clon independiente de la plantilla OOTB antes de aplicar actualizaciones.",
+        "Evaluar nuevas soluciones del catálogo (ej. Zero Trust TIC 3.0, soluciones de dominio ASIM, SAP) para el backlog semanal."
+      ],
+      "rolResponsable": "Platform Engineer / SOC L3",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Initial Access / Execution (TA0001 / TA0002)",
+      "evidenciaAuditable": "Registro semanal de actualizaciones aplicadas en Content Hub y tickets de cambio asociados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Primera tarea semanal oficial en ops-guide (Content review of solutions or standalone content).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría de actividades administrativas y consultas ejecutadas en Microsoft Sentinel",
+      "objetivo": "Detectar cambios o borrados no autorizados en reglas, bookmarks, conectores o automatizaciones y auditar consultas sobre datos sensibles.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Hunting > Advanced hunting (SentinelAudit / AzureActivity / LAQueryLogs)",
+      "procedimiento": [
+        "Consultar SentinelAudit y AzureActivity para listar creaciones, modificaciones y eliminaciones de recursos en los últimos 7 días.",
+        "Revisar LAQueryLogs para auditar el uso interactivo de consultas sobre tablas sensibles.",
+        "Conciliar cada cambio contra solicitudes aprobadas en Git/ITSM y revertir e investigar cualquier cambio no autorizado."
+      ],
+      "rolResponsable": "Platform Engineer / SOC Manager / GRC",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.PO-02",
+      "mitreTactic": "Impair Defenses (TA0005 / T1562)",
+      "evidenciaAuditable": "Reporte semanal exportado de SentinelAudit y LAQueryLogs conciliado con Change Management.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Segunda tarea semanal oficial en ops-guide (Microsoft Sentinel auditing).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/audit-sentinel-data"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Evaluación y ejecución de recomendaciones de SOC Optimization (Cobertura y Valor de Datos)",
+      "objetivo": "Cerrar brechas de detección basadas en riesgo y optimizar costos de tablas o columnas sin uso analítico.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Optimization",
+      "procedimiento": [
+        "Revisar recomendaciones activas de cobertura frente a amenazas MITRE ATT&CK y habilitar las reglas sugeridas.",
+        "Analizar recomendaciones de Data value optimization para tablas facturables sin reglas activas en 30 días (activar detecciones o mover la tabla al Data Lake tier) y columnas sin uso en preview.",
+        "Registrar justificación formal antes de descartar cualquier recomendación."
+      ],
+      "rolResponsable": "SOC L3 / Platform Engineer",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-05",
+      "mitreTactic": "Credential Access / Lateral Movement (TA0006 / TA0008)",
+      "evidenciaAuditable": "Exportación semanal de SOC Optimization (UI o API) con historial de recomendaciones mitigadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Funcionalidad soportada para producción en el portal Defender y vía API; cadencia semanal recomendada.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/soc-optimization/soc-optimization-reference"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Tuning semanal de reglas con mayor tasa de falsos positivos, mapeo de entidades y migración a ASIM",
+      "objetivo": "Reducir fatiga de alertas, garantizar mapeo completo de entidades para SOAR y consolidar reglas multi-fabricante.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Analytics / Custom detection rules",
+      "procedimiento": [
+        "Identificar las 5 reglas con mayor volumen de cierres FalsePositive o BenignPositive de la semana.",
+        "Ajustar filtros KQL tempranos, exclusiones basadas en Watchlists, agrupación de alertas y mapeo de entidades (Account, Host, IP, CloudApplication).",
+        "Priorizar el uso de parsers ASIM para cubrir nuevas fuentes sin duplicar reglas."
+      ],
+      "rolResponsable": "SOC L3 / SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-03",
+      "mitreTactic": "Initial Access / Persistence (TA0001 / TA0003)",
+      "evidenciaAuditable": "Commits de tuning en Sentinel Repositories y reducción verificada de falsos positivos.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Integra prácticas oficiales de tuning, entity mapping y ASIM en un ciclo semanal disciplinado.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/normalization"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Actualización de Watchlists contextuales, fuentes UEBA y reglas de supresión con expiración",
+      "objetivo": "Asegurar que el enriquecimiento contextual y las líneas base de comportamiento operen con datos vigentes de activos e identidades.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Watchlists / System > Settings > Microsoft Sentinel > UEBA",
+      "procedimiento": [
+        "Actualizar Watchlists críticas (usuarios VIP, activos crown-jewel, rangos VPN/escáneres, cuentas de emergencia).",
+        "Auditar reglas de automatización de supresión confirmando que todas posean fecha de expiración activa.",
+        "Verificar estado Connected de la sincronización de directorio y fuentes conectadas en la pestaña UEBA."
+      ],
+      "rolResponsable": "SOC L2 / Platform Engineer",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-03",
+      "mitreTactic": "Valid Accounts / Lateral Movement (TA0001 / TA0008)",
+      "evidenciaAuditable": "Marca de actualización de Watchlists y auditoría de Automation Rules activas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Componentes nativos de Watchlists, Automation Rules expiration y UEBA verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/watchlists"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Reunión semanal de control operacional del SOC sobre KPIs (MTTA, MTTC/MTTR y SLA)",
+      "objetivo": "Evaluar objetivamente el rendimiento semanal del equipo, desvíos de SLA y priorización de mejoras técnicas.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Threat management > Workbooks > Security operations efficiency",
+      "procedimiento": [
+        "Revisar en el workbook Security operations efficiency el MTTA, MTTC/MTTR por severidad, incidentes abiertos vs. cerrados y distribución por analista.",
+        "Analizar causas de cualquier incidente que haya excedido el SLA interno.",
+        "Priorizar el backlog semanal entre Detection Engineering, Platform Engineering y SOAR."
+      ],
+      "rolResponsable": "SOC Manager / SOC Leads",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Exfiltration / Impact (TA0010 / TA0040)",
+      "evidenciaAuditable": "Exportación semanal del workbook de métricas y acta de seguimiento operativo.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Basado en Manage your SOC better with incident metrics y el Modelo Operativo SecOps.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/manage-soc-with-incident-metrics"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Revisión mensual de permisos de usuarios, cuentas inactivas y roles RBAC / Unified RBAC",
+      "objetivo": "Aplicar mínimo privilegio revocando accesos ociosos o excesivos en el workspace, Resource Groups de playbooks y Data Lake.",
+      "consolaRuta": "portal.azure.com > Sentinel Resource Group > Access control (IAM) / security.microsoft.com > Permissions > Microsoft Defender XDR > Roles",
+      "procedimiento": [
+        "Listar todas las asignaciones Azure RBAC (Reader, Responder, Contributor, Playbook Operator, Owner) y Entra ID / Defender URBAC sobre el Data Lake.",
+        "Identificar usuarios sin actividad en 30 días o rotados fuera del SOC cruzando con LAQueryLogs y SigninLogs.",
+        "Revocar permisos innecesarios, convertir roles permanentes de escritura a elegibles en PIM y registrar evidencia para auditoría."
+      ],
+      "rolResponsable": "Platform Engineer / IAM Admin / SOC Manager",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Valid Accounts / Account Manipulation (TA0001 / TA0003)",
+      "evidenciaAuditable": "Exportación mensual de roles revisada, revocaciones ejecutadas y acta firmada de recertificación.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Primera tarea mensual oficial en ops-guide (Review user access).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Revisión mensual de retención del workspace y clasificación de tablas entre Analytics y Data Lake",
+      "objetivo": "Asegurar cumplimiento regulatorio de retención histórica optimizando el almacenamiento entre el nivel interactivo y el lago.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration / Data management > Tables",
+      "procedimiento": [
+        "Validar que la retención interactiva en Analytics tier (90 días incluidos) y la retención total en Sentinel Data Lake (hasta 12 años) cumplan la política corporativa y regulatoria.",
+        "Reubicar tablas de datos secundarios de alto volumen hacia Lake-only tier o configurar transformaciones DCR filter/split.",
+        "Verificar KQL jobs o Summary rules que promuevan agregados desde el Data Lake hacia Analytics."
+      ],
+      "rolResponsable": "Platform Engineer / GRC",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-04",
+      "mitreTactic": "Defense Evasion / Indicator Removal (TA0005 / T1070)",
+      "evidenciaAuditable": "Inventario exportado de tablas con plan de almacenamiento y días de retención validados por GRC.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Segunda tarea mensual oficial en ops-guide actualizada a Table management y Sentinel Data Lake integrado (sep-2026).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/log-plans"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Conciliación FinOps de Commitment Tiers, Data Grant M365 E5 (5 MB/usuario/día) y medidores del Data Lake",
+      "objetivo": "Verificar la captura íntegra de beneficios incluidos por licencias M365 E5/Defender for Servers P2 y ajustar el tier comprometido.",
+      "consolaRuta": "portal.azure.com > Cost Management + Billing > Cost analysis / System > Settings > Microsoft Sentinel > Pricing",
+      "procedimiento": [
+        "Auditar en Cost analysis los medidores Free Benefit - M365 Defender confirmando el descuento automático de hasta 5 MB/usuario/día sobre fuentes elegibles.",
+        "Comparar el volumen diario real de 30 días contra el Simplified Commitment Tier activo para ajustar capacidad hacia arriba o abajo (cada 31 días).",
+        "Revisar costos de consultas sobre Data Lake, cómputo Spark/Graph, Logic Apps y consumo de SCUs frente a la dotación E5."
+      ],
+      "rolResponsable": "Platform Engineer / FinOps / SOC Manager",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-01",
+      "mitreTactic": "Impact (TA0040)",
+      "evidenciaAuditable": "Reporte mensual FinOps con GB bonificados por M365 E5, GB facturados y optimización aplicada.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Basado en la documentación oficial de facturación de Sentinel y oferta de beneficio M365 E5.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/billing"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría de contenido como código en Sentinel Repositories (Bicep/ARM) y eficiencia de consultas KQL",
+      "objetivo": "Garantizar respaldo versionado del 100 % de detecciones y automatizaciones y eliminar consultas ineficientes.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Content management > Repositories",
+      "procedimiento": [
+        "Confirmar sincronización exitosa de reglas analíticas, Custom Detection Rules (Bicep), Automation Rules (JSON/ARM), workbooks y playbooks en GitHub / Azure DevOps.",
+        "Detectar reglas creadas manualmente en portal fuera del repositorio e incorporarlas al pipeline CI/CD.",
+        "Optimizar reglas con tiempos elevados de ejecución reportados en SentinelHealth."
+      ],
+      "rolResponsable": "SOC L3 / Platform Engineer",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-01",
+      "mitreTactic": "Impair Defenses (TA0005)",
+      "evidenciaAuditable": "Historial de despliegues CI/CD en Repositories sin desviación respecto al entorno productivo.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Soporte de Repositories e incorporación de Custom Detection Rules as Code (jul-2026) verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/whats-new"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Prueba controlada mensual de Playbooks SOAR críticos y validación de Managed Identities",
+      "objetivo": "Asegurar que las acciones automatizadas de contención funcionen de extremo a extremo ante un incidente real.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Automation",
+      "procedimiento": [
+        "Ejecutar incidente sintético de prueba sobre cuentas/equipos de laboratorio para validar cada playbook crítico (bloqueo Entra ID, aislamiento MDE, bloqueo IP, ticket ITSM).",
+        "Comprobar orden secuencial de Automation Rules y ausencia de secretos expirables verificando uso exclusivo de Managed Identity.",
+        "Documentar latencia de respuesta y tasa mensual de éxito."
+      ],
+      "rolResponsable": "SOAR Engineer / SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Lateral Movement / Exfiltration (TA0008 / TA0010)",
+      "evidenciaAuditable": "Acta mensual de prueba sintética SOAR e historial Succeeded en Logic Apps.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Arquitectura de autenticación con Managed Identity verificada en MS Learn; prueba mensual sintética es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/automation/authenticate-playbooks-to-sentinel"
+    },
+    {
+      "codigo": "M-06",
+      "cadencia": "Mensual",
+      "actividad": "Presentación ejecutiva mensual de desempeño SOC, postura de detección y ROI al CISO",
+      "objetivo": "Proveer visibilidad estratégica sobre tiempos de respuesta, cobertura de amenazas, automatización y eficiencia financiera.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Threat management > Workbooks",
+      "procedimiento": [
+        "Consolidar tendencias de 30 y 90 días de MTTA, MTTC/MTTR (promedio y P95), FPR y tasa de incidentes automatizados.",
+        "Incluir progreso en cobertura MITRE ATT&CK, cierre de brechas de SOC Optimization y ahorro mensual por M365 E5 Data Grant + Data Lake.",
+        "Revisar riesgos residuales y decisiones de inversión con el CISO."
+      ],
+      "rolResponsable": "SOC Manager / CISO",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Initial Access / Impact (TA0001 / TA0040)",
+      "evidenciaAuditable": "Informe mensual ejecutivo archivado y minuta del comité de dirección.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Basado en métricas oficiales de Sentinel y gobernanza ejecutiva del SOC.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/manage-soc-with-incident-metrics"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Simulacro técnico Purple Team / Tabletop de ataque multi-dominio sobre SIEM + XDR",
+      "objetivo": "Validar empíricamente la detección, correlación, playbooks de contención y coordinación inter-equipos.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts / MITRE ATT&CK",
+      "procedimiento": [
+        "Ejecutar escenario realista trimestral (ransomware humano, robo de token privilegiado, abuso de Service Principal o exfiltración multicloud).",
+        "Evaluar visibilidad de logs, correlación del incidente, disparo de playbooks y criterios de erradicación clean-as-you-go vs. big-bang.",
+        "Convertir cada brecha detectada en nuevas reglas analíticas/custom detections y mejoras de runbooks."
+      ],
+      "rolResponsable": "SOC Manager / Threat Hunter / SOC L3 / GRC",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.IM-02",
+      "mitreTactic": "Credential Access / Lateral Movement / Impact (TA0006 / TA0008 / TA0040)",
+      "evidenciaAuditable": "Informe trimestral de ejercicio Purple Team / Tabletop y registro de cierre de hallazgos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Recomendado en Incident Response Overview y guías Zero Trust SIEM-XDR de Microsoft.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/incident-response-overview"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Auditoría de transición integral al portal de Microsoft Defender (Hito 31-mar-2027) y retiro de APIs heredadas",
+      "objetivo": "Eliminar toda dependencia operativa del portal de Azure antes del fin de soporte y asegurar vigencia técnica de integraciones.",
+      "consolaRuta": "security.microsoft.com > System > Settings > Microsoft Sentinel",
+      "procedimiento": [
+        "Confirmar incorporación de todos los workspaces al portal de Defender y actualizar enlaces en playbooks, notificaciones e instructivos.",
+        "Verificar que no existan flujos dependientes de la retirada HTTP Data Collector API (post 14-sep-2026) ni de APIs Graph heredadas (/security/alerts).",
+        "Validar modelo de permisos Unified RBAC y integraciones de Data Lake / Fabric."
+      ],
+      "rolResponsable": "Platform Engineer / SOC Manager",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.PO-02",
+      "mitreTactic": "Defense Evasion (TA0005)",
+      "evidenciaAuditable": "Checklist trimestral firmado de modernización y preparación para el corte del 31 de marzo de 2027.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Fecha oficial de fin de soporte en Azure Portal: después del 31 de marzo de 2027.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Análisis semestral de cobertura real vs. simulada en la matriz MITRE ATT&CK v18",
+      "objetivo": "Priorizar el desarrollo semestral de nuevas detecciones y conectores cerrando brechas en tácticas adversarias críticas.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Threat management > MITRE ATT&CK",
+      "procedimiento": [
+        "Comparar cobertura activa actual (Scheduled, NRT y Custom Detections) frente a la cobertura simulada disponible en Content Hub y plantillas.",
+        "Cruzar brechas con el perfil de amenaza de la industria y hallazgos de SOC Optimization.",
+        "Aprobar plan semestral de ingeniería de detección con metas medibles."
+      ],
+      "rolResponsable": "Threat Hunter / SOC L3",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-05",
+      "mitreTactic": "Initial Access / Persistence / Exfiltration (TA0001 / TA0003 / TA0010)",
+      "evidenciaAuditable": "Exportación semestral de cobertura MITRE ATT&CK y roadmap aprobado de nuevas reglas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Alineación nativa de Sentinel a MITRE ATT&CK v18 verificada en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/mitre-coverage"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Autoevaluación anual de madurez NIST CSF 2.0, simulacro BCDR del SIEM y revisión arquitectónica Zero Trust",
+      "objetivo": "Evaluar integralmente el programa SecOps, certificar la resiliencia ante desastres del SIEM y definir la arquitectura anual.",
+      "consolaRuta": "security.microsoft.com / Repositorio IaC GitHub o Azure DevOps",
+      "procedimiento": [
+        "Ejecutar la autoevaluación anual estructurada en las 6 funciones de NIST CSF 2.0 registrando brechas en el Risk Register corporativo.",
+        "Probar el plan BCDR de Microsoft Sentinel validando restauración como código de reglas, playbooks y conectores y residencia geográfica de datos.",
+        "Revisar estrategia multicloud, federación con Microsoft Fabric OneLake y gobierno de capacidades agénticas (Security Copilot / MCP)."
+      ],
+      "rolResponsable": "CISO / GRC / Cloud Security Architect / SOC Manager",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-01",
+      "mitreTactic": "Initial Access / Impact (TA0001 / TA0040)",
+      "evidenciaAuditable": "Informe anual de madurez NIST CSF 2.0, acta de simulacro BCDR y arquitectura SecOps aprobada.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Basado en Integrate NIST CSF 2.0 governance y BCDR recommendations for Microsoft Sentinel.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/zero-trust/sfi/integrate-nist-2-governance"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook mayor de contención y erradicación ante campaña de Ransomware Humano multi-dominio",
+      "objetivo": "Frenar el movimiento lateral y el cifrado masivo coordinando Automatic Attack Disruption, playbooks SOAR y caza histórica.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts / Action center",
+      "procedimiento": [
+        "Validar activos ya contenidos por Automatic Attack Disruption y disparar playbooks para aislar hosts en MDE, deshabilitar identidades en Entra ID y bloquear IPs C2.",
+        "Definir con el Incident Commander estrategia clean-as-you-go o erradicación simultánea big-bang según alcance de persistencia del actor.",
+        "Cazar retrospectivamente en el Sentinel Data Lake para determinar paciente cero y validar limpieza total antes de restaurar servicios."
+      ],
+      "rolResponsable": "SOC L2 / SOC L3 / Incident Commander",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Lateral Movement / Impact (TA0008 / TA0040 - T1486)",
+      "evidenciaAuditable": "Expediente completo en Case Management, logs de ejecución SOAR y autorización formal de retorno a operación.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Alineado a Incident Response Overview y capacidades unificadas SIEM + XDR de Microsoft.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/incident-response-overview"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de respuesta ante compromiso crítico de identidad híbrida, administrador o Service Principal",
+      "objetivo": "Revocar acceso activo, erradicar mecanismos de persistencia en Entra ID / Azure y auditar acciones ejecutadas.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts / Assets > Identities / entra.microsoft.com",
+      "procedimiento": [
+        "Ejecutar playbook de contención de identidad: bloqueo de cuenta/SPN, revocación de refresh tokens y limpieza de métodos MFA fraudulentos.",
+        "Correlacionar SigninLogs, AADServicePrincipalSignInLogs, AuditLogs, CloudAppEvents y AzureActivity para detectar backdoors OAuth o cambios RBAC.",
+        "Restablecer acceso únicamente con credenciales limpias y MFA resistente a phishing tras auditar el grafo de entidades."
+      ],
+      "rolResponsable": "SOC L2 / IAM Admin / SOC L3",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "Credential Access / Persistence / Privilege Escalation (TA0006 / TA0003 / TA0004)",
+      "evidenciaAuditable": "Trazas de contención en AuditLogs, ejecuciones de Logic Apps y línea de tiempo forense completa.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Integra respuesta unificada identidad + SIEM documentada en Microsoft Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/siem-xdr-overview"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Campaña de caza de emergencia (Emergency Hunt) y retro-búsqueda en Data Lake ante Zero-Day / CVE crítico",
+      "objetivo": "Determinar rápidamente si un actor explotó una vulnerabilidad recién divulgada utilizando meses de historia en el lago.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Threat management > Hunts / Advanced hunting",
+      "procedimiento": [
+        "Cargar nuevos IOCs en ThreatIntelIndicators y abrir una campaña estructurada en Hunts.",
+        "Ejecutar consultas KQL normalizadas con ASIM tanto en Analytics tier (90d) como en Sentinel Data Lake (hasta 12 meses+).",
+        "Promover cualquier Bookmark positivo a incidente crítico y desplegar Custom Detection Rule (NRT/programada) para vigilancia continua."
+      ],
+      "rolResponsable": "Threat Hunter / SOC L3",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-07",
+      "mitreTactic": "Initial Access / Execution / Command and Control (TA0001 / TA0002 / TA0011)",
+      "evidenciaAuditable": "Campaña cerrada en Hunts, resultados de búsqueda sobre el Data Lake y nueva regla desplegada.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Uso combinado de Hunts, ASIM y consultas interactivas sobre el Data Lake en Advanced Hunting.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/hunts"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Contingencia ante interrupción de ingesta crítica o anomalía aguda de volumen/facturación",
+      "objetivo": "Restaurar visibilidad de seguridad en minutos o contener tormentas de logs ruidosos mediante DCR sin cegar el SIEM.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Data connectors / portal.azure.com > Data Collection Rules",
+      "procedimiento": [
+        "Ante caída de ingesta: validar Service Health, diagnosticar causa exacta en SentinelHealth, restablecer credenciales/reenviadores AMA y registrar la ventana afectada.",
+        "Ante tormenta de logs/costos: identificar tabla y fuente emisora en Usage / CommonSecurityLog y aplicar filtro o split inmediato en la DCR hacia Data Lake.",
+        "Evitar depender de un Daily Cap abrupto que detenga toda la ingesta de seguridad del workspace."
+      ],
+      "rolResponsable": "Platform Engineer / Cloud Ops",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-04",
+      "mitreTactic": "Impair Defenses (TA0005)",
+      "evidenciaAuditable": "Diagnóstico en SentinelHealth/Usage, modificación controlada de DCR y registro para auditoría.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Basado en monitor-data-connector-health y recomendaciones oficiales sobre Daily Cap y DCR transformations.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/monitor-data-connector-health"
+    },
+    {
+      "codigo": "AH-05",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Análisis Post-Incidente (Post-Mortem) y cierre trazable de mejoras de detección y SOAR",
+      "objetivo": "Convertir cada incidente grave en reducción permanente de riesgo mediante nuevas detecciones, playbooks y telemetría.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts / Microsoft Sentinel > Optimization",
+      "procedimiento": [
+        "Reconstruir cronología exacta y métricas MTTA/MTTC/MTTR desde SecurityIncident y Case Management.",
+        "Documentar causa raíz y brechas en visibilidad de logs, cobertura MITRE ATT&CK y tiempos de respuesta manual.",
+        "Desplegar en Sentinel Repositories las nuevas reglas, Watchlists y ajustes de playbooks derivados, verificando su cierre."
+      ],
+      "rolResponsable": "SOC Manager / SOC L3 / GRC",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-06",
+      "mitreTactic": "Exfiltration / Impact (TA0010 / TA0040)",
+      "evidenciaAuditable": "Informe formal Post-Mortem vinculado al incidente y commits de mejoras implementadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Fase post-incidente documentada en Incident Response Overview y ciclo de mejora NIST CSF 2.0.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/incident-response-overview"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Diagnóstico unificado de fallos en reglas, conectores y playbooks (SentinelHealth)",
+      "plataforma": "Microsoft Sentinel / Defender Portal Advanced Hunting",
+      "tablaPrincipal": "SentinelHealth",
+      "consulta": "SentinelHealth | where TimeGenerated > ago(24h) and Status in ('Failure', 'PartiallySucceeded') | summarize Fallos24h = count(), UltimoFalloUTC = max(TimeGenerated), Motivos = make_set(Reason, 5) by SentinelResourceType, SentinelResourceName, OperationName | order by Fallos24h desc, UltimoFalloUTC desc",
+      "proposito": "Detectar de forma inmediata reglas AUTO DISABLED, caídas de conectores de datos y ejecuciones fallidas de playbooks o automation rules.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección de agentes AMA y colectores CEF/Syslog sin latido reciente",
+      "plataforma": "Microsoft Sentinel / Log Analytics",
+      "tablaPrincipal": "Heartbeat",
+      "consulta": "Heartbeat | where TimeGenerated > ago(24h) and Category == 'Azure Monitor Agent' | summarize UltimoLatidoUTC = max(TimeGenerated), OS = any(OSType) by Computer, _ResourceId | where UltimoLatidoUTC < ago(1h) | extend MinutosDesconectado = datetime_diff('minute', now(), UltimoLatidoUTC) | order by MinutosDesconectado desc",
+      "proposito": "Identificar servidores y Log Forwarders desconectados del workspace para restaurar visibilidad.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Cálculo ejecutivo de MTTA, MTTC/MTTR (Promedio, P50, P95) y tasa de falsos positivos",
+      "plataforma": "Microsoft Sentinel / Defender Portal Advanced Hunting",
+      "tablaPrincipal": "SecurityIncident",
+      "consulta": "SecurityIncident | where TimeGenerated > ago(30d) | summarize arg_max(TimeGenerated, *) by IncidentNumber | extend MinutosTriaje = iff(isnotnull(FirstModifiedTime), datetime_diff('minute', FirstModifiedTime, CreatedTime), real(null)), HorasCierre = iff(Status == 'Closed' and isnotnull(ClosedTime), datetime_diff('minute', ClosedTime, CreatedTime) / 60.0, real(null)) | summarize Total = count(), Cerrados = countif(Status == 'Closed'), MTTA_Min = round(avg(MinutosTriaje), 1), MTTC_Horas = round(avg(HorasCierre), 2), P95_Horas = round(percentile(HorasCierre, 95), 2), FP = countif(Classification == 'FalsePositive') by Severity | extend FPR_Pct = round(todouble(FP) * 100.0 / iff(Cerrados == 0, 1, Cerrados), 1)",
+      "proposito": "Generar evidencia reproducible de KPIs operativos del SOC para comités ejecutivos y auditorías NIST CSF 2.0.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría FinOps de volumen ingerido por tabla facturable vs. gratuita (30 días)",
+      "plataforma": "Microsoft Sentinel / Log Analytics",
+      "tablaPrincipal": "Usage",
+      "consulta": "Usage | where TimeGenerated > ago(30d) | summarize TotalGB_30d = round(sum(Quantity) / 1024.0, 2), PromedioDiario_GB = round(sum(Quantity) / 1024.0 / 30.0, 2) by DataType, IsBillable | order by TotalGB_30d desc",
+      "proposito": "Dimensionar Commitment Tiers, auditar fuentes gratuitas y detectar tablas candidatas a migrar al Sentinel Data Lake.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría de gobernanza de cambios sobre reglas analíticas y reglas de automatización",
+      "plataforma": "Microsoft Sentinel / Defender Portal Advanced Hunting",
+      "tablaPrincipal": "SentinelAudit",
+      "consulta": "SentinelAudit | where TimeGenerated > ago(7d) and SentinelResourceType in ('Analytics Rule', 'Automation rule') | project TimeGenerated, OperationName, SentinelResourceType, SentinelResourceName, Status, Description, ExtendedProperties | order by TimeGenerated desc",
+      "proposito": "Demostrar trazabilidad completa de quién creó, editó o eliminó lógica de detección o respuesta en el SIEM.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección multi-fuente normalizada con ASIM de fuerza bruta seguida de éxito",
+      "plataforma": "Microsoft Sentinel",
+      "tablaPrincipal": "_Im_Authentication (ASIM Authentication Schema)",
+      "consulta": "_Im_Authentication(starttime=ago(2h), endtime=now()) | summarize IntentosFallidos = countif(EventResult == 'Failure'), IniciosExitosos = countif(EventResult == 'Success'), Fuentes = make_set(EventProduct, 5), PrimerFallo = min(TimeGenerated), UltimoExito = maxif(TimeGenerated, EventResult == 'Success') by TargetUsername, SrcIpAddr | where IntentosFallidos >= 15 and IniciosExitosos >= 1 and UltimoExito > PrimerFallo | order by IntentosFallidos desc",
+      "proposito": "Detectar compromisos por fuerza bruta o password spray de forma agnóstica a través de Entra ID, Windows, Linux, Okta o VPNs.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Tiempo medio de triaje / reconocimiento de incidentes (MTTA)",
+      "definicion": "Tiempo promedio desde la creación del incidente en la cola unificada hasta su primera actualización/asignación por un analista o flujo.",
+      "formula": "avg(FirstModifiedTime - CreatedTime) sobre arg_max(TimeGenerated, *) by IncidentNumber",
+      "metaSugerida": "< 15 minutos (Crítico / High) y < 45 minutos (Medium)",
+      "frecuencia": "Semanal",
+      "audiencia": "SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "MTTA es una de las métricas primarias nativas documentadas por Microsoft; los valores objetivo en minutos son propuesta editorial."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Tiempo medio de cierre / resolución de incidentes (MTTC / MTTR)",
+      "definicion": "Tiempo integral transcurrido desde la generación del incidente hasta su cierre validado tras contención y remediación (acompañado del percentil P95).",
+      "formula": "avg(ClosedTime - CreatedTime) y percentile(ClosedTime - CreatedTime, 95)",
+      "metaSugerida": "< 4 horas (High) / < 24 horas (Medium)",
+      "frecuencia": "Semanal / Mensual",
+      "audiencia": "SOC Manager / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "MTTC/MTTR está integrado en el workbook Security operations efficiency de Sentinel; las metas de 4 h y 24 h son propuesta editorial."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Tasa de falsos positivos del catálogo de detección (FPR)",
+      "definicion": "Porcentaje de incidentes cerrados con clasificación FalsePositive sobre el universo total de incidentes cerrados en el período.",
+      "formula": "(countif(Classification == 'FalsePositive') / countif(Status == 'Closed')) * 100",
+      "metaSugerida": "< 15% global (< 20% máximo por regla individual antes de tuning obligatorio)",
+      "frecuencia": "Semanal / Mensual",
+      "audiencia": "SOC L3 / Detection Engineer",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "La clasificación FalsePositive es nativa en SecurityIncident; el umbral del 15% es referencia consultiva editorial."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Tasa de éxito de ejecución de Playbooks SOAR (Playbook Success Rate)",
+      "definicion": "Porcentaje de ejecuciones de playbooks invocadas por Automation Rules o analistas que finalizan exitosamente sin errores.",
+      "formula": "(countif(Status == 'Success') / count()) * 100 en SentinelHealth where SentinelResourceType == 'Playbook'",
+      "metaSugerida": ">= 98%",
+      "frecuencia": "Diaria / Semanal",
+      "audiencia": "SOAR Engineer / Platform Engineer",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Medido directamente sobre la tabla oficial SentinelHealth; el objetivo >= 98% es propuesta editorial."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Porcentaje de incidentes con enriquecimiento o triaje automatizado",
+      "definicion": "Proporción de incidentes que reciben tareas estandarizadas, enriquecimiento TI/UEBA, asignación o contención automática vía Automation Rules.",
+      "formula": "(Incidentes_Procesados_Por_AutomationRule / Total_Incidentes_Creados) * 100",
+      "metaSugerida": ">= 70%",
+      "frecuencia": "Mensual",
+      "audiencia": "SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Alineado al principio oficial Automation-assisted SOC; meta del 70% propuesta editorialmente."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Disponibilidad de conectores críticos e integridad de reglas activas",
+      "definicion": "Porcentaje de conectores críticos recibiendo telemetría sin interrupción y ausencia total de reglas deshabilitadas automáticamente.",
+      "formula": "(Conectores_Activos_En_SLA / Total_Conectores_Criticos) * 100 y Conteo(Reglas AUTO DISABLED)",
+      "metaSugerida": ">= 99,5% disponibilidad de conectores y 0 reglas AUTO DISABLED",
+      "frecuencia": "Diaria / Semanal",
+      "audiencia": "Platform Engineer / SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en el monitoreo oficial de salud de conectores e integridad de reglas de Microsoft Sentinel."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Cobertura activa sobre técnicas prioritarias de MITRE ATT&CK v18",
+      "definicion": "Porcentaje de técnicas adversarias definidas como prioritarias para el negocio que cuentan con al menos una regla activa validada.",
+      "formula": "(Tecnicas_Prioritarias_Con_Regla_Activa / Total_Tecnicas_Prioritarias_Objetivo) * 100",
+      "metaSugerida": ">= 80% de las técnicas prioritarias del perfil de amenaza organizacional",
+      "frecuencia": "Semestral / Mensual",
+      "audiencia": "Threat Hunter / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "La matriz nativa de cobertura MITRE ATT&CK v18 es oficial; el umbral del 80% sobre técnicas prioritarias es propuesta editorial."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Índice de optimización de valor de datos en Analytics Tier (Data Value Efficiency)",
+      "definicion": "Porcentaje de tablas facturables alojadas en el Analytics tier que son utilizadas activamente por reglas de detección, UEBA o TI matching.",
+      "formula": "((Tablas_Facturables_Analytics - Tablas_Sin_Deteccion_SOC_Optimization) / Tablas_Facturables_Analytics) * 100",
+      "metaSugerida": ">= 95% (reubicando tablas secundarias sin reglas hacia el Sentinel Data Lake)",
+      "frecuencia": "Mensual",
+      "audiencia": "FinOps / Platform Engineer / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado directamente en las recomendaciones Data value optimization de SOC Optimization en MS Learn."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.OV-03",
+      "descripcionResultado": "El desempeño de la gestión de riesgos de ciberseguridad organizacional se evalúa y revisa para aplicar los ajustes necesarios.",
+      "capacidadMicrosoft": "Workbook oficial Security operations efficiency, métricas históricas en SecurityIncident y recomendaciones basadas en riesgo de negocio de SOC Optimization (UI y API).",
+      "evidenciaAuditoria": "Exportación mensual de métricas MTTA/MTTC/FPR e historial de mitigación de brechas en SOC Optimization.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.PO-02",
+      "descripcionResultado": "La política y reglas para gestionar riesgos de ciberseguridad se revisan, actualizan, comunican y auditan de forma trazable.",
+      "capacidadMicrosoft": "Auditoría nativa de modificaciones en SentinelAudit y AzureActivity, auditoría de consultas en LAQueryLogs y control de cambios como código en Sentinel Repositories.",
+      "evidenciaAuditoria": "Reportes semanales de SentinelAudit y LAQueryLogs conciliados contra tickets aprobados y commits CI/CD.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-04",
+      "descripcionResultado": "Se mantienen inventarios y visibilidad de los servicios y plataformas externas/cloud utilizados por la organización.",
+      "capacidadMicrosoft": "Más de 350 conectores en Content Hub (M365, Azure, AWS, GCP, SAP, firewalls CEF/Syslog) y diseño multi-workspace / Data Lake con residencia de datos documentada.",
+      "evidenciaAuditoria": "Consultas sobre Usage y CommonSecurityLog inventariando fuentes activas y configuración regional de workspaces.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-02",
+      "descripcionResultado": "Se recibe inteligencia sobre amenazas cibernéticas desde foros y fuentes especializadas para enriquecer el análisis de riesgo.",
+      "capacidadMicrosoft": "Ingesta STIX/TAXII, feeds nativos de Microsoft Threat Intelligence en ThreatIntelIndicators, matriz MITRE ATT&CK v18 y análisis de brechas en SOC Optimization.",
+      "evidenciaAuditoria": "Inventario exportado de indicadores TI activos por fuente/confianza y mapa semestral de cobertura MITRE ATT&CK.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Los permisos, derechos y autorizaciones de acceso se definen, gestionan, hacen cumplir y revisan bajo privilegio mínimo.",
+      "capacidadMicrosoft": "Segregación con Azure RBAC en Resource Group, Microsoft Entra ID / Defender Unified RBAC para el Data Lake, scoping por fila y Managed Identities en playbooks.",
+      "evidenciaAuditoria": "Exportación mensual de asignaciones IAM/URBAC recertificadas (M-01) y verificación de playbooks autenticados sin secretos.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.PS-04",
+      "descripcionResultado": "Los registros de log se generan y ponen a disposición para monitoreo continuo y preservación conforme a requisitos normativos.",
+      "capacidadMicrosoft": "Recolección mediante AMA + DCRs, Logs Ingestion API y arquitectura por niveles entre Analytics tier (90d a 2 años) y Sentinel Data Lake (hasta 12 años).",
+      "evidenciaAuditoria": "Configuración exportada de Table management demostrando retención por tabla alineada a exigencias legales y regulatorias.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-01",
+      "descripcionResultado": "Las redes, servicios e infraestructuras se monitorean continuamente para detectar eventos potencialmente adversos.",
+      "capacidadMicrosoft": "Reglas Scheduled, NRT, Custom Detection Rules, normalización ASIM, analítica conductual UEBA y supervisión continua en SentinelHealth.",
+      "evidenciaAuditoria": "Catálogo de reglas activas sin estado AUTO DISABLED, alertas en SecurityAlert y chequeos diarios de SentinelHealth.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.AE-03",
+      "descripcionResultado": "Se correlaciona información procedente de múltiples fuentes y se realiza caza proactiva para comprender cadenas de ataque.",
+      "capacidadMicrosoft": "Correlación automática multi-dominio SIEM + Defender XDR, mapeo de entidades, Sentinel Graph / Blast Radius, campañas Hunts y Bookmarks.",
+      "evidenciaAuditoria": "Expedientes de incidentes correlacionados multi-fuente y campañas documentadas en Hunts / HuntingBookmark.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MA-02",
+      "descripcionResultado": "Los reportes de incidentes son triados, validados, priorizados y gestionados con propiedad y comunicación estructurada.",
+      "capacidadMicrosoft": "Cola unificada de incidentes y Case Management en el portal Defender con listas de tareas obligatorias, notificaciones automáticas e integración ITSM.",
+      "evidenciaAuditoria": "Muestras auditables de incidentes cerrados con cronología completa, propietario, tareas completadas y tickets ITSM.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Se ejecutan acciones oportunas para contener los incidentes y mitigar su impacto.",
+      "capacidadMicrosoft": "Automation Rules + Playbooks en Logic Apps para bloqueo de usuarios Entra ID, aislamiento de endpoints MDE y bloqueo de IPs, junto con Automatic Attack Disruption.",
+      "evidenciaAuditoria": "Historial Runs history de Logic Apps con estado Succeeded y registros de bloqueo/aislamiento en los sistemas destino.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-01",
+      "descripcionResultado": "Se ejecutan planes de recuperación asegurando la resiliencia del servicio de monitoreo y la incorporación de lecciones aprendidas.",
+      "capacidadMicrosoft": "Guía oficial BCDR de Microsoft Sentinel, respaldo completo como código en Sentinel Repositories y análisis histórico de tendencias MTTR post-incidente.",
+      "evidenciaAuditoria": "Repositorio Git/Bicep sincronizado, acta anual de simulacro BCDR e informes post-mortem con mejoras desplegadas.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Se consolidaron e integraron los tres bloques que se encontraban separados en MSEOP-MD (el Modelo de Operación SecOps real con sus 12 bloques y SOPs de consola, el mapeo de auditoría NIST CSF 2.0 y el documento estratégico de Licenciamiento/FinOps), sometiéndolos a revalidación integral contra Microsoft Learn MCP y páginas oficiales de precios de Azure a noviembre de 2026. Se verificaron y actualizaron las fechas mandatorias de retiro del portal de Azure y de APIs heredadas, la integración nativa del Sentinel Data Lake desde septiembre de 2026, las condiciones exactas del Data Grant de M365 E5/E7 y las novedades SOAR/CI-CD de 2026.",
+    "correccionesAplicadas": [
+      "Corrección estructural de fuentes locales: se unificó el mapeo de auditoría NIST CSF 2.0 (alojado originalmente en Sentinel - VC- SecOps) con el Modelo de Operación SecOps completo (Modelo operacion, 12 bloques SecOps y Sentinel OG) y el modelo financiero (Sentinel VC Lic).",
+      "Confirmación y actualización de la fecha oficial de retiro de Microsoft Sentinel en Azure Portal: después del 31 de marzo de 2027 (extendida desde julio de 2026), incorporando la tabla oficial de equivalencia de navegación hacia https://security.microsoft.com.",
+      "Actualización arquitectónica de niveles de almacenamiento: incorporación del onboarding integrado de Microsoft Sentinel SIEM + Data Lake vigente desde el 23 de septiembre de 2026 (Table management, compresión 6:1, retención hasta 12 años, KQL interactivo en Advanced Hunting y espejo sin copia a Microsoft Fabric OneLake).",
+      "Documentación precisa de relacionM365E5: facturación por consumo/Commitment Tiers en Azure combinada con el Microsoft 365 E5/E7/A5/F5/G5 Data Grant de hasta 5 MB/usuario/día, fuentes siempre gratuitas, 30 días de consulta gratuita de tablas XDR en el portal unificado, conexión UEBA en preview (extend-ueba) y SCUs incluidas en E5.",
+      "Actualización de retiros y mejoras técnicas 2026: fin de soporte de HTTP Data Collector API el 14 de septiembre de 2026 (migración a Logs Ingestion API + DCR filter/split y CCF), retiro de Livestream en favor de Hunts y NRT/Custom Detections, obsolescencia de playbooks directos en reglas analíticas (mar-2026), AI Playbook Generator en GA (may-2026), normalización de AccountName a prefijo UPN (jul-2026) y Custom Detection Rules as Code en Repositories (Preview, jul-2026).",
+      "Alineación estricta de KPIs con la auditoría técnica oficial: preservación de MTTA y MTTC/MTTR como métricas nativas de Microsoft y etiquetado explícito de metas porcentuales y numéricas como propuestas editoriales."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Metas cuantitativas de SLA y KPIs (MTTA < 15 min, MTTC < 4 h, FPR < 15%, Playbook Success >= 98%, cobertura MITRE >= 80%)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft provee las métricas y workbooks nativos (Security operations efficiency y SentinelHealth), pero establece que los umbrales numéricos deben fijarse según dotación, horario de cobertura y apetito de riesgo de cada organización."
+      },
+      {
+        "elemento": "Extensión del modelo operativo hacia cadencias Trimestral, Semestral y Anual (T-01, T-02, SM-01, A-01)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "El artículo ops-guide oficial de Sentinel cubre hasta actividades mensuales; las cadencias trimestral, semestral y anual consolidan guías complementarias de Microsoft sobre MITRE ATT&CK, BCDR y gobernanza NIST CSF 2.0."
+      },
+      {
+        "elemento": "Ventanas máximas de activación JIT en PIM (4 h / 8 h) y segregación dedicada de Resource Groups para Playbooks",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft recomienda mínimo privilegio y asignación en Resource Group; los límites horarios de elevación PIM y la separación orgánica entre ingeniería SOAR y analistas L1/L2 son controles de gobierno propuestos."
+      },
+      {
+        "elemento": "Modelo de Madurez Operacional SIEM / SOAR en 5 niveles (de Reactivo a SOC Agéntico y Federado)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Construcción consultiva diseñada para orientar hojas de ruta ejecutivas de modernización hacia Unified SecOps, Data Lake y Security Copilot."
+      },
+      {
+        "elemento": "Selección de consultas KQL y artefactos específicos como evidencia probatoria para cada subcategoría NIST CSF 2.0",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Conforme a NIST CSWP 29, el marco define outcomes agnósticos de tecnología; la definición de evidencias reproducibles en Sentinel constituye diseño de aseguramiento GRC."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Microsoft Sentinel operational guide",
+      "url": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Guía oficial de actividades operativas diarias, semanales y mensuales recomendadas para equipos SOC y administradores.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Microsoft Sentinel in the Microsoft Defender portal",
+      "url": "https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Comparativa funcional, mapeo completo de menús y confirmación oficial del retiro de Sentinel en Azure Portal después del 31 de marzo de 2027.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Plan costs and understand Microsoft Sentinel pricing and billing",
+      "url": "https://learn.microsoft.com/en-us/azure/sentinel/billing",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Referencia oficial de precios y medidores para Analytics tier (PAYG y Simplified Commitment Tiers), Data Lake tier, Sentinel Graph, MCP y fuentes gratuitas.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Microsoft 365 E5 benefit offer with Microsoft Sentinel",
+      "url": "https://azure.microsoft.com/en-us/pricing/offers/sentinel-microsoft-365-offer/",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Azure",
+      "comentario": "Términos oficiales del Data Grant de hasta 5 MB/usuario/día para clientes Microsoft 365 E7, E5, A5, F5, G5 y suites Security, con listado de tablas elegibles.",
+      "verificacion": "Verificado vía Web Search / Fetch oficial Azure (Nov 2026)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Log retention tiers in Microsoft Sentinel & What is Microsoft Sentinel data lake?",
+      "url": "https://learn.microsoft.com/en-us/azure/sentinel/log-plans",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Estrategia oficial de clasificación de datos primarios (Analytics tier) y secundarios (Data Lake tier con hasta 12 años de retención).",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Roles and permissions in the Microsoft Sentinel platform",
+      "url": "https://learn.microsoft.com/en-us/azure/sentinel/roles",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Definición oficial de roles Azure RBAC para SIEM y roles Microsoft Entra ID / Defender Unified RBAC para el Data Lake.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Automate threat response in Microsoft Sentinel with automation rules",
+      "url": "https://learn.microsoft.com/en-us/azure/sentinel/automate-incident-handling-with-automation-rules",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Arquitectura oficial de orquestación SOAR, triggers, orden secuencial, Simple Flows y delegación multitenant.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Authenticate playbooks to Microsoft Sentinel",
+      "url": "https://learn.microsoft.com/en-us/azure/sentinel/automation/authenticate-playbooks-to-sentinel",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Guía oficial para autenticar playbooks de Logic Apps mediante System-Assigned Managed Identity con mínimo privilegio.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "SOC optimization recommendations reference",
+      "url": "https://learn.microsoft.com/en-us/azure/sentinel/soc-optimization/soc-optimization-reference",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Referencia de recomendaciones de cobertura frente a amenazas y optimización de valor de datos por tabla y columna.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Normalization and the Advanced Security Information Model (ASIM)",
+      "url": "https://learn.microsoft.com/en-us/azure/sentinel/normalization",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Documentación oficial de esquemas, parsers query-time y normalización ingest-time alineada con OSSEM.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "What's new in Microsoft Sentinel",
+      "url": "https://learn.microsoft.com/en-us/azure/sentinel/whats-new",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Registro oficial de lanzamientos 2026: onboarding integrado del Data Lake (sep-2026), espejo Fabric OneLake, Custom Detections as Code y AI Playbook Generator GA.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "UPDATE: New timeline for transitioning Sentinel experience to Defender portal",
+      "url": "https://techcommunity.microsoft.com/blog/microsoftsentinelblog/update-new-timeline-for-transitioning-sentinel-experience-to-defender-portal/4490464",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Microsoft Sentinel Product Team",
+      "comentario": "Comunicado oficial en Microsoft Sentinel Blog estableciendo el 31 de marzo de 2027 como fecha de retiro del portal de Azure.",
+      "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Become a Microsoft Sentinel Ninja: The complete level 400 training",
+      "url": "https://techcommunity.microsoft.com/blog/microsoftsentinelblog/become-a-microsoft-sentinel-ninja-the-complete-level-400-training/1246310",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Ofer Shezaf (Principal Product Manager, Microsoft)",
+      "comentario": "Entrenamiento maestro oficial nivel 400 organizado por perfiles de arquitecto, ingeniero y analista SOC.",
+      "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Sentinel All-in-One & Sentinel as Code",
+      "url": "https://github.com/javiersoriano/sentinel-all-in-one",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Javier Soriano (Principal Product Manager, Microsoft)",
+      "comentario": "Repositorio de referencia para automatización de despliegue e infraestructura como código en Microsoft Sentinel.",
+      "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "Create Tasks Repository in Microsoft Sentinel & Must Learn KQL",
+      "url": "https://techcommunity.microsoft.com/blog/microsoftsentinelblog/create-tasks-repository-in-microsoft-sentinel/4038563",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Benji Kovacevic (Microsoft) / complementado por Rod Trent (MustLearnKQL)",
+      "comentario": "Guía práctica de estandarización de listas de tareas e implementación de automatización SOAR en incidentes de Sentinel.",
+      "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "KQL Query & Hunting-Queries-Detection-Rules",
+      "url": "https://kqlquery.com",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Bert-Jan Pals (Microsoft Security MVP)",
+      "comentario": "Portal y repositorio comunitario líder en ingeniería de detección y threat hunting con KQL para Sentinel y Defender XDR.",
+      "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "Blog d3fend.me - Laboratorio reproducible Defender XDR + Microsoft Sentinel en español",
+      "url": "https://blog.d3fend.me/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Jorge Castañeda (Microsoft Security MVP, Perú)",
+      "comentario": "Referencia técnica en español sobre despliegue práctico de laboratorios, correlación XDR+SIEM y priorización de vulnerabilidades.",
+      "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "Morten Knudsen Technical Blog (AMA, DCR, Logs Ingestion API & Sentinel Data Lake) y Workbooks de Clive Watson",
+      "url": "https://mortenknudsen.net/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Morten Knudsen (Microsoft MVP)",
+      "comentario": "Guías profundas de ingeniería de recolección con AMA/DCR, transformaciones y administración de tablas en el Data Lake de Sentinel.",
+      "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "NIST Cybersecurity Framework (CSF) 2.0 (CSWP 29) & Integrate NIST CSF 2.0 Governance",
+      "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Estándar oficial NIST CSF 2.0 complementado por la guía oficial de Microsoft learn.microsoft.com/en-us/security/zero-trust/sfi/integrate-nist-2-governance.",
+      "verificacion": "Verificado en fuentes oficiales NIST y Microsoft Learn (Nov 2026)"
+    }
+  ]
+}

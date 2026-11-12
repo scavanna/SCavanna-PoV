@@ -1,0 +1,1268 @@
+{
+  "schemaVersion": "2.0",
+  "id": "09_Microsoft_Security_Copilot",
+  "orden": 9,
+  "slug": "Microsoft_Security_Copilot",
+  "nombre": "Microsoft Security Copilot (IA Generativa y Agéntica para SecOps, Identidad, Endpoints y Datos)",
+  "nombreCorto": "Microsoft Security Copilot",
+  "categoria": "SecOps, XDR y SIEM",
+  "bloqueOrigen": "Nuevo desde Microsoft Learn MCP (Nov 2026)",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://securitycopilot.microsoft.com",
+    "https://security.microsoft.com",
+    "https://entra.microsoft.com",
+    "https://intune.microsoft.com",
+    "https://purview.microsoft.com",
+    "https://securitystore.microsoft.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "SOC Manager",
+    "SOC L1",
+    "SOC L2",
+    "SOC L3 / Detection Engineer",
+    "Threat Hunter",
+    "Identity Administrator",
+    "Endpoint Administrator",
+    "Purview Data Security Administrator",
+    "AI Security Engineer",
+    "FinOps",
+    "GRC"
+  ],
+  "relacionM365E5": {
+    "estado": "Incluido con dotación base en M365 E5 (2026) + Consumo elástico por SCUs en Azure",
+    "licencias": [
+      "Microsoft 365 E5 y Microsoft 365 E7 (incluyen 400 Security Compute Units [SCUs] mensuales por cada 1.000 licencias de usuario pagas, con escalado lineal hasta 10.000 SCUs/mes sin costo adicional)",
+      "Escalamiento Pay-As-You-Go sobre la dotación incluida M365 E5/E7 ($6 USD por SCU adicional, con notificación previa de 30 días)",
+      "Capacidad Azure Microsoft Security Copilot: Provisioned SCUs (por bloques de hora reloj fija, mínimo 1 SCU/hora) + Overage SCUs (facturación por consumo exacto con precisión de 1 decimal)",
+      "Licencias de los servicios de seguridad subyacentes consultados mediante plugins/agentes (Defender XDR/MDO P2/MDI/MDC, Microsoft Sentinel, Entra ID P1/P2/Governance, Intune, Purview DLP/IRM) y eventuales ofertas SaaS de partners en Microsoft Security Store"
+    ],
+    "prerrequisitos": [
+      "Tenant comercial elegible de Microsoft 365 E5/E7 con Default Security Copilot Capacity auto-aprovisionada (zero-click) o suscripción Azure con capacidad SCU aprovisionada vinculada a un Workspace",
+      "Revisión y endurecimiento día-1 de Owner settings: ubicación geográfica de almacenamiento (inmutable por Workspace), ubicación GPU (EU/US/UK/ANZ o global), compartición de Customer Data en Off y Logging audit data in Microsoft Purview en On",
+      "Configuración de RBAC de plataforma en Role assignment eliminando el grupo legado Everyone, conservando al menos 2 Copilot Owners y asignando acceso vía Recommended Microsoft Security roles o Role-assignable groups",
+      "Asignación de permisos de mínimo privilegio en cada producto subyacente para autenticación On-Behalf-Of (OBO) y creación de identidades dedicadas Microsoft Entra Agent ID para agentes autónomos soportados",
+      "Habilitación de Microsoft Purview Audit (Standard) con políticas de retención extendida (>=365 días) y Microsoft Purview DSPM for AI para inspección de pares prompt/respuesta y banderas XPIADetected / JailbreakDetected"
+    ],
+    "notaLicenciamiento": "Anunciado en Ignite 2025 e implementado desde el 18 de noviembre de 2025 con despliegue escalonado entre abril y junio de 2026 (MC1261596), todos los clientes comerciales de Microsoft 365 E5 y E7 reciben sin mínimo de licencias una Default Security Copilot Capacity de 400 SCUs al mes por cada 1.000 licencias pagas (ej. 400 asientos = 160 SCUs/mes; 4.000 asientos = 1.600 SCUs/mes; tope máximo de 10.000 SCUs/mes). Esta bolsa deduce consumo real (no bloques horarios), se reinicia mensualmente sin rollover y puede aplicarse a escenarios de Defender, Entra, Intune, Purview, portal standalone y Microsoft Sentinel (clientes de Sentinel sin M365 E5/E7 no califican y deben aprovisionar SCUs en Azure). Los clientes que ya contaban con capacidad aprovisionada en Azure no deben eliminarla abruptamente. Tanto funciones GA como Public Preview consumen SCUs (solo Private Preview está exenta). No se incluyen costos de cómputo/almacenamiento de Sentinel Data Lake, ejecuciones de Azure Logic Apps, Data Security Investigations no agénticas en Purview ni licencias propias de agentes de terceros en Security Store."
+  },
+  "resumenEjecutivo": "Microsoft Security Copilot es la plataforma de inteligencia artificial generativa y agéntica de Microsoft diseñada para potenciar a velocidad y escala de máquina las operaciones del SOC, administración de identidades, gestión de endpoints y protección de datos. Combina modelos de lenguaje avanzados (incluyendo gpt-4.1 y modelos de seguridad propios de Microsoft sobre infraestructura Azure protegida) con preprocesamiento grounding, plugins 1P/3P/Custom, protocolo MCP (destacando el Microsoft Sentinel MCP Server sobre Sentinel Data Lake), Promptbooks estandarizados y un catálogo creciente de agentes autónomos e interactivos en Defender, Entra, Intune y Purview. Con la inclusión automática de 400 SCUs mensuales por cada 1.000 licencias en Microsoft 365 E5 y E7, su excelencia operacional exige gobernar estrictamente el modelo RBAC On-Behalf-Of e identidades Microsoft Entra Agent ID, mitigar el riesgo de sobreconfianza analítica (human-in-the-loop), controlar diariamente el consumo FinOps de SCUs, proteger sesiones compartidas y auditar toda actividad e intento de XPIA/Jailbreak en Microsoft Purview Unified Audit Log y DSPM for AI.",
+  "principiosRectores": [
+    {
+      "principio": "Mínimo privilegio estricto en nombre del usuario y agentes (OBO + Entra Agent ID)",
+      "descripcion": "Ejecutar toda consulta interactiva bajo autenticación On-Behalf-Of respetando el RBAC del producto subyacente y desplegar agentes autónomos con identidades dedicadas Microsoft Entra Agent ID en lugar de cuentas personales administrativas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/copilot/security/authentication"
+    },
+    {
+      "principio": "Supervisión humana obligatoria contra la sobreconfianza (Anti-Overreliance)",
+      "descripcion": "Tratar todo resumen, consulta KQL, análisis de script o veredicto de agente como insumo acelerador sujeto a verificación analítica humana y retroalimentación continua antes de ejecutar acciones destructivas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/copilot/security/microsoft-security-copilot"
+    },
+    {
+      "principio": "Privacidad por diseño y cero entrenamiento de modelos fundacionales externos",
+      "descripcion": "Garantizar que Customer Data nunca se comparta con OpenAI ni entrene modelos fundacionales de Azure OpenAI, fijando conscientemente la región inmutable del Workspace y manteniendo en Off la captura para revisión humana.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/copilot/security/privacy-data-security"
+    },
+    {
+      "principio": "Disciplina FinOps continua sobre SCUs (Inclusión E5/E7, Provisioned y Overage)",
+      "descripcion": "Supervisar diariamente el consumo por experiencia, categoría (Prompt, Promptbook, Agent, Primitive) y acciones automatizadas para optimizar la dotación mensual de 400 SCUs/1.000 usuarios sin bloqueos al 100 %.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/copilot/security/manage-usage"
+    },
+    {
+      "principio": "Gobierno seguro de extensibilidad (Plugins YAML/OpenAPI, Promptbooks y MCP)",
+      "descripcion": "Restringir la publicación organizacional de plugins personalizados a Copilot Owners, validar manifiestos YAML contra colisiones de skills y gobernar el acceso al Microsoft Sentinel MCP Server.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/copilot/security/manage-plugins"
+    },
+    {
+      "principio": "Trazabilidad forense integral en Purview Audit (Standard) y DSPM for AI",
+      "descripcion": "Auditar el 100 % de eventos administrativos, metadatos CopilotInteraction, pares prompt/respuesta, sesiones compartidas y señales XPIADetected / JailbreakDetected con retención extendida e ingesta en Sentinel.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/copilot/security/audit-log"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Security Copilot Standalone Portal, Workspaces y Pinboard",
+      "funcionOperativa": "Consola central para investigaciones transversales multi-plugin, ejecución/creación de Promptbooks, Agent Library, Security Store, compartición de sesiones, Owner settings y panel Usage monitoring (90 días).",
+      "portalRuta": "securitycopilot.microsoft.com > Home menu / Owner settings / Usage monitoring",
+      "integraciones": [
+        "Workspaces regionales con almacenamiento inmutable",
+        "Microsoft Security Store (securitystore.microsoft.com)",
+        "Tenant Switching B2B, GDAP y Azure Lighthouse para MSSPs"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Motor de Capacidad SCU (Default Inclusion E5/E7, Provisioned y Overage)",
+      "funcionOperativa": "Gestión del cómputo de IA mediante la capacidad mensual auto-aprovisionada en M365 E5/E7 (400 SCUs/1.000 licencias hasta 10.000/mes) y/o capacidades horarias y overage decimal en Azure.",
+      "portalRuta": "securitycopilot.microsoft.com > Owner settings > Security compute units / portal.azure.com",
+      "integraciones": [
+        "Microsoft 365 E5 & E7 Licensing Entitlement",
+        "Azure Cost Management + Billing",
+        "Usage Monitoring Dashboard (Export to Excel)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Experiencias Embedded y Agentes en Microsoft Defender XDR",
+      "funcionOperativa": "Asistencia integrada para resumen de incidentes XDR+Sentinel, Guided Response, análisis de scripts/archivos, NL2KQL y agentes autónomos (Security Alert/Phishing Triage, TI Briefing, Hunting Assistant, Security Analyst, Dynamic Threat Detection).",
+      "portalRuta": "security.microsoft.com > Incidents / Hunting / Security Copilot > Agents",
+      "integraciones": [
+        "Microsoft Defender for Office 365, Endpoint, Identity y Cloud Apps",
+        "Microsoft Defender Threat Intelligence (MDTI) & Defender EASM",
+        "Microsoft Defender Vulnerability Management"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Integración con Microsoft Sentinel y Microsoft Sentinel MCP Server",
+      "funcionOperativa": "Plugins nativos de Sentinel y NL2KQL (con default workspace), más servidor Model Context Protocol (MCP) estandarizado sobre Sentinel Data Lake y herramientas de creación de agentes en VS Code.",
+      "portalRuta": "security.microsoft.com / sentinel.microsoft.com/mcp/security-copilot-agent-creation",
+      "integraciones": [
+        "Microsoft Sentinel Analytics & Sentinel Data Lake",
+        "Visual Studio Code (GitHub Copilot Agent Mode)",
+        "Microsoft Copilot Studio & Microsoft Foundry"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Entra Copilot Chat y Agentes de Identidad en Microsoft Entra",
+      "funcionOperativa": "Panel lateral/pantalla completa para investigar usuarios y apps riesgosas, auditar inicios de sesión, crear Lifecycle Workflows y operar Conditional Access Optimization, Identity Risk Management y Access Review Agents.",
+      "portalRuta": "entra.microsoft.com > Copilot chat / Agents",
+      "integraciones": [
+        "Microsoft Entra Conditional Access & ID Protection",
+        "Microsoft Entra ID Governance & Microsoft Teams",
+        "Microsoft Entra Agent ID"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Copilot in Intune y Agentes de Gestión Segura de Endpoints",
+      "funcionOperativa": "Consultas KQL en Device query, análisis del Settings Catalog, troubleshooting comparativo de dispositivos y operación de Change Review, Device Offboarding, Policy Configuration y Vulnerability Remediation Agents.",
+      "portalRuta": "intune.microsoft.com > Copilot / Agents",
+      "integraciones": [
+        "Microsoft Intune Settings Catalog & Multi Admin Approval",
+        "Microsoft Entra Device Registration",
+        "Microsoft Defender Vulnerability Management"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Copilot y Agentes de Triaje en Microsoft Purview (DLP, IRM, eDiscovery, Comm Compliance)",
+      "funcionOperativa": "Resumen contextual de alertas y mensajes sensibles junto con los agentes Alert Triage en DLP y Triage Agent en Insider Risk Management (clasificación automática en 4 categorías).",
+      "portalRuta": "purview.microsoft.com > Data Loss Prevention / Insider Risk Management > Alerts",
+      "integraciones": [
+        "Microsoft Purview DLP, IRM, MIP, Communication Compliance y eDiscovery",
+        "Endpoint DLP Evidence Collection",
+        "Microsoft Purview Agent Management Role Group"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Framework de Extensibilidad Custom (YAML, OpenAPI, KQL, LogicApp) y Auditoría IA",
+      "funcionOperativa": "Desarrollo y publicación controlada de plugins y agentes mediante manifiestos YAML/JSON (Descriptor, SkillGroups, AgentDefinitions con gpt-4.1) auditados en Purview UAL y DSPM for AI.",
+      "portalRuta": "securitycopilot.microsoft.com > Manage plugins > Custom / purview.microsoft.com > Audit & DSPM for AI",
+      "integraciones": [
+        "APIs REST OpenAPI 3.0 / 3.0.1 y Azure Logic Apps",
+        "Clusters Azure Data Explorer (Kusto)",
+        "Microsoft Purview Unified Audit Log & Office Management API"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "Security Copilot Owner",
+      "nivelSOC": "Platform Governance Lead",
+      "permisosClave": "Administrar Owner settings (privacidad, GPU, acceso M365, Purview logging), asignar roles en el Workspace, controlar disponibilidad de plugins preinstalados/custom y consultar Usage monitoring.",
+      "asignacionPIM": "Asignado mediante Role-assignable group gobernado en PIM (máx. 4 h); mantener siempre mínimo 2 owners activos (retención forzosa de plataforma).",
+      "responsabilidadOperativa": "Gobierno de privacidad, catálogo de plugins, cuotas de acceso y supervisión FinOps de SCUs.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Azure Capacity Owner / Contributor + Security Administrator",
+      "nivelSOC": "Cloud FinOps / SecOps Infrastructure",
+      "permisosClave": "Crear, modificar unidades Provisioned y Overage, vincular capacidades a Workspaces y ejecutar baja permanente de capacidad (Delete the capacity).",
+      "asignacionPIM": "Elegible en PIM sobre el Resource Group de capacidad en Azure y en Entra ID (máx. 2 h con aprobación dual).",
+      "responsabilidadOperativa": "Aprovisionamiento elástico de SCUs en Azure, control presupuestario y protección contra borrado accidental de capacidad.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Security Copilot Contributor (Recommended Microsoft Security roles)",
+      "nivelSOC": "SOC L1 / L2 / L3 & IT Security Analysts",
+      "permisosClave": "Crear sesiones, ejecutar y compartir Promptbooks, subir archivos propios e invocar plugins permitidos (sin publicar plugins custom por defecto).",
+      "asignacionPIM": "Reemplazar irreversiblemente el grupo Everyone por Recommended Microsoft Security roles o grupos Role-assignable segmentados.",
+      "responsabilidadOperativa": "Uso operativo diario en consolas standalone y embedded bajo autenticación estricta On-Behalf-Of.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Defender XDR Custom Role (Security Copilot) + Microsoft Sentinel Reader/Responder",
+      "nivelSOC": "SOC L1 / SOC L2 / Threat Hunter",
+      "permisosClave": "Habilita acceso OBO a incidentes unificados, alertas, scripts, archivos y tablas de Advanced Hunting y Microsoft Sentinel / Data Lake.",
+      "asignacionPIM": "Lectura activa para turno SOC; permisos de contención/respuesta elegibles en PIM por 8 horas.",
+      "responsabilidadOperativa": "Triaje asistido de incidentes, caza NL2KQL/MCP y validación humana de veredictos del Alert Triage Agent.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Security Administrator (Configurador de Agentes Defender y Entra)",
+      "nivelSOC": "SecOps & Identity Agent Custodian",
+      "permisosClave": "Rol requerido para configurar y administrar Security Alert / Phishing Triage Agent, Threat Intelligence Briefing Agent, Conditional Access Optimization Agent e Identity Risk Management Agent.",
+      "asignacionPIM": "Elegible en PIM (máx. 2 h, MFA resistente al phishing; prohibido asignarlo solo para uso analítico ordinario de Copilot).",
+      "responsabilidadOperativa": "Activación controlada de agentes, creación de sus Microsoft Entra Agent IDs y apagado de emergencia.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Endpoint Security Manager / Intune Role con permiso Security Copilot",
+      "nivelSOC": "Endpoint Security Operations",
+      "permisosClave": "Operar Copilot in Intune (Device query, políticas) y gestionar Change Review, Device Offboarding, Policy Configuration y Vulnerability Remediation Agents.",
+      "asignacionPIM": "Elegible en PIM (máx. 4 h) combinado con Multi Admin Approval en Intune.",
+      "responsabilidadOperativa": "Troubleshooting asistido de endpoints, diseño de baselines Settings Catalog y retiro supervisado de equipos obsoletos.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Purview Content Analyst (Purview Agent Management) + IRM Investigator",
+      "nivelSOC": "Data Security & Insider Risk Ops",
+      "permisosClave": "Purview Content Analyst administra los agentes de triaje DLP e IRM; IRM Analysts/Investigators visualizan resultados y habilitan datos Purview en el promptbook Microsoft User analysis.",
+      "asignacionPIM": "Asignación controlada con recertificación trimestral y rotación programada (<75 días) de la autenticación de 90 días del agente.",
+      "responsabilidadOperativa": "Operación segura de agentes de triaje de datos y resguardo estricto de evidencias DLP/IRM.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Purview Audit Reader + DSPM for AI Administrator",
+      "nivelSOC": "AI Governance & Internal Audit",
+      "permisosClave": "Consultar registros CopilotInteraction y acciones admin en Unified Audit Log e inspeccionar contenido prompt/respuesta y detecciones XPIA/Jailbreak en DSPM for AI.",
+      "asignacionPIM": "Elegible en PIM (máx. 4 h) con segregación estricta respecto a operadores cotidianos del SOC.",
+      "responsabilidadOperativa": "Auditoría independiente de uso de IA, investigación de fugas en sesiones compartidas y respuesta ante abusos de prompts.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo FinOps diario de consumo de SCUs (Default Inclusion E5/E7, Provisioned y Overage)",
+      "objetivo": "Vigilar la tasa de consumo diario por categoría y tipo de acción para evitar agotamiento inesperado de SCUs durante incidentes críticos.",
+      "consolaRuta": "securitycopilot.microsoft.com > Home menu > Owner settings > Usage monitoring",
+      "procedimiento": [
+        "Revisar el gráfico y tabla de las últimas 24 horas en cada pestaña de capacidad (Default Capacity E5/E7 y capacidades Azure).",
+        "Filtrar por Category (Prompt, Promptbook, Agent, Primitive) y Type (Manual Action vs. Automated Action) detectando anomalías.",
+        "Proyectar el consumo acumulado mensual frente a la bolsa incluida (400 SCUs por cada 1.000 licencias E5/E7, sin rollover).",
+        "Alertar al Azure Capacity Owner si el consumo supera el 85 % para ajustar unidades al inicio de hora reloj (tarda hasta 30 min)."
+      ],
+      "rolResponsable": "Security Copilot Owner / FinOps",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Resource Development",
+      "evidenciaAuditable": "Reporte exportado en Excel desde Usage monitoring y registro diario de burn rate.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Dimensiones Category/Type, exportación Excel y demora de 30 min verificadas en manage-usage.md; umbral 85 % propuesto editorialmente.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/copilot/security/manage-usage"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Supervisión de veredictos autónomos y feedback del Phishing / Security Alert Triage Agent",
+      "objetivo": "Validar la precisión del triaje autónomo de alertas de correo/colaboración, nube e identidad en Defender XDR y retroalimentar al modelo.",
+      "consolaRuta": "security.microsoft.com > Security Copilot > Agents > Agents in use > Security Alert Triage Agent",
+      "procedimiento": [
+        "Confirmar salud de autenticación y ejecución automática ante nuevas alertas en las cargas habilitadas.",
+        "Muestrear las explicaciones en lenguaje natural (transparent rationale) de alertas clasificadas como verdaderos y falsos positivos.",
+        "Registrar feedback correctivo de analista L2 cuando se identifique matiz contextual omitido por el agente."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "Initial Access / Phishing (T1566)",
+      "evidenciaAuditable": "Historial de actividad del agente en Microsoft Defender y bitácora de calificaciones de analistas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Evolución de Phishing Triage Agent hacia Security Alert Triage Agent verificada en security-copilot-agents-defender.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/security-copilot-agents-defender"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Triaje e investigación asistida de incidentes unificados XDR + Sentinel con control anti-overreliance",
+      "objetivo": "Acelerar el análisis de incidentes High/Medium, desofuscación de scripts y redacción de informes verificando siempre la evidencia cruda.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Incidents / securitycopilot.microsoft.com",
+      "procedimiento": [
+        "Revisar el Incident summary y los pasos de Guided response en el panel embebido de Copilot in Defender.",
+        "Ejecutar Analyze scripts and codes / Analyze files o el promptbook Suspicious script analysis ante artefactos sospechosos.",
+        "Validar las consultas NL2KQL e indicadores devueltos contra las tablas originales de Advanced Hunting antes de contener.",
+        "Generar el reporte técnico/ejecutivo con Create incident reports y calificar la calidad de respuesta."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "Execution / PowerShell (T1059.001)",
+      "evidenciaAuditable": "Informe validado adjunto al incidente en Defender/Sentinel y registro en Purview Audit.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Capacidades embebidas y control de sobreconfianza verificados en experiences-security-copilot.md y Application Card.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/copilot/security/experiences-security-copilot"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Revisión diaria de sugerencias del Conditional Access Optimization Agent e Identity Risk Agent",
+      "objetivo": "Detectar usuarios/apps no cubiertos por políticas Zero Trust e investigar cuentas riesgosas priorizadas cada 24 horas en Entra.",
+      "consolaRuta": "entra.microsoft.com > Agents / Copilot chat > Agent chat",
+      "procedimiento": [
+        "Inspeccionar los resultados del ciclo de 24 horas del Conditional Access Optimization Agent (brechas, solapamientos y políticas report-only).",
+        "Simular con What If cualquier política propuesta antes de pasarla a producción.",
+        "Revisar investigaciones y acciones sugeridas por el Identity Risk Management Agent (Preview) en Entra ID Protection."
+      ],
+      "rolResponsable": "Conditional Access Administrator / SOC L2",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "Credential Access / Valid Accounts (T1078.004)",
+      "evidenciaAuditable": "Registro de ejecuciones de 24 h en Entra Agents y políticas report-only evaluadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Permisos (Policy.Create.ConditionalAccessRO), identidad Agent ID y trigger de 24 h verificados en entra-agents.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/security-copilot/entra-agents"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Atención priorizada de alertas clasificadas por los Agentes de Triaje en Purview DLP e IRM",
+      "objetivo": "Focalizar a los investigadores de datos en las alertas de mayor riesgo de sensibilidad, exfiltración y comportamiento interno.",
+      "consolaRuta": "purview.microsoft.com > Data Loss Prevention > Alerts / Insider Risk Management > Alerts",
+      "procedimiento": [
+        "Verificar que los agentes de triaje DLP e IRM hayan corrido según calendario sin expiración de sesión (límite 90 días).",
+        "Atender en primer orden las alertas clasificadas en la categoría crítica dentro de las cuatro categorías del agente.",
+        "Usar el resumen embebido de Copilot en Purview sobre alertas DLP, actividades IRM y mensajes relacionados."
+      ],
+      "rolResponsable": "Insider Risk Management / DLP Analyst & Investigator",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "Exfiltration / Exfiltration Over Web Service (T1567)",
+      "evidenciaAuditable": "Cola diaria de alertas DLP/IRM priorizadas atendida y feedback registrado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Clasificación en 4 categorías y expiración a 90 días verificadas en copilot-in-purview-agents.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/copilot-in-purview-agents"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Detección diaria de eventos XPIADetected, JailbreakDetected y cambios administrativos en Copilot",
+      "objetivo": "Identificar de inmediato intentos de inyección indirecta de prompts desde artefactos externos, jailbreaks o alta no autorizada de plugins.",
+      "consolaRuta": "purview.microsoft.com > Audit / DSPM for AI > Activity explorer / Microsoft Sentinel",
+      "procedimiento": [
+        "Ejecutar consulta KQL sobre eventos CopilotInteraction de Security Copilot buscando XPIADetected = true o JailbreakDetected = true.",
+        "Revisar operaciones administrativas sensibles: UpdateTenantSettings, CreatePlugin, DeletePlugin y EnablePromptBook.",
+        "Aislar cualquier artefacto malicioso que haya disparado XPIA e inspeccionar la respuesta generada en DSPM for AI."
+      ],
+      "rolResponsable": "SOC L2 / AI Security Engineer",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Defense Evasion / Prompt Injection (XPIA)",
+      "evidenciaAuditable": "Bitácora diaria de alertas de seguridad IA en Sentinel con 0 eventos XPIA/Jailbreak sin triaje.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Propiedades AccessedResources.XPIADetected, Messages.JailbreakDetected y operaciones admin verificadas en purview/audit-copilot.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-copilot"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Análisis de alertas del Dynamic Threat Detection Agent y distribución del TI Briefing Agent",
+      "objetivo": "Investigar falsos negativos correlacionados entre Defender y Sentinel y alinear las defensas del día con inteligencia accionable.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts / Security Copilot > Agents > Threat Intelligence Briefing Agent",
+      "procedimiento": [
+        "Triar prioritariamente alertas generadas por el servicio adaptativo Dynamic Threat Detection Agent revisando sus técnicas MITRE ATT&CK.",
+        "Revisar el informe del Threat Intelligence Briefing Agent confirmando cruce efectivo con vulnerabilidades de endpoints.",
+        "Lanzar consultas de validación con el Threat Hunting Assistant sobre los IOCs críticos del briefing."
+      ],
+      "rolResponsable": "Threat Hunter / SOC L3",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-02",
+      "mitreTactic": "Reconnaissance / Multi-Stage Intrusion Correlation",
+      "evidenciaAuditable": "Briefing diario validado y registro de alertas dinámicas investigadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Dynamic Threat Detection Agent y TI Briefing Agent verificados en security-copilot-agents-defender.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/security-copilot-agents-defender"
+    },
+    {
+      "codigo": "D-08",
+      "cadencia": "Diaria",
+      "actividad": "Revisión asistida de cambios críticos en endpoints con el Change Review Agent en Intune",
+      "objetivo": "Evaluar el impacto operativo y de seguridad de las solicitudes pendientes de Multi Admin Approval antes de autorizarlas.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Multi Admin Approval / Agents > Change Review Agent",
+      "procedimiento": [
+        "Abrir las solicitudes pendientes de aprobación dual en el centro de administración de Intune.",
+        "Revisar el análisis de efecto y recomendación emitido por el Change Review Agent y verificar solapamientos de políticas.",
+        "Aprobar o rechazar dejando evidencia del análisis en el registro de cambio."
+      ],
+      "rolResponsable": "Intune Administrator / Endpoint Security Manager",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Defense Evasion / Modify System Process",
+      "evidenciaAuditable": "Decisiones de Multi Admin Approval respaldadas por evaluación del Change Review Agent.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Change Review Agent verificado en intune/copilot/agents/ (actualizado el 2026-11-11).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/copilot/agents/"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría de identidades y vigencia de autenticación de todos los Agentes desplegados",
+      "objetivo": "Prevenir interrupciones operativas por expiración de tokens y asegurar uso de Microsoft Entra Agent ID con permisos mínimos.",
+      "consolaRuta": "securitycopilot.microsoft.com > Agents / purview.microsoft.com / entra.microsoft.com > Agent ID",
+      "procedimiento": [
+        "Revisar el estado de conexión de todos los agentes activos en Defender, Entra, Intune, Purview y Standalone.",
+        "Verificar días restantes antes de la caducidad de 90 días en agentes Purview autenticados con cuenta de administrador.",
+        "Validar que el Threat Intelligence Briefing Agent con Agent ID tenga acceso Read a todos los Device Groups productivos de MDE."
+      ],
+      "rolResponsable": "Security Administrator / Security Copilot Owner",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Persistence / Valid Accounts (T1078)",
+      "evidenciaAuditable": "Checklist semanal de salud e identidad de agentes con 0 agentes desconectados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Configuración obligatoria de Device Groups para TI Briefing Agent y expiración de 90d en Purview verificadas en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/copilot/security/agents-overview"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Gobierno del catálogo de Plugins Preinstalados, Custom Plugins y Security Store",
+      "objetivo": "Mantener control estricto Owners only sobre plugins personalizados organizacionales y validar disponibilidad en consolas embebidas.",
+      "consolaRuta": "securitycopilot.microsoft.com > Owner > Plugin settings / Manage plugins",
+      "procedimiento": [
+        "Confirmar en Plugin settings que solo Copilot Owners puedan publicar plugins custom para toda la organización.",
+        "Revisar cualquier plugin custom en prueba privada antes de autorizar alcance organizacional, validando OpenAPI 3.0 y auth AAD/OAuth.",
+        "Comprobar que restricciones sobre plugins preinstalados no bloqueen accidentalmente experiencias embebidas del SOC."
+      ],
+      "rolResponsable": "Security Copilot Owner",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-02",
+      "mitreTactic": "Supply Chain Compromise / Third-Party Software",
+      "evidenciaAuditable": "Inventario semanal validado de Plugin settings y manifiestos custom autorizados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Controles Owners only e impacto en experiencias embebidas verificados en manage-plugins.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/copilot/security/manage-plugins"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Curación y optimización de consumo SCU en la librería corporativa de Promptbooks",
+      "objetivo": "Estandarizar flujos analíticos repetibles de alta calidad reduciendo consumo innecesario de SCUs por prompts mal estructurados.",
+      "consolaRuta": "securitycopilot.microsoft.com > Promptbook library / Usage monitoring",
+      "procedimiento": [
+        "Auditar nuevos Promptbooks compartidos con el tenant verificando parametrización limpia y ausencia de datos sensibles fijos.",
+        "Cruzar en Usage monitoring el consumo medio en SCUs por corrida de cada Promptbook corporativo.",
+        "Refinar redacción de prompts y consolidar pasos redundantes para optimizar velocidad y costo."
+      ],
+      "rolResponsable": "SOC L3 / Detection Engineer",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "Defense Operations Standardization",
+      "evidenciaAuditable": "Catálogo curado de Promptbooks con métrica de SCUs promedio por ejecución.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Funcionamiento y costos de Promptbooks verificados en using-promptbooks.md y manage-usage.md; curación semanal propuesta editorialmente.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/copilot/security/using-promptbooks"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Depuración de dispositivos obsoletos y priorización CVE con Agentes de Intune",
+      "objetivo": "Alinear inventarios Intune/Entra ID y acelerar remediación de vulnerabilidades críticas mediante agentes supervisados.",
+      "consolaRuta": "intune.microsoft.com > Agents > Device Offboarding / Vulnerability Remediation / Policy Configuration",
+      "procedimiento": [
+        "Evaluar candidatos identificados por el Device Offboarding Agent y otorgar aprobación administrativa expresa para retirar equipos obsoletos.",
+        "Revisar priorizaciones de riesgo del Vulnerability Remediation Agent y enriquecer CVEs críticos con el promptbook Vulnerability impact assessment.",
+        "Generar políticas de endurecimiento en el Settings Catalog asistidas por el Policy Configuration Agent."
+      ],
+      "rolResponsable": "Endpoint Security Manager / Intune Administrator",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "Initial Access / Exploit Public-Facing Application (T1190)",
+      "evidenciaAuditable": "Actas semanales de baja aprobada de dispositivos y despliegues de remediación en Intune.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Los cuatro agentes de Intune verificados en intune/copilot/agents/ (actualizado 2026-11-11).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/copilot/agents/"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Threat Hunting avanzado con Microsoft Sentinel MCP Server y Security Analyst Agent sobre Data Lake",
+      "objetivo": "Ejecutar cacerías complejas por hipótesis y clustering estadístico sobre grandes volúmenes históricos en Sentinel Data Lake.",
+      "consolaRuta": "security.microsoft.com > Hunting / Security Analyst Agent / VS Code con Sentinel MCP Server",
+      "procedimiento": [
+        "Confirmar configuración del default workspace en el plugin Microsoft Sentinel dentro de Security Copilot.",
+        "Ejecutar análisis de anomalías, clustering de red y evaluación de usuarios comprometidos con Security Analyst Agent y herramientas Sentinel MCP.",
+        "Documentar hallazgos y promover consultas validadas a Custom Detection Rules en el portal unificado."
+      ],
+      "rolResponsable": "Threat Hunter / SOC L3",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "Command and Control / Lateral Movement",
+      "evidenciaAuditable": "Reporte semanal de cacería sobre Sentinel Data Lake y nuevas detecciones publicadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Sentinel MCP Server y Security Analyst Agent verificados en sentinel-mcp-get-started.md y security-copilot-agents-defender.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/datalake/sentinel-mcp-get-started"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría de sesiones compartidas (Shared Sessions) y archivos subidos en Purview DSPM for AI",
+      "objetivo": "Impedir exposición interna de información restringida debido a que los enlaces de sesión compartida no reevalúan el RBAC del plugin origen.",
+      "consolaRuta": "purview.microsoft.com > DSPM for AI > Activity explorer / securitycopilot.microsoft.com > Owner settings",
+      "procedimiento": [
+        "Revisar sesiones compartidas durante la semana verificando qué plugins fueron invocados (especialmente Purview DLP, IRM y eDiscovery).",
+        "Confirmar que ningún enlace compartido haya expuesto datos confidenciales a colaboradores sin necesidad de saber (need-to-know).",
+        "Validar la configuración de Upload files en Owner settings recordando que fragmentos recuperados pueden salir del Workspace si data sharing estuviera activo."
+      ],
+      "rolResponsable": "Purview Data Security Admin / Security Copilot Owner",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-01",
+      "mitreTactic": "Collection / Data from Information Repositories (T1213)",
+      "evidenciaAuditable": "Bitácora semanal de inspección DSPM for AI con 0 exposiciones internas no autorizadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Comportamiento de no-reevaluación RBAC en Shared sessions y aislamiento de archivos subidos verificados en authentication.md y privacy-data-security.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/copilot/security/authentication"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Cierre mensual FinOps y dimensionamiento de capacidad SCU (Inclusión M365 E5/E7 vs. Azure)",
+      "objetivo": "Maximizar el aprovechamiento de las SCUs incluidas sin costo en E5/E7 (sin rollover) y calibrar unidades Provisioned/Overage en Azure.",
+      "consolaRuta": "securitycopilot.microsoft.com > Usage monitoring / portal.azure.com > Cost Management",
+      "procedimiento": [
+        "Exportar 30 días de datos de Usage monitoring analizando SCUs por experiencia, categoría, plugin y usuario/agente.",
+        "Comparar consumo total contra la dotación mensual incluida (400 SCUs por cada 1.000 licencias E5/E7 hasta 10.000 SCUs/mes).",
+        "Ajustar unidades Provisioned (al inicio de hora reloj) y topes Overage o presupuestar escalamiento PAYG ($6 USD/SCU) según demanda real."
+      ],
+      "rolResponsable": "FinOps / Security Copilot Owner / SOC Manager",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Resource Optimization",
+      "evidenciaAuditable": "Informe mensual FinOps con métricas de utilización SCU y costo unitario por investigación.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Reglas de facturación mensual sin rollover, $6 USD PAYG y precisión decimal en Overage verificadas en security-copilot-inclusion.md y security-compute-units-capacity.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/copilot/security/security-copilot-inclusion"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Recertificación mensual de Roles de Plataforma, herencia de Owners y Conditional Access para IA",
+      "objetivo": "Garantizar mínimo privilegio en Role assignment, ausencia del grupo Everyone y cobertura MFA phishing-resistant al portal.",
+      "consolaRuta": "securitycopilot.microsoft.com > Role assignment / entra.microsoft.com > Conditional Access",
+      "procedimiento": [
+        "Verificar que el grupo Everyone esté ausente y que el acceso contributor use Recommended Microsoft Security roles o Role-assignable groups.",
+        "Revisar los roles Entra/Intune/Purview que heredan Copilot Owner asegurando al menos 2 owners custodios y removiendo excesos.",
+        "Comprobar vigencia de la política de Acceso Condicional Protect AI sobre Microsoft Security Copilot."
+      ],
+      "rolResponsable": "Security Copilot Owner / Identity Governance Administrator",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-02",
+      "mitreTactic": "Valid Accounts (T1078.004)",
+      "evidenciaAuditable": "Exportación mensual de asignaciones RBAC de plataforma y prueba What If de Acceso Condicional.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Retención mínima de 2 owners, grupos Role-assignable y política Protect AI verificados en authentication.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/copilot/security/authentication"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría de postura de Privacidad, ubicación GPU, acceso M365 y retención Purview Audit",
+      "objetivo": "Confirmar cumplimiento inalterado de soberanía de datos, bloqueo de captura humana y retención de auditoría >=365 días.",
+      "consolaRuta": "securitycopilot.microsoft.com > Owner settings / purview.microsoft.com > Audit retention policies",
+      "procedimiento": [
+        "Verificar que ambas opciones de compartición de Customer Data con revisión humana continúen en Off.",
+        "Validar ubicación de evaluación GPU, estado del toggle de acceso a servicios M365 y activación de Logging audit data in Microsoft Purview.",
+        "Comprobar que la retención en Purview Audit supere el valor estándar de 180 días conforme a normativa aplicable."
+      ],
+      "rolResponsable": "Security Copilot Owner / GRC",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "Compliance & Data Sovereignty",
+      "evidenciaAuditable": "Acta mensual de control de configuración de privacidad y auditoría.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Opciones de Owner settings y retención base de 180 días en Purview verificadas en auto-provisioning-security-copilot.md y audit-log.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/copilot/security/auto-provisioning-security-copilot"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Evaluación mensual de precisión analítica, feedback de calidad y reducción de MTTR",
+      "objetivo": "Cuantificar el impacto operativo de Security Copilot y corregir fuentes de alucinación o imprecisión en flujos del SOC.",
+      "consolaRuta": "security.microsoft.com / securitycopilot.microsoft.com",
+      "procedimiento": [
+        "Comparar tiempos medios de investigación y cierre (MTTA/MTTR) en incidentes con y sin asistencia de Security Copilot.",
+        "Analizar respuestas calificadas como Needs improvement o Inappropriate identificando brechas de contexto o colisiones de skills.",
+        "Actualizar instrucciones de agentes, descripciones DescriptionForModel y guías de prompting del equipo."
+      ],
+      "rolResponsable": "SOC Manager / Detection Engineering Lead",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Continuous SecOps Improvement",
+      "evidenciaAuditable": "Reporte ejecutivo mensual de desempeño y calidad de IA en el SOC.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Opciones oficiales de feedback (Looks right, Needs improvement, Inappropriate) verificadas en sentinel-security-copilot.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/sentinel-security-copilot"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría técnica de Manifiestos YAML de Agentes Custom, Logic Apps y conexiones MCP",
+      "objetivo": "Asegurar que toda automatización propia cumpla estándares de autenticación moderna, alcance acotado y cero secretos expuestos.",
+      "consolaRuta": "securitycopilot.microsoft.com > Manage plugins > Custom / Repositorios Git / VS Code mcp.json",
+      "procedimiento": [
+        "Revisar todos los manifiestos YAML/JSON productivos verificando Descriptor, SkillGroups (AGENT, GPT gpt-4.1, KQL, API, LogicApp) y AgentDefinitions.",
+        "Confirmar prohibición del flujo legado OAuthPasswordGrantFlow, priorizando AAD, AADDelegated u OAuthAuthorizationCodeFlow.",
+        "Auditar clientes conectados al Microsoft Sentinel MCP Server verificando vigencia de permisos Security Reader."
+      ],
+      "rolResponsable": "AI Security Engineer / Platform Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Credential Access / Unsecured Credentials (T1552)",
+      "evidenciaAuditable": "Informe mensual de revisión de seguridad de manifiestos YAML y endpoints MCP.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Sintaxis YAML, modelo gpt-4.1 y esquemas de autenticación verificados en developer/agent-manifest.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/copilot/security/developer/agent-manifest"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Renovación preventiva (<75 días) de credenciales de Agentes y Access Review de Agent IDs",
+      "objetivo": "Garantizar operación ininterrumpida renovando autenticaciones antes del límite de 90 días y recertificando permisos de identidades de agentes.",
+      "consolaRuta": "purview.microsoft.com / security.microsoft.com > Agents / entra.microsoft.com > Access reviews",
+      "procedimiento": [
+        "Renovar de forma planificada antes del día 75 la autenticación de los agentes de triaje en Purview DLP e IRM (expiran a los 90 días).",
+        "Rotar secretos/certificados de cualquier plugin custom API u OAuth según calendario criptográfico.",
+        "Ejecutar Access Review trimestral sobre roles y grupos asignados a cada Microsoft Entra Agent ID de Security Copilot."
+      ],
+      "rolResponsable": "Security Administrator / Purview Content Analyst / Identity Governance Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Valid Accounts (T1078)",
+      "evidenciaAuditable": "Bitácora de renovación preventiva completada sin caídas y actas de Access Reviews cerradas.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Expiración a 90 días verificada en copilot-in-purview-agents.md; ventana preventiva <75 días definida editorialmente.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/copilot-in-purview-agents"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Evaluación gobernada de nuevos Agentes Microsoft y ofertas de Partners en Security Store",
+      "objetivo": "Adoptar innovaciones trimestrales del ecosistema Security Store validando previamente licenciamiento, privacidad e impacto en SCUs.",
+      "consolaRuta": "securitystore.microsoft.com / security.microsoft.com > Security Copilot > Security Store",
+      "procedimiento": [
+        "Revisar lanzamientos trimestrales en Security Store verificando prerrequisitos de productos y costos de licencia SaaS de partners.",
+        "Ejecutar piloto controlado de 14 días midiendo consumo real de SCUs (recordando que Public Preview también consume SCUs).",
+        "Aprobar paso a producción mediante comité SecOps + FinOps + Privacidad."
+      ],
+      "rolResponsable": "SOC Manager / Security Architect / FinOps",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.SC-07",
+      "mitreTactic": "Supply Chain Governance",
+      "evidenciaAuditable": "Fichas técnicas de evaluación de agentes en Security Store aprobadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo de compra/despliegue en Security Store y cobro SCU en Public Preview verificados en security-copilot-agents-defender.md y manage-usage.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/security-copilot-agents-defender"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Ejercicio controlado de AI Red Teaming (XPIA, Jailbreak, Shared Sessions y Plugins Custom)",
+      "objetivo": "Comprobar la resiliencia de analistas, agentes y reglas de detección ante intentos de manipulación adversarial sobre Security Copilot.",
+      "consolaRuta": "securitycopilot.microsoft.com / purview.microsoft.com > DSPM for AI",
+      "procedimiento": [
+        "Inyectar cadenas benignas de prueba XPIA en correos/scripts de laboratorio analizados por Copilot y verificar generación de XPIADetected = true.",
+        "Validar detección de prompts de prueba JailbreakDetected y cumplimiento del protocolo de verificación humana por parte de analistas L1/L2.",
+        "Auditar tiempos de detección y contención del SOC ejecutando el playbook AH-02."
+      ],
+      "rolResponsable": "AI Red Team / SOC L3 / AI Security Engineer",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Adversarial ML / Prompt Injection",
+      "evidenciaAuditable": "Informe semestral de AI Red Teaming con evidencias en Purview UAL / Sentinel y plan de remediación.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Banderas XPIADetected y JailbreakDetected verificadas en purview/audit-copilot.md; cadencia semestral de ejercicio propuesta editorialmente.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-copilot"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Auditoría anual integral de Gobierno IA, accesos Multitenant/MSSP y ciclo de vida de datos",
+      "objetivo": "Recertificar el cumplimiento anual de Security Copilot frente a NIST CSF 2.0, privacidad regulatoria y delegaciones B2B/GDAP/Lighthouse.",
+      "consolaRuta": "securitycopilot.microsoft.com / entra.microsoft.com / purview.microsoft.com",
+      "procedimiento": [
+        "Recertificar accesos externos multitenant habilitados vía B2B Tenant Switching, Partner Center GDAP o Azure Lighthouse.",
+        "Verificar políticas de purga por inactividad (>180 días) y probar el flujo documental de atención GDPR/DSR con soporte.",
+        "Actualizar la estrategia anual de capacidad SCU y hoja de ruta del SOC agéntico para el siguiente ejercicio fiscal."
+      ],
+      "rolResponsable": "CISO / GRC Lead / SOC Director",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "Trusted Relationship (T1199)",
+      "evidenciaAuditable": "Informe anual de auditoría de Microsoft Security Copilot firmado por el CISO.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Modelos multitenant (B2B, GDAP, Lighthouse) y retención de 180 días verificados en authentication.md y privacy-data-security.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/copilot/security/privacy-data-security"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de escalamiento de emergencia ante saturación del 100 % de SCUs en incidente crítico",
+      "objetivo": "Restablecer capacidad operativa de Security Copilot para los respondedores de incidentes y contener consumos secundarios.",
+      "consolaRuta": "securitycopilot.microsoft.com > Usage monitoring > Change units / portal.azure.com",
+      "procedimiento": [
+        "Identificar en Usage monitoring flujos Automated Action o Logic Apps de baja prioridad y pausarlos de inmediato.",
+        "Ejecutar Change units con rol Azure Capacity Owner + Copilot Owner ampliando Overage SCUs o Provisioned SCUs (efectivo en <=30 min).",
+        "Finalizada la contingencia, normalizar Provisioned SCUs exactamente al comienzo de una hora reloj para evitar cobros horarios duplicados."
+      ],
+      "rolResponsable": "Azure Capacity Owner / Security Copilot Owner / SOC Manager",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-01",
+      "mitreTactic": "Resource Availability & Incident Response Continuity",
+      "evidenciaAuditable": "Registro en AzureActivity del incremento/reducción controlada de unidades SCU.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Comportamiento al cruzar el 100 %, propagación en 30 min y cobro por hora reloj verificados en manage-usage.md y security-compute-units-capacity.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/copilot/security/manage-usage"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de contención ante XPIA confirmado, Jailbreak o agente/plugin comprometido",
+      "objetivo": "Desactivar de forma inmediata el agente o plugin involucrado, preservar el par prompt/respuesta y revertir decisiones inducidas.",
+      "consolaRuta": "securitycopilot.microsoft.com > Agents / Manage plugins / purview.microsoft.com > DSPM for AI",
+      "procedimiento": [
+        "Apagar de inmediato el agente afectado o restringir/eliminar el plugin custom en Manage plugins (impacto instantáneo en el tenant).",
+        "Deshabilitar el Microsoft Entra Agent ID asociado o revocar sus permisos si se sospecha abuso de credenciales.",
+        "Extraer de Purview DSPM for AI el contenido íntegro del prompt, respuesta y archivo/recurso con XPIADetected = true y auditar acciones previas."
+      ],
+      "rolResponsable": "Security Administrator / Security Copilot Owner / SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Execution / Prompt Injection Containment",
+      "evidenciaAuditable": "Eventos DeletePlugin/UpdateTenantSettings en Purview UAL y reporte forense del incidente IA.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Efecto inmediato de restricción de plugins/agentes e inspección en DSPM for AI verificados en manage-plugins.md y audit-log.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/copilot/security/audit-log"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de remediación ante exposición interna de datos sensibles en una Shared Session",
+      "objetivo": "Cortar el acceso de lectura a enlaces de sesión compartidos por error y purgar Customer Data sensible cuando sea necesario.",
+      "consolaRuta": "securitycopilot.microsoft.com / purview.microsoft.com > Audit",
+      "procedimiento": [
+        "Hacer que el creador original de la sesión revoque el vínculo compartido o elimine la sesión de inmediato.",
+        "Si la sesión contenía datos regulados de Purview/RR. HH. que deban erradicarse antes de 180 días, solicitar borrado formal (completado en <=30 días).",
+        "Auditar en Purview UAL todos los accesos registrados a la sesión y notificar al Oficial de Privacidad según protocolo interno."
+      ],
+      "rolResponsable": "Security Copilot Owner / Purview Data Security Admin",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Data Exposure Containment",
+      "evidenciaAuditable": "Confirmación de eliminación de sesión/solicitud de purga de 30 días y traza UAL.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Control exclusivo por el creador de la sesión y plazo de borrado de 30 días verificados en authentication.md y privacy-data-security.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/copilot/security/privacy-data-security"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de evaluación rápida de impacto Zero-Day (<30 min) con Promptbooks y Agentes",
+      "objetivo": "Determinar en minutos si una vulnerabilidad crítica recién divulgada o campaña activa impacta activos corporativos.",
+      "consolaRuta": "securitycopilot.microsoft.com > Promptbook library / intune.microsoft.com > Agents",
+      "procedimiento": [
+        "Ejecutar los promptbooks Vulnerability impact assessment (por CVEID) y Check impact of an external threat article / TI 360 MDTI.",
+        "Correr las consultas KQL generadas sobre Defender XDR y Sentinel Data Lake para listar dispositivos expuestos e IOCs.",
+        "Coordinar remediación urgente con el Vulnerability Remediation Agent en Intune y emitir resumen ejecutivo al CISO."
+      ],
+      "rolResponsable": "Threat Hunter / SOC L3 / Endpoint Security Manager",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.CO-02",
+      "mitreTactic": "Exploit Public-Facing Application (T1190)",
+      "evidenciaAuditable": "Informe ejecutivo Zero-Day exportado en <30 minutos y campaña de parcheo iniciada.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Promptbooks oficiales verificados en using-promptbooks.md; SLA de 30 minutos definido como meta operativa.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/copilot/security/using-promptbooks"
+    },
+    {
+      "codigo": "AH-05",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Desconexión controlada de datos M365 o baja definitiva de capacidad SCU por mandato regulatorio",
+      "objetivo": "Ejecutar desconexión de servicios M365 o retiro irreversible de capacidad asegurando respaldo previo y plazos legales de purga.",
+      "consolaRuta": "securitycopilot.microsoft.com > Owner settings > Delete the capacity",
+      "procedimiento": [
+        "Para cortar solo el acceso a datos de Purview/M365, desactivar Allow Security Copilot to access data from your Microsoft 365 services en Owner settings.",
+        "Contactar a Security Copilot Support antes de borrar capacidad si se requiere exportación oficial de datos históricos.",
+        "Con rol Security Administrator o superior, ejecutar Delete the capacity confirmando purga definitiva (<=180 días automático o <=30 días bajo solicitud)."
+      ],
+      "rolResponsable": "Security Administrator / Security Copilot Owner / Legal",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "Regulatory Offboarding",
+      "evidenciaAuditable": "Ticket de soporte Microsoft y acta de baja de capacidad firmada.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Proceso de offboarding, rol Security Administrator y plazos de 180d/30d verificados en manage-usage.md y privacy-data-security.md.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/copilot/security/manage-usage"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Auditoría de interacciones y cambios administrativos en Security Copilot",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel",
+      "tablaPrincipal": "CloudAppEvents",
+      "consulta": "CloudAppEvents\n| where Timestamp > ago(7d)\n| where ActionType in ('CopilotInteraction', 'UpdateTenantSettings', 'CreatePlugin', 'DeletePlugin', 'EnablePromptBook')\n| extend AppIdentity = tostring(RawEventData.AppIdentity), AppHost = tostring(RawEventData.AppHost), AgentName = tostring(RawEventData.AgentName)\n| where AppIdentity has 'SecurityCopilot' or AppHost in ('Copilot in Defender', 'Copilot in Intune', 'Security Copilot')\n| summarize TotalEventos = count(), Plugins = make_set(tostring(RawEventData.AISystemPlugin), 10) by AccountDisplayName, ActionType, AppHost, AgentName, bin(Timestamp, 1d)\n| order by Timestamp desc",
+      "proposito": "Monitorear uso diario por analista, host embebido, agente invocado y modificaciones administrativas de plugins o configuración.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección de ataques Cross-Prompt Injection (XPIADetected) e intentos de Jailbreak",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel",
+      "tablaPrincipal": "CloudAppEvents",
+      "consulta": "CloudAppEvents\n| where Timestamp > ago(7d)\n| where ActionType == 'CopilotInteraction'\n| extend AppIdentity = tostring(RawEventData.AppIdentity)\n| where AppIdentity has 'SecurityCopilot' or tostring(RawEventData.AppHost) startswith 'Copilot in '\n| mv-expand Resource = RawEventData.AccessedResources\n| mv-expand Msg = RawEventData.Messages\n| extend XPIA = tobool(Resource.XPIADetected), Jailbreak = tobool(Msg.JailbreakDetected)\n| where XPIA == true or Jailbreak == true\n| project Timestamp, AccountDisplayName, AppIdentity, XPIA, Jailbreak, ResourceName = tostring(Resource.Name), ResourceId = tostring(Resource.ID)\n| order by Timestamp desc",
+      "proposito": "Alertar en tiempo cercano al real ante artefactos maliciosos con instrucciones ocultas XPIA o intentos de evasión de guardrails.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Trazabilidad de escalamiento, modificación o borrado de capacidades SCU en Azure",
+      "plataforma": "Azure Monitor Log Analytics / Microsoft Sentinel",
+      "tablaPrincipal": "AzureActivity",
+      "consulta": "AzureActivity\n| where TimeGenerated > ago(30d)\n| where ResourceProviderValue =~ 'MICROSOFT.SECURITYCOPILOT' or OperationNameValue has 'securityCopilot'\n| where ActivityStatusValue in ('Succeeded', 'Failed')\n| project TimeGenerated, Caller, OperationNameValue, ActivityStatusValue, SubscriptionId, ResourceGroup, _ResourceId\n| order by TimeGenerated desc",
+      "proposito": "Auditar quién aprovisiona, modifica unidades Provisioned/Overage o intenta eliminar recursos de capacidad SCU.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Supervisión de altas y cambios sobre identidades Microsoft Entra Agent ID de Security Copilot",
+      "plataforma": "Azure Monitor Log Analytics / Microsoft Sentinel",
+      "tablaPrincipal": "AuditLogs",
+      "consulta": "AuditLogs\n| where TimeGenerated > ago(30d)\n| where Category in ('ApplicationManagement', 'RoleManagement', 'DirectoryManagement')\n| mv-expand TargetResources\n| where tostring(TargetResources.displayName) has_any ('Agent', 'Security Copilot', 'Conditional Access Optimization', 'Triage')\n| project TimeGenerated, Category, OperationName, Result, Actor = coalesce(tostring(InitiatedBy.user.userPrincipalName), tostring(InitiatedBy.app.displayName)), TargetName = tostring(TargetResources.displayName)\n| order by TimeGenerated desc",
+      "proposito": "Rastrear el ciclo de vida y permisos otorgados a las identidades dedicadas de agentes autónomos en Entra ID.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Extracción directa del Unified Audit Log para Security Copilot vía PowerShell",
+      "plataforma": "Exchange Online / Microsoft Purview Audit PowerShell",
+      "tablaPrincipal": "UnifiedAuditLog (RecordType: CopilotInteraction)",
+      "consulta": "Connect-ExchangeOnline -ShowBanner:$false\nSearch-UnifiedAuditLog -StartDate (Get-Date).AddDays(-7) -EndDate (Get-Date) -RecordType CopilotInteraction -ResultSize 1000 |\nForEach-Object {\n  $d = $_.AuditData | ConvertFrom-Json\n  if ($d.AppIdentity -like '*SecurityCopilot*' -or $d.AppHost -like 'Copilot in *') {\n    [PSCustomObject]@{ Date = $_.CreationDate; User = $_.UserIds; Op = $_.Operations; AppIdentity = $d.AppIdentity; Host = $d.AppHost; Agent = $d.AgentName }\n  }\n} | Format-Table -AutoSize",
+      "proposito": "Verificar ingesta forense en Purview Audit cuando aún no se ha conectado el flujo hacia Microsoft Sentinel.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Cálculo automatizado de la bolsa mensual de SCUs incluidas en Microsoft 365 E5 y E7",
+      "plataforma": "Microsoft Graph PowerShell",
+      "tablaPrincipal": "subscribedSkus",
+      "consulta": "Connect-MgGraph -Scopes 'Organization.Read.All'\n$skus = Get-MgSubscribedSku | Where-Object { $_.SkuPartNumber -match 'SPE_E5|M365_E5|SPE_E7|M365_E7' -and $_.CapabilityStatus -eq 'Enabled' }\n$seats = ($skus.PrepaidUnits.Enabled | Measure-Object -Sum).Sum\n$scus = [Math]::Min(10000, [Math]::Round(($seats / 1000.0) * 400, 1))\n[PSCustomObject]@{ PaidE5E7Seats = $seats; MonthlyIncludedSCUs = $scus; MaxCapReached = ($scus -eq 10000) }",
+      "proposito": "Estimar con exactitud la dotación mensual incluida (400 SCUs por cada 1.000 asientos pagos hasta 10.000 SCUs/mes) para FinOps.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Verificación sintáctica de Manifiesto YAML de Agente Custom (gpt-4.1 + KQL Sentinel)",
+      "plataforma": "Microsoft Security Copilot Custom Agent Manifest (YAML)",
+      "tablaPrincipal": "Descriptor / SkillGroups / AgentDefinitions",
+      "consulta": "Descriptor:\n  Name: SecOps.SentinelHighSevTriage\n  DisplayName: Sentinel High Severity Triage Helper\n  Description: Agente gobernado de resumen de incidentes High\nSkillGroups:\n  - Format: KQL\n    Skills:\n      - Name: FetchHighIncidents\n        Description: Lista 10 incidentes High recientes\n        Settings:\n          Target: Sentinel\n          TenantId: '{{TenantId}}'\n          SubscriptionId: '{{SubscriptionId}}'\n          ResourceGroupName: '{{ResourceGroupName}}'\n          WorkspaceName: '{{WorkspaceName}}'\n          Template: SecurityIncident | where TimeGenerated > ago(1h) and Severity == 'High' | take 10\n  - Format: AGENT\n    Skills:\n      - Name: EntrySkill\n        Description: Sintetiza contexto para L1\n        Interfaces: [Agent]\n        Settings:\n          Model: gpt-4.1\n          Instructions: Resume el incidente y sugiere pasos de verificacion humana.\n        ChildSkills: [FetchHighIncidents]",
+      "proposito": "Plantilla base conforme al esquema oficial agent-manifest.md para validar agentes personalizados antes de publicarlos.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Reducción Porcentual de MTTR en Incidentes Asistidos por Security Copilot",
+      "definicion": "Disminución relativa del tiempo medio de resolución en incidentes High/Medium investigados usando resúmenes, Guided Response o Promptbooks frente a la línea base histórica.",
+      "formula": "((MTTR_Base - MTTR_ConSecurityCopilot) / MTTR_Base) * 100",
+      "metaSugerida": ">= 30 %",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO, SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mide ganancia tangible de velocidad operativa del SOC sin sacrificar rigor forense."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Índice de Aprovechamiento Óptimo de SCUs Incluidas en M365 E5/E7",
+      "definicion": "Porcentaje consumido de la dotación mensual gratuita (400 SCUs por cada 1.000 licencias E5/E7, sin rollover) antes del reinicio mensual.",
+      "formula": "(SCUs consumidas sobre Default Security Copilot Capacity / SCUs mensuales asignadas) * 100",
+      "metaSugerida": "70 % - 92 %",
+      "frecuencia": "Semanal / Mensual",
+      "audiencia": "FinOps, Security Copilot Owner",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Evita tanto subutilización del beneficio E5/E7 como saturación prematura del 100 %."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Tasa de Concordancia Analítica de Agentes de Triaje (Defender y Purview)",
+      "definicion": "Porcentaje de veredictos autónomos emitidos por Security Alert/Phishing Triage Agent y Purview DLP/IRM Triage Agents ratificados sin rectificación en muestreo L2.",
+      "formula": "(Veredictos autónomos confirmados por L2 / Total de veredictos muestreados) * 100",
+      "metaSugerida": ">= 94 %",
+      "frecuencia": "Semanal",
+      "audiencia": "SOC Manager, Purview Data Security Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Control esencial contra sesgos y falsos negativos en triaje automatizado."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Continuidad de Autenticación de Agentes Autónomos (Zero Auth-Expiry Downtime)",
+      "definicion": "Disponibilidad operativa mensual de agentes programados o basados en eventos sin interrupciones por expiración de tokens o cuentas de 90 días.",
+      "formula": "(Horas activas sin fallo de autenticación / Horas totales programadas en el mes) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Semanal",
+      "audiencia": "Security Administrator, SOC Operations",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Garantizado mediante rotación preventiva <75 días y adopción de Microsoft Entra Agent ID."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Adopción de Microsoft Entra Agent ID en Agentes Microsoft Soportados",
+      "definicion": "Porcentaje de agentes creados por Microsoft que operan con identidad dedicada Entra Agent ID frente al uso de credenciales personales de usuario.",
+      "formula": "(Agentes Microsoft configurados con Entra Agent ID / Total de agentes Microsoft activos que soportan Agent ID) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Mensual",
+      "audiencia": "Identity Architect, AI Security Engineer",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Alinea el SOC agéntico con las prácticas recomendadas en agents-overview.md."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Cobertura de Telemetría Purview Audit y DSPM for AI",
+      "definicion": "Porcentaje de Workspaces de Security Copilot con envío activo a Microsoft Purview Audit, retención >=365 días y políticas de captura en DSPM for AI.",
+      "formula": "(Workspaces con Purview logging On + DSPM for AI activo / Total de Workspaces en el tenant) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Mensual",
+      "audiencia": "GRC, Internal Audit, Data Security Admin",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Requisito indispensable para visibilidad de pares prompt/respuesta y auditoría regulatoria."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Tiempo Medio de Respuesta ante Alertas XPIADetected / JailbreakDetected",
+      "definicion": "Tiempo mediano desde el registro de una bandera XPIA o Jailbreak en Purview Audit/Sentinel hasta el inicio de contención e inspección forense.",
+      "formula": "Mediana(Timestamp_TriajeSOC - Timestamp_EventoAudit)",
+      "metaSugerida": "< 30 min",
+      "frecuencia": "Diaria",
+      "audiencia": "SOC L2, AI Security Engineer",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mide capacidad defensiva sobre la propia infraestructura de IA del SOC."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Tasa de Calidad Validada en Respuestas y Promptbooks (Looks Right Rate)",
+      "definicion": "Proporción de calificaciones positivas emitidas por los analistas sobre respuestas de Security Copilot respecto al total de evaluaciones registradas.",
+      "formula": "(Calificaciones 'Looks right' / Total de calificaciones emitidas en el mes) * 100",
+      "metaSugerida": ">= 90 %",
+      "frecuencia": "Mensual",
+      "audiencia": "SOC L3, Detection Engineering Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Guía la mejora continua de Promptbooks, plugins custom y capacitación de analistas."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.OC-03",
+      "descripcionResultado": "Los requisitos legales, regulatorios y contractuales —incluyendo obligaciones de privacidad y residencia de datos— se comprenden y gestionan.",
+      "capacidadMicrosoft": "Inmutabilidad geográfica por Workspace, selección de región GPU (EU, US, UK, ANZ), desactivación por defecto en E5/E7 de captura para revisión humana y cero entrenamiento de modelos fundacionales OpenAI.",
+      "evidenciaAuditoria": "Revisión mensual firmada de Owner settings y políticas de retención Purview Audit >=365 días.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles, responsabilidades y autoridades de gestión de riesgos de ciberseguridad se establecen, comunican y aplican.",
+      "capacidadMicrosoft": "Segregación entre Copilot Owner (mínimo 2 retenidos) y Copilot Contributor, eliminación irreversible de Everyone, modelo OBO y control Owners only sobre plugins custom.",
+      "evidenciaAuditoria": "Capturas auditadas de Role assignment y Plugin settings sin permisos excesivos.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-01",
+      "descripcionResultado": "Las vulnerabilidades en activos y deficiencias de configuración se identifican, validan y registran.",
+      "capacidadMicrosoft": "Conditional Access Optimization Agent en Entra, Vulnerability Remediation Agent en Intune, análisis en Defender for Cloud y promptbook Vulnerability impact assessment.",
+      "evidenciaAuditoria": "Reportes de políticas report-only sugeridas en Entra y planes priorizados de remediación CVE en Intune.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-02",
+      "descripcionResultado": "Se recibe inteligencia sobre amenazas cibernéticas de foros y fuentes de intercambio.",
+      "capacidadMicrosoft": "Threat Intelligence Briefing Agent, plugins Microsoft Threat Intelligence / Defender EASM y promptbooks Threat actor profile y TI 360 MDTI.",
+      "evidenciaAuditoria": "Briefings periódicos generados cruzando inteligencia externa con exposición interna verificada.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Los permisos de acceso, derechos y autorizaciones se gestionan aplicando los principios de mínimo privilegio y separación de funciones.",
+      "capacidadMicrosoft": "Autenticación On-Behalf-Of en cada plugin, identidades dedicadas Microsoft Entra Agent ID, Conditional Access Protect AI y Change Review Agent en Multi Admin Approval de Intune.",
+      "evidenciaAuditoria": "Inventario de identidades Entra Agent ID activas y bitácora de solicitudes evaluadas por Change Review Agent.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.DS-01",
+      "descripcionResultado": "La confidencialidad, integridad y disponibilidad de los datos en reposo están protegidas.",
+      "capacidadMicrosoft": "Aislamiento individual de archivos subidos, control de acceso a datos M365/Purview, gobernanza de Shared sessions e inspección de contenido en Purview DSPM for AI.",
+      "evidenciaAuditoria": "Políticas activas en Purview DSPM for AI y auditoría semanal sin fugas en sesiones compartidas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.AE-02",
+      "descripcionResultado": "Los eventos potencialmente adversos se analizan para comprender mejor las actividades asociadas.",
+      "capacidadMicrosoft": "Security Alert / Phishing Triage Agent en Defender, DLP & IRM Triage Agents en Purview y Dynamic Threat Detection Agent descubriendo falsos negativos entre XDR y SIEM.",
+      "evidenciaAuditoria": "Veredictos autónomos razonados auditados semanalmente y alertas dinámicas investigadas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-09",
+      "descripcionResultado": "El hardware y software de cómputo, entornos de ejecución y sus datos se monitorean para encontrar eventos potencialmente adversos.",
+      "capacidadMicrosoft": "Registro automático en Purview Audit (Standard) de CopilotInteraction, banderas XPIADetected y JailbreakDetected, y monitoreo de capacidades SCU en AzureActivity.",
+      "evidenciaAuditoria": "Reglas analíticas KQL operativas en Microsoft Sentinel sobre CloudAppEvents y AzureActivity.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.AN-03",
+      "descripcionResultado": "Se realiza un análisis para establecer qué tuvo lugar durante un incidente y determinar su causa raíz.",
+      "capacidadMicrosoft": "Resúmenes de incidentes XDR+Sentinel, análisis de scripts/archivos, Security Analyst Agent y exploración en lenguaje natural vía Microsoft Sentinel MCP Server sobre Data Lake.",
+      "evidenciaAuditoria": "Informes forenses validados por analistas L2/L3 adjuntos a los expedientes de incidentes.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Los incidentes son contenidos.",
+      "capacidadMicrosoft": "Guided Response en Defender XDR, Identity Risk Management Agent en Entra y desactivación instantánea de agentes/plugins custom ante eventos XPIA o anomalías (AH-02).",
+      "evidenciaAuditoria": "Trazas de contención aprobadas por humanos y eventos DeletePlugin/UpdateTenantSettings en Purview UAL.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.CO-02",
+      "descripcionResultado": "Las partes interesadas internas y externas son notificadas de los incidentes.",
+      "capacidadMicrosoft": "Generación estandarizada de informes ejecutivos para audiencias no técnicas mediante Create incident reports y los pasos finales de Promptbooks.",
+      "evidenciaAuditoria": "Reportes ejecutivos validados y distribuidos en el cierre formal de incidentes críticos.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-01",
+      "descripcionResultado": "La parte de recuperación del plan de respuesta a incidentes se ejecuta una vez iniciada desde el proceso de respuesta.",
+      "capacidadMicrosoft": "Restablecimiento de línea base de políticas con Policy Configuration Agent, normalización horaria de capacidad SCU post-contingencia (AH-01) y rotación de credenciales de agentes.",
+      "evidenciaAuditoria": "Actas de restablecimiento post-incidente en AzureActivity, Intune y paneles de salud de agentes.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Módulo construido íntegramente desde cero y verificado contra Microsoft Learn MCP y fuentes oficiales Microsoft a corte 11 de noviembre de 2026, cubriendo el modelo de inclusión de 400 SCUs/1.000 usuarios en Microsoft 365 E5 y E7 (2025-2026), auto-provisioning zero-click, facturación Provisioned vs. Overage decimal en Azure, catálogo completo de 14+ agentes en Defender/Entra/Intune/Purview, Microsoft Sentinel MCP Server, especificación YAML gpt-4.1, modelo RBAC On-Behalf-Of y auditoría en Purview UAL + DSPM for AI.",
+    "correccionesAplicadas": [
+      "Verificado en security-copilot-inclusion.md (jun-2026) y MC1261596 que todos los clientes comerciales de Microsoft 365 E5 y E7 reciben sin mínimo de asientos una Default Security Copilot Capacity de 400 SCUs/mes por cada 1.000 licencias pagas (escalado lineal hasta 10.000 SCUs/mes, sin rollover mensual, aplicable también a Microsoft Sentinel en tenants E5/E7 y con opción futura PAYG de $6 USD/SCU).",
+      "Confirmada la diferencia crítica de configuración inicial entre modelos: en el auto-aprovisionamiento E5/E7 las dos preferencias de compartición de Customer Data para revisión humana nacen en Off por defecto (auto-provisioning-security-copilot.md), mientras que en el onboarding manual no-E5 nacen en On por defecto (privacy-data-security.md).",
+      "Verificado el catálogo oficial de agentes vigentes al 2026-11-11: en Defender (Security Alert/Phishing Triage, TI Briefing, Threat Hunting Assistant, Security Analyst, Dynamic Threat Detection), en Entra (Conditional Access Optimization, Identity Risk Management Preview, Access Review Agent), en Intune (Change Review, Device Offboarding, Policy Configuration, Vulnerability Remediation — página actualizada el 2026-11-11) y en Purview (DLP Alert Triage e IRM Triage con expiración de autenticación a los 90 días).",
+      "Documentados los requisitos específicos del Threat Intelligence Briefing Agent al usar Microsoft Entra Agent ID: exige permisos de rol custom en Defender for Endpoint (Advanced Hunting, Vulnerability Management, Machine Configuration, Device Inventory Read) más acceso Read explícito en cada Device Group productivo para no reportar cero CVEs.",
+      "Verificada la arquitectura del Microsoft Sentinel MCP Server sobre Sentinel Data Lake y su endpoint de creación de agentes en VS Code (https://sentinel.microsoft.com/mcp/security-copilot-agent-creation), así como el esquema oficial de manifiestos YAML con modelo gpt-4.1 y formatos AGENT, GPT, KQL, API (OpenAPI 3.0/3.0.1) y LogicApp.",
+      "Confirmadas en security-compute-units-capacity.md y manage-usage.md las reglas exactas de facturación Azure: Provisioned SCUs por bloques fijos de hora reloj sin rollover, Overage SCUs facturadas con precisión exacta de 1 decimal, ajustes efectivos en <=30 minutos y cobro de SCUs tanto en GA como en Public Preview.",
+      "Verificado en purview/audit-copilot.md (ago-2026) y copilot/security/audit-log.md que Security Copilot está incluido sin recargo PAYG en Purview Audit (Standard) con retención base de 180 días, registrando AppIdentity Copilot.Security.SecurityCopilot, banderas XPIADetected / JailbreakDetected y captura de contenido prompt/respuesta exclusivamente vía Purview DSPM for AI."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Banda objetivo de utilización mensual SCU (70 % - 92 %) y alerta preventiva al 85 %",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Maximiza el valor financiero de las SCUs incluidas en M365 E5/E7 (que se pierden a fin de mes sin rollover) manteniendo un colchón operativo que absorba los 30 minutos de propagación si se requiere ampliar capacidad durante un incidente mayor."
+      },
+      {
+        "elemento": "Rotación preventiva trimestral antes del día 75 para agentes autenticados mediante cuenta de usuario",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Anticípase con 15 días de margen al vencimiento duro de 90 días documentado en los agentes de triaje de Microsoft Purview."
+      },
+      {
+        "elemento": "Metas numéricas de los 8 KPIs (>= 30 % reducción MTTR, >= 94 % concordancia de triaje, < 30 min respuesta XPIA, >= 90 % Looks right)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Proporciona indicadores cuantitativos equilibrados entre velocidad operativa, rigor analítico anti-overreliance y defensa del plano de IA."
+      },
+      {
+        "elemento": "Ejercicio semestral obligatorio de AI Red Teaming sobre XPIA, Jailbreak y exposición en Shared Sessions",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Operacionaliza las advertencias de la Application Card oficial de Security Copilot y el comportamiento de no-reevaluación RBAC en sesiones compartidas."
+      },
+      {
+        "elemento": "Modelo de Madurez de 5 niveles y mapeo probatorio de 12 subcategorías en NIST CSF 2.0",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Asegura trazabilidad homogénea de auditoría para el CISO y GRC a través de las seis funciones del marco NIST CSF 2.0."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "What is Microsoft Security Copilot?",
+      "url": "https://learn.microsoft.com/en-us/copilot/security/microsoft-security-copilot",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Security Copilot Documentation Team (mjcaparas)",
+      "comentario": "Arquitectura general de grounding, plugins, experiencias standalone/embedded y nota de alcance comercial vs. nubes gubernamentales.",
+      "verificacion": "Verificado 2026-11-11"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Learn about Security Copilot for Microsoft 365 E5 and E7 customers",
+      "url": "https://learn.microsoft.com/en-us/copilot/security/security-copilot-inclusion",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Security Copilot Documentation Team",
+      "comentario": "Fuente autoritativa sobre la inclusión de 400 SCUs/mes por cada 1.000 licencias pagas en M365 E5/E7 (hasta 10.000/mes), Default Capacity, uso en Sentinel y PAYG $6 USD/SCU.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-06-19)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Understand how Security Copilot is auto provisioned for eligible Microsoft 365 E5 and E7 customers",
+      "url": "https://learn.microsoft.com/en-us/copilot/security/auto-provisioning-security-copilot",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Security Copilot Documentation Team",
+      "comentario": "Configuraciones preseleccionadas en zero-click autoprovisioning: geo storage, ubicación GPU, compartición en Off, acceso M365 en On y roles heredados.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-06-18)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Microsoft Security Copilot Security Compute Units and capacity",
+      "url": "https://learn.microsoft.com/en-us/copilot/security/security-compute-units-capacity",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Security Copilot Documentation Team",
+      "comentario": "Comparativa técnica de capacidad incluida E5/E7, Provisioned SCUs (bloques horarios reloj) y Overage SCUs (precisión de 1 decimal).",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-05-01)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Manage security compute unit usage in Security Copilot",
+      "url": "https://learn.microsoft.com/en-us/copilot/security/manage-usage",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Security Copilot Documentation Team",
+      "comentario": "Panel Usage monitoring (90 días), dimensiones Category/Type, propagación en 30 minutos, cobro en Public Preview y borrado de capacidad.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-08-05)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Understand authentication in Microsoft Security Copilot",
+      "url": "https://learn.microsoft.com/en-us/copilot/security/authentication",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Security Copilot Documentation Team",
+      "comentario": "Autenticación On-Behalf-Of, roles Copilot Owner (mín. 2) y Contributor, eliminación de Everyone, implicaciones de Shared sessions y modelos multitenant/MSSP.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-06-06)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Privacy and data security in Microsoft Security Copilot",
+      "url": "https://learn.microsoft.com/en-us/copilot/security/privacy-data-security",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Security Copilot Documentation Team",
+      "comentario": "Definición de Customer Data, cero entrenamiento de modelos fundacionales OpenAI, tabla de datos Purview accesibles y plazos de retención/borrado (180d / 90d / 30d).",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-07-13)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Microsoft Security Copilot experiences",
+      "url": "https://learn.microsoft.com/en-us/copilot/security/experiences-security-copilot",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Security Copilot Documentation Team",
+      "comentario": "Matriz oficial de experiencias Standalone y Embedded en Defender XDR, Sentinel, Entra, Intune, Purview, Defender for Cloud, MDTI y Azure Firewall.",
+      "verificacion": "Verificado 2026-11-11"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Microsoft Security Copilot agents overview",
+      "url": "https://learn.microsoft.com/en-us/copilot/security/agents-overview",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Security Copilot Documentation Team",
+      "comentario": "Arquitectura de triggers, permisos, plugins e identidad de agentes (Microsoft Entra Agent ID vs. cuenta de usuario existente).",
+      "verificacion": "Verificado 2026-11-11"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Deploy AI agents in Microsoft Defender",
+      "url": "https://learn.microsoft.com/en-us/defender-xdr/security-copilot-agents-defender",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Defender XDR Documentation Team (guywi-ms)",
+      "comentario": "Detalle operativo de Security Alert/Phishing Triage Agent, Threat Intelligence Briefing Agent (incluyendo permisos Device Groups), Threat Hunting Assistant, Security Analyst Agent y Dynamic Threat Detection Agent.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-08-07)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Microsoft Entra Agents & Security Copilot in Microsoft Entra",
+      "url": "https://learn.microsoft.com/en-us/entra/security-copilot/entra-agents",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation Team (cilwerner)",
+      "comentario": "Especificaciones de permisos, triggers e identidad Agent ID del Conditional Access Optimization Agent e Identity Risk Management Agent.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-06-15)"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Security Copilot Agents in Intune",
+      "url": "https://learn.microsoft.com/en-us/intune/copilot/agents/",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Intune Documentation Team (MikeDano)",
+      "comentario": "Catálogo oficial de agentes en Intune: Change Review Agent, Device Offboarding Agent, Policy Configuration Agent y Vulnerability Remediation Agent.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-11-11)"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Microsoft Security Copilot agents in Microsoft Purview (preview)",
+      "url": "https://learn.microsoft.com/en-us/purview/copilot-in-purview-agents",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team (MSFTTracyP)",
+      "comentario": "Configuración, roles Purview Agent Management, recolección de evidencias y caducidad de autenticación de 90 días en DLP e IRM Triage Agents.",
+      "verificacion": "Verificado 2026-11-11"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Get started with Microsoft Sentinel MCP server",
+      "url": "https://learn.microsoft.com/en-us/azure/sentinel/datalake/sentinel-mcp-get-started",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Sentinel Documentation Team (poliveria)",
+      "comentario": "Integración del servidor Model Context Protocol (MCP) de Sentinel con Sentinel Data Lake, Security Copilot, Copilot Studio, Foundry y VS Code.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-09-23)"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "Agent manifest & Manage plugins in Microsoft Security Copilot",
+      "url": "https://learn.microsoft.com/en-us/copilot/security/developer/agent-manifest",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Security Copilot Developer Documentation",
+      "comentario": "Referencia técnica de manifiestos YAML/JSON (Descriptor, SkillGroups, AgentDefinitions), modelo gpt-4.1, formatos API/KQL/LogicApp y esquemas de autenticación.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-06-04)"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "Access the Security Copilot audit log & Audit logs for Copilot and AI applications",
+      "url": "https://learn.microsoft.com/en-us/purview/audit-copilot",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Audit Documentation Team",
+      "comentario": "Inclusión en Audit (Standard), esquema CopilotInteraction, AppIdentity Copilot.Security.SecurityCopilot, banderas XPIADetected / JailbreakDetected y DSPM for AI.",
+      "verificacion": "Verificado 2026-11-11 (actualizado 2026-08-26)"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "The agentic SOC—Rethinking SecOps for the next decade",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/04/09/the-agentic-soc-rethinking-secops-for-the-next-decade/",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Microsoft Security Leadership",
+      "comentario": "Visión arquitectónica oficial 2026 sobre la transición desde copilotos asistivos hacia operaciones de seguridad agénticas supervisadas.",
+      "verificacion": "Verificado 2026-11-11"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "Copilot for Security Community Prompts, Plugins & Promptbooks Repository",
+      "url": "https://github.com/rod-trent/Copilot-for-Security",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Rod Trent (Microsoft Cloud Security Advocate)",
+      "comentario": "Repositorio comunitario de referencia citado en la documentación oficial de Microsoft Sentinel para ingeniería de prompts y Promptbooks.",
+      "verificacion": "Verificado 2026-11-11"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)",
+      "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Marco normativo rector para auditar controles de gobernanza, detección, respuesta y recuperación asistidos por inteligencia artificial.",
+      "verificacion": "Verificado 2026-11-11"
+    }
+  ]
+}

@@ -1,0 +1,1255 @@
+{
+  "schemaVersion": "2.0",
+  "id": "10_Microsoft_Intune_Plan_1",
+  "orden": 10,
+  "slug": "Microsoft_Intune_Plan_1",
+  "nombre": "Microsoft Intune Plan 1 (Gestión Unificada de Endpoints y Postura en Microsoft 365 E3/E5)",
+  "nombreCorto": "Microsoft Intune Plan 1",
+  "categoria": "Endpoints, Dispositivos y Plataforma Windows",
+  "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://intune.microsoft.com",
+    "https://security.microsoft.com",
+    "https://entra.microsoft.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "SOC Manager",
+    "SOC L1",
+    "SOC L2",
+    "Endpoint Security Engineer",
+    "Intune Platform Administrator",
+    "Vulnerability Management Analyst",
+    "Identity Architect",
+    "GRC"
+  ],
+  "relacionM365E5": {
+    "estado": "Incluido en Microsoft 365 E5",
+    "licencias": [
+      "Microsoft 365 E5 / E3 / E7 (incluye Microsoft Intune Plan 1)",
+      "Enterprise Mobility + Security (EMS) E5 / E3 (incluye Microsoft Intune Plan 1)",
+      "Microsoft 365 F1 / F3, Microsoft 365 Business Premium y Microsoft 365 Education A3 / A5",
+      "Microsoft Intune Device-only subscription (exclusivo para quioscos, salas y dispositivos dedicados sin afinidad de usuario)"
+    ],
+    "prerrequisitos": [
+      "Microsoft Entra ID P1 o P2 para Conditional Access, Continuous Access Evaluation (CAE), auto-enrollment MDM y Entra ID PIM",
+      "Microsoft Defender for Endpoint P1/P2 con conector bidireccional activo para señales de riesgo en cumplimiento, reglas ASR, MDVM Security Tasks y aislamiento/Live Response",
+      "Windows 11 Enterprise E3/E5 (o equivalente elegible) con Virtualization-based Security (VBS) activo en 24H2+ para Windows Autopatch y Hotpatch updates sin reinicio",
+      "Certificado Apple MDM Push (APNs) renovado anualmente con el mismo Apple ID corporativo, tokens ABM/VPP y enlace Managed Google Play / Android Enterprise (Android 10+ o AOSP)",
+      "Suscripción activa de Azure con Log Analytics Workspace conectado en Reports > Diagnostics settings para enrutar IntuneAuditLogs, IntuneOperationalLogs, IntuneDeviceComplianceOrg e IntuneDevices"
+    ],
+    "notaLicenciamiento": "Microsoft Intune Plan 1 es el servicio base de gestión unificada de endpoints (MDM + MAM) incluido en Microsoft 365 E3 y E5. Los administradores no requieren licencia Intune asignada en tenants creados después de julio de 2021 (o con Allow access to unlicensed admins habilitado, acción irreversible, con límite de 1.000 admins por grupo de seguridad directo sin anidamiento). Las capacidades avanzadas de Intune Plan 2 (Microsoft Tunnel for MAM, Specialty devices, FOTA) y Microsoft Intune Suite (Endpoint Privilege Management, Cloud PKI, Remote Help, Enterprise Application Management y Advanced Analytics) son complementos pagos detallados en el Módulo 11_Microsoft_Intune_Suite, mientras que la arquitectura interna de seguridad y cifrado del SO Windows se profundiza en el Módulo 12_Windows_Enterprise_Security_y_Cifrado."
+  },
+  "resumenEjecutivo": "Microsoft Intune Plan 1 actúa en arquitecturas Zero Trust como la fuente autoritativa de verdad sobre la postura de seguridad de dispositivos corporativos y contenedores de aplicaciones BYOD en entornos Microsoft 365 E3/E5. Su operación de excelencia articula cuatro bucles continuos: (1) evaluación determinista de Device Compliance acoplada al nivel de riesgo de Microsoft Defender for Endpoint y aplicada en tiempo real por Microsoft Entra Conditional Access y Continuous Access Evaluation (CAE); (2) endurecimiento estandarizado mediante Settings Catalog, Endpoint Security policies y Security Baselines actualizadas a 2026 (Windows v26H2/25H2/24H2, M365 Apps v2512, Edge v139, Defender v24H1) verificando siempre el enforcement real en reportes dedicados y no solo el estado Succeeded de entrega MDM; (3) protección de datos sin inscripción MDM mediante App Protection Policies (MAM) en iOS 17+, Android 10+ y Microsoft Edge for Business en Windows con conector MTD de Windows Security Center; y (4) resiliencia del plano administrativo mediante Multi Admin Approval (MAA) en consola y Graph API, Scope Tags, Windows Autopatch con Hotpatch updates sin reinicio en Windows 11 24H2+, migración a Apple DDM y correlación SIEM consciente de las ventanas y deduplicación de sus cuatro tablas diagnósticas.",
+  "principiosRectores": [
+    {
+      "principio": "Entrega MDM no equivale a enforcement efectivo (Assignment != Enforcement)",
+      "descripcion": "El estado Succeeded en una política de Intune solo confirma la recepción por el CSP local; SecOps debe verificar el estado operativo real en Encryption report, MDM Firewall status y ASR Configuration.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/intune/intune-service/configuration/device-profile-monitor"
+    },
+    {
+      "principio": "Bucle cerrado Zero Trust entre postura, riesgo EDR y Acceso Condicional",
+      "descripcion": "Integrar señales de Device Compliance y el nivel de riesgo dinámico de Defender for Endpoint con Microsoft Entra Conditional Access y CAE para bloquear o revocar sesiones ante degradación de postura.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/intune/intune-service/protect/mde-security-integration"
+    },
+    {
+      "principio": "Doble control obligatorio en el plano administrativo (Multi Admin Approval)",
+      "descripcion": "Proteger acciones destructivas (Wipe, Retire, Delete), scripts, políticas de cumplimiento/configuración, aplicaciones y RBAC mediante Multi Admin Approval tanto en consola interactiva como en llamadas app-auth a Graph API.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/multi-admin-approval"
+    },
+    {
+      "principio": "Contenedorización MAM para BYOD móvil y Microsoft Edge for Business en Windows",
+      "descripcion": "Aislar y cifrar datos organizacionales en dispositivos personales sin inscripción MDM mediante App Protection Policies, App Protection Conditional Access, Windows Security Center MTD y Selective Wipe.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/intune/intune-service/apps/protect-mam-windows"
+    },
+    {
+      "principio": "Parcheo continuo sin reinicio (Hotpatching) con vía rápida ante CISA KEV",
+      "descripcion": "Maximizar la elegibilidad de Hotpatch updates en Windows 11 Enterprise 24H2+ (VBS activo y baselines trimestrales) reservando despliegues acelerados Expedited updates para vulnerabilidades explotadas activamente.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/windows/deployment/windows-autopatch/manage/windows-autopatch-hotpatch-updates"
+    },
+    {
+      "principio": "Correlación SIEM consciente de latencias asimétricas y deduplicación KQL",
+      "descripcion": "Distinguir analíticamente las tablas transaccionales inmediatas (IntuneAuditLogs, IntuneOperationalLogs) de los snapshots diarios de 24 a 48 horas (IntuneDevices, IntuneDeviceComplianceOrg) aplicando arg_max() frente a duplicados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/review-logs-using-azure-monitor"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Device Compliance Engine & Global Compliance Settings",
+      "funcionOperativa": "Evalúa cumplimiento por ajuste (cifrado, integridad de plataforma, versión mínima de SO y riesgo MDE), aplica Grace Period y gobierna Validity Period y el marcado Not compliant por defecto.",
+      "portalRuta": "intune.microsoft.com > Devices > Compliance",
+      "integraciones": [
+        "Microsoft Entra Conditional Access",
+        "Continuous Access Evaluation (CAE)",
+        "Microsoft Defender for Endpoint"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Settings Catalog y Gestión Declarativa Multiplataforma (CSP / Apple DDM)",
+      "funcionOperativa": "Catálogo granular mapeado directamente a CSPs de Windows, políticas declarativas Apple DDM (requeridas en Apple OS 26 para actualizaciones) y Android Enterprise/AOSP, asistido por Copilot in Intune.",
+      "portalRuta": "intune.microsoft.com > Devices > Manage devices > Configuration > Settings catalog",
+      "integraciones": [
+        "Windows Configuration Service Providers (CSP)",
+        "Apple Declarative Device Management (DDM)",
+        "Microsoft Copilot in Intune"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Security Baselines para Windows, Edge, M365 Apps y Defender",
+      "funcionOperativa": "Plantillas versionadas de endurecimiento oficial (Windows v26H2/25H2/24H2, M365 Apps v2512, Edge v139, Defender v24H1 para equipos físicos y Windows 365) con monitoreo Per-setting status.",
+      "portalRuta": "intune.microsoft.com > Endpoint security > Security baselines",
+      "integraciones": [
+        "Windows Security",
+        "Microsoft Edge for Business",
+        "Microsoft Defender for Endpoint"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Endpoint Security Workloads y Conector Bidireccional MDE",
+      "funcionOperativa": "Políticas dedicadas para Antivirus, Disk Encryption (BitLocker/FileVault), Firewall MDM, ASR, Account Protection (Windows LAPS), onboarding EDR y flujo de Security Tasks desde MDVM.",
+      "portalRuta": "intune.microsoft.com > Endpoint security",
+      "integraciones": [
+        "Microsoft Defender XDR",
+        "Microsoft Defender Vulnerability Management",
+        "Microsoft Entra ID (BitLocker Key Escrow)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Windows Autopatch y Hotpatch Updates",
+      "funcionOperativa": "Automatización en anillos de actualizaciones de Windows, M365 Apps, Edge y Teams, incluyendo parches mensuales sin reinicio (8 meses hotpatch + 4 meses baseline ene/abr/jul/oct) en Windows 11 Enterprise 24H2+.",
+      "portalRuta": "intune.microsoft.com > Devices > Manage updates > Windows updates > Quality updates",
+      "integraciones": [
+        "Windows Update",
+        "Virtualization-based Security (VBS)",
+        "Endpoint Analytics"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "App Protection Policies (MAM) y Data Protection for Windows MAM",
+      "funcionOperativa": "Contenedorización DLP a nivel app, Conditional Launch y App Selective Wipe sobre iOS 17+, Android y Microsoft Edge for Business en Windows personal con conector MTD de Windows Security Center (Win 11 23H2+).",
+      "portalRuta": "intune.microsoft.com > Apps > Protection",
+      "integraciones": [
+        "Microsoft Entra App Protection Conditional Access",
+        "Windows Security Center MTD Connector",
+        "Microsoft Purview Browser / Endpoint DLP"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Multi Admin Approval (MAA) y Scope Tags",
+      "funcionOperativa": "Políticas de doble aprobación sobre Apps, Compliance, Settings Catalog, Device actions (Wipe/Retire/Delete), RBAC, Scripts (con Change Review Agent) y Tenant Configuration en consola y Graph API.",
+      "portalRuta": "intune.microsoft.com > Tenant administration > Multi Admin Approval",
+      "integraciones": [
+        "Microsoft Graph API",
+        "Intune RBAC & Scope Tags",
+        "Change Review Agent"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Diagnostics Settings y Exportación hacia Azure Monitor / Sentinel",
+      "funcionOperativa": "Enrutamiento de AuditLogs, OperationalLogs, DeviceComplianceOrg e IntuneDevices hacia Log Analytics, Azure Storage o Event Hubs para correlación SIEM y retención auditable.",
+      "portalRuta": "intune.microsoft.com > Reports > Diagnostics settings",
+      "integraciones": [
+        "Azure Monitor Log Analytics",
+        "Microsoft Sentinel",
+        "Azure Event Hubs & Storage"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "Intune Read Only Operator",
+      "nivelSOC": "SOC L1 / Analista de Guardia y Auditores GRC",
+      "permisosClave": "Lectura global de dispositivos, estado de cumplimiento, perfiles, líneas base, reportes y Audit logs sin capacidad de escritura ni acciones remotas.",
+      "asignacionPIM": "Asignación acotada por Scope Tags regionales; sin privilegios de modificación.",
+      "responsabilidadOperativa": "Ejecutar monitoreo diario D-01 a D-07, enriquecer incidentes XDR y extraer evidencias de auditoría.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Endpoint Security Manager",
+      "nivelSOC": "SOC L2 / Endpoint Security Engineer",
+      "permisosClave": "Gestión de Endpoint security (Security Baselines, AV, Disk Encryption, Firewall, ASR, EDR onboarding, Security Tasks) y políticas de cumplimiento.",
+      "asignacionPIM": "Elegible en Entra ID PIM (máximo 4 horas sugeridas), MFA phishing-resistant y ticket ITSM obligatorio.",
+      "responsabilidadOperativa": "Gobernar postura de seguridad de endpoints, resolver conflictos CSP, promover reglas ASR a Block y procesar Security Tasks.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Custom Role — SecOps Endpoint Responder",
+      "nivelSOC": "SOC L2 / Incident Response Team",
+      "permisosClave": "ManagedDevices/Read, RemoteTasks/RemoteLock, RemoteTasks/SyncDevice, RemoteTasks/LocateDevice, RemoteTasks/RotateBitLockerKeys; Wipe y Retire sujetos a MAA.",
+      "asignacionPIM": "Elegible JIT en PIM exclusivamente durante incidentes P1/P2 activos; acciones destructivas gobernadas por Multi Admin Approval.",
+      "responsabilidadOperativa": "Ejecutar contención remota en playbooks IR-01 e IR-02 con registro formal de cadena de custodia.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "rol": "Policy and Profile Manager",
+      "nivelSOC": "Microinformática / Endpoint Engineering",
+      "permisosClave": "Administración de perfiles de configuración de productividad (Wi-Fi, VPN, certificados), inscripción corporativa y anillos dentro de sus Scope Tags.",
+      "asignacionPIM": "Elegible vía PIM for Groups (máximo 8 horas sugeridas); cambios en Settings Catalog y Scripts sujetos a MAA.",
+      "responsabilidadOperativa": "Gestionar ciclo de vida operativo de dispositivos, conectividad corporativa y anillos regulares de Windows Autopatch.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Application Manager",
+      "nivelSOC": "Empaquetado TI / Seguridad de Movilidad",
+      "permisosClave": "Gestión de aplicaciones móviles/Win32, políticas de configuración de apps, políticas App Protection (MAM) y ejecución de App selective wipe.",
+      "asignacionPIM": "Elegible vía PIM for Groups; despliegues de aplicaciones sujetos a doble aprobación MAA.",
+      "responsabilidadOperativa": "Administrar protección MAM en BYOD móvil y Edge for Business en Windows y ejecutar borrados selectivos de datos corporativos.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Custom Role — MAA Access Policy Admin & Approver",
+      "nivelSOC": "Security Lead / Change Advisory Board",
+      "permisosClave": "Permisos Create/Read/Update/Delete access policy o membresía directa en grupo de seguridad aprobador asignado directamente a un rol RBAC con permiso Read.",
+      "asignacionPIM": "Segregación estricta: ningún administrador puede aprobar su propia solicitud en Intune (ni siquiera Global Administrator).",
+      "responsabilidadOperativa": "Revisar justificaciones de negocio y aprobar o rechazar solicitudes de cambio o borrado en Multi Admin Approval antes de su expiración a los 3 días.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Intune Administrator (Intune Service Administrator)",
+      "nivelSOC": "Arquitecto Principal de Plataforma (Nivel 3)",
+      "permisosClave": "Acceso completo al tenant de Intune, conectores globales (MDE, APNs, Android Enterprise, Windows Security Center), Diagnostics settings y Administrator Licensing.",
+      "asignacionPIM": "Estrictamente elegible en Entra ID PIM (máximo 2 horas sugeridas, aprobación dual, Authentication Context desde PAW). Prohibido en uso rutinario.",
+      "responsabilidadOperativa": "Gobernar conectores tenant-wide, telemetría hacia Azure Monitor y recuperación declarativa ante incidentes IR-03.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Detección de dispositivos Noncompliant con sesión corporativa activa",
+      "objetivo": "Identificar dispositivos activos marcados como Noncompliant que mantienen sesiones exitosas en Entra ID tras vencer su Grace Period.",
+      "consolaRuta": "intune.microsoft.com > Devices > Compliance > Monitor > Noncompliant devices + entra.microsoft.com > Sign-in logs",
+      "procedimiento": [
+        "Filtrar dispositivos con Compliance state = Noncompliant y Last check-in < 24h segmentando vistas por sistema operativo.",
+        "Clasificar el ajuste incumplido en Categoría A crítica (cifrado apagado, riesgo MDE High, AV/EDR inactivo) frente a Categoría B administrativa.",
+        "Cruzar DeviceId y UPN contra SigninLogs de las últimas 24 horas buscando inicios de sesión exitosos (ResultType == 0) fuera de Grace Period.",
+        "Escalar como incidente prioritario cualquier acceso exitoso sin bloqueo de Conditional Access ni revocación CAE."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Initial Access (TA0001) / Valid Accounts (T1078)",
+      "evidenciaAuditable": "Reporte diario CSV o salida de consulta KQL deduplicada cruzando IntuneDeviceComplianceOrg con SigninLogs.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "El flujo de evaluación y correlación es oficial en MS Learn; la taxonomía Categoría A/B y meta de 0 sesiones son criterios consultivos.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/protect/device-compliance-get-started"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Verificación de salud del conector Defender for Endpoint y cobertura EDR/AV",
+      "objetivo": "Confirmar que el canal bidireccional Intune <-> MDE permanezca activo y sin puntos ciegos de sensor EDR o protección antimalware.",
+      "consolaRuta": "intune.microsoft.com > Endpoint security > Overview / Microsoft Defender for Endpoint",
+      "procedimiento": [
+        "Comprobar en Endpoint security > Microsoft Defender for Endpoint que Connection status figure Enabled con sincronización < 24h.",
+        "Revisar el mosaico de dispositivos incorporados a MDE frente al inventario elegible en Intune y asignar perfil EDR onboarding a brechas.",
+        "Inspeccionar Reports > Microsoft Defender Antivirus > Antivirus agent status para remediar agentes inactivos o firmas obsoletas."
+      ],
+      "rolResponsable": "SOC L1 / Endpoint Security Engineer",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Defense Evasion (T1562 Impair Defenses)",
+      "evidenciaAuditable": "Registro diario del estado Enabled del conector MDE y lista de remediación de endpoints Unhealthy.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Rutas y monitoreo del conector verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/protect/mde-security-integration"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Conciliación de cambios administrativos y bandeja Multi Admin Approval (MAA)",
+      "objetivo": "Detectar modificaciones de políticas o acciones remotas sin ticket aprobado y gestionar aprobaciones pendientes en MAA.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Audit logs / Multi Admin Approval > All requests",
+      "procedimiento": [
+        "Filtrar Audit logs de las últimas 24h en categorías Compliance, DeviceConfiguration, DeviceSecurity, Role, Enrollment y acciones Wipe/Retire/Delete.",
+        "Conciliar cada evento de escritura e identidad Actor contra tickets aprobados en el sistema ITSM.",
+        "Revisar solicitudes pendientes en Multi Admin Approval antes de su expiración a los 3 días, evaluando sugerencias de Agent Response del Change Review Agent para scripts PowerShell.",
+        "Activar playbook AH-03 (IR-03) ante cualquier cambio crítico huérfano de ticket."
+      ],
+      "rolResponsable": "SOC L2 / Security Administrator",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Persistence / Account Manipulation (T1098)",
+      "evidenciaAuditable": "Bitácora diaria de conciliación IntuneAuditLogs <-> ITSM y trazas de aprobaciones MAA.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Categorías de Audit logs, expiración MAA de 3 días e integración con Change Review Agent verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/multi-admin-approval"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Control diario de errores y conflictos CSP en Security Baselines",
+      "objetivo": "Identificar y eliminar colisiones de configuración entre perfiles de Security Baselines y Settings Catalog.",
+      "consolaRuta": "intune.microsoft.com > Endpoint security > Security baselines > [Perfil] > Monitor",
+      "procedimiento": [
+        "Inspeccionar los perfiles activos de Windows, Defender for Endpoint, M365 Apps y Microsoft Edge.",
+        "Filtrar estados Error y Conflict en Per-setting status para aislar ajustes CSP en colisión.",
+        "Eliminar el ajuste duplicado en la política secundaria o escalar fallos globales de prerrequisito de hardware (ej. VBS apagado en UEFI)."
+      ],
+      "rolResponsable": "SOC L2 / Endpoint Security Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "Defense Evasion (TA0005)",
+      "evidenciaAuditable": "Exportación de Per-setting status con seguimiento de resolución de conflictos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Monitoreo Per-setting status y resolución de conflictos verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/protect/security-baselines"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Enriquecimiento de incidentes de Defender XDR con postura del dispositivo en Intune",
+      "objetivo": "Contextualizar cada incidente High/Medium en el SOC con el estado real de cumplimiento, cifrado y sincronización en Intune.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts > Incidents + intune.microsoft.com > Devices > All devices",
+      "procedimiento": [
+        "Filtrar incidentes activos High y Medium con entidades de endpoint en el portal de Microsoft Defender.",
+        "Consultar en Intune el estado Compliant/Noncompliant, Last check-in, propiedad del activo y políticas de seguridad aplicadas.",
+        "Verificar custodia de BitLocker/FileVault Recovery Key antes de autorizar medidas destructivas y registrar si una brecha de postura fue factor contribuyente."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "Execution (TA0002) / Credential Access (TA0006)",
+      "evidenciaAuditable": "Notas de contexto Intune documentadas en el expediente del incidente en security.microsoft.com.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Integración XDR-Intune verificada; el flujo operativo de enriquecimiento por turno es práctica consultiva SOC.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/alerts-incidents-correlation"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Vigilancia de nuevas inscripciones (Enrollments) y restricciones de plataforma",
+      "objetivo": "Detectar inscripciones MDM no autorizadas y confirmar el rechazo efectivo de dispositivos personales no permitidos.",
+      "consolaRuta": "intune.microsoft.com > Devices > All devices / Devices > Monitor > Enrollment failures",
+      "procedimiento": [
+        "Listar dispositivos inscritos en las últimas 24 horas validando método de inscripción, propiedad Corporate/Personal y correlación con tickets de alta.",
+        "Auditar inscripciones realizadas con cuentas Device Enrollment Manager (DEM) verificando uso exclusivo en escenarios sin afinidad de usuario.",
+        "Revisar Enrollment failures comprobando que los rechazos personales respondan a Platform restrictions y descartando fallos de conectores."
+      ],
+      "rolResponsable": "SOC L1",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-01",
+      "mitreTactic": "Initial Access (TA0001)",
+      "evidenciaAuditable": "Consulta diaria sobre IntuneOperationalLogs y registro de altas validadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Restricciones de inscripción, cuentas DEM y logs operacionales verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/review-logs-using-azure-monitor"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo de alertas de Windows Autopatch y eventos de bloqueo MAM",
+      "objetivo": "Resolver tempranamente bloqueos de parches (incluyendo pérdida de elegibilidad Hotpatch) y bloqueos por amenaza en sesiones BYOD MAM.",
+      "consolaRuta": "intune.microsoft.com > Devices > Manage updates > Windows updates > Monitor / Apps > Monitor > App protection status",
+      "procedimiento": [
+        "Revisar alertas activas en Windows Autopatch atendiendo prioritariamente la alerta Hotpatch – VBS not running.",
+        "Inspeccionar bloqueos de Conditional Launch en App protection status para iOS, Android y Microsoft Edge for Business en Windows.",
+        "Confirmar la ejecución efectiva de órdenes emitidas en Apps > App selective wipe."
+      ],
+      "rolResponsable": "Endpoint Security Engineer / SOC L1",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-02",
+      "mitreTactic": "Collection (TA0009)",
+      "evidenciaAuditable": "Panel diario exportado de alertas Autopatch y estado de solicitudes App selective wipe.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Alerta Hotpatch – VBS not running y monitoreo Windows MAM verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/windows/deployment/windows-autopatch/manage/windows-autopatch-hotpatch-updates"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Análisis de tendencias organizacionales de cumplimiento y cobertura Conditional Access",
+      "objetivo": "Detectar degradaciones estructurales por sistema operativo o segmento y cerrar brechas de aplicaciones no cubiertas por CA.",
+      "consolaRuta": "intune.microsoft.com > Reports > Device compliance > Organizational + entra.microsoft.com > Conditional Access > Insights",
+      "procedimiento": [
+        "Comparar la tasa de cumplimiento organizacional de la semana actual frente a la semana previa por plataforma.",
+        "Investigar toda caída > 5% aislando actualizaciones recientes, cambios de políticas o fallos de hardware.",
+        "Verificar en Conditional Access Insights and reporting que todas las aplicaciones críticas evalúen dispositivo Compliant o App Protection Policy."
+      ],
+      "rolResponsable": "Endpoint Security Engineer / Identity Architect",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Valid Accounts (T1078)",
+      "evidenciaAuditable": "Informe semanal comparativo de cumplimiento organizacional y cobertura de Acceso Condicional.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Reportes nativos verificados en MS Learn; el umbral de variación semanal del 5% es criterio consultivo.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/protect/compliance-policy-monitor"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Gobernanza semanal de reglas Attack Surface Reduction (ASR): detecciones y cobertura Block",
+      "objetivo": "Evaluar telemetría semanal de auditoría/bloqueo ASR para promover reglas críticas a modo Block y depurar exclusiones.",
+      "consolaRuta": "security.microsoft.com > Reports > Attack surface reduction rules + intune.microsoft.com > Endpoint security > ASR",
+      "procedimiento": [
+        "Analizar la pestaña Detections identificando reglas en modo Audit listas para promoción controlada a modo Block.",
+        "Revisar en Configuration equipos con reglas críticas en Off o Misconfigured, verificando Event IDs 1121 y 1122 localmente.",
+        "Confirmar que toda exclusión ASR sea granular por ruta/ejecutable y posea ticket aprobado con fecha de revisión."
+      ],
+      "rolResponsable": "SOC L2 / Endpoint Security Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "Execution (T1059) / Credential Access (T1003.001)",
+      "evidenciaAuditable": "Exportación semanal de cobertura ASR por regla y registro auditado de exclusiones.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Reportes ASR y Event IDs 1121/1122 verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Ejecución del pipeline Defender Vulnerability Management -> Intune Security Tasks",
+      "objetivo": "Procesar tareas de remediación de vulnerabilidades priorizando catálogo CISA KEV y severidad crítica.",
+      "consolaRuta": "intune.microsoft.com > Endpoint security > Security tasks",
+      "procedimiento": [
+        "Ordenar Security tasks pendientes por inclusión en CISA KEV, exploit activo, CVSS y número de dispositivos expuestos.",
+        "Aceptar tareas en Intune y desplegar actualización de aplicación, ajuste en Settings Catalog o parche de SO en anillos piloto y productivo.",
+        "Cerrar la tarea en Intune tras comprobar la disminución efectiva de exposición en Defender Vulnerability Management."
+      ],
+      "rolResponsable": "Vulnerability Management Analyst / Endpoint Engineering",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "Exploitation for Client Execution (T1203)",
+      "evidenciaAuditable": "Registro semanal de Security tasks procesadas y tiempos de cierre.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Integración bidireccional de Security tasks entre MDVM e Intune verificada en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/protect/mde-security-tasks"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría semanal de RBAC, activaciones PIM, Scope Tags y políticas Multi Admin Approval",
+      "objetivo": "Verificar privilegio mínimo administrativo, elegibilidad JIT y salud de grupos aprobadores y exclusiones MAA.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Roles / Multi Admin Approval + entra.microsoft.com > PIM",
+      "procedimiento": [
+        "Auditar miembros de Intune Administrator y Endpoint Security Manager convirtiendo cualquier asignación permanente no Break Glass a elegible en PIM.",
+        "Validar correcta asignación de Scope Tags en roles delegados regionales o de soporte.",
+        "Confirmar que los grupos aprobadores MAA sean grupos de seguridad directos vinculados a un rol RBAC de Intune y revisar apps excluidas (máximo 50 por política)."
+      ],
+      "rolResponsable": "Intune Platform Administrator / GRC Lead",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-02",
+      "mitreTactic": "Valid Accounts (T1078.004)",
+      "evidenciaAuditable": "Matriz semanal exportada de roles RBAC, activaciones PIM y exclusiones app-auth en MAA.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Requisitos de grupos aprobadores y límite de 50 apps excluidas por política MAA verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/multi-admin-approval"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Vigilancia de vigencia de certificados (APNs, SCEP/PKCS), tokens ABM/VPP y conectores",
+      "objetivo": "Prevenir caídas masivas de gestión móvil o autenticación de red por expiración de credenciales de infraestructura.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Connectors and tokens / Devices > Monitor > Certificates",
+      "procedimiento": [
+        "Verificar estado Healthy y fecha de expiración del certificado Apple MDM Push (APNs), tokens ABM/VPP, Android Enterprise y conectores PKI.",
+        "Disparar renovación preventiva cuando falten menos de 45 días para tokens Apple (validando resguardo del Apple ID original) o 30 días en SCEP/PKCS.",
+        "Remediar certificados emitidos en estado Error o Revoked junto al equipo de PKI."
+      ],
+      "rolResponsable": "Intune Platform Administrator",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-02",
+      "mitreTactic": "Impair Defenses (T1562)",
+      "evidenciaAuditable": "Reporte semanal de Connector status y calendario de expiración de certificados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Regla de renovación anual APNs con mismo Apple ID verificada en MS Learn; alertas a 45/30 días son propuestas operativas.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/connector-status"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Higiene de dispositivos inactivos, control de Phantom Compliant y conciliación con Entra ID",
+      "objetivo": "Eliminar riesgos de equipos silenciosos que retienen estado Compliant aparente y depurar objetos huérfanos en Entra ID.",
+      "consolaRuta": "intune.microsoft.com > Devices > Organize devices > Device cleanup rules + entra.microsoft.com > Devices",
+      "procedimiento": [
+        "Filtrar equipos en estado Compliant con Last check-in > 10 días (Phantom Compliant) y validar situación laboral del usuario.",
+        "Cruzar bajas semanales de RRHH contra dispositivos aún activos en Intune ejecutando Retire o Wipe según propiedad.",
+        "Conciliar dispositivos removidos por Device cleanup rules (30-90 días) deshabilitando o eliminando sus objetos homólogos en Entra ID."
+      ],
+      "rolResponsable": "Intune Platform Administrator / Identity Administrator",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-01",
+      "mitreTactic": "Valid Accounts (T1078)",
+      "evidenciaAuditable": "Reporte semanal de conciliación de inventario Intune <-> Entra ID.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Comportamiento de Device cleanup rules (no elimina objeto Entra ID) verificado en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/remote-actions/devices-wipe"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Verificación profunda de enforcement real: BitLocker/FileVault, Firewall MDM y ASR",
+      "objetivo": "Auditar en reportes específicos de control que el cifrado, firewall y reglas ASR estén activos en el SO más allá del Succeeded del perfil.",
+      "consolaRuta": "intune.microsoft.com > Devices > Monitor > Encryption report / Reports > Firewall + security.microsoft.com > ASR",
+      "procedimiento": [
+        "En Encryption report confirmar Encrypted, TPM 2.0 y custodia efectiva de Recovery Keys en Entra ID/Intune; diagnosticar códigos CSP en Status details.",
+        "En MDM Firewall status confirmar Enabled en los 3 perfiles y Target = MDM (validando HKLM\\...\\Mdm\\FirewallRules ante discrepancias en lugar de wf.msc).",
+        "Auditar discrepancias locales ASR (Get-MpPreference) y depurar excepciones de seguridad vencidas (> 90 días)."
+      ],
+      "rolResponsable": "Endpoint Security Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-01",
+      "mitreTactic": "Data from Local System (T1005) / Lateral Movement (TA0008)",
+      "evidenciaAuditable": "Informe mensual del Tridente de Hardening y registro actualizado de excepciones aprobadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Rutas de Encryption report, MDM Firewall status y clave de registro CSP verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/protect/encrypt-devices"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Calibración mensual de políticas de cumplimiento, Validity Period y versiones mínimas de SO",
+      "objetivo": "Actualizar builds mínimos exigidos por plataforma y auditar parámetros globales de cumplimiento del tenant.",
+      "consolaRuta": "intune.microsoft.com > Devices > Compliance > Compliance policy settings",
+      "procedimiento": [
+        "Confirmar Mark devices with no compliance policy assigned as = Not compliant y Validity period dentro del rango aprobado (7-14 días sugeridos).",
+        "Actualizar versiones mínimas requeridas en Windows 11, macOS, iOS/iPadOS (17+) y Android (10+) tras el cierre mensual de parcheo.",
+        "Revisar notificaciones automáticas de remediación al usuario previas al vencimiento del Grace Period."
+      ],
+      "rolResponsable": "Endpoint Security Engineer / SOC Manager",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Initial Access (TA0001)",
+      "evidenciaAuditable": "Captura mensual de Compliance policy settings y matriz vigente de builds mínimos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Ajustes globales de cumplimiento verificados en MS Learn; el rango de 7-14 días para Validity Period es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/protect/device-compliance-get-started"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Evaluación y actualización controlada de versiones de Security Baselines",
+      "objetivo": "Adoptar nuevas versiones GA de Security Baselines mediante anillos piloto evitando regresiones operativas y tattooing.",
+      "consolaRuta": "intune.microsoft.com > Endpoint security > Security baselines",
+      "procedimiento": [
+        "Revisar nuevas versiones GA publicadas (Windows v26H2, M365 Apps v2512, Edge v139, MDE v24H1 evitando aplicar MDE baseline en VDI/VMs).",
+        "Analizar diferencias de configuraciones y desplegar perfil nuevo en anillo piloto durante 7-14 días antes de migrar producción.",
+        "Documentar valores explícitos de reversión frente al fenómeno de tattooing antes de retirar perfiles antiguos."
+      ],
+      "rolResponsable": "Endpoint Security Engineer / Microinformática",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "Defense Evasion (TA0005)",
+      "evidenciaAuditable": "Análisis comparativo de versión de baseline y aprobación formal de cambio.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Versiones 2026 de Security Baselines y recomendación sobre VDI/VMs verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/protect/security-baselines"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Gestión mensual de Microsoft Secure Score (categoría Device)",
+      "objetivo": "Medir la evolución mensual de postura en endpoints y priorizar acciones de mejora de alto impacto.",
+      "consolaRuta": "security.microsoft.com > Exposure management > Secure score",
+      "procedimiento": [
+        "Registrar el puntaje actual, porcentaje y variación de 90 días de la categoría Device junto con el benchmark sectorial.",
+        "Seleccionar de 3 a 5 Improvement actions priorizadas para implementación en Settings Catalog o Endpoint Security.",
+        "Auditar que toda acción marcada como Risk accepted posea justificación firmada vigente."
+      ],
+      "rolResponsable": "Endpoint Security Engineer / CISO",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Defense Evasion / Multiple Tactics",
+      "evidenciaAuditable": "Reporte ejecutivo mensual de evolución de Microsoft Secure Score (Device).",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "La herramienta Secure Score es oficial en MS Learn; la meta de acciones mensuales es propuesta consultiva.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/microsoft-secure-score"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría mensual de Windows Autopatch y elegibilidad de Hotpatch updates",
+      "objetivo": "Asegurar convergencia oportuna del parcheo mensual y maximizar parches sin reinicio en Windows 11 Enterprise 24H2+.",
+      "consolaRuta": "intune.microsoft.com > Reports > Windows updates > Hotpatch quality update report",
+      "procedimiento": [
+        "Auditar tasas de instalación por anillo de Windows Autopatch tras el lanzamiento mensual B.",
+        "Revisar el Hotpatch quality update report identificando equipos excluidos de hotpatch por falta de VBS o baseline trimestral pendiente.",
+        "En dispositivos Arm64, verificar aplicación de DisableCHPE y eliminación de M365 Apps de 32 bits antes de diciembre de 2026."
+      ],
+      "rolResponsable": "Endpoint Engineering / Vulnerability Management Analyst",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-02",
+      "mitreTactic": "Exploitation for Privilege Escalation (T1068)",
+      "evidenciaAuditable": "Exportación mensual del Hotpatch quality update report y métricas por anillo Autopatch.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Prerrequisitos VBS, CHPE en Arm64 y fin de soporte Office 32-bit Arm en dic-2026 verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/windows/deployment/windows-autopatch/manage/windows-autopatch-hotpatch-updates"
+    },
+    {
+      "codigo": "M-06",
+      "cadencia": "Mensual",
+      "actividad": "Validación mensual de integridad y deduplicación del pipeline hacia Log Analytics / Sentinel",
+      "objetivo": "Comprobar ingesta continua de las 4 tablas de Intune en el SIEM y uso correcto de deduplicación KQL.",
+      "consolaRuta": "intune.microsoft.com > Reports > Diagnostics settings + security.microsoft.com > Advanced hunting",
+      "procedimiento": [
+        "Confirmar en Diagnostics settings el envío activo de AuditLogs, OperationalLogs, DeviceComplianceOrg e IntuneDevices.",
+        "Ejecutar consulta KQL validando latencia < 1h en tablas transaccionales y snapshots dentro de la ventana de 24-48h en tablas diarias.",
+        "Verificar que reglas analíticas y workbooks utilicen summarize arg_max(TimeGenerated, *) by DeviceId para mitigar duplicación de hasta 100%."
+      ],
+      "rolResponsable": "SOC L3 / Detection Engineer",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Impair Defenses: Disable Cloud Logs (T1562.008)",
+      "evidenciaAuditable": "Resultado mensual de consulta KQL de salud de ingesta y auditoría de reglas analíticas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Ventana de hasta 48h y duplicación de hasta 100% en export diario documentadas oficialmente en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/review-logs-using-azure-monitor"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Gobernanza de meses Baseline de Hotpatch y auditoría de modernización Apple DDM / Android AOSP",
+      "objetivo": "Completar los cuatro reinicios anuales Baseline de Hotpatch (ene/abr/jul/oct) y certificar protocolos modernos en Apple y Android.",
+      "consolaRuta": "intune.microsoft.com > Devices > Manage updates > Windows updates / Configuration > Settings catalog",
+      "procedimiento": [
+        "Monitorear la convergencia del reinicio obligatorio en enero, abril, julio y octubre en Windows 11 Enterprise y alinear saltos de Feature Update a esos meses.",
+        "Confirmar que las políticas de actualización de Apple OS 26 operen exclusivamente sobre Apple DDM en Settings Catalog.",
+        "Verificar ausencia de dispositivos en Android Device Administrator y cumplimiento de retiro de Windows 10 sin ESU."
+      ],
+      "rolResponsable": "Endpoint Engineering / Endpoint Security Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-02",
+      "mitreTactic": "Exploitation for Client Execution (T1203)",
+      "evidenciaAuditable": "Acta trimestral de cierre de Baseline update y reporte de versiones de plataformas soportadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Calendario trimestral Baseline de Hotpatch y transición Apple DDM verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/windows/deployment/windows-autopatch/manage/windows-autopatch-hotpatch-updates"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Recertificación Access Reviews, auditoría MAM y respaldo declarativo en Git vía Graph API",
+      "objetivo": "Recertificar roles privilegiados y aprobadores MAA, revisar políticas MAM y exportar configuraciones de Intune como código.",
+      "consolaRuta": "entra.microsoft.com > Identity governance > Access reviews + Microsoft Graph PowerShell",
+      "procedimiento": [
+        "Completar Access Reviews trimestrales en Entra ID sobre Intune Administrator, Endpoint Security Manager, cuentas DEM y grupos aprobadores MAA.",
+        "Revisar políticas App Protection (MAM) en iOS, Android y Edge for Business en Windows contra el marco de protección de datos de Microsoft.",
+        "Exportar a JSON en repositorio Git privado todas las políticas de Intune vía Microsoft Graph API para garantizar capacidad de recuperación ante IR-03."
+      ],
+      "rolResponsable": "Identity Governance Lead / Intune Platform Administrator",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-02",
+      "mitreTactic": "Account Manipulation (T1098) / Impact (TA0040)",
+      "evidenciaAuditable": "Certificación firmada de Access Reviews y etiqueta trimestral del backup JSON en Git.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Respaldo vía Graph API compensa la ausencia nativa de rollback masivo en Intune documentada en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/role-based-access-control"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Simulacro semestral integrado de playbooks IR-01, IR-02 e IR-03 y revisión de matriz RACI",
+      "objetivo": "Ejercitar contención MDE/Intune, doble aprobación MAA para Wipe y restauración de políticas desde Git, refrendando el modelo RACI.",
+      "consolaRuta": "intune.microsoft.com + security.microsoft.com + entra.microsoft.com (entorno controlado)",
+      "procedimiento": [
+        "Ejecutar prueba controlada de aislamiento MDE, verificación de BitLocker Recovery Key y solicitud/aprobación MAA de Wipe sobre host de laboratorio.",
+        "Simular restauración de una política eliminada importando el respaldo JSON desde Git vía Microsoft Graph API.",
+        "Revisar y firmar semestralmente la matriz RACI y SLAs internos entre Ciberseguridad y Microinformática."
+      ],
+      "rolResponsable": "SOC Manager / Incident Response Lead",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MA-01",
+      "mitreTactic": "Impact (TA0040)",
+      "evidenciaAuditable": "Informe semestral de simulacro con métricas de tiempo reales y matriz RACI actualizada.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Práctica recomendada de gobierno operativo alineada a NIST CSF 2.0.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/incident-response-playbooks"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Ceremonia anual de renovación APNs, tokens ABM/VPP y evaluación arquitectónica hacia Intune Suite",
+      "objetivo": "Renovar sin caída de servicio los certificados anuales Apple y evaluar brechas funcionales frente a Intune Suite.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Connectors and tokens",
+      "procedimiento": [
+        "Renovar el Apple MDM Push certificate (APNs) autenticándose estrictamente con el Apple ID corporativo original y validando coincidencia de Subject/UID.",
+        "Renovar tokens anuales de Apple Business Manager (ADE) y Volume Purchase Program (VPP) comprobando sincronización limpia.",
+        "Evaluar brechas anuales (privilegios locales, PKI cloud, catálogo Win32 o soporte remoto) para planificar adopción del Módulo 11 (Intune Suite)."
+      ],
+      "rolResponsable": "Intune Platform Administrator / CISO Architect",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.SC-07",
+      "mitreTactic": "Impair Defenses (T1562)",
+      "evidenciaAuditable": "Certificado APNs y tokens ABM/VPP vigentes a +365 días en Connectors and tokens.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Renovación anual obligatoria de APNs/ABM/VPP verificada en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/enrollment/apple-mdm-push-certificate-get"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook IR-01: Contención, investigación y remediación de dispositivo corporativo comprometido",
+      "objetivo": "Aislar el endpoint comprometido preservando evidencia forense y custodia BitLocker antes de limpiar o ejecutar Full Wipe gobernado por MAA.",
+      "consolaRuta": "security.microsoft.com > Assets > Devices + intune.microsoft.com > Devices > All devices",
+      "procedimiento": [
+        "Aislar inmediatamente el host en MDE (Isolate device) y revocar sesiones activas del usuario en Microsoft Entra ID.",
+        "Confirmar obligatoriamente en Intune Encryption report / Entra ID que la BitLocker o FileVault Recovery Key esté custodiada antes de acciones destructivas.",
+        "Recolectar Investigation package y artefactos vía MDE Live Response e investigar alcance lateral en Advanced Hunting / Sentinel.",
+        "Si persiste compromiso o ransomware, ejecutar Full Wipe aprobado por un segundo administrador mediante Multi Admin Approval y re-aprovisionar con Autopilot."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2 / IR Team + Approver MAA",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Lateral Movement (TA0008) / Impact (T1486)",
+      "evidenciaAuditable": "Paquete forense MDE, aprobación MAA registrada en IntuneAuditLogs y ticket post-incidente cerrado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Acciones técnicas MDE, custodia BitLocker y flujo MAA verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/respond-machine-alerts"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook IR-02: Respuesta proporcional ante pérdida, robo físico o baja hostil de dispositivo",
+      "objetivo": "Proteger datos corporativos en dispositivos extraviados o no devueltos aplicando bloqueo remoto y borrado proporcional a la propiedad del activo.",
+      "consolaRuta": "intune.microsoft.com > Devices > All devices > [Dispositivo] + entra.microsoft.com > Users",
+      "procedimiento": [
+        "Ejecutar Remote lock inmediato, Locate device si aplica (Windows/iOS supervisado) y revocar refresh tokens del usuario en Entra ID.",
+        "Verificar en Encryption report si el disco estaba Encrypted; si carecía de cifrado y contenía datos regulados, notificar de inmediato al DPO / Legal.",
+        "Aplicar Retire / App selective wipe en BYOD o Full Wipe autorizado vía MAA en equipos corporativos, revocando certificados SCEP/PKCS y depurando Entra ID."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2 + Approver MAA + DPO",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Collection / Data from Local System (T1005)",
+      "evidenciaAuditable": "Estado de acción Wipe/Retire completado, registro de cadena de custodia y revocación de certificado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Diferencias entre Retire, Wipe, Selective Wipe y soporte de Locate device verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/remote-actions/devices-wipe"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook IR-03: Compromiso de cuenta administrativa o alteración masiva del plano Intune",
+      "objetivo": "Cortar el acceso privilegiado comprometido, auditar el radio de daño en IntuneAuditLogs y restaurar políticas legítimas desde código.",
+      "consolaRuta": "entra.microsoft.com > Users / PIM + intune.microsoft.com > Tenant administration > Audit logs / MAA",
+      "procedimiento": [
+        "Revocar sesiones, desactivar roles activos en Entra ID PIM y deshabilitar la cuenta o Service Principal comprometido.",
+        "Extraer en Sentinel todas las operaciones de IntuneAuditLogs del actor en los últimos 7 días y cancelar solicitudes pendientes en Multi Admin Approval.",
+        "Re-importar configuraciones legítimas desde el respaldo JSON en Git vía Microsoft Graph API y forzar sincronización masiva de dispositivos."
+      ],
+      "rolResponsable": "Incident Response Team + Identity Lead + Intune Architect",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-02",
+      "mitreTactic": "Account Manipulation (T1098) / Defense Evasion (T1562)",
+      "evidenciaAuditable": "Línea de tiempo forense de IntuneAuditLogs y trazas de restauración declarativa vía Graph API.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Ausencia de rollback nativo en Intune e intercepción MAA verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/multi-admin-approval"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Despliegue acelerado de emergencia ante vulnerabilidad Zero-Day / catálogo CISA KEV",
+      "objetivo": "Mitigar vulnerabilidades explotadas activamente omitiendo diferimientos ordinarios de anillos en Windows Autopatch.",
+      "consolaRuta": "intune.microsoft.com > Devices > Manage updates > Windows updates > Quality updates",
+      "procedimiento": [
+        "Identificar activos expuestos mediante Security tasks de MDVM o consulta KQL en DeviceTvmSoftwareVulnerabilities.",
+        "Desplegar política de Expedited quality update en Intune / Windows Autopatch definiendo plazo estricto de reinicio cuando aplique.",
+        "Aplicar mitigación inmediata mediante reglas ASR en modo Block o Firewall MDM y elevar build mínimo en Device Compliance tras vencer la ventana."
+      ],
+      "rolResponsable": "Vulnerability Management Analyst + Endpoint Engineering",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-02",
+      "mitreTactic": "Exploitation for Privilege Escalation (T1068)",
+      "evidenciaAuditable": "Política Expedited desplegada, reporte de convergencia a 72h y Security task cerrada.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Políticas Expedited quality updates verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/protect/windows-10-expedite-updates"
+    },
+    {
+      "codigo": "AH-05",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Contención MAM y App Selective Wipe en BYOD móvil y Microsoft Edge for Business en Windows",
+      "objetivo": "Purgar datos y tokens corporativos en dispositivos personales no inscritos en MDM ante amenaza local o baja de terceros.",
+      "consolaRuta": "intune.microsoft.com > Apps > App selective wipe / Apps > Protection",
+      "procedimiento": [
+        "Emitir orden de App selective wipe para usuario/dispositivo eliminando contenedores corporativos en iOS, Android y perfil laboral de Edge en Windows.",
+        "Confirmar que Health Checks (Conditional Launch) y el conector MTD de Windows Security Center bloqueen nuevos accesos mientras persista el riesgo.",
+        "Revocar sesiones del usuario en Entra ID para forzar re-evaluación inmediata de App Protection Conditional Access."
+      ],
+      "rolResponsable": "SOC L1 / Application Manager",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Collection (TA0009) / Exfiltration (TA0010)",
+      "evidenciaAuditable": "Estado Deleted/Completed en App selective wipe y registro en IntuneAuditLogs.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo de Windows MAM con Edge for Business, Windows Security Center MTD y selective wipe verificado en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/intune-service/apps/protect-mam-windows"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Salud de ingesta y control de ventanas asimétricas de las 4 tablas de Intune",
+      "plataforma": "Microsoft Sentinel / Azure Monitor Log Analytics",
+      "tablaPrincipal": "IntuneAuditLogs, IntuneOperationalLogs, IntuneDeviceComplianceOrg, IntuneDevices",
+      "consulta": "union IntuneAuditLogs, IntuneOperationalLogs, IntuneDeviceComplianceOrg, IntuneDevices\n| where TimeGenerated > ago(72h)\n| summarize LastEventUTC = max(TimeGenerated), HoursSinceLastIngestion = round(datetime_diff(\"minute\", now(), max(TimeGenerated)) / 60.0, 2), TotalRecords72h = count() by TableName = Type\n| extend ExpectedSLAPipeline = iff(TableName in (\"IntuneAuditLogs\", \"IntuneOperationalLogs\"), \"< 1h (Lotes ~5m)\", \"24h - 48h (Snapshot Diario)\")\n| order by HoursSinceLastIngestion desc",
+      "proposito": "Validar continuidad de telemetría respetando que Audit/Operational son inmediatas mientras ComplianceOrg/IntuneDevices se exportan cada 24h (hasta 48h).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección deduplicada de dispositivos Noncompliant con sesión exitosa en Entra ID",
+      "plataforma": "Microsoft Sentinel",
+      "tablaPrincipal": "IntuneDeviceComplianceOrg + SigninLogs",
+      "consulta": "let LatestNonCompliant = IntuneDeviceComplianceOrg\n    | where TimeGenerated > ago(48h)\n    | summarize arg_max(TimeGenerated, *) by DeviceId\n    | where ComplianceState != \"Compliant\" and isnotempty(UPN);\nSigninLogs\n| where TimeGenerated > ago(24h) and ResultType == 0\n| extend SignInDeviceId = tostring(DeviceDetail.deviceId)\n| join kind=inner LatestNonCompliant on $left.SignInDeviceId == $right.DeviceId\n| summarize SuccessfulSignIns = count(), TargetApps = make_set(AppDisplayName, 10), LastAccessUTC = max(TimeGenerated) by UPN, DeviceName, OS, ComplianceState, ConditionalAccessStatus\n| order by LastAccessUTC desc",
+      "proposito": "Detectar brechas de Conditional Access deduplicando previamente el snapshot diario de IntuneDeviceComplianceOrg con arg_max().",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Equipos corporativos marcados Compliant pero sin cifrado activo en disco",
+      "plataforma": "Microsoft Sentinel / Log Analytics",
+      "tablaPrincipal": "IntuneDevices",
+      "consulta": "IntuneDevices\n| where TimeGenerated > ago(48h)\n| summarize arg_max(TimeGenerated, *) by DeviceId\n| where Ownership == \"Corporate\" and CompliantState == \"Compliant\" and StorageTotal > 0\n| where EncryptionState != \"Encrypted\" and EncryptionStatusString != \"Encrypted\"\n| project SnapshotUTC = TimeGenerated, DeviceName, OS, OSVersion, UPN, CompliantState, EncryptionStatusString, LastContact\n| order by LastContact desc",
+      "proposito": "Identificar huecos de diseño en políticas de cumplimiento donde estaciones corporativas acceden como Compliant sin cifrado efectivo.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría de acciones remotas destructivas, cambios críticos y Multi Admin Approval",
+      "plataforma": "Microsoft Sentinel / Log Analytics",
+      "tablaPrincipal": "IntuneAuditLogs",
+      "consulta": "IntuneAuditLogs\n| where TimeGenerated > ago(24h)\n| where OperationName has_any (\"Wipe\", \"Retire\", \"Delete\", \"CompliancePolicy\", \"SecurityBaseline\", \"DeviceSecurity\", \"Role\", \"AccessPolicy\", \"MultiAdminApproval\")\n| project TimeGenerated, OperationName, Category, ResultType, InitiatedBy = Identity, TargetResources, Properties\n| order by TimeGenerated desc",
+      "proposito": "Rastrear operaciones Wipe/Retire, alteraciones de líneas base o RBAC y eventos de solicitud/aprobación MAA para conciliación ITSM.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección de activos Phantom Compliant sin check-in reciente (> 10 días)",
+      "plataforma": "Microsoft Sentinel / Log Analytics",
+      "tablaPrincipal": "IntuneDevices",
+      "consulta": "IntuneDevices\n| where TimeGenerated > ago(48h)\n| summarize arg_max(TimeGenerated, *) by DeviceId\n| where CompliantState == \"Compliant\"\n| extend LastContactUTC = todatetime(LastContact)\n| extend DaysWithoutCheckIn = datetime_diff(\"day\", now(), LastContactUTC)\n| where DaysWithoutCheckIn > 10\n| project DeviceName, UPN, OS, Ownership, CompliantState, LastContactUTC, DaysWithoutCheckIn\n| order by DaysWithoutCheckIn desc",
+      "proposito": "Localizar dispositivos silenciosos que conservan estado Compliant aparente dentro del Validity Period.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Correlación XDR de endpoints con alertas High frente a telemetría ASR",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "AlertInfo, AlertEvidence, DeviceEvents",
+      "consulta": "let HighAlertHosts = AlertInfo\n    | where Timestamp > ago(72h) and Severity == \"High\"\n    | join kind=inner (AlertEvidence | where EntityType == \"Machine\") on AlertId\n    | distinct DeviceId, DeviceName, Title;\nHighAlertHosts\n| join kind=leftouter (\n    DeviceEvents\n    | where Timestamp > ago(7d) and ActionType startswith \"Asr\"\n    | summarize AsrBlocks7d = countif(ActionType endswith \"Blocked\"), AsrAudits7d = countif(ActionType endswith \"Audited\") by DeviceId\n) on DeviceId\n| project DeviceName, HighAlertTitle = Title, AsrBlocks7d = coalesce(AsrBlocks7d, 0), AsrAudits7d = coalesce(AsrAudits7d, 0)",
+      "proposito": "Enriquecer incidentes High de Defender XDR verificando si las reglas ASR estaban bloqueando o solo auditando en el host afectado.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Extracción automatizada App-Only de dispositivos Noncompliant vía Microsoft Graph PowerShell",
+      "plataforma": "Microsoft Graph PowerShell SDK",
+      "tablaPrincipal": "deviceManagement/managedDevices",
+      "consulta": "Connect-MgGraph -TenantId $env:TENANT_ID -ClientId $env:APP_ID -CertificateThumbprint $env:CERT_THUMBPRINT -NoWelcome\n$devices = Get-MgDeviceManagementManagedDevice -Filter \"complianceState eq 'noncompliant'\" -Property \"id,deviceName,userPrincipalName,operatingSystem,osVersion,lastSyncDateTime,isEncrypted,managedDeviceOwnerType\" -All\n$devices | Select-Object DeviceName, UserPrincipalName, OperatingSystem, OSVersion, IsEncrypted, ManagedDeviceOwnerType, LastSyncDateTime | Export-Csv -Path \".\\Intune_NonCompliant_Audit.csv\" -NoTypeInformation -Encoding UTF8",
+      "proposito": "Generar evidencia diaria firmada de dispositivos no conformes empleando autenticación por certificado sin credenciales interactivas.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Dispositivos Noncompliant con sesión corporativa activa",
+      "definicion": "Cantidad de dispositivos marcados como Noncompliant fuera de su Grace Period que registran inicios de sesión exitosos en Entra ID en las últimas 24 horas.",
+      "formula": "Count(Dispositivos Noncompliant fuera de Grace Period con SignIn ResultType == 0 en 24h)",
+      "metaSugerida": "0 dispositivos",
+      "frecuencia": "Diaria",
+      "audiencia": "SOC Manager / Identity Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Meta consultiva Zero Trust; Microsoft no publica un umbral numérico oficial."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Cobertura efectiva de onboarding EDR en flota gestionada",
+      "definicion": "Porcentaje de dispositivos corporativos elegibles inscritos en Intune que reportan sensor activo en Microsoft Defender for Endpoint.",
+      "formula": "(Dispositivos en Intune con sensor MDE activo / Total dispositivos corporativos elegibles en Intune) * 100",
+      "metaSugerida": ">= 98 %",
+      "frecuencia": "Diaria",
+      "audiencia": "SOC Manager / Endpoint Security Engineer",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Objetivo operativo consultivo para minimizar puntos ciegos de detección."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Tasa de cifrado verificado con Recovery Key en custodia",
+      "definicion": "Porcentaje de estaciones corporativas Windows y macOS en estado Encrypted cuya clave de recuperación consta custodiada en Entra ID o Intune.",
+      "formula": "(Equipos corporativos Encrypted con Recovery Key custodiada / Total equipos corporativos Windows y macOS) * 100",
+      "metaSugerida": ">= 99 % (100 % restante con excepción aprobada <= 90 días)",
+      "frecuencia": "Semanal / Mensual",
+      "audiencia": "CISO / GRC & Auditoría Interna",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en Encryption report oficial; el porcentaje meta es criterio consultivo."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Adherencia limpia a Security Baselines sin conflictos CSP",
+      "definicion": "Porcentaje de dispositivos asignados a perfiles de Security Baselines sin estados Error ni Conflict y conteo de colisiones CSP abiertas.",
+      "formula": "(Dispositivos sin Error ni Conflict en Security Baselines / Total dispositivos asignados) * 100",
+      "metaSugerida": ">= 95 % y 0 conflictos CSP > 7 días",
+      "frecuencia": "Semanal",
+      "audiencia": "Endpoint Security Engineer",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Meta consultiva orientada a eliminar deriva e indeterminismo entre políticas."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Cumplimiento de SLA en Security Tasks críticas y CISA KEV",
+      "definicion": "Porcentaje de tareas de remediación críticas o presentes en CISA KEV enviadas desde MDVM a Intune cerradas dentro de la ventana objetivo.",
+      "formula": "(Security Tasks Críticas o KEV completadas en <= 7 días / Total generadas) * 100",
+      "metaSugerida": ">= 95 % (100 % KEV con acción iniciada en <= 48h)",
+      "frecuencia": "Semanal",
+      "audiencia": "Vulnerability Management / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "SLA interno consultivo alineado a prácticas de gestión de vulnerabilidades."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Tasa de adopción de Hotpatch updates sin reinicio (Windows 11 24H2+)",
+      "definicion": "Porcentaje de la flota Windows 11 Enterprise elegible y activa recibiendo parches mensuales de seguridad sin reinicio mediante Windows Autopatch.",
+      "formula": "(Equipos Windows 11 Enterprise aplicando Hotpatch / Total flota Windows 11 Enterprise) * 100",
+      "metaSugerida": ">= 85 %",
+      "frecuencia": "Mensual",
+      "audiencia": "Endpoint Engineering / CIO / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Medido sobre el Hotpatch quality update report oficial; el umbral >= 85% es meta consultiva."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Integridad de doble control administrativo (MAA + ITSM)",
+      "definicion": "Porcentaje de acciones remotas destructivas (Wipe/Retire/Delete) y cambios en políticas críticas que cuentan con aprobación MAA y ticket ITSM.",
+      "formula": "(Operaciones críticas con aprobación MAA + ticket ITSM / Total operaciones críticas en IntuneAuditLogs) * 100",
+      "metaSugerida": "100 % (0 cambios no autorizados)",
+      "frecuencia": "Diaria / Semanal",
+      "audiencia": "CISO / Internal Audit",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Meta de control interno basada en trazabilidad de Multi Admin Approval e IntuneAuditLogs."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Higiene de inventario activo y erradicación de Phantom Compliant",
+      "definicion": "Proporción de dispositivos inscritos sin check-in superior al umbral de limpieza y conteo de equipos activos pertenecientes a bajas de RRHH.",
+      "formula": "(Dispositivos sin check-in > umbral limpieza / Total inventario Intune) * 100",
+      "metaSugerida": "< 3 % inactivos y 0 equipos activos en bajas RRHH > 48h",
+      "frecuencia": "Semanal",
+      "audiencia": "Intune Platform Administrator / Identity Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Umbral consultivo para preservar fidelidad de denominadores de cumplimiento y EDR."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.OC-03",
+      "descripcionResultado": "Los requisitos legales, regulatorios y de privacidad sobre activos y datos corporativos se comprenden y gestionan.",
+      "capacidadMicrosoft": "Intune App Protection Policies (MAM) y App selective wipe en iOS, Android y Microsoft Edge for Business en Windows para proteger datos corporativos respetando privacidad en BYOD.",
+      "evidenciaAuditoria": "Configuración exportada de Apps > Protection y registros de ejecución en Apps > App selective wipe.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles, responsabilidades y autoridades de ciberseguridad están establecidos, comunicados y exigidos.",
+      "capacidadMicrosoft": "Roles RBAC granulares en Intune, Scope Tags, activación JIT en Entra ID PIM y doble aprobación obligatoria mediante Multi Admin Approval (MAA).",
+      "evidenciaAuditoria": "Políticas activas en Multi Admin Approval > Access policies, asignaciones PIM y actas trimestrales de Access Reviews.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-01",
+      "descripcionResultado": "Se mantienen inventarios precisos de hardware y dispositivos gestionados por la organización.",
+      "capacidadMicrosoft": "Inventario central All devices con clasificación Corporate/Personal, Device cleanup rules y tabla IntuneDevices exportada y deduplicada en Log Analytics.",
+      "evidenciaAuditoria": "Consulta KQL deduplicada sobre IntuneDevices y reporte semanal S-06 de conciliación Intune <-> Entra ID.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-01",
+      "descripcionResultado": "Las vulnerabilidades en los activos son identificadas, validadas y registradas.",
+      "capacidadMicrosoft": "Integración bidireccional de Security Tasks entre Microsoft Defender Vulnerability Management e Intune y políticas de versión mínima de SO.",
+      "evidenciaAuditoria": "Historial cerrado de Endpoint security > Security tasks y matriz vigente de versiones mínimas permitidas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Los derechos de acceso, permisos y autorizaciones se definen y aplican bajo mínimo privilegio y postura verificada.",
+      "capacidadMicrosoft": "Evaluación continua de Device Compliance (incluyendo nivel de riesgo MDE) y App Protection consumida por Microsoft Entra Conditional Access y CAE.",
+      "evidenciaAuditoria": "Consulta KQL cruzando IntuneDeviceComplianceOrg con SigninLogs demostrando bloqueo efectivo de equipos no conformes.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.PS-01",
+      "descripcionResultado": "Se establecen y mantienen prácticas de gestión de configuración segura.",
+      "capacidadMicrosoft": "Settings Catalog, Security Baselines actualizadas (Windows v26H2, M365 Apps v2512, Edge v139, MDE v24H1) y Apple Declarative Device Management (DDM).",
+      "evidenciaAuditoria": "Reportes Per-setting status sin estados Conflict y respaldo trimestral JSON de configuraciones en repositorio Git.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.PS-02",
+      "descripcionResultado": "El software se mantiene, reemplaza y actualiza de forma acorde al riesgo.",
+      "capacidadMicrosoft": "Windows Autopatch, Hotpatch updates sin reinicio en Windows 11 Enterprise 24H2+ y políticas Expedited quality updates ante CISA KEV.",
+      "evidenciaAuditoria": "Hotpatch quality update report mensual y reportes de convergencia de anillos Autopatch.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.DS-01",
+      "descripcionResultado": "La confidencialidad, integridad y disponibilidad de los datos en reposo están protegidas.",
+      "capacidadMicrosoft": "Políticas Endpoint security > Disk encryption (BitLocker con TPM 2.0 en Windows y FileVault en macOS) con custodia obligatoria de claves en Entra ID / Intune.",
+      "evidenciaAuditoria": "Exportación mensual de Devices > Monitor > Encryption report y verificación de Key escrow.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-01",
+      "descripcionResultado": "Las redes y servicios se monitorean para detectar eventos potencialmente adversos o cambios no autorizados.",
+      "capacidadMicrosoft": "Supervisión de MDM Firewall status, telemetría de reglas ASR y correlación casi en tiempo real de IntuneAuditLogs en Microsoft Sentinel.",
+      "evidenciaAuditoria": "Reglas analíticas activas sobre IntuneAuditLogs en Sentinel y reporte semanal de detecciones ASR.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-09",
+      "descripcionResultado": "El hardware y software de cómputo y sus entornos de ejecución se monitorean para encontrar anomalías.",
+      "capacidadMicrosoft": "Onboarding automatizado del sensor EDR de Defender for Endpoint desde Intune y conector MTD de Windows Security Center para sesiones MAM.",
+      "evidenciaAuditoria": "Estado Enabled del conector MDE en Intune y reporte Antivirus agent status con cobertura >= 98%.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Los incidentes son contenidos para evitar la propagación del impacto.",
+      "capacidadMicrosoft": "Playbooks IR-01 e IR-02 combinando aislamiento en MDE con Remote lock, Retire, App selective wipe y Full Wipe protegido por Multi Admin Approval.",
+      "evidenciaAuditoria": "Registros de acciones remotas y aprobaciones MAA en IntuneAuditLogs junto con bitácoras de cadena de custodia.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-02",
+      "descripcionResultado": "Las acciones de recuperación se seleccionan, alcanzan, autorizan y ejecutan de forma segura.",
+      "capacidadMicrosoft": "Playbook IR-03 de re-importación declarativa de políticas desde respaldo JSON vía Microsoft Graph API y re-aprovisionamiento limpio vía Windows Autopilot.",
+      "evidenciaAuditoria": "Actas del simulacro semestral SM-01 de restauración Graph y verificación post-inscripción Autopilot.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Consolidación integral del corpus MSEOP-MD de Microsoft Intune (incluyendo las tres auditorías previas revisado 1-3, los 9 bloques operativos y los playbooks IR-01 a IR-03) revalidada contra Microsoft Learn MCP al 11 de noviembre de 2026. Se corrigieron supuestos erróneos de latencia y duplicación en tablas de Log Analytics, se incorporaron capacidades críticas GA (Multi Admin Approval en consola y Graph API, Windows Autopatch unificado con Hotpatching en Windows 11 24H2+, Windows MAM con Edge for Business, transición a Apple DDM en Apple OS 26, fin de soporte de Windows 10 y Android Device Administrator) y se establecieron fronteras explícitas con los Módulos 11 (Intune Suite) y 12 (Windows Enterprise Security).",
+    "correccionesAplicadas": [
+      "Corrección de latencia y duplicación SIEM: se reemplazó el supuesto uniforme < 15 min por el comportamiento oficial documentado (IntuneAuditLogs/IntuneOperationalLogs inmediatos en lotes ~5m vs. IntuneDeviceComplianceOrg/IntuneDevices exportados cada 24h con ventana de hasta 48h y duplicación de hasta 100% mitigada con arg_max()).",
+      "Incorporación integral de Multi Admin Approval (MAA): protección nativa sobre Apps, Compliance, Settings Catalog, Device actions (Wipe/Retire/Delete), RBAC, Scripts (con Change Review Agent) y Tenant Configuration tanto en UI como en llamadas app-auth a Graph API, documentando además la advertencia oficial anti-deadlock en políticas Role.",
+      "Actualización a Windows Autopatch unificado (abril 2025) y Hotpatch updates sin reinicio en Windows 11 Enterprise 24H2/25H2 (4 meses baseline ene/abr/jul/oct + 8 meses hotpatch, requisito VBS, desactivación CHPE en Arm64 y fin de soporte de Office 32-bit en Arm en diciembre de 2026).",
+      "Reflejo del fin de soporte de Windows 10 (14 de octubre de 2025, mantenido solo como allowed version en Intune) y deprecación de Dual Scan en favor de Scan source policy.",
+      "Actualización de gestión móvil: fin de soporte de Android Device Administrator en GMS (dic-2024), adopción de Android Enterprise 10+ y AOSP (con referenced apps en release 2610 de oct-2026) y transición obligatoria a Apple Declarative Device Management (DDM) en Settings Catalog tras la deprecación de actualizaciones MDM clásicas en Apple OS 26.",
+      "Incorporación de Data Protection for Windows MAM en escenarios BYOD mediante Microsoft Edge for Business, App Protection Conditional Access y el conector MTD de Windows Security Center (Windows 11 23H2+).",
+      "Actualización de versiones vigentes de Security Baselines a noviembre de 2026 (Windows v26H2/25H2/24H2, M365 Apps v2512, Edge v139, MDE v24H1 con restricción explícita en VDI/VMs) y delimitación contractual exacta entre Intune Plan 1, Intune Plan 2 e Intune Suite."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Umbrales cuantitativos de KPI-01 a KPI-08 y SLA <= 7 días para Security Tasks críticas / KEV",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft provee las métricas y reportes base pero no impone porcentajes universales; fijar metas cuantitativas permite instrumentar SLAs internos auditables entre el CISO y Operaciones de TI."
+      },
+      {
+        "elemento": "Taxonomía de incumplimiento Categoría A (crítica) vs. Categoría B (administrativa) y control de Phantom Compliant (> 10 días)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Prioriza la capacidad analítica del SOC sobre exposiciones reales (falta de cifrado, riesgo MDE o sesión activa) y neutraliza el punto ciego de dispositivos silenciosos cubiertos por el Validity Period."
+      },
+      {
+        "elemento": "Matriz RACI entre Ciberseguridad / SOC, Microinformática / TI e Identidad",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Elimina conflictos de propiedad durante incidentes y auditorías en tenants donde la consola de Intune es compartida entre equipos de seguridad y soporte."
+      },
+      {
+        "elemento": "Ventanas máximas JIT en Entra ID PIM (2h Intune Admin / 4h Endpoint Security Manager) y backup trimestral JSON en Git vía Graph API",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Limita la exposición de credenciales privilegiadas y suple la carencia nativa de rollback masivo en Intune ante un compromiso administrativo IR-03."
+      },
+      {
+        "elemento": "Mapeo probatorio a 12 subcategorías de las 6 funciones de NIST CSF 2.0 y modelo de madurez de 5 niveles",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Traduce controles técnicos de Intune Plan 1 a evidencia estructurada para auditorías normativas y reportes ejecutivos de directorio."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Microsoft Intune licensing (Plan 1, Plan 2, Intune Suite, Device-only & Unlicensed Admins)",
+      "url": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/licenses",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Define oficialmente Intune Plan 1, Plan 2, Intune Suite, licencias device-only y reglas de acceso para administradores sin licencia.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Microsoft Intune advanced capabilities",
+      "url": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/advanced-capabilities",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Delimita las capacidades aditivas de Intune Plan 2 e Intune Suite (EPM, Cloud PKI, Remote Help, Enterprise App Mgmt, Advanced Analytics, Tunnel MAM).",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Operating systems and browsers supported by Microsoft Intune",
+      "url": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/supported-devices-browsers",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Documenta el fin de soporte de Windows 10 (oct-2025), fin de Android Device Administrator en GMS (dic-2024), Android 10+/AOSP e iOS 17+ para MAM.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "What's new in Microsoft Intune (Service release 2610 — October 2026)",
+      "url": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/whats-new",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Novedades recientes de plataforma incluyendo gestión de referenced apps en dispositivos AOSP.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Use compliance policies to set rules for devices you manage with Intune",
+      "url": "https://learn.microsoft.com/en-us/intune/intune-service/protect/device-compliance-get-started",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Documenta la evaluación de cumplimiento, Grace Period, Validity Period e integración con Conditional Access y nivel de riesgo MDE.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Use the Intune settings catalog to configure settings",
+      "url": "https://learn.microsoft.com/en-us/intune/intune-service/configuration/settings-catalog",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Arquitectura del Settings Catalog para Windows CSP, Apple MDM/DDM y asistencia con Copilot in Intune.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Use security baselines to help secure Windows devices you manage with Microsoft Intune",
+      "url": "https://learn.microsoft.com/en-us/intune/intune-service/protect/security-baselines",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Instancias vigentes a 2026 (Windows v26H2/25H2/24H2, Office v2512, Edge v139, MDE v24H1), exclusión recomendada en VDI/VMs y alcance frente a CIS/NIST.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Configure Microsoft Defender for Endpoint in Microsoft Intune",
+      "url": "https://learn.microsoft.com/en-us/intune/intune-service/protect/mde-security-integration",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Configuración del conector bidireccional Intune <-> Defender for Endpoint, onboarding EDR y evaluación de riesgo.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Use access policies to require multi admin approval in Microsoft Intune",
+      "url": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/multi-admin-approval",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Especifica recursos protegidos por MAA, intercepción en Graph API app-auth, sugerencias del Change Review Agent y prevención de deadlock en políticas Role.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Role-based access control (RBAC) and Scope Tags with Microsoft Intune",
+      "url": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/role-based-access-control",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Roles integrados, permisos granulares para roles personalizados y segmentación administrativa con Scope Tags.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "What is Windows Autopatch?",
+      "url": "https://learn.microsoft.com/en-us/windows/deployment/windows-autopatch/overview/windows-autopatch-overview",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Unificación de Windows Autopatch (abril 2025) para licencias E3+/A3+/F3/Business Premium y reemplazo de Dual Scan por Scan source policy.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Hotpatch updates in Windows Autopatch",
+      "url": "https://learn.microsoft.com/en-us/windows/deployment/windows-autopatch/manage/windows-autopatch-hotpatch-updates",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Calendario anual (4 meses baseline + 8 meses hotpatch sin reinicio), requisito obligatorio de VBS y desactivación de CHPE en dispositivos Arm64.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Data Protection for Windows MAM",
+      "url": "https://learn.microsoft.com/en-us/intune/intune-service/apps/protect-mam-windows",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Protección MAM en estaciones Windows personales con Microsoft Edge for Business, App Protection Conditional Access y conector MTD de Windows Security Center.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Send Intune log data to Azure Storage, Event Hubs, or Log Analytics",
+      "url": "https://learn.microsoft.com/en-us/intune/intune-service/fundamentals/review-logs-using-azure-monitor",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Documenta las 4 tablas diagnósticas, latencia inmediata vs. exportación de hasta 48h y duplicación conocida de hasta 100% en 24h.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "Retire or wipe devices using Microsoft Intune",
+      "url": "https://learn.microsoft.com/en-us/intune/intune-service/remote-actions/devices-wipe",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Comportamiento técnico y diferencias operativas entre Retire, Wipe completo, Delete y acciones pendientes en dispositivos offline.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "Support tip: Move to declarative device management for Apple software updates",
+      "url": "https://techcommunity.microsoft.com/blog/intunecustomersuccess/support-tip-move-to-declarative-device-management-for-apple-software-updates/4432177",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Benjamin Flamm (Microsoft Intune Customer Success)",
+      "comentario": "Guía oficial de transición desde actualizaciones MDM heredadas hacia Apple DDM en Settings Catalog ante Apple OS 26.",
+      "verificacion": "Verificado vía Web Search (2026-11-11)"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "Hotpatch efficiency unlocked: Smaller update size",
+      "url": "https://techcommunity.microsoft.com/blog/windows-itpro-blog/hotpatch-efficiency-unlocked-smaller-update-size/4460681",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Windows IT Pro Blog — Microsoft",
+      "comentario": "Análisis de ingeniería sobre reducción de tamaño e impacto operativo de paquetes Hotpatch en Windows 11 Enterprise.",
+      "verificacion": "Verificado vía Microsoft Learn / Tech Community (2026-11-11)"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "Microsoft Graph PowerShell Intune Samples",
+      "url": "https://github.com/microsoft/mggraph-intune-samples",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Microsoft Intune Engineering",
+      "comentario": "Repositorio oficial de scripts de referencia sobre el SDK Microsoft.Graph.DeviceManagement para automatización SecOps.",
+      "verificacion": "Verificado (2026-11-11)"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)",
+      "url": "https://doi.org/10.6028/NIST.CSWP.29",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Estándar normativo oficial para las seis funciones (GV, ID, PR, DE, RS, RC) y subcategorías mapeadas en esta guía.",
+      "verificacion": "Verificado (2026-11-11)"
+    }
+  ]
+}

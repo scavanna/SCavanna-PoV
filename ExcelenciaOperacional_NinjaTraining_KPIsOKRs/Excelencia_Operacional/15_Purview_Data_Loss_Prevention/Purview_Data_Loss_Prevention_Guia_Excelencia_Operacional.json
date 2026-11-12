@@ -1,0 +1,1265 @@
+{
+  "schemaVersion": "2.0",
+  "id": "15_Purview_Data_Loss_Prevention",
+  "orden": 15,
+  "slug": "Purview_Data_Loss_Prevention",
+  "nombre": "Microsoft Purview Data Loss Prevention (Cloud, Teams, Endpoint DLP, Adaptive Protection y DLP para IA)",
+  "nombreCorto": "Purview Data Loss Prevention",
+  "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)",
+  "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://purview.microsoft.com",
+    "https://security.microsoft.com",
+    "https://intune.microsoft.com",
+    "https://portal.azure.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "Data Security Architect",
+    "DLP Engineer / Admin",
+    "SOC Manager",
+    "SOC L1",
+    "SOC L2",
+    "SOC L3 / Detection Engineer",
+    "Endpoint Security Engineer",
+    "Insider Risk Analyst",
+    "GRC"
+  ],
+  "relacionM365E5": {
+    "estado": "Incluido en Microsoft 365 E5",
+    "licencias": [
+      "Microsoft 365 E5 / A5 / G5 (incluye cobertura completa: Exchange, SharePoint, OneDrive, Teams DLP, Endpoint DLP, Adaptive Protection, DLP para Microsoft 365 Copilot/GenAI, Fabric/Power BI y triaje en Defender XDR)",
+      "Microsoft Purview Suite (denominación oficial desde octubre de 2025 para Microsoft 365 E5 Compliance sobre Microsoft 365 E3)",
+      "Microsoft 365 E5 Information Protection and Governance (incluye DLP Cloud, Teams DLP y Endpoint DLP; Adaptive Protection requiere además licencia de Insider Risk Management)",
+      "Office 365 E5 / A5 / G5 (incluye DLP para Exchange, SharePoint, OneDrive, Teams DLP y alertas en Defender XDR, pero NO incluye Endpoint DLP)",
+      "Microsoft 365 E3 / Office 365 E3 (limitado exclusivamente a Exchange Online, SharePoint Online y OneDrive for Business, incluyendo archivos en Teams respaldados en SPO/OD, con Single-event alerts)",
+      "Suscripción Azure (para almacenamiento Customer-managed Azure Blob Storage en Evidence Collection, capacidades Microsoft Fabric F2+/P1+ y escenarios PAYG de red/no-M365)"
+    ],
+    "prerrequisitos": [
+      "Taxonomía de Sensitivity Labels, SITs, EDM y clasificadores entrenables publicada desde Microsoft Purview Information Protection (Módulo 14)",
+      "Onboarding unificado de dispositivos Windows 10/11, Windows Server soportado y macOS (3 últimas versiones mayores) mediante Microsoft Defender for Endpoint / Microsoft Intune / Purview Device Onboarding",
+      "Revisión explícita en security.microsoft.com > Settings > Microsoft Defender XDR > Alert tuning de la regla integrada (vigente desde inicios de octubre de 2026) que reclasifica señales DLP como behaviors",
+      "Configuración de Evidence Collection (Azure Blob Storage propio o almacenamiento administrado por Microsoft) y habilitación de Advanced classification scanning para Adaptive Protection en dispositivos",
+      "Gestión por Intune de dispositivos Windows 10/11 (sin Multi-admin approval activo) para aplicar DLP inline en Microsoft Edge for Business hacia aplicaciones IA no gestionadas",
+      "Migración de File Policies de Microsoft Defender for Cloud Apps antes de su retiro definitivo el 6 de enero de 2027 mediante el asistente DLP to Purview migration"
+    ],
+    "notaLicenciamiento": "La diferencia operativa entre Microsoft 365 E3 y Microsoft 365 E5 / Microsoft Purview Suite es estructural: M365 E3 se detiene en el perímetro documental de Exchange, SharePoint y OneDrive con alertas simples. M365 E5 / Microsoft Purview Suite extiende la prevención al canal efímero (Teams chat y canales privados/compartidos), más allá del límite de descarga en el sistema operativo (Endpoint DLP sin agente adicional con Just-in-Time protection y captura de archivos de evidencia), a la capa de IA empresarial y Shadow AI (Microsoft 365 Copilot, Copilot Chat, Cowork y bloqueo inline en Microsoft Edge for Business) y al ajuste dinámico por riesgo conductual (Adaptive Protection con Insider Risk Management)."
+  },
+  "resumenEjecutivo": "Microsoft Purview Data Loss Prevention (DLP) es el motor unificado de prevención en tiempo real que ejecuta controles sobre información clasificada o sensible en aplicaciones empresariales, endpoints, navegadores, repositorios analíticos e interacciones de IA generativa. A noviembre de 2026, Purview DLP articula defensa sin agentes adicionales en Windows 10/11 y macOS (con Just-in-Time protection, controles sobre USB, impresoras, portapapeles, red SMB, RDP y recolección íntegra de archivos de evidencia), protección nativa en Microsoft 365 Copilot, Copilot Chat y Cowork (bloqueando SITs en prompts, restringiendo grounding por etiquetas de sensibilidad e impidiendo búsquedas web externas con datos sensibles), bloqueo inline en Microsoft Edge for Business frente a sitios GenAI no administrados (ChatGPT, Gemini, DeepSeek), mitigación dinámica Adaptive Protection acoplada a Insider Risk Management y absorción de las File Policies de Defender for Cloud Apps antes de su retiro el 6 de enero de 2027. Su operación SOC converge en security.microsoft.com exigiendo gobernar la regla integrada de Alert Tuning introducida en octubre de 2026 y correlacionar telemetría en CloudAppEvents, DeviceEvents, DataSecurityEvents y BehaviorInfo bajo marcos auditables NIST CSF 2.0.",
+  "principiosRectores": [
+    {
+      "principio": "Defensa multicapa sin fisuras más allá del límite de descarga (Cloud + Endpoint + Browser)",
+      "descripcion": "Coordinar políticas coherentes entre correo/colaboración M365, Endpoint DLP nativo en Windows/macOS y protección inline en Microsoft Edge for Business para cubrir todo canal de egreso.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/dlp-learn-about-dlp"
+    },
+    {
+      "principio": "Clasificación unificada como señal y DLP como plano de enforcement",
+      "descripcion": "Reutilizar Sensitivity Labels, SITs personalizados, Exact Data Match (hasta 100M filas) y Trainable Classifiers de Information Protection como condiciones nativas de decisión en DLP.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/dlp-policy-reference"
+    },
+    {
+      "principio": "Protección proporcional y dinámica guiada por riesgo (Adaptive Protection)",
+      "descripcion": "Vincular políticas DLP a los niveles dinámicos Elevated, Moderate y Minor de Insider Risk Management para aplicar bloqueo estricto solo a identidades riesgosas y preservar productividad general.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/dlp-adaptive-protection-learn"
+    },
+    {
+      "principio": "Cero ventana de exposición en evaluación local (Endpoint DLP Just-in-Time Protection)",
+      "descripcion": "Bloquear o auditar preventivamente egresos de archivos aún no evaluados o con clasificación obsoleta mientras concluye el escaneo local de políticas en Windows y macOS.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about-jit"
+    },
+    {
+      "principio": "Despliegue progresivo en modo Simulación con Policy Tips educativos",
+      "descripcion": "Validar toda regla nueva en modo simulación evaluando impacto y falsos positivos con dueños de procesos antes de activar bloqueo duro en producción.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/dlp-policy-design"
+    },
+    {
+      "principio": "Triaje convergente XDR y cadena de custodia forense sobre evidencias",
+      "descripcion": "Investigar alertas y comportamientos DLP correlacionados con señales de endpoint e identidad en security.microsoft.com, custodiando copias de evidencia bajo doble aprobación RBAC.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-xdr/dlp-investigate-alerts-defender"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Motor Cloud DLP para Exchange, SharePoint, OneDrive y Microsoft Teams",
+      "funcionOperativa": "Inspecciona en profundidad correos, archivos colaborativos y mensajes de Teams (1:1, grupales y canales estándar, privados y compartidos) bloqueando en segundos y mostrando Policy Tips.",
+      "portalRuta": "purview.microsoft.com > Solutions > Data Loss Prevention > Policies",
+      "integraciones": [
+        "Exchange Online",
+        "SharePoint Online & OneDrive for Business",
+        "Microsoft Teams (Chats, Private & Shared Channels)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Endpoint DLP Built-in (Windows 10/11, Windows Server y macOS)",
+      "funcionOperativa": "Supervisa y restringe sin agente adicional copia a USB extraíble, impresión, portapapeles, recursos de red SMB, RDP, Bluetooth, acceso por apps restringidas y subida en navegadores.",
+      "portalRuta": "purview.microsoft.com > Settings > Data Loss Prevention > Endpoint settings",
+      "integraciones": [
+        "Microsoft Defender for Endpoint (MDE)",
+        "Microsoft Intune",
+        "Windows 10/11, Windows Server & macOS"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Endpoint DLP Just-in-Time (JIT) Protection",
+      "funcionOperativa": "Retiene y bloquea intentos de egreso sobre JIT candidate files (archivos nuevos o con stale classification) mientras termina la evaluación de la política, con acción fallback configurable.",
+      "portalRuta": "purview.microsoft.com > Settings > Data Loss Prevention > Endpoint settings > Just-in-time protection",
+      "integraciones": [
+        "Endpoint DLP en Windows 10/11 y macOS",
+        "Microsoft Defender Antivirus (versión mínima requerida)",
+        "Activity Explorer (JIT triggered = true)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Evidence Collection para Actividades de Archivos en Dispositivos",
+      "funcionOperativa": "Almacena copia íntegra del archivo original coincidente (Windows GA y macOS Preview) más resumen contextual hacia Azure Storage del cliente o almacenamiento gestionado por Microsoft.",
+      "portalRuta": "purview.microsoft.com > Settings > Data Loss Prevention > Endpoint settings > Setup evidence collection",
+      "integraciones": [
+        "Customer-managed Azure Blob Storage / Microsoft-managed Storage",
+        "Activity Explorer",
+        "Microsoft Purview Data Security Investigations"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "DLP para Microsoft 365 Copilot, Copilot Chat y Cowork",
+      "funcionOperativa": "Bloquea prompts de usuario con SITs, impide que Copilot y Cowork procesen archivos/correos con etiquetas sensibles seleccionadas y desactiva búsquedas web externas ante datos sensibles.",
+      "portalRuta": "purview.microsoft.com > Solutions > Data Loss Prevention > Policies (Microsoft 365 Copilot and Copilot Chat)",
+      "integraciones": [
+        "Microsoft 365 Copilot & Copilot Chat",
+        "Cowork",
+        "Purview Sensitivity Labels & SITs"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Browser DLP Inline en Microsoft Edge for Business (Protección Shadow AI)",
+      "funcionOperativa": "Impide inline escribir, pegar o subir datos sensibles hacia apps GenAI no administradas (ChatGPT, Google Gemini, DeepSeek) y bloquea la ejecución de navegadores desprotegidos en equipos Intune.",
+      "portalRuta": "purview.microsoft.com > Solutions > Data Loss Prevention + DSPM for AI",
+      "integraciones": [
+        "Microsoft Edge for Business",
+        "Microsoft Intune",
+        "Microsoft Purview Extension para Google Chrome"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Motor de Adaptive Protection (DLP + Insider Risk Management)",
+      "funcionOperativa": "Evalúa dinámicamente la condición Insider risk level for Adaptive Protection is (Elevated, Moderate, Minor) en reglas dirigidas a Exchange Online, Teams y Devices.",
+      "portalRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Adaptive protection",
+      "integraciones": [
+        "Microsoft Purview Insider Risk Management",
+        "Exchange Online, Teams & Endpoint DLP"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "DLP para Microsoft Fabric, Power BI y Migración de Nubes Conectadas",
+      "funcionOperativa": "Inspecciona espacios de trabajo Fabric/Power BI y consolida la protección de archivos SaaS (SharePoint, OneDrive, Google Workspace, Box, Dropbox, Salesforce) ante el retiro de File Policies de MDCA el 2027-01-06.",
+      "portalRuta": "purview.microsoft.com > Solutions > Data Loss Prevention > Policies y asistente DLP to Purview migration",
+      "integraciones": [
+        "Microsoft Fabric & Power BI",
+        "Google Workspace, Box, Dropbox, Salesforce",
+        "Microsoft Defender for Cloud Apps"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Triaje Unificado de Incidentes, Alert Tuning y Caza Avanzada en Defender XDR",
+      "funcionOperativa": "Correlaciona alertas y comportamientos DLP con alertas XDR/SIEM, ejecuta acciones in-situ (Unshare, Delete, Label, Isolate) y habilita caza en CloudAppEvents, DeviceEvents, DataSecurityEvents y BehaviorInfo.",
+      "portalRuta": "security.microsoft.com > Incidents & alerts > Incidents y Settings > Microsoft Defender XDR > Alert tuning",
+      "integraciones": [
+        "Microsoft Defender XDR",
+        "Microsoft Sentinel",
+        "Microsoft Security Copilot"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "DLP Compliance Management",
+      "nivelSOC": "Ingeniería de Políticas DLP",
+      "permisosClave": "Creación, edición, simulación y activación de políticas DLP, configuración de Endpoint DLP settings, JIT y gestión de alertas DLP.",
+      "asignacionPIM": "Eligible en Entra PIM for Groups (elevación JIT máx. 4 horas con MFA phishing-resistant y ticket de cambio aprobado).",
+      "responsabilidadOperativa": "Diseño, mantenimiento y afinamiento de políticas y exclusiones DLP sin permiso permanente para descargar evidencias.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "View-Only DLP Compliance Management",
+      "nivelSOC": "SOC L1 / GRC / Auditoría",
+      "permisosClave": "Lectura de políticas, reglas, configuración de Endpoint DLP, Adaptive Protection y alertas DLP en Purview y Defender XDR.",
+      "asignacionPIM": "Asignación activa acotada o Eligible 8 horas.",
+      "responsabilidadOperativa": "Verificación independiente de postura, conciliación de cambios y monitoreo sin capacidad de modificación.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Information Protection Analyst / Investigator",
+      "nivelSOC": "SOC L1 / L2 — Triaje DLP",
+      "permisosClave": "Acceso DLP-only a alertas en Purview y Microsoft Defender XDR para clasificación, investigación y cierre operativo.",
+      "asignacionPIM": "Eligible en Entra PIM (turno SOC máx. 8 horas con MFA resistente a phishing).",
+      "responsabilidadOperativa": "Triaje diario de alertas DLP, revisión de overrides de usuario y escalamiento de verdaderos positivos.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Security Operator / Manage Alerts (Defender Unified RBAC)",
+      "nivelSOC": "SOC L2 / L3 — Respuesta Unificada XDR",
+      "permisosClave": "Gestión conjunta de alertas DLP y de seguridad XDR, caza avanzada y ejecución de remediación sobre archivos, cuentas y dispositivos.",
+      "asignacionPIM": "Eligible en Entra PIM (JIT máx. 8 horas por guardia).",
+      "responsabilidadOperativa": "Correlación multi-dominio y contención rápida (Unshare, aislamiento de endpoint, revocación) en security.microsoft.com.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Data Classification Content Viewer",
+      "nivelSOC": "Inspección Sensible Controlada",
+      "permisosClave": "Previsualización en consola del fragmento de texto coincidente y vista previa de elementos capturados por Evidence Collection.",
+      "asignacionPIM": "Eligible estricto (JIT máx. 2 horas con aprobación dual de Privacidad/Legal y SOC Lead).",
+      "responsabilidadOperativa": "Validación puntual de verdaderos positivos sensibles sin descargar archivos al equipo local del analista.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Data Classification Content Download",
+      "nivelSOC": "Custodia Forense Crítica",
+      "permisosClave": "Descarga íntegra de los archivos originales capturados como evidencia desde dispositivos Windows y macOS.",
+      "asignacionPIM": "Eligible excepcional (JIT máx. 1 hora con aprobación dual obligatoria y folio de investigación formal).",
+      "responsabilidadOperativa": "Extracción forense con cadena de custodia para procesos disciplinarios o regulatorios.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Insider Risk Management Admin",
+      "nivelSOC": "Gobierno de Riesgo Conductual",
+      "permisosClave": "Definición de indicadores, umbrales de niveles Elevated/Moderate/Minor y activación de Adaptive Protection.",
+      "asignacionPIM": "Eligible en Entra PIM (JIT máx. 4 horas segregado de TI general).",
+      "responsabilidadOperativa": "Calibración con Legal y RR. HH. de los perfiles conductuales que gobiernan bloqueos dinámicos DLP.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Intune / Endpoint Security Administrator",
+      "nivelSOC": "Ingeniería de Plataforma Endpoint",
+      "permisosClave": "Onboarding de endpoints Windows/macOS, sincronización de políticas de Microsoft Edge for Business y requisitos antimalware JIT.",
+      "asignacionPIM": "Eligible en Entra PIM (JIT máx. 4 horas).",
+      "responsabilidadOperativa": "Asegurar cobertura de flota >=98%, salud de sincronización Edge y control de navegadores.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Verificación diaria de onboarding de endpoints, salud de Evidence Collection y regla Alert Tuning en Defender XDR",
+      "objetivo": "Garantizar que la flota Windows/macOS reporte telemetría activa, el almacenamiento de evidencias esté disponible y la regla Alert Tuning de oct-2026 no suprima alertas esperadas.",
+      "consolaRuta": "purview.microsoft.com > Settings > Device onboarding / Endpoint settings y security.microsoft.com > Settings > Microsoft Defender XDR > Alert tuning",
+      "procedimiento": [
+        "Revisar el conteo de dispositivos activos y estado de sincronización de políticas en Purview Device onboarding.",
+        "Confirmar que la regla integrada de Alert tuning para señales DLP en Defender XDR (octubre de 2026) mantenga el estado definido por el SOC.",
+        "Verificar disponibilidad y espacio operativo del almacenamiento configurado en Setup evidence collection."
+      ],
+      "rolResponsable": "SOC L1 / Endpoint Security Engineer",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-06",
+      "mitreTactic": "Defense Evasion (T1562)",
+      "evidenciaAuditable": "Check diario de salud de onboarding Endpoint DLP, estado Alert Tuning y cuota de evidencias.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Refleja el cambio oficial de Alert Tuning de octubre de 2026 y monitoreo de Evidence Collection en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/dlp-investigate-alerts-defender"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Auditoría de cambios administrativos en políticas DLP, exclusiones y grupos restringidos",
+      "objetivo": "Detectar cualquier desactivación de políticas, paso no autorizado a simulación o alta de exclusiones en rutas, USB o dominios cloud.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit > Search y Advanced Hunting (OfficeActivity)",
+      "procedimiento": [
+        "Buscar operaciones New/Set/Remove-DlpCompliancePolicy y New/Set/Remove-DlpComplianceRule de las últimas 24 horas.",
+        "Conciliar cada cambio con un ticket aprobado en ITSM y elevación válida en Entra PIM.",
+        "Inspeccionar cambios en exclusiones de rutas Windows/macOS, dispositivos USB permitidos y dominios cloud sin restricciones.",
+        "Activar inmediatamente AH-04 / investigación de seguridad si aparece un cambio huérfano."
+      ],
+      "rolResponsable": "SOC L1 / GRC Analyst",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Defense Evasion (T1562.001)",
+      "evidenciaAuditable": "Exportación diaria de cambios administrativos DLP conciliada 1:1 contra tickets ITSM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Operaciones auditadas nativas en Unified Audit Log; exigencia 100% ITSM es política de gobierno.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-log-activities"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Triaje unificado de incidentes y alertas DLP por severidad en Microsoft Defender XDR",
+      "objetivo": "Analizar, correlacionar y contener dentro de SLA los incidentes de fuga potencial en la cola unificada del SOC.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts > Incidents (Service source: Microsoft Data Loss Prevention)",
+      "procedimiento": [
+        "Filtrar incidentes con alertas de Microsoft Data Loss Prevention priorizando severidades High y correlaciones multi-dominio.",
+        "Revisar resumen asistido por Security Copilot, Alert story, SITs detectados y consultas contextuales desde Go Hunt.",
+        "Clasificar en Verdadero Positivo (escalar a AH-01/AH-02), Falso Positivo (documentar para S-01) o Excepción Autorizada.",
+        "Registrar marcas temporales para seguimiento de MTTA."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "Exfiltration (T1048)",
+      "evidenciaAuditable": "Cola de incidentes DLP triajada con clasificación, analista responsable y timestamps.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo oficial de investigación DLP en Defender XDR incl. Summarize y Go Hunt.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/dlp-investigate-alerts-defender"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Revisión diaria de eventos Block with Override y justificaciones de negocio declaradas",
+      "objetivo": "Auditar todas las anulaciones ejecutadas por usuarios finales para detectar exfiltraciones encubiertas bajo justificaciones falsas.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Data Loss Prevention > Activity explorer",
+      "procedimiento": [
+        "Filtrar Activity Explorer (últimas 24h) por coincidencias DLP con override ejecutado por el usuario o reporte de falso positivo.",
+        "Contrastar el texto de justificación con la sensibilidad del archivo y el destinatario/canal externo involucrado.",
+        "Ejecutar Unshare o escalar a investigación cuando la anulación sea injustificada o reincidente."
+      ],
+      "rolResponsable": "SOC L1 / DLP Analyst",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-05",
+      "mitreTactic": "Exfiltration (T1567)",
+      "evidenciaAuditable": "Bitácora diaria de overrides auditados y acciones de revocación aplicadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Auditoría nativa de overrides en Activity Explorer; revisión del 100% en reglas críticas es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-activity-explorer"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo de intentos de exfiltración física y local en Endpoint DLP (USB, Impresión, Red, RDP, JIT)",
+      "objetivo": "Identificar patrones reiterados de intento de copia local/física en Windows y macOS y supervisar eventos Just-in-Time.",
+      "consolaRuta": "purview.microsoft.com > Data Loss Prevention > Activity explorer y security.microsoft.com > Advanced hunting (DeviceEvents)",
+      "procedimiento": [
+        "Analizar eventos bloqueados y auditados en Devices sobre USB extraíble, impresión, portapapeles, recursos SMB, RDP y Bluetooth.",
+        "Revisar eventos con JIT triggered = true validando ausencia de errores sistemáticos de evaluación.",
+        "Escalar a AH-01 usuarios con >=3 intentos bloqueados de extracción física o red en 24 horas."
+      ],
+      "rolResponsable": "SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Exfiltration Over Physical Medium (T1052)",
+      "evidenciaAuditable": "Reporte diario de bloqueos Endpoint DLP y eventos JIT.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Acciones de egreso y telemetría JIT verificadas en Learn; umbral >=3 intentos/24h es consultivo.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about-jit"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Supervisión de bloqueos en Microsoft 365 Copilot y pegado/subida hacia GenAI no gestionada (Shadow AI)",
+      "objetivo": "Vigilar intentos de ingreso de SITs/archivos restringidos en Copilot/Cowork y transferencias hacia LLMs públicos en Microsoft Edge for Business.",
+      "consolaRuta": "purview.microsoft.com > Data Loss Prevention > Activity explorer y Solutions > DSPM for AI",
+      "procedimiento": [
+        "Revisar eventos generados por la ubicación Microsoft 365 Copilot and Copilot Chat (prompts con SITs, etiquetas bloqueadas y búsquedas web restringidas).",
+        "Inspeccionar intentos bloqueados o auditados en Edge for Business hacia ChatGPT, Gemini, DeepSeek y aperturas bloqueadas de navegadores no permitidos.",
+        "Activar AH-03 si se detecta envío exitoso de secretos o datos regulados en políticas aún en simulación."
+      ],
+      "rolResponsable": "SOC L2 / AI Security Analyst",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Exfiltration Over Web Service (T1567)",
+      "evidenciaAuditable": "Informe diario de eventos preventivos sobre M365 Copilot y sitios GenAI externos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Basado en las capacidades verificadas de DLP para Copilot/Cowork (oct-2026) y Edge for Business.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-microsoft365-copilot-location-learn-about"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Vigilancia de actividad DLP sobre usuarios en nivel Elevated de Adaptive Protection",
+      "objetivo": "Asegurar atención prioritaria ante cualquier intento de compartición o extracción por parte de identidades calificadas en riesgo elevado.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Adaptive protection y DataSecurityEvents",
+      "procedimiento": [
+        "Consultar coincidencias de reglas con condición Insider risk level for Adaptive Protection is Elevated en Exchange, Teams y Devices.",
+        "Confirmar aplicación efectiva del bloqueo sin override sobre dichas actividades.",
+        "Notificar bajo protocolo de privacidad al analista de Insider Risk cuando exista reincidencia activa."
+      ],
+      "rolResponsable": "SOC L2 + Insider Risk Analyst",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Exfiltration (T1048)",
+      "evidenciaAuditable": "Registro diario de bloqueos adaptativos ejecutados sobre perfiles de alto riesgo.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Integración nativa de niveles Elevated/Moderate/Minor en Adaptive Protection verificada en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-adaptive-protection-learn"
+    },
+    {
+      "codigo": "D-08",
+      "cadencia": "Diaria",
+      "actividad": "Control de SLAs de incidentes DLP pendientes y cierre del tablero operativo diario",
+      "objetivo": "Prevenir vencimiento de ventanas MTTA/MTTC en alertas de fuga y documentar el cierre operativo de turno.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts > Incidents y tablero operativo SOC",
+      "procedimiento": [
+        "Revisar antigüedad y responsable de todos los incidentes DLP abiertos frente a metas internas (Críticos: MTTA <30m, MTTC <2h).",
+        "Escalar de inmediato casos con riesgo de incumplimiento de SLA.",
+        "Publicar resumen diario RAG de operaciones DLP para cambio de guardia."
+      ],
+      "rolResponsable": "SOC Shift Lead",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MA-01",
+      "mitreTactic": "Exfiltration (T1041)",
+      "evidenciaAuditable": "Snapshot diario de incidentes en SLA y acta de cambio de turno.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Métricas SLA y ritual de cierre diario corresponden a mejores prácticas consultivas de gestión SOC.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Tuning semanal de reglas DLP, umbrales de instancia/confianza y reducción de falsos positivos",
+      "objetivo": "Mantener la precisión de alertas por encima del 75% ajustando umbrales, proximidad y excepciones acotadas.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Data Loss Prevention > Policies",
+      "procedimiento": [
+        "Identificar las 5 reglas DLP con mayor tasa de falsos positivos u overrides legítimos durante la semana.",
+        "Estructurar reglas escalonadas por volumen de instancias y nivel de confianza (High vs Medium).",
+        "Aplicar excepciones documentadas con fecha de caducidad y validar en simulación."
+      ],
+      "rolResponsable": "DLP Engineer / SOC L3",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.IM-03",
+      "mitreTactic": "Exfiltration (T1048)",
+      "evidenciaAuditable": "Registro semanal de ajustes de reglas y evolución del ratio VP.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Proceso continuo de afinamiento basado en telemetría de Purview.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-policy-design"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Evaluación y graduación de políticas DLP en modo Simulación hacia Enforcement",
+      "objetivo": "Promover de forma segura políticas validadas en simulación (incluida la política predeterminada de M365 Copilot) a bloqueo activo.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Data Loss Prevention > Policies",
+      "procedimiento": [
+        "Revisar eventos capturados por políticas en Run the policy in simulation mode junto a dueños de negocio.",
+        "Habilitar Show policy tips while in simulation mode como etapa previa de sensibilización.",
+        "Cambiar a modo Enable las políticas con precisión validada >90% y aprobación formal."
+      ],
+      "rolResponsable": "DLP Engineer + Data Owners",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-05",
+      "mitreTactic": "Exfiltration (T1567)",
+      "evidenciaAuditable": "Actas de graduación de simulación a producción firmadas por Data Owners.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo oficial de simulación con y sin Policy Tips documentado en Microsoft Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-create-deploy-policy"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Revisión de higiene de Endpoint DLP, sincronización Edge for Business y listas de exclusión",
+      "objetivo": "Asegurar que el 100% de endpoints elegibles apliquen políticas vigentes sin errores de sincronización Intune/Edge ni exclusiones abusivas.",
+      "consolaRuta": "purview.microsoft.com > Settings > Data Loss Prevention > Endpoint settings e intune.microsoft.com",
+      "procedimiento": [
+        "Remediar equipos Windows/macOS con políticas desactualizadas o errores Resync en políticas de apps no gestionadas para Edge.",
+        "Auditar grupos de dispositivos USB (VID/PID/Serial), grupos de impresoras, apps restringidas y exclusiones de carpetas.",
+        "Confirmar vigencia de la extensión Microsoft Purview en navegadores Chrome autorizados."
+      ],
+      "rolResponsable": "Endpoint Engineer (Intune/MDE) + DLP Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "Exfiltration Over Physical Medium (T1052)",
+      "evidenciaAuditable": "Reporte semanal de cumplimiento de sincronización Endpoint DLP e inventario de exclusiones.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Incluye validación del requisito Resync en Edge for Business documentado en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-create-policy-block-to-ai-via-edge"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría de gobernanza y accesos sobre archivos capturados en Evidence Collection",
+      "objetivo": "Controlar cada previsualización o descarga de archivos originales recolectados desde endpoints y vigilar costos/cuota de almacenamiento.",
+      "consolaRuta": "purview.microsoft.com > Settings > Data Loss Prevention > Endpoint settings > Setup evidence collection > View Usage y Audit",
+      "procedimiento": [
+        "Auditar el 100% de activaciones y usos de Data Classification Content Viewer y Data Classification Content Download en la semana.",
+        "Confirmar que toda descarga tenga un caso abierto asociado en Defender XDR o Data Security Investigations.",
+        "Revisar métricas de volumen en View Usage o en el Azure Storage Account del cliente."
+      ],
+      "rolResponsable": "GRC Lead / Privacy Officer Liaison",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Valid Accounts (T1078)",
+      "evidenciaAuditable": "Informe semanal de auditoría de custodia de evidencias y consumo de almacenamiento.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Roles Content Viewer / Content Download y panel View Usage verificados en Microsoft Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-copy-matched-items-get-started"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Calibración conjunta de perfiles Adaptive Protection con Insider Risk Management",
+      "objetivo": "Asegurar que la asignación dinámica de usuarios a niveles Elevated, Moderate y Minor mantenga equilibrio óptimo entre prevención y fricción.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Adaptive protection",
+      "procedimiento": [
+        "Analizar distribución semanal de identidades por nivel de riesgo y volumen de bloqueos/auditorías DLP asociados.",
+        "Comprobar que Advanced classification scanning and protection siga activo para reglas adaptativas en Devices.",
+        "Ajustar indicadores y umbrales de puntuación en Insider Risk si se detectan desviaciones."
+      ],
+      "rolResponsable": "Insider Risk Admin + DLP Engineer",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-04",
+      "mitreTactic": "Insider Threat / Exfiltration (T1048)",
+      "evidenciaAuditable": "Resumen semanal seudonimizado de efectividad de Adaptive Protection.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Requisitos técnicos de Adaptive Protection en Devices verificados en Microsoft Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-adaptive-protection-learn"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Verificación de cobertura DLP en Teams (Shared Channels), Microsoft Fabric y Power BI",
+      "objetivo": "Evitar puntos ciegos de alcance en canales de Teams y gestionar hallazgos DLP sobre modelos semánticos en Fabric/Power BI.",
+      "consolaRuta": "purview.microsoft.com > Data Loss Prevention > Policies y portal Microsoft Fabric",
+      "procedimiento": [
+        "Auditar que todas las políticas de Teams orientadas a canales apunten a grupos M365 o de seguridad y no solo a cuentas individuales.",
+        "Revisar alertas DLP generadas en workspaces de Microsoft Fabric y Power BI, verificando restricciones sobre usuarios Guest."
+      ],
+      "rolResponsable": "DLP Engineer + Fabric/Teams Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-05",
+      "mitreTactic": "Exfiltration Over Web Service (T1567)",
+      "evidenciaAuditable": "Reporte semanal de validación de alcance en Teams y coincidencias atendidas en Fabric/Power BI.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Refleja la regla oficial de alcance de grupos para canales en Teams DLP y soporte Fabric DLP.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-microsoft-teams"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Avance y decomiso en la migración obligatoria desde Defender for Cloud Apps File Policies (2027-01-06)",
+      "objetivo": "Migrar todas las File Policies heredadas a Purview DLP antes de su retiro definitivo el 6 de enero de 2027.",
+      "consolaRuta": "security.microsoft.com > Cloud apps > Policies > Policy management y asistente DLP to Purview migration",
+      "procedimiento": [
+        "Evaluar políticas existentes agrupadas como Can migrate, Partial migration o Cannot migrate en SharePoint, OneDrive y SaaS conectadas (Google Workspace, Box, Dropbox, Salesforce).",
+        "Desplegar las políticas migradas por etapas en Purview DLP validando coincidencias en simulación.",
+        "Desactivar las File Policies equivalentes en Defender for Cloud Apps tras verificar cobertura completa."
+      ],
+      "rolResponsable": "DLP Engineer + Cloud App Security Admin",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-02",
+      "mitreTactic": "Collection (T1530)",
+      "evidenciaAuditable": "Tablero mensual de progreso de migración y actas de baja previa al 6 de enero de 2027.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Retiro oficial el 2027-01-06 y cobertura multi-SaaS del asistente verificados en Learn (ago-2026).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/migrate-file-policies-to-purview"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Pruebas sintéticas mensuales extremo a extremo de vectores de exfiltración (Purple Team DLP)",
+      "objetivo": "Demostrar empíricamente la eficacia real de bloqueo, Policy Tips, Evidence Collection y alertamiento XDR en los 8 canales principales.",
+      "consolaRuta": "Endpoints de prueba Windows 11 / macOS + cuentas de validación M365 E5 y Copilot",
+      "procedimiento": [
+        "Ejecutar pruebas controladas con datos sintéticos sobre Exchange externo, enlaces SharePoint, Teams externo, USB con JIT, impresión, pegado en GenAI vía Edge, apertura de navegador prohibido y prompt/etiqueta en M365 Copilot.",
+        "Confirmar bloqueo en tiempo real, recolección del archivo de evidencia y aparición en CloudAppEvents/DeviceEvents/Incidents en <15 minutos."
+      ],
+      "rolResponsable": "SOC L3 / QA Security Engineer + DLP Engineer",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.IM-03",
+      "mitreTactic": "Exfiltration (T1048 / T1052 / T1567)",
+      "evidenciaAuditable": "Informe mensual de pruebas Purple Team DLP con evidencia de bloqueo y telemetría.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Metodología consultiva de validación continua sobre controles oficiales Purview DLP.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-learn-about-dlp"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Exportación histórica de métricas DLP, análisis de reincidencia y reporte ejecutivo CISO",
+      "objetivo": "Preservar histórico mayor a 30 días, evaluar KPI-01 a KPI-08 y orientar acciones de concientización por área.",
+      "consolaRuta": "PowerShell Export-ActivityExplorerData, purview.microsoft.com > DLP > Reports y Power BI",
+      "procedimiento": [
+        "Consolidar exportaciones históricas de Activity Explorer e incidentes XDR para calcular los 8 KPIs del módulo.",
+        "Identificar departamentos con mayor tasa de overrides o intentos bloqueados hacia Shadow AI / USB.",
+        "Presentar informe mensual al CISO y comité de seguridad de datos."
+      ],
+      "rolResponsable": "SOC Manager + DLP Lead",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-01",
+      "mitreTactic": "Exfiltration (T1048)",
+      "evidenciaAuditable": "Dataset mensual archivado y presentación ejecutiva CISO.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Combina exportación oficial PowerShell con gobierno ejecutivo mensual.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/export-activityexplorerdata"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Conciliación mensual de línea base de políticas DLP y auditoría de deriva (Configuration Drift)",
+      "objetivo": "Verificar integridad de prioridades, estados Enable y exclusiones de todas las políticas DLP respecto al mes anterior.",
+      "consolaRuta": "Security & Compliance PowerShell (Get-DlpCompliancePolicy / Get-DlpComplianceRule)",
+      "procedimiento": [
+        "Exportar a JSON/CSV la configuración completa de políticas, reglas, orden de prioridad y ajustes de endpoint.",
+        "Ejecutar comparación diferencial frente al snapshot certificado del mes previo.",
+        "Revocar excepciones temporales cuya vigencia haya caducado."
+      ],
+      "rolResponsable": "GRC / Internal Audit Liaison",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Defense Evasion (T1562.001)",
+      "evidenciaAuditable": "Snapshot mensual versionado de políticas DLP y certificado de conciliación.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Sustentado en cmdlets oficiales de Security & Compliance PowerShell.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/get-dlpcompliancepolicy"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Actualización del catálogo de dominios GenAI / nube no gestionados y revisión de novedades Purview",
+      "objetivo": "Incorporar nuevos sitios de Shadow AI o transferencia de archivos en controles inline de Edge for Business y Endpoint DLP.",
+      "consolaRuta": "purview.microsoft.com > DSPM for AI, Endpoint settings > Restricted cloud service domains y What's new",
+      "procedimiento": [
+        "Cruzar hallazgos de descubrimiento Cloud Discovery en Defender for Cloud Apps y DSPM for AI contra dominios restringidos en DLP.",
+        "Agregar nuevos dominios de LLMs públicos o almacenamiento no autorizado bajo gestión de cambios.",
+        "Evaluar lanzamientos mensuales en What's new in Microsoft Purview."
+      ],
+      "rolResponsable": "AI Data Security Architect + DLP Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "Exfiltration Over Web Service (T1567.002)",
+      "evidenciaAuditable": "Catálogo actualizado de dominios GenAI restringidos y registro de novedades evaluadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Integra descubrimiento Shadow AI con dominios restringidos en Endpoint/Browser DLP.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-browser-dlp-learn"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Racionalización arquitectónica de políticas DLP, rendimiento y alineación regulatoria",
+      "objetivo": "Consolidar reglas superpuestas, sincronizar nuevas etiquetas/EDM del Módulo 14 y validar cumplimiento normativo.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Data Loss Prevention > Policies y Compliance Manager",
+      "procedimiento": [
+        "Revisar orden de prioridad y consolidar políticas fragmentadas para optimizar evaluación en endpoints y clientes Office.",
+        "Confirmar inclusión de toda nueva Sensitivity Label o EDM en reglas de Cloud, Endpoint y Microsoft 365 Copilot.",
+        "Validar cobertura regulatoria actualizada (PCI-DSS, GDPR, HIPAA, Ley 21.719 Chile, LFPDPPP México) junto a Legal."
+      ],
+      "rolResponsable": "Data Security Architect + Legal & Privacy + DLP Lead",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.PO-01",
+      "mitreTactic": "Exfiltration (T1048)",
+      "evidenciaAuditable": "Matriz trimestral de racionalización de políticas y cobertura normativa firmada.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Gobierno arquitectónico trimestral alineado a Compliance Manager.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-overview-plan-for-dlp"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Certificación de accesos (Access Reviews) sobre roles DLP y descarga de evidencias",
+      "objetivo": "Recertificar membresías elegibles en roles de administración DLP y custodia de evidencias sensibles.",
+      "consolaRuta": "entra.microsoft.com > Identity governance > Access reviews y Azure Storage IAM",
+      "procedimiento": [
+        "Ejecutar campañas Access Reviews sobre DLP Compliance Management, Content Viewer, Content Download y Manage Alerts.",
+        "Remover automáticamente usuarios no aprobados o con cambio de funciones.",
+        "Auditar control de acceso RBAC e inmutabilidad en el Azure Storage Account de Evidence Collection."
+      ],
+      "rolResponsable": "Identity Governance Admin + CISO Delegate",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Valid Accounts (T1078.004)",
+      "evidenciaAuditable": "Actas cerradas de Access Reviews en Entra ID y auditoría RBAC de Azure Storage.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Usa Entra ID Access Reviews sobre Role Groups de Purview respaldados en Entra.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-permissions"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Ejercicio integral de respuesta ante exfiltración multi-canal (Insider + GenAI + USB)",
+      "objetivo": "Validar la coordinación operativa entre SOC, DLP, Insider Risk, Endpoint y Legal frente a una fuga compleja.",
+      "consolaRuta": "security.microsoft.com y purview.microsoft.com (Data Security Investigations / Insider Risk)",
+      "procedimiento": [
+        "Simular intento encadenado de exfiltración por correo, Teams, navegador hacia GenAI y medio USB extraíble.",
+        "Medir tiempo de correlación en Defender XDR, transición automática en Adaptive Protection, análisis en Data Security Investigations y contención.",
+        "Incorporar mejoras detectadas a las reglas y playbooks."
+      ],
+      "rolResponsable": "SOC Manager + Insider Risk Lead + Legal / RR. HH.",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.IM-02",
+      "mitreTactic": "Exfiltration (T1048 / T1052)",
+      "evidenciaAuditable": "Informe semestral de ejercicio multi-canal con tiempos medidos y plan de mejora.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Ejercicio práctico recomendado para probar convergencia XDR + Purview.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-copy-matched-items-learn"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Revisión estratégica anual de arquitectura DLP, retención de evidencias y privacidad laboral",
+      "objetivo": "Recertificar ante CISO, Legal/DPO y RR. HH. la proporcionalidad, retención de evidencias y evolución anual del programa DLP.",
+      "consolaRuta": "Comité ejecutivo + purview.microsoft.com + Azure Storage Lifecycle Management",
+      "procedimiento": [
+        "Auditar plazos de purga automática de archivos en Evidence Collection conforme a leyes laborales y de datos personales.",
+        "Revalidar controles de seudonimización y gobierno en Adaptive Protection / Insider Risk.",
+        "Aprobar hoja de ruta anual (integración SASE/SSE de red, agentes IA con Agent 365 y presupuesto)."
+      ],
+      "rolResponsable": "CISO + General Counsel / DPO + Data Security Architect",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.PO-01",
+      "mitreTactic": "Exfiltration (T1041)",
+      "evidenciaAuditable": "Dictamen anual de privacidad, retención y arquitectura DLP firmado por CISO y DPO.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Alinea operación técnica con marcos legales y privacidad organizacional.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-overview-plan-for-dlp"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Contención e investigación ante exfiltración activa confirmada en Endpoint o Nube",
+      "objetivo": "Frenar de inmediato una extracción maliciosa o comprometida de activos críticos preservando evidencia íntegra.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts y purview.microsoft.com > Data Security Investigations",
+      "procedimiento": [
+        "Ejecutar acciones in-situ desde Defender XDR: Unshare/etiquetado en SharePoint o aislamiento/restricción del host en Defender for Endpoint.",
+        "Activar JIT de Data Classification Content Viewer para inspeccionar elementos en Evidence Collection y correlacionar en Data Security Investigations.",
+        "Revocar sesiones en Entra ID si hay compromiso externo o coordinar elevación inmediata a Elevated risk en Adaptive Protection si es insider."
+      ],
+      "rolResponsable": "SOC L2/L3 + DLP Investigator",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Exfiltration (T1048)",
+      "evidenciaAuditable": "Expediente de contención en Defender XDR y evidencia preservada en Data Security Investigations.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Acciones de remediación in-situ e integración con Data Security Investigations verificadas en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/dlp-investigate-alerts-defender"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Respuesta inmediata ante exposición accidental en Microsoft Teams o compartición externa en SharePoint",
+      "objetivo": "Revocar al instante accesos externos no autorizados y neutralizar secretos o documentos expuestos en canales colaborativos.",
+      "consolaRuta": "security.microsoft.com > Incidents y consolas SharePoint / Teams Admin",
+      "procedimiento": [
+        "Ejecutar acción Unshare desde la alerta DLP en Defender XDR para eliminar vínculos externos e invitados.",
+        "Rotar de inmediato cualquier clave API, contraseña o token expuesto en chats externos (especialmente cuando otro tenant fue el iniciador del hilo).",
+        "Aplicar etiqueta de sensibilidad cifrante Azure RMS al archivo involucrado."
+      ],
+      "rolResponsable": "SOC L1/L2 + Collaboration Admin",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-02",
+      "mitreTactic": "Exfiltration Over Web Service (T1567)",
+      "evidenciaAuditable": "Registro de Unshare ejecutado, rotación de credenciales y aplicación de cifrado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Considera el límite arquitectónico de hosting tenant en chats externos de Teams documentado en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-microsoft-teams"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Contención ante volcado de datos sensibles en herramientas GenAI públicas o prompts críticos",
+      "objetivo": "Bloquear el servicio receptor no autorizado y evaluar el impacto regulatorio o intelectual de datos enviados a IA externa.",
+      "consolaRuta": "purview.microsoft.com > DSPM for AI / Activity explorer y Defender for Endpoint Indicators",
+      "procedimiento": [
+        "Extraer de Activity Explorer y Evidence Collection el resumen contextual o archivo exacto enviado y el dominio GenAI involucrado.",
+        "Elevar de inmediato el dominio a Block en políticas inline de Edge for Business / Endpoint DLP e indicadores de red MDE.",
+        "Rotar secretos expuestos y notificar a Legal/DPO si el volcado contenía PII o propiedad intelectual regulada."
+      ],
+      "rolResponsable": "SOC L2 / AI Security Analyst + Legal",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Exfiltration to Cloud / Web Service (T1567.002)",
+      "evidenciaAuditable": "Evidencia del evento, bloqueo activo del dominio GenAI e informe de impacto.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Combina telemetría de DSPM for AI, Edge for Business DLP y bloqueo en MDE.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-create-policy-block-to-ai-via-edge"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Rollback operativo de emergencia ante bloqueo masivo por falso positivo crítico de negocio",
+      "objetivo": "Restaurar continuidad operativa de un proceso crítico afectado por una regla mal calibrada sin desactivar la protección global del tenant.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Data Loss Prevention > Policies / Endpoint settings",
+      "procedimiento": [
+        "Pasar únicamente la regla causante a modo simulación o habilitar temporalmente override con justificación mientras se ajusta el clasificador.",
+        "Si el bloqueo proviene de espera Just-in-Time sobre una carpeta de aplicación local verificada, añadir la ruta solo en JIT file path exclusions (conservando DLP estándar).",
+        "Comunicar ventanas reales de sincronización (~1 hora en servicios cloud/Teams) y documentar análisis de causa raíz."
+      ],
+      "rolResponsable": "DLP Engineer + SOC Incident Commander",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-01",
+      "mitreTactic": "Impact (T1499)",
+      "evidenciaAuditable": "Registro ITSM de cambio de emergencia, ajuste granular aplicado y post-mortem.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Aprovecha la diferencia oficial entre JIT file path exclusions y exclusiones globales de Endpoint DLP.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about-jit"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Caza de coincidencias y anulaciones (Overrides) DLP en servicios Cloud y Copilot",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "CloudAppEvents",
+      "consulta": "CloudAppEvents\n| where Timestamp > ago(24h)\n| where ActionType has \"DlpRuleMatch\" or ActionType in (\"DLPRuleUndo\", \"DlpInfo\")\n| extend Raw = parse_json(RawEventData)\n| extend PolicyName = tostring(Raw.PolicyDetails[0].PolicyName)\n| extend RuleName = tostring(Raw.PolicyDetails[0].Rules[0].RuleName)\n| extend OverrideReason = tostring(Raw.ExceptionInfo)\n| project Timestamp, AccountDisplayName, Application, ActionType, PolicyName, RuleName, OverrideReason, IPAddress\n| order by Timestamp desc",
+      "proposito": "Auditar coincidencias DLP y justificaciones de override en Exchange, SharePoint, OneDrive, Teams y M365 Copilot (D-03 / D-04).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Caza de señales DLP reclasificadas como Behaviors tras Alert Tuning de Octubre 2026",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "BehaviorInfo + BehaviorEntities",
+      "consulta": "BehaviorInfo\n| where Timestamp > ago(24h)\n| where ServiceSource has \"Data Loss Prevention\" or DetectionSource has \"DLP\"\n| join kind=leftouter (\n    BehaviorEntities\n    | where Timestamp > ago(24h)\n    | project BehaviorId, EntityType, AccountUpn, FileName, FolderPath, RemoteUrl\n) on BehaviorId\n| project Timestamp, BehaviorId, Title, Category, Severity, AccountUpn, FileName, RemoteUrl, AttackTechniques\n| order by Timestamp desc",
+      "proposito": "Monitorear señales DLP en Defender XDR cuando permanece activa la regla integrada de Alert Tuning introducida en octubre de 2026 (D-01 / D-03).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección de intentos concentrados de exfiltración física y web en Endpoint DLP",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "DeviceEvents",
+      "consulta": "DeviceEvents\n| where Timestamp > ago(24h)\n| where ActionType startswith \"Dlp\" or ActionType in (\"FileCopiedToRemovableMedia\", \"FilePrinted\", \"ClipBoardCopied\", \"FileCopiedToNetworkShare\", \"FileUploadedToCloud\", \"FileCopiedOverRdp\")\n| summarize TotalEventos = count(), Acciones = make_set(ActionType, 10), Archivos = make_set(FileName, 10), Destinos = make_set(RemoteUrl, 5) by InitiatingProcessAccountUpn, DeviceName\n| where TotalEventos >= 3\n| order by TotalEventos desc",
+      "proposito": "Detectar usuarios o equipos Windows/macOS con múltiples eventos de extracción por USB, impresión, red, RDP o navegador (D-05 / AH-01).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Correlación de actividades riesgosas de datos y uso de IA en DataSecurityEvents",
+      "plataforma": "Microsoft Defender XDR / Microsoft Sentinel",
+      "tablaPrincipal": "DataSecurityEvents",
+      "consulta": "DataSecurityEvents\n| where Timestamp > ago(7d)\n| where isnotempty(RiskyAIUsageAppCategory) or isnotempty(SequenceCorrelationId)\n| project Timestamp, AccountUpn, ActionType, RiskyAIUsageAppCategory, RiskyAIUsageSensitivityLabelsInfo, FileName, SequenceCorrelationId\n| order by Timestamp desc",
+      "proposito": "Investigar secuencias de exfiltración e interacciones riesgosas con apps IA enriquecidas con etiquetas de sensibilidad (D-06 / D-07).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría diaria de cambios administrativos en políticas y reglas DLP",
+      "plataforma": "Microsoft Sentinel / Unified Audit Log",
+      "tablaPrincipal": "OfficeActivity",
+      "consulta": "OfficeActivity\n| where TimeGenerated > ago(24h)\n| where Operation in (\"New-DlpCompliancePolicy\", \"Set-DlpCompliancePolicy\", \"Remove-DlpCompliancePolicy\", \"New-DlpComplianceRule\", \"Set-DlpComplianceRule\", \"Remove-DlpComplianceRule\")\n| project TimeGenerated, UserId, Operation, Parameters, ClientIP\n| order by TimeGenerated desc",
+      "proposito": "Garantizar trazabilidad del 100% de altas, bajas y modificaciones sobre políticas y reglas DLP (D-02 / M-04).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Inventario completo de políticas DLP, modo de aplicación y cobertura de ubicaciones",
+      "plataforma": "Security & Compliance PowerShell (ExchangeOnlineManagement)",
+      "tablaPrincipal": "Get-DlpCompliancePolicy",
+      "consulta": "Connect-IPPSSession\nGet-DlpCompliancePolicy | Select-Object Name, Mode, Priority, ExchangeLocation, SharePointLocation, OneDriveLocation, TeamsLocation, EndpointDlpLocation, ThirdPartyAppDlpLocation, WhenChanged | Sort-Object Priority | Format-Table -AutoSize",
+      "proposito": "Verificar orden de prioridad, políticas activas vs. en simulación y alcance de ubicaciones (M-04 / T-01).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría de reglas DLP con Override permitido o sin generación de alertas",
+      "plataforma": "Security & Compliance PowerShell (ExchangeOnlineManagement)",
+      "tablaPrincipal": "Get-DlpComplianceRule",
+      "consulta": "Get-DlpComplianceRule | Where-Object { $_.Disabled -eq $false } | Select-Object Name, ParentPolicyName, BlockAccess, BlockAccessScope, NotifyAllowOverride, ReportSeverityLevel | Export-Csv -Path \".\\DLP_Rules_Posture_$(Get-Date -Format 'yyyyMMdd').csv\" -NoTypeInformation -Encoding utf8",
+      "proposito": "Detectar reglas activas que permiten anulación no deseada por el usuario o carecen de severidad de alerta configurada (S-01 / M-04).",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Tasa de Verdaderos Positivos (Precisión de Alertas DLP)",
+      "definicion": "Porcentaje de alertas DLP revisadas por el SOC que corresponden a eventos reales de riesgo y no a ruido de clasificación.",
+      "formula": "(Alertas DLP clasificadas como Verdadero Positivo / Total de alertas DLP triajadas en el periodo) * 100",
+      "metaSugerida": ">= 75 %",
+      "frecuencia": "Semanal",
+      "audiencia": "SOC Manager, DLP Engineer",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mide calidad de reglas y clasificadores; el umbral >=75% es benchmark operativo consultivo."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Cobertura Efectiva de Flota en Endpoint DLP",
+      "definicion": "Porcentaje de dispositivos corporativos Windows 10/11 y macOS elegibles incorporados y con políticas Endpoint DLP actualizadas.",
+      "formula": "(Endpoints con estado de sincronización DLP saludable / Total de endpoints corporativos elegibles) * 100",
+      "metaSugerida": ">= 98 %",
+      "frecuencia": "Semanal",
+      "audiencia": "CISO, Endpoint Security Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Calculado desde Purview Device onboarding e Intune; meta consultiva para evitar puntos ciegos locales."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Tiempo Medio de Reconocimiento (MTTA) en Alertas DLP Críticas/Altas",
+      "definicion": "Tiempo medio transcurrido desde que se dispara una alerta DLP de severidad crítica o alta hasta el inicio del triaje SOC.",
+      "formula": "Promedio(Timestamp Inicio Triaje - Timestamp Generación Alerta DLP)",
+      "metaSugerida": "< 30 minutos (Críticas) / < 2 horas (Altas)",
+      "frecuencia": "Mensual",
+      "audiencia": "SOC Manager, Auditoría Externa",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "SLA consultivo orientado a contener exfiltraciones en curso."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Tiempo Medio de Contención de Exfiltración (MTTC)",
+      "definicion": "Tiempo promedio desde el reconocimiento de una alerta confirmada hasta ejecutar Unshare, bloqueo adaptativo o aislamiento del host.",
+      "formula": "Promedio(Timestamp Contención Efectiva - Timestamp Reconocimiento SOC)",
+      "metaSugerida": "< 2 horas (Críticas) / < 6 horas (Altas)",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO, SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mide velocidad real de ejecución de los playbooks AH-01 a AH-03."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Tasa de Anulación por Usuario (Override Rate)",
+      "definicion": "Porcentaje de eventos con Policy Tip de bloqueo donde el usuario final ejerce la opción de anular el control.",
+      "formula": "(Eventos DLP con User Override ejecutado / Total de eventos con bloqueo anulable) * 100",
+      "metaSugerida": "< 5 % general y 100 % de overrides en reglas altas auditados en 24h",
+      "frecuencia": "Semanal",
+      "audiencia": "DLP Lead, Data Owners",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Tasas elevadas revelan reglas mal afinadas o cultura de evasión."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Proporción de Políticas en Enforcement Activo vs. Simulación",
+      "definicion": "Porcentaje del catálogo de políticas DLP productivas que operan en bloqueo/restricción efectiva frente a políticas detenidas en simulación.",
+      "formula": "(Políticas DLP en modo Enable / Total de políticas DLP diseñadas) * 100",
+      "metaSugerida": ">= 85 % (cero políticas >30 días en simulación sin decisión)",
+      "frecuencia": "Mensual",
+      "audiencia": "Data Security Architect, CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Evita la falsa sensación de seguridad de mantener políticas permanentemente en modo auditoría."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Tasa de Prevención en Interacciones IA (Copilot y Shadow AI)",
+      "definicion": "Porcentaje de intentos riesgosos con datos sensibles hacia Microsoft 365 Copilot o sitios GenAI no gestionados que son bloqueados inline.",
+      "formula": "(Intentos riesgosos bloqueados en M365 Copilot + Edge for Business / Total de intentos riesgosos detectados en IA) * 100",
+      "metaSugerida": ">= 95 % en políticas activas",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO, Comité de Gobierno de IA",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mide eficacia real de los controles DLP sobre IA empresarial y no administrada."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Cumplimiento de Migración MDCA (2027-01-06) y Control de Cambios",
+      "definicion": "Avance porcentual de migración de File Policies heredadas hacia Purview DLP y porcentaje de cambios administrativos con ticket ITSM.",
+      "formula": "Min(% File Policies migradas antes de 2027-01-06, % Cambios DLP con ticket ITSM aprobado)",
+      "metaSugerida": "100 %",
+      "frecuencia": "Mensual",
+      "audiencia": "GRC, Cloud Security Lead, Auditoría",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Asegura continuidad antes del retiro del 6 de enero de 2027 y trazabilidad regulatoria."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.PO-01",
+      "descripcionResultado": "La política para gestionar riesgos de ciberseguridad y protección contra fuga de información se establece con base en el contexto legal y de negocio.",
+      "capacidadMicrosoft": "Definición centralizada de políticas Purview DLP multicanal alineadas a regulaciones, etiquetas de sensibilidad y clasificadores.",
+      "evidenciaAuditoria": "Matriz trimestral de cobertura normativa (T-01) y exportación Get-DlpCompliancePolicy.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.OV-03",
+      "descripcionResultado": "El desempeño de la gestión de riesgos cibernéticos es evaluado y auditado continuamente para asegurar cumplimiento.",
+      "capacidadMicrosoft": "Registro inmutable de cambios en políticas/reglas DLP en Unified Audit Log, análisis mensual de deriva y revisión anual de privacidad.",
+      "evidenciaAuditoria": "Conciliaciones al 100% D-02 y M-04 contra tickets ITSM y dictamen anual A-01.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-01",
+      "descripcionResultado": "Las exposiciones, canales de fuga y riesgos emergentes sobre activos críticos se identifican y documentan.",
+      "capacidadMicrosoft": "Modo simulación de políticas DLP, descubrimiento de Shadow AI para Edge for Business e inventario de migración de File Policies MDCA.",
+      "evidenciaAuditoria": "Actas de evaluación en simulación (S-02), catálogo GenAI actualizado (M-05) y reporte de migración M-01.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.IM-03",
+      "descripcionResultado": "Se identifican mejoras continuas a partir de la operación diaria, tuning y ejercicios de validación de controles.",
+      "capacidadMicrosoft": "Tuning semanal guiado por falsos positivos y ejecución mensual de pruebas sintéticas Purple Team DLP en los 8 vectores.",
+      "evidenciaAuditoria": "Registro semanal S-01 e informes mensuales de pruebas sintéticas M-02.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Las autorizaciones y restricciones de uso se aplican bajo mínimo privilegio y contexto dinámico de riesgo.",
+      "capacidadMicrosoft": "Adaptive Protection ajustando controles DLP según nivel Elevated/Moderate/Minor y segregación PIM de Content Viewer / Download.",
+      "evidenciaAuditoria": "Registros operativos D-07 / S-05, Access Reviews T-02 y auditoría semanal de evidencias S-04.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.DS-02",
+      "descripcionResultado": "La confidencialidad e integridad de los datos en tránsito por correo, mensajería y web están protegidas.",
+      "capacidadMicrosoft": "Bloqueo/cifrado en Exchange Online, remoción automática de mensajes en Teams DLP y bloqueo inline en Microsoft Edge for Business.",
+      "evidenciaAuditoria": "Eventos de bloqueo en Activity Explorer y validaciones mensuales M-02.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.DS-05",
+      "descripcionResultado": "Las fugas de datos (data leaks) se previenen activamente en endpoints, colaboración y asistentes de IA.",
+      "capacidadMicrosoft": "Endpoint DLP nativo con Just-in-Time protection (USB, impresión, portapapeles, red, RDP) y DLP para Microsoft 365 Copilot / Cowork.",
+      "evidenciaAuditoria": "Configuraciones activas en Endpoint/Copilot y cumplimiento de KPI-02 y KPI-07.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-01",
+      "descripcionResultado": "Las redes, servicios cloud, endpoints y navegadores se monitorean continuamente para detectar actividad anómala de exfiltración.",
+      "capacidadMicrosoft": "Telemetría unificada en CloudAppEvents, DeviceEvents, DataSecurityEvents, BehaviorInfo y Purview Activity Explorer.",
+      "evidenciaAuditoria": "Ejecución documentada de controles diarios D-04, D-05 y D-06 mediante consultas KQL verificadas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.AE-02",
+      "descripcionResultado": "Los eventos potencialmente adversos se correlacionan entre múltiples dominios para dimensionar incidentes.",
+      "capacidadMicrosoft": "Correlación de alertas DLP con señales de Defender for Endpoint, Office 365, Entra ID y Sentinel en security.microsoft.com.",
+      "evidenciaAuditoria": "Expedientes de incidentes correlacionados en D-03 y resúmenes de Security Copilot.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.AN-03",
+      "descripcionResultado": "El análisis de incidentes se sustenta en evidencia íntegra para establecer hechos y alcance regulatorio.",
+      "capacidadMicrosoft": "Captura del archivo original mediante Endpoint DLP Evidence Collection e investigación agregada en Data Security Investigations.",
+      "evidenciaAuditoria": "Auditoría de custodia S-04 y expedientes forenses del playbook AH-01.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Los incidentes son contenidos con rapidez para frenar la exfiltración en origen y destino.",
+      "capacidadMicrosoft": "Acciones in-situ en Defender XDR (Unshare, Delete, Apply label, aislamiento de dispositivo) y bloqueo inmediato de dominios GenAI.",
+      "evidenciaAuditoria": "Registros de ejecución de AH-01, AH-02 y AH-03 dentro de la meta MTTC (KPI-04).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.IM-02",
+      "descripcionResultado": "Los procedimientos de respuesta y políticas preventivas se actualizan tras incidentes y simulacros.",
+      "capacidadMicrosoft": "Procedimiento quirúrgico de rollback AH-04 (incl. JIT file path exclusions) y ejercicio semestral multi-canal SM-01.",
+      "evidenciaAuditoria": "Informe del simulacro semestral SM-01 y cambios post-mortem documentados.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Consolidación limpia y estructurada desde las subcarpetas válidas de MSEOP-MD\\Purview DLP (0427 Purview DLP Bloques SecOps\\Claude - Compilado final (Limpio), Actúa como Principal Cloud Security Architect v6, DLP NIST VC y Purview DLP - VC LIC), descartando íntegramente la carpeta obsoleta NO, cruzando autores y prácticas con Ninja Training 2026 (06_Purview_DLP) y revalidando todos los controles, límites y cambios 2026-2027 contra Microsoft Learn MCP al 11 de noviembre de 2026.",
+    "correccionesAplicadas": [
+      "Consolidación documental limpia desde las subcarpetas vigentes de MSEOP-MD\\Purview DLP (0427 Purview DLP Bloques SecOps, DLP NIST VC y Purview DLP - VC LIC), excluyendo por completo la carpeta descartada NO para eliminar desvíos previos.",
+      "Incorporación del cambio crítico de inicios de octubre de 2026 en Microsoft Defender XDR: regla integrada de Alert Tuning que convierte señales DLP en behaviors (BehaviorInfo / BehaviorEntities) salvo desactivación explícita en Settings > Microsoft Defender XDR > Alert tuning.",
+      "Actualización de la ubicación Microsoft 365 Copilot and Copilot Chat (Learn actualizado el 2026-10-27): soporte para Copilot, Copilot Chat y Cowork incluyendo bloqueo de búsquedas web externas con SITs, bloqueo de prompts con SITs y exclusión de archivos/correos por etiqueta.",
+      "Incorporación de DLP inline en Microsoft Edge for Business (Windows 10/11 en Intune) frente a apps GenAI no administradas (ChatGPT, Google Gemini, DeepSeek), bloqueo de navegadores desprotegidos, prioridad de Endpoint DLP e incompatibilidad con Intune Multi-admin approval.",
+      "Inclusión de la migración obligatoria desde File Policies de Microsoft Defender for Cloud Apps antes de su retiro el 6 de enero de 2027 usando DLP to Purview migration (con soporte para SharePoint, OneDrive, Google Workspace, Box, Dropbox y Salesforce).",
+      "Precisión técnica de Endpoint DLP sin agentes en Windows 10/11 y macOS (3 últimas versiones): Just-in-Time protection (con distinción de JIT file path exclusions) y Evidence Collection hacia Azure Storage propio o Microsoft-managed storage integrada con Data Security Investigations.",
+      "Clarificación de reglas arquitectónicas de Teams DLP: requerimiento de grupos (no cuentas sueltas) para cubrir canales, evaluación por tenant del remitente en Shared Channels y dependencia del hosting tenant iniciador en chats externos.",
+      "Actualización de licenciamiento oficial a Microsoft Purview Suite (renombre oct-2025 de M365 E5 Compliance), distinción exacta E3 vs. O365 E5 vs. M365 E5 en Endpoint DLP y requisito de opt-in de Insider Risk para la tabla DataSecurityEvents."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Exclusión deliberada de la carpeta NO en MSEOP-MD\\Purview DLP y estructuración de 27 actividades operacionales en 7 cadencias",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Garantiza trazabilidad sobre versiones limpias auditadas y dota al SOC de un modelo operativo ejecutable extremo a extremo."
+      },
+      {
+        "elemento": "SLAs operativos acelerados (MTTA < 30 min y MTTC < 2 h en severidad crítica) para alertas DLP confirmadas",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Refleja la urgencia de contención ante intentos activos de exfiltración frente a alertas puramente informativas."
+      },
+      {
+        "elemento": "Metas numéricas para los 8 KPIs (>=75% precisión VP, >=98% cobertura Endpoint DLP, <5% override rate)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Establece referencias cuantitativas de madurez y salud operativa aclarando que no son umbrales oficiales de Microsoft."
+      },
+      {
+        "elemento": "Restricción en Entra PIM de Data Classification Content Download a ventanas JIT <= 1 hora con aprobación dual",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Protege la confidencialidad y cadena de custodia de archivos originales recolectados desde dispositivos de usuarios."
+      },
+      {
+        "elemento": "Programa mensual de 8 pruebas sintéticas Purple Team DLP (M-02), modelo de madurez de 5 niveles y mapeo de 12 subcategorías NIST CSF 2.0",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Transforma configuraciones de consola en garantías verificadas empíricamente y defendibles ante auditoría regulatoria."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Learn about data loss prevention",
+      "url": "https://learn.microsoft.com/en-us/purview/dlp-learn-about-dlp",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Arquitectura general de Purview DLP dividida en Enterprise applications & devices e Inline web traffic.",
+      "verificacion": "Verificado contra Microsoft Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Learn about Endpoint data loss prevention",
+      "url": "https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Cobertura nativa sin agente adicional sobre Windows 10/11, Windows Server y las tres últimas versiones mayores de macOS.",
+      "verificacion": "Verificado contra Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Learn about Endpoint DLP just-in-time protection",
+      "url": "https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about-jit",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Funcionamiento de JIT candidate files, stale classification, acciones bloqueadas, fallback y JIT triggered en Activity Explorer.",
+      "verificacion": "Verificado contra Microsoft Learn (actualizado jun-2026)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Get started with collecting files that match data loss prevention policies from devices",
+      "url": "https://learn.microsoft.com/en-us/purview/dlp-copy-matched-items-get-started",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Configuración de Evidence Collection en Azure Storage propio o Microsoft-managed, roles Content Viewer/Download e integración con Data Security Investigations.",
+      "verificacion": "Verificado contra Microsoft Learn (actualizado jun-2026)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Learn about using Microsoft Purview Data Loss Prevention to protect interactions with Microsoft 365 Copilot, Copilot Chat, and Cowork",
+      "url": "https://learn.microsoft.com/en-us/purview/dlp-microsoft365-copilot-location-learn-about",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Controles sobre SITs en prompts, bloqueo de búsquedas web externas y exclusión de archivos/correos por etiqueta en Copilot y Cowork.",
+      "verificacion": "Verificado contra Microsoft Learn (actualizado 2026-10-27)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Learn about Data Loss Prevention for Cloud Apps in Edge for Business",
+      "url": "https://learn.microsoft.com/en-us/purview/dlp-browser-dlp-learn",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Protección inline en Edge for Business sobre Windows 10/11 en Intune, prioridad de Endpoint DLP y restricción de navegadores no protegidos.",
+      "verificacion": "Verificado contra Microsoft Learn (actualizado 2026-09-15)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Help prevent sharing via Microsoft Edge for Business to unmanaged AI apps from managed devices",
+      "url": "https://learn.microsoft.com/en-us/purview/dlp-create-policy-block-to-ai-via-edge",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Procedimiento paso a paso para bloquear pegado y subida hacia sitios GenAI no gestionados y bloqueo de Firefox/Chrome sin extensión.",
+      "verificacion": "Verificado contra Microsoft Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Learn about Adaptive Protection in Data Loss Prevention",
+      "url": "https://learn.microsoft.com/en-us/purview/dlp-adaptive-protection-learn",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Integración dinámica de niveles Elevated, Moderate y Minor de Insider Risk Management en Exchange, Teams y Devices.",
+      "verificacion": "Verificado mediante lectura íntegra en Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Data loss prevention and Microsoft Teams",
+      "url": "https://learn.microsoft.com/en-us/purview/dlp-microsoft-teams",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Licenciamiento E5, reglas de alcance en canales, Shared Channels multi-tenant y chats con acceso externo.",
+      "verificacion": "Verificado mediante lectura íntegra en Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Get started with data loss prevention policies for Fabric and Power BI",
+      "url": "https://learn.microsoft.com/en-us/purview/dlp-powerbi-get-started",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview & Fabric Documentation Team",
+      "comentario": "Evaluación DLP de espacios de trabajo y artefactos soportados en Microsoft Fabric y Power BI.",
+      "verificacion": "Verificado contra Microsoft Learn (actualizado jul-2026)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Investigate data loss prevention alerts with Microsoft Defender XDR",
+      "url": "https://learn.microsoft.com/en-us/defender-xdr/dlp-investigate-alerts-defender",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Defender XDR Documentation Team",
+      "comentario": "Documenta la regla integrada de Alert Tuning de inicios de octubre de 2026 (BehaviorInfo), roles RBAC, Go Hunt y acciones in-situ.",
+      "verificacion": "Verificado mediante lectura íntegra en Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "DataSecurityEvents table in the advanced hunting schema",
+      "url": "https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-datasecurityevents-table",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Defender XDR Documentation Team",
+      "comentario": "Esquema oficial de caza avanzada para violaciones de políticas de datos y uso riesgoso de IA en Defender XDR y Sentinel.",
+      "verificacion": "Verificado contra Microsoft Learn (actualizado 2026-09-01)"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Migrate file policies to Microsoft Purview",
+      "url": "https://learn.microsoft.com/en-us/defender-cloud-apps/migrate-file-policies-to-purview",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Defender for Cloud Apps Team",
+      "comentario": "Guía oficial del retiro de File Policies el 6 de enero de 2027 y migración hacia Purview DLP para M365 y nubes de terceros.",
+      "verificacion": "Verificado contra Microsoft Learn (actualizado 2026-08-28)"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Microsoft Purview service description",
+      "url": "https://learn.microsoft.com/en-us/office365/servicedescriptions/microsoft-365-service-descriptions/microsoft-365-tenantlevel-services-licensing-guidance/microsoft-purview-service-description",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft 365 Service Descriptions",
+      "comentario": "Tabla oficial de elegibilidad de licencias para Purview DLP, Teams DLP, Endpoint DLP y Microsoft Purview Suite.",
+      "verificacion": "Verificado contra Microsoft Learn (actualizado 2026-11-09)"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "Close the gaps: layered data protection with Microsoft Purview across endpoint, browser, and network",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-purview-blog/close-the-gaps-layered-data-protection-with-microsoft-purview-across-endpoint-br/4550997",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Nick-MSFT (Microsoft Purview Blog)",
+      "comentario": "Arquitectura oficial en capas (Endpoint DLP + Edge for Business + Network DLP) publicada el 31 de agosto de 2026.",
+      "verificacion": "Verificado en Microsoft Tech Community (ago-2026)"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "Safeguard sensitive data with Microsoft Purview ninja training scenarios",
+      "url": "https://learn.microsoft.com/en-us/training/paths/purview-ninja-safeguard-data/",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Learn Training",
+      "comentario": "Ruta oficial de formación práctica por escenarios para Information Protection y Data Loss Prevention.",
+      "verificacion": "Verificado contra Microsoft Learn"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "Speaking Engagements 2026: Preventing Data Leakage from Generative AI Apps & Shadow AI",
+      "url": "https://nikkichapple.com/speaking-engagements-2026/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Nikki Chapple (Dual Microsoft MVP, M365 & Security)",
+      "comentario": "Patrones prácticos de prevención de fuga de datos en aplicaciones de IA generativa y gobernanza Microsoft 365.",
+      "verificacion": "Verificado en web (2026)"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "Microsoft Information Protection & DLP Archives — Office 365 for IT Pros",
+      "url": "https://office365itpros.com/category/microsoft-information-protection/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Tony Redmond (Microsoft MVP)",
+      "comentario": "Cobertura técnica continua de novedades de políticas DLP, Copilot DLP y cambios del Message Center.",
+      "verificacion": "Verificado en web (nov-2026)"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "Things to Know About Microsoft Purview — September 2026",
+      "url": "https://alberthoitingh.com/2026/09/04/things-to-know-about-microsoft-purview-september-2026/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Albert Hoitingh (Microsoft MVP)",
+      "comentario": "Análisis ejecutivo sobre Network DLP, protección de agentes y cambios operativos de Purview para CISOs.",
+      "verificacion": "Verificado en repositorio Ninja Training 2026"
+    },
+    {
+      "id": "REF-20",
+      "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)",
+      "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Referencia normativa oficial empleada para estructurar las evidencias de auditoría en las 6 funciones de CSF 2.0.",
+      "verificacion": "Publicación oficial NIST CSWP 29"
+    }
+  ]
+}

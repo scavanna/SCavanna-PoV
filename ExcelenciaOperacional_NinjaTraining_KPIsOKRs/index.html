@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ecosistema Integrado de Ciberseguridad Microsoft · CISO 365, Excelencia Operacional y Ninja Training</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 15.5px;
+  line-height: 1.68;
+}
+.topbar {
+  background: var(--cp-panel-strong);
+  border-bottom: 1px solid var(--cp-border);
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.wrap { max-width: 1320px; margin: 0 auto; padding: 36px 28px 80px; }
+.hero {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 36px 40px;
+  margin-bottom: 28px;
+}
+.eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cp-accent);
+  margin-bottom: 8px;
+}
+.hero h1 { margin: 0 0 14px 0; font-size: 30px; line-height: 1.24; }
+.hero p { margin: 0 0 24px 0; color: var(--cp-text-muted); max-width: 960px; font-size: 16.5px; }
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+}
+.kpi-box {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+.kpi-val { font-size: 24px; font-weight: 700; color: var(--cp-accent); line-height: 1.15; }
+.kpi-lbl { font-size: 13px; color: var(--cp-text-muted); margin-top: 4px; }
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 22px;
+  margin-bottom: 28px;
+}
+.pillar-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 28px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.pillar-card.featured {
+  border: 2px solid var(--cp-accent);
+}
+.pillar-card h2 { margin: 6px 0 10px 0; font-size: 20px; line-height: 1.3; }
+.pillar-card p { margin: 0 0 20px 0; color: var(--cp-text-muted); font-size: 14.5px; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; padding: 9px 16px;
+  border-radius: 0.625rem; border: 1px solid var(--cp-border-strong);
+  background: var(--cp-surface); color: var(--cp-text);
+  font-family: inherit; font-size: 13.5px; font-weight: 600;
+  text-decoration: none; cursor: pointer;
+}
+.btn:hover { background: var(--cp-surface-soft); }
+.btn-primary {
+  background: var(--cp-accent); color: var(--cp-accent-fg); border-color: var(--cp-accent);
+}
+.btn-primary:hover { background: var(--cp-accent-hover); }
+.downloads-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 26px 32px;
+}
+.downloads-card h2 { margin: 0 0 12px 0; font-size: 20px; }
+.dl-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+.dl-item {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-decoration: none;
+  color: var(--cp-text);
+}
+.dl-item:hover { border-color: var(--cp-accent); }
+.dl-item strong { display: block; font-size: 14px; color: var(--cp-accent); margin-bottom: 3px; }
+.dl-item span { font-size: 12.5px; color: var(--cp-text-muted); }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div>
+    <span style="font-weight:700;">Repositorio Integrado CISO 365 · Excelencia Operacional · Ninja Training</span>
+    <span style="color:var(--cp-text-muted);margin-left:10px;font-size:13.5px;">Edición Noviembre 2026 · 100% Estático y Autocontenido</span>
+  </div>
+  <button type="button" class="btn" id="themeBtn">Cambiar Tema Claro / Oscuro</button>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow">Arquitectura de 4 Capas para el CISO y los Product Owners de Controles</div>
+    <h1>Del Mandato Anual del CISO a la Excelencia Operacional y el Entrenamiento Ninja</h1>
+    <p>Este portal unifica en un único repositorio verificable el <strong>Plan Anual CISO 365</strong>, el <strong>Catálogo de KPIs y OKRs del CISO de Empresa de Frontera</strong>, las <strong>23 Guías de Excelencia Operacional Microsoft</strong> (configuración puntual, rutinas periódicas y playbooks ad-hoc) y los <strong>15 Programas de Ninja Training 2026</strong>, trazados de punta a punta para cada Product Owner.</p>
+    <div class="kpi-strip">
+      <div class="kpi-box"><div class="kpi-val">7 Fases · 130 ACT</div><div class="kpi-lbl">Plan Anual CISO 365 y 54 Rituales</div></div>
+      <div class="kpi-box"><div class="kpi-val">70 Indicadores</div><div class="kpi-lbl">K01–K64 + KSG01–06 y OKRs E3/E4</div></div>
+      <div class="kpi-box"><div class="kpi-val">23 Controles EO</div><div class="kpi-lbl">833 Acciones en 3 Planos y 184 KPIs</div></div>
+      <div class="kpi-box"><div class="kpi-val">15 Ninja Trainings</div><div class="kpi-lbl">387 Módulos y 2.165 Ejercicios</div></div>
+    </div>
+  </section>
+
+  <section class="pillars-grid">
+    <article class="pillar-card featured">
+      <div>
+        <div class="eyebrow">Punto de Entrada Recomendado</div>
+        <h2>1. Puente Maestro del Product Owner</h2>
+        <p>Navegador interactivo que conecta cada tecnología (00 a 22) con los OKRs/KPIs del CISO, separa las acciones de Configuración Puntual, Rutinas Periódicas y Respuesta Ad-Hoc, y enlaza exactamente los módulos Ninja para el Product Owner y para su equipo técnico.</p>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="./00_Puente_ProductOwner/index.html">Abrir Navegador Product Owner</a>
+      </div>
+    </article>
+
+    <article class="pillar-card">
+      <div>
+        <div class="eyebrow">Ejecución y Auditoría Técnica</div>
+        <h2>2. Portal de Excelencia Operacional (23 Módulos)</h2>
+        <p>Acceso directo al índice maestro y a los 23 dashboards interactivos de controles Microsoft 365 E5, Entra, Defender XDR, Sentinel, Intune, Purview, Security Copilot y Agent 365 con consultas KQL y checklists.</p>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="./Excelencia_Operacional/index.html">Abrir Excelencia Operacional</a>
+      </div>
+    </article>
+
+    <article class="pillar-card">
+      <div>
+        <div class="eyebrow">Habilitación Profunda y Laboratorios</div>
+        <h2>3. Portal Ninja Training Seguridad 2026 (15 Programas)</h2>
+        <p>Serie interactiva completa en español con 387 módulos en 4 niveles, 2.165 ejercicios etiquetados ([LAB], [LAB-PARCIAL], [SOLO-PRODUCCION]), autoevaluaciones al 80% y certificados por nivel.</p>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="./Ninja_Training/index.html">Abrir Portal Ninja Training</a>
+      </div>
+    </article>
+
+    <article class="pillar-card">
+      <div>
+        <div class="eyebrow">Gobierno y Sistema de Medición</div>
+        <h2>4. Biblioteca de Referencia CISO 365 y KPIs/OKRs</h2>
+        <p>Visor web interactivo y copias íntegras verificadas de los playbooks del primer año del CISO (F0–F6), los 54 rituales del ciclo anual y el sistema de medición para empresas de frontera.</p>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-primary" href="./Referencias_CISO/index.html">Leer y Descargar Referencias CISO</a>
+      </div>
+    </article>
+  </section>
+
+  <section class="downloads-card">
+    <h2>Descargas Directas de Libros Maestros y Contratos de Datos</h2>
+    <div class="dl-list">
+      <a class="dl-item" href="./00_Puente_ProductOwner/Matriz_Maestra_CISO365_ProductOwner_EO_y_Ninja_Training.xlsx" download>
+        <strong>Matriz Maestra Product Owner (.xlsx)</strong>
+        <span>9 hojas y 816 fórmulas dinámicas (CISO 365 + KPIs + 3 Planos EO + 387 Módulos Ninja)</span>
+      </a>
+      <a class="dl-item" href="./00_Puente_ProductOwner/Guia_Maestra_CISO365_ProductOwner_EO_y_Ninja_Training.md">
+        <strong>Guía Maestra de Vinculación (.md)</strong>
+        <span>Documento arquitectónico completo con las 23 fichas de Product Owner</span>
+      </a>
+      <a class="dl-item" href="./Referencias_CISO/CISO_365_Plan_Anual/AI_CISO_Atlas_CISO365_Plan_y_Ciclo_Anual_v1.0.xlsx" download>
+        <strong>Plan Anual y Ciclo CISO 365 (.xlsx)</strong>
+        <span>7 fases, 130 actividades, 54 rituales y derechos de decisión</span>
+      </a>
+      <a class="dl-item" href="./Referencias_CISO/KPIs_y_OKRs_CISO_Frontera/AI_CISO_Atlas_KPIs_OKRs_CISO_de_Frontera_v1.1_2026-11-10.xlsx" download>
+        <strong>Catálogo KPIs y OKRs CISO Frontera (.xlsx)</strong>
+        <span>70 indicadores (K01–K64 + KSG01–06), estadios E1–E5 y arreglos sectoriales</span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<script>
+document.getElementById("themeBtn").addEventListener("click", () => {
+  const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", next);
+});
+</script>
+</body>
+</html>
