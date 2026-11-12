@@ -1,0 +1,1199 @@
+{
+  "schemaVersion": "2.0",
+  "id": "06_Microsoft_Defender_for_Identity",
+  "orden": 6,
+  "slug": "Microsoft_Defender_for_Identity",
+  "nombre": "Microsoft Defender for Identity (ITDR Híbrido)",
+  "nombreCorto": "Defender for Identity",
+  "categoria": "SecOps, XDR y SIEM",
+  "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://security.microsoft.com",
+    "https://entra.microsoft.com",
+    "https://admin.microsoft.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "SOC Manager",
+    "SOC L1",
+    "SOC L2",
+    "SOC L3",
+    "SOC Identity Responder",
+    "Identity Architect",
+    "Active Directory Tier-0 Admin",
+    "Security Admin",
+    "GRC"
+  ],
+  "relacionM365E5": {
+    "estado": "Incluido en M365 E5",
+    "licencias": [
+      "Microsoft 365 E5",
+      "Microsoft 365 E7",
+      "Microsoft Defender Suite (antes Microsoft 365 E5 Security)",
+      "Enterprise Mobility + Security E5 (EMS E5 / A5)",
+      "Microsoft 365 A5 / G5",
+      "Microsoft 365 F5 Security / F5 Security + Compliance",
+      "Microsoft Defender for Identity (Standalone)"
+    ],
+    "prerrequisitos": [
+      "Servidores AD DS, AD FS, AD CS y Microsoft Entra Connect en Windows Server 2019, 2022 o 2025 con actualizacion acumulativa de septiembre de 2026 o posterior (sensor v3.0.10+)",
+      "Opcion 'Automatically use the sensor's local system account' seleccionada en Settings > Identities > Microsoft Defender for Identity > Manage action accounts",
+      "Memoria RAM completamente reservada en maquinas virtuales (sin Dynamic Memory en Hyper-V y con Reserve all guest memory en VMware) y plan de energia High Performance",
+      "Automatic Windows event auditing habilitado para sensores v3.x (AD DS, AD FS, AD CS y Entra Connect) y validacion aprobada con Test-MdiReadiness.ps1",
+      "Microsoft Defender Unified RBAC (URBAC) configurado con permisos Response (manage) gobernados mediante Entra PIM"
+    ],
+    "notaLicenciamiento": "Incluido nativamente en Microsoft 365 E5, E7, A5/G5, EMS E5 y Microsoft Defender Suite (antes M365 E5 Security). No esta incluido en Microsoft 365 E3, Office 365 E3/E5 ni Business Premium (disponible Defender Suite for Business Premium para hasta 300 usuarios). La pestana Identity Explorer requiere adicionalmente licencia de Microsoft Sentinel Data Lake."
+  },
+  "resumenEjecutivo": "Microsoft Defender for Identity (MDI) es la solucion cloud-native de Deteccion y Respuesta a Amenazas de Identidad (ITDR) integrada en Microsoft Defender XDR para proteger infraestructuras hibridas y multi-IdP. Mediante el sensor unificado v3.x desplegado en controladores de dominio (AD DS), AD FS, AD CS y Microsoft Entra Connect —junto con integraciones hacia Microsoft Entra ID, Okta, CyberArk Identity y SailPoint Identity Security Cloud—, MDI correlaciona trafico profundo de red, eventos de Windows y proveedores ETW para detectar en tiempo real todo el kill-chain de identidad (reconocimiento LDAP, Kerberoasting, Pass-the-Ticket, abuso de AD CS ESC1/ESC8/ESC11, Diamond/Golden Ticket, DPAPI y DCSync), evaluar continuamente la postura en Microsoft Secure Score, gobernar identidades humanas, no humanas y de agentes IA, y ejecutar contencion inmediata manual o mediante Automatic Attack Disruption.",
+  "principiosRectores": [
+    {
+      "principio": "Cobertura total de activos Tier-0 con el sensor unificado v3.x",
+      "descripcion": "Monitorear el 100% de los controladores de dominio y servidores AD FS, AD CS y Microsoft Entra Connect con el sensor v3.x (LocalSystem) y cero alertas de salud abiertas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-for-identity/deploy/deploy-sensor-v3"
+    },
+    {
+      "principio": "Asumir brecha en el directorio e instrumentar trampas de alta fidelidad (Honeytokens)",
+      "descripcion": "Operar bajo la premisa de que el adversario intentara enumerar y escalar en Active Directory, desplegando cuentas y equipos Honeytoken cuya sola interaccion confirma compromiso activo.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-for-identity/entity-tags"
+    },
+    {
+      "principio": "Convergencia de senales de riesgo y contencion multi-directorio",
+      "descripcion": "Alimentar senales de riesgo unificadas hacia Microsoft Entra ID Protection para disparar acceso condicional basado en riesgo y ejecutar remediaciones sincronizadas en AD, Entra ID e IdPs terceros.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-for-identity/remediation-actions"
+    },
+    {
+      "principio": "Reduccion proactiva de exposicion y rutas de ataque antes del incidente (ISPA)",
+      "descripcion": "Convertir misconfiguraciones heredadas (NTLMv1, delegaciones sin restriccion, Print Spooler, plantillas AD CS vulnerables) en un backlog medible en Secure Score y Exposure Management Attack Paths.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-for-identity/security-assessment"
+    },
+    {
+      "principio": "Ajuste quirurgico sin puntos ciegos (Alert Tuning frente a Exclusiones Globales)",
+      "descripcion": "Utilizar reglas granulares de Alert tuning (alertas XDR) o exclusiones por deteccion especifica (alertas clasicas) para actividad benigna autorizada, evitando excluir hosts o cuentas de forma global.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-for-identity/ops-guide/ops-guide-daily"
+    },
+    {
+      "principio": "Minimo privilegio sobre acciones de respuesta e identidad del sensor",
+      "descripcion": "Operar sensores v3.x exclusivamente con LocalSystem eliminando cuentas DSA/gMSA innecesarias, y restringir el permiso Response (manage) mediante Unified RBAC y Entra PIM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-for-identity/role-groups"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Sensor Unificado MDI v3.x (AD DS, AD FS, AD CS y Entra Connect)",
+      "funcionOperativa": "Captura trafico de red, eventos de Windows y proveedores ETW operando con LocalSystem, limite de 30% CPU / 1.5 GB RAM, auditoria RPC automatica, NNR automatico y actualizacion via Windows Update.",
+      "portalRuta": "security.microsoft.com > Settings > Identities > On-premises > Sensor management",
+      "integraciones": [
+        "Active Directory Domain Services",
+        "AD FS",
+        "AD CS",
+        "Microsoft Entra Connect",
+        "Microsoft Defender for Endpoint"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Identity Security Dashboard y Coverage & Maturity",
+      "funcionOperativa": "Centraliza Top insights, incidentes relacionados con identidad, usuarios Entra en riesgo y brechas de cobertura multi-nube/multi-IdP.",
+      "portalRuta": "security.microsoft.com > Identities > Dashboard",
+      "integraciones": [
+        "Microsoft Defender XDR",
+        "Microsoft Entra ID Protection",
+        "Exposure Management"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Identity Inventory (Humanas, NHI y Agentes IA) e Identity Risk Score",
+      "funcionOperativa": "Inventario unificado de usuarios, cuentas de servicio AD y service principals Entra (con indicador Used by AI agents) y puntaje de riesgo de identidad de 0 a 100 en GA.",
+      "portalRuta": "security.microsoft.com > Assets > Identities",
+      "integraciones": [
+        "Microsoft Entra ID",
+        "Active Directory",
+        "Defender for Cloud Apps",
+        "Microsoft Entra Agent ID"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Identity Security Posture Assessments (ISPA) y Domain Investigation",
+      "funcionOperativa": "Evaluaciones continuas en 6 categorias dentro de Microsoft Secure Score mas pagina dedicada para auditar propiedades, GPOs, cuentas de servicio y trusts por dominio AD.",
+      "portalRuta": "security.microsoft.com > Exposure management > Secure score y Identities > Domain investigation",
+      "integraciones": [
+        "Microsoft Secure Score",
+        "Identity Security Initiative",
+        "Okta"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Exposure Management Attack Paths e Identity Explorer",
+      "funcionOperativa": "Visualizacion moderna basada en grafos de rutas de movimiento lateral y escalamiento hacia activos Tier-0 (reemplazando los mapas clasicos LMP desactualizados desde mayo de 2025).",
+      "portalRuta": "security.microsoft.com > Assets > Identities > [Identidad] > Attack paths / Identity Explorer",
+      "integraciones": [
+        "Microsoft Security Exposure Management",
+        "Hunting Graph",
+        "Microsoft Sentinel Data Lake"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Entity Tags (Sensitive, Honeytoken y Exchange Server)",
+      "funcionOperativa": "Clasificacion automatica de grupos/roles privilegiados (AD, Entra incluyendo Agent ID Administrator, Okta, CyberArk, SailPoint) y etiquetado manual de cuentas/equipos trampa.",
+      "portalRuta": "security.microsoft.com > Settings > Identities > Entity tags",
+      "integraciones": [
+        "Active Directory",
+        "Microsoft Entra ID",
+        "Okta",
+        "CyberArk Identity",
+        "SailPoint ISC"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Identity Remediation Actions y Automatic Attack Disruption",
+      "funcionOperativa": "Ejecucion directa o autonoma de Disable, Enable, Revoke session, Mark as compromised y Force password change a traves de AD, Entra ID, IdPs terceros y apps SaaS.",
+      "portalRuta": "security.microsoft.com > Assets > Identities > [Identidad] > Actions / Action center",
+      "integraciones": [
+        "Active Directory (DC Sensors)",
+        "Microsoft Entra ID (Managed App)",
+        "Okta / CyberArk / SailPoint",
+        "Defender for Cloud Apps"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Health Issues y Herramienta Test-MdiReadiness",
+      "funcionOperativa": "Deteccion continua de fallos de comunicacion, parches faltantes o brechas de auditoria Windows en pestanas Global y Sensor, apoyada por script de validacion previa y trimestral.",
+      "portalRuta": "security.microsoft.com > Identities > Health issues y Identities > Tools",
+      "integraciones": [
+        "Windows Event Log",
+        "Email Notifications",
+        "Microsoft Defender APIs"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "URBAC Custom: SOC L1 Identity Monitor (con Identity Scoping opcional)",
+      "nivelSOC": "Tier 1 / L1",
+      "permisosClave": "Security data basics (read), Alerts (manage), Security settings (read) y System settings (read), acotable por dominio AD mediante Identity scoping.",
+      "asignacionPIM": "Activa permanente sin permisos de remediacion ni cambio de configuracion",
+      "responsabilidadOperativa": "Monitoreo diario de Dashboard, Health issues y triaje inicial de incidentes sin capacidad de deshabilitar cuentas.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "SOC Identity Responder / Security Operator (+ URBAC Response manage)",
+      "nivelSOC": "Tier 2 / L2",
+      "permisosClave": "Rol Entra SOC Identity Responder o Security Operator combinado con permiso URBAC Response (manage).",
+      "asignacionPIM": "Elegible en Entra PIM (maximo 8 horas con MFA resistente a phishing y ticket de incidente)",
+      "responsabilidadOperativa": "Ejecucion de acciones de contencion (Disable, Enable, Revoke session, Mark as compromised, Force password change) sobre cuentas comprometidas.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "URBAC Custom: SOC L3 ITDR Hunter & Detection Engineer",
+      "nivelSOC": "Tier 3 / L3",
+      "permisosClave": "Permisos de lectura avanzada sobre tablas Identity*/EntraId*, gestion de Custom detection rules y configuracion de Alert tuning.",
+      "asignacionPIM": "Elegible en Entra PIM (maximo 8 horas con MFA resistente a phishing)",
+      "responsabilidadOperativa": "Caceria proactiva KQL del AD kill-chain, analisis de Attack paths, diseno de detecciones personalizadas y ajuste de ruido B-TP.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Security Administrator (Identity Platform Engineer)",
+      "nivelSOC": "Ingenieria de Plataforma ITDR",
+      "permisosClave": "System settings (Read and manage), Security settings (All permissions) y Authorization (manage) en Defender portal.",
+      "asignacionPIM": "Elegible en Entra PIM (maximo 4 horas con aprobacion cruzada y numero de cambio)",
+      "responsabilidadOperativa": "Creacion de workspace, activacion y migracion de sensores v3.x, configuracion de Manage action accounts (LocalSystem), Entity tags y resolucion de Health issues.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Active Directory Tier-0 Administrator",
+      "nivelSOC": "Ingenieria Directorio Activo / PKI",
+      "permisosClave": "Privilegios administrativos locales en AD DS / AD CS / GPO operados exclusivamente desde estaciones PAW dedicadas.",
+      "asignacionPIM": "JIT / PAM en directorio local (maximo 2 horas desde estacion PAW endurecida)",
+      "responsabilidadOperativa": "Aplicacion de actualizaciones acumulativas en DCs, endurecimiento de GPOs y plantillas AD CS, erradicacion de NTLMv1 y doble rotacion de krbtgt.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "rol": "Security Reader / Global Reader",
+      "nivelSOC": "Auditoria / GRC",
+      "permisosClave": "Lectura integral de Secure Score (ISPA), Identity Inventory, Health issues, permisos URBAC e historial del Action Center.",
+      "asignacionPIM": "Elegible en Entra PIM para ventanas de auditoria",
+      "responsabilidadOperativa": "Verificacion independiente de cobertura de sensores Tier-0, separacion de funciones y evidencias NIST CSF 2.0.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Revision diaria del Identity Security Dashboard y panel Coverage & Maturity",
+      "objetivo": "Detectar variaciones bruscas en riesgos de identidad, incidentes activos y brechas de cobertura en infraestructura hibrida.",
+      "consolaRuta": "security.microsoft.com > Identities > Dashboard",
+      "procedimiento": [
+        "Revisar los tres widgets diarios recomendados por Microsoft: Top insights, Identity related incidents y Entra ID users at risk.",
+        "Verificar en Coverage & Maturity que no existan caidas de cobertura en AD DS, AD FS, AD CS, Entra Connect o IdPs conectados.",
+        "Priorizar para investigacion inmediata cualquier pico en cuentas privilegiadas o con Identity Risk Score elevado."
+      ],
+      "rolResponsable": "SOC L1 / Identity Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "Initial Access / Credential Access (TA0001 / TA0006)",
+      "evidenciaAuditable": "Registro diario de revision del dashboard ITDR y tickets generados ante anomalias.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tarea diaria prescriptiva en Daily operational guide - Microsoft Defender for Identity.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/ops-guide/ops-guide-daily"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Triaje priorizado de incidentes de identidad en la cola unificada de Defender XDR",
+      "objetivo": "Investigar y clasificar oportunamente ataques contra credenciales, Kerberos, AD CS y escalamiento de privilegios.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts > Incidents",
+      "procedimiento": [
+        "Filtrar Status = New, In progress y Severity = High, Medium, Low conservando todas las fuentes XDR para correlacion y revisando especificamente Defender for Identity.",
+        "Atender con prioridad critica alertas de Honeytoken, DCSync, Golden/Diamond Ticket, abuso AD CS (ESC1/8/11/Certighost), DPAPI, Entra Connect, Pass-the-Hash/Ticket y TAP/MFA sospechoso.",
+        "Analizar Attack story y Evidence and response, asignar propietario y clasificar al cierre como True positive (con tipo de amenaza), False positive o Informational."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-03",
+      "mitreTactic": "Credential Access / Lateral Movement (TA0006 / TA0008)",
+      "evidenciaAuditable": "Exportacion de cola de incidentes, tiempos de atencion y clasificacion documentada.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Procedimiento oficial en MDI Daily operational guide; catalogo de alertas actualizado a octubre 2026.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/ops-guide/ops-guide-daily"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Verificacion de actividad en Honeytokens y modificaciones en grupos sensibles",
+      "objetivo": "Confirmar ausencia de intrusiones sobre cuentas trampa y auditar cualquier alta en grupos o roles Tier-0.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts > Alerts / Hunting > Advanced hunting",
+      "procedimiento": [
+        "Verificar cero inicios de sesion o consultas asociadas a usuarios o dispositivos etiquetados como Honeytoken.",
+        "Consultar adiciones de miembros en grupos sensibles de AD, Entra ID (incluyendo Global Admin y Agent ID Admin), Okta, CyberArk y SailPoint.",
+        "Contrastar cada modificacion privilegiada contra cambios aprobados en ITSM y escalar como P1 cualquier cambio no autorizado."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Privilege Escalation / Persistence (TA0004 / TA0003)",
+      "evidenciaAuditable": "Conciliacion diaria firmada de cambios en grupos privilegiados y estado de Honeytokens.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Etiquetado Honeytoken y grupos sensibles multi-IdP verificados en entity-tags.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/entity-tags"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo y resolucion de Health Issues (pestanas Global y Sensor)",
+      "objetivo": "Garantizar visibilidad ininterrumpida 24x7 sobre todos los controladores de dominio y servidores de identidad.",
+      "consolaRuta": "security.microsoft.com > Identities > Health issues",
+      "procedimiento": [
+        "Revisar diariamente las pestanas Global health issues y Sensor health issues filtrando estado Open.",
+        "Priorizar alertas Sensor service failed to start, Sensor stopped communicating, Sensor outdated (v3) o fallos de auditoria Windows/NTLM.",
+        "Aplicar el procedimiento correspondiente a la version del sensor (ej. habilitar Automatic Windows auditing configuration en v3 o suprimir por 7 dias solo en mantenimientos programados)."
+      ],
+      "rolResponsable": "Identity Platform Admin / SOC L1",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Defense Evasion (TA0005 - T1562)",
+      "evidenciaAuditable": "Captura/estado diario de Health issues sin alertas criticas abiertas y notificaciones por correo configuradas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tarea diaria oficial en ops-guide-daily y tabla de resolucion v2/v3 verificada en health-alerts.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/health-alerts"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Ejecucion y seguimiento de acciones de contencion sobre identidades comprometidas",
+      "objetivo": "Cortar en minutos el uso de credenciales o sesiones robadas tanto en tierra como en nube e IdPs conectados.",
+      "consolaRuta": "security.microsoft.com > Assets > Identities > [Identidad] > Actions y Action center",
+      "procedimiento": [
+        "Ante compromiso confirmado o disparo de Automatic Attack Disruption, verificar la ejecucion de Disable, Revoke session, Mark as compromised o Force password change.",
+        "Confirmar en Action center que la accion se completo exitosamente tanto en el DC (via sensor LocalSystem) como en Entra ID y conectores externos.",
+        "Coordinar con el usuario y mesa de ayuda antes de ejecutar Enable tras la erradicacion."
+      ],
+      "rolResponsable": "SOC L2 / SOC Identity Responder",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Credential Access / Lateral Movement (TA0006 / TA0008)",
+      "evidenciaAuditable": "Historial de acciones completadas en Action center y logs de auditoria de Defender.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Acciones multi-IdP y uso por Automatic Attack Disruption verificados en remediation-actions.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/remediation-actions"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Ajuste tactico de alertas Benign True Positive (Alert Tuning / Exclusions)",
+      "objetivo": "Reducir fatiga de alertas del SOC preservando cobertura de deteccion para otras tecnicas sobre los mismos activos.",
+      "consolaRuta": "security.microsoft.com > Settings > Microsoft Defender XDR > Alert tuning y Settings > Identities > Exclusions",
+      "procedimiento": [
+        "Identificar alertas repetitivas validadas como actividad legitima esperada (ej. escaneres autorizados o herramientas de administracion aprobadas).",
+        "Crear reglas especificas de Alert tuning (para alertas en formato Defender) o exclusiones por deteccion puntual (para alertas clasicas).",
+        "Documentar justificacion y propietario evitando exclusiones globales de cuentas o direcciones IP."
+      ],
+      "rolResponsable": "SOC L2 / SOC L3",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-03",
+      "mitreTactic": "Discovery (TA0007)",
+      "evidenciaAuditable": "Reglas de ajuste documentadas con referencia a ticket de cambio o incidente.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Recomendacion diaria oficial en ops-guide-daily y distincion clasicas vs XDR en alerts-overview.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/ops-guide/ops-guide-daily"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Threat Hunting diario rapido sobre replicacion AD, cuentas de servicio y riesgo hibrido",
+      "objetivo": "Detectar actividades sutiles en datos crudos de las ultimas 24 horas antes de que escalen a incidente mayor.",
+      "consolaRuta": "security.microsoft.com > Hunting > Advanced hunting",
+      "procedimiento": [
+        "Ejecutar consultas diarias sobre eventos Directory Service Replication en IdentityDirectoryEvents.",
+        "Buscar inicios de sesion interactivos anomalos ejecutados por cuentas de servicio (IdentityLogonEvents / IdentityAccountInfo).",
+        "Cruzar usuarios con alertas MDI frente a inicios de sesion recientes en EntraIdSignInEvents."
+      ],
+      "rolResponsable": "SOC L2 / SOC L3",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Credential Access / Privilege Escalation (TA0006 / TA0004)",
+      "evidenciaAuditable": "Ejecucion diaria de consultas guardadas y registro de hallazgos en bitacora SOC.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Proactively hunt incluido en ops-guide-daily; tablas validadas en advanced-hunting-schema-tables.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/ops-guide/ops-guide-daily"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Revision semanal y priorizacion de Identity Security Posture Assessments (ISPA)",
+      "objetivo": "Cerrar sistematicamente configuraciones explotables en AD DS, AD CS, GPOs, Entra Connect y Okta.",
+      "consolaRuta": "security.microsoft.com > Exposure management > Secure score > Recommended actions (Identity)",
+      "procedimiento": [
+        "Evaluar recomendaciones abiertas en las 6 categorias: Hybrid security, Identity infrastructure, Certificates, Group policy, Accounts y Cloud identities.",
+        "Priorizar hallazgos criticos: Print Spooler en DCs, Unconstrained Delegation, plantillas vulnerables AD CS (ESC1-ESC8), LDAP Simple Bind y cuentas privilegiadas obsoletas.",
+        "Asignar acciones de remediacion al equipo IAM/AD y verificar actualizacion de estado (ciclo de refresco de 24 horas en puntaje)."
+      ],
+      "rolResponsable": "Identity Architect / Security Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "Privilege Escalation / Credential Access (TA0004 / TA0006)",
+      "evidenciaAuditable": "Exportacion semanal de recomendaciones de identidad en Secure Score y tickets de remediacion.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Actividad semanal prescriptiva en ops-guide-weekly y categorias verificadas en security-assessment.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/security-assessment"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Caceria proactiva semanal del AD Kill-Chain (LDAP Recon, Kerberoasting, Spraying y AD CS)",
+      "objetivo": "Descubrir reconocimiento lento, extraccion offline de tickets Kerberos o abuso de certificados no cubiertos por alertas estandar.",
+      "consolaRuta": "security.microsoft.com > Hunting > Advanced hunting",
+      "procedimiento": [
+        "Ejecutar consultas de 7 dias en IdentityQueryEvents para detectar rafagas LDAP/SAM-R compatibles con BloodHound/SharpHound.",
+        "Cazar solicitudes TGS con cifrado RC4 (Kerberoasting) y rafagas distribuidas LogonFailed (Password Spraying) en IdentityLogonEvents.",
+        "Convertir patrones maliciosos recurrentes en Custom detection rules con acciones automaticas."
+      ],
+      "rolResponsable": "SOC L3 / Threat Hunter",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Discovery / Credential Access (TA0007 / TA0006)",
+      "evidenciaAuditable": "Consultas KQL semanales ejecutadas, hipotesis documentadas y reglas custom creadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Actividad semanal oficial en ops-guide-weekly.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/ops-guide/ops-guide-weekly"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Analisis de rutas de ataque hacia activos Tier-0 (Exposure Management e Identity Explorer)",
+      "objetivo": "Cortar caminos de movimiento lateral y escalamiento de privilegios hacia Domain Admins, DCs y servidores PKI/Entra Connect.",
+      "consolaRuta": "security.microsoft.com > Exposure management > Attack paths y Assets > Identities > Identity Explorer",
+      "procedimiento": [
+        "Inspeccionar las rutas de ataque activas que conducen a identidades criticas y controladores de dominio (sustituyendo a los antiguos mapas LMP desactualizados en 2025).",
+        "Utilizar Identity Explorer (si se dispone de Sentinel Data Lake) para explorar grafos de exposicion y puntos de estrangulamiento.",
+        "Emitir ordenes de saneamiento de permisos ACL, membresias anidadas o sesiones privilegiadas en equipos estandar."
+      ],
+      "rolResponsable": "Identity Architect / SOC L3",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Lateral Movement / Privilege Escalation (TA0008 / TA0004)",
+      "evidenciaAuditable": "Reporte semanal de rutas de ataque criticas hacia Tier-0 y acciones de mitigacion.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Refleja el reemplazo oficial de LMP (MC1073068) por Attack paths de Exposure Management e Identity Explorer (abril 2026).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/whats-new"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Auditoria semanal de protocolos inseguros (NTLMv1 y LDAP Simple Bind)",
+      "objetivo": "Identificar las aplicaciones y dispositivos exactos que impiden deshabilitar NTLMv1 y exigir LDAP firmado.",
+      "consolaRuta": "security.microsoft.com > Hunting > Advanced hunting",
+      "procedimiento": [
+        "Agrupar por DeviceName, IPAddress y Application todos los eventos NTLMv1 y LDAP SimpleBind de los ultimos 7 dias en IdentityLogonEvents.",
+        "Abrir o actualizar requerimientos de remediacion con los propietarios de sistemas heredados para migrar a Kerberos y LDAPS.",
+        "Validar que no aparezcan nuevos servidores emitiendo trafico de autenticacion degradado."
+      ],
+      "rolResponsable": "Identity Admin / Security Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "Credential Access / Defense Evasion (TA0006 / TA0005)",
+      "evidenciaAuditable": "Reporte semanal de emisores NTLMv1 / LDAP Simple Bind y plan de apagado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Alineado a las evaluaciones oficiales ISPA de credenciales en texto claro y NTLMv1.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/security-assessment"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Seguimiento de amenazas emergentes de identidad en Threat Analytics",
+      "objetivo": "Evaluar impacto inmediato de nuevas CVEs de Active Directory, Kerberos, AD CS o federacion.",
+      "consolaRuta": "security.microsoft.com > Threat intelligence > Threat analytics",
+      "procedimiento": [
+        "Revisar informes recientes de analistas de Microsoft sobre explotacion de identidad (ej. CVE-2025-33073, Certighost CVE-2026-54121, ataques AiTM/TAP).",
+        "Comprobar exposicion de parches en controladores de dominio y servidores AD CS/AD FS.",
+        "Ejecutar consultas de caza asociadas y validar cobertura de detecciones."
+      ],
+      "rolResponsable": "SOC L3",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "Privilege Escalation / Credential Access (TA0004 / TA0006)",
+      "evidenciaAuditable": "Bitacora semanal de amenazas emergentes evaluadas y estado de mitigacion.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Review and respond to emerging threats documentado en ops-guide-weekly.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/ops-guide/ops-guide-weekly"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Control semanal de cobertura y estado de migracion en Sensor Management",
+      "objetivo": "Garantizar que todo servidor elegible ejecute el sensor v3.x actualizado y con cuenta de accion LocalSystem.",
+      "consolaRuta": "security.microsoft.com > Settings > Identities > On-premises > Sensor management",
+      "procedimiento": [
+        "Revisar en la pestana combinada Sensor management los sensores instalados y los servidores elegibles pendientes de activacion.",
+        "Inspeccionar motivos Not ready for migration si quedan sensores v2.x y planificar su ventana de migracion.",
+        "Confirmar que Manage action accounts mantenga activo Automatically use the sensor's local system account."
+      ],
+      "rolResponsable": "Identity Platform Admin",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Defense Evasion (TA0005)",
+      "evidenciaAuditable": "Listado exportado de sensores y estado de versiones desde Sensor management.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Pestana combinada Sensor management (sep 2026) y migracion v3.x (jul 2026) verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/deploy/migrate-to-sensor-v3"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Revision mensual y depuracion de reglas de Alert Tuning y Exclusiones MDI",
+      "objetivo": "Asegurar que las reglas de supresion y ajuste sigan vigentes y no oculten compromisos reales.",
+      "consolaRuta": "security.microsoft.com > Settings > Microsoft Defender XDR > Alert tuning y Settings > Identities > Exclusions",
+      "procedimiento": [
+        "Revisar todas las reglas de Alert tuning y exclusiones clasicas verificando coincidencias del ultimo mes y vigencia de justificacion.",
+        "Eliminar reglas huerfanas o asociadas a proyectos/pruebas finalizadas.",
+        "Si todos los sensores ya migraron a v3.x, confirmar la eliminacion de configuraciones residuales DSA/gMSA a nivel workspace."
+      ],
+      "rolResponsable": "SOC Lead / Security Admin",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-02",
+      "mitreTactic": "Defense Evasion (TA0005)",
+      "evidenciaAuditable": "Acta mensual de revision de reglas de tuning y exclusiones.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Actividad mensual prescriptiva en ops-guide-monthly.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/ops-guide/ops-guide-monthly"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Gobernanza mensual de Identity Security Initiative y Domain Investigation",
+      "objetivo": "Evaluar la reduccion estructural de exposicion de identidad frente al Target score y auditar cada dominio AD.",
+      "consolaRuta": "security.microsoft.com > Exposure management > Initiatives > Identity Security e Identities > Domain investigation",
+      "procedimiento": [
+        "Medir el progreso mensual de la iniciativa Identity Security frente al puntaje objetivo fijado con el CISO.",
+        "Revisar la pagina Domain investigation para cada dominio activo auditando relaciones de confianza (trusts), GPOs y cuentas de servicio.",
+        "Generar el resumen ejecutivo de postura e incidentes ITDR para la direccion."
+      ],
+      "rolResponsable": "Identity Architect / SOC Manager",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-02",
+      "mitreTactic": "Privilege Escalation (TA0004)",
+      "evidenciaAuditable": "Reporte mensual de Identity Security Initiative y capturas de Domain investigation.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Identity Security Initiative y Domain investigation page (GA julio 2026) verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/whats-new"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Auditoria mensual de Non-Human Identities (NHI), Agentes IA y etiquetas Entity Tags",
+      "objetivo": "Gobernar cuentas de servicio, service principals usados por agentes de IA y mantener vigentes etiquetas Sensitive y Honeytoken.",
+      "consolaRuta": "security.microsoft.com > Assets > Identities y Settings > Identities > Entity tags",
+      "procedimiento": [
+        "Filtrar identidades no humanas (cuentas de servicio AD y service principals Entra, incluyendo la columna Used by AI agents) con privilegios altos o inactividad.",
+        "Actualizar etiquetas manuales Sensitive para nuevos activos o grupos criticos de negocio.",
+        "Validar el estado, ubicacion creible e inactividad normal de todas las cuentas y dispositivos Honeytoken."
+      ],
+      "rolResponsable": "Identity Architect / Security Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-05",
+      "mitreTactic": "Persistence / Credential Access (TA0003 / TA0006)",
+      "evidenciaAuditable": "Exportacion CSV de inventario NHI/privilegiado y registro auditado de Entity tags.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Inventario NHI y visibilidad de agentes IA verificados en whats-new (junio-septiembre 2026) y entity-tags.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/entity-tags"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Auditoria de roles Unified RBAC, Identity Scoping, Entra PIM y Action Center",
+      "objetivo": "Confirmar que las capacidades de contencion sobre identidades esten estrictamente gobernadas y auditadas.",
+      "consolaRuta": "security.microsoft.com > System > Permissions & roles, Action center > History y entra.microsoft.com",
+      "procedimiento": [
+        "Revisar titulares elegibles y activos con permiso Response (manage), SOC Identity Responder y Security Administrator, verificando alcances Identity scoping.",
+        "Conciliar el 100% de las acciones manuales de deshabilitacion o reseteo en Action center contra tickets de incidentes cerrados.",
+        "Verificar que las directivas de acceso condicional basadas en riesgo unificado permanezcan activas y sin exclusiones indebidas."
+      ],
+      "rolResponsable": "Security Admin / GRC",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-02",
+      "mitreTactic": "Privilege Escalation (TA0004)",
+      "evidenciaAuditable": "Informe mensual de auditoria RBAC/PIM y conciliacion del Action Center.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Modelo URBAC, Identity scoping y Action center verificados en role-groups y remediation-actions.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/role-groups"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Seguimiento mensual de novedades MDI / Defender XDR y avisos del Message Center",
+      "objetivo": "Adoptar nuevas detecciones y anticipar cambios de plataforma, parches requeridos o despliegues automaticos.",
+      "consolaRuta": "admin.microsoft.com > Health > Message center y learn.microsoft.com/defender-for-identity/whats-new",
+      "procedimiento": [
+        "Revisar las publicaciones mensuales de What's new in Defender for Identity y avisos del Message Center (ej. banners de 30 dias de activacion automatica).",
+        "Evaluar nuevas alertas incorporadas (AD, Entra ID, Okta, SailPoint) y actualizar playbooks del SOC.",
+        "Coordinar con el equipo de parches de servidores el despliegue de las actualizaciones acumulativas mensuales en todos los sensores v3.x."
+      ],
+      "rolResponsable": "Identity Platform Admin / SOC Lead",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-02",
+      "mitreTactic": "Initial Access (TA0001)",
+      "evidenciaAuditable": "Registro mensual de cambios de plataforma convertidos en tareas operativas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Track new changes in Microsoft Defender XDR and Defender for Identity prescrito en ops-guide-monthly.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/ops-guide/ops-guide-monthly"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Validacion trimestral de configuracion de dominio con Test-MdiReadiness.ps1 y proceso de alta de servidores",
+      "objetivo": "Certificar que las politicas de auditoria de dominio/objetos y el proceso de aprovisionamiento de servidores no presenten brechas.",
+      "consolaRuta": "security.microsoft.com > Identities > Tools, PowerShell en DCs y admin.microsoft.com > Service health",
+      "procedimiento": [
+        "Ejecutar Test-MdiReadiness.ps1 en todos los dominios y servidores de identidad verificando auditoria avanzada, SACLs, NTLM (8004), RPC, memoria VM reservada y High Performance.",
+        "Revisar el procedimiento corporativo de alta de servidores (DCs, AD FS, AD CS, Entra Connect) confirmando que exija activacion inmediata del sensor v3.x.",
+        "Revisar el historial trimestral de Microsoft Service Health para MDI."
+      ],
+      "rolResponsable": "Identity Platform Admin / AD Tier-0 Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "Defense Evasion (TA0005)",
+      "evidenciaAuditable": "Reportes HTML/JSON de Test-MdiReadiness.ps1 sin fallos y checklist auditado de aprovisionamiento.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Las tres actividades corresponden exactamente al Quarterly/Ad-hoc operational guide oficial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/ops-guide/ops-guide-quarterly"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Ejercicio Purple Team de historias completas de ataque sobre identidad hibrida",
+      "objetivo": "Validar empiricamente detecciones, correlacion XDR y contencion siguiendo las buenas practicas ofensivas oficiales de MDI.",
+      "consolaRuta": "Entorno controlado monitoreado en security.microsoft.com",
+      "procedimiento": [
+        "Confirmar salud al 100% de sensores en DCs, AD FS y AD CS antes de iniciar la prueba conforme a la guia oficial de security testing.",
+        "Ejecutar una historia completa encadenada (reconocimiento LDAP -> abuso AD CS o Kerberoasting -> Pass-the-Ticket -> intento DCSync o toque Honeytoken), nunca comandos aislados fuera de contexto.",
+        "Medir tiempos de deteccion, correlacion en incidente XDR, elevacion de riesgo unificado y ejecucion de respuesta."
+      ],
+      "rolResponsable": "Purple Team / SOC L3 / Identity Architect",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-03",
+      "mitreTactic": "Credential Access / Lateral Movement (TA0006 / TA0008)",
+      "evidenciaAuditable": "Informe semestral Purple Team con matriz ATT&CK validada y mejoras implementadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Metodologia de historias completas verificada en security-testing-best-practices; frecuencia semestral propuesta.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/security-testing-best-practices"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Simulacro Tabletop de compromiso total de dominio y doble rotacion controlada de krbtgt",
+      "objetivo": "Asegurar preparacion ejecutiva y tecnica para erradicar persistencia Kerberos (Golden/Diamond Ticket) y recuperar Tier-0.",
+      "consolaRuta": "Ejercicio interdisciplinario SOC, IAM/AD Tier-0, Infraestructura, Legal y CISO",
+      "procedimiento": [
+        "Simular escenario de compromiso de cuenta Tier-0 con extraccion de hashes y forjado de tickets Kerberos.",
+        "Validar coordinacion de aislamiento masivo, revocacion hibrida y ejecucion en laboratorio/pre-produccion del doble reseteo de krbtgt con intervalo minimo de 10 horas.",
+        "Emitir After-Action Report y actualizar el plan de recuperacion de Active Directory."
+      ],
+      "rolResponsable": "CISO / Incident Response Lead / AD Tier-0 Lead",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-05",
+      "mitreTactic": "Credential Access / Persistence (TA0006 / TA0003)",
+      "evidenciaAuditable": "Acta anual de simulacro firmada y procedimiento actualizado de recuperacion de bosque AD.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Alineado a NIST SP 800-61 Rev. 3 y guias de respuesta a incidentes de identidad de Microsoft.",
+      "urlSoporte": "https://csrc.nist.gov/pubs/sp/800/61/r3/final"
+    },
+    {
+      "codigo": "A-02",
+      "cadencia": "Anual",
+      "actividad": "Revision arquitectonica anual de ciclo de vida de servidores de identidad, limites de workspace y licencias",
+      "objetivo": "Prevenir obsolescencia de SO en controladores de dominio y alinear capacidad y conectores multi-IdP.",
+      "consolaRuta": "security.microsoft.com > Settings > Identities y admin.microsoft.com",
+      "procedimiento": [
+        "Auditar versiones de Windows Server en todos los DCs, AD FS, AD CS y Entra Connect garantizando soporte pleno de sensor v3.x (WS2019/2022/2025).",
+        "Validar capacidad del workspace (hasta 1.000 sensores) e integraciones con Okta, CyberArk, SailPoint y Sentinel Data Lake.",
+        "Conciliar licencias activas Microsoft 365 E5 / E7 / Defender Suite / EMS E5 frente al total de identidades."
+      ],
+      "rolResponsable": "Enterprise Identity Architect / CISO",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-02",
+      "mitreTactic": "Initial Access (TA0001)",
+      "evidenciaAuditable": "Informe anual de arquitectura ITDR, ciclo de vida de SO y cumplimiento de licenciamiento.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Limites de 1.000 sensores y requisitos de SO para sensor v3.x verificados en deploy-sensor-v3.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/deploy/deploy-sensor-v3"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de contencion y erradicacion ante ataque DCSync, Golden Ticket o Diamond Ticket",
+      "objetivo": "Impedir la dominancia persistente del bosque Active Directory tras deteccion de compromiso de credenciales Tier-0.",
+      "consolaRuta": "security.microsoft.com (Incidents, Assets > Devices/Identities, Advanced hunting) y estacion PAW AD",
+      "procedimiento": [
+        "Validar de inmediato en Alert story e IdentityDirectoryEvents el host origen y cuenta ejecutora, descartando solo DCs o servidores Entra Connect legitimos.",
+        "Aislar el dispositivo origen en Defender for Endpoint y ejecutar Disable, Revoke session y Mark as compromised sobre las cuentas involucradas.",
+        "Auditar ACLs de replicacion en raiz de dominio / AdminSDHolder y ejecutar doble rotacion coordinada de la cuenta krbtgt (separada >= 10 horas) si hubo compromiso Kerberos."
+      ],
+      "rolResponsable": "SOC L3 / SOC Identity Responder / AD Tier-0 Admin",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Credential Access / Persistence (TA0006 / TA0003)",
+      "evidenciaAuditable": "Incidente documentado en XDR, historial del Action center y registro de rotacion krbtgt.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Alertas DCSync/Golden/Diamond Ticket y acciones de contencion verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/remediation-actions"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de respuesta ante abuso de Active Directory Certificate Services (ESC1, ESC8, ESC11, Certighost)",
+      "objetivo": "Neutralizar la emision fraudulenta de certificados capaces de suplantar administradores de dominio mediante PKINIT.",
+      "consolaRuta": "security.microsoft.com (Alerts, Domain investigation) y consola de administracion AD CS",
+      "procedimiento": [
+        "Identificar en la alerta XDR de MDI la plantilla comprometida, la cuenta solicitante y la identidad privilegiada suplantada en el SAN.",
+        "Despublicar inmediatamente la plantilla vulnerable en la CA, revocar los certificados emitidos publicando nueva CRL y contener las cuentas afectadas.",
+        "Verificar que el servidor AD CS cuente con sensor v3.x activo, parches al dia y proteccion EPA/HTTPS contra relay NTLM."
+      ],
+      "rolResponsable": "SOC L3 / PKI & AD Tier-0 Admin",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Credential Access / Privilege Escalation (TA0006 / TA0004 - T1649)",
+      "evidenciaAuditable": "Certificados revocados en CRL, plantilla corregida e incidente cerrado con evidencia forense.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Nuevas alertas ESC1, ESC8, ESC11, Certighost CVE-2026-54121 y PKINIT verificadas en whats-new (octubre 2026).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/whats-new"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de respuesta inmediata P1 ante interaccion con cuenta o equipo Honeytoken",
+      "objetivo": "Aislar al adversario en fase temprana de reconocimiento o movimiento lateral con cero ambiguedad de falso positivo.",
+      "consolaRuta": "security.microsoft.com (Incidents, IdentityLogonEvents, DeviceNetworkEvents)",
+      "procedimiento": [
+        "Declarar incidente critico confirmado al detectar cualquier evento sobre una entidad etiquetada como Honeytoken.",
+        "Identificar mediante NNR el endpoint exacto de origen, aislarlo en Defender for Endpoint y recolectar paquete de investigacion.",
+        "Contener las cuentas reales que tenian sesion activa en dicho equipo y rotar el secreto del Honeytoken una vez erradicada la amenaza."
+      ],
+      "rolResponsable": "SOC L2 / SOC L3",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Credential Access / Lateral Movement (TA0006 / TA0008)",
+      "evidenciaAuditable": "Timeline completa del incidente, accion de aislamiento MDE y contencion de cuentas vinculadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Mecanismo oficial de deteccion con cuentas trampa documentado en entity-tags.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/entity-tags"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Incorporacion o migracion controlada de servidor de identidad al sensor unificado v3.x",
+      "objetivo": "Incorporar nuevos DCs, AD FS, AD CS o Entra Connect —o migrar desde v2.x— sin tiempo de inactividad ni perdida de respuesta.",
+      "consolaRuta": "security.microsoft.com > Settings > Identities > Manage action accounts y On-premises > Sensor management",
+      "procedimiento": [
+        "Confirmar previamente que 'Automatically use the sensor's local system account' este habilitado en Manage action accounts.",
+        "Verificar Windows Server 2019/2022/2025 con CU de septiembre 2026+, reserva total de RAM en VM y plan High Performance.",
+        "Activar o iniciar migracion desde Sensor management (hasta 20 min sin reinicio), habilitar Automatic Windows event auditing y validar 0 Health issues."
+      ],
+      "rolResponsable": "Identity Platform Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "Defense Evasion (TA0005)",
+      "evidenciaAuditable": "Sensor v3.x en estado Running en el portal y reporte Test-MdiReadiness.ps1 aprobado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Pasos exactos verificados en deploy-sensor-v3 y migrate-to-sensor-v3.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-for-identity/deploy/deploy-sensor-v3"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Deteccion de replicacion de directorio (DCSync) desde equipos o cuentas de usuario",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel",
+      "tablaPrincipal": "IdentityDirectoryEvents",
+      "consulta": "IdentityDirectoryEvents | where Timestamp > ago(7d) | where ActionType == 'Directory Service Replication' | where isnotempty(AccountUpn) or not(AccountName endswith '$') | project Timestamp, ActionType, AccountDomain, AccountName, AccountUpn, DeviceName, IPAddress, TargetDeviceName, AdditionalFields | order by Timestamp desc",
+      "proposito": "Identificar cualquier intento de extraccion de hashes de Active Directory mediante llamadas DRSUAPI fuera de cuentas de equipo de DCs legitimos.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Monitoreo de actividad sobre cuentas trampa (Honeytoken Activity)",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel",
+      "tablaPrincipal": "IdentityLogonEvents",
+      "consulta": "let Honeytokens = dynamic(['svc_backup_legacy@contoso.com', 'adm_tier0_vault@contoso.com']); IdentityLogonEvents | where Timestamp > ago(24h) | where AccountUpn in~ (Honeytokens) or TargetAccountUpn in~ (Honeytokens) | project Timestamp, ActionType, Protocol, LogonType, AccountUpn, DeviceName, IPAddress, TargetDeviceName, FailureReason",
+      "proposito": "Detectar con fidelidad inmediata cualquier intento de autenticacion con credenciales trampa plantadas en el entorno.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoria de cambios de membresia en grupos sensibles Tier-0 de Active Directory",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel",
+      "tablaPrincipal": "IdentityDirectoryEvents",
+      "consulta": "IdentityDirectoryEvents | where Timestamp > ago(7d) | where ActionType has 'Group Membership changed' | extend Details = parse_json(AdditionalFields) | extend TargetGroup = coalesce(tostring(Details['TO.GROUP']), tostring(Details.GroupName)) | where TargetGroup in~ ('Domain Admins', 'Enterprise Admins', 'Schema Admins', 'Administrators', 'Account Operators', 'Backup Operators', 'Server Operators', 'Print Operators') | project Timestamp, Actor = AccountUpn, MemberChanged = TargetAccountUpn, TargetGroup, TargetDeviceName",
+      "proposito": "Rastrear elevaciones de privilegios en grupos criticos de Active Directory para conciliacion contra tickets de cambio.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Caceria de reconocimiento masivo LDAP y SAM-R (patron BloodHound / SharpHound)",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel",
+      "tablaPrincipal": "IdentityQueryEvents",
+      "consulta": "IdentityQueryEvents | where Timestamp > ago(7d) and ActionType in ('SamR query', 'Ldap query') | summarize TotalQueries = count(), DistinctQueryTypes = dcount(QueryType), SampleQueries = make_set(QueryType, 10) by AccountUpn, DeviceName, IPAddress, bin(Timestamp, 1h) | where TotalQueries > 500 and DistinctQueryTypes >= 3 | order by TotalQueries desc",
+      "proposito": "Identificar endpoints y cuentas ejecutando recoleccion automatizada de topologia, permisos y sesiones de Active Directory.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Inventario de emisores de protocolos heredados NTLMv1 y LDAP Simple Bind",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel",
+      "tablaPrincipal": "IdentityLogonEvents",
+      "consulta": "IdentityLogonEvents | where Timestamp > ago(14d) | extend Info = parse_json(AdditionalFields) | extend NtlmVersion = tostring(Info.NtlmVersion) | where (Protocol == 'Ntlm' and NtlmVersion == '1') or (Protocol == 'Ldap' and LogonType == 'SimpleBind') | summarize EventCount = count(), AffectedAccounts = dcount(AccountUpn) by Protocol, LogonType, NtlmVersion, DeviceName, IPAddress, Application | order by EventCount desc",
+      "proposito": "Mapear dispositivos y aplicaciones que negocian NTLMv1 o envian credenciales en texto claro para guiar su erradicacion.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Correlacion hibrida de alertas MDI con inicios de sesion en EntraIdSignInEvents",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel",
+      "tablaPrincipal": "AlertInfo / AlertEvidence / EntraIdSignInEvents",
+      "consulta": "let MdiAlertUsers = AlertInfo | where Timestamp > ago(24h) and DetectionSource == 'Microsoft Defender for Identity' | join kind=inner (AlertEvidence | where Timestamp > ago(24h) and EntityType == 'User') on AlertId | distinct AccountUpn, Title, Severity; EntraIdSignInEvents | where Timestamp > ago(24h) | join kind=inner MdiAlertUsers on AccountUpn | project Timestamp, AccountUpn, Title, Severity, Application, IPAddress, Country, RiskLevelDuringSignIn, ConditionalAccessStatus",
+      "proposito": "Detectar movimiento lateral tierra-a-nube cruzando usuarios con alertas de AD frente a la tabla EntraIdSignInEvents (vigente desde octubre 2026).",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Cobertura y salud operativa de sensores Tier-0 (Sensor v3.x Health Rate)",
+      "definicion": "Porcentaje de controladores de dominio y servidores AD FS, AD CS y Entra Connect con sensor activo y sin alertas de salud criticas abiertas.",
+      "formula": "(Servidores de identidad con sensor Running y 0 Health Issues High/Medium / Total servidores de identidad) * 100",
+      "metaSugerida": "100% de cobertura de instalacion y >= 99,5% de estado saludable",
+      "frecuencia": "Diaria",
+      "audiencia": "Identity Platform Admin / SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Monitoreo diario exigido en ops-guide-daily; umbral de disponibilidad definido editorialmente."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Tiempo de reconocimiento en incidentes criticos de identidad (MTTA-ITDR)",
+      "definicion": "Tiempo desde la creacion del incidente con origen MDI en Defender XDR hasta su asignacion e inicio de investigacion.",
+      "formula": "percentiles(FirstModifiedTime - CreatedTime, 50, 90) sobre incidentes con alertas MDI",
+      "metaSugerida": "Mediana (p50) < 10 min / p90 < 15 min en severidad Alta",
+      "frecuencia": "Semanal",
+      "audiencia": "SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Calculado sobre SecurityIncident deduplicado; meta ajustada a la velocidad de ataques Kerberos/DCSync."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Tiempo medio de contencion de identidad hibrida (MTTC-ID)",
+      "definicion": "Tiempo transcurrido desde la alerta critica de compromiso hasta la deshabilitacion o revocacion efectiva en AD y Entra ID.",
+      "formula": "percentiles(Timestamp_ActionCenter_Disable_Revoke - CreatedTime_Incidente, 50, 90)",
+      "metaSugerida": "p90 < 15 minutos (automatica con Attack Disruption o manual asistida)",
+      "frecuencia": "Semanal",
+      "audiencia": "SOC Manager / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Emparejar con porcentaje de acciones revertidas para controlar falsos bloqueos."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Cumplimiento de postura ISPA e Identity Security Initiative",
+      "definicion": "Porcentaje de puntaje alcanzado en las evaluaciones de postura de identidad de Microsoft Secure Score y en la iniciativa de Exposure Management.",
+      "formula": "(Puntaje actual de recomendaciones Identity / Puntaje maximo alcanzable) * 100",
+      "metaSugerida": ">= 85% con crecimiento mensual sostenido",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO / Identity Architect",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Metricas nativas de Secure Score e Identity Security Initiative verificadas en MS Learn."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Volumen residual de autenticaciones heredadas (NTLMv1 y LDAP Simple Bind)",
+      "definicion": "Cantidad mensual de autenticaciones que emplean NTLMv1 o enlaces LDAP en texto claro detectadas por sensores MDI.",
+      "formula": "Conteo de eventos en IdentityLogonEvents con NtlmVersion == '1' o LogonType == 'SimpleBind'",
+      "metaSugerida": "0 eventos NTLMv1 y reduccion trimestral >= 25% en LDAP Simple Bind hasta llegar a 0",
+      "frecuencia": "Mensual",
+      "audiencia": "Identity Architect / Lideres de Infraestructura",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "MS Learn identifica NTLMv1 y credenciales en texto claro entre los principales vectores de brecha en AD."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Rutas de ataque criticas abiertas hacia activos Tier-0 (Attack Paths to Tier-0)",
+      "definicion": "Numero de rutas de ataque activas en Exposure Management que permiten escalar desde un activo no privilegiado hasta Domain Admins o DCs.",
+      "formula": "Conteo de Attack paths activas con destino en entidades criticas de identidad",
+      "metaSugerida": "0 rutas criticas con credenciales expuestas o delegaciones explotables",
+      "frecuencia": "Semanal",
+      "audiencia": "CISO / Identity Architect",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Sustituye a la antigua metrica de Lateral Movement Paths (LMP) tras MC1073068."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Tasa de falsos positivos en detecciones MDI",
+      "definicion": "Porcentaje de alertas originadas por Defender for Identity cerradas como False Positive sobre el total cerrado en el mes.",
+      "formula": "(Alertas MDI cerradas como FalsePositive / Total alertas MDI cerradas) * 100",
+      "metaSugerida": "< 10% manteniendo 0 exclusiones globales amplias",
+      "frecuencia": "Mensual",
+      "audiencia": "SOC Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mide calidad de ingenieria de deteccion y eficacia de Alert tuning."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Exposiciones criticas abiertas en infraestructura Tier-0 (Spooler, Unconstrained, ESC1)",
+      "definicion": "Suma de DCs con Print Spooler habilitado, equipos no-DC con Unconstrained Delegation y plantillas AD CS vulnerables abiertas.",
+      "formula": "DCs_Spooler_Activo + Equipos_NoDC_Unconstrained + Plantillas_ADCS_Vulnerables",
+      "metaSugerida": "Exactamente 0 hallazgos abiertos",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO / Auditoria GRC",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Controles verificados directamente por las evaluaciones ISPA de Infrastructure y Certificates."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RM-02",
+      "descripcionResultado": "Se establecen y mantienen objetivos de apetito y tolerancia al riesgo cibernetico que guian la priorizacion.",
+      "capacidadMicrosoft": "Definicion de Target score en la iniciativa Identity Security de Exposure Management y panel Coverage & Maturity.",
+      "evidenciaAuditoria": "Captura de puntaje objetivo configurado y tendencia historica exportada de la iniciativa Identity Security.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles, responsabilidades y autoridades relacionados con el riesgo cibernetico se establecen y aplican.",
+      "capacidadMicrosoft": "Modelo obligatorio Unified RBAC (URBAC) con Identity scoping por dominio AD y activacion JIT en Entra PIM para permisos Response (manage).",
+      "evidenciaAuditoria": "Matriz exportada de roles personalizados URBAC, asignaciones con alcance de dominio y registros de Entra PIM.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-05",
+      "descripcionResultado": "Los activos se priorizan segun su clasificacion, criticidad, recursos e impacto para la mision.",
+      "capacidadMicrosoft": "Identity Inventory unificado (humanas, cuentas de servicio AD, service principals Entra y agentes IA), Identity Risk Score (0-100) y Entity tags Sensitive.",
+      "evidenciaAuditoria": "Exportacion CSV de Assets > Identities y configuracion de etiquetas en Settings > Identities > Entity tags.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-01",
+      "descripcionResultado": "Las vulnerabilidades y configuraciones inseguras en activos son identificadas, validadas y registradas.",
+      "capacidadMicrosoft": "Identity Security Posture Assessments (ISPA) en 6 categorias dentro de Microsoft Secure Score y pagina Domain investigation.",
+      "evidenciaAuditoria": "Exportacion de acciones recomendadas de identidad en Secure Score y reporte por dominio en Domain investigation.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Los permisos de acceso, derechos y autorizaciones se definen y gestionan incorporando el principio de minimo privilegio.",
+      "capacidadMicrosoft": "Analisis y corte de rutas en Exposure Management Attack Paths / Identity Explorer y senales de riesgo unificadas hacia acceso condicional.",
+      "evidenciaAuditoria": "Evidencia de remediacion de Attack paths hacia Tier-0 y politicas de acceso condicional Require risk remediation activas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.PS-01",
+      "descripcionResultado": "Se establecen y mantienen practicas seguras de gestion de configuracion en plataformas criticas.",
+      "capacidadMicrosoft": "Endurecimiento de AD DS, AD CS y Entra Connect (deshabilitar Print Spooler, eliminar NTLMv1 y Unconstrained Delegation) validado con Test-MdiReadiness.ps1.",
+      "evidenciaAuditoria": "Reportes trimestrales Test-MdiReadiness.ps1 sin desvios y consultas KQL demostrando 0 eventos NTLMv1.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-01",
+      "descripcionResultado": "Las redes y servicios se monitorean continuamente para encontrar eventos potencialmente adversos.",
+      "capacidadMicrosoft": "Sensores unificados v3.x en DCs, AD FS, AD CS y Entra Connect monitoreados en Health issues, complementados con cuentas Honeytoken.",
+      "evidenciaAuditoria": "Inventario en Sensor management al 100% de cobertura y 0 alertas criticas abiertas en Health issues.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.AE-03",
+      "descripcionResultado": "La informacion de eventos adversos se correlaciona desde multiples fuentes para analizar incidentes.",
+      "capacidadMicrosoft": "Correlacion de alertas AD, Entra ID, Okta y SailPoint junto con MDE y MDO en incidentes unificados de Defender XDR con Attack story.",
+      "evidenciaAuditoria": "Exportacion de incidentes correlacionados multi-dominio y timeline de 180 dias en la pagina de identidad.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Los incidentes son contenidos para prevenir la propagacion del compromiso.",
+      "capacidadMicrosoft": "Identity Remediation Actions (Disable, Revoke session, Mark as compromised, Force password change) manuales y autonomas via Automatic Attack Disruption.",
+      "evidenciaAuditoria": "Registros de acciones en Action center > History y eventos en la tabla DisruptionAndResponseEvents.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-05",
+      "descripcionResultado": "Se verifica la integridad de los activos restaurados y se restablece el funcionamiento normal de forma segura.",
+      "capacidadMicrosoft": "Rehabilitacion auditada de identidades (Enable), validacion forense de ACLs/grupos/certificados y simulacros anuales de doble rotacion krbtgt.",
+      "evidenciaAuditoria": "Informes After-Action Report (AAR), registros de rehabilitacion en Action center y actas de ejercicios de recuperacion AD.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Contenido consolidado desde los documentos maestros MSEOP-MD de MDI y revalidado exhaustivamente contra Microsoft Learn via MCP en noviembre de 2026. Se incorporaron cambios arquitectonicos criticos de 2025-2026: sensor unificado v3.x (LocalSystem obligatorio, fin de DSA/gMSA en v3, actualizacion via Windows Update, migracion y activacion sin MDE en GA), reemplazo de los antiguos mapas LMP por Exposure Management Attack Paths e Identity Explorer, remediaciones multi-IdP (Okta, CyberArk, SailPoint), Identity Risk Score GA, Domain Investigation GA y nuevas alertas AD CS/Kerberos/Entra 2026.",
+    "correccionesAplicadas": [
+      "Actualizacion arquitectonica al sensor unificado v3.x (julio-octubre 2026): migracion v2->v3 en GA (incluyendo Windows Server 2025), activacion sin MDE en GA comercial, requisito de actualizacion acumulativa de septiembre 2026+ (sensor 3.0.10+), limite de 30% CPU / 1.5 GB RAM, auditoria RPC automatica desde v3.0.8+ y capacidad ampliada a 1.000 sensores por workspace.",
+      "Correccion critica sobre cuentas de servicio y Action Accounts: en sensor v3.x no se usan DSA ni gMSA; LocalSystem es la unica identidad soportada y es obligatorio seleccionar 'Automatically use the sensor's local system account' en Manage action accounts antes de migrar para no interrumpir las acciones de respuesta ni Automatic Attack Disruption.",
+      "Actualizacion sobre Lateral Movement Paths (MC1073068): desde mayo de 2025 MDI deshabilito la recoleccion remota SAM-R de administradores locales, dejando sin actualizacion los mapas clasicos LMP; se reemplazaron en la guia por Attack Paths en Exposure Management e Identity Explorer (Preview con Sentinel Data Lake).",
+      "Ampliacion del alcance de Identity Remediation Actions a Active Directory (solo sensores en DCs), Microsoft Entra ID (via app administrada 60ca1954-583c-4d1f-86de-39d835f3e452), Okta, CyberArk Identity, SailPoint Identity Security Cloud y apps SaaS (Google Workspace, Salesforce, Box).",
+      "Incorporacion de capacidades GA/Preview 2026: Identity Risk Score (0-100) en GA (junio 2026), Domain Investigation page en GA (julio 2026), pestana combinada Sensor management y panel Coverage & Maturity (septiembre 2026), inventario NHI con visibilidad de agentes IA ('Used by AI agents') y rol sensible Agent ID Administrator.",
+      "Actualizacion del catalogo de alertas y tablas KQL a noviembre de 2026: nuevas detecciones AD CS (ESC1, ESC8, ESC11, Certighost CVE-2026-54121), Diamond Ticket, DPAPI master key, TAP sospechoso, registro malicioso de MFA y alertas Okta/SailPoint, junto con tablas IdentityAccountInfo (GA), IdentityEvents (Preview) y EntraIdSignInEvents (GA octubre 2026).",
+      "Gobierno de permisos y licenciamiento actualizado: Unified RBAC obligatorio para nuevos tenants desde marzo 2025 (fin de creacion automatica de grupos Azure ATP), soporte de Identity scoping por dominio AD, retiro de directivas de riesgo heredadas en Entra ID Protection (1-oct-2026) y nombre comercial Microsoft Defender Suite."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Umbrales cuantitativos de SLA y KPIs (MTTA p50 < 10 min, MTTC p90 < 15 min, ISPA >= 85%, FP < 10%)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft Learn prescribe priorizar incidentes de identidad y medir postura, pero delega los tiempos meta al modelo de turnos y apetito de riesgo de cada organizacion."
+      },
+      {
+        "elemento": "Duraciones maximas de elevacion JIT en Entra PIM (2 h Tier-0, 4 h Admin, 8 h L2/L3) y exigencia de estaciones PAW para administracion AD",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Politica consultiva de separacion de funciones basada en las guias de acceso privilegiado de Microsoft para proteger activos Tier-0."
+      },
+      {
+        "elemento": "Modelo de Madurez Operacional ITDR de 5 niveles y plan de habilitacion 30-60-90 dias",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Estructura evolutiva propia alineada a Coverage & Maturity de Defender, el Microsoft Security Adoption Framework (SAF) y NIST CSF 2.0."
+      },
+      {
+        "elemento": "Mapeo de resultados (outcomes) y evidencias auditables hacia las 6 funciones de NIST CSF 2.0",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Interpretacion metodologica outcome-based conforme a NIST CSWP 29 que vincula artefactos tecnicos de MDI con resultados auditables."
+      },
+      {
+        "elemento": "Cadencia semestral obligatoria de pruebas Purple Team de historias completas y simulacro anual de doble rotacion krbtgt",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft documenta como probar MDI con historias completas y como responder a Golden Ticket; su institucionalizacion semestral/anual es decision de gobierno."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Microsoft Defender for Identity operational guide",
+      "url": "https://learn.microsoft.com/en-us/defender-for-identity/ops-guide/ops-guide",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Indice oficial de operaciones recomendadas para MDI en cadencias diaria, semanal, mensual y trimestral/ad-hoc.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Daily operational guide - Microsoft Defender for Identity",
+      "url": "https://learn.microsoft.com/en-us/defender-for-identity/ops-guide/ops-guide-daily",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Guia prescriptiva diaria del SOC: Dashboard ITDR, triaje en Defender XDR, Alert tuning, hunting proactivo y Health issues.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "What's new in Microsoft Defender for Identity",
+      "url": "https://learn.microsoft.com/en-us/defender-for-identity/whats-new",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Registro oficial 2026: sensor v3.x sin MDE GA, migracion GA, activacion automatica, alertas AD CS/Diamond Ticket/Okta/SailPoint, Identity Risk Score y Domain investigation.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Deploy the Microsoft Defender for Identity sensor v3.x",
+      "url": "https://learn.microsoft.com/en-us/defender-for-identity/deploy/deploy-sensor-v3",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Requisitos tecnicos del sensor unificado v3.x: parches de septiembre 2026, LocalSystem, limites de CPU/RAM, memoria VM y auditoria RPC automatica.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Migrate from sensor v2.x to sensor v3.x - Microsoft Defender for Identity",
+      "url": "https://learn.microsoft.com/en-us/defender-for-identity/deploy/migrate-to-sensor-v3",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Procedimiento oficial en GA para migrar controladores de dominio desde el portal sin tiempo de inactividad.",
+      "verificacion": "Verificado en Ninja Training 2026 y Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Identity remediation actions in Microsoft Defender",
+      "url": "https://learn.microsoft.com/en-us/defender-for-identity/remediation-actions",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Acciones directas de respuesta en AD, Entra ID, Okta, CyberArk, SailPoint y SaaS, permisos requeridos e integracion con Attack Disruption.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Microsoft Defender for Identity's security posture assessments",
+      "url": "https://learn.microsoft.com/en-us/defender-for-identity/security-assessment",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Evaluaciones ISPA en Microsoft Secure Score organizadas en 6 categorias y requisitos de sensores en AD CS y Entra Connect.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Defender for Identity entity tags in Microsoft Defender",
+      "url": "https://learn.microsoft.com/en-us/defender-for-identity/entity-tags",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Configuracion de etiquetas Sensitive, Honeytoken y Exchange server y lista oficial de roles sensibles por defecto multi-IdP.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Microsoft Defender for Identity health issues",
+      "url": "https://learn.microsoft.com/en-us/defender-for-identity/health-alerts",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Referencia completa de alertas de salud globales y por sensor aplicables a v2.x y v3.x.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Microsoft Defender for Identity role groups",
+      "url": "https://learn.microsoft.com/en-us/defender-for-identity/role-groups",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Permisos minimos en Microsoft Defender Unified RBAC e Identity scoping por dominio Active Directory.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Unified risk signals in Microsoft Entra ID Protection",
+      "url": "https://learn.microsoft.com/en-us/entra/id-protection/concept-identity-protection-unified-risk",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Composicion del riesgo de usuario en Entra ID Protection integrando senales de MDI, MDE, MDCA y Purview.",
+      "verificacion": "Verificado en Ninja Training 2026 (Nov 2026)"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Seamless Migration to the Unified MDI Sensor (V3) - Webinar",
+      "url": "https://www.youtube.com/watch?v=fp_JpsZ3Oos",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Ronit Litinski (Microsoft Security Community)",
+      "comentario": "Sesion tecnica del equipo de ingenieria de MDI sobre la migracion sin caida al sensor unificado v3.x.",
+      "verificacion": "Verificado en Ninja Training 2026 (Nov 2026)"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Mark Morowczynski - Identity & KQL Technical Content",
+      "url": "https://markmorow.com/content/",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Mark Morowczynski (Microsoft GHOST)",
+      "comentario": "Investigaciones aplicadas de respuesta a incidentes de identidad y consultas KQL avanzadas.",
+      "verificacion": "Verificado en Directorio de Referentes Ninja Training 2026"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Welcome to the Microsoft Incident Response Ninja Hub",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-defender-experts/welcome-to-the-microsoft-incident-response-ninja-hub/4243594/replies/4245146",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Emily Liu (Microsoft Incident Response)",
+      "comentario": "Compilacion oficial de guias de caza y respuesta a incidentes de identidad y Active Directory del equipo Microsoft IR.",
+      "verificacion": "Verificado en Ninja Training 2026 (Nov 2026)"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "Christopher Brumm - Identity & ITDR Security Blog",
+      "url": "https://chris-brumm.com/archive/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Christopher Brumm (Microsoft Security MVP)",
+      "comentario": "Articulos especializados en seguridad de identidad hibrida, ITDR y monitoreo en Microsoft Entra y Defender.",
+      "verificacion": "Verificado en Directorio de Referentes Ninja Training 2026"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "Fabian Bader - Cloudbrothers Identity & SIEM/XDR Blog",
+      "url": "https://cloudbrothers.info/en/aboutme/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Fabian Bader (Microsoft Security MVP)",
+      "comentario": "Investigacion tecnica sobre Defender for Identity, detecciones KQL y automatizacion de seguridad de identidad.",
+      "verificacion": "Verificado en Directorio de Referentes Ninja Training 2026"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "Entra ID Protection - User Risk with Unified Identity Signals from Defender",
+      "url": "https://blog.sonnes.cloud/entra-id-protection-user-risk-with-unified-identity-signals-from-defender-is-here/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Michael Morten Sonne (Microsoft Security MVP)",
+      "comentario": "Recorrido practico sobre configuracion e investigacion de senales de riesgo unificadas entre MDI y Entra ID Protection.",
+      "verificacion": "Verificado en Ninja Training 2026 (Nov 2026)"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "Thomas Naunheim - Cloud-Architekt Blog (ITDR, Workload & Agent Identities)",
+      "url": "https://www.cloud-architekt.net/blog/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Thomas Naunheim (Microsoft Security MVP)",
+      "comentario": "Analisis profundos de proteccion de identidades privilegiadas, workload identities, agentes e ITDR en el ecosistema Microsoft.",
+      "verificacion": "Verificado en Directorio de Referentes Ninja Training 2026"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "NIST Cybersecurity Framework (CSF) 2.0 (CSWP 29)",
+      "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Documento normativo oficial de las seis funciones y subcategorias basadas en resultados del NIST CSF 2.0.",
+      "verificacion": "Verificado documento normativo publico"
+    },
+    {
+      "id": "REF-20",
+      "titulo": "NIST SP 800-61 Rev. 3: Incident Response Recommendations and Considerations",
+      "url": "https://csrc.nist.gov/pubs/sp/800/61/r3/final",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Marco oficial de gestion y respuesta a incidentes integrado con las funciones de NIST CSF 2.0.",
+      "verificacion": "Verificado documento normativo publico"
+    }
+  ]
+}

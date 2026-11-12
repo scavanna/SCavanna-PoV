@@ -1,0 +1,1250 @@
+{
+  "schemaVersion": "2.0",
+  "id": "07_Microsoft_Defender_for_Cloud_Apps",
+  "orden": 7,
+  "slug": "Microsoft_Defender_for_Cloud_Apps",
+  "nombre": "Microsoft Defender for Cloud Apps (MDA / CASB & SaaS Security)",
+  "nombreCorto": "Defender for Cloud Apps",
+  "categoria": "SecOps, XDR y SIEM",
+  "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://security.microsoft.com",
+    "https://entra.microsoft.com",
+    "https://purview.microsoft.com",
+    "https://admin.microsoft.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "SOC Manager",
+    "SOC L1",
+    "SOC L2",
+    "SOC L3",
+    "Cloud Security Architect",
+    "Security Admin",
+    "Compliance Admin",
+    "GRC"
+  ],
+  "relacionM365E5": {
+    "estado": "Incluido en M365 E5",
+    "licencias": [
+      "Microsoft 365 E5 / A5 / G5",
+      "Microsoft Defender Suite (antes Microsoft 365 E5 Security)",
+      "Microsoft Purview Suite (antes Microsoft 365 E5 Compliance)",
+      "Enterprise Mobility + Security (EMS) E5",
+      "Microsoft 365 F5 Security & Compliance (Microsoft Defender + Purview Suite FLW)",
+      "Microsoft Defender for Cloud Apps Standalone"
+    ],
+    "prerrequisitos": [
+      "Acceso consolidado en Microsoft Defender portal (https://security.microsoft.com > Cloud apps); el portal clásico portal.cloudappsecurity.com redirige de forma obligatoria e irreversible",
+      "Conector Microsoft 365 habilitado en Settings > Cloud apps > Connected apps > App Connectors con Microsoft 365 activities activo para poblar CloudAppEvents",
+      "Integración nativa con Microsoft Defender for Endpoint activada para descubrimiento continuo en endpoints (Windows y macOS) y bloqueo de apps Unsanctioned",
+      "Microsoft Entra ID P1 mínimo requerido para Conditional Access App Control y Azure Information Protection P2 / Purview para etiquetado automático del lado cliente",
+      "Configuración previa de rangos IP corporativos, VPN y proxies en Settings > Cloud apps > System > IP address ranges para calibrar el motor UEBA"
+    ],
+    "notaLicenciamiento": "Se licencia por usuario e incluye App Governance sin costo adicional para Microsoft Entra ID, Google Workspace y Salesforce. Nota crítica de vigencia (Nov 2026): desde el 1 de julio de 2026, el descubrimiento, postura, detección de amenazas y tabla AgentsInfo para agentes de Copilot Studio y Foundry exigen licencia Microsoft Agent 365 (o M365 E7); además, las File Policies de MDA se retiran el 6 de enero de 2027 migrando hacia Microsoft Purview DLP y Auto-labeling."
+  },
+  "resumenEjecutivo": "Microsoft Defender for Cloud Apps (MDA) constituye el plano de control CASB y de seguridad SaaS convergente dentro de Microsoft Defender XDR. Protege la intersección entre identidad, dispositivo, sesión web e integraciones app-to-app (OAuth) combinando cuatro disciplinas: (1) descubrimiento continuo de Shadow IT y Shadow AI sobre un catálogo de más de 31.000 aplicaciones evaluadas con más de 90 factores de riesgo —incluyendo más de 1.000 aplicaciones en la categoría nativa Generative AI— con bloqueo directo en el endpoint vía Microsoft Defender for Endpoint; (2) gestión de postura de seguridad SaaS (SSPM) integrada en Microsoft Secure Score y Security Exposure Management; (3) control inline de sesiones en tiempo real mediante Conditional Access App Control (proxy inverso y protección nativa in-browser con Microsoft Edge for Business) sumado a detección conductual UEBA correlacionada en incidentes XDR; y (4) App Governance para aplicaciones OAuth en Microsoft Entra ID, Google Workspace y Salesforce. A noviembre de 2026, su operación exige ejecutar una cadencia disciplinada en security.microsoft.com, gobernar permisos bajo Microsoft Defender Unified RBAC (habilitado por defecto desde agosto de 2026) y completar la migración planificada de File Policies hacia Microsoft Purview antes del 6 de enero de 2027.",
+  "principiosRectores": [
+    {
+      "principio": "Verificación explícita en el plano de sesión SaaS (Zero Trust)",
+      "descripcion": "Evaluar identidad, riesgo de sesión, ubicación y postura del dispositivo en cada acceso y transacción dentro de la aplicación mediante Conditional Access App Control e In-Browser Protection en Edge for Business.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/security/zero-trust/deploy/applications"
+    },
+    {
+      "principio": "Mínimo privilegio humano y no humano (OAuth & Unified RBAC)",
+      "descripcion": "Auditar y revocar continuamente permisos delegados y de aplicación excesivos o inactivos en App Governance, operando la consola bajo Microsoft Defender Unified RBAC y activación JIT en Entra PIM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-cloud-apps/app-governance-manage-app-governance"
+    },
+    {
+      "principio": "Asumir brecha con analítica conductual (UEBA) y correlación XDR",
+      "descripcion": "Monitorear desviaciones respecto a la línea base de 7 días del usuario, saltos en Investigation Priority Score y rutas de ataque laterales desde endpoints vulnerables hacia Service Principals OAuth.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-cloud-apps/attack-paths"
+    },
+    {
+      "principio": "Gobernanza activa de Shadow IT y Shadow AI del descubrimiento al bloqueo",
+      "descripcion": "Clasificar de manera continua servicios cloud y más de 1.000 herramientas de IA generativa en Sanctioned o Unsanctioned, sincronizando el enforcement de red directamente hacia endpoints gestionados por MDE.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-cloud-apps/set-up-cloud-discovery"
+    },
+    {
+      "principio": "Convergencia de protección de archivos en reposo hacia Microsoft Purview",
+      "descripcion": "Migrar de forma planificada y sin coexistencia conflictiva todas las File Policies históricas de MDA hacia Microsoft Purview DLP y Auto-labeling antes de su retiro oficial el 6 de enero de 2027.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-cloud-apps/migrate-file-policies-to-purview"
+    },
+    {
+      "principio": "Operación orientada a evidencia auditable por cadencias",
+      "descripcion": "Estructurar el trabajo del SOC en ciclos diarios, semanales, mensuales, trimestrales y ad-hoc donde cada revisión, tuning o contención genere artefactos reproducibles para auditoría NIST CSF 2.0.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Cloud Discovery y Catálogo de Aplicaciones (>31.000 apps / GenAI)",
+      "funcionOperativa": "Analiza registros de tráfico cuatro veces al día frente a más de 31.000 apps y más de 90 factores de riesgo, incluyendo más de 1.000 apps en la categoría nativa Generative AI.",
+      "portalRuta": "security.microsoft.com > Cloud apps > Cloud discovery / Cloud app catalog",
+      "integraciones": [
+        "Microsoft Defender for Endpoint (Windows y macOS)",
+        "Log Collector Docker (Syslog/FTP)",
+        "Secure Web Gateways (Zscaler, iboss, Menlo, Corrata)",
+        "Microsoft Entra Global Secure Access"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Application Inventory Unificado (SaaS y OAuth)",
+      "funcionOperativa": "Centraliza en dos pestañas (SaaS apps y OAuth apps) el inventario, insights accionables de apps GenAI sin etiqueta, apps sobre-privilegiadas, apps sin uso (>90 días) y publishers no verificados.",
+      "portalRuta": "security.microsoft.com > Assets > Applications",
+      "integraciones": [
+        "Cloud Discovery",
+        "App Governance",
+        "Defender Identity Inventory"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "App Connectors (Conectores API SaaS)",
+      "funcionOperativa": "Integración out-of-band vía APIs nativas de proveedores cloud para visibilidad profunda de cuentas, actividades, archivos, gobernanza y postura de configuración.",
+      "portalRuta": "security.microsoft.com > System > Settings > Cloud apps > Connected apps > App Connectors",
+      "integraciones": [
+        "Microsoft 365",
+        "Salesforce (incluyendo Real-Time Event Monitoring en preview)",
+        "Google Workspace",
+        "Box, Dropbox, Okta, GitHub, ServiceNow, Workday"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Conditional Access App Control (CAAC - Reverse Proxy)",
+      "funcionOperativa": "Intervención inline en tiempo real sobre sesiones web para bloquear descargas en equipos no administrados, aplicar cifrado/etiquetas al descargar, bloquear copiar/pegar e inspeccionar malware.",
+      "portalRuta": "security.microsoft.com > Cloud apps > Policies > Policy management > Conditional Access",
+      "integraciones": [
+        "Microsoft Entra Conditional Access",
+        "Microsoft Purview Information Protection",
+        "Okta, AD FS y proveedores SAML 2.0"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "In-Browser Protection con Microsoft Edge for Business (Preview)",
+      "funcionOperativa": "Aplica controles de sesión directamente dentro del perfil de trabajo de Microsoft Edge en Windows 10/11 y macOS sin redirección por proxy inverso ni sufijo .mcas.ms, deshabilitando herramientas de desarrollador.",
+      "portalRuta": "security.microsoft.com > System > Settings > Cloud apps > Conditional Access App Control > Edge for Business protection",
+      "integraciones": [
+        "Microsoft Edge for Business",
+        "Microsoft Entra Conditional Access",
+        "Microsoft Purview Browser DLP"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "App Governance (Seguridad App-to-App / OAuth)",
+      "funcionOperativa": "Gobierna aplicaciones OAuth evaluando privilegios otorgados vs. usados, acceso a datos etiquetados por Graph API y anomalías conductuales detectadas mediante Machine Learning.",
+      "portalRuta": "security.microsoft.com > Cloud apps > App governance",
+      "integraciones": [
+        "Microsoft Entra ID",
+        "Google Workspace",
+        "Salesforce Connected Apps y External Client Apps"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "SaaS Security Posture Management (SSPM) y OAuth Attack Paths",
+      "funcionOperativa": "Detecta desviaciones de configuración segura en aplicaciones SaaS conectadas y modela rutas de ataque laterales hacia Service Principals de alto valor.",
+      "portalRuta": "security.microsoft.com > Exposure management > Secure Score / Attack surface > Attack paths",
+      "integraciones": [
+        "Microsoft Secure Score",
+        "Microsoft Security Exposure Management"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Telemetría Enriquecida CloudAppEvents y Motor UEBA",
+      "funcionOperativa": "Registra actividades SaaS con enriquecimiento conductual (LastSeenForUser, UncommonForUser, IPTags) para caza avanzada KQL, detecciones personalizadas y streaming a Microsoft Sentinel.",
+      "portalRuta": "security.microsoft.com > Investigation & response > Hunting > Advanced hunting",
+      "integraciones": [
+        "Microsoft Defender XDR",
+        "Microsoft Sentinel",
+        "Microsoft Entra ID Protection"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "Security Reader / Global Reader",
+      "nivelSOC": "Tier 1 / Monitor y Auditoría GRC",
+      "permisosClave": "Lectura integral de alertas, incidentes, apps descubiertas, catálogo, políticas, archivos y registro de gobernanza sin capacidad de modificar configuraciones ni ejecutar acciones.",
+      "asignacionPIM": "Permanente sobre grupos de monitoreo SOC L1 o auditores con MFA resistente a phishing",
+      "responsabilidadOperativa": "Vigilancia continua de colas y dashboards, validación de cumplimiento y recolección de evidencia de auditoría.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Security Operator",
+      "nivelSOC": "Tier 1 / Tier 2 (Triage & Incident Response)",
+      "permisosClave": "Lectura global más gestión de alertas e incidentes; restringido de crear o modificar políticas, subir logs manuales o alterar ajustes de sistema y rangos IP.",
+      "asignacionPIM": "Permanente para analistas de turno activo o elegible vía Entra PIM por turnos de 8 horas",
+      "responsabilidadOperativa": "Triaje diario de incidentes XDR con señales CASB, investigación en Activity log y escalamiento estructurado.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Cloud App Security Administrator",
+      "nivelSOC": "Ingeniería CASB / SaaS Security Admin",
+      "permisosClave": "Permisos completos circunscritos exclusivamente a Defender for Cloud Apps (conectores, CAAC, políticas, acciones de gobernanza, SIEM agents y administración de roles internos MDA).",
+      "asignacionPIM": "Elegible (JIT) en Microsoft Entra PIM (máximo 4 horas) con justificación, MFA FIDO2 y ticket de cambio",
+      "responsabilidadOperativa": "Onboarding de conectores API y apps CAAC, tuning de políticas, clasificación Sanctioned/Unsanctioned y salud de plataforma.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Compliance Administrator / Compliance Data Administrator",
+      "nivelSOC": "Gobierno de Datos, DLP y Privacidad",
+      "permisosClave": "Lectura en MDA, gestión de alertas, reportes de descubrimiento, acciones sobre archivos y ejecución conjunta del asistente DLP to Purview migration.",
+      "asignacionPIM": "Elegible (JIT) en Entra PIM (4 a 8 horas) con aprobación del área de Cumplimiento",
+      "responsabilidadOperativa": "Revisión de cuarentenas administrativas, reportes ejecutivos de Shadow IT y migración de File Policies hacia Microsoft Purview.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Security Administrator (y Roles Personalizados Unified RBAC)",
+      "nivelSOC": "Tier 3 / Lead Security Engineer",
+      "permisosClave": "Administración completa transversal en Microsoft Defender XDR, incluyendo MDA, vistas completas de App Governance, Exposure Management y configuración de Unified RBAC.",
+      "asignacionPIM": "Estrictamente Elegible (JIT) en Entra PIM (máximo 4 horas) con aprobación dual y estación privilegiada (PAW)",
+      "responsabilidadOperativa": "Gobierno de arquitectura XDR, gestión de roles unificados URBAC y remediación estructural de OAuth Attack Paths.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Application Administrator / Cloud Application Administrator",
+      "nivelSOC": "IAM / Remediación OAuth",
+      "permisosClave": "Control sobre Enterprise Applications, App Registrations, Service Principals y políticas de consentimiento en Microsoft Entra ID (y prerrequisito para habilitar Information Protection en MDA).",
+      "asignacionPIM": "Elegible (JIT) en Entra PIM (2 a 4 horas) vinculada a incidente o cambio aprobado",
+      "responsabilidadOperativa": "Deshabilitación/revocación definitiva de aplicaciones OAuth maliciosas, rotación de secretos y endurecimiento de consentimientos.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Global Administrator",
+      "nivelSOC": "Emergencia (Break-Glass)",
+      "permisosClave": "Control total irrestricto del tenant; Microsoft recomienda explícitamente limitarlo a escenarios de emergencia donde ningún rol de menor privilegio aplique.",
+      "asignacionPIM": "Exclusivo cuentas break-glass de emergencia con monitoreo de alerta crítica inmediata",
+      "responsabilidadOperativa": "Recuperación ante contingencia catastrófica de control de identidad del tenant.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Triaje de incidentes y alertas CASB en cola unificada de Microsoft Defender XDR",
+      "objetivo": "Detectar y clasificar compromisos de cuentas cloud, robo de tokens de sesión y ataques multi-dominio correlacionados.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts > Incidents",
+      "procedimiento": [
+        "Filtrar Status = New, In progress y Severity = High, Medium manteniendo todas las fuentes de servicio seleccionadas para máxima fidelidad XDR; aplicar filtro puntual por Defender for Cloud Apps para revisión específica.",
+        "Inspeccionar Attack story, pestaña Users (saltos en Investigation Priority Score) y Evidence and response > Investigate > Activity log o Go hunt.",
+        "Clasificar en Manage incident como True positive, False positive o Informational, expected activity, asignando propietario y pasando a In progress."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "Initial Access / Credential Access (TA0001 / TA0006)",
+      "evidenciaAuditable": "Incidente actualizado en Defender XDR con propietario, clasificación y bitácora estructurada en Comments.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Procedimiento documentado en Daily operational guide - Review alerts and incidents.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-daily"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Análisis de datos de detección de amenazas y anomalías comportamentales (UEBA)",
+      "objetivo": "Identificar señales tempranas de viajes imposibles, actividad desde países infrecuentes, descargas masivas o patrones de ransomware en SaaS.",
+      "consolaRuta": "security.microsoft.com > Cloud apps > Policies > Policy management > Threat detection",
+      "procedimiento": [
+        "Revisar alertas recientes de Activity policies y Anomaly detection policies.",
+        "Analizar en Activity log los campos de enriquecimiento UncommonForUser, LastSeenForUser e IPTags para descartar VPNs corporativas no etiquetadas.",
+        "Confirmar picos horarios de actividad con consulta KQL en CloudAppEvents antes de escalar a contención."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Collection / Impact (TA0009 / TA0040)",
+      "evidenciaAuditable": "Registro de investigación en Activity log y consulta KQL adjunta al expediente del incidente.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Actividad oficial Review threat detection data de la guía diaria de MDA.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-daily"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Revisión diaria de App Governance y aplicaciones OAuth de alto riesgo",
+      "objetivo": "Neutralizar campañas de consent phishing, abuso de Microsoft Graph y aplicaciones OAuth con publishers no verificados o sobre-privilegiadas.",
+      "consolaRuta": "security.microsoft.com > Cloud apps > App governance > Overview",
+      "procedimiento": [
+        "Verificar en Overview el conteo diario de apps Overprivileged, Highly privileged, Unverified publisher y acceso vía Graph API a datos con y sin etiquetas de sensibilidad.",
+        "Triar alertas con Detection source = App Governance e inspeccionar permisos críticos (Mail.ReadWrite, Files.ReadWrite.All, Directory.ReadWrite.All).",
+        "Deshabilitar o revocar de inmediato aplicaciones maliciosas confirmadas y pivotar a Entra ID para revocar sesiones afectadas."
+      ],
+      "rolResponsable": "SOC L2 / Security Admin",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-06",
+      "mitreTactic": "Persistence / Exfiltration (TA0003 / TA0010)",
+      "evidenciaAuditable": "Acciones registradas en Governance log y AuditLogs de Entra ID sobre aplicaciones OAuth.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Actividad oficial Review application governance en Daily operational guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-daily"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Revisión de alertas y registros de Conditional Access App Control (CAAC) e In-Browser Protection",
+      "objetivo": "Asegurar que los controles preventivos en tiempo real sobre sesiones web operen sin desconexiones ni evasión.",
+      "consolaRuta": "security.microsoft.com > Cloud apps > Policies > Policy management > Conditional Access",
+      "procedimiento": [
+        "Revisar alertas generadas por políticas de acceso y sesión (intentos de descarga bloqueados en BYOD, bloqueos de subida de malware).",
+        "Filtrar Cloud apps > Activity log por origen Access control y Session control para auditar acciones bloqueadas.",
+        "Verificar que las aplicaciones integradas en Settings > Cloud apps > Connected apps > Conditional Access App Control apps mantengan estado Connected."
+      ],
+      "rolResponsable": "Security Admin / SOC L1",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-02",
+      "mitreTactic": "Exfiltration (TA0010)",
+      "evidenciaAuditable": "Registros de sesión controlada en Activity log y estado Connected de aplicaciones CAAC.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Actividad oficial Review Conditional Access app control en Daily operational guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-daily"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Evaluación del Cloud Discovery Dashboard y detección de Shadow IT / Shadow AI",
+      "objetivo": "Detectar tempranamente nuevas aplicaciones SaaS riesgosas y herramientas de IA generativa no autorizadas.",
+      "consolaRuta": "security.microsoft.com > Cloud apps > Cloud discovery > Dashboard",
+      "procedimiento": [
+        "Inspeccionar picos de tráfico, top categorías, top usuarios/IPs y mapa geográfico en el dashboard diario.",
+        "En Discovered apps y Assets > Applications > SaaS apps, filtrar Category = Generative AI y Risk score <= 4 sin etiqueta.",
+        "Clasificar formalmente como Sanctioned o Unsanctioned para propagar bloqueo o advertencia educativa automática a endpoints MDE."
+      ],
+      "rolResponsable": "SOC L1 / Security Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-02",
+      "mitreTactic": "Exfiltration (TA0010)",
+      "evidenciaAuditable": "Cambios de etiqueta registrados en Governance log e indicadores sincronizados en MDE.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Integra Review shadow IT - cloud discovery y Review the cloud discovery dashboard con gobernanza nativa de Generative AI.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-daily"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Inspección proactiva de exposición externa de archivos y protección de información",
+      "objetivo": "Remediar archivos sensibles compartidos públicamente, con cuentas personales o con dominios externos no autorizados.",
+      "consolaRuta": "security.microsoft.com > Cloud apps > Files",
+      "procedimiento": [
+        "Ejecutar las cuatro consultas proactivas recomendadas por Microsoft: archivos públicos sin enlace restringido, compartición saliente a socios, nombres sensibles y compartición con cuentas personales.",
+        "Triar alertas de políticas de protección de información (y alertas equivalentes en Microsoft Purview DLP para políticas ya migradas).",
+        "Aplicar remediación inmediata: Make private, Remove external users, Apply sensitivity label o Admin quarantine."
+      ],
+      "rolResponsable": "SOC L1 / Compliance Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-01",
+      "mitreTactic": "Collection / Exfiltration (TA0009 / TA0010)",
+      "evidenciaAuditable": "Registro de remediación de permisos sobre archivos en Governance log / Purview.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Procedimiento oficial Review information protection (considerando la transición de File Policies a Purview antes del 06-ene-2027).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-daily"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Verificación rápida de frescura de ingesta SaaS en tabla CloudAppEvents",
+      "objetivo": "Detectar caídas silenciosas de conectores API o interrupciones de telemetría hacia Advanced Hunting.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Hunting > Advanced hunting",
+      "procedimiento": [
+        "Ejecutar query KQL diaria resumiendo max(Timestamp) y conteo de eventos por Application y AuditSource en las últimas 24 horas.",
+        "Revisar alertas de sistema por errores de conectores en Incidents & alerts.",
+        "Escalar cualquier conector crítico sin eventos por más de 4 horas al administrador de plataforma."
+      ],
+      "rolResponsable": "SOC L1 / Security Admin",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Defense Evasion (TA0005)",
+      "evidenciaAuditable": "Resultado diario de consulta de salud registrado en el checklist de turno del SOC.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Microsoft documenta el chequeo de conectores en frecuencia semanal; ejecutar una validación KQL rápida diaria con umbral de 4 h es propuesta editorial de excelencia operativa.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-cloudappevents-table"
+    },
+    {
+      "codigo": "D-08",
+      "cadencia": "Diaria",
+      "actividad": "Escalamiento estructurado, documentación forense y entrega de turno (Shift Handover)",
+      "objetivo": "Garantizar trazabilidad auditable completa y continuidad operativa sin incidentes de severidad alta o media sin responsable.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts > Incidents",
+      "procedimiento": [
+        "Confirmar propietario asignado y etiquetas normalizadas en el 100 % de los incidentes activos con origen MDA.",
+        "Registrar avances en Comments bajo formato [UTC Timestamp] - [Analista] - [Acción/Evidencia].",
+        "Emitir reporte ejecutivo SBAR por canal fuera de banda si se detecta compromiso de correo o identidad privilegiada."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MA-04",
+      "mitreTactic": "Command and Control / Exfiltration (TA0011 / TA0010)",
+      "evidenciaAuditable": "Comentarios con marca de tiempo en incidentes XDR y acta diaria de cambio de turno.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Práctica operativa estándar de gobierno SOC sobre la cola unificada de Defender XDR.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/investigate-incidents"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Revisión y remediación de postura SaaS (SSPM) en Microsoft Secure Score",
+      "objetivo": "Identificar y corregir configuraciones inseguras en aplicaciones SaaS conectadas antes de su explotación.",
+      "consolaRuta": "security.microsoft.com > Exposure management > Secure Score > Recommended actions",
+      "procedimiento": [
+        "Agrupar Recommended actions por Product y filtrar recomendaciones generadas por Microsoft Defender for Cloud Apps y conectores SaaS.",
+        "Priorizar brechas críticas (MFA administrativo, desactivación de autenticación heredada, restricciones de compartición externa) evaluando impacto al usuario.",
+        "Asignar tickets de remediación a los administradores de cada SaaS y verificar la actualización del puntaje la semana siguiente."
+      ],
+      "rolResponsable": "Security Admin / Cloud Security Architect",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "Initial Access / Privilege Escalation (TA0001 / TA0004)",
+      "evidenciaAuditable": "Exportación semanal de acciones recomendadas SSPM y evolución de Microsoft Secure Score.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Actividad oficial Review SaaS security posture management de la guía semanal.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-weekly"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría de salud de App Connectors, CAAC Apps, Log Collectors, SIEM Agents y API Tokens",
+      "objetivo": "Prevenir fallos de ingesta, expiración de credenciales de integración y pérdida de sincronización con SIEM.",
+      "consolaRuta": "security.microsoft.com > System > Settings > Cloud apps",
+      "procedimiento": [
+        "Revisar App Connectors, Conditional Access App Control apps y Cloud Discovery > Automatic log upload confirmando estado Connected / Receiving data.",
+        "Auditar System > API tokens y System > SIEM agents verificando vigencia, mínimo privilegio y envío de alertas de sistema.",
+        "Rotar tokens próximos a vencer y depurar cuentas de servicio con permisos excedentes (ej. modelo View-only en conector Workday)."
+      ],
+      "rolResponsable": "Security Admin",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Defense Evasion (TA0005)",
+      "evidenciaAuditable": "Checklist semanal de estado de las cuatro vistas de Settings > Cloud apps y tickets de rotación ejecutados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Actividad oficial Check app connectors, log collectors, and SIEM agent health.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-weekly"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Revisión del Governance Log y control de calidad de remediaciones automáticas",
+      "objetivo": "Confirmar que las tareas de gobernanza manuales y automáticas se ejecutan sin fallos ni interrupciones indebidas.",
+      "consolaRuta": "security.microsoft.com > Cloud apps > Governance log",
+      "procedimiento": [
+        "Filtrar los últimos 7 días por Status = Failed / Error sobre acciones de usuario, archivo, app OAuth o bloqueo MDE.",
+        "Corregir permisos de conectores o límites de throttling que hayan impedido la acción y reintentar cuando corresponda.",
+        "Auditar una muestra de 5 acciones exitosas de cuarentena/suspensión para validar precisión de la política disparadora."
+      ],
+      "rolResponsable": "Security Admin / Compliance Admin",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Exfiltration / Impact (TA0010 / TA0040)",
+      "evidenciaAuditable": "Exportación semanal del Governance log y registro de corrección de tareas fallidas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Actividad oficial Review the governance log en Weekly operational guide (el tamaño de muestra de 5 casos es propuesta editorial).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-weekly"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Seguimiento de anuncios en Message Center y notas de versión de Defender for Cloud Apps",
+      "objetivo": "Convertir cambios de plataforma, nuevas funciones y avisos de retiro en tareas planificadas de ingeniería SOC.",
+      "consolaRuta": "admin.microsoft.com > Health > Message center",
+      "procedimiento": [
+        "Filtrar anuncios del servicio Microsoft Defender for Cloud Apps y Microsoft Defender XDR de los últimos 7 días.",
+        "Contrastar con la página oficial What's new in Microsoft Defender for Cloud Apps en Microsoft Learn.",
+        "Crear tareas con propietario y fecha límite para todo aviso etiquetado como Plan for change."
+      ],
+      "rolResponsable": "Security Admin / Cloud Security Architect",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.PO-02",
+      "mitreTactic": "Initial Access / Defense Evasion (TA0001 / TA0005)",
+      "evidenciaAuditable": "Registro en tablero de ingeniería SOC vinculando IDs del Message Center con acciones de cambio.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Actividad oficial Track new changes in Microsoft Defender XDR de la guía semanal.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-weekly"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Barrido de higiene OAuth (Unused/Overprivileged Apps) y OAuth Attack Paths",
+      "objetivo": "Reducir superficie de ataque no humana eliminando permisos OAuth ociosos y cortando rutas laterales hacia Service Principals críticos.",
+      "consolaRuta": "security.microsoft.com > Assets > Applications > OAuth apps / Exposure management > Attack surface > Attack paths",
+      "procedimiento": [
+        "Revisar los insights nativos New apps, Highly privileged apps, Unused apps (>90 días) y External unverified publishers en OAuth apps.",
+        "Revocar aplicaciones raras no verificadas sin justificación de negocio.",
+        "En Attack paths y Choke points, filtrar objetivos Microsoft Entra OAuth app / AAD Service principal y ejecutar remediación dual sobre el endpoint expuesto y los permisos de la app."
+      ],
+      "rolResponsable": "SOC L3 / Security Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-05",
+      "mitreTactic": "Lateral Movement / Privilege Escalation (TA0008 / TA0004)",
+      "evidenciaAuditable": "Listado semanal de aplicaciones OAuth revocadas y reducción de Attack Paths activos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Capacidades verificadas en Application Inventory, App Hygiene y OAuth Attack Paths de Microsoft Learn; cadencia semanal consolidada como estándar operativo.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/attack-paths"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Revisión semanal de Top Risky Users e identidades SaaS en UEBA",
+      "objetivo": "Detectar compromisos silenciosos o amenazas internas acumulativas que no dispararon alertas individuales de severidad alta.",
+      "consolaRuta": "security.microsoft.com > Assets > Identities",
+      "procedimiento": [
+        "Ordenar identidades de forma descendente por Investigation Priority Score e inspeccionar el Top 10 de la semana.",
+        "Revisar historial de anomalías, cuentas SaaS correlacionadas automáticamente en Identity inventory y posibles rutas de movimiento lateral.",
+        "Abrir sesión de threat hunting focalizada en CloudAppEvents para identidades con score elevado persistente sin incidente activo."
+      ],
+      "rolResponsable": "SOC L2 / SOC L3",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-03",
+      "mitreTactic": "Persistence / Collection (TA0003 / TA0009)",
+      "evidenciaAuditable": "Bitácora semanal de revisión UEBA y casos de caza generados.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Uso de Investigation Priority Score e Identity Inventory verificado en Learn; el corte semanal sobre el Top 10 es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/tutorial-ueba"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Evaluación mensual de efectividad de políticas, tuning de falsos positivos y depuración de alertas antiguas",
+      "objetivo": "Mantener una tasa de falsos positivos controlada y alinear el catálogo de políticas con nuevas amenazas y necesidades del negocio.",
+      "consolaRuta": "security.microsoft.com > Cloud apps > Policies > Policy management",
+      "procedimiento": [
+        "Analizar tasas de False Positive y Benign True Positive por política; actualizar rangos IP corporativos y exclusiones justificadas.",
+        "Evaluar nuevas plantillas nativas y configurar supresión de alertas informativas de bloqueo MDE (Generate alert for blocked app access) si generan fatiga.",
+        "Agrupar alertas no resueltas de los últimos 6 meses, investigar por qué permanecieron abiertas, ajustar la política y cerrar las benignas."
+      ],
+      "rolResponsable": "SOC L3 / Security Admin",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Defense Evasion / Exfiltration (TA0005 / TA0010)",
+      "evidenciaAuditable": "Informe mensual de tuning de políticas y métrica comparativa de tasa de falsos positivos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Actividad oficial Review policy assessments en Monthly operational guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-monthly"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Revisión mensual de patrones repetitivos en Activity Log y auditoría administrativa (Audit the Auditors)",
+      "objetivo": "Detectar actividades anómalas recurrentes por entidad y verificar autorización formal de todo cambio administrativo en MDA.",
+      "consolaRuta": "security.microsoft.com > Cloud apps > Activity log / Permissions > Cloud Apps > Roles > Export admin activities",
+      "procedimiento": [
+        "Pivotar Activity log por tipo de evento (fallos de inicio de sesión, búsquedas repetidas, cambios de privilegios) agrupado por usuario/app para diseñar nuevas detecciones.",
+        "Filtrar Activity type = Administrative activity y descargar Export admin activities desde Permissions > Cloud Apps > Roles.",
+        "Conciliar el 100 % de desactivaciones de políticas, cierres masivos de alertas y cambios Sanctioned/Unsanctioned contra tickets de Change Management."
+      ],
+      "rolResponsable": "SOC Manager / GRC / Security Admin",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-02",
+      "mitreTactic": "Defense Evasion / Account Manipulation (TA0005 / TA0003)",
+      "evidenciaAuditable": "Exportación CSV de actividad administrativa conciliada y firmada por GRC / SOC Manager.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Combina Review activity logs de la guía mensual oficial con la función Export admin activities de manage-admins.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-monthly"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría mensual de roles Unified RBAC, overrides de permisos y cobertura de Scoped Deployment",
+      "objetivo": "Garantizar mínimo privilegio administrativo y confirmar que el 100 % de los usuarios con licencia E5 estén dentro del alcance monitoreado.",
+      "consolaRuta": "security.microsoft.com > Permissions > Cloud Apps > Roles / System > Settings > Cloud apps > System > Scoped deployment",
+      "procedimiento": [
+        "Auditar asignaciones en Defender Unified RBAC, roles Entra ID y overrides manuales en MDA, eliminando permisos permanentes innecesarios.",
+        "Verificar en Scoped deployment que los grupos incluidos abarcan a todas las altas recientes y unidades de negocio.",
+        "Conciliar licencias asignadas vs. disponibles en admin.microsoft.com > Billing > Licenses."
+      ],
+      "rolResponsable": "Security Admin / IAM Admin / GRC",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Valid Accounts (TA0001 / T1078)",
+      "evidenciaAuditable": "Matriz mensual de recertificación RBAC y captura verificada de Scoped deployment.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Configuraciones verificadas en manage-admins; periodicidad mensual alineada a mejores prácticas Zero Trust.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/manage-admins"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Ejecución y validación por lotes de la migración de File Policies hacia Microsoft Purview",
+      "objetivo": "Completar sin pérdida de cobertura ni conflictos de coexistencia el retiro obligatorio de File Policies antes del 6 de enero de 2027.",
+      "consolaRuta": "security.microsoft.com > Cloud apps > Policies > Policy management > All policies > Migrate",
+      "procedimiento": [
+        "Ejecutar el asistente DLP to Purview migration para políticas elegibles (Can migrate / Partial migration) y recrear manualmente en Purview Auto-labeling o Purview DLP para apps no-Microsoft aquellas marcadas como Cannot migrate.",
+        "Validar coincidencias en modo simulación/Test with notifications en https://purview.microsoft.com.",
+        "Deshabilitar la File Policy original en MDA inmediatamente al pasar la política equivalente de Purview a modo enforcement."
+      ],
+      "rolResponsable": "Compliance Admin / Security Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-01",
+      "mitreTactic": "Collection / Exfiltration (TA0009 / TA0010)",
+      "evidenciaAuditable": "Registro mensual de avance de migración con GUIDs origen/destino y validación de simulación en Purview.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Requerimiento técnico oficial por retiro de File Policies el 6 de enero de 2027.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/migrate-file-policies-to-purview"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Generación y presentación del Reporte Ejecutivo de Cloud Discovery y Postura SaaS al CISO",
+      "objetivo": "Sustentar decisiones ejecutivas sobre racionalización SaaS, riesgo de Shadow AI, higiene OAuth y desempeño del SOC.",
+      "consolaRuta": "security.microsoft.com > Cloud apps > Cloud discovery > Dashboard > Actions > Generate Cloud Discovery executive report",
+      "procedimiento": [
+        "Generar el reporte ejecutivo PDF oficial de Cloud Discovery y extraer la tendencia de 30 días de Microsoft Secure Score.",
+        "Consolidar KPIs mensuales (MTTA, MTTC, FPR, apps GenAI gobernadas, apps OAuth revocadas, avance de migración Purview).",
+        "Presentar hallazgos y decisiones requeridas ante el comité del CISO."
+      ],
+      "rolResponsable": "SOC Manager / Compliance Admin",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Exfiltration / Initial Access (TA0010 / TA0001)",
+      "evidenciaAuditable": "Reporte ejecutivo PDF mensual archivado y acta de revisión de dirección.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Generación del reporte verificada en Ad-hoc operational guide; consolidación mensual al CISO es práctica estándar de gobierno.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-ad-hoc"
+    },
+    {
+      "codigo": "M-06",
+      "cadencia": "Mensual",
+      "actividad": "Prueba sintética end-to-end del bucle de integración XDR, MDE, Purview y SOAR",
+      "objetivo": "Confirmar empíricamente que las señales generadas en SaaS producen alertas, bloqueos de endpoint y ejecución de playbooks en los tiempos esperados.",
+      "consolaRuta": "security.microsoft.com > System > Settings > Cloud apps",
+      "procedimiento": [
+        "Verificar el estado habilitado de integraciones con Defender for Endpoint, Purview Information Protection, Entra ID Protection y Microsoft Sentinel.",
+        "Ejecutar un caso controlado con cuenta de prueba (acceso a dominio de prueba Unsanctioned y sesión CAAC restringida).",
+        "Confirmar generación de telemetría en CloudAppEvents, bloqueo de red en MDE y ejecución exitosa de automatización asociada."
+      ],
+      "rolResponsable": "Cloud Security Architect / SOC L3",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Exfiltration (TA0010)",
+      "evidenciaAuditable": "Acta mensual de validación sintética con marcas de tiempo de extremo a extremo.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Práctica recomendada de aseguramiento operativo continuo del tejido XDR.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/mde-govern"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Ejercicio Tabletop y simulación técnica de incidente SaaS / OAuth (Consent Phishing / Exfiltración)",
+      "objetivo": "Entrenar la respuesta coordinada entre SOC, IAM, Legal y dueños de aplicaciones y medir brechas reales en playbooks.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts",
+      "procedimiento": [
+        "Ejecutar escenario trimestral rotativo (consent phishing OAuth, robo AiTM con descarga masiva, ransomware vía OneDrive sync o fuga hacia Shadow AI).",
+        "Medir tiempos reales de detección, aislamiento CAAC, revocación OAuth y comunicación ejecutiva.",
+        "Documentar lecciones aprendidas y actualizar runbooks y reglas de detección."
+      ],
+      "rolResponsable": "SOC Manager / SOC L2 / IAM Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.IM-02",
+      "mitreTactic": "Initial Access / Collection / Exfiltration (TA0001 / TA0009 / TA0010)",
+      "evidenciaAuditable": "Informe de resultados del ejercicio trimestral y control de versiones de playbooks actualizados.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Alineado a las guías de ejercicios de respuesta a incidentes de Microsoft Security Operations.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/incident-response-playbooks"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Calibración de métricas de score de riesgo (Score Metrics) y auditoría de sobrescrituras del catálogo",
+      "objetivo": "Asegurar que el cálculo de riesgo de las más de 31.000 aplicaciones refleje las exigencias normativas y de IA vigentes del negocio.",
+      "consolaRuta": "security.microsoft.com > System > Settings > Cloud apps > Cloud Discovery > Score metrics",
+      "procedimiento": [
+        "Revisar ponderaciones de cumplimiento, seguridad y factores legales en Score metrics.",
+        "Auditar todas las aplicaciones con score modificado manualmente (Override risk score) validando vigencia de su justificación.",
+        "Incorporar como Custom apps las aplicaciones web corporativas o regionales críticas no incluidas en el catálogo estándar."
+      ],
+      "rolResponsable": "Compliance Admin / Cloud Security Architect",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "Exfiltration (TA0010)",
+      "evidenciaAuditable": "Configuración exportada de Score metrics y registro aprobado de excepciones de score.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Basado en Review app risk scores del Ad-hoc operational guide estructurado en revisión trimestral.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-ad-hoc"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Revisión arquitectónica de In-Browser Protection (Edge for Business), clientes nativos y coexistencia con Global Secure Access",
+      "objetivo": "Ampliar controles preventivos sin fricción de proxy inverso y cerrar brechas de evasión por aplicaciones de escritorio.",
+      "consolaRuta": "security.microsoft.com > System > Settings > Cloud apps > Conditional Access App Control > Edge for Business protection",
+      "procedimiento": [
+        "Evaluar la transición de Do not enforce hacia Enforce access from Edge when possible o Allow access only from Edge en escenarios de datos sensibles y BYOD.",
+        "Auditar políticas de Acceso Condicional para asegurar bloqueo de clientes de escritorio no soportados por CAAC (como Microsoft Teams desktop) en poblaciones restringidas.",
+        "Validar arquitectura conjunta con Microsoft Entra Internet Access (Shadow AI / red) y Microsoft Agent 365."
+      ],
+      "rolResponsable": "Cloud Security Architect / IAM Architect",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.IR-01",
+      "mitreTactic": "Defense Evasion / Exfiltration (TA0005 / TA0010)",
+      "evidenciaAuditable": "Documento de revisión arquitectónica semestral aprobado por Arquitectura e IAM.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Capacidades técnicas verificadas en Microsoft Learn (in-browser-protection y coexistencia GSA); cadencia semestral propuesta.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/in-browser-protection"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Autoevaluación anual de evidencias NIST CSF 2.0, higiene de datos Cloud Discovery y recertificación SOC",
+      "objetivo": "Consolidar el expediente anual de auditoría regulatoria y validar competencias técnicas del personal operativo.",
+      "consolaRuta": "security.microsoft.com > Cloud apps",
+      "procedimiento": [
+        "Compilar y verificar la trazabilidad de evidencias de los últimos 12 meses para las 6 funciones de NIST CSF 2.0.",
+        "Evaluar si se requiere limpieza controlada de cargas antiguas de Cloud Discovery en Settings > Cloud apps > Cloud Discovery > Delete data.",
+        "Revisar cumplimiento del plan anual de formación y certificaciones (SC-200, SC-300, SC-401, SC-100) por rol."
+      ],
+      "rolResponsable": "CISO / GRC / SOC Manager",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-01",
+      "mitreTactic": "Initial Access / Exfiltration (TA0001 / TA0010)",
+      "evidenciaAuditable": "Expediente anual de auditoría NIST CSF 2.0 y matriz de certificaciones vigentes del SOC.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Integra lineamientos de autoevaluación anual CSF 2.0 de Microsoft y gestión de ciclo de vida de datos.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-ad-hoc"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de respuesta ante compromiso de aplicación OAuth o campaña de Consent Phishing",
+      "objetivo": "Cortar de inmediato el acceso autónomo vía tokens OAuth a Microsoft Graph, Google o Salesforce y erradicar persistencia.",
+      "consolaRuta": "security.microsoft.com > Cloud apps > App governance / entra.microsoft.com > Enterprise applications",
+      "procedimiento": [
+        "Identificar AppId, scopes concedidos, tipo de consentimiento (Admin/User) y usuarios afectados desde la alerta de App Governance.",
+        "Ejecutar Disable app / Revoke app y revocar sesiones activas de los usuarios comprometidos en Entra ID.",
+        "Cazar en CloudAppEvents (MailItemsAccessed, FileDownloaded, reglas de buzón y cambios de rol) para cuantificar impacto y eliminar persistencia."
+      ],
+      "rolResponsable": "SOC L2 / IAM Admin",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Initial Access / Persistence / Collection (TA0001 / TA0003 / TA0009)",
+      "evidenciaAuditable": "Línea de tiempo forense exportada de CloudAppEvents, registro de revocación y reporte RCA.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Basado en las guías oficiales de investigación de alertas de App Governance e incident response playbooks.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/app-governance-anomaly-detection-alerts"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de contención e investigación forense ante exfiltración masiva de datos en SaaS",
+      "objetivo": "Detener la salida activa de información confidencial preservando evidencia con cadena de custodia legal.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts / Cloud apps > Activity log",
+      "procedimiento": [
+        "Reconstruir cronología de descargas y comparticiones externas en CloudAppEvents verificando etiquetas de sensibilidad involucradas.",
+        "Aplicar política CAAC restrictiva inmediata (Block download / Block copy) o ejecutar Suspend user y revocación de sesiones en Entra ID.",
+        "Bloquear cualquier destino no autorizado marcándolo como Unsanctioned (enforcement MDE), remover enlaces externos y coordinar con Legal/RR. HH."
+      ],
+      "rolResponsable": "SOC L2 / SOC L3 / Legal",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "Collection / Exfiltration (TA0009 / TA0010)",
+      "evidenciaAuditable": "Paquete forense exportado, acciones en Governance log y acta de coordinación legal.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Acciones de gobernanza y control de sesión documentadas en Microsoft Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/governance-actions"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Respuesta preventiva ante vulnerabilidad Zero-Day o incidente de seguridad en proveedor SaaS",
+      "objetivo": "Determinar el radio de exposición interno y bloquear o restringir el servicio afectado hasta la confirmación del parche.",
+      "consolaRuta": "security.microsoft.com > Cloud apps > Cloud discovery / Hunting > Advanced hunting",
+      "procedimiento": [
+        "Localizar la aplicación en Discovered apps y consultar CloudAppEvents para identificar usuarios activos, IPs y volumen de datos en los últimos 30 días.",
+        "Marcar temporalmente como Unsanctioned para bloqueo inmediato en endpoints MDE o restringir vía CAAC solo a equipos administrados sin descargas.",
+        "Cargar indicadores IP externos en Settings > Cloud apps > System > IP address ranges y monitorear hasta validar remediación del proveedor."
+      ],
+      "rolResponsable": "SOC L3 / Cloud Security Architect / CISO",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-02",
+      "mitreTactic": "Initial Access / Exploit Public-Facing Application (TA0001)",
+      "evidenciaAuditable": "Reporte KQL de usuarios expuestos, cambio de etiqueta de la app y comunicado a usuarios afectados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Mecanismos técnicos verificados en CloudAppEvents, MDE Govern e IP tags.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/mde-govern"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Revisión de salud del servicio M365 y resolución forense de archivos en Admin Quarantine",
+      "objetivo": "Descartar incidencias globales de plataforma y gestionar de forma segura la restauración o purga definitiva de archivos aislados.",
+      "consolaRuta": "admin.microsoft.com > Health > Service health / security.microsoft.com > Cloud apps > Files",
+      "procedimiento": [
+        "Comprobar Health > Service health antes de escalar anomalías operativas de conectores o latencia.",
+        "Filtrar Cloud apps > Files por Quarantined = True (o revisar el sitio de cuarentena de Purview DLP para cargas migradas).",
+        "Investigar origen en Defender XDR si es malware; restaurar únicamente con validación escrita de Compliance y aplicación de etiqueta de sensibilidad si es falso positivo."
+      ],
+      "rolResponsable": "Compliance Admin / SOC L2",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-05",
+      "mitreTactic": "Impact / Defense Evasion (TA0040 / TA0005)",
+      "evidenciaAuditable": "Decisión documentada de cuarentena/restauración y registro en Governance log.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Actividades oficiales Review Microsoft service health y Review file quarantines del Ad-hoc operational guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-ad-hoc"
+    },
+    {
+      "codigo": "AH-05",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Respuesta ante inyección de prompts o invocación maliciosa de herramientas en agentes de Copilot Studio",
+      "objetivo": "Bloquear y aislar agentes empresariales manipulados que intenten acceder o exfiltrar datos corporativos.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts / Hunting > Advanced hunting",
+      "procedimiento": [
+        "Investigar la alerta o el registro en BehaviorInfo / CloudAppEvents identificando agente, usuario invocador y herramienta bloqueada.",
+        "Coordinar con el administrador de Power Platform la puesta en cuarentena o desactivación del agente afectado.",
+        "Auditar si el agente operaba con credenciales del creador (maker) y verificar cobertura de licencia Microsoft Agent 365 para inventario AgentsInfo y políticas unificadas."
+      ],
+      "rolResponsable": "SOC L2 / Security Admin",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Execution / Exfiltration (TA0002 / TA0010)",
+      "evidenciaAuditable": "Evidencia de bloqueo runtime en Defender XDR y cambio de estado del agente en Power Platform.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Alineado a la transición oficial del 1 de julio de 2026 hacia Microsoft Agent 365 y protección runtime de Copilot Studio.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/security-for-ai/transition-agent-security-to-agent-365"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Health check diario de frescura de ingesta por aplicación en CloudAppEvents",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "CloudAppEvents",
+      "consulta": "CloudAppEvents | where Timestamp > ago(24h) | summarize Eventos24h = count(), UltimoEventoUTC = max(Timestamp) by Application, AuditSource | extend MinutosSinDatos = datetime_diff('minute', now(), UltimoEventoUTC) | order by MinutosSinDatos asc",
+      "proposito": "Confirmar que Microsoft 365, conectores SaaS y controles de acceso/sesión CAAC están enviando telemetría activa.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección de picos horarios de descarga y acceso por usuarios externos",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "CloudAppEvents",
+      "consulta": "CloudAppEvents | where Timestamp > ago(7d) and ActionType == 'FileDownloaded' | extend FileName = tostring(RawEventData.SourceFileName), FileLabel = tostring(RawEventData.SensitivityLabelId) | summarize DescargasHora = count(), ArchivosUnicos = dcount(FileName) by AccountDisplayName, Application, IPAddress, IsExternalUser, FileLabel, bin(Timestamp, 1h) | where DescargasHora >= 50 or IsExternalUser == true | order by DescargasHora desc",
+      "proposito": "Identificar exfiltración masiva de archivos o descargas efectuadas por identidades externas sobre repositorios cloud.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría de consentimientos otorgados a aplicaciones OAuth",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "CloudAppEvents",
+      "consulta": "CloudAppEvents | where Timestamp > ago(14d) and ActionType == 'Consent to application' | extend TargetAppId = coalesce(OAuthAppId, tostring(RawEventData.AppId)) | project Timestamp, AccountDisplayName, AccountObjectId, IsAdminOperation, TargetAppId, IPAddress, CountryCode | order by Timestamp desc",
+      "proposito": "Rastrear otorgamientos de permisos OAuth de usuario y de administrador para detectar campañas de consent phishing.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección de adición de miembros a roles privilegiados en directorio",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "CloudAppEvents",
+      "consulta": "CloudAppEvents | where Timestamp > ago(30d) and ActionType in ('Add member to role.') | extend FirstElement = ActivityObjects[0], SecondElement = ActivityObjects[1] | extend RoleName = tostring(FirstElement.Name), UserAddedName = tostring(SecondElement.Name), UserAddedId = tostring(SecondElement.Id) | project Timestamp, ActionType, RoleName, UserAddedName, UserAddedId, AccountId, AccountDisplayName, IPAddress | order by Timestamp desc",
+      "proposito": "Consulta oficial del Ad-hoc Operational Guide para auditar escalamientos de privilegios en Microsoft Entra ID.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Investigación forense de MailItemsAccessed correlacionado con EmailEvents",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "CloudAppEvents / EmailEvents",
+      "consulta": "CloudAppEvents | where Timestamp > ago(7d) and ActionType == 'MailItemsAccessed' | extend Folders = RawEventData.Folders[0] | extend MailboxPath = tostring(Folders.Path) | mv-expand Folders.FolderItems | extend MessageIDs = tostring(Folders_FolderItems.InternetMessageId) | join kind=inner (EmailEvents | where Timestamp > ago(14d)) on $left.MessageIDs == $right.InternetMessageId | project Timestamp, AccountDisplayName, OAuthAppId, IPAddress, CountryCode, MailboxPath, Subject, SenderFromAddress | sort by Timestamp desc",
+      "proposito": "Determinar exactamente qué correos electrónicos fueron leídos durante el compromiso de una sesión o aplicación OAuth.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría de efectividad de controles inline CAAC (Access y Session Control)",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "CloudAppEvents",
+      "consulta": "CloudAppEvents | where Timestamp > ago(7d) and AuditSource in ('Defender for Cloud Apps session control', 'Defender for Cloud Apps access control') | summarize TotalEventos = count(), UsuariosUnicos = dcount(AccountObjectId) by AuditSource, Application, ActionType, DeviceType, OSPlatform | order by TotalEventos desc",
+      "proposito": "Verificar la aplicación real de políticas de acceso y sesión tanto en proxy inverso como en Microsoft Edge for Business.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Búsqueda en grafo de exposición de OAuth Apps críticas con permisos en Microsoft Graph",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting (Exposure Management)",
+      "tablaPrincipal": "ExposureGraphNodes / ExposureGraphEdges",
+      "consulta": "let RelevantNodes = ExposureGraphNodes | where NodeLabel in ('Microsoft Entra OAuth App', 'serviceprincipal') | project NodeId, NodeLabel, NodeName, NodeProperties; ExposureGraphEdges | where EdgeLabel in ('has permissions to', 'can authenticate as') | make-graph SourceNodeId --> TargetNodeId with RelevantNodes on NodeId | graph-match (AppRegistration)-[canAuthAs]->(SPN)-[hasPermissionTo]->(Target) where AppRegistration.NodeLabel == 'Microsoft Entra OAuth App' and SPN.NodeLabel == 'serviceprincipal' and SPN.NodeProperties['rawData']['criticalityLevel']['criticalityLevel'] == 0 and Target.NodeName == 'Microsoft Graph' | project DisplayName = SPN.NodeProperties['rawData']['accountDisplayName'], Enabled = SPN.NodeProperties['rawData']['accountEnabled'], AppPermissions = hasPermissionTo.EdgeProperties['rawData']['applicationPermissions']['permissions']",
+      "proposito": "Descubrir Service Principals críticos con permisos de aplicación sobre Microsoft Graph expuestos en rutas de ataque.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Tiempo medio de reconocimiento de incidentes CASB (MTTA-CASB)",
+      "definicion": "Tiempo promedio desde la creación de un incidente High o Medium con señales de Defender for Cloud Apps hasta el inicio del triaje activo.",
+      "formula": "Promedio(Timestamp_InProgress - Timestamp_Created)",
+      "metaSugerida": "< 15 minutos (High) / < 60 minutos (Medium)",
+      "frecuencia": "Semanal",
+      "audiencia": "SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Métrica estándar de operaciones XDR; los umbrales de 15 y 60 minutos son metas consultivas recomendadas para SOC 24x7."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Tiempo medio de contención de amenazas SaaS y OAuth (MTTC-SaaS)",
+      "definicion": "Tiempo desde la detección de un compromiso confirmado SaaS u OAuth hasta la revocación de la app, suspensión del usuario o restricción de sesión.",
+      "formula": "Promedio(Timestamp_AccionContencion_GovernanceLog - Timestamp_Created)",
+      "metaSugerida": "< 30 minutos (severidad Crítica / Alta)",
+      "frecuencia": "Semanal",
+      "audiencia": "SOC Manager / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Las acciones automáticas de gobernanza actúan en minutos; el objetivo de 30 min para casos con validación humana es propuesta editorial."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Tasa de falsos positivos en políticas de Defender for Cloud Apps (FPR)",
+      "definicion": "Porcentaje de alertas originadas por políticas de MDA clasificadas como False Positive respecto al total de alertas cerradas en el período.",
+      "formula": "(Alertas_Cerradas_FP / Total_Alertas_Clasificadas) * 100",
+      "metaSugerida": "< 15%",
+      "frecuencia": "Mensual",
+      "audiencia": "SOC L3 / Security Admin",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Microsoft Learn exige revisar tasas de FP/BTP mensualmente; el umbral numérico < 15% es propuesta editorial."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Aplicaciones de IA Generativa (Shadow AI) sin clasificación de gobierno",
+      "definicion": "Cantidad de aplicaciones descubiertas en la categoría Generative AI con tráfico activo que permanecen sin etiqueta Sanctioned o Unsanctioned.",
+      "formula": "Conteo(DiscoveredApps where Category == 'Generative AI' and TrafficBytes > 10MB and Tag == 'Untagged')",
+      "metaSugerida": "0 aplicaciones sin clasificar al cierre semanal",
+      "frecuencia": "Semanal",
+      "audiencia": "CISO / GRC",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "El filtro nativo Generative AI está verificado en MS Learn; el umbral de tolerancia cero sobre >10 MB es meta editorial."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Exposición de aplicaciones OAuth de alto privilegio no verificadas o inactivas",
+      "definicion": "Número de aplicaciones OAuth con nivel de privilegio High y publisher Unverified o sin actividad en más de 90 días pendientes de revisión.",
+      "formula": "Conteo(OAuthApps where PrivilegeLevel == 'High' and (PublisherVerified == false or LastUsed > 90d) and ReviewStatus == 'Pending')",
+      "metaSugerida": "0 aplicaciones pendientes por más de 7 días",
+      "frecuencia": "Semanal",
+      "audiencia": "IAM Lead / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Insights de Highly privileged y Unused (>90 días) son nativos en Assets > Applications; el SLA de 7 días es propuesta editorial."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Tasa de remediación de recomendaciones SSPM en Secure Score",
+      "definicion": "Porcentaje de acciones recomendadas de postura de seguridad SaaS emitidas por MDA que han sido completadas.",
+      "formula": "(Acciones_SSPM_Completadas / Total_Acciones_SSPM_Aplicables) * 100",
+      "metaSugerida": ">= 75% en controles de impacto alto",
+      "frecuencia": "Mensual",
+      "audiencia": "Cloud Security Architect / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Integración SSPM con Microsoft Secure Score verificada en MS Learn; el objetivo de 75% es propuesta editorial."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Disponibilidad operativa de App Connectors, CAAC y Log Collectors",
+      "definicion": "Porcentaje de conectores API SaaS, aplicaciones CAAC y colectores automáticos de logs operando sin errores ni interrupción de datos.",
+      "formula": "(Fuentes_Conectadas_Saludables / Total_Fuentes_Configuradas) * 100",
+      "metaSugerida": ">= 99,5%",
+      "frecuencia": "Semanal",
+      "audiencia": "Security Admin / SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en el chequeo semanal de salud de conectores documentado en MS Learn."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Avance de migración de File Policies hacia Microsoft Purview",
+      "definicion": "Proporción de políticas de archivos heredadas en MDA migradas a Microsoft Purview DLP / Auto-labeling, validadas en simulación y deshabilitadas en MDA.",
+      "formula": "(FilePolicies_Migradas_Y_Deshabilitadas / Total_FilePolicies_Historicas) * 100",
+      "metaSugerida": "100% completado antes del 15 de diciembre de 2026 (retiro oficial: 6 de enero de 2027)",
+      "frecuencia": "Mensual",
+      "audiencia": "Compliance Lead / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "La fecha límite técnica del 6 de enero de 2027 es oficial de MS Learn; la meta interna al 15-dic-2026 provee margen de seguridad."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.OC-03",
+      "descripcionResultado": "Los requisitos legales, regulatorios y contractuales —incluyendo obligaciones de privacidad— se comprenden y gestionan.",
+      "capacidadMicrosoft": "Cloud Discovery y Cloud App Catalog con evaluación de más de 90 factores de riesgo regulatorios (GDPR, SOC 2, ISO 27001, HIPAA, propiedad de datos e IA).",
+      "evidenciaAuditoria": "Cloud Discovery Executive Report en PDF y matriz de evaluación de cumplimiento por categoría SaaS y Generative AI.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.PO-01",
+      "descripcionResultado": "La política para gestionar riesgos de ciberseguridad se establece según el contexto organizacional, se comunica y se hace cumplir.",
+      "capacidadMicrosoft": "Políticas de descubrimiento (Sanctioned/Unsanctioned con bloqueo en MDE), políticas de acceso/sesión CAAC y políticas de App Governance.",
+      "evidenciaAuditoria": "Inventario exportado de políticas habilitadas y registros de ejecución efectiva en Governance log.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles, responsabilidades y autoridades relacionados con la gestión de riesgos de ciberseguridad se establecen, comunican y hacen cumplir.",
+      "capacidadMicrosoft": "Microsoft Defender Unified RBAC, segregación de roles en Permissions > Cloud Apps > Roles y auditoría Export admin activities.",
+      "evidenciaAuditoria": "Exportación mensual de actividad de administradores conciliada contra tickets de cambio y matriz RACI vigente.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-02",
+      "descripcionResultado": "Se mantienen inventarios de software, servicios y sistemas gestionados o utilizados por la organización.",
+      "capacidadMicrosoft": "Application Inventory unificado (Assets > Applications para SaaS y OAuth apps) alimentado por conectores API y Defender-managed endpoints.",
+      "evidenciaAuditoria": "Exportación actualizada de aplicaciones SaaS descubiertas y aplicaciones OAuth registradas en Entra ID, Google Workspace y Salesforce.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-01",
+      "descripcionResultado": "Las vulnerabilidades y configuraciones inseguras en los activos son identificadas, validadas y registradas.",
+      "capacidadMicrosoft": "SaaS Security Posture Management (SSPM) integrado en Microsoft Secure Score y modelado de OAuth Attack Paths en Security Exposure Management.",
+      "evidenciaAuditoria": "Exportación de acciones recomendadas SSPM por aplicación SaaS y mapa de choke points de Service Principals críticos.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Los permisos, derechos y autorizaciones de acceso se definen en políticas, se gestionan, se hacen cumplir y se revisan aplicando mínimo privilegio.",
+      "capacidadMicrosoft": "Conditional Access App Control integrado con Entra Conditional Access y revocación periódica de permisos OAuth sobre-privilegiados o sin uso en App Governance.",
+      "evidenciaAuditoria": "Políticas de Acceso Condicional con controles de sesión activas y registros semanales de revocación de apps OAuth.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.DS-02",
+      "descripcionResultado": "La confidencialidad, integridad y disponibilidad de los datos en tránsito están protegidas.",
+      "capacidadMicrosoft": "Controles de sesión en tiempo real vía CAAC e In-Browser Protection en Microsoft Edge for Business (bloqueo de descarga, protect-on-download con Purview, bloqueo de copia/impresión y antimalware).",
+      "evidenciaAuditoria": "Eventos en CloudAppEvents con AuditSource igual a Defender for Cloud Apps session control evidenciando bloqueos y protección aplicada.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-03",
+      "descripcionResultado": "La actividad del personal y el uso de tecnología son monitoreados para detectar eventos potencialmente adversos.",
+      "capacidadMicrosoft": "Políticas de detección de anomalías UEBA, monitoreo ML de App Governance y correlación automática en incidentes de Microsoft Defender XDR.",
+      "evidenciaAuditoria": "Cola de incidentes y alertas XDR con fuentes MDA y App Governance, y consultas de verificación sobre CloudAppEvents.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Los incidentes de ciberseguridad son contenidos oportunamente para limitar su impacto.",
+      "capacidadMicrosoft": "Acciones nativas e integradas de contención: Suspend user, Disable/Revoke OAuth app, Tag as Unsanctioned (bloqueo en MDE) y Admin quarantine.",
+      "evidenciaAuditoria": "Registros con Status = Success en Governance log, indicadores activos en MDE y expedientes de incidentes cerrados con MTTC medido.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-06",
+      "descripcionResultado": "Se declara el fin de la recuperación con base en criterios establecidos y se completa la documentación e incorporación de mejoras post-incidente.",
+      "capacidadMicrosoft": "Contribución evidencial y forense mediante el registro histórico inmutable en Activity log y CloudAppEvents para análisis de causa raíz y endurecimiento de políticas.",
+      "evidenciaAuditoria": "Informes post-mortem (RCA) sustentados en telemetría de MDA y cambios de políticas aplicados tras incidentes o ejercicios Tabletop.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "El módulo fue compilado a partir del corpus completo MSEOP-MD (12 bloques SecOps, guía operativa, licenciamiento y mapeo NIST CSF 2.0) y sometido a revalidación exhaustiva contra Microsoft Learn MCP en noviembre de 2026. Se verificaron todas las rutas vigentes en security.microsoft.com, la arquitectura de Edge for Business in-browser protection, los cambios de licenciamiento y nombres de suites, y tres hitos críticos de 2026–2027: el retiro de File Policies hacia Microsoft Purview el 6 de enero de 2027, la transición de seguridad de agentes de IA hacia Microsoft Agent 365 el 1 de julio de 2026 y la habilitación por defecto de Unified RBAC e integración automática con Identity Inventory en agosto y octubre de 2026.",
+    "correccionesAplicadas": [
+      "Incorporación del retiro oficial de File Policies en Defender for Cloud Apps el 6 de enero de 2027 y del flujo asistido DLP to Purview migration (anunciado en junio de 2026), prohibiendo la coexistencia activa simultánea de políticas equivalentes.",
+      "Actualización del alcance de protección de agentes de IA (Copilot Studio y Microsoft Foundry): desde el 1 de julio de 2026 el inventario (migrado de AIAgentsInfo a AgentsInfo), postura y detección de amenazas requieren licencia Microsoft Agent 365.",
+      "Actualización del modelo de permisos a Microsoft Defender Unified RBAC (habilitado por defecto para clientes nuevos desde agosto de 2026), documentando el cese de nuevas asignaciones para roles heredados (App/instance admin, User group admin, Cloud Discovery admins) y el control exclusivo por Entra ID en vistas de App Governance.",
+      "Incorporación de las novedades de mayo, junio y octubre de 2026: habilitación automática de integración de cuentas SaaS con Identity Inventory (15-oct-2026), Salesforce Real-Time Event Monitoring y Connected Apps/ECAs en App Governance (Preview), y supresión opcional de alertas informativas de bloqueo en MDE.",
+      "Consolidación total de rutas en https://security.microsoft.com (tras la redirección irreversible de portal.cloudappsecurity.com), actualización a https://purview.microsoft.com y adopción de nombres vigentes Microsoft Defender Suite y Microsoft Purview Suite.",
+      "Corrección taxonómica del mapeo NIST CSF 2.0 eliminando el código heredado PR.AC (CSF 1.1) en favor de PR.AA-05 y aplicando la codificación exacta de subcategorías de NIST CSWP 29."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Metas cuantitativas de SLA y KPIs (MTTA < 15 min, MTTC < 30 min, FPR < 15%, >= 75% remediación SSPM)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft Learn documenta las métricas operativas pero establece que cada organización debe calibrar los umbrales numéricos según criticidad del negocio y cobertura horaria del SOC."
+      },
+      {
+        "elemento": "Matriz RACI organizacional y tiempos máximos de activación JIT en Entra PIM (4 h / 8 h)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft exige mínimo privilegio y recomienda PIM, pero la distribución específica de responsabilidades entre SOC L1/L2/L3, IAM, SaaS Admin y GRC es diseño organizacional consultivo."
+      },
+      {
+        "elemento": "Cadencias Trimestral, Semestral y Anual adicionales (T-01, T-02, SM-01, A-01)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "El Operational Guide oficial de Defender for Cloud Apps cubre actividades Daily, Weekly, Monthly y Ad-hoc; las cadencias extendidas integran buenas prácticas de Microsoft SAF, Zero Trust y auditoría anual."
+      },
+      {
+        "elemento": "Modelo de Madurez Operacional CASB & SaaS Security de 5 niveles",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Estructura consultiva basada en los objetivos progresivos de Zero Trust para Aplicaciones para facilitar diagnósticos ejecutivos y hojas de ruta de adopción."
+      },
+      {
+        "elemento": "Asociación de artefactos probatorios específicos a cada subcategoría NIST CSF 2.0",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "NIST CSF 2.0 es un marco de outcomes no prescriptivo; la selección de reportes, logs y tablas de MDA como evidencia objetiva constituye ingeniería de aseguramiento GRC."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Microsoft Defender for Cloud Apps overview",
+      "url": "https://learn.microsoft.com/en-us/defender-cloud-apps/what-is-defender-for-cloud-apps",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Arquitectura oficial de los cuatro pilares del producto: CASB, SSPM, protección XDR e integraciones app-to-app.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Microsoft Defender for Cloud Apps operational guide",
+      "url": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Índice maestro oficial de actividades operativas recomendadas en frecuencias diaria, semanal, mensual y ad-hoc.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Daily operational guide - Microsoft Defender for Cloud Apps",
+      "url": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-daily",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Procedimientos diarios oficiales para triaje XDR, detección de amenazas, App Governance, CAAC, Shadow IT y protección de información.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Weekly and Monthly operational guides - Microsoft Defender for Cloud Apps",
+      "url": "https://learn.microsoft.com/en-us/defender-cloud-apps/ops-guide/ops-guide-weekly",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Guía oficial semanal (SSPM en Secure Score, salud de conectores/tokens, Message Center, Governance log) vinculada a ops-guide-monthly y ops-guide-ad-hoc.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "What's new in Microsoft Defender for Cloud Apps",
+      "url": "https://learn.microsoft.com/en-us/defender-cloud-apps/release-notes",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Notas de versión verificadas hasta octubre de 2026: Identity inventory automático, Unified RBAC por defecto, retiro de File Policies y mejoras Salesforce OAuth.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Migrate file policies to Microsoft Purview",
+      "url": "https://learn.microsoft.com/en-us/defender-cloud-apps/migrate-file-policies-to-purview",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Documentación oficial del retiro de File Policies el 6 de enero de 2027, asistente de migración y equivalencias con Purview DLP y Auto-labeling.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "In-browser protection with Microsoft Edge for Business (Preview) & Conditional Access App Control",
+      "url": "https://learn.microsoft.com/en-us/defender-cloud-apps/in-browser-protection",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Configuración, modos de enforcement y limitaciones de controles de sesión nativos en Microsoft Edge for Business sin redirección por proxy.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Cloud app discovery overview",
+      "url": "https://learn.microsoft.com/en-us/defender-cloud-apps/set-up-cloud-discovery",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Especificación del catálogo de más de 31.000 aplicaciones cloud, más de 90 factores de riesgo, integración nativa con MDE y firewalls/SWGs soportados.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "App governance in Microsoft Defender for Cloud Apps & OAuth Attack Paths",
+      "url": "https://learn.microsoft.com/en-us/defender-cloud-apps/app-governance-manage-app-governance",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Cobertura oficial de gobernanza OAuth sobre Microsoft Entra ID, Google Workspace y Salesforce.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Configure admin access in Defender for Cloud Apps",
+      "url": "https://learn.microsoft.com/en-us/defender-cloud-apps/manage-admins",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Matriz oficial de permisos por rol Entra ID, Unified RBAC, deprecación de roles heredados y exportación de auditoría administrativa.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "CloudAppEvents table in the advanced hunting schema",
+      "url": "https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-cloudappevents-table",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Referencia completa de columnas y prerrequisitos de la tabla CloudAppEvents en Advanced Hunting.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Transition Microsoft Copilot Studio and Microsoft Foundry agent security capabilities to Microsoft Agent 365",
+      "url": "https://learn.microsoft.com/en-us/defender-xdr/security-for-ai/transition-agent-security-to-agent-365",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Detalle oficial de la transición efectiva el 1 de julio de 2026 hacia licencia Microsoft Agent 365 y tabla AgentsInfo.",
+      "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Microsoft Defender for Cloud Apps Ninja Training",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-security-blog/microsoft-defender-for-cloud-apps-ninja-training--june-2022/2751518",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Microsoft Security Team",
+      "comentario": "Entrenamiento Ninja oficial en Microsoft Tech Community estructurado por capacidades operativas de CASB.",
+      "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Start secure and stay secure on your AI agent journey with Microsoft Defender",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-security-blog/start-secure-and-stay-secure-on-your-ai-agent-journey-with-microsoft-defender/4469430",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Microsoft Security Team",
+      "comentario": "Publicación oficial en Tech Community sobre postura e inspección en tiempo real de agentes de IA en Microsoft Defender.",
+      "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "Microsoft Community Hub - Ninja Training Series",
+      "url": "https://techcommunity.microsoft.com/tag/ninja%20training",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Heike Ritter y equipos de producto Microsoft Security",
+      "comentario": "Índice curado de entrenamientos Ninja y actualizaciones mensuales mantenidas por especialistas de producto de Microsoft.",
+      "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "How to Govern Shadow AI with Microsoft Purview, Defender and DSPM",
+      "url": "https://nikkichapple.com/govern-shadow-ai-microsoft-purview-defender-dspm/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Nikki Chapple (Microsoft MVP)",
+      "comentario": "Guía aplicada en dos capas (control de aplicaciones con Defender for Cloud Apps + MDE y control de datos con Purview) para gobernar Shadow AI.",
+      "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "Hunting-Queries-Detection-Rules (KQL Repository)",
+      "url": "https://github.com/Bert-JanP/Hunting-Queries-Detection-Rules",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Bert-Jan Pals (Microsoft Security MVP)",
+      "comentario": "Repositorio comunitario de referencia con consultas KQL de caza e ingeniería de detección sobre CloudAppEvents y Defender XDR.",
+      "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "NIST Cybersecurity Framework (CSF) 2.0 (CSWP 29) & Zero Trust Applications Deployment",
+      "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Documento normativo oficial de NIST CSF 2.0 utilizado como base para el mapeo de outcomes y evidencias auditables.",
+      "verificacion": "Verificado en fuentes oficiales NIST / MSEOP-MD"
+    }
+  ]
+}

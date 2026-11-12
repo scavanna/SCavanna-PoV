@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marco Maestro CISO, SOC y NIST — Guía Operacional (Configuración, Rutinas y Playbooks)</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.72;
+}
+code, pre, .mono {
+  font-family: Consolas, "Courier New", Courier, monospace;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 0.88em;
+  color: var(--cp-text);
+  word-break: break-word;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Sticky Top Navigation */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--cp-panel-strong);
+  border-bottom: 1px solid var(--cp-border);
+  backdrop-filter: blur(10px);
+  padding: 12px 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.topbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border-strong);
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.btn-primary:hover {
+  background: var(--cp-accent-hover);
+  border-color: var(--cp-accent-hover);
+  color: var(--cp-accent-fg);
+}
+.btn-sm {
+  padding: 5px 11px;
+  font-size: 12.5px;
+}
+.select-input, .search-input {
+  padding: 9px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+}
+.search-input { min-width: 260px; flex: 1; }
+
+/* Two-Column Spacious App Layout */
+.app-shell {
+  max-width: 1520px;
+  margin: 0 auto;
+  padding: 28px 32px 56px 32px;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+.sidebar {
+  position: sticky;
+  top: 76px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 20px 16px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+}
+.nav-section-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cp-text-soft);
+  padding: 12px 12px 6px 12px;
+}
+.nav-section-label:first-child { padding-top: 2px; }
+.nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border-radius: 0.625rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.nav-item:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border);
+}
+.nav-item.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.nav-subitem {
+  padding-left: 24px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.nav-count {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--cp-surface-soft);
+  color: var(--cp-text-muted);
+  border: 1px solid var(--cp-border);
+}
+.nav-item.active .nav-count {
+  background: var(--cp-panel-strong);
+  color: var(--cp-text);
+  border-color: transparent;
+}
+.sidebar-progress {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cp-border);
+}
+.prog-row { margin-bottom: 12px; }
+.prog-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--cp-text-muted);
+  font-weight: 600;
+}
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--cp-accent);
+  width: 0%;
+  transition: width 0.25s ease;
+}
+
+/* Main Reading Area */
+.main-area {
+  max-width: 1080px;
+  width: 100%;
+}
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+
+/* Hero & Section Headers */
+.hero-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 32px 36px;
+  margin-bottom: 28px;
+}
+.hero-card h1 {
+  margin: 10px 0 14px 0;
+  font-size: 28px;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+}
+.hero-lead {
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: var(--cp-text-muted);
+  margin: 0;
+}
+.section-banner {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-left: 5px solid var(--cp-accent);
+  border-radius: 16px;
+  padding: 26px 32px;
+  margin-bottom: 28px;
+}
+.section-banner h2 {
+  margin: 0 0 8px 0;
+  font-size: 23px;
+  line-height: 1.3;
+}
+.section-banner p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15.5px;
+}
+
+/* Mode Selector Cards on Overview */
+.modes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.mode-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+}
+.mode-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cp-accent);
+}
+.mode-card h3 {
+  margin: 6px 0 10px 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+.mode-card p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15px;
+}
+
+/* Badges & Inline Tags */
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 0.625rem;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface-soft);
+  color: var(--cp-text);
+}
+.badge-accent {
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border-color: var(--cp-accent);
+}
+.badge-learn {
+  border-color: var(--cp-success);
+  color: var(--cp-success);
+  background: var(--cp-surface-soft);
+}
+.badge-editorial {
+  border-color: var(--cp-warning);
+  color: var(--cp-warning);
+  background: var(--cp-surface-soft);
+}
+.inline-tag {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 6px;
+  margin-left: 4px;
+  vertical-align: middle;
+  border: 1px solid var(--cp-border);
+}
+.tag-learn { color: var(--cp-success); border-color: var(--cp-success); background: var(--cp-surface-soft); }
+.tag-edit { color: var(--cp-warning); border-color: var(--cp-warning); background: var(--cp-surface-soft); }
+
+/* Sub-navigation Switcher */
+.subnav-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.subnav-pill {
+  padding: 10px 18px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.subnav-pill:hover { border-color: var(--cp-border-strong); background: var(--cp-surface-soft); }
+.subnav-pill.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.filter-toolbar {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Spacious Operational, Setup & Playbook Cards */
+.spacious-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 30px 34px;
+  margin-bottom: 24px;
+}
+.spacious-card.is-done {
+  border-color: var(--cp-success);
+  background: var(--cp-bg-elevated);
+}
+.adhoc-card {
+  border-left: 5px solid var(--cp-accent);
+}
+.card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.card-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 280px;
+}
+.task-checkbox {
+  width: 22px;
+  height: 22px;
+  margin-top: 4px;
+  accent-color: var(--cp-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.card-code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border: 1px solid var(--cp-accent);
+  display: inline-block;
+  margin-bottom: 6px;
+}
+.card-heading {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+/* Info Callout Boxes inside Cards */
+.info-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.info-box {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+.info-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-soft);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.info-content {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.trigger-banner {
+  background: var(--cp-accent-soft);
+  border: 1px solid var(--cp-accent);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+}
+.trigger-banner .info-label {
+  color: var(--cp-accent);
+}
+
+/* Step-by-Step Spacious List */
+.steps-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-muted);
+  margin: 0 0 12px 0;
+}
+.steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.step-row:hover { border-color: var(--cp-border-strong); }
+.step-row.step-checked {
+  border-color: var(--cp-success);
+  opacity: 0.88;
+}
+.step-num {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border-strong);
+  color: var(--cp-text);
+  font-weight: 700;
+  font-size: 13.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-row.step-checked .step-num {
+  background: var(--cp-success);
+  border-color: var(--cp-success);
+  color: var(--cp-accent-fg);
+}
+.step-body {
+  font-size: 15.5px;
+  line-height: 1.72;
+  flex: 1;
+}
+
+/* Validation & Evidence Footer Box */
+.validation-footer {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.validation-footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--cp-border);
+  font-size: 13.5px;
+  color: var(--cp-text-muted);
+}
+
+/* Grids & Tables for Secondary Views */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.subsection-heading {
+  font-size: 20px;
+  margin: 34px 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cp-border);
+}
+pre.code-block {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 14px 0 0 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.table-wrap {
+  overflow-x: auto;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th, td { padding: 16px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--cp-border); line-height: 1.6; }
+th { background: var(--cp-bg-elevated); font-weight: 700; }
+tr:last-child td { border-bottom: none; }
+.muted { color: var(--cp-text-muted); }
+
+.footer {
+  margin-top: 48px;
+  padding: 24px 0;
+  border-top: 1px solid var(--cp-border);
+  color: var(--cp-text-muted);
+  font-size: 13.5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 1080px) {
+  .app-shell { grid-template-columns: 1fr; padding: 18px; gap: 20px; }
+  .sidebar { position: static; max-height: none; }
+  .grid-2, .info-pair { grid-template-columns: 1fr; }
+  .spacious-card, .hero-card { padding: 22px; }
+}
+@media print {
+  .topbar, .sidebar, .filter-toolbar, .subnav-bar { display: none !important; }
+  .app-shell { display: block; padding: 0; }
+  .view-panel { display: block !important; margin-bottom: 32px; }
+  body { background: var(--cp-surface); font-size: 13px; }
+}
+</style></head>
+<body>
+<header class="topbar">
+  <div class="topbar-group">
+    <a class="btn btn-primary" href="../index.html">← Portal Maestro (23 Módulos)</a>
+    <a class="btn" id="prevModBtn" href="#">Anterior</a>
+    <select class="select-input" id="modJumpSelect" aria-label="Cambiar de módulo"></select>
+    <a class="btn" id="nextModBtn" href="#">Siguiente</a>
+  </div>
+  <div class="topbar-group">
+    <a class="btn" id="xlsxLink" href="#" download>Libro .XLSX</a>
+    <a class="btn" id="mdLink" href="#">Guía .MD</a>
+    <button class="btn" type="button" id="exportCsvBtn">Exportar CSV</button>
+    <button class="btn" type="button" id="printBtn">Imprimir / PDF</button>
+    <button class="btn" type="button" id="themeToggleBtn">Tema Claro / Oscuro</button>
+  </div>
+</header>
+
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Navegación de la guía operativa">
+    <div class="nav-section-label">Introducción</div>
+    <button class="nav-item active" type="button" data-view="view-overview">
+      <span>Visión General y Mapa</span>
+    </button>
+
+    <div class="nav-section-label">1 · Configuración Puntual</div>
+    <button class="nav-item" type="button" data-view="view-config">
+      <span>Configuración y Validaciones</span>
+      <span class="nav-count" id="navCntConfig">0</span>
+    </button>
+
+    <div class="nav-section-label">2 · Acciones Periódicas</div>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Diaria">
+      <span>Rutinas Diarias</span>
+      <span class="nav-count" id="navCntDiaria">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Semanal">
+      <span>Rutinas Semanales</span>
+      <span class="nav-count" id="navCntSemanal">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Mensual">
+      <span>Rutinas Mensuales</span>
+      <span class="nav-count" id="navCntMensual">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="CICLOS_LARGOS">
+      <span>Trimestral · Semestral · Anual</span>
+      <span class="nav-count" id="navCntLargos">0</span>
+    </button>
+
+    <div class="nav-section-label">3 · Respuesta a Señales</div>
+    <button class="nav-item" type="button" data-view="view-adhoc">
+      <span>Playbooks Ad-Hoc (Alertas)</span>
+      <span class="nav-count" id="navCntAdhoc">0</span>
+    </button>
+
+    <div class="nav-section-label">Verificación y Gobierno</div>
+    <button class="nav-item" type="button" data-view="view-queries">
+      <span>Consultas KQL / Graph / PS</span>
+      <span class="nav-count" id="navCntQueries">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-kpis">
+      <span>KPIs, Madurez y Formación</span>
+      <span class="nav-count" id="navCntKpis">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-nist">
+      <span>Auditoría NIST 2.0 y Fuentes</span>
+      <span class="nav-count" id="navCntNist">0</span>
+    </button>
+
+    <div class="sidebar-progress" id="sidebarProgress"></div>
+  </aside>
+
+  <main class="main-area">
+    <!-- VISTA 0: OVERVIEW & MAPA DE LOS 3 MODOS -->
+    <section class="view-panel active" id="view-overview">
+      <div class="hero-card">
+        <div class="pill-row" id="heroBadges"></div>
+        <h1 id="heroTitle"></h1>
+        <p class="hero-lead" id="heroSummary"></p>
+      </div>
+
+      <h2 class="subsection-heading" style="margin-top:0;">Cómo operar esta tecnología: Los 3 Niveles de Acción</h2>
+      <div class="modes-grid" id="modesSummaryGrid"></div>
+
+      <div class="spacious-card" id="licensingOverviewCard"></div>
+
+      <h2 class="subsection-heading">Principios Rectores Oficiales (Zero Trust)</h2>
+      <div class="grid-2" id="principlesGrid"></div>
+    </section>
+
+    <!-- VISTA 1: ACCIONES PUNTUALES DE CONFIGURACIÓN Y VALIDACIONES -->
+    <section class="view-panel" id="view-config">
+      <div class="section-banner">
+        <h2>1. Acciones Puntuales de Configuración y Validaciones sobre la Plataforma</h2>
+        <p>Controles que se ejecutan al desplegar la tecnología, activar nuevas capacidades o auditar su línea base. Distingue qué debes configurar una sola vez y cómo validar técnicamente ("Proof of Life") que cada ajuste está activo y protegiendo el entorno.</p>
+      </div>
+
+      <div class="subnav-bar" id="configSubnav">
+        <a class="subnav-pill" href="#cfg-prereqs">1A. Puesta en Marcha Inicial</a>
+        <a class="subnav-pill" href="#cfg-validations">1B. Validaciones de Configuración ("Proof of Life")</a>
+        <a class="subnav-pill" href="#cfg-components">1C. Configuración por Componente</a>
+        <a class="subnav-pill" href="#cfg-rbac">1D. Privilegio Mínimo RBAC y PIM</a>
+      </div>
+
+      <h3 class="subsection-heading" id="cfg-prereqs">1A. Checklist de Puesta en Marcha y Prerrequisitos Puntuales</h3>
+      <div id="prereqsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-validations">1B. Validaciones Técnicas sobre las Configuraciones ("Proof of Life")</h3>
+      <p class="muted" style="margin-top:-8px;margin-bottom:20px;">Comprueba cada uno de estos indicadores en consola o mediante consulta para confirmar que la configuración no quedó solo en papel o en modo auditoría incompleta.</p>
+      <div id="validationsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-components">1C. Configuración Base por Componente e Integraciones</h3>
+      <div id="componentsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-rbac">1D. Configuración Puntual de Roles Administrativos y Estrategia PIM / JIT</h3>
+      <div id="rbacContainer"></div>
+    </section>
+
+    <!-- VISTA 2: ACCIONES PERIÓDICAS PROGRAMADAS -->
+    <section class="view-panel" id="view-periodic">
+      <div class="section-banner">
+        <h2 id="periodicTitle">2. Acciones Periódicas Programadas</h2>
+        <p id="periodicSubtitle">Rutinas recurrentes preventivas, de higiene operativa, tuning y gobierno. Selecciona la frecuencia deseada para leer cómodamente solo las actividades de ese ciclo.</p>
+      </div>
+
+      <div class="subnav-bar" id="periodicCadBar">
+        <button class="subnav-pill active" type="button" data-pcad="Diaria">Diarias</button>
+        <button class="subnav-pill" type="button" data-pcad="Semanal">Semanales</button>
+        <button class="subnav-pill" type="button" data-pcad="Mensual">Mensuales</button>
+        <button class="subnav-pill" type="button" data-pcad="CICLOS_LARGOS">Trimestrales · Semestrales · Anuales</button>
+        <button class="subnav-pill" type="button" data-pcad="ALL_PERIODIC">Ver Todas las Periódicas</button>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="perSearch" placeholder="Buscar acción periódica, consola, tabla KQL, control a validar o rol...">
+        <select class="select-input" id="perRole"><option value="ALL">Rol Responsable: Todos</option></select>
+        <select class="select-input" id="perOrigin">
+          <option value="ALL">Origen: Todos</option>
+          <option value="Verificado MS Learn">Verificado MS Learn</option>
+          <option value="Propuesta Editorial">Propuesta Editorial</option>
+        </select>
+        <button class="btn btn-sm" type="button" id="resetChecksBtn">Reiniciar Progreso</button>
+      </div>
+
+      <p class="muted" id="perCountLabel" style="margin-bottom:18px;"></p>
+      <div id="periodicCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 3: ACCIONES AD-HOC ANTE SEÑALES, ALERTAS E INCIDENTES -->
+    <section class="view-panel" id="view-adhoc">
+      <div class="section-banner">
+        <h2>3. Acciones Ad-Hoc ante Señales, Alertas e Incidentes (Playbooks del Analista)</h2>
+        <p>Procedimientos reactivos bajo demanda. A diferencia de las rutinas periódicas, estos playbooks se activan únicamente cuando una señal de riesgo, alerta de detección, anomalía o emergencia exige la intervención inmediata de un analista.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="adhocSearch" placeholder="Filtrar playbooks por alerta disparadora, síntoma, técnica MITRE o acción de contención...">
+      </div>
+
+      <div id="adhocCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 4: CONSULTAS KQL / GRAPH / POWERSHELL -->
+    <section class="view-panel" id="view-queries">
+      <div class="section-banner">
+        <h2>4. Consultas Técnicas de Validación, Monitoreo y Threat Hunting</h2>
+        <p>Consultas KQL, llamadas Microsoft Graph API y scripts PowerShell listos para auditar configuraciones puntuales, medir salud periódica o investigar alertas ad-hoc.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="kqlSearch" placeholder="Buscar consulta por nombre, tabla (SigninLogs, DeviceEvents, SentinelHealth...), comando o propósito...">
+        <select class="select-input" id="kqlUsageFilter">
+          <option value="ALL">Momento de Uso: Todos</option>
+          <option value="Validación de Configuración y Postura">1. Validación de Configuración y Postura</option>
+          <option value="Control Periódico de Salud, Auditoría y KPIs">2. Control Periódico de Salud y KPIs</option>
+          <option value="Investigación Ad-Hoc y Threat Hunting">3. Investigación Ad-Hoc y Hunting</option>
+        </select>
+      </div>
+
+      <div id="queriesContainer"></div>
+    </section>
+
+    <!-- VISTA 5: KPIs, MADUREZ Y FORMACIÓN -->
+    <section class="view-panel" id="view-kpis">
+      <div class="section-banner">
+        <h2>5. Indicadores Clave (KPIs), Modelo de Madurez y Ruta de Formación</h2>
+        <p>Métricas objetivas para medir eficacia operativa ante el CISO, evolución en 5 niveles de madurez y habilitación técnica recomendada por rol.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Indicadores Clave de Desempeño (KPIs)</h3>
+      <div class="grid-2" id="kpiContainer"></div>
+
+      <h3 class="subsection-heading">Modelo de Madurez Operacional (Niveles 1 a 5)</h3>
+      <div id="maturityContainer"></div>
+
+      <h3 class="subsection-heading">Ruta de Habilitación y Formación por Rol</h3>
+      <div id="trainingContainer"></div>
+    </section>
+
+    <!-- VISTA 6: AUDITORÍA NIST CSF 2.0, TRANSPARENCIA Y REFERENCIAS -->
+    <section class="view-panel" id="view-nist">
+      <div class="section-banner">
+        <h2>6. Mapeo de Auditoría NIST CSF 2.0, Revalidación (Nov 2026) y Referencias</h2>
+        <p>Evidencia auditable reproducible para las seis funciones de NIST CSF 2.0 (CSWP 29), registro transparente de verificaciones en Microsoft Learn frente a propuestas editoriales y fuentes públicas.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Matriz de Evidencia Auditable NIST CSF 2.0</h3>
+      <div class="filter-toolbar">
+        <select class="select-input" id="nistFuncSelect">
+          <option value="ALL">Función NIST CSF 2.0: Todas (6 Funciones)</option>
+          <option value="GOVERN">GOVERN (GV)</option>
+          <option value="IDENTIFY">IDENTIFY (ID)</option>
+          <option value="PROTECT">PROTECT (PR)</option>
+          <option value="DETECT">DETECT (DE)</option>
+          <option value="RESPOND">RESPOND (RS)</option>
+          <option value="RECOVER">RECOVER (RC)</option>
+        </select>
+      </div>
+      <div id="nistCardsContainer"></div>
+
+      <h3 class="subsection-heading">Registro de Revalidación Técnica (Noviembre 2026) y Decisiones Editoriales</h3>
+      <div class="spacious-card" id="auditSummaryBox"></div>
+      <div class="grid-2">
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Hallazgos y Actualizaciones Verificadas en MS Learn</h3>
+          <div id="corrContainer"></div>
+        </div>
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Decisiones y Propuestas Editoriales Explícitas</h3>
+          <div id="decContainer"></div>
+        </div>
+      </div>
+
+      <h3 class="subsection-heading">Directorio de Referencias Públicas Verificadas</h3>
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="refSearch" placeholder="Filtrar referencias por título, autor, MVP o URL...">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Recurso Oficial / Comunitario</th>
+              <th>Tipo</th>
+              <th>Autor / Entidad</th>
+              <th>Comentario de Alcance</th>
+            </tr>
+          </thead>
+          <tbody id="refTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>Guía Maestra de Excelencia Operacional Microsoft — Edición Espaciada v3.0 (Validación: 2026-11-11)</div>
+      <div>Configuración Puntual · Rutinas Periódicas · Playbooks Ad-Hoc · NIST CSF 2.0</div>
+    </footer>
+  </main>
+</div>
+
+<script>
+const MODULE_DATA = {"schemaVersion": "2.0", "id": "00_Marco_Maestro_CISO_SOC_y_NIST", "orden": 0, "slug": "Marco_Maestro_CISO_SOC_y_NIST", "nombre": "Marco Maestro de Excelencia Operacional para la Oficina del CISO, SOC Moderno y Gobierno NIST CSF 2.0", "nombreCorto": "Marco Maestro CISO, SOC y NIST", "categoria": "Marco Transversal CISO, SOC y NIST", "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn", "fechaValidacion": "2026-11-11", "portalesPrincipales": ["https://security.microsoft.com", "https://entra.microsoft.com", "https://purview.microsoft.com", "https://intune.microsoft.com", "https://portal.azure.com"], "audiencia": ["CISO", "Oficina del CISO", "Consejo de Administración (Board)", "Cybersecurity Architect", "SOC Manager", "SOC L1 / L2 / L3", "GRC & Risk Manager", "Identity & Endpoint Leads", "Data Security & Purview Lead", "FinOps & MSSP Governance Lead"], "relacionM365E5": {"estado": "Asociado a M365 E5 (Marco Arquitectónico y de Gobierno Transversal sobre M365 E5 / E7 y Azure)", "licencias": ["Microsoft 365 E5 (suite base integral de productividad, identidad P2, seguridad Defender XDR, endpoints Intune P1/Windows E5 y Purview Suite)", "Microsoft Defender Suite (antes Microsoft 365 E5 Security: incluye Entra ID P2, MDE P2, MDO P2, MDI, MDCA y elegibilidad al Data Grant de Sentinel)", "Microsoft Purview Suite (antes Microsoft 365 E5 Compliance: incluye MIP, DLP, DLM/Records, IRM, Communication Compliance, Audit Premium, eDiscovery Premium y Lockbox/Key/PAM; NO incluye Entra ID P2)", "Complementos especializados: Microsoft Entra Suite (SSE + ID Governance completo), Microsoft Intune Suite (EPM, Remote Help, Cloud PKI), Microsoft Sentinel (consumo Azure + Data Grant E5 de hasta 5 MB/usuario/día) y Microsoft Security Copilot (SCUs base limitadas en E5/E7 + SCUs Azure)", "Microsoft 365 E7: The Frontier Suite (disponible desde el 1 de mayo de 2026: consolida M365 E5 + M365 Copilot + Microsoft Entra Suite + Microsoft Agent 365)"], "prerrequisitos": ["Gobierno formal de la función GOVERN de NIST CSF 2.0 retenido al 100% internamente por la Oficina del CISO y Comité Directivo", "Atributo UsageLocation configurado en Microsoft Entra ID para correcta asignación de planes de servicio M365 E5/E7 y suites modulares", "Incorporación del workspace primario de Microsoft Sentinel al portal unificado Microsoft Defender (https://security.microsoft.com) antes del retiro de Azure Portal tras el 31 de marzo de 2027", "Despliegue de Privileged Identity Management (PIM), al menos dos cuentas Break-Glass cloud-only protegidas con FIDO2 o CBA y segregación RBAC multi-portal", "Activación de Microsoft Purview Audit (Premium) y Compliance Manager para generación continua de evidencia auditable frente a las 22 categorías de NIST CSF 2.0"], "notaLicenciamiento": "Este módulo transversal gobierna la arquitectura contractual completa de los 22 módulos tecnológicos (01 a 22). A noviembre de 2026, Microsoft renombró Microsoft 365 E5 Security como Microsoft Defender Suite y Microsoft 365 E5 Compliance como Microsoft Purview Suite (aclaración crítica de auditoría: Purview Suite no otorga Microsoft Entra ID P2). Microsoft Sentinel se factura por consumo/Commitment Tiers en Azure (Analytics Tier y Sentinel Data Lake integrado desde el 23 de septiembre de 2026), pero recibe hasta 5 MB/usuario/día gratuitos con M365 E5/E7 o Defender Suite. Finalmente, para gobernar y asegurar agentes autónomos a escala empresarial, Microsoft introdujo el 1 de mayo de 2026 Microsoft Agent 365 (disponible como add-on sobre E5 o incluido en Microsoft 365 E7: The Frontier Suite)."}, "resumenEjecutivo": "El Marco Maestro de Excelencia Operacional establece la constitución ejecutiva, arquitectónica y operativa para la Oficina del CISO y el SOC moderno sobre el ecosistema Microsoft a noviembre de 2026. Articula el triple pivote del CISO: de operador reactivo de controles a gobernador fiduciario del riesgo empresarial bajo la función transversal GOVERN de NIST CSF 2.0 (CSWP 29: 6 funciones, 22 categorías y 106 subcategorías); de herramientas fragmentadas a la Unified SecOps Platform en security.microsoft.com (convergiendo Defender XDR, Sentinel con Data Lake integrado, Exposure Management CTEM, Purview Adaptive Protection y Entra ITDR); y de triaje manual exhaustivo a un SOC Agéntico sostenible gobernado mediante tres modos de orquestación Humano-IA (Human-IN, Human-ON y Human-OUT-of-the-Loop con Automatic Attack Disruption, Security Copilot y Microsoft Agent 365), SLAs basados en resultados para socios MSSP y métricas diferenciadas en tres altitudes para el SOC, el C-Suite y el Consejo de Administración.", "principiosRectores": [{"principio": "Gobierno fiduciario indelegable centrado en NIST CSF 2.0 GOVERN", "descripcion": "Retener al 100% dentro de la organización el contexto regulatorio (GV.OC), el apetito de riesgo cuantificado (GV.RM), la autoridad RACI (GV.RR), las políticas (GV.PO), la supervisión ante el Board (GV.OV) y el gobierno contractual del MSSP (GV.SC), ejecutando evaluaciones anuales bajo el patrón SFI de Microsoft.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/security/zero-trust/sfi/integrate-nist-2-governance"}, {"principio": "Plataformización Zero Trust sobre fragmentación multi-consola (SAF y MCRA Junio 2026)", "descripcion": "Consolidar la visibilidad, prevención y respuesta sobre Microsoft Security Adoption Framework (SAF) y MCRA para reducir la carga cognitiva del analista y correlacionar nativamente más de 100 billones de señales diarias entre identidad, endpoints, datos, apps, red e IA.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/security/adoption/adoption"}, {"principio": "Mínimo privilegio universal y acceso Just-In-Time (Zero Standing Privileges)", "descripcion": "Erradicar permisos administrativos permanentes en Entra, Defender URBAC, Azure, Intune y Purview mediante PIM JIT, MFA resistente a phishing (Passkeys FIDO2/WHfB/CBA), Endpoint Privilege Management y menos de 5 Global Administrators elegibles.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/entra/architecture/security-operations-privileged-accounts"}, {"principio": "Orquestación calibrada Humano-IA y contención a velocidad de máquina", "descripcion": "Combinar Automatic Attack Disruption (>=99% SNR en modo Human-OUT-of-the-Loop) con agentes supervisados de Security Copilot y Microsoft Agent 365 (Human-ON-the-Loop), reservando validación humana paso a paso (Human-IN-the-Loop) para decisiones críticas de negocio.", "estadoValidacion": "Propuesta Editorial", "fuenteUrl": "https://learn.microsoft.com/en-us/defender-xdr/automatic-attack-disruption"}, {"principio": "Co-gestión estratégica con MSSP regida por SLAs de resultados (Outcomes)", "descripcion": "Estructurar el SOC híbrido en tres zonas (núcleo interno estratégico, zona co-gestionada y ejecución 24x7 MSSP), exigiendo por contrato precisión de escalamiento y tiempos reales de contención auditados directamente en el tenant del cliente.", "estadoValidacion": "Propuesta Editorial", "fuenteUrl": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide"}, {"principio": "Sostenibilidad del talento humano, cultura Kaizen y métricas en tres altitudes", "descripcion": "Prevenir el burnout manteniendo una holgura mínima del 15% en capacidad analítica y 20% de tiempo protegido para upskilling, traduciendo el valor de seguridad en tres altitudes: táctica (SOC), de negocio (C-Level) y fiduciaria/FAIR (Board).", "estadoValidacion": "Propuesta Editorial", "fuenteUrl": "https://learn.microsoft.com/en-us/security/zero-trust/workshop-business-security-leaders"}], "arquitecturaYComponentes": [{"componente": "Unified SecOps Platform en Microsoft Defender Portal", "funcionOperativa": "Superficie operativa convergente de cola única de incidentes, correlación XDR+SIEM, Case Management, Advanced Hunting y transición obligatoria de Sentinel antes del 31 de marzo de 2027.", "portalRuta": "https://security.microsoft.com > Investigation & response / Microsoft Sentinel", "integraciones": ["Microsoft Defender XDR (MDE, MDO, MDI, MDCA)", "Microsoft Sentinel & Sentinel Data Lake", "Microsoft Security Copilot"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Microsoft Security Exposure Management (MSEM)", "funcionOperativa": "Motor nativo CTEM que descubre activos multi-nube, clasifica joyas de la corona, modela rutas de ataque (Attack Paths), identifica cuellos de botella (Chokepoints) y mide iniciativas Zero Trust.", "portalRuta": "https://security.microsoft.com > Exposure management > Exposure insights", "integraciones": ["Defender Vulnerability Management", "Microsoft Entra ID", "Microsoft Defender for Cloud"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Plano de Control de Identidad, Red y Agentes (Microsoft Entra)", "funcionOperativa": "Autenticación resistente a phishing, Conditional Access adaptativo (Token Protection, CAE estricto), Identity Protection (ITDR), PIM JIT, Global Secure Access y Microsoft Entra Agent ID.", "portalRuta": "https://entra.microsoft.com > Identity / Protection / Identity governance / Agent ID", "integraciones": ["Microsoft Defender XDR (EntraIdSignInEvents)", "Microsoft Intune Compliance", "Microsoft Agent 365"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Microsoft Sentinel Data Lake, Graph y Automatización SOAR", "funcionOperativa": "Almacenamiento integrado de escala petabyte (desde sep-2026) con compresión 6:1 y hasta 12 años de retención, normalización ASIM, Sentinel Graph y playbooks Logic Apps con Managed Identity.", "portalRuta": "https://security.microsoft.com > Microsoft Sentinel > Configuration / Data management", "integraciones": ["Azure Monitor Logs Ingestion API & DCR", "Microsoft Fabric OneLake", "Azure Logic Apps"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Capa de IA Generativa y Gobierno Agéntico (Security Copilot + Agent 365)", "funcionOperativa": "Asistencia embebida, agentes autónomos supervisados vía MCP y registro/protección unificada de agentes empresariales bajo Microsoft Agent 365 y Microsoft 365 E7.", "portalRuta": "https://security.microsoft.com / https://securitycopilot.microsoft.com / https://admin.microsoft.com > Agents", "integraciones": ["Microsoft Entra Agent ID", "Microsoft Purview DSPM for AI", "Microsoft Defender XDR & Intune"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Gestión Unificada y Seguridad de Endpoints (Intune + Windows Enterprise E5)", "funcionOperativa": "Cumplimiento continuo de dispositivos, baselines de endurecimiento, cifrado BitLocker, Windows LAPS, Windows Hello for Business y Endpoint Privilege Management (Intune Suite).", "portalRuta": "https://intune.microsoft.com > Devices / Endpoint security", "integraciones": ["Microsoft Entra Conditional Access", "Microsoft Defender for Endpoint", "Microsoft Security Copilot"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Seguridad de Datos, Riesgo Interno y Gobierno Regulatorio (Microsoft Purview)", "funcionOperativa": "Clasificación y cifrado MIP, prevención de fuga DLP unificada, Insider Risk Adaptive Protection, retención inmutable DLM, Audit Premium, eDiscovery Premium y Compliance Manager.", "portalRuta": "https://purview.microsoft.com > Solutions > Information Protection / DLP / Insider Risk / Compliance Manager", "integraciones": ["Microsoft Defender XDR Incidents", "Microsoft Entra Conditional Access (Adaptive Protection)", "Microsoft 365 Copilot & Agent 365"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Arquitectura de Supervisión Co-Gestionada (Azure Lighthouse, URBAC y Workbooks)", "funcionOperativa": "Delegación granular de lectura/respuesta hacia socios MSSP sin ceder gobierno del tenant y tableros ejecutivos multi-audiencia en Workbooks y Power BI.", "portalRuta": "https://portal.azure.com > My customers (Lighthouse) / https://security.microsoft.com > Permissions", "integraciones": ["Microsoft Defender Unified RBAC", "Microsoft Sentinel Workbooks", "Power BI"], "estadoValidacion": "Verificado MS Learn"}], "rbacYRoles": [{"rol": "CISO / Líder de Oficina del CISO (Security Reader / Reports Reader)", "nivelSOC": "Ejecutivo / Gobierno Fiduciario (GV)", "permisosClave": "Lectura transversal de postura en Exposure Management, Secure Score, Purview Compliance Manager y dashboards ejecutivos sin permisos de modificación técnica.", "asignacionPIM": "Activa de solo lectura protegida con MFA resistente a phishing; prohibición expresa de Global Administrator operativo.", "responsabilidadOperativa": "Presidir el Comité de Ciberseguridad, proponer el apetito de riesgo al Board, gobernar la estrategia SAF y supervisar el desempeño del programa.", "estadoValidacion": "Propuesta Editorial"}, {"rol": "Enterprise Cybersecurity Architect (Security Reader + Conditional Access Admin elegible)", "nivelSOC": "Estratégico / Diseño Zero Trust (ID / PR)", "permisosClave": "Análisis de rutas de ataque en MSEM, diseño de políticas Zero Trust alineadas a MCRA y validación técnica en comité de cambios (CAB).", "asignacionPIM": "Eligible en PIM (máximo 4 horas, justificación con ticket CAB aprobado y MFA FIDO2/WHfB).", "responsabilidadOperativa": "Mantener la arquitectura de referencia, priorizar Chokepoints en Exposure Management y auditar deriva de políticas.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "GRC, Cyber Risk & Audit Lead (Compliance Administrator elegible + View-Only Audit Logs)", "nivelSOC": "Gobierno, Riesgo y Auditoría (GV / ID)", "permisosClave": "Gestión de evaluaciones NIST CSF 2.0 / ISO 27001 en Purview Compliance Manager, lectura inmutable de logs de auditoría y revisión de Access Reviews.", "asignacionPIM": "Lectura activa permanente; escritura en Compliance Manager vía PIM Eligible (máximo 8 horas).", "responsabilidadOperativa": "Mantener el Risk Register (Open FAIR), liderar la evaluación anual NIST CSF 2.0 y auditar SLAs contractuales del MSSP.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "SOC Manager / CSIRT Lead (Defender URBAC SOC Lead + Sentinel Responder)", "nivelSOC": "Dirección Operativa SecOps (DE / RS)", "permisosClave": "Administración de cola unificada de incidentes, aprobación de acciones en Action Center, autorización de Live Response y declaración formal de incidentes P1.", "asignacionPIM": "Eligible en PIM por turno operativo de 8 horas con MFA resistente a phishing.", "responsabilidadOperativa": "Comandar la operación diaria del SOC híbrido, liderar crisis mayores (Incident Commander) y asegurar cumplimiento de MTTA/MTTC.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "SOC Analysts L1 / L2 y Analistas MSSP (Defender URBAC Scoped + Sentinel Responder)", "nivelSOC": "Monitoreo y Respuesta Táctica 24x7 (DE / RS)", "permisosClave": "Investigación y clasificación de incidentes, uso supervisado de Security Copilot y contención táctica pre-aprobada sin poder borrar reglas ni conectores.", "asignacionPIM": "PIM for Groups por turno de 8 horas; para MSSP, delegación vía Azure Lighthouse con alcance restringido.", "responsabilidadOperativa": "Ejecutar triaje continuo 24x7, enriquecimiento contextual, contención inicial y escalamiento preciso en <=15 minutos para incidentes críticos.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "SOC L3 / Detection Engineer & Threat Hunter (Sentinel Contributor + Custom Detections)", "nivelSOC": "Caza Avanzada e Ingeniería (DE / ID.IM)", "permisosClave": "Creación de reglas analíticas KQL/ASIM, Custom Detection Rules, campañas Hunts, Live Response avanzado y playbooks en Azure Logic Apps.", "asignacionPIM": "Eligible en PIM (4 a 8 horas con justificación y MFA resistente a phishing); despliegues vía CI/CD revisado por pares.", "responsabilidadOperativa": "Ejecutar caza proactiva por hipótesis, afinar falsos positivos, operar SOC Optimization y liderar ejercicios Purple Team.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Domain Platform Leads (Authentication Policy, Conditional Access, Intune & Purview Admins)", "nivelSOC": "Ingeniería Preventiva por Dominio (PR / RC)", "permisosClave": "Configuración especializada en Entra ID, Intune o Purview según segregación estricta de dominios, sin acumular privilegios cruzados.", "asignacionPIM": "100% Eligible en PIM (máximo 4 horas; Privileged Role Administrator exige aprobación dual y Authentication Context FIDO2).", "responsabilidadOperativa": "Implementar baselines seguras, Passkeys, Token Protection, cifrado MIP/BitLocker y políticas DLP aprobadas.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "AI & Agent Governance Lead (Agent ID Administrator + Security Copilot Contributor)", "nivelSOC": "Gobierno de Agentes IA y SCUs (GV / PR)", "permisosClave": "Administración de Agent Identity Blueprints, patrocinio en Microsoft Agent 365, Conditional Access para agentes y monitoreo de cuotas SCU.", "asignacionPIM": "Eligible en PIM (máximo 4 horas con MFA resistente a phishing y ticket de aprobación).", "responsabilidadOperativa": "Gobernar el registro unificado de agentes IA, auditar agentes en riesgo y prevenir Shadow AI o sobrecostos de cómputo generativo.", "estadoValidacion": "Verificado MS Learn"}], "actividadesOperacionales": [{"codigo": "D-01", "cadencia": "Diaria", "actividad": "Supervisión matutina de cola unificada de incidentes críticos y traspaso 24x7 (SIEM + XDR)", "objetivo": "Asegurar visibilidad táctica sobre todo incidente Critical o High abierto, validando MTTA <= 15 minutos y calidad del traspaso nocturno o del MSSP.", "consolaRuta": "https://security.microsoft.com > Investigation & response > Incidents & alerts > Incidents", "procedimiento": ["Filtrar la cola unificada por Severity: Critical, High y Status: New, In progress ordenando por antigüedad.", "Verificar que el 100% de los incidentes tengan propietario nominal asignado y tareas activas en Case Management.", "Contrastar el resumen ejecutivo de Security Copilot con la evidencia técnica del grafo de ataque.", "Escalar de inmediato al CSIRT Lead cualquier afectación sobre activos Crown Jewels o cuentas privilegiadas."], "rolResponsable": "SOC Manager / SOC L2 Lead", "funcionNIST": "RS", "subcategoriaNIST": "RS.MA-02", "mitreTactic": "Multi-Tactic (All Enterprise Tactics)", "evidenciaAuditable": "Exportación diaria o snapshot en Workbook de SecurityIncident sin casos críticos huérfanos > 15 min.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Ruta de cola unificada verificada en Microsoft Learn; umbral MTTA <= 15 min es criterio editorial.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/investigate-incidents", "pasosDetallados": ["Aplicar filtro `Severity: Critical, High` y `Status: New, In progress`, ordenando de más antiguo a más reciente `[Verificado MS Learn]`.", "Verificar que el 100% de los incidentes tengan propietario nominal asignado, etiquetas de contexto y lista de tareas activa en *Case Management* `[Verificado MS Learn]`.", "Revisar el resumen ejecutivo generado por **Microsoft Security Copilot** en cada incidente mayor y contrastarlo con las evidencias crudas del grafo de ataque `[Verificado MS Learn]`.", "Escalar de inmediato al CSIRT Lead cualquier incidente con afectación sobre activos etiquetados como *Crown Jewels* o cuentas privilegiadas `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Asegurar visibilidad táctica sobre todo incidente Critical o High abierto, validando MTTA <= 15 minutos y calidad del traspaso nocturno o del MSSP.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-02", "cadencia": "Diaria", "actividad": "Auditoría Human-ON-the-Loop del Action Center y Automatic Attack Disruption", "objetivo": "Supervisar todas las contenciones autónomas ejecutadas a velocidad de máquina en las últimas 24 horas y resolver acciones pendientes.", "consolaRuta": "https://security.microsoft.com > Investigation & response > Actions & submissions > Action center", "procedimiento": ["Revisar todos los incidentes etiquetados con Attack Disruption en las últimas 24 horas.", "Auditar en Action center > History las contenciones automáticas ejecutadas sobre dispositivos, IPs, apps OAuth y usuarios en Entra/AD.", "Aprobar o rechazar en menos de 2 horas las remediaciones pendientes en la pestaña Pending.", "Confirmar erradicación forense completa antes de autorizar cualquier reversión o liberación de activos contenidos."], "rolResponsable": "SOC L2 / SOC L3", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Lateral Movement / Impact", "evidenciaAuditable": "Bitácora exportada del Action Center con usuario revisor, activo contenido y marca temporal.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Capacidades y flujo del Action Center y Attack Disruption verificados en Microsoft Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/automatic-attack-disruption", "pasosDetallados": ["Inspeccionar en `Incidents` todos los expedientes marcados con el banner amarillo y etiqueta **`Attack Disruption`** `[Verificado MS Learn]`.", "Verificar en `Action center > History` el alcance de las acciones automáticas ejecutadas (`Contain device`, `Isolate device`, `Contain user`, `Disable user` en AD/Entra, `Revoke user session`, `OAuth app compromise`) `[Verificado MS Learn]`.", "Aprobar o rechazar en menos de 2 horas las remediaciones pendientes en `Action center > Pending` originadas por investigaciones automatizadas (`AIR`) o agentes supervisados `[Decisión / Propuesta Editorial]`.", "Confirmar que ningún activo contenido sea liberado (*Undo*) sin haber completado previamente la erradicación forense de persistencia `[Verificado MS Learn]`."], "disparadorAlerta": "Supervisar todas las contenciones autónomas ejecutadas a velocidad de máquina en las últimas 24 horas y resolver acciones pendientes.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-03", "cadencia": "Diaria", "actividad": "Verificación diaria de salud de conectores, telemetría XDR y consumo en Sentinel", "objetivo": "Prevenir puntos ciegos de visibilidad entre Entra ID, Defender XDR, Purview, nubes externas y Microsoft Sentinel.", "consolaRuta": "https://security.microsoft.com > Microsoft Sentinel > Configuration > Data connectors", "procedimiento": ["Consultar SentinelHealth buscando errores de ingesta o fallos de autenticación en conectores CCF, AMA/DCR y API.", "Validar recepción continua de eventos en EntraIdSignInEvents, DeviceProcessEvents, EmailEvents, IdentityLogonEvents y OfficeActivity.", "Verificar salud operativa de sensores de Defender for Identity en controladores de dominio.", "Contrastar el volumen diario en GB con la línea base presupuestaria y el beneficio Microsoft 365 E5 Data Grant."], "rolResponsable": "Platform / SIEM Engineer", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-01", "mitreTactic": "Defense Evasion", "evidenciaAuditable": "Resultado diario de consulta KQL sobre SentinelHealth y tabla Usage archivado en Workbook operativo.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tablas SentinelHealth, Usage y EntraIdSignInEvents verificadas en documentación oficial.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/monitor-data-connector-health", "pasosDetallados": ["Consultar la tabla `SentinelHealth` filtrando `Status != \"Success\"` en las últimas 24 horas para detectar fallos de autenticación o API en conectores CCF, AMA/DCR o multicloud `[Verificado MS Learn]`.", "Verificar latencia y flujo continuo en tablas críticas (`EntraIdSignInEvents`, `DeviceProcessEvents`, `EmailEvents`, `IdentityLogonEvents`, `OfficeActivity`) y salud de sensores de **Defender for Identity** `[Verificado MS Learn]`.", "Validar la ingesta diaria acumulada en GB frente a la línea base presupuestada y la absorción del **M365 E5 Data Grant** `[Verificado MS Learn]`."], "disparadorAlerta": "Prevenir puntos ciegos de visibilidad entre Entra ID, Defender XDR, Purview, nubes externas y Microsoft Sentinel.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-04", "cadencia": "Diaria", "actividad": "Vigilancia de cuentas Break-Glass y elevaciones privilegiadas críticas", "objetivo": "Garantizar ausencia absoluta de uso no autorizado de cuentas de emergencia y auditar toda activación administrativa Tier-0.", "consolaRuta": "https://entra.microsoft.com > Identity > Monitoring & health > Audit logs / PIM Resource audit", "procedimiento": ["Confirmar cero eventos no autorizados en la regla de alerta crítica Severidad 0 sobre los ObjectId de las cuentas Break-Glass.", "Revisar en PIM todas las activaciones de Global Administrator, Privileged Role Administrator y Security Administrator del último día.", "Correlacionar cada elevación con su ticket aprobado de cambio o incidente y verificar horario/ubicación.", "Investigar como incidente inmediato cualquier evento Add member to role realizado fuera de MS-PIM."], "rolResponsable": "SOC L2 + Identity Security Analyst", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Privilege Escalation / Persistence", "evidenciaAuditable": "Registro diario conciliado de AuditLogs y estado limpio de alertas de emergencia.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Monitoreo Severidad 0 sobre cuentas Break-Glass y auditoría PIM verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-emergency-access", "pasosDetallados": ["Verificar que las cuentas **Break-Glass** (`*.onmicrosoft.com`) registren cero inicios de sesión o intentos fallidos no programados `[Verificado MS Learn]`.", "Auditar en `PIM > Resource audit` todas las activaciones de roles Tier-0 (`Global Administrator`, `Privileged Role Administrator`, `Security Administrator`, `Conditional Access Administrator`), validando justificación y correspondencia con tickets reales `[Decisión / Propuesta Editorial]`.", "Investigar como incidente potencial cualquier evento `Add member to role` ejecutado directamente fuera del flujo de `MS-PIM` o fuera de ventana horaria habitual `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Garantizar ausencia absoluta de uso no autorizado de cuentas de emergencia y auditar toda activación administrativa Tier-0.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-05", "cadencia": "Diaria", "actividad": "Triaje transversal de riesgo de usuarios, workload identities y agentes IA", "objetivo": "Contener en menos de 4 horas identidades humanas, principales de servicio y agentes autónomos en riesgo alto no auto-remediados.", "consolaRuta": "https://entra.microsoft.com > ID Protection > Risky users / Risky workload identities / Risky agents", "procedimiento": ["Filtrar identidades humanas, service principals y agentes en estado At risk con nivel High.", "Correlacionar detecciones (anomalousToken, leakedCredentials, entraDirectoryReconnaissance, suspiciousCredentialUsage) en Advanced Hunting.", "Ejecutar Confirm compromise, revocación de sesiones o Disable sobre entidades comprometidas.", "Notificar al propietario de aplicación o Sponsor humano en Microsoft Agent 365 cuando afecte identidades no humanas."], "rolResponsable": "SOC L1 / L2 (ITDR)", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-03", "mitreTactic": "Credential Access / Valid Accounts", "evidenciaAuditable": "Reporte diario de colas de riesgo con cero entidades High pendientes > 4 horas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Reportes Risky users, workload identities y Risky agents verificados en MS Learn; SLA < 4h es propuesta editorial.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-protection/concept-risky-agents", "pasosDetallados": ["Filtrar entidades con `Risk state == At risk` y `Risk level == High` que no hayan sido remediadas automáticamente por políticas de Conditional Access `[Verificado MS Learn]`.", "Investigar detecciones críticas (`anomalousToken`, `leakedCredentials`, `mcasImpossibleTravel`, `earlyLifeMaliciousActivity`, `entraDirectoryReconnaissance`, `suspiciousCredentialUsage`) cruzando con `EntraIdSignInEvents` y `EntraIdSpnSignInEvents` `[Verificado MS Learn]`.", "Ejecutar `Confirm compromise`, revocación de tokens o deshabilitación inmediata en caso de compromiso real, o `Dismiss risk` documentado tras verificación fehaciente `[Verificado MS Learn]`."], "disparadorAlerta": "Contener en menos de 4 horas identidades humanas, principales de servicio y agentes autónomos en riesgo alto no auto-remediados.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-06", "cadencia": "Diaria", "actividad": "Revisión diaria de alertas críticas de fuga de datos (Purview DLP) y riesgo interno elevado", "objetivo": "Integrar las alertas de exfiltración de datos sensibles y Adaptive Protection al flujo diario de respuesta de seguridad.", "consolaRuta": "https://purview.microsoft.com > Solutions > Data Loss Prevention > Alerts", "procedimiento": ["Revisar alertas DLP de severidad High generadas en endpoints, Exchange, SharePoint, navegadores e interacciones con IA.", "Verificar aplicación efectiva de bloqueos automáticos por Adaptive Protection sobre usuarios en nivel Elevated risk.", "Escalar exfiltraciones dolosas confirmadas al protocolo conjunto estrictamente confidencial con Legal y RRHH."], "rolResponsable": "Data Security Analyst / SOC L2 autorizado", "funcionNIST": "PR", "subcategoriaNIST": "PR.DS-10", "mitreTactic": "Collection / Exfiltration", "evidenciaAuditable": "Cola de alertas DLP High atendida dentro de SLA de 24 horas y auditada en Purview Audit.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Integración de alertas Purview DLP/Adaptive Protection verificada en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-alerts-dashboard-get-started", "pasosDetallados": ["Revisar alertas DLP de severidad `High` por carga a dominios cloud no corporativos, copiado a USB, impresión masiva o pegado de datos confidenciales en prompts de IA no autorizados `[Verificado MS Learn]`.", "Verificar que los usuarios asignados dinámicamente al nivel *Elevated risk* en **Insider Risk Management** estén recibiendo controles preventivos automáticos vía **Adaptive Protection** `[Verificado MS Learn]`.", "Escalar incidentes confirmados de exfiltración dolosa al protocolo confidencial conjunto con Legal, Privacidad y Recursos Humanos `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Integrar las alertas de exfiltración de datos sensibles y Adaptive Protection al flujo diario de respuesta de seguridad.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-07", "cadencia": "Diaria", "actividad": "Evaluación diaria de inteligencia de amenazas emergentes y vulnerabilidades CISA KEV", "objetivo": "Determinar en menos de 24 horas la exposición del entorno ante nuevas campañas adversarias o vulnerabilidades zero-day explotadas.", "consolaRuta": "https://security.microsoft.com > Threat intelligence > Threat analytics / Vulnerability management", "procedimiento": ["Revisar informes nuevos o actualizados en Threat analytics priorizando aquellos con activos internos expuestos.", "Cruzar nuevos CVEs en explotación activa (CISA KEV / EPSS alto) contra el inventario real en Defender Vulnerability Management.", "Emitir orden de parcheo fuera de banda o mitigación compensatoria (ASR/WAF/IOCs) con SLA de 24 a 48 horas."], "rolResponsable": "Threat Intelligence Analyst / SOC L3", "funcionNIST": "ID", "subcategoriaNIST": "ID.RA-02", "mitreTactic": "Initial Access / Exploitation", "evidenciaAuditable": "Bitácora diaria de boletines Threat Analytics evaluados y tickets urgentes abiertos.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Consolas Threat Analytics y Defender Vulnerability Management verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/threat-analytics", "pasosDetallados": ["Revisar los boletines de **Threat analytics** publicados en las últimas 24 horas ordenando por activos expuestos o mal configurados en el propio tenant `[Verificado MS Learn]`.", "Identificar presencia de CVEs recién añadidos a CISA KEV o con puntaje EPSS crítico sobre activos expuestos a internet o servidores Tier-0 `[Verificado MS Learn]`.", "Disparar orden de mitigación inmediata (parche fuera de banda en Intune/Azure Update Manager, regla ASR o bloqueo de indicadores) con SLA de 24 a 48 horas `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Determinar en menos de 24 horas la exposición del entorno ante nuevas campañas adversarias o vulnerabilidades zero-day explotadas.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-01", "cadencia": "Semanal", "actividad": "Comité táctico semanal de operaciones híbridas (SOC interno + MSSP) y tuning de ruido", "objetivo": "Auditar calidad investigativa, tiempos MTTA/MTTC, precisión de escalamiento del MSSP y reducir falsos positivos.", "consolaRuta": "https://security.microsoft.com > Microsoft Sentinel > Threat management > Workbooks", "procedimiento": ["Revisar métricas semanales de MTTA, MTTC y proporción de cierres TP, BP y FP por severidad.", "Auditar una muestra aleatoria del 10% de incidentes cerrados por el MSSP verificando adherencia a runbooks.", "Seleccionar las 5 reglas analíticas o políticas más ruidosas de la semana para ajuste por Ingeniería de Detección."], "rolResponsable": "SOC Manager + MSSP Delivery Lead + Detection Lead", "funcionNIST": "GV", "subcategoriaNIST": "GV.SC-07", "mitreTactic": "Defense Evasion", "evidenciaAuditable": "Minuta semanal firmada y registro de reglas ajustadas en repositorio de código.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Práctica recomendada de supervisión operativa sobre Workbook oficial Security Operations Efficiency.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide", "pasosDetallados": ["Analizar las métricas semanales de MTTA, MTTC, volumen de alertas a incidentes y porcentaje de cierres por `FalsePositive` y `BenignPositive` `[Verificado MS Learn]`.", "Revisar muestra aleatoria del 10% de incidentes cerrados por el MSSP para auditar calidad investigativa y adherencia a runbooks aprobados `[Decisión / Propuesta Editorial]`.", "Seleccionar las 5 reglas o políticas más ruidosas de la semana e ingresarlas al backlog semanal de ajuste (*tuning*) sin degradar cobertura real `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Auditar calidad investigativa, tiempos MTTA/MTTC, precisión de escalamiento del MSSP y reducir falsos positivos.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-02", "cadencia": "Semanal", "actividad": "Gestión semanal de rutas de ataque críticas y Chokepoints en Exposure Management", "objetivo": "Romper proactivamente caminos de ataque hacia activos críticos priorizando nodos cuello de botella.", "consolaRuta": "https://security.microsoft.com > Exposure management > Exposure insights > Attack paths / Chokepoints", "procedimiento": ["Revisar rutas de ataque activas que alcanzan activos clasificados como Crown Jewels.", "Priorizar remediación sobre los Chokepoints con mayor impacto agregado de reducción de riesgo.", "Medir avance semanal porcentual de las Initiatives activas (Zero Trust, Ransomware Protection, Identity Security)."], "rolResponsable": "Cybersecurity Architect + Vulnerability Lead", "funcionNIST": "ID", "subcategoriaNIST": "ID.RA-05", "mitreTactic": "Lateral Movement / Privilege Escalation", "evidenciaAuditable": "Exportación semanal de Chokepoints mitigados y evolución de Initiatives en MSEM.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Funcionalidades Attack Paths, Chokepoints e Initiatives verificadas en Microsoft Security Exposure Management.", "urlSoporte": "https://learn.microsoft.com/en-us/security-exposure-management/attack-paths-overview", "pasosDetallados": ["Inspeccionar las rutas de ataque activas que finalizan en activos críticos (*Crown Jewels*), tales como dispositivos con credenciales privilegiadas cacheadas, VMs con IPs públicas o permisos excesivos en la nube `[Verificado MS Learn]`.", "Priorizar la remediación de los **Chokepoints** principales para maximizar el número de rutas de ataque rotas por cada hora de ingeniería invertida `[Verificado MS Learn]`.", "Seguimiento del puntaje de progreso semanal en las **Initiatives** estratégicas (*Zero Trust*, *Ransomware Protection*, *Cloud Security*) `[Verificado MS Learn]`."], "disparadorAlerta": "Romper proactivamente caminos de ataque hacia activos críticos priorizando nodos cuello de botella.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-03", "cadencia": "Semanal", "actividad": "Ejecución de SOC Optimization y gobernanza FinOps (Sentinel Data Lake + Security Copilot SCUs)", "objetivo": "Cerrar brechas de cobertura MITRE ATT&CK v18 y optimizar costos de almacenamiento de logs y cómputo de IA.", "consolaRuta": "https://security.microsoft.com > Microsoft Sentinel > Configuration > SOC optimization", "procedimiento": ["Aplicar recomendaciones de cobertura de amenazas y optimización de valor de datos en SOC Optimization.", "Re-enrutar tablas verbosas sin uso analítico hacia el Sentinel Data Lake mediante transformaciones DCR.", "Auditar el consumo semanal de SCUs en Security Copilot (dotación base E5/E7 vs capacidad Azure y overage)."], "rolResponsable": "Sentinel Platform Lead + FinOps Security Analyst", "funcionNIST": "ID", "subcategoriaNIST": "ID.IM-02", "mitreTactic": "Multi-Tactic (MITRE ATT&CK v18 Coverage)", "evidenciaAuditable": "Reporte semanal de recomendaciones SOC Optimization cerradas y balance de consumo GB/SCUs.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "SOC Optimization, Sentinel Data Lake y monitoreo de SCUs verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/soc-optimization/soc-optimization-reference", "pasosDetallados": ["Revisar y aplicar recomendaciones de **SOC optimization** para cubrir tácticas MITRE ATT&CK v18 deficitarias y detectar tablas de baja utilidad analítica `[Verificado MS Learn]`.", "Mover fuentes verbosas secundarias desde el **Analytics tier** hacia el **Sentinel Data Lake** mediante transformaciones pre-ingesta en **Data Collection Rules (DCR)** `[Verificado MS Learn]`.", "Auditar el consumo semanal de **SCUs** (incluidas en E5/E7 vs. aprovisionadas/overage en Azure) identificando agentes o prompts ineficientes `[Verificado MS Learn]`."], "disparadorAlerta": "Cerrar brechas de cobertura MITRE ATT&CK v18 y optimizar costos de almacenamiento de logs y cómputo de IA.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-04", "cadencia": "Semanal", "actividad": "Campaña semanal de caza proactiva de amenazas guiada por hipótesis (Threat Hunting)", "objetivo": "Descubrir compromisos sigilosos que operan con credenciales válidas o abuso de herramientas legítimas.", "consolaRuta": "https://security.microsoft.com > Investigation & response > Hunting > Advanced hunting", "procedimiento": ["Formular hipótesis semanal basada en TTPs recientes del sector o brechas detectadas en MITRE ATT&CK.", "Ejecutar consultas KQL multi-dominio sobre XDR (30 días) y Sentinel / Data Lake asistidas por Security Copilot.", "Documentar evidencias con Bookmarks y convertir cazas fructíferas en Custom Detection Rules permanentes."], "rolResponsable": "Threat Hunter interno (SOC L3)", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-09", "mitreTactic": "Persistence / Command and Control", "evidenciaAuditable": "Expediente semanal de Hunt cerrado con consultas ejecutadas y reglas promovidas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Flujo de Hunts, Bookmarks y Custom Detection Rules verificado en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/hunting-conduct-hunt", "pasosDetallados": ["Definir hipótesis semanal anclada en inteligencia sectorial reciente o técnicas de evasión sobre identidad, endpoints, SaaS o agentes IA `[Decisión / Propuesta Editorial]`.", "Ejecutar caza KQL correlacionando tablas XDR (30 días interactivos) e histórico en **Sentinel Data Lake** con apoyo de **Security Copilot** `[Verificado MS Learn]`.", "Registrar hallazgos con *Bookmarks*, abrir incidente si se detecta compromiso y promover la consulta validada como nueva regla programada o **Custom Detection Rule** `[Verificado MS Learn]`."], "disparadorAlerta": "Descubrir compromisos sigilosos que operan con credenciales válidas o abuso de herramientas legítimas.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-05", "cadencia": "Semanal", "actividad": "Control de deriva de configuración y promoción segura de políticas Report-Only", "objetivo": "Auditar cambios semanales en controles preventivos y promover políticas validadas desde Report-only hacia aplicación activa.", "consolaRuta": "https://entra.microsoft.com > Protection > Conditional Access > Policies", "procedimiento": ["Ejecutar validación automatizada de postura como código (ej. Maester) sobre políticas de Entra, Defender y Purview.", "Analizar en Conditional Access Insights el impacto de políticas en Report-only (incluyendo Microsoft-managed policies antes de 45 días).", "Aprobar en CAB el paso controlado a estado On y purgar exclusiones temporales vencidas."], "rolResponsable": "Cybersecurity Architect + Domain Leads", "funcionNIST": "GV", "subcategoriaNIST": "GV.PO-02", "mitreTactic": "Defense Evasion", "evidenciaAuditable": "Reporte automatizado semanal de postura y acta CAB de políticas activadas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Ventana de 45 días de Microsoft-managed policies y modo Report-only verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/managed-policies", "pasosDetallados": ["Ejecutar batería automatizada de pruebas de postura como código (ej. **Maester** sobre Entra/M365) para detectar modificaciones no autorizadas o exclusiones vencidas `[Decisión / Propuesta Editorial]`.", "Evaluar telemetría de impacto de políticas en `Report-only` (incluyendo **Microsoft-managed Conditional Access policies** antes de su ventana de auto-activación de 45 días) `[Verificado MS Learn]`.", "Promover a estado `On` las políticas validadas sin bloqueo accidental de procesos críticos `[Verificado MS Learn]`."], "disparadorAlerta": "Auditar cambios semanales en controles preventivos y promover políticas validadas desde Report-only hacia aplicación activa.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-06", "cadencia": "Semanal", "actividad": "Gobierno semanal del registro de agentes IA (Agent 365), apps OAuth y Shadow AI", "objetivo": "Asegurar que todo agente autónomo y aplicación OAuth opere con identidad gobernada, Sponsor activo y privilegio mínimo.", "consolaRuta": "https://admin.microsoft.com > Agents / https://entra.microsoft.com > Agent ID / https://security.microsoft.com > Cloud apps", "procedimiento": ["Revisar altas semanales en Microsoft Agent 365 y Entra Agent ID validando Blueprint autorizado y Sponsor humano.", "Auditar en Defender for Cloud Apps nuevos consentimientos OAuth con permisos sensibles y uso de GenAI no sancionada.", "Bloquear o revocar agentes y apps fuera de política y aplicar controles en Purview DSPM for AI."], "rolResponsable": "AI & Agent Governance Lead + Cloud App Security Admin", "funcionNIST": "ID", "subcategoriaNIST": "ID.AM-02", "mitreTactic": "Persistence / Exfiltration", "evidenciaAuditable": "Inventario semanal conciliado de agentes IA y aplicaciones OAuth de alto privilegio.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Registro convergente Agent 365 y Entra Agent ID verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/capabilities-entra", "pasosDetallados": ["Revisar altas semanales en **Microsoft Agent 365** y **Entra Agent ID**, verificando que ningún agente opere sin *Sponsor* humano válido, *Blueprint* autorizado ni políticas de **Conditional Access for agents** `[Verificado MS Learn]`.", "Auditar en **Defender for Cloud Apps** nuevos consentimientos OAuth con alcances de lectura/escritura amplia y tráfico descubierto hacia aplicaciones de IA generativa de alto riesgo `[Verificado MS Learn]`.", "Revocar aplicaciones o agentes fuera de política y ajustar controles de bloqueo o advertencia en **Purview DSPM for AI** y **Global Secure Access** `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar que todo agente autónomo y aplicación OAuth opere con identidad gobernada, Sponsor activo y privilegio mínimo.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-01", "cadencia": "Mensual", "actividad": "Comité operativo mensual de la Oficina del CISO y evaluación de sostenibilidad del equipo", "objetivo": "Revisar tendencias de 6 meses de KPIs maestros (Altitud 2) y verificar indicadores de salud y capacidad del talento humano.", "consolaRuta": "Tablero Ejecutivo Power BI conectado a MSEM, Sentinel, Entra ID y Purview", "procedimiento": ["Evaluar cumplimiento mensual de los 8 KPIs maestros junto a líderes de dominio y pares de TI/Operaciones.", "Verificar que la carga operativa no supere el 85% de capacidad disponible y que se respete el 20% de tiempo Kaizen.", "Asignar planes de acción correctiva (CAPA) con vencimiento a 30 días para métricas en estado Ámbar o Rojo."], "rolResponsable": "CISO + Líderes de Seguridad", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-01", "mitreTactic": "Gobierno Transversal (N/A)", "evidenciaAuditable": "Paquete mensual de indicadores de la Oficina del CISO y seguimiento CAPA en plataforma GRC.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Cadencia ejecutiva mensual y regla de holgura del 15% son propuestas editoriales del marco CISO.", "urlSoporte": "https://learn.microsoft.com/en-us/security/adoption/adoption", "pasosDetallados": ["Analizar la evolución mensual de los KPIs maestros (MTTA/MTTC, cobertura MFA phishing-resistant, rutas críticas MSEM, tasa de automatización e incidentes por dominio) `[Decisión / Propuesta Editorial]`.", "Revisar indicadores humanos de sostenibilidad: relación carga de trabajo vs. capacidad disponible (meta <=85%), horas en guardia nocturna y cumplimiento del 20% de tiempo de formación Kaizen `[Decisión / Propuesta Editorial]`.", "Aprobar reasignaciones de prioridad y planes correctivos a 30 días para cualquier indicador en desviación `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Revisar tendencias de 6 meses de KPIs maestros (Altitud 2) y verificar indicadores de salud y capacidad del talento humano.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-02", "cadencia": "Mensual", "actividad": "Revisión mensual de postura global en Secure Score y Purview Compliance Manager", "objetivo": "Medir la reducción mensual de deuda técnica preventiva y el cumplimiento frente a NIST CSF 2.0 e ISO 27001.", "consolaRuta": "https://security.microsoft.com > Exposure management > Secure score / https://purview.microsoft.com > Compliance Manager", "procedimiento": ["Comparar el Microsoft Secure Score global y por dominio frente a la meta objetivo (>=85%).", "Auditar el avance de acciones técnicas de mejora en las evaluaciones activas de Purview Compliance Manager.", "Incorporar las 10 acciones de mayor retorno preventivo al sprint mensual de plataformas."], "rolResponsable": "GRC Lead + Cybersecurity Architect", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-02", "mitreTactic": "Initial Access / Defense Evasion", "evidenciaAuditable": "Exportación mensual PDF/CSV de Secure Score y Compliance Manager archivada en GRC.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Herramientas Secure Score y Purview Compliance Manager verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/compliance-manager", "pasosDetallados": ["Registrar el puntaje mensual de **Microsoft Secure Score** global y por pilar (Identidad, Dispositivos, Apps, Datos), investigando cualquier caída superior a 2 puntos `[Verificado MS Learn]`.", "Revisar el **Compliance Score** y el estado de pruebas de controles técnicos en las evaluaciones de **NIST CSF 2.0**, **ISO 27001** y normativas sectoriales dentro de **Compliance Manager** `[Verificado MS Learn]`.", "Comprometer con los equipos de plataforma el cierre mensual de un lote priorizado de acciones de mejora `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Medir la reducción mensual de deuda técnica preventiva y el cumplimiento frente a NIST CSF 2.0 e ISO 27001.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-03", "cadencia": "Mensual", "actividad": "Auditoría mensual de privilegios, alertas PIM y certificaciones críticas de acceso", "objetivo": "Asegurar cumplimiento estricto de Zero Standing Privileges en Entra, Defender, Azure, Intune y Purview.", "consolaRuta": "https://entra.microsoft.com > Identity governance > Privileged Identity Management > Alerts / Access reviews", "procedimiento": ["Remediar el 100% de las alertas activas en PIM (roles sin MFA, asignaciones fuera de PIM, cuentas obsoletas).", "Confirmar menos de 5 Global Administrators elegibles y cero asignaciones permanentes salvo cuentas Break-Glass.", "Validar el cierre y revocación automática en Access Reviews mensuales de invitados B2B críticos y cuentas MSSP."], "rolResponsable": "Identity Governance Lead + GRC Auditor", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Privilege Escalation / Valid Accounts", "evidenciaAuditable": "Reporte mensual CSV de asignaciones PIM e historial firmado de Access Reviews.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Alertas nativas de PIM y Access Reviews con auto-apply verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-how-to-configure-security-alerts", "pasosDetallados": ["Auditar y remediar todas las alertas de configuración en **PIM**, asegurando cero roles críticos sin exigencia de MFA y cero asignaciones permanentes fuera de las dos cuentas Break-Glass `[Verificado MS Learn]`.", "Confirmar que la cantidad de usuarios elegibles para `Global Administrator` se mantenga en `< 5` `[Verificado MS Learn]`.", "Validar la finalización y remoción automática de permisos no renovados en campañas mensuales de **Access Reviews** sobre invitados B2B y grupos operativos del MSSP (articulado con el Módulo `02`) `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar cumplimiento estricto de Zero Standing Privileges en Entra, Defender, Azure, Intune y Purview.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-04", "cadencia": "Mensual", "actividad": "Conciliación mensual de licenciamiento, adopción M365 E5/E7 y optimización FinOps", "objetivo": "Garantizar alineación contractual plena de licencias asignadas, reclamar licencias ociosas y optimizar tiers en Azure.", "consolaRuta": "https://admin.microsoft.com > Billing > Licenses / https://portal.azure.com > Cost Management + Billing", "procedimiento": ["Auditar correspondencia entre usuarios protegidos por capacidades P2/Defender/Purview/Agent 365 y licencias asignadas.", "Reclamar automáticamente licencias E5/E7 retenidas en cuentas deshabilitadas o inactivas > 60 días.", "Evaluar ajuste de Simplified Commitment Tiers en Sentinel y SCUs aprovisionadas en Security Copilot."], "rolResponsable": "FinOps Security Lead + Office of the CISO", "funcionNIST": "GV", "subcategoriaNIST": "GV.RR-03", "mitreTactic": "Gobierno Financiero (N/A)", "evidenciaAuditable": "Informe mensual de utilización de licencias y optimización financiera cloud.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Gobierno mensual FinOps sobre portales oficiales de facturación M365 y Azure.", "urlSoporte": "https://www.microsoft.com/licensing/guidance/subscription-suites", "pasosDetallados": ["Verificar que el 100% de los usuarios cubiertos por políticas avanzadas (Entra ID P2, Defender Suite, Purview Suite, Intune Suite, Agent 365 / M365 E7) cuenten con la licencia correspondiente correctamente asignada `[Verificado MS Learn]`.", "Recuperar licencias asignadas a cuentas dadas de baja, buzones compartidos que no las requieran o usuarios inactivos > 60 días `[Decisión / Propuesta Editorial]`.", "Evaluar la eficiencia de los **Commitment Tiers** de Sentinel y la capacidad aprovisionada de **Security Copilot** frente a la demanda real del mes `[Verificado MS Learn]`."], "disparadorAlerta": "Garantizar alineación contractual plena de licencias asignadas, reclamar licencias ociosas y optimizar tiers en Azure.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-05", "cadencia": "Mensual", "actividad": "Evaluación independiente mensual de SLAs de resultado del proveedor MSSP / MXDR", "objetivo": "Auditar con datos propios del tenant el rendimiento real del socio operativo externo frente a cláusulas de resultados.", "consolaRuta": "https://security.microsoft.com > Microsoft Sentinel > Workbooks", "procedimiento": ["Calcular directamente sobre SecurityIncident y AuditLogs la precisión de escalamiento (>=90%) y cumplimiento SLA P1 (>=95%).", "Revisar altas, bajas y accesos delegados del personal del MSSP en Azure Lighthouse o grupos B2B.", "Celebrar comité mensual de servicio documentando mejoras, bonificaciones o créditos contractuales."], "rolResponsable": "Vendor Performance Lead + SOC Manager", "funcionNIST": "GV", "subcategoriaNIST": "GV.SC-07", "mitreTactic": "Trusted Relationship", "evidenciaAuditable": "Scorecard mensual auditado del MSSP y minuta firmada por ambas partes.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Modelo de supervisión TPRM basado en outcomes para contratos SecOps co-gestionados.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/lighthouse/overview", "pasosDetallados": ["Extraer directamente de `SecurityIncident` y `AuditLogs` las métricas independientes del mes: tiempo de notificación P1 (`<= 15 min`), tasa de falsos positivos escalados (`< 10%`) y calidad narrativa de investigaciones `[Decisión / Propuesta Editorial]`.", "Verificar que toda nueva detección o runbook desarrollado para el entorno haya quedado documentado en el repositorio interno del cliente `[Decisión / Propuesta Editorial]`.", "Celebrar reunión mensual de gobierno de servicio documentando penalizaciones, créditos o mejoras acordadas `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Auditar con datos propios del tenant el rendimiento real del socio operativo externo frente a cláusulas de resultados.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-06", "cadencia": "Mensual", "actividad": "Campaña mensual de simulación de ataques y medición de resiliencia humana (AST)", "objetivo": "Evaluar y reducir continuamente la tasa de compromiso humano frente a phishing moderno, QR y AiTM.", "consolaRuta": "https://security.microsoft.com > Email & collaboration > Attack simulation training", "procedimiento": ["Ejecutar campaña mensual en Attack simulation training inspirada en señuelos reales del sector.", "Medir tasa de compromiso real frente a tasa predicha y porcentaje de reportes proactivos de usuarios.", "Auditar completitud de entrenamientos correctivos asignados automáticamente a usuarios vulnerables."], "rolResponsable": "Security Awareness Lead + MDO Admin", "funcionNIST": "PR", "subcategoriaNIST": "PR.AT-01", "mitreTactic": "Initial Access (Phishing)", "evidenciaAuditable": "Reporte mensual de campaña AST con métricas de compromiso y formación completada.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Capacidades nativas de Attack Simulation Training en MDO Plan 2 verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/attack-simulation-training-get-started", "pasosDetallados": ["Ejecutar simulación mensual dirigida empleando técnicas realistas (captura de credenciales, adjunto malicioso, código QR, consentimiento OAuth) `[Verificado MS Learn]`.", "Analizar la tasa de clics/compromiso frente a la tasa de reporte activo de correos sospechosos por departamento y rol crítico `[Verificado MS Learn]`.", "Auditar el cumplimiento dentro de plazo de las cápsulas formativas asignadas automáticamente a los usuarios que fallaron la prueba `[Verificado MS Learn]`."], "disparadorAlerta": "Evaluar y reducir continuamente la tasa de compromiso humano frente a phishing moderno, QR y AiTM.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-01", "cadencia": "Trimestral", "actividad": "Reporte ejecutivo trimestral al Comité de Riesgos y Board of Directors (Scorecard & FAIR)", "objetivo": "Traducir el desempeño técnico y la exposición cibernética a lenguaje fiduciario y financiero (ALE Open FAIR) para el Directorio.", "consolaRuta": "Scorecard Ejecutivo Trimestral (Altitud 1) alimentado por MSEM, Compliance Manager y Risk Register", "procedimiento": ["Actualizar la cuantificación financiera anualizada (ALE) para los 5 escenarios principales de riesgo cibernético.", "Presentar en formato ejecutivo la alineación con el apetito de riesgo aprobado, postura regulatoria y ROI.", "Documentar en acta del Directorio las decisiones formales de inversión, mitigación o aceptación de riesgo."], "rolResponsable": "CISO", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-01", "mitreTactic": "Gobierno Ejecutivo (N/A)", "evidenciaAuditable": "Presentación trimestral al Board y acta firmada del Comité de Riesgos / Auditoría.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Práctica ejecutiva recomendada alineada a NIST SP 1303 (ERM) y Open FAIR.", "urlSoporte": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.1303.pdf", "pasosDetallados": ["Recalcular la exposición financiera residual (*ALE*) de los escenarios de riesgo principales y contrastarla con el umbral de apetito de riesgo vigente `[Decisión / Propuesta Editorial]`.", "Exponer la evolución intertrimestral del *Cyber Resilience Scorecard*: alineación con apetito de riesgo, cumplimiento regulatorio, incidentes materiales contenidos, tiempo de recuperación de negocio y madurez del SOC Agéntico `[Decisión / Propuesta Editorial]`.", "Documentar formalmente en acta del Directorio las decisiones de inversión, transferencia aseguradora o aceptación explícita de riesgo `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Traducir el desempeño técnico y la exposición cibernética a lenguaje fiduciario y financiero (ALE Open FAIR) para el Directorio.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-02", "cadencia": "Trimestral", "actividad": "Ejercicio Purple Team multi-dominio y prueba obligatoria de cuentas Break-Glass (90 días)", "objetivo": "Comprobar empíricamente controles de detección/bloqueo ante TTPs reales y validar operatividad de cuentas de emergencia.", "consolaRuta": "https://security.microsoft.com / https://entra.microsoft.com", "procedimiento": ["Emular cadenas de ataque priorizadas en MITRE ATT&CK v18 verificando telemetría, alerta y bloqueo efectivo.", "Ejecutar la validación obligatoria cada <=90 días de las cuentas Break-Glass con llave FIDO2/CBA desde una PAW.", "Confirmar disparo inmediato de la alerta Severidad 0 al SOC y registrar mejoras en SOC Optimization."], "rolResponsable": "SOC L3 / Purple Team Lead + Identity Lead", "funcionNIST": "ID", "subcategoriaNIST": "ID.IM-02", "mitreTactic": "Credential Access / Lateral Movement", "evidenciaAuditable": "Informe técnico Purple Team y acta trimestral de prueba Break-Glass con captura de alerta.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Validación al menos cada 90 días de cuentas de emergencia verificada textualmente en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-emergency-access", "pasosDetallados": ["Ejecutar campaña trimestral *Purple Team* simulando cadenas completas de ataque (ej. phishing AiTM -> robo de sesión -> reconocimiento en Entra -> movimiento lateral -> intento de exfiltración SharePoint) `[Decisión / Propuesta Editorial]`.", "Ejecutar el simulacro trimestral mandatorio (**al menos cada 90 días**) de las cuentas **Break-Glass** autenticando con llave física **FIDO2** o **CBA** desde una **PAW**, verificando que no sean bloqueadas por Conditional Access y que disparen la alerta crítica Severidad 0 al SOC `[Verificado MS Learn]`.", "Registrar y cerrar brechas de detección o telemetría identificadas durante las pruebas `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Comprobar empíricamente controles de detección/bloqueo ante TTPs reales y validar operatividad de cuentas de emergencia.", "tipoAccion": "Periódica Programada"}, {"codigo": "SM-01", "cadencia": "Semestral", "actividad": "Simulacro ejecutivo de crisis cibernética, continuidad (BCP/DRP) e integración MSSP", "objetivo": "Entrenar la respuesta coordinada entre C-Suite, Legal, Comunicaciones, TI y MSSP/IR Retainer junto con pruebas de recuperación limpia.", "consolaRuta": "Sala de crisis out-of-band + https://security.microsoft.com + infraestructura BCDR", "procedimiento": ["Ejecutar ejercicio Tabletop semestral con alta dirección, Legal, RRPP y el socio MSSP sobre un escenario severo.", "Realizar prueba técnica de restauración limpia validando cumplimiento de RTO/RPO e integridad anti-malware previa a reconexión.", "Actualizar el Incident Response Plan (IRP) y protocolos de escalamiento en menos de 15 días hábiles."], "rolResponsable": "CISO + CSIRT Lead + BCDR Manager", "funcionNIST": "RC", "subcategoriaNIST": "RC.RP-01", "mitreTactic": "Impact (Inhibit System Recovery)", "evidenciaAuditable": "Informe semestral de evaluación del simulacro, asistencia ejecutiva y versión actualizada del IRP/DRP.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Cadencia semestral alineada a mejores prácticas SAF y NIST CSF 2.0 (GV.SC-08, RC.RP).", "urlSoporte": "https://learn.microsoft.com/en-us/security/zero-trust/sfi/integrate-nist-2-governance", "pasosDetallados": ["Conducir simulacro ejecutivo (*Tabletop*) con participación activa de C-Level, Legal, RRPP, TI y representantes del MSSP sobre un escenario de extorsión cibernética o indisponibilidad crítica `[Decisión / Propuesta Editorial]`.", "Ejecutar en paralelo validación técnica de restauración limpia de cargas críticas verificando el cumplimiento real de objetivos RTO/RPO y escaneo de seguridad previo a reconexión `[Decisión / Propuesta Editorial]`.", "Incorporar hallazgos al Plan de Respuesta a Incidentes (IRP), planes DRP y anexos operativos del contrato MSSP `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Entrenar la respuesta coordinada entre C-Suite, Legal, Comunicaciones, TI y MSSP/IR Retainer junto con pruebas de recuperación limpia.", "tipoAccion": "Periódica Programada"}, {"codigo": "A-01", "cadencia": "Anual", "actividad": "Autoevaluación anual de madurez NIST CSF 2.0 (patrón SFI), Zero Trust Assessment y roadmap anual", "objetivo": "Medir objetivamente la madurez anual en las 6 funciones y 22 categorías de NIST CSF 2.0 y renovar la estrategia plurianual.", "consolaRuta": "https://purview.microsoft.com > Compliance Manager + Microsoft Zero Trust Assessment", "procedimiento": ["Definir alcance basado en riesgo y calificar Perfil Actual vs Perfil Objetivo en NIST CSF 2.0 usando Implementation Tiers (1-4).", "Ejecutar la herramienta automatizada Microsoft Zero Trust Assessment sobre el tenant para contrastar configuración real.", "Renovar la Declaración de Apetito de Riesgo, actualizar el Manifiesto de Excelencia Operacional y aprobar presupuesto anual con el Board."], "rolResponsable": "CISO + GRC Lead + Enterprise Cybersecurity Architect", "funcionNIST": "GV", "subcategoriaNIST": "GV.RM-01", "mitreTactic": "Gobierno Estratégico Anual (N/A)", "evidenciaAuditable": "Informe anual NIST CSF 2.0 Maturity Assessment, reporte Zero Trust Assessment y plan estratégico aprobado.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Patrón anual oficial documentado por Microsoft en Secure Future Initiative (integrate-nist-2-governance).", "urlSoporte": "https://learn.microsoft.com/en-us/security/zero-trust/sfi/integrate-nist-2-governance", "pasosDetallados": ["Definir el alcance anual basado en riesgo y calificar el *Perfil Actual* vs. *Perfil Objetivo* en las 106 subcategorías de **NIST CSF 2.0** empleando *Implementation Tiers* (1 a 4) y dominios **C2M2** `[Verificado MS Learn]`.", "Correr la evaluación técnica automatizada **Microsoft Zero Trust Assessment** sobre el tenant para respaldar cada calificación con configuración verificable `[Verificado MS Learn]`.", "Renovar la Declaración de Apetito de Riesgo, actualizar el **Manifiesto de Excelencia Operacional**, alinear el roadmap a **SAF / MCRA** y presentar el presupuesto anual ante el Directorio `[Verificado MS Learn]`."], "disparadorAlerta": "Medir objetivamente la madurez anual en las 6 funciones y 22 categorías de NIST CSF 2.0 y renovar la estrategia plurianual.", "tipoAccion": "Periódica Programada"}, {"codigo": "AH-01", "cadencia": "Ad-Hoc", "actividad": "Activación de crisis mayor (P1), contención coordinada XDR y gobierno ejecutivo de respuesta", "objetivo": "Contener ataques severos en minutos bajo liderazgo interno, preservar evidencia legal y gestionar notificaciones regulatorias.", "consolaRuta": "https://security.microsoft.com > Incidents + canal de crisis out-of-band", "procedimiento": ["Declarar incidente P1 en <=15 minutos, designar Incident Commander interno y activar canal fuera de banda.", "Verificar y ampliar contención inmediata en Defender XDR, Entra ID y Active Directory (aislamiento de hosts, suspensión y revocación de sesiones).", "Activar Legal Hold en Purview eDiscovery Premium y resguardo forense en Purview Audit y Sentinel Data Lake.", "Coordinar con Legal y Dirección las notificaciones regulatorias obligatorias y emitir informe PIR en <=7 días hábiles post-cierre."], "rolResponsable": "CSIRT Lead + CISO", "funcionNIST": "RS", "subcategoriaNIST": "RS.MA-01", "mitreTactic": "Impact / Exfiltration", "evidenciaAuditable": "Expediente maestro P1, preservación con cadena de custodia, notificaciones regulatorias y acta PIR.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Flujos técnicos de respuesta multi-dominio y preservación verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/incident-response-overview", "pasosDetallados": ["Declarar incidente mayor P1 en `<= 15 minutos`, designar formalmente al Incident Commander interno y activar sala de guerra fuera de banda si existe sospecha sobre canales colaborativos habituales `[Decisión / Propuesta Editorial]`.", "Validar y extender la contención inmediata en `security.microsoft.com`: aislar máquinas comprometidas en MDE, suspender cuentas y revocar sesiones en Entra ID/AD y bloquear IPs/dominios/apps OAuth maliciosas `[Verificado MS Learn]`.", "Activar preservación probatoria inmutable (*Legal Hold* en **Purview eDiscovery Premium** y congelamiento de logs en **Purview Audit** / **Sentinel Data Lake**) `[Verificado MS Learn]`.", "Coordinar con Legal, Privacidad y Dirección Ejecutiva las notificaciones obligatorias a reguladores, aseguradora cibernética y partes afectadas dentro de los plazos legales `[Decisión / Propuesta Editorial]`.", "Dirigir la erradicación total de persistencia, autorizar la recuperación escalonada validando integridad (`RC.RP-05`) y emitir el informe Post-Incident Review (PIR) en un máximo de 7 días hábiles post-cierre `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Ataque activo de ransomware humano, compromiso confirmado de plano de control (Entra ID / AD Tier-0 / Suscripción Azure raíz), exfiltración crítica en curso o múltiples contenciones simultáneas de **Automatic Attack Disruption** `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-02", "cadencia": "Ad-Hoc", "actividad": "Playbook de contención ante compromiso o comportamiento malicioso de agentes IA", "objetivo": "Interrumpir inmediatamente el acceso de agentes autónomos comprometidos o manipulados mediante Prompt Injection.", "consolaRuta": "https://entra.microsoft.com > ID Protection > Risky agents / https://admin.microsoft.com > Agents", "procedimiento": ["Ejecutar Confirm compromise y Disable sobre el agente en Risky agents para activar bloqueo inmediato en Conditional Access for agents.", "Revocar sesiones del usuario sujeto si hubo flujo delegado OBO e inspeccionar credenciales del Agent Identity Blueprint padre.", "Reconstruir accesos a SharePoint, buzones y servidores MCP mediante logs de agente y Purview Audit / DSPM for AI.", "Exigir remediación y recertificación por el Sponsor humano registrado en Microsoft Agent 365 antes de rehabilitar."], "rolResponsable": "SOC L2/L3 + AI & Agent Governance Lead", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Valid Accounts / Collection", "evidenciaAuditable": "Evento adminConfirmedAgentCompromised, trazas forenses auditadas y dictamen firmado del Sponsor.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Acciones Confirm compromise y Disable en Risky agents verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-protection/concept-risky-agents", "pasosDetallados": ["En `Risky agents`, ejecutar de inmediato **Confirm compromise** (activando políticas de bloqueo de **Conditional Access for agents**) y **Disable** sobre la identidad del agente afectado (y su *Agent User* vinculado, si existiera) `[Verificado MS Learn]`.", "Si el incidente ocurrió en un flujo delegado *On-Behalf-Of (OBO)*, revocar inmediatamente los tokens de sesión del usuario humano sujeto e inspeccionar las credenciales del **Agent Identity Blueprint** padre `[Verificado MS Learn]`.", "Consultar los logs de inicio de sesión de agentes y **Purview Audit / DSPM for AI** para reconstruir todos los prompts, llamadas a servidores MCP y archivos accedidos o compartidos `[Verificado MS Learn]`.", "Convocar al *Sponsor* responsable registrado en **Agent 365** para corregir permisos excesivos, filtros de inyección de prompts y etiquetas de sensibilidad antes de considerar su reactivación `[Verificado MS Learn]`."], "disparadorAlerta": "Detección de riesgo alto en **ID Protection for agents** (`earlyLifeMaliciousActivity`, `entraDirectoryReconnaissance`, `suspiciousCredentialUsage`, `signInSpike`, `unfamiliarResourceAccess`), ataque exitoso de *Indirect Prompt Injection* o acceso anómalo de un agente a datos restringidos `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-03", "cadencia": "Ad-Hoc", "actividad": "Protocolo de apertura de emergencia y revisión Post-Mortem de cuenta Break-Glass", "objetivo": "Restaurar el control administrativo del tenant durante bloqueos críticos auditando exhaustivamente cada acción ejecutada.", "consolaRuta": "Bóveda física ignífuga + PAW dedicada + https://entra.microsoft.com", "procedimiento": ["Si la alerta Severidad 0 se disparó sin autorización previa, activar respuesta P1 inmediata por posible compromiso Tier-0.", "En emergencia autorizada, retirar llave FIDO2 o smartcard CBA bajo control dual y autenticar exclusivamente desde una PAW.", "Ejecutar únicamente el cambio mínimo indispensable para restaurar acceso administrativo normal y cerrar sesión.", "Preservar SigninLogs y AuditLogs completos y realizar revisión formal Post-Mortem en menos de 48 horas."], "rolResponsable": "Identity Lead + CISO + Comité Post-Mortem", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-01", "mitreTactic": "Initial Access / Persistence", "evidenciaAuditable": "Autorización de apertura, logs inmutables de sesión y acta formal Post-Mortem.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Guía de custodia, autenticación FIDO2/CBA en PAW y equipo Post-Mortem verificada en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-emergency-access", "pasosDetallados": ["Si la alerta Severidad 0 se dispara sin autorización previa conocida, tratar el hecho como brecha crítica activa de Tier-0, bloquear el acceso desde la cuenta de emergencia secundaria y activar `AH-01` `[Verificado MS Learn]`.", "En emergencia operativa legítima autorizada por el CISO, retirar bajo custodia dual la llave **FIDO2** (o credencial **CBA**) de la bóveda segura e iniciar sesión exclusivamente desde una **PAW** `[Verificado MS Learn]`.", "Ejecutar únicamente el cambio mínimo indispensable para restaurar la administración nominal (ej. deshabilitar la política CA defectuosa o restablecer aprobadores PIM) y cerrar inmediatamente la sesión `[Verificado MS Learn]`.", "Extraer y resguardar `SigninLogs` y `AuditLogs` completos de la intervención, rotar combinaciones de custodia física si corresponde y celebrar sesión formal **Post-Mortem** dentro de las 48 horas siguientes `[Verificado MS Learn]`."], "disparadorAlerta": "Indisponibilidad total del proveedor de identidad federado, bloqueo administrativo accidental por política de Conditional Access, pérdida de todos los aprobadores PIM o disparo no planificado de la alerta crítica de monitoreo Break-Glass `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-04", "cadencia": "Ad-Hoc", "actividad": "Gobierno de seguridad en M&A, interconexiones Cross-Tenant B2B o transición de MSSP", "objetivo": "Evaluar e integrar nuevos entornos sin importar riesgo oculto y asegurar revocación limpia al rotar proveedores críticos.", "consolaRuta": "https://entra.microsoft.com > External Identities > Cross-tenant access settings / Azure Lighthouse", "procedimiento": ["Ejecutar debida diligencia técnica y Microsoft Zero Trust Assessment sobre el tenant entrante antes de conectar redes o identidades.", "Configurar Cross-tenant access settings restrictivos reconociendo solo MFA resistente a phishing y dispositivos conformes auditados.", "Incorporar el entorno a Defender Multi-Tenant Management y Sentinel para visibilidad inmediata.", "Al finalizar contrato con un MSSP, revocar delegaciones Azure Lighthouse/GDAP, cuentas B2B y tokens API asegurando transferencia documental."], "rolResponsable": "Cybersecurity Architect + GRC TPRM Lead", "funcionNIST": "GV", "subcategoriaNIST": "GV.SC-06", "mitreTactic": "Trusted Relationship", "evidenciaAuditable": "Dictamen de riesgo M&A/TPRM, políticas Cross-tenant exportadas y checklist de offboarding limpio.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Controles Cross-tenant access, Multi-tenant Defender y Azure Lighthouse verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/external-id/cross-tenant-access-overview", "pasosDetallados": ["Ejecutar evaluación previa de diligencia debida (`GV.SC-06`) y correr **Microsoft Zero Trust Assessment** sobre el tenant externo antes de habilitar relaciones de confianza `[Verificado MS Learn]`.", "Configurar políticas restrictivas en `Cross-tenant access settings`, exigiendo reconocimiento explícito de MFA resistente a phishing y dispositivos conformes únicamente para organizaciones auditadas `[Verificado MS Learn]`.", "Conectar el nuevo entorno a **Defender Multi-Tenant Management** y **Sentinel** para visibilidad inmediata del SOC `[Verificado MS Learn]`.", "En caso de baja o reemplazo de un MSSP (`GV.SC-10`), eliminar en ventana coordinada todas las delegaciones **Azure Lighthouse / GDAP**, cuentas invitadas B2B, registros de aplicación API y verificar la entrega íntegra de playbooks y documentación en el repositorio propio `[Verificado MS Learn]`."], "disparadorAlerta": "Integración de una empresa adquirida, apertura de colaboración `Cross-tenant` sensible con un proveedor Tier-1 o transición/terminación contractual del socio **MSSP** `[Decisión / Propuesta Editorial]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-05", "cadencia": "Ad-Hoc", "actividad": "Evaluación y aprobación excepcional de Customer Lockbox o elevación M365 PAM", "objetivo": "Controlar con aprobación explícita y segregación de funciones todo acceso temporal de soporte Microsoft o tareas críticas M365.", "consolaRuta": "https://admin.microsoft.com > Settings > Org settings > Security & privacy > Customer Lockbox", "procedimiento": ["Verificar legitimidad del ticket de soporte, alcance exacto del dato requerido y ventana acotada de tiempo.", "Aprobar o denegar mediante un responsable autorizado distinto del solicitante original.", "Auditar todas las operaciones registradas en Purview Audit al concluir la ventana temporal."], "rolResponsable": "Data Security / Compliance Approver + CISO Office", "funcionNIST": "PR", "subcategoriaNIST": "PR.DS-01", "mitreTactic": "Trusted Relationship / Collection", "evidenciaAuditable": "Registro inmutable de aprobación/rechazo de Customer Lockbox y logs asociados en Purview Audit.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Flujo oficial de Customer Lockbox para Microsoft 365 verificado en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-lockbox-requests", "pasosDetallados": ["Validar la existencia y legitimidad del ticket de soporte institucional que origina la solicitud, el alcance mínimo de los datos involucrados y la ventana estricta de expiración `[Verificado MS Learn]`.", "Someter la solicitud a aprobación por un responsable autorizado distinto de quien abrió el ticket (segregación de funciones) `[Verificado MS Learn]`.", "Auditar al cierre de la ventana todas las acciones registradas en **Purview Audit** bajo registros `CustomerLockbox` o `PrivilegedAccess` `[Verificado MS Learn]`."], "disparadorAlerta": "Solicitud formal de acceso temporal a datos del cliente emitida por ingeniería de soporte de Microsoft (**Customer Lockbox**) o requerimiento interno de tarea administrativa crítica en cargas M365 (**Privileged Access Management**) `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}], "consultasKQLyVerificacion": [{"nombre": "Desempeño ejecutivo de incidentes unificados SIEM + XDR (MTTA, MTTC y FPR — 30 días)", "plataforma": "Microsoft Sentinel / Microsoft Defender Portal", "tablaPrincipal": "SecurityIncident", "consulta": "SecurityIncident\n| where TimeGenerated > ago(30d)\n| summarize arg_max(TimeGenerated, *) by IncidentNumber\n| extend AckMinutes = iff(isnotempty(FirstModifiedTime), datetime_diff('minute', FirstModifiedTime, CreatedTime), real(null)),\n         CloseHours = iff(Status == \"Closed\" and isnotempty(ClosedTime), round(datetime_diff('minute', ClosedTime, CreatedTime) / 60.0, 2), real(null))\n| summarize TotalIncidents = count(),\n            ActiveOpen = countif(Status != \"Closed\"),\n            MedianMTTA_Min = percentile(AckMinutes, 50),\n            MedianMTTC_Hours = percentile(CloseHours, 50),\n            TruePositives = countif(Classification == \"TruePositive\"),\n            FalsePositives = countif(Classification == \"FalsePositive\")\n            by Severity\n| extend FalsePositivePct = round(todouble(FalsePositives) * 100.0 / todouble(TotalIncidents), 2)\n| order by case(Severity == \"High\", 1, Severity == \"Medium\", 2, Severity == \"Low\", 3, 4) asc", "proposito": "Calcular de manera auditable e independiente del MSSP los indicadores medianos MTTA, MTTC y tasa de falsos positivos por severidad.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Control Periódico de Salud, Auditoría y KPIs"}, {"nombre": "Supervisión Human-ON-the-Loop de incidentes con Automatic Attack Disruption", "plataforma": "Microsoft Defender XDR / Microsoft Sentinel", "tablaPrincipal": "SecurityIncident", "consulta": "SecurityIncident\n| where TimeGenerated > ago(14d)\n| summarize arg_max(TimeGenerated, *) by IncidentNumber\n| where Title has \"(attack disruption)\" or tostring(Labels) has \"Attack Disruption\" or tostring(AdditionalData) has \"AttackDisruption\"\n| project CreatedTime, IncidentNumber, Title, Severity, Status, AssignedTo = tostring(Owner.assignedTo), Classification, IncidentUrl\n| order by CreatedTime desc", "proposito": "Listar todos los incidentes contenidos automáticamente por IA de alta confianza para verificar erradicación de causa raíz.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Cobertura de MFA y dispositivos conformes en EntraIdSignInEvents (esquema vigente post 2026-10-19)", "plataforma": "Microsoft Defender XDR Advanced Hunting", "tablaPrincipal": "EntraIdSignInEvents", "consulta": "EntraIdSignInEvents\n| where Timestamp > ago(7d)\n| where ErrorCode == 0 and LogonType has \"interactive\" and IsExternalUser == 0\n| summarize TotalSignIns = count(),\n            MfaSignIns = countif(AuthenticationRequirement == \"multiFactorAuthentication\"),\n            CompliantDeviceSignIns = countif(IsCompliant == 1),\n            ManagedDevices = dcountif(EntraIdDeviceId, IsManaged == 1),\n            HighRiskEvents = countif(RiskLevelAggregated == 100)\n            by Application\n| where TotalSignIns >= 50\n| extend MfaPct = round(todouble(MfaSignIns) * 100.0 / todouble(TotalSignIns), 2),\n         CompliantDevicePct = round(todouble(CompliantDeviceSignIns) * 100.0 / todouble(TotalSignIns), 2)\n| order by TotalSignIns desc", "proposito": "Auditar el cumplimiento Zero Trust sobre la tabla nativa EntraIdSignInEvents que reemplazó a AADSignInEventsBeta en octubre de 2026.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Gobierno FinOps de ingesta elegible para Microsoft 365 E5 Data Grant vs consumo neto", "plataforma": "Microsoft Sentinel / Log Analytics", "tablaPrincipal": "Usage", "consulta": "let E5EligibleTables = dynamic([\n    \"SigninLogs\", \"AuditLogs\", \"AADNonInteractiveUserSignInLogs\", \"AADServicePrincipalSignInLogs\",\n    \"AADManagedIdentitySignInLogs\", \"AADProvisioningLogs\", \"ADFSSignInLogs\",\n    \"DeviceEvents\", \"DeviceFileEvents\", \"DeviceImageLoadEvents\", \"DeviceInfo\", \"DeviceLogonEvents\",\n    \"DeviceNetworkEvents\", \"DeviceNetworkInfo\", \"DeviceProcessEvents\", \"DeviceRegistryEvents\",\n    \"EmailAttachmentInfo\", \"EmailEvents\", \"EmailPostDeliveryEvents\", \"EmailUrlInfo\",\n    \"UrlClickEvents\", \"CloudAppEvents\", \"IdentityInfo\", \"IdentityLogonEvents\",\n    \"IdentityQueryEvents\", \"IdentityDirectoryEvents\", \"AlertEvidence\", \"McasShadowItReporting\"\n]);\nUsage\n| where TimeGenerated > ago(30d)\n| where IsBillable == true\n| extend BillingCategory = iff(DataType in (E5EligibleTables), \"Elegible M365 E5 Data Grant\", \"Facturable Neto Azure / Terceros\")\n| summarize TotalGB_30d = round(sum(Quantity) / 1024.0, 2), AvgDailyGB = round(sum(Quantity) / 1024.0 / 30.0, 2) by BillingCategory, DataType\n| order by TotalGB_30d desc", "proposito": "Cuantificar la absorción mensual del beneficio gratuito de hasta 5 MB/usuario/día de M365 E5/E7/Defender Suite frente a fuentes pagas.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Control Periódico de Salud, Auditoría y KPIs"}, {"nombre": "Exposición de activos críticos (Crown Jewels) en Microsoft Security Exposure Management", "plataforma": "Microsoft Defender XDR Advanced Hunting", "tablaPrincipal": "ExposureGraphNodes", "consulta": "ExposureGraphNodes\n| where NodeLabel in (\"device\", \"user\", \"serviceprincipal\", \"virtualmachine\")\n| extend CriticalityLevel = toint(parse_json(NodeProperties).rawData.criticalityLevel.criticalityLevel)\n| where CriticalityLevel <= 2 or tostring(NodeProperties) has_any (\"CrownJewel\", \"CriticalAsset\", \"Tier0\")\n| join kind=inner (\n    ExposureGraphEdges\n    | project SourceNodeId, TargetNodeId, EdgeLabel\n) on $left.NodeId == $right.TargetNodeId\n| summarize InboundVectors = count(), DistinctSources = dcount(SourceNodeId), RelationshipTypes = make_set(EdgeLabel, 10) by NodeName, NodeLabel, CriticalityLevel\n| order by InboundVectors desc", "proposito": "Priorizar remediación sobre activos críticos expuestos a vectores entrantes en el grafo de exposición CTEM.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Auditoría unificada de cambios en políticas críticas de Entra ID y Purview DLP", "plataforma": "Microsoft Sentinel", "tablaPrincipal": "AuditLogs", "consulta": "let IdentityPolicyAudit = AuditLogs\n| where TimeGenerated > ago(7d)\n| where Category == \"Policy\" and OperationName has_any (\"Conditional Access\", \"authentication method\", \"Authentication Strength\")\n| project TimeGenerated, Domain = \"Entra ID\", OperationName, Initiator = tostring(InitiatedBy.user.userPrincipalName), TargetPolicy = tostring(TargetResources[0].displayName), Result;\nlet DataPolicyAudit = OfficeActivity\n| where TimeGenerated > ago(7d)\n| where Operation has_any (\"New-DlpCompliancePolicy\", \"Set-DlpCompliancePolicy\", \"Remove-DlpCompliancePolicy\", \"Set-DlpComplianceRule\", \"New-RetentionCompliancePolicy\")\n| project TimeGenerated, Domain = \"Microsoft Purview\", OperationName = Operation, Initiator = UserId, TargetPolicy = OfficeObjectId, Result = ResultStatus;\nunion IdentityPolicyAudit, DataPolicyAudit\n| order by TimeGenerated desc", "proposito": "Consolidar cambios administrativos sobre el plano de acceso y seguridad de datos para control de cambios y auditoría GV.PO-02.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Extracción de agentes IA en riesgo vía Microsoft Graph PowerShell (riskyAgents)", "plataforma": "Microsoft Graph PowerShell / Entra ID Protection for Agents", "tablaPrincipal": "identityProtection/riskyAgents", "consulta": "Connect-MgGraph -Scopes \"IdentityRiskyAgent.Read.All\", \"IdentityRiskEvent.Read.All\" -NoWelcome\n$riskyAgentsUri = \"https://graph.microsoft.com/beta/identityProtection/riskyAgents?`$filter=riskState eq 'atRisk'\"\n$agents = (Invoke-MgGraphRequest -Method GET -Uri $riskyAgentsUri).value\n$agents | Select-Object id, agentDisplayName, riskLevel, riskState, riskLastUpdatedDateTime | Format-Table -AutoSize", "proposito": "Auditar programáticamente los agentes autónomos marcados en riesgo medio o alto dentro del gobierno del SOC Agéntico.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Validación de Configuración y Postura"}], "kpisYMetricas": [{"id": "KPI-01", "nombre": "Velocidad de Reconocimiento y Contención Crítica (MTTA / MTTC P1)", "definicion": "Tiempo mediano transcurrido desde la creación de un incidente crítico/alto verdadero positivo hasta su atención inicial y su contención efectiva.", "formula": "Mediana(FirstModifiedTime - CreatedTime) y Mediana(ContainmentTime - CreatedTime) en incidentes Critical/High TP", "metaSugerida": "MTTA <= 15 minutos; MTTC <= 60 minutos", "frecuencia": "Diaria / Semanal", "audiencia": "Altitud 3: SOC Manager y Equipo SecOps", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Calculado sobre tabla oficial SecurityIncident; umbrales numéricos basados en mejores prácticas de infraestructura crítica."}, {"id": "KPI-02", "nombre": "Cobertura de Autenticación Resistente a Phishing", "definicion": "Porcentaje de usuarios activos que autentican mediante Passkeys (FIDO2), Windows Hello for Business o Certificate-Based Authentication.", "formula": "(Usuarios autenticando con FIDO2, WHfB o CBA / Total de usuarios activos en alcance) * 100", "metaSugerida": "100% en Roles Privilegiados; >= 85% en Usuarios Generales", "frecuencia": "Mensual", "audiencia": "Altitud 2: CISO, IAM Lead y CIO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Alineado a Authentication Strengths de MS Learn y patrón SFI de reducción de ataques de credenciales."}, {"id": "KPI-03", "nombre": "Índice de Mitigación de Rutas de Ataque Críticas y Postura (MSEM)", "definicion": "Proporción de rutas de ataque críticas hacia activos Crown Jewels cerradas dentro de SLA combinada con Microsoft Secure Score.", "formula": "(Rutas de ataque críticas cerradas en el período / Total rutas críticas detectadas hacia Crown Jewels) * 100", "metaSugerida": ">= 90% rutas críticas mitigadas en SLA; Microsoft Secure Score >= 85%", "frecuencia": "Semanal / Mensual", "audiencia": "Altitud 2: CISO, Cybersecurity Architects y CTO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Basado en telemetría oficial de Microsoft Security Exposure Management y Secure Score."}, {"id": "KPI-04", "nombre": "Tasa de Automatización Tier-1 y Precisión de Agentes IA", "definicion": "Porcentaje de incidentes Tier-1 enriquecidos o resueltos sin intervención manual y porcentaje de decisiones agénticas validadas como correctas.", "formula": "(Incidentes Tier-1 auto-procesados / Total incidentes Tier-1) * 100 y % acierto en auditoría muestral Human-ON-the-Loop", "metaSugerida": "60% - 70% automatización Tier-1; >= 95% precisión validada de agentes IA", "frecuencia": "Semanal / Mensual", "audiencia": "Altitud 3 y 2: SOC Manager y CISO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Métrica clave de transición hacia CMMI 3.0+ y gobierno responsable del SOC Agéntico."}, {"id": "KPI-05", "nombre": "Índice de Cero Privilegio Permanente (Zero Standing Privilege Ratio)", "definicion": "Porcentaje de sesiones administrativas en Entra, Defender, Azure, Intune y Purview ejecutadas mediante elevación temporal PIM JIT.", "formula": "(Sesiones administrativas vía elevación PIM JIT / Total de sesiones administrativas del tenant) * 100", "metaSugerida": ">= 98% vía PIM JIT (< 5 Global Administrators elegibles; solo 2 Break-Glass activas sin uso)", "frecuencia": "Mensual", "audiencia": "Altitud 2: CISO, IAM Lead y Auditoría Interna", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Mide materialización operativa del principio Zero Trust de privilegio mínimo."}, {"id": "KPI-06", "nombre": "Efectividad Contractual del MSSP Basada en Resultados (Outcome SLA)", "definicion": "Proporción de escalamientos realizados por el MSSP que corresponden a amenazas reales documentadas dentro del tiempo pactado.", "formula": "(Escalamientos verdaderos positivos con contexto completo en SLA / Total de escalamientos del MSSP) * 100", "metaSugerida": ">= 90% precisión de escalamiento; >= 95% cumplimiento SLA en incidentes P1", "frecuencia": "Mensual", "audiencia": "Altitud 2: CISO, Compras/TPRM y SOC Manager", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Evita incentivos perversos basados en cantidad de tickets cerrados en contratos co-gestionados."}, {"id": "KPI-07", "nombre": "Índice de Sostenibilidad Operativa y Retención del Talento", "definicion": "Holgura de capacidad analítica frente al volumen esperado de trabajo y tasa anual de retención del equipo interno de ciberseguridad.", "formula": "((Horas Analista Disponibles - Horas Trabajo Esperado) / Horas Disponibles) * 100 y % retención anual", "metaSugerida": "Holgura operativa >= 15%; Retención anual del equipo >= 88%", "frecuencia": "Mensual / Trimestral", "audiencia": "Altitud 2 y 1: CISO, RRHH y Comité Ejecutivo", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Operacionaliza el principio Kaizen y prevención de burnout del Manifiesto de Excelencia Operacional."}, {"id": "KPI-08", "nombre": "Alineación al Apetito de Riesgo (FAIR) y Madurez NIST CSF 2.0", "definicion": "Cumplimiento de la exposición anualizada residual (ALE) frente al umbral aprobado por el Directorio y avance a Tier 3+ en NIST CSF 2.0.", "formula": "% escenarios materiales con ALE <= Tolerancia aprobada y (Subcategorías CSF 2.0 en Tier >= 3 / 106) * 100", "metaSugerida": "100% escenarios dentro de tolerancia o con plan financiado; >= 85% subcategorías en Tier 3 (Repeatable)", "frecuencia": "Trimestral / Anual", "audiencia": "Altitud 1: Consejo de Administración (Board), CEO y CFO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Integra la cuantificación financiera Open FAIR con la evaluación anual SFI/NIST CSF 2.0."}], "mapeoNISTCSF20": [{"funcion": "GOVERN (GV)", "subcategoria": "GV.OC-03", "descripcionResultado": "Los requisitos legales, regulatorios y contractuales relativos a ciberseguridad y privacidad se comprenden y gestionan.", "capacidadMicrosoft": "Microsoft Purview Compliance Manager (plantillas regulatorias multi-norma), políticas de retención DLM y matriz legal de la Oficina del CISO.", "evidenciaAuditoria": "Exportación fechada de evaluaciones regulatorias activas en Compliance Manager con controles técnicos vinculados y dueños internos asignados.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "GOVERN (GV)", "subcategoria": "GV.RM-02", "descripcionResultado": "Las declaraciones de apetito y tolerancia al riesgo se establecen, comunican y mantienen.", "capacidadMicrosoft": "Cuantificación Open FAIR traducida técnicamente en políticas automáticas de bloqueo por riesgo en Entra ID Protection, MSEM y Purview Adaptive Protection.", "evidenciaAuditoria": "Acta anual del Directorio aprobando la Declaración de Apetito de Riesgo junto con exportación JSON de políticas alineadas a dichos umbrales.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "GOVERN (GV)", "subcategoria": "GV.RR-02", "descripcionResultado": "Los roles, responsabilidades y autoridades de ciberseguridad se establecen, comunican, aplican y revisan.", "capacidadMicrosoft": "Microsoft Entra RBAC, Privileged Identity Management (PIM), Defender Unified RBAC, Purview Role Groups y asignación de Sponsors en Microsoft Agent 365.", "evidenciaAuditoria": "Reporte mensual de asignaciones Eligible vs Active en PIM, configuración de roles URBAC y matriz RACI firmada con segregación frente al MSSP.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "GOVERN (GV)", "subcategoria": "GV.SC-07", "descripcionResultado": "Los riesgos planteados por un proveedor, sus productos y sus servicios se comprenden, registran, priorizan, evalúan y monitorean continuamente.", "capacidadMicrosoft": "Workbooks independientes de SLA en Sentinel, delegación controlada con Azure Lighthouse, Defender for Cloud Apps OAuth Governance y Customer Lockbox.", "evidenciaAuditoria": "Scorecard mensual recalculado en KQL sobre el desempeño del MSSP, inventario gobernado de apps OAuth de terceros y registros Customer Lockbox.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.AM-05", "descripcionResultado": "Los recursos se priorizan según clasificación, criticidad, recursos y valor de impacto para el negocio.", "capacidadMicrosoft": "Clasificación de activos críticos (Crown Jewels) en Microsoft Security Exposure Management, taxonomía Purview MIP y registro unificado Agent 365.", "evidenciaAuditoria": "Catálogo exportado de activos críticos en MSEM conciliado con análisis BIA y reporte de cobertura de etiquetado de sensibilidad.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.RA-05", "descripcionResultado": "Amenazas, vulnerabilidades, probabilidades e impactos se utilizan conjuntamente para comprender el riesgo y priorizar la respuesta.", "capacidadMicrosoft": "Attack Paths y Chokepoints en Exposure Management combinados con Defender Vulnerability Management (CVSS/EPSS/CISA KEV) y Threat Analytics.", "evidenciaAuditoria": "Informe semanal de Chokepoints mitigados y cola priorizada de remediación vinculada a activos de alto valor.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.IM-02", "descripcionResultado": "Se identifican mejoras a partir de pruebas de seguridad, ejercicios y revisiones operativas y de recuperación.", "capacidadMicrosoft": "Microsoft Sentinel SOC Optimization, ejercicios trimestrales Purple Team, simulacros semestrales y autoevaluación anual SFI/NIST CSF 2.0.", "evidenciaAuditoria": "Historial de recomendaciones implementadas en SOC Optimization, informes Purple Team con delta MITRE ATT&CK y actas PIR cerradas.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.AA-05", "descripcionResultado": "Los permisos de acceso, derechos y autorizaciones se definen, gestionan, aplican y revisan incorporando mínimo privilegio y segregación.", "capacidadMicrosoft": "Entra Conditional Access (Authentication Strengths, Token Protection, CAE), PIM JIT, Intune Endpoint Privilege Management y Conditional Access for agents.", "evidenciaAuditoria": "Exportación auditada de políticas CA, reportes CSV de Access Reviews con revocación automática e historial de elevaciones JIT.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.DS-01", "descripcionResultado": "Se protegen la confidencialidad, integridad y disponibilidad de los datos en reposo.", "capacidadMicrosoft": "Cifrado persistente Purview Information Protection, BitLocker gestionado en Intune, soberanía BYOK con Customer Key y Preservation Lock en DLM.", "evidenciaAuditoria": "Reporte de cumplimiento de cifrado en Intune, analítica de documentos cifrados con MIP y políticas de retención inmutable activas.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.AE-02", "descripcionResultado": "Los eventos potencialmente adversos se analizan para comprender mejor las actividades asociadas y detectar incidentes.", "capacidadMicrosoft": "Correlación multi-dominio Defender XDR, reglas KQL/ASIM y UEBA en Sentinel, tabla nativa EntraIdSignInEvents y asistencia de Security Copilot.", "evidenciaAuditoria": "Expedientes unificados de incidentes con Attack Story, mapeo MITRE ATT&CK v18 y registro inmutable de consultas en LAQueryLogs.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.MI-01", "descripcionResultado": "Los incidentes de ciberseguridad son contenidos oportunamente.", "capacidadMicrosoft": "Automatic Attack Disruption en Defender XDR, playbooks en Azure Logic Apps con Managed Identity, aislamiento MDE y suspensión en Entra ID / Agent ID.", "evidenciaAuditoria": "Bitácora del Action Center y métricas de SecurityIncident demostrando contención efectiva dentro de SLA.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RECOVER (RC)", "subcategoria": "RC.RP-05", "descripcionResultado": "Se verifica la integridad de los activos restaurados, se restauran sistemas y servicios, y se confirma el retorno a operación normal.", "capacidadMicrosoft": "Liberación auditada en Defender Action Center, reprovisionamiento limpio con Windows Autopilot/Intune, rotación de credenciales Entra y validación post-incidente.", "evidenciaAuditoria": "Checklists firmados de escaneo e integridad previos a reconexión productiva, logs de liberación de aislamiento y cierre formal del incidente.", "estadoValidacion": "Propuesta Editorial"}], "validacionYDecisionesEditoriales": {"fechaRevalidacion": "2026-11-11", "resumenAuditoria": "Módulo maestro compilado desde los ensayos ejecutivos de la Oficina del CISO (Duplas 1, 2 y 3, Manifiesto de Excelencia Operacional) y los bloques de mapeo NIST SAFVAL, revalidado íntegramente al 11 de noviembre de 2026 contra Microsoft Learn MCP, guías oficiales de licenciamiento Microsoft y NIST CSWP 29.", "correccionesAplicadas": ["Corrección taxonómica de NIST CSF 2.0 (CSWP 29): se corrigió el conteo previo de 23 categorías a las 22 categorías y 106 subcategorías oficiales, eliminando la categoría inexistente RC.IM al haberse consolidado toda mejora continua en ID.IM.", "Actualización contractual de suites renombradas: se incorporó el renombre oficial de Microsoft 365 E5 Security a Microsoft Defender Suite y de Microsoft 365 E5 Compliance a Microsoft Purview Suite (ratificando que Purview Suite no incluye Entra ID P2).", "Incorporación de Microsoft Agent 365 y Microsoft 365 E7 (The Frontier Suite, disponible desde el 1 de mayo de 2026) conectando el gobierno ejecutivo y el SOC Agéntico con Entra Agent ID y el Módulo 22.", "Alineación con la publicación oficial en Microsoft Learn del Microsoft Security Adoption Framework (SAF), la edición junio de 2026 de MCRA, el volumen actualizado de más de 100 billones de señales diarias y el patrón SFI integrate-nist-2-governance.", "Reflejo del retiro definitivo de Microsoft Sentinel en Azure Portal después del 31 de marzo de 2027 y la integración nativa por defecto del Microsoft Sentinel Data Lake vigente desde el 23 de septiembre de 2026.", "Actualización del esquema de caza avanzada en Defender XDR tras la deprecación el 19 de octubre de 2026 de AADSignInEventsBeta en favor de EntraIdSignInEvents (y EntraIdDeviceId).", "Posicionamiento de Microsoft Security Exposure Management (MSEM) como motor primario CTEM de rutas de ataque y activos críticos en consonancia con MCRA 2025/2026.", "Sustitución de la certificación retirada SC-400 por SC-401 (Administering Information Security in Microsoft 365) en la ruta curricular oficial de especialistas de datos e IA."], "decisionesEditoriales": [{"elemento": "Inalienabilidad 100% interna de la función GOVERN y arquitectura SecOps híbrida en tres zonas", "tipo": "Propuesta Editorial", "justificacion": "Previene la abdicación fiduciaria y el conflicto de interés inherente a delegar políticas, apetito de riesgo o supervisión en el mismo proveedor MSSP que ejecuta el monitoreo."}, {"elemento": "Modelo de gobernanza Humano-IA en tres modos (Human-IN, Human-ON y Human-OUT-of-the-Loop)", "tipo": "Propuesta Editorial", "justificacion": "Otorga un criterio auditable frente a reguladores y comités de riesgo para equilibrar contención autónoma a velocidad de máquina con supervisión humana explicable."}, {"elemento": "Arquitectura de métricas en tres altitudes y metas cuantitativas de los 8 KPIs maestros", "tipo": "Propuesta Editorial", "justificacion": "Elimina métricas de vanidad alineando el reporte al nivel cognitivo y decisorio del SOC, del C-Suite y del Board con objetivos exigentes pero alcanzables."}, {"elemento": "Regla Kaizen de sostenibilidad humana (holgura mínima del 15% de capacidad y 20% de tiempo para upskilling)", "tipo": "Propuesta Editorial", "justificacion": "Formaliza la prevención del agotamiento y rotación del talento como prerrequisito operativo indispensable para sostener decisiones de alta calidad durante incidentes críticos."}, {"elemento": "Mapa integrador de los 23 módulos del repositorio sobre las 22 categorías de NIST CSF 2.0 con declaración de fronteras", "tipo": "Propuesta Editorial", "justificacion": "Aporta trazabilidad completa entre documentos sin sobredimensionar capacidades de consola donde se requiere gobierno legal, físico o de continuidad corporativa."}]}, "referenciasVerificadas": [{"id": "REF-01", "titulo": "Microsoft Security Adoption Framework (SAF) Overview", "url": "https://learn.microsoft.com/en-us/security/adoption/adoption", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Security Documentation", "comentario": "Marco operativo oficial que articula escenarios de negocio, disciplinas de seguridad, tecnologías y soluciones técnicas Zero Trust.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-02", "titulo": "Integrate NIST CSF 2.0 governance into annual cybersecurity assessments (Secure Future Initiative)", "url": "https://learn.microsoft.com/en-us/security/zero-trust/sfi/integrate-nist-2-governance", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Secure Future Initiative (SFI)", "comentario": "Patrón de ingeniería y gobierno de Microsoft para ejecutar autoevaluaciones anuales alineadas a las 6 funciones de NIST CSF 2.0.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-03", "titulo": "Microsoft Cybersecurity Reference Architectures (MCRA)", "url": "https://learn.microsoft.com/en-us/security/adoption/mcra", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Security Architecture Team", "comentario": "Arquitectura maestra de referencia actualizada en junio de 2026 con Exposure Management, Security Copilot, Passkeys y estándares Open Group.", "verificacion": "Verificado vía Microsoft Learn MCP y notas de versión 2026"}, {"id": "REF-04", "titulo": "The Chief Information Security Officer (CISO) Workshop", "url": "https://learn.microsoft.com/en-us/security/zero-trust/workshop-business-security-leaders", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Security", "comentario": "Taller estratégico oficial para modernizar la postura Zero Trust, el modelo operativo del SOC y la alineación ejecutiva.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-05", "titulo": "Microsoft Sentinel in the Microsoft Defender portal (Unified SecOps Platform)", "url": "https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Sentinel Documentation", "comentario": "Documentación canónica de convergencia SIEM+XDR en security.microsoft.com y retiro de Azure Portal tras el 31 de marzo de 2027.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-06", "titulo": "Automatic attack disruption in Microsoft Defender XDR", "url": "https://learn.microsoft.com/en-us/defender-xdr/automatic-attack-disruption", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Defender XDR Documentation", "comentario": "Detalle técnico de contención autónoma con confianza >=99% SNR sobre Entra ID, Active Directory, MDE, MDA, Okta y AWS.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-07", "titulo": "What is Microsoft Security Exposure Management?", "url": "https://learn.microsoft.com/en-us/security-exposure-management/overview", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Security Documentation", "comentario": "Capacidades CTEM de inventario unificado, activos críticos, rutas de ataque, Chokepoints e iniciativas de postura.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-08", "titulo": "What is Microsoft Entra Agent ID? & Protect agent identities with Microsoft Entra", "url": "https://learn.microsoft.com/en-us/entra/agent-id/what-is-microsoft-entra-agent-id", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Entra Documentation", "comentario": "Plataforma de identidad, blueprints, Conditional Access, ID Protection y relación de licenciamiento con Microsoft Agent 365 y M365 E7.", "verificacion": "Verificado vía Microsoft Learn MCP (actualizado jun-2026, consultado 2026-11-11)"}, {"id": "REF-09", "titulo": "Subscription Suites Licensing Guidance (M365 E5, E7, Defender Suite & Purview Suite)", "url": "https://www.microsoft.com/licensing/guidance/subscription-suites", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Licensing", "comentario": "Tabla contractual oficial que documenta M365 E5, M365 E7, Microsoft Defender Suite (antes E5 Security) y Microsoft Purview Suite (antes E5 Compliance).", "verificacion": "Verificado vía búsqueda web sobre microsoft.com (2026-11-11)"}, {"id": "REF-10", "titulo": "AADSignInEventsBeta replacement by EntraIdSignInEvents in Defender XDR", "url": "https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-aadsignineventsbeta-table", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Defender XDR Documentation", "comentario": "Confirmación oficial del reemplazo de AADSignInEventsBeta por EntraIdSignInEvents efectivo el 19 de octubre de 2026.", "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"}, {"id": "REF-11", "titulo": "Secure agentic AI for your Frontier Transformation (Microsoft Agent 365 & M365 E7)", "url": "https://www.microsoft.com/en-us/security/blog/2026/03/09/secure-agentic-ai-for-your-frontier-transformation/", "tipoFuente": "Blog Oficial Microsoft", "autor": "Vasu Jakkal (CVP, Microsoft Security)", "comentario": "Anuncio ejecutivo de Microsoft Agent 365 y Microsoft 365 E7: The Frontier Suite (disponible desde el 1 de mayo de 2026).", "verificacion": "Verificado vía búsqueda web oficial (2026-11-11)"}, {"id": "REF-12", "titulo": "Microsoft Security Adoption Framework (SAF) & June 2026 MCRA Architecture Guidance", "url": "https://learn.microsoft.com/en-us/security/adoption/security-adoption-existing-guidance", "tipoFuente": "Empleado Microsoft", "autor": "Mark Simos (Principal Lead Cybersecurity Architect, Microsoft)", "comentario": "Integración del CISO Workshop, MCRA, SDL, SFI e iniciativas de modernización SecOps dentro de SAF.", "verificacion": "Verificado vía Microsoft Learn MCP y publicaciones del autor (2026-11-11)"}, {"id": "REF-13", "titulo": "Announcing Microsoft Entra Agent ID: Secure and manage your AI agents", "url": "https://techcommunity.microsoft.com/blog/microsoft-entra-blog/announcing-microsoft-entra-agent-id-secure-and-manage-your-ai-agents/3827392", "tipoFuente": "Empleado Microsoft", "autor": "Alex Simons (CVP, Microsoft Identity & Network Access)", "comentario": "Fundamentos estratégicos de gestión y protección de identidades no humanas y agentes autónomos en Microsoft Entra.", "verificacion": "Verificado vía búsqueda web Tech Community (2026-11-11)"}, {"id": "REF-14", "titulo": "Entra.News & Maester Security Testing Automation Framework", "url": "https://entra.news/archive", "tipoFuente": "Empleado Microsoft", "autor": "Merill Fernando (Principal Product Manager, Microsoft Entra)", "comentario": "Cobertura continua de novedades operativas de Microsoft Entra, M365 E7 y pruebas automatizadas de postura como código con Maester.", "verificacion": "Verificado vía búsqueda web noviembre 2026 (edición #174)"}, {"id": "REF-15", "titulo": "Defender Monthly News & Integrating Microsoft Defender/Sentinel Data Lake with Microsoft Fabric", "url": "https://jeffreyappel.nl/defender-monthly-news-october-2026/", "tipoFuente": "MVP Seguridad", "autor": "Jeffrey Appel (Microsoft Security MVP)", "comentario": "Análisis práctico sobre el onboarding integrado del Sentinel Data Lake (sep-2026), retención multi-año y novedades mensuales XDR.", "verificacion": "Verificado vía búsqueda web octubre/noviembre 2026"}, {"id": "REF-16", "titulo": "Practical Microsoft Entra, Conditional Access & Passkey Security Guides", "url": "https://janbakker.tech/categories/entra/", "tipoFuente": "MVP Seguridad", "autor": "Jan Bakker (Microsoft Security & Entra MVP)", "comentario": "Guías técnicas de implementación y endurecimiento operativo sobre Microsoft Entra, Passkeys y Global Secure Access.", "verificacion": "Verificado vía búsqueda web noviembre 2026"}, {"id": "REF-17", "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)", "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf", "tipoFuente": "Marco Normativo", "autor": "National Institute of Standards and Technology (NIST)", "comentario": "Documento normativo oficial de las 6 funciones (GV, ID, PR, DE, RS, RC), 22 categorías y 106 subcategorías.", "verificacion": "Verificado contra publicación oficial NIST CSWP 29"}, {"id": "REF-18", "titulo": "NIST CSF 2.0: Enterprise Risk Management (ERM) Quick-Start Guide (NIST SP 1303)", "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.1303.pdf", "tipoFuente": "Marco Normativo", "autor": "National Institute of Standards and Technology (NIST)", "comentario": "Guía oficial para articular registros de riesgo cibernético, apetito de riesgo y gobierno ERM corporativo.", "verificacion": "Verificado vía referencia directa en Microsoft Learn SFI"}, {"id": "REF-19", "titulo": "Cybersecurity Capability Maturity Model (C2M2) Version 2.1", "url": "https://www.energy.gov/ceser/cybersecurity-capability-maturity-model-c2m2", "tipoFuente": "Marco Normativo", "autor": "U.S. Department of Energy (DOE)", "comentario": "Modelo de evaluación táctica de madurez en 10 dominios (MIL0 a MIL3) utilizado en infraestructura crítica y empresas reguladas.", "verificacion": "Verificado contra portal oficial DOE CESER"}, {"id": "REF-20", "titulo": "Open FAIR Risk Analysis Standards & MITRE ATT&CK Enterprise v18", "url": "https://attack.mitre.org", "tipoFuente": "Marco Normativo", "autor": "The Open Group / MITRE Corporation", "comentario": "Estándares de cuantificación financiera de riesgo (LEF x LM) y taxonomía global de tácticas y técnicas adversarias.", "verificacion": "Verificado contra estándares vigentes 2026"}], "validacionesConfiguracion": [{"control": "**1. Identidad, Acceso y Red** (`01`, `02`, `22`)", "comoValidar": "`entra.microsoft.com` > `Authentication methods` / `Conditional Access` / `PIM` / `Agent ID`", "estadoEsperado": "Directiva unificada `Authentication methods` en `Migration Complete`; >=2 cuentas Break-Glass cloud-only con FIDO2/CBA probadas <=90 días; Conditional Access aplicando *Phishing-resistant MFA* a admins; >98% elevaciones vía PIM; inventario activo en `Entra Agent ID`.", "origen": "Verificado MS Learn"}, {"control": "**2. Unified SecOps & SIEM** (`03`–`08`)", "comoValidar": "`security.microsoft.com` > `Incidents` / `Exposure management` / `Microsoft Sentinel`", "estadoEsperado": "Workspace primario incorporado en `security.microsoft.com`, **Sentinel Data Lake** habilitado, **Automatic Attack Disruption** activo, tablas `EntraIdSignInEvents` y XDR fluyendo sin errores en `SentinelHealth` y **MSEM** calculando *Attack Paths*.", "origen": "Verificado MS Learn"}, {"control": "**3. IA para SOC (Agéntica)** (`09`, `22`)", "comoValidar": "`security.microsoft.com` / `securitycopilot.microsoft.com` / `admin.microsoft.com > Agents`", "estadoEsperado": "Capacidad SCU activa y monitoreada, agentes aprobados operando bajo modo definido (*Human-ON-the-Loop*) y registro unificado en **Microsoft Agent 365** con *Sponsors* asignados.", "origen": "Verificado MS Learn"}, {"control": "**4. Endpoints y Plataforma** (`10`, `11`, `12`)", "comoValidar": "`intune.microsoft.com` > `Devices` / `Endpoint security`", "estadoEsperado": "Flota inscrita en Intune evaluando cumplimiento en tiempo real, sensores MDE activos, cifrado BitLocker + claves Windows LAPS rotadas y elevación local gobernada por **Intune EPM**.", "origen": "Verificado MS Learn"}, {"control": "**5. Datos, Riesgo y GRC** (`13`–`21`)", "comoValidar": "`purview.microsoft.com` > `Compliance Manager` / `DLP` / `Audit`", "estadoEsperado": "Etiquetas de sensibilidad con cifrado desplegadas, DLP + **Insider Risk Adaptive Protection** activos, **Purview Audit (Premium)** reteniendo >=1 año, **Customer Lockbox** activo y evaluación NIST CSF 2.0 viva en **Compliance Manager**.", "origen": "Verificado MS Learn"}], "modeloMadurez": [{"nivel": "**Nivel 1 — Inicial / Reactivo**", "estadio": "NIST Tier 1 · CMMI 1 · C2M2 MIL0–1", "descripcion": "Sin comité directivo ni apetito de riesgo; ciberseguridad confinada a soporte TI; licencias E5 fragmentadas sin adopción real."}, {"nivel": "**Nivel 2 — Gestionado**", "estadio": "NIST Tier 2 · CMMI 2 · C2M2 MIL1–2", "descripcion": "Políticas fundacionales aprobadas; inventario inicial de activos; reportes técnicos mensuales sin cuantificación financiera."}, {"nivel": "**Nivel 3 — Definido y Repetible** *(Objetivo Base)*", "estadio": "NIST Tier 3 · CMMI 3 · C2M2 MIL2 (MIL3 en IAM/IR)", "descripcion": "Comité trimestral activo; apetito de riesgo aprobado; evaluación anual SFI/NIST CSF 2.0; supervisión TPRM rigurosa sobre el MSSP."}, {"nivel": "**Nivel 4 — Cuantitativo y Predictivo**", "estadio": "NIST Tier 3+ · CMMI 4 · C2M2 MIL3", "descripcion": "Cuantificación **Open FAIR** integrada al ERM corporativo; reportes en tres altitudes; inversiones decididas por reducción marginal de ALE."}, {"nivel": "**Nivel 5 — Adaptativo y Agéntico**", "estadio": "NIST Tier 4 · CMMI 5 · C2M2 MIL3 sostenido", "descripcion": "Ciberresiliencia y confianza digital integradas al negocio y M&A; gobernanza completa de ética/regulación IA y preparación criptográfica post-cuántica (PQC)."}], "rutaFormacion": {"headers": ["Rol en el Ecosistema", "Recursos Oficiales Microsoft Learn y SAF", "Ninja Trainings y Comunidad Experta (2026)", "Certificaciones Vigentes Recomendadas", "Cadencia de Acreditación", "Etiqueta"], "rows": [["**CISO y Líderes de Oficina del CISO**", "**Microsoft Security Adoption Framework (SAF)**, **The CISO Workshop**, **Integrate NIST CSF 2.0 governance (SFI)**", "*Microsoft Digital Defense Report*, *Entra.News* (Merill Fernando), foros CISO de Microsoft", "**SC-900**, **CISSP**, **CISM**, **CRISC**, **Open FAIR**", "Taller SAF/CISO en primeros 60 días; actualización ejecutiva semestral.", "`[Verificado MS Learn]` / `[Decisión / Propuesta Editorial]`"], ["**Enterprise & Cloud Security Architects**", "**MCRA (Junio 2026)**, **Zero Trust Architecture**, rutas oficiales de diseño **SC-100** y **Exposure Management**", "*Microsoft Security Exposure Management Ninja Training*, publicaciones de Mark Simos y Thomas Naunheim", "**SC-100: Microsoft Cybersecurity Architect Expert**, **SABSA SCF**", "Certificación anual renovada en Learn + revisión de cada release de MCRA.", "`[Verificado MS Learn]` / `[Decisión / Propuesta Editorial]`"], ["**SOC Manager, Analistas L1–L3 y Threat Hunters**", "**Defender XDR SecOps Guide**, **Microsoft Sentinel Operational Guide**, **Advanced Hunting KQL**", "*Defender XDR Ninja Training*, *Microsoft Sentinel Ninja Training*, *Security Copilot Ninja Training*, blog de Jeffrey Appel", "**SC-200: Microsoft Security Operations Analyst Associate**", "`SC-200` en primeros 90–120 días; 20% de horas semanales reservadas a laboratorio Kaizen.", "`[Verificado MS Learn]` / `[Decisión / Propuesta Editorial]`"], ["**Identity, Access & Agent Governance Leads**", "**Microsoft Entra SecOps Guide**, **Authentication Methods & Passkeys**, **Entra Agent ID & Agent 365**", "*Microsoft Entra Identity & Agents Ninja Training 2026*, *Maester.dev*, blogs de Merill Fernando y Jan Bakker", "**SC-300: Microsoft Identity and Access Administrator Associate**", "`SC-300` vigente + ejercicios trimestrales de políticas como código y Break-Glass.", "`[Verificado MS Learn]` / `[Decisión / Propuesta Editorial]`"], ["**Data Security, Purview & GRC Specialists**", "Rutas **Microsoft Purview (MIP, DLP, IRM, Audit, eDiscovery, Compliance Manager, DSPM for AI)**", "*Microsoft Purview Ninja Trainings*, guías oficiales **NIST CSWP 29** y **NIST SP 1303**", "**SC-401: Administering Information Security in Microsoft 365**, **CISA / CRISC**", "`SC-401` activa (reemplazo oficial de SC-400) y simulacro semestral de auditoría/eDiscovery.", "`[Verificado MS Learn]` / `[Decisión / Propuesta Editorial]`"]]}};
+const NAV_INDEX = [{"id": "00_Marco_Maestro_CISO_SOC_y_NIST", "orden": 0, "folder": "00_Marco_Maestro_CISO_SOC_y_NIST", "slug": "Marco_Maestro_CISO_SOC_y_NIST", "nombreCorto": "Marco Maestro CISO, SOC y NIST", "categoria": "Marco Transversal CISO, SOC y NIST", "htmlRel": "../00_Marco_Maestro_CISO_SOC_y_NIST/Marco_Maestro_CISO_SOC_y_NIST_Guia_Excelencia_Operacional.html"}, {"id": "01_Microsoft_Entra_ID", "orden": 1, "folder": "01_Microsoft_Entra_ID", "slug": "Microsoft_Entra_ID", "nombreCorto": "Microsoft Entra ID", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../01_Microsoft_Entra_ID/Microsoft_Entra_ID_Guia_Excelencia_Operacional.html"}, {"id": "02_Microsoft_Entra_ID_Governance", "orden": 2, "folder": "02_Microsoft_Entra_ID_Governance", "slug": "Microsoft_Entra_ID_Governance", "nombreCorto": "Microsoft Entra ID Governance", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../02_Microsoft_Entra_ID_Governance/Microsoft_Entra_ID_Governance_Guia_Excelencia_Operacional.html"}, {"id": "03_Microsoft_Defender_XDR", "orden": 3, "folder": "03_Microsoft_Defender_XDR", "slug": "Microsoft_Defender_XDR", "nombreCorto": "Defender XDR", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../03_Microsoft_Defender_XDR/Microsoft_Defender_XDR_Guia_Excelencia_Operacional.html"}, {"id": "04_Microsoft_Defender_for_Endpoint", "orden": 4, "folder": "04_Microsoft_Defender_for_Endpoint", "slug": "Microsoft_Defender_for_Endpoint", "nombreCorto": "Defender for Endpoint", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../04_Microsoft_Defender_for_Endpoint/Microsoft_Defender_for_Endpoint_Guia_Excelencia_Operacional.html"}, {"id": "05_Microsoft_Defender_for_Office_365", "orden": 5, "folder": "05_Microsoft_Defender_for_Office_365", "slug": "Microsoft_Defender_for_Office_365", "nombreCorto": "Defender for Office 365", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../05_Microsoft_Defender_for_Office_365/Microsoft_Defender_for_Office_365_Guia_Excelencia_Operacional.html"}, {"id": "06_Microsoft_Defender_for_Identity", "orden": 6, "folder": "06_Microsoft_Defender_for_Identity", "slug": "Microsoft_Defender_for_Identity", "nombreCorto": "Defender for Identity", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../06_Microsoft_Defender_for_Identity/Microsoft_Defender_for_Identity_Guia_Excelencia_Operacional.html"}, {"id": "07_Microsoft_Defender_for_Cloud_Apps", "orden": 7, "folder": "07_Microsoft_Defender_for_Cloud_Apps", "slug": "Microsoft_Defender_for_Cloud_Apps", "nombreCorto": "Defender for Cloud Apps", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../07_Microsoft_Defender_for_Cloud_Apps/Microsoft_Defender_for_Cloud_Apps_Guia_Excelencia_Operacional.html"}, {"id": "08_Microsoft_Sentinel", "orden": 8, "folder": "08_Microsoft_Sentinel", "slug": "Microsoft_Sentinel", "nombreCorto": "Microsoft Sentinel", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../08_Microsoft_Sentinel/Microsoft_Sentinel_Guia_Excelencia_Operacional.html"}, {"id": "09_Microsoft_Security_Copilot", "orden": 9, "folder": "09_Microsoft_Security_Copilot", "slug": "Microsoft_Security_Copilot", "nombreCorto": "Microsoft Security Copilot", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../09_Microsoft_Security_Copilot/Microsoft_Security_Copilot_Guia_Excelencia_Operacional.html"}, {"id": "10_Microsoft_Intune_Plan_1", "orden": 10, "folder": "10_Microsoft_Intune_Plan_1", "slug": "Microsoft_Intune_Plan_1", "nombreCorto": "Microsoft Intune Plan 1", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../10_Microsoft_Intune_Plan_1/Microsoft_Intune_Plan_1_Guia_Excelencia_Operacional.html"}, {"id": "11_Microsoft_Intune_Suite", "orden": 11, "folder": "11_Microsoft_Intune_Suite", "slug": "Microsoft_Intune_Suite", "nombreCorto": "Microsoft Intune Suite", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../11_Microsoft_Intune_Suite/Microsoft_Intune_Suite_Guia_Excelencia_Operacional.html"}, {"id": "12_Windows_Enterprise_Security_y_Cifrado", "orden": 12, "folder": "12_Windows_Enterprise_Security_y_Cifrado", "slug": "Windows_Enterprise_Security_y_Cifrado", "nombreCorto": "Windows Enterprise Security y Cifrado", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../12_Windows_Enterprise_Security_y_Cifrado/Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.html"}, {"id": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "orden": 13, "folder": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "slug": "Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "nombreCorto": "Microsoft Purview Suite", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno/Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.html"}, {"id": "14_Purview_Information_Protection", "orden": 14, "folder": "14_Purview_Information_Protection", "slug": "Purview_Information_Protection", "nombreCorto": "Purview Information Protection", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../14_Purview_Information_Protection/Purview_Information_Protection_Guia_Excelencia_Operacional.html"}, {"id": "15_Purview_Data_Loss_Prevention", "orden": 15, "folder": "15_Purview_Data_Loss_Prevention", "slug": "Purview_Data_Loss_Prevention", "nombreCorto": "Purview Data Loss Prevention", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../15_Purview_Data_Loss_Prevention/Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.html"}, {"id": "16_Purview_Data_Lifecycle_y_Records_Management", "orden": 16, "folder": "16_Purview_Data_Lifecycle_y_Records_Management", "slug": "Purview_Data_Lifecycle_y_Records_Management", "nombreCorto": "Purview DLCM y Records Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../16_Purview_Data_Lifecycle_y_Records_Management/Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.html"}, {"id": "17_Purview_Insider_Risk_Management", "orden": 17, "folder": "17_Purview_Insider_Risk_Management", "slug": "Purview_Insider_Risk_Management", "nombreCorto": "Purview Insider Risk Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../17_Purview_Insider_Risk_Management/Purview_Insider_Risk_Management_Guia_Excelencia_Operacional.html"}, {"id": "18_Purview_Communication_Compliance", "orden": 18, "folder": "18_Purview_Communication_Compliance", "slug": "Purview_Communication_Compliance", "nombreCorto": "Purview Communication Compliance", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../18_Purview_Communication_Compliance/Purview_Communication_Compliance_Guia_Excelencia_Operacional.html"}, {"id": "19_Purview_Audit_Premium", "orden": 19, "folder": "19_Purview_Audit_Premium", "slug": "Purview_Audit_Premium", "nombreCorto": "Purview Audit (Premium)", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../19_Purview_Audit_Premium/Purview_Audit_Premium_Guia_Excelencia_Operacional.html"}, {"id": "20_Purview_eDiscovery_Premium", "orden": 20, "folder": "20_Purview_eDiscovery_Premium", "slug": "Purview_eDiscovery_Premium", "nombreCorto": "Purview eDiscovery Premium", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../20_Purview_eDiscovery_Premium/Purview_eDiscovery_Premium_Guia_Excelencia_Operacional.html"}, {"id": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "orden": 21, "folder": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "slug": "Customer_Lockbox_Customer_Key_y_M365_PAM", "nombreCorto": "Customer Lockbox, Customer Key y M365 PAM", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../21_Customer_Lockbox_Customer_Key_y_M365_PAM/Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.html"}, {"id": "22_Microsoft_Agent_365", "orden": 22, "folder": "22_Microsoft_Agent_365", "slug": "Microsoft_Agent_365", "nombreCorto": "Microsoft Agent 365", "categoria": "Gobierno y Seguridad de Agentes IA", "htmlRel": "../22_Microsoft_Agent_365/Microsoft_Agent_365_Guia_Excelencia_Operacional.html"}];
+
+(() => {
+  const memStore = {};
+  const storageKey = "mseop_v3_state_" + MODULE_DATA.id;
+  function loadState() {
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      return raw ? JSON.parse(raw) : { tasks: {}, steps: {} };
+    } catch (_) {
+      return memStore[storageKey] || { tasks: {}, steps: {} };
+    }
+  }
+  function saveState(st) {
+    memStore[storageKey] = st;
+    try { window.localStorage.setItem(storageKey, JSON.stringify(st)); } catch (_) {}
+  }
+
+  let uiState = loadState();
+  if (!uiState.tasks) uiState.tasks = {};
+  if (!uiState.steps) uiState.steps = {};
+  let activeView = "view-overview";
+  let activePeriodicCad = "Diaria";
+
+  function esc(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // Converts inline Markdown (**bold**, `code`, [Verificado MS Learn], [Decisión / Propuesta Editorial]) into clean readable HTML
+  function richText(str) {
+    let s = esc(str);
+    s = s.replace(/`\[Verificado MS Learn\]`|\[Verificado MS Learn\]/g, '<span class="inline-tag tag-learn">Verificado MS Learn</span>');
+    s = s.replace(/`\[Decisión \/ Propuesta Editorial\]`|\[Decisión \/ Propuesta Editorial\]|`\[Propuesta Editorial\]`|\[Propuesta Editorial\]/g, '<span class="inline-tag tag-edit">Propuesta Editorial</span>');
+    s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    return s;
+  }
+
+  function valBadge(status) {
+    const isLearn = String(status).indexOf("Verificado") !== -1;
+    return '<span class="' + (isLearn ? "badge badge-learn" : "badge badge-editorial") + '">' + esc(status) + '</span>';
+  }
+
+  // Partition activities cleanly into Periodic vs Ad-Hoc
+  const allActs = MODULE_DATA.actividadesOperacionales || [];
+  const periodicActs = allActs.filter((a) => a.cadencia !== "Ad-Hoc");
+  const adhocActs = allActs.filter((a) => a.cadencia === "Ad-Hoc");
+  const prereqs = (MODULE_DATA.relacionM365E5 && MODULE_DATA.relacionM365E5.prerrequisitos) || [];
+  const validations = MODULE_DATA.validacionesConfiguracion || [];
+  const components = MODULE_DATA.arquitecturaYComponentes || [];
+  const rbacRoles = MODULE_DATA.rbacYRoles || [];
+
+  const dailyActs = periodicActs.filter((a) => a.cadencia === "Diaria");
+  const weeklyActs = periodicActs.filter((a) => a.cadencia === "Semanal");
+  const monthlyActs = periodicActs.filter((a) => a.cadencia === "Mensual");
+  const longCycleActs = periodicActs.filter((a) => ["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) !== -1);
+
+  // Topbar links & module switcher
+  const baseName = MODULE_DATA.slug + "_Guia_Excelencia_Operacional";
+  document.getElementById("xlsxLink").href = "./" + baseName + ".xlsx";
+  document.getElementById("mdLink").href = "./" + baseName + ".md";
+
+  const jumpSel = document.getElementById("modJumpSelect");
+  NAV_INDEX.forEach((m) => {
+    const opt = document.createElement("option");
+    opt.value = m.htmlRel;
+    opt.textContent = String(m.orden).padStart(2, "0") + " — " + m.nombreCorto;
+    if (m.id === MODULE_DATA.id) opt.selected = true;
+    jumpSel.appendChild(opt);
+  });
+  jumpSel.addEventListener("change", (e) => { if (e.target.value) window.location.href = e.target.value; });
+
+  const curIdx = NAV_INDEX.findIndex((m) => m.id === MODULE_DATA.id);
+  const prevBtn = document.getElementById("prevModBtn");
+  const nextBtn = document.getElementById("nextModBtn");
+  if (curIdx > 0) prevBtn.href = NAV_INDEX[curIdx - 1].htmlRel;
+  else { prevBtn.style.opacity = "0.4"; prevBtn.style.pointerEvents = "none"; }
+  if (curIdx >= 0 && curIdx < NAV_INDEX.length - 1) nextBtn.href = NAV_INDEX[curIdx + 1].htmlRel;
+  else { nextBtn.style.opacity = "0.4"; nextBtn.style.pointerEvents = "none"; }
+
+  document.getElementById("themeToggleBtn").addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+  });
+  document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+  // Sidebar counters
+  const totalConfigChecks = prereqs.length + validations.length;
+  document.getElementById("navCntConfig").textContent = totalConfigChecks;
+  document.getElementById("navCntDiaria").textContent = dailyActs.length;
+  document.getElementById("navCntSemanal").textContent = weeklyActs.length;
+  document.getElementById("navCntMensual").textContent = monthlyActs.length;
+  document.getElementById("navCntLargos").textContent = longCycleActs.length;
+  document.getElementById("navCntAdhoc").textContent = adhocActs.length;
+  document.getElementById("navCntQueries").textContent = (MODULE_DATA.consultasKQLyVerificacion || []).length;
+  document.getElementById("navCntKpis").textContent = (MODULE_DATA.kpisYMetricas || []).length;
+  document.getElementById("navCntNist").textContent = (MODULE_DATA.mapeoNISTCSF20 || []).length;
+
+  function switchView(viewId, periodicCadOverride) {
+    activeView = viewId;
+    if (periodicCadOverride) activePeriodicCad = periodicCadOverride;
+
+    document.querySelectorAll(".view-panel").forEach((p) => p.classList.remove("active"));
+    const target = document.getElementById(viewId);
+    if (target) target.classList.add("active");
+
+    document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+      const bv = btn.getAttribute("data-view");
+      const bc = btn.getAttribute("data-cad");
+      if (bv === viewId && (!bc || bc === activePeriodicCad)) btn.classList.add("active");
+      else btn.classList.remove("active");
+    });
+
+    if (viewId === "view-periodic") {
+      syncPeriodicSubnav();
+      renderPeriodicCards();
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      switchView(btn.getAttribute("data-view"), btn.getAttribute("data-cad") || null);
+    });
+  });
+
+  // Handle incoming URL hash (#config, #periodic-diaria, #adhoc, etc.)
+  function applyInitialHash() {
+    const h = (window.location.hash || "").replace("#", "");
+    if (h === "config") switchView("view-config");
+    else if (h === "periodic-diaria") switchView("view-periodic", "Diaria");
+    else if (h === "periodic-semanal") switchView("view-periodic", "Semanal");
+    else if (h === "periodic-mensual") switchView("view-periodic", "Mensual");
+    else if (h === "periodic-largos") switchView("view-periodic", "CICLOS_LARGOS");
+    else if (h === "adhoc") switchView("view-adhoc");
+    else if (h === "queries") switchView("view-queries");
+    else if (h === "nist") switchView("view-nist");
+  }
+
+  function updateProgressTracker() {
+    let cfgDone = 0;
+    prereqs.forEach((_, i) => { if (uiState.tasks["CFG-" + (i + 1)]) cfgDone++; });
+    validations.forEach((_, i) => { if (uiState.tasks["VAL-" + (i + 1)]) cfgDone++; });
+    const cfgPct = totalConfigChecks ? Math.round((cfgDone / totalConfigChecks) * 100) : 0;
+
+    const perDone = periodicActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const perPct = periodicActs.length ? Math.round((perDone / periodicActs.length) * 100) : 0;
+
+    const ahDone = adhocActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const ahPct = adhocActs.length ? Math.round((ahDone / adhocActs.length) * 100) : 0;
+
+    document.getElementById("sidebarProgress").innerHTML =
+      '<div class="nav-section-label" style="padding-left:0;">Tu Progreso de Revisión</div>' +
+      '<div class="prog-row"><div class="prog-head"><span>1. Configuración y Validación</span><span>' + cfgDone + '/' + totalConfigChecks + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + cfgPct + '%"></div></div></div>' +
+      '<div class="prog-row"><div class="prog-head"><span>2. Rutinas Periódicas</span><span>' + perDone + '/' + periodicActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + perPct + '%"></div></div></div>' +
+      '<div class="prog-row" style="margin-bottom:0;"><div class="prog-head"><span>3. Playbooks Ad-Hoc</span><span>' + ahDone + '/' + adhocActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + ahPct + '%"></div></div></div>';
+  }
+
+  // VISTA 0: OVERVIEW
+  document.getElementById("heroTitle").textContent = MODULE_DATA.nombre;
+  document.getElementById("heroSummary").textContent = MODULE_DATA.resumenEjecutivo;
+  document.getElementById("heroBadges").innerHTML = [
+    '<span class="badge badge-accent">Módulo ' + String(MODULE_DATA.orden).padStart(2, "0") + ' de 22</span>',
+    '<span class="badge">' + esc(MODULE_DATA.categoria) + '</span>',
+    '<span class="badge badge-learn">' + esc(MODULE_DATA.relacionM365E5.estado) + '</span>',
+    '<span class="badge">Validación: ' + esc(MODULE_DATA.fechaValidacion) + '</span>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").innerHTML = [
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 1 · Acciones Puntuales</div>' +
+        '<h3>Configuración Base y Validaciones</h3>' +
+        '<p>Qué debes habilitar al inicio (' + prereqs.length + ' prerrequisitos, ' + components.length + ' componentes y ' + rbacRoles.length + ' roles RBAC/PIM) y <strong>' + validations.length + ' validaciones "Proof of Life"</strong> para comprobar que todo quedó bien configurado.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-config">Ir a Configuración y Validaciones →</button></div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 2 · Operación Programada</div>' +
+        '<h3>Rutinas Periódicas por Frecuencia</h3>' +
+        '<p><strong>' + periodicActs.length + ' procedimientos preventivos</strong> separados con claridad en ciclos Diarios (' + dailyActs.length + '), Semanales (' + weeklyActs.length + '), Mensuales (' + monthlyActs.length + ') y Trimestrales/Anuales (' + longCycleActs.length + ').</p>' +
+      '</div>' +
+      '<div class="pill-row">' +
+        '<button class="btn btn-primary btn-sm" type="button" data-goto="view-periodic" data-gocad="Diaria">Diarias (' + dailyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Semanal">Semanales (' + weeklyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Mensual">Mensuales (' + monthlyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="CICLOS_LARGOS">Trim./Anual (' + longCycleActs.length + ')</button>' +
+      '</div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 3 · Reacción del Analista</div>' +
+        '<h3>Playbooks Ad-Hoc ante Alertas</h3>' +
+        '<p><strong>' + adhocActs.length + ' playbooks tácticos</strong> que no siguen calendario: se disparan cuando una alerta, señal de compromiso o incidente requiere contención e investigación del analista.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-adhoc">Abrir Playbooks Ad-Hoc →</button></div>' +
+    '</div>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-goto]");
+    if (!b) return;
+    switchView(b.getAttribute("data-goto"), b.getAttribute("data-gocad") || null);
+  });
+
+  const rel = MODULE_DATA.relacionM365E5;
+  document.getElementById("licensingOverviewCard").innerHTML =
+    '<h3 style="margin-top:0;font-size:20px;">Encaje de Licenciamiento en Microsoft 365 E5 y Portales Oficiales</h3>' +
+    '<p style="margin-bottom:16px;">' + richText(rel.notaLicenciamiento) + '</p>' +
+    '<div class="info-pair" style="margin-bottom:0;">' +
+      '<div class="info-box"><div class="info-label">Licencias y SKUs Aplicables</div><ul style="margin:6px 0 0 0;padding-left:20px;">' +
+        (rel.licencias || []).map((l) => '<li style="margin-bottom:6px;">' + richText(l) + '</li>').join("") +
+      '</ul></div>' +
+      '<div class="info-box"><div class="info-label">Consolas Oficiales de Administración y SOC</div><div class="pill-row" style="margin-top:10px;">' +
+        (MODULE_DATA.portalesPrincipales || []).map((u) => '<a class="btn" href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + ' ↗</a>').join("") +
+      '</div><div style="margin-top:16px;"><div class="info-label">Roles Involucrados</div><div class="pill-row" style="margin-top:6px;">' +
+        (MODULE_DATA.audiencia || []).map((au) => '<span class="badge">' + esc(au) + '</span>').join("") +
+      '</div></div></div>' +
+    '</div>';
+
+  document.getElementById("principlesGrid").innerHTML = (MODULE_DATA.principiosRectores || []).map((p) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:10px;">' +
+        '<h3 style="margin:0;font-size:17.5px;">' + esc(p.principio) + '</h3>' +
+        valBadge(p.estadoValidacion) +
+      '</div>' +
+      '<p class="muted" style="margin:0 0 12px 0;">' + richText(p.descripcion) + '</p>' +
+      (p.fuenteUrl ? '<a href="' + esc(p.fuenteUrl) + '" target="_blank" rel="noopener noreferrer">Consultar referencia en Microsoft Learn ↗</a>' : '') +
+    '</div>'
+  )).join("");
+
+  // VISTA 1: CONFIGURACIÓN PUNTUAL Y VALIDACIONES
+  function renderConfigView() {
+    document.getElementById("prereqsContainer").innerHTML = prereqs.map((pr, idx) => {
+      const code = "CFG-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '" style="padding:22px 28px;margin-bottom:16px;">' +
+          '<div class="card-title-group">' +
+            '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+            '<div style="flex:1;">' +
+              '<div class="pill-row" style="margin-bottom:6px;">' +
+                '<span class="card-code" style="margin-bottom:0;">' + code + '</span>' +
+                '<span class="badge">Acción Puntual de Puesta en Marcha</span>' +
+              '</div>' +
+              '<div style="font-size:16px;font-weight:600;">' + richText(pr) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("validationsContainer").innerHTML = validations.map((v, idx) => {
+      const code = "VAL-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + code + ' · Validación de Configuración</span>' +
+                '<h4 class="card-heading">' + richText(v.control) + '</h4>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' + valBadge(v.origen || "Verificado MS Learn") + '</div>' +
+          '</div>' +
+          '<div class="info-pair" style="margin-bottom:0;">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Dónde y Cómo Validar la Configuración</div>' +
+              '<div class="info-content">' + richText(v.comoValidar) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label">Estado / Resultado Esperado ("Proof of Life")</div>' +
+              '<div class="info-content">' + richText(v.estadoEsperado) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("componentsContainer").innerHTML = components.map((c, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">COMP-' + String(idx + 1).padStart(2, "0") + ' · Subsistema Técnico</span>' +
+            '<h4 class="card-heading">' + esc(c.componente) + '</h4>' +
+          '</div>' +
+          valBadge(c.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Qué Configurar y Habilitar en este Componente</div>' +
+            '<div class="info-content">' + richText(c.funcionOperativa) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Ruta Exacta en Consola</div>' +
+            '<div class="info-content"><code>' + esc(c.portalRuta) + '</code></div>' +
+            '<div class="info-label" style="margin-top:14px;">Integraciones que Validar</div>' +
+            '<div class="pill-row" style="margin-top:6px;">' + (c.integraciones || []).map((i) => '<span class="badge">' + esc(i) + '</span>').join("") + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+
+    document.getElementById("rbacContainer").innerHTML = rbacRoles.map((r) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">RBAC / PIM · ' + esc(r.nivelSOC) + '</span>' +
+            '<h4 class="card-heading">' + esc(r.rol) + '</h4>' +
+          '</div>' +
+          valBadge(r.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair" style="margin-bottom:14px;">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Configuración Puntual en PIM / Asignación</div>' +
+            '<div class="info-content">' + richText(r.asignacionPIM) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Alcance de Permisos a Validar</div>' +
+            '<div class="info-content">' + richText(r.permisosClave) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="validation-footer">' +
+          '<div><strong>Uso operativo autorizado:</strong> ' + richText(r.responsabilidadOperativa) + '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+
+  // Helper to render step-by-step lists with clickable step checkmarks
+  function renderStepRows(actCode, steps) {
+    return '<ol class="steps-list">' + (steps || []).map((st, idx) => {
+      const stepKey = actCode + "_S" + (idx + 1);
+      const isChecked = !!uiState.steps[stepKey];
+      return (
+        '<li class="step-row ' + (isChecked ? "step-checked" : "") + '" data-step="' + esc(stepKey) + '" title="Haz clic para marcar o desmarcar este paso">' +
+          '<span class="step-num">' + (isChecked ? "✓" : (idx + 1)) + '</span>' +
+          '<div class="step-body">' + richText(st) + '</div>' +
+        '</li>'
+      );
+    }).join("") + '</ol>';
+  }
+
+  // VISTA 2: ACCIONES PERIÓDICAS
+  const roleSet = new Set();
+  periodicActs.forEach((a) => {
+    String(a.rolResponsable || "").split(/[\/+,]/).forEach((r) => {
+      const clean = r.trim();
+      if (clean) roleSet.add(clean);
+    });
+  });
+  const perRoleSel = document.getElementById("perRole");
+  Array.from(roleSet).sort().forEach((r) => {
+    const o = document.createElement("option");
+    o.value = r; o.textContent = "Rol: " + r;
+    perRoleSel.appendChild(o);
+  });
+
+  function syncPeriodicSubnav() {
+    document.querySelectorAll("#periodicCadBar .subnav-pill").forEach((b) => {
+      b.classList.toggle("active", b.getAttribute("data-pcad") === activePeriodicCad);
+    });
+    const titles = {
+      "Diaria": ["2. Acciones Periódicas — Rutinas Diarias", "Controles diarios del turno SOC y administración para asegurar salud de plataforma, triaje a tiempo y cero caídas silenciosas."],
+      "Semanal": ["2. Acciones Periódicas — Rutinas Semanales", "Actividades semanales de tuning de falsos positivos, caza proactiva, revisión de postura e higiene operativa."],
+      "Mensual": ["2. Acciones Periódicas — Rutinas Mensuales", "Gobierno mensual de privilegios RBAC/PIM, optimización financiera/retención, pruebas de automatización y reporte ejecutivo al CISO."],
+      "CICLOS_LARGOS": ["2. Acciones Periódicas — Ciclos Trimestrales, Semestrales y Anuales", "Ejercicios Tabletop/Purple Team, análisis de cobertura MITRE ATT&CK, simulacros de continuidad y auditoría estratégica anual."],
+      "ALL_PERIODIC": ["2. Todas las Acciones Periódicas Programadas", "Listado consolidado de todas las rutinas preventivas y de gobierno del módulo (excluyendo playbooks reactivos Ad-Hoc)."]
+    };
+    const pair = titles[activePeriodicCad] || titles["ALL_PERIODIC"];
+    document.getElementById("periodicTitle").textContent = pair[0];
+    document.getElementById("periodicSubtitle").textContent = pair[1];
+  }
+
+  document.getElementById("periodicCadBar").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-pcad]");
+    if (!b) return;
+    activePeriodicCad = b.getAttribute("data-pcad");
+    syncPeriodicSubnav();
+    switchView("view-periodic", activePeriodicCad);
+  });
+
+  function getFilteredPeriodic() {
+    const q = document.getElementById("perSearch").value.trim().toLowerCase();
+    const rol = document.getElementById("perRole").value;
+    const orig = document.getElementById("perOrigin").value;
+
+    return periodicActs.filter((a) => {
+      if (activePeriodicCad === "CICLOS_LARGOS") {
+        if (["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) === -1) return false;
+      } else if (activePeriodicCad !== "ALL_PERIODIC") {
+        if (a.cadencia !== activePeriodicCad) return false;
+      }
+      if (rol !== "ALL" && String(a.rolResponsable).indexOf(rol) === -1) return false;
+      if (orig !== "ALL" && a.estadoValidacion !== orig) return false;
+      if (q) {
+        const hay = [a.codigo, a.cadencia, a.actividad, a.objetivo, a.consolaRuta, a.rolResponsable, a.evidenciaAuditable, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderPeriodicCards() {
+    const list = getFilteredPeriodic();
+    document.getElementById("perCountLabel").textContent =
+      "Mostrando " + list.length + " acciones periódicas en esta vista (haz clic en cada paso numerado para llevar control de lectura o ejecución).";
+
+    const box = document.getElementById("periodicCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay actividades periódicas que coincidan con los filtros seleccionados.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + ' aria-label="Completar ' + esc(a.codigo) + '">' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Rutina ' + esc(a.cadencia) + '</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge">' + esc(a.rolResponsable) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Objetivo de la Rutina</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Consola y Ruta Exacta</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Acciones Paso a Paso a Ejecutar y Validar (' + steps.length + ' pasos)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación de cierre y evidencia auditable:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<span>MITRE ATT&amp;CK: ' + esc(a.mitreTactic) + ' · ' + esc(a.notaValidacion) + '</span>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Ver guía oficial en MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+
+  ["perSearch", "perRole", "perOrigin"].forEach((id) => {
+    document.getElementById(id).addEventListener("input", renderPeriodicCards);
+    document.getElementById(id).addEventListener("change", renderPeriodicCards);
+  });
+
+  // VISTA 3: PLAYBOOKS AD-HOC (ALERTAS Y SEÑALES)
+  function renderAdhocCards() {
+    const q = document.getElementById("adhocSearch").value.trim().toLowerCase();
+    const list = adhocActs.filter((a) => {
+      if (!q) return true;
+      const hay = [a.codigo, a.actividad, a.disparadorAlerta, a.objetivo, a.consolaRuta, a.rolResponsable, a.mitreTactic, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+      return hay.indexOf(q) !== -1;
+    });
+
+    const box = document.getElementById("adhocCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay playbooks Ad-Hoc que coincidan con la búsqueda.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card adhoc-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Playbook Reactivo del Analista (Ad-Hoc)</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge badge-accent">MITRE: ' + esc(a.mitreTactic) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="trigger-banner">' +
+            '<div class="info-label">Señal, Alerta o Evento Disparador (Cuándo debe actuar el analista)</div>' +
+            '<div class="info-content" style="font-weight:600;">' + richText(a.disparadorAlerta) + '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Meta de Contención y Erradicación</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Analista Ejecutor y Consola de Intervención</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><strong>Rol:</strong> ' + esc(a.rolResponsable) + '<br><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Secuencia Táctica del Analista (' + steps.length + ' pasos de respuesta)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación post-contención y evidencia forense:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<button class="btn btn-sm go-queries-btn" type="button">Abrir Consultas KQL / Scripts de Apoyo →</button>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Documentación oficial de respuesta MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+  document.getElementById("adhocSearch").addEventListener("input", renderAdhocCards);
+
+  // Global delegation for task checkboxes, step rows, copy buttons & query jumps
+  document.addEventListener("change", (e) => {
+    const chk = e.target.closest(".task-checkbox");
+    if (!chk) return;
+    const key = chk.getAttribute("data-task");
+    uiState.tasks[key] = chk.checked;
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  document.addEventListener("click", (e) => {
+    const stepEl = e.target.closest(".step-row");
+    if (stepEl && !e.target.closest("a")) {
+      const sk = stepEl.getAttribute("data-step");
+      uiState.steps[sk] = !uiState.steps[sk];
+      saveState(uiState);
+      renderPeriodicCards();
+      renderAdhocCards();
+      return;
+    }
+    const copyBtn = e.target.closest(".copy-text-btn");
+    if (copyBtn) {
+      const txt = copyBtn.getAttribute("data-copy") || "";
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(() => {
+          const prev = copyBtn.textContent;
+          copyBtn.textContent = "¡Copiado!";
+          setTimeout(() => { copyBtn.textContent = prev; }, 1400);
+        });
+      }
+      return;
+    }
+    if (e.target.closest(".go-queries-btn")) {
+      switchView("view-queries");
+    }
+  });
+
+  document.getElementById("resetChecksBtn").addEventListener("click", () => {
+    uiState = { tasks: {}, steps: {} };
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  // Export CSV (all activities with action type distinction)
+  document.getElementById("exportCsvBtn").addEventListener("click", () => {
+    const hdr = ["TipoAccion", "Codigo", "Cadencia", "Actividad", "Disparador_u_Objetivo", "ConsolaRuta", "RolResponsable", "FuncionNIST", "SubcategoriaNIST", "MITRE", "EstadoValidacion", "Completado", "EvidenciaAuditable"];
+    const lines = [hdr.join(",")];
+    allActs.forEach((a) => {
+      const vals = [
+        a.tipoAccion, a.codigo, a.cadencia, a.actividad,
+        a.cadencia === "Ad-Hoc" ? a.disparadorAlerta : a.objetivo,
+        a.consolaRuta, a.rolResponsable, a.funcionNIST, a.subcategoriaNIST,
+        a.mitreTactic, a.estadoValidacion, uiState.tasks[a.codigo] ? "Si" : "No", a.evidenciaAuditable
+      ].map((v) => '"' + String(v || "").replace(/"/g, '""') + '"');
+      lines.push(vals.join(","));
+    });
+    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url; link.download = MODULE_DATA.slug + "_Guia_Operacional.csv";
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  });
+
+  // VISTA 4: QUERIES
+  function renderQueries() {
+    const q = document.getElementById("kqlSearch").value.trim().toLowerCase();
+    const uf = document.getElementById("kqlUsageFilter").value;
+    const list = (MODULE_DATA.consultasKQLyVerificacion || []).filter((it) => {
+      if (uf !== "ALL" && it.usoOperativo !== uf) return false;
+      if (q && [it.nombre, it.plataforma, it.tablaPrincipal, it.proposito, it.consulta, it.usoOperativo].join(" ").toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+
+    document.getElementById("queriesContainer").innerHTML = list.map((it, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">Q-' + String(idx + 1).padStart(2, "0") + ' · ' + esc(it.usoOperativo) + '</span>' +
+            '<h3 class="card-heading">' + esc(it.nombre) + '</h3>' +
+          '</div>' +
+          '<div class="pill-row">' +
+            '<span class="badge badge-accent">' + esc(it.plataforma) + '</span>' +
+            '<span class="badge mono">' + esc(it.tablaPrincipal) + '</span>' +
+            valBadge(it.estadoValidacion) +
+            '<button class="btn btn-sm copy-kql-btn" type="button" data-qidx="' + idx + '">Copiar consulta</button>' +
+          '</div>' +
+        '</div>' +
+        '<p style="margin:0 0 12px 0;"><strong>Qué valida o detecta:</strong> ' + richText(it.proposito) + '</p>' +
+        '<pre class="code-block">' + esc(it.consulta) + '</pre>' +
+      '</div>'
+    )).join("");
+
+    document.querySelectorAll(".copy-kql-btn").forEach((b) => {
+      b.addEventListener("click", () => {
+        const item = list[Number(b.getAttribute("data-qidx"))];
+        if (item && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(item.consulta).then(() => {
+            b.textContent = "¡Consulta copiada!";
+            setTimeout(() => { b.textContent = "Copiar consulta"; }, 1500);
+          });
+        }
+      });
+    });
+  }
+  document.getElementById("kqlSearch").addEventListener("input", renderQueries);
+  document.getElementById("kqlUsageFilter").addEventListener("change", renderQueries);
+
+  // VISTA 5: KPIs, MATURITY & TRAINING
+  document.getElementById("kpiContainer").innerHTML = (MODULE_DATA.kpisYMetricas || []).map((k) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:12px;">' +
+        '<div><span class="card-code">' + esc(k.id) + '</span><h4 class="card-heading" style="font-size:18px;">' + esc(k.nombre) + '</h4></div>' +
+        valBadge(k.estadoValidacion) +
+      '</div>' +
+      '<p style="margin:0 0 12px 0;">' + richText(k.definicion) + '</p>' +
+      '<pre class="code-block" style="margin:0 0 14px 0;">Fórmula: ' + esc(k.formula) + '</pre>' +
+      '<div class="pill-row">' +
+        '<span class="badge badge-accent">Meta: ' + esc(k.metaSugerida) + '</span>' +
+        '<span class="badge">Medición: ' + esc(k.frecuencia) + '</span>' +
+        '<span class="badge">' + esc(k.audiencia) + '</span>' +
+      '</div>' +
+      '<p class="muted" style="font-size:13px;margin:10px 0 0 0;">' + richText(k.notaValidacion) + '</p>' +
+    '</div>'
+  )).join("");
+
+  const mat = MODULE_DATA.modeloMadurez || [];
+  document.getElementById("maturityContainer").innerHTML = mat.map((m) => (
+    '<div class="spacious-card" style="padding:22px 28px;margin-bottom:14px;">' +
+      '<div class="pill-row" style="margin-bottom:6px;">' +
+        '<span class="card-code" style="margin-bottom:0;">' + richText(m.nivel) + '</span>' +
+        (m.estadio ? '<strong style="font-size:17px;">' + richText(m.estadio) + '</strong>' : '') +
+        '<span class="badge badge-editorial">Propuesta Editorial</span>' +
+      '</div>' +
+      '<div style="font-size:15.5px;">' + richText(m.descripcion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  const tr = MODULE_DATA.rutaFormacion || { headers: [], rows: [] };
+  if (tr.rows && tr.rows.length) {
+    document.getElementById("trainingContainer").innerHTML =
+      '<div class="table-wrap"><table><thead><tr>' +
+      tr.headers.map((h) => '<th>' + richText(h) + '</th>').join("") +
+      '</tr></thead><tbody>' +
+      tr.rows.map((row) => '<tr>' + row.map((cell, ci) => '<td>' + (ci === 0 ? '<strong>' + richText(cell) + '</strong>' : richText(cell)) + '</td>').join("") + '</tr>').join("") +
+      '</tbody></table></div>';
+  }
+
+  // VISTA 6: NIST CSF 2.0, AUDIT & REFS
+  function renderNist() {
+    const fn = document.getElementById("nistFuncSelect").value;
+    const rows = (MODULE_DATA.mapeoNISTCSF20 || []).filter((n) => fn === "ALL" || String(n.funcion).indexOf(fn) !== -1);
+    document.getElementById("nistCardsContainer").innerHTML = rows.map((n) => (
+      '<div class="spacious-card" style="padding:24px 30px;margin-bottom:16px;">' +
+        '<div class="card-top" style="margin-bottom:14px;">' +
+          '<div class="pill-row">' +
+            '<span class="card-code" style="margin-bottom:0;">' + esc(n.subcategoria) + '</span>' +
+            '<strong style="font-size:17px;">' + esc(n.funcion) + '</strong>' +
+          '</div>' +
+          valBadge(n.estadoValidacion) +
+        '</div>' +
+        '<p style="margin:0 0 14px 0;"><strong>Outcome NIST CSWP 29:</strong> ' + richText(n.descripcionResultado) + '</p>' +
+        '<div class="info-pair" style="margin-bottom:0;">' +
+          '<div class="info-box"><div class="info-label">Capacidad Habilitadora en Microsoft</div><div class="info-content">' + richText(n.capacidadMicrosoft) + '</div></div>' +
+          '<div class="info-box"><div class="info-label">Evidencia Auditable Reproducible</div><div class="info-content">' + richText(n.evidenciaAuditoria) + '</div></div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+  document.getElementById("nistFuncSelect").addEventListener("change", renderNist);
+
+  const vd = MODULE_DATA.validacionYDecisionesEditoriales || {};
+  document.getElementById("auditSummaryBox").innerHTML =
+    '<h4 style="margin:0 0 8px 0;font-size:18px;">Resumen de Auditoría Documental (' + esc(vd.fechaRevalidacion) + ')</h4>' +
+    '<p style="margin:0;">' + richText(vd.resumenAuditoria) + '</p>';
+
+  document.getElementById("corrContainer").innerHTML = '<ol style="padding-left:20px;margin:0;">' +
+    (vd.correccionesAplicadas || []).map((c) => '<li style="margin-bottom:12px;">' + richText(c) + '</li>').join("") + '</ol>';
+
+  document.getElementById("decContainer").innerHTML = (vd.decisionesEditoriales || []).map((d) => (
+    '<div class="info-box" style="margin-bottom:12px;">' +
+      '<div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;"><strong>' + esc(d.elemento) + '</strong>' + valBadge(d.tipo) + '</div>' +
+      '<div class="muted" style="font-size:14.5px;">' + richText(d.justificacion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  function renderRefs() {
+    const q = document.getElementById("refSearch").value.trim().toLowerCase();
+    const list = (MODULE_DATA.referenciasVerificadas || []).filter((r) => {
+      if (!q) return true;
+      return [r.id, r.titulo, r.tipoFuente, r.autor, r.comentario, r.url].join(" ").toLowerCase().indexOf(q) !== -1;
+    });
+    document.getElementById("refTableBody").innerHTML = list.map((r) => (
+      '<tr>' +
+        '<td class="mono"><strong>' + esc(r.id) + '</strong></td>' +
+        '<td><a href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer"><strong>' + esc(r.titulo) + ' ↗</strong></a><br><span class="mono muted" style="font-size:12px;">' + esc(r.url) + '</span></td>' +
+        '<td><span class="badge">' + esc(r.tipoFuente) + '</span></td>' +
+        '<td>' + esc(r.autor) + '</td>' +
+        '<td>' + richText(r.comentario) + '</td>' +
+      '</tr>'
+    )).join("");
+  }
+  document.getElementById("refSearch").addEventListener("input", renderRefs);
+
+  // Initial render
+  updateProgressTracker();
+  renderConfigView();
+  syncPeriodicSubnav();
+  renderPeriodicCards();
+  renderAdhocCards();
+  renderQueries();
+  renderNist();
+  renderRefs();
+  applyInitialHash();
+})();
+</script>
+</body>
+</html>

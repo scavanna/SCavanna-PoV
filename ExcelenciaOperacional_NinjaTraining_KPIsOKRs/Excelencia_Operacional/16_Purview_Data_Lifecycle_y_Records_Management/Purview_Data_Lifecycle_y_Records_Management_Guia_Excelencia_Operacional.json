@@ -1,0 +1,1262 @@
+{
+  "schemaVersion": "2.0",
+  "id": "16_Purview_Data_Lifecycle_y_Records_Management",
+  "orden": 16,
+  "slug": "Purview_Data_Lifecycle_y_Records_Management",
+  "nombre": "Microsoft Purview Data Lifecycle Management y Records Management",
+  "nombreCorto": "Purview DLCM y Records Management",
+  "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)",
+  "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://purview.microsoft.com",
+    "https://admin.exchange.microsoft.com",
+    "https://admin.microsoft.com",
+    "https://security.microsoft.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "Oficial de Cumplimiento y Privacidad (DPO)",
+    "Records Manager",
+    "Data Governance Lead",
+    "SOC Manager",
+    "Analistas GRC / Auditoría Interna",
+    "Administradores de Microsoft Purview, Exchange y SharePoint",
+    "Asesoría Legal (eDiscovery)"
+  ],
+  "relacionM365E5": {
+    "estado": "Incluido en Microsoft 365 E5",
+    "licencias": [
+      "Microsoft 365 E5 / E7 / A5 / G5 (incluye capacidades avanzadas de DLCM y todo Records Management)",
+      "Microsoft Purview Suite (anteriormente Microsoft Purview E5 Compliance Add-on sobre M365 E3)",
+      "Microsoft 365 F5 Compliance / F5 Security + Compliance y mini-suite Information Protection & Governance",
+      "Microsoft 365 E3 / Office 365 E3 (limitado a políticas de retención estáticas y etiquetas de retención manuales sin Records Management)",
+      "Suscripción Azure Pay-As-You-Go vinculada para retención de apps IA empresariales/terceros (vía Collection Policies) y Microsoft 365 Archive"
+    ],
+    "prerrequisitos": [
+      "Auditoría de Microsoft Purview habilitada al menos 24 horas antes de la primera acción de disposición o seguimiento de registros",
+      "Plan de servicio Records Management activo en las licencias de usuario E5 / Purview Suite para habilitar capacidades de registros y el nuevo tope de 3 TB en Auto-Expanding Archiving",
+      "Configuración de Mail-Enabled Security Groups para revisores de disposición (los grupos Microsoft 365 no están soportados en Disposition Reviews)",
+      "Habilitación explícita vía Security & Compliance PowerShell (Set-RegulatoryComplianceUI -Enabled $true) únicamente si el marco regulatorio exige Regulatory Records",
+      "Configuración de Collection Policies con captura de contenido y facturación Pay-As-You-Go para retener interacciones de aplicaciones de IA distintas de Microsoft 365 Copilot y Copilot Studio"
+    ],
+    "notaLicenciamiento": "Microsoft 365 E3 cubre únicamente políticas de retención estáticas por contenedor (Exchange, SharePoint, OneDrive, M365 Groups, Teams, Viva Engage y M365 Copilot cuando el usuario tiene licencia Copilot) y etiquetas estándar publicadas para aplicación manual. Todas las capacidades de automatización y escala —Auto-apply retention labels (SITs, KeyQL, etiquetas de sensibilidad y Trainable Classifiers; este último exclusivo de M365 E5 / Purview Suite y no incluido en O365 E5 aislado), Adaptive Policy Scopes dinámicos, retención automática de Cloud Attachments, expansión de archivo automático hasta 3 TB (desplegada en octubre de 2026) y la totalidad de Records Management (File Plan, Records, Regulatory Records, Event-based retention, Multi-stage Disposition Reviews y Proof of Disposal)— requieren Microsoft 365 E5/E7 o Microsoft Purview Suite."
+  },
+  "resumenEjecutivo": "Microsoft Purview Data Lifecycle Management (DLCM) y Records Management gobiernan de forma nativa e in-place la retención, inmutabilidad y eliminación defensible de datos a través de Exchange, SharePoint, OneDrive, Teams, Viva Engage, Cloud Attachments e interacciones con Microsoft 365 Copilot, Copilot Studio, agentes empresariales y aplicaciones GenAI de terceros. En una estrategia Zero Trust y de preparación para IA a noviembre de 2026, constituyen un control estructural de ciberseguridad: la purga sistemática de datos redundantes, obsoletos y triviales (ROT) y de deuda de retención en exempleados contrae drásticamente la superficie de oversharing en Copilot y el radio de impacto ante ransomware o exfiltración, mientras que los 4 principios determinísticos de precedencia, la declaración de Records / Regulatory Records, Preservation Lock y las revisiones de disposición de hasta 5 etapas con Proof of Disposal conservada hasta 7 años aseguran cumplimiento verificable ante auditores y reguladores.",
+  "principiosRectores": [
+    {
+      "principio": "Los 4 principios determinísticos de precedencia de retención",
+      "descripcion": "Ante políticas o etiquetas concurrentes (tras evaluar primero cualquier eDiscovery Hold salvo Priority Cleanup), Purview resuelve conflictos en orden estricto: (1) la retención prevalece sobre la eliminación, (2) gana el período de retención más largo, (3) lo explícito (etiqueta) gana sobre lo implícito (política) en eliminaciones, y (4) gana el período de eliminación más corto.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/retention"
+    },
+    {
+      "principio": "Minimización activa de datos ROT como defensa pre-IA y Zero Trust (Assume Breach)",
+      "descripcion": "Eliminar defensiblemente correos, documentos obsoletos, deuda de retención de exempleados y chats efímeros de IA reduce la exposición semántica en Microsoft 365 Copilot y contrae el volumen de datos comprometibles en una intrusión.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/retention-policies-copilot"
+    },
+    {
+      "principio": "Gobierno in-place sin duplicación y separación clara entre Retención y Backup",
+      "descripcion": "Conservar y bloquear registros directamente en Preservation Hold Library, Recoverable Items y SubstrateHolds sin bóvedas externas, distinguiendo el cumplimiento normativo (DLCM/RM) de la recuperación operativa masiva ante desastres (Microsoft 365 Backup).",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/manage-data-governance"
+    },
+    {
+      "principio": "Automatización dinámica a escala mediante Adaptive Scopes y clasificación inteligente",
+      "descripcion": "Sustituir listas estáticas limitadas por Adaptive Policy Scopes basados en atributos de Entra ID y SharePoint, aplicando etiquetas automáticamente por SITs, KeyQL, etiquetas de sensibilidad, Trainable Classifiers y Cloud Attachments.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/purview-adaptive-scopes"
+    },
+    {
+      "principio": "Inmutabilidad graduada y prudencia extrema con controles irreversibles",
+      "descripcion": "Utilizar etiquetas Record (bloqueadas/desbloqueadas) para registros corporativos generales y reservar Regulatory Records y Preservation Lock exclusivamente para mandatos regulatorios explícitos, dado su carácter irreversible incluso para Global Administrators.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/records-management"
+    },
+    {
+      "principio": "Disposición defensible con segregación estricta de funciones y Proof of Disposal",
+      "descripcion": "Separar el diseño del File Plan de la aprobación humana en revisiones de hasta 5 etapas (y exigir triple aprobación independiente en Priority Cleanup), preservando certificados auditables de destrucción hasta por 7 años.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/disposition"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Retention Policies y Ubicaciones Separadas para Copilot e IA",
+      "funcionOperativa": "Gobierno implícito a nivel contenedor en Exchange, SharePoint, OneDrive, M365 Groups, Teams, Viva Engage y las tres ubicaciones dedicadas de IA (Microsoft Copilot experiences, Enterprise AI apps y Other AI apps) respaldadas por SubstrateHolds.",
+      "portalRuta": "purview.microsoft.com > Solutions > Data Lifecycle Management > Policies > Retention policies",
+      "integraciones": [
+        "Exchange Online (Recoverable Items / SubstrateHolds)",
+        "SharePoint y OneDrive (Preservation Hold Library)",
+        "Microsoft 365 Copilot, Copilot Studio y Collection Policies IA"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Adaptive Policy Scopes (Ámbitos de Política Adaptables)",
+      "funcionOperativa": "Motor dinámico que evalúa diariamente atributos de usuarios Entra ID, propiedades administradas de sitios SharePoint, grupos M365 e Inactive Mailboxes para superar límites estáticos y corregir deuda de retención.",
+      "portalRuta": "purview.microsoft.com > Settings > Roles and scopes > Adaptive scopes",
+      "integraciones": [
+        "Microsoft Entra ID",
+        "SharePoint Online Managed Properties",
+        "Purview Administrative Units"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "File Plan y Catálogo de Retention Labels",
+      "funcionOperativa": "Gestión estructurada de hasta 1.000 etiquetas de retención con importación/exportación CSV masiva y descriptores normativos (Reference ID, Department, Category, Authority type, Citation).",
+      "portalRuta": "purview.microsoft.com > Solutions > Records Management > File plan",
+      "integraciones": [
+        "Microsoft Purview Compliance Manager",
+        "Outlook, SharePoint y OneDrive UI",
+        "Security & Compliance PowerShell (Get-ComplianceTag)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Auto-Apply Label Policies y Retención de Cloud Attachments",
+      "funcionOperativa": "Aplicación automática de etiquetas por SITs, consultas KeyQL, etiquetas de sensibilidad, Trainable Classifiers y captura inmutable de la versión exacta de archivos compartidos mediante enlaces en la nube.",
+      "portalRuta": "purview.microsoft.com > Solutions > Records Management > Label policies > Auto-apply a label",
+      "integraciones": [
+        "Purview Information Protection (Sensitivity Labels & SITs)",
+        "Trainable Classifiers",
+        "Microsoft Teams, Exchange y Copilot links"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Motor de Declaración de Records y Regulatory Records",
+      "funcionOperativa": "Imposición de restricciones de edición, movimiento y borrado mediante Record Versioning en SharePoint/OneDrive y Regulatory Records inmutables habilitados vía PowerShell Set-RegulatoryComplianceUI.",
+      "portalRuta": "purview.microsoft.com > Solutions > Records Management > File plan + PowerShell Set-RegulatoryComplianceUI",
+      "integraciones": [
+        "SharePoint Record Versioning & vti_writevalidationtoken",
+        "Exchange Online Mailbox Store",
+        "Purview Unified Audit Log"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Event-Based Retention (Retención Basada en Eventos)",
+      "funcionOperativa": "Inicio diferido del período de retención a partir de eventos externos de negocio (hasta 1.000.000 de eventos por tenant) correlacionando EventType con ComplianceAssetID o consultas KeyQL.",
+      "portalRuta": "purview.microsoft.com > Solutions > Records Management > Events",
+      "integraciones": [
+        "Microsoft Graph Records Management API (/security/triggers/retentionEvents)",
+        "Sistemas HRIS / ERP / CLM",
+        "SharePoint Document Properties (ComplianceAssetID)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Multi-Stage Disposition Reviews y Proof of Disposal",
+      "funcionOperativa": "Flujo secuencial de revisión humana de hasta 5 etapas con acciones Approve disposal, Extend, Relabel o Add reviewers, eliminación permanente en hasta 15 días tras aprobación final y evidencia conservada hasta 7 años.",
+      "portalRuta": "purview.microsoft.com > Solutions > Records Management > Disposition",
+      "integraciones": [
+        "Mail-Enabled Security Groups",
+        "Content Explorer Mini-Preview",
+        "Purview Audit / Microsoft Graph AuditLogQuery"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Preservation Lock, Priority Cleanup y Sustrato Archive / Inactive Mailboxes",
+      "funcionOperativa": "Bloqueo regulatorio irreversible (-RestrictiveRetention $true), purga acelerada con triple aprobación para derrames sensibles (bloqueada sobre Records) y archivo auto-expandible ampliado hasta 3 TB en E5.",
+      "portalRuta": "purview.microsoft.com > Data Lifecycle Management > Priority cleanup + Exchange PowerShell",
+      "integraciones": [
+        "Exchange Online Auto-Expanding Archiving (3 TB) & Inactive Mailboxes",
+        "Purview Insider Risk Management (Adaptive Protection 120-day retention)",
+        "Purview eDiscovery Holds & Microsoft 365 Archive"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "Records Management (Role Group integrado)",
+      "nivelSOC": "Arquitecto de Gobierno / Líder de Registros (L3)",
+      "permisosClave": "Agrupa Retention Management, Disposition Management y View-Only Audit Logs para configurar File Plan, etiquetas de registro, descriptores y eventos.",
+      "asignacionPIM": "Elegible en Entra ID PIM (máx. 4 horas JIT, MFA resistente a phishing y ticket de cambio aprobado por Comité de Retención).",
+      "responsabilidadOperativa": "Diseño estructural del File Plan y políticas maestras; en producción se segrega la aprobación cotidiana de disposiciones en un grupo separado.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Retention Manager (en Role Group personalizado de Ingeniería DLCM)",
+      "nivelSOC": "Ingeniero de Plataforma Purview (L2/L3)",
+      "permisosClave": "Creación y administración de políticas de retención, Adaptive Scopes, etiquetas estándar y auto-aplicación sin incluir el rol Disposition Management.",
+      "asignacionPIM": "Elegible JIT (máx. 4 horas) vinculada a solicitud aprobada.",
+      "responsabilidadOperativa": "Implementar y mantener políticas de ciclo de vida sobre cargas M365 e IA sin facultad para autorizar destrucción final de registros.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Disposition Reviewers (Role Group personalizado con rol Disposition Management)",
+      "nivelSOC": "Dueños de Datos / Legal / Archivo (Negocio & GRC)",
+      "permisosClave": "Acceso exclusivo a la página Disposition para ejecutar Approve disposal, Extend, Relabel o Add reviewers sobre los ítems asignados a su etapa.",
+      "asignacionPIM": "Membresía controlada en Mail-Enabled Security Groups auditada trimestralmente mediante Entra ID Access Reviews.",
+      "responsabilidadOperativa": "Ejecutar las etapas 1 a 5 de revisión de disposición sin permisos para editar etiquetas ni desactivar políticas (ni siquiera Global Admin tiene este rol por defecto).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Content Explorer Content Viewer",
+      "nivelSOC": "Investigador Autorizado / Revisor Excepcional",
+      "permisosClave": "Permite leer el cuerpo real de documentos y correos electrónicos en el panel de vista previa de Disposition y Content Explorer.",
+      "asignacionPIM": "Estricto JIT (máx. 2 horas) con aprobación dual de Privacidad y Legal.",
+      "responsabilidadOperativa": "Inspección puntual de contenido cuando los metadatos indexados resultan insuficientes para resolver una disposición o validar auto-etiquetado.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Tríada Priority Cleanup (Priority Cleanup Admin + Retention Admin + eDiscovery Admin)",
+      "nivelSOC": "Respuesta a Incidentes de Datos / Crisis (L3 + Legal)",
+      "permisosClave": "Creación, validación y aprobación tripartita obligatoria de trabajos de Priority Cleanup sobre elementos retenidos o en hold.",
+      "asignacionPIM": "Activación JIT de emergencia ante incidente confirmado; exige tres identidades humanas distintas.",
+      "responsabilidadOperativa": "Garantizar control mancomunado al purgar derrames críticos de datos sensibles sin posibilidad de abuso individual.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "View-Only Retention Management y View-Only Record Management",
+      "nivelSOC": "Analista SOC / GRC / Auditor Interno o Externo",
+      "permisosClave": "Lectura completa del File Plan, políticas de retención, Adaptive Scopes y estado de despliegue sin permisos de modificación.",
+      "asignacionPIM": "Permanente para monitoreo SOC/GRC o asignación con fecha de expiración automática para auditores externos.",
+      "responsabilidadOperativa": "Supervisión continua de postura, levantamiento de métricas KPI y auditoría independiente sin riesgo operativo.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Exchange Administrator",
+      "nivelSOC": "Ingeniero de Infraestructura M365",
+      "permisosClave": "Administración de Archive Mailboxes, AutoExpandingArchive (hasta 3 TB), Start-ManagedFolderAssistant, Inactive Mailboxes y Delay Holds.",
+      "asignacionPIM": "Elegible en Entra ID PIM (máx. 2 horas JIT desde PAW).",
+      "responsabilidadOperativa": "Mantener la capacidad y salud operativa del sustrato de almacenamiento en Exchange Online sin alterar definiciones legales del File Plan.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo de estado de distribución y errores en políticas de retención y etiquetas",
+      "objetivo": "Detectar fallos de sincronización (DistributionStatus distinto de Success) antes de que provoquen brechas de preservación.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Data Lifecycle Management > Policies > Retention policies / Label policies",
+      "procedimiento": [
+        "1. Ordenar por Status las vistas de Retention policies y Label policies en el portal de Microsoft Purview.",
+        "2. Identificar directivas en Error o Pending por encima de la ventana normal de propagación de hasta 7 días.",
+        "3. Ejecutar en Security & Compliance PowerShell Get-RetentionCompliancePolicy -DistributionDetail para aislar la ubicación fallida.",
+        "4. Corregir referencias inválidas o excesos sobre límites estáticos y documentar el ticket de remediación."
+      ],
+      "rolResponsable": "Administrador DLCM (View-Only / Retention Manager)",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Defense Evasion (T1562 - Impair Defenses)",
+      "evidenciaAuditable": "Exportación diaria de DistributionStatus sin errores críticos abiertos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Cmdlet Get-RetentionCompliancePolicy -DistributionDetail y ventana de propagación verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/retention-limits"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Auditoría diaria de cambios administrativos en políticas, etiquetas y Set-RegulatoryComplianceUI",
+      "objetivo": "Confirmar que toda modificación de retención o habilitación de Regulatory Records cuente con aprobación de gestión de cambios.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit y Microsoft Sentinel (OfficeActivity)",
+      "procedimiento": [
+        "1. Filtrar eventos de las últimas 24 horas: New/Set/Remove-RetentionCompliancePolicy, Set-ComplianceTag y Enabled regulatory record option for retention labels.",
+        "2. Conciliar cada operación con el ticket aprobado del Comité de Retención y la sesión PIM correspondiente.",
+        "3. Verificar ausencia de reducciones no autorizadas en RetentionDuration.",
+        "4. Activar el playbook AH-03 ante cualquier cambio sin respaldo documental."
+      ],
+      "rolResponsable": "Analista GRC / SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Impact (T1485 - Data Destruction)",
+      "evidenciaAuditable": "Bitácora diaria conciliada de eventos administrativos en Purview Audit / Graph AuditLogQuery.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Eventos auditables verificados en declare-records y audit-log-activities.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/declare-records"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Seguimiento de cola activa de revisiones de disposición próximas a vencer o auto-aprobarse",
+      "objetivo": "Evitar que registros en Pending dispositions superen el SLA interno o disparen auto-aprobación sin supervisión humana.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Records Management > Disposition",
+      "procedimiento": [
+        "1. Inspeccionar el contador de Pending dispositions en Records Management > Overview y abrir Disposition.",
+        "2. Filtrar ítems con más de 10 días hábiles pendientes o próximos al umbral opcional de auto-aprobación (7-365 días).",
+        "3. Validar que los revisores pertenezcan al mail-enabled security group y posean el rol Disposition Management.",
+        "4. Escalar recordatorio operativo o habilitar al revisor suplente autorizado."
+      ],
+      "rolResponsable": "Records Manager",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-02",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Exportación CSV diaria de Pending disposition sin elementos fuera de SLA.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mecanismo técnico verificado en MS Learn; umbral preventivo de 10 días hábiles definido como SLA editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/disposition"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Conciliación diaria de eventos transaccionales en Event-Based Retention",
+      "objetivo": "Verificar que los eventos disparados vía Graph API o PowerShell contengan siempre ComplianceAssetID o consulta KeyQL acotada.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Records Management > Events",
+      "procedimiento": [
+        "1. Revisar las ejecuciones diarias hacia Microsoft Graph (/security/triggers/retentionEvents) o New-ComplianceRetentionEvent.",
+        "2. Confirmar que cada evento incluya Asset ID o Keywords explícitos (omitirlos dispara por error la retención sobre todo el EventType).",
+        "3. Auditar el conteo de documentos sincronizados tras la ventana de hasta 7 días.",
+        "4. Reemitir evento equivalente si se cargaron documentos tardíos al expediente cerrado."
+      ],
+      "rolResponsable": "Records Manager / Ingeniero GRC",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-01",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Listado diario de eventos verificados al 100% con Asset ID válido.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Comportamiento crítico ante omisión de Asset ID y uso de Microsoft Graph API verificados en event-driven-retention.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/event-driven-retention"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Supervisión de alertas y ejecuciones activas de Priority Cleanup",
+      "objetivo": "Asegurar que toda limpieza prioritaria sobre datos retenidos cuente con las tres aprobaciones obligatorias e independientes.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Data Lifecycle Management > Priority cleanup y Audit",
+      "procedimiento": [
+        "1. Revisar si existen trabajos de Priority Cleanup creados, pendientes de aprobación o en curso.",
+        "2. Consultar en Purview Audit por el ID de la limpieza las aprobaciones de Retention Admin, eDiscovery Admin y Priority Cleanup Admin.",
+        "3. Verificar la acotación exacta de la consulta KQL al incidente de derrame de datos.",
+        "4. Resguardar el log de cierre al concluir la purga."
+      ],
+      "rolResponsable": "Oficial de Cumplimiento / SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Exfiltration Containment (TA0010)",
+      "evidenciaAuditable": "Trazabilidad en Audit por ID de Priority Cleanup con triple aprobación registrada.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Triple aprobación y seguimiento por ID verificados en priority-cleanup-exchange.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/priority-cleanup-exchange"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Verificación de conversión a Inactive Mailboxes en bajas críticas de personal",
+      "objetivo": "Garantizar la preservación de correo e interacciones de Copilot/Teams antes y después de eliminar cuentas en Entra ID.",
+      "consolaRuta": "Exchange Online PowerShell (Get-Mailbox / Get-Mailbox -InactiveMailboxOnly)",
+      "procedimiento": [
+        "1. Validar que la cuenta saliente tenga aplicado un hold de retención Retain o Retain and then delete antes de borrar el usuario.",
+        "2. Confirmar que no se modifique el UPN ni PrimarySmtpAddress antes del borrado (para no bloquear futuras exclusiones de políticas).",
+        "3. Ejecutar Get-Mailbox -InactiveMailboxOnly para corroborar la conversión exitosa a buzón inactivo."
+      ],
+      "rolResponsable": "Administrador Exchange / Analista IAM",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-11",
+      "mitreTactic": "Impact (T1485 - Data Destruction Prevention)",
+      "evidenciaAuditable": "Reporte diario automatizado de pre-validación de holds e Inactive Mailboxes creados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Requisitos de conversión y advertencia oficial sobre cambio de UPN verificados en inactive-mailboxes-in-office-365.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/inactive-mailboxes-in-office-365"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo de cuotas en Recoverable Items y Auto-Expanding Archives hasta 3 TB",
+      "objetivo": "Prevenir bloqueos operativos de buzones bajo retención y habilitar oportunamente la expansión automática de archivo.",
+      "consolaRuta": "admin.exchange.microsoft.com > Recipients > Mailboxes y Exchange Online PowerShell",
+      "procedimiento": [
+        "1. Detectar buzones primarios cuyo TotalDeletedItemSize supere el 85% de RecoverableItemsQuota (100 GB / 110 GB bajo hold).",
+        "2. Habilitar Archive Mailbox y AutoExpandingArchive con antelación (aprovisionamiento auxiliar de hasta 30 días, tope 1 GB/día).",
+        "3. Verificar licencia E5 / Purview Suite con plan Records Management habilitado para acceder al límite ampliado de 3 TB."
+      ],
+      "rolResponsable": "Administrador Exchange Online",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-11",
+      "mitreTactic": "Impact (T1499 - Service Continuity)",
+      "evidenciaAuditable": "Salida diaria del monitoreo de cuotas Recoverable Items y estado AutoExpandingArchiveEnabled.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Límite de 3 TB desde octubre de 2026 y tasa de 1 GB/día verificados en autoexpanding-archiving.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/autoexpanding-archiving"
+    },
+    {
+      "codigo": "D-08",
+      "cadencia": "Diaria",
+      "actividad": "Verificación de políticas de retención y Collection Policies para Copilot y aplicaciones IA",
+      "objetivo": "Confirmar que los prompts y respuestas de Microsoft Copilot experiences, Enterprise AI apps y Other AI apps se gobiernen sin brechas.",
+      "consolaRuta": "purview.microsoft.com > Data Lifecycle Management > Policies > Retention policies y Settings > Collection policies",
+      "procedimiento": [
+        "1. Comprobar estado Success en políticas para Microsoft Copilot experiences, Enterprise AI apps y Other AI apps.",
+        "2. Verificar que las Collection Policies con captura de contenido activa sigan habilitadas para IA distinta de M365 Copilot / Copilot Studio.",
+        "3. Confirmar operatividad sin alertas de la suscripción Azure Pay-As-You-Go vinculada."
+      ],
+      "rolResponsable": "Administrador DLCM / Especialista Seguridad IA",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-03",
+      "mitreTactic": "Collection (TA0009)",
+      "evidenciaAuditable": "Estado activo verificado de políticas de retención IA y Collection Policies en Purview.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tres familias de ubicaciones IA y dependencia de Collection Policies verificadas en retention-policies-copilot.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/retention-policies-copilot"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Muestreo de precisión en políticas de auto-aplicación de etiquetas y Cloud Attachments",
+      "objetivo": "Evaluar exactitud de etiquetado automático por SITs, KeyQL, etiquetas de sensibilidad, Trainable Classifiers y vínculos compartidos.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Data Lifecycle Management > Explorers > Content explorer / Activity explorer",
+      "procedimiento": [
+        "1. Analizar en Activity explorer los eventos semanales de aplicación automática de etiquetas.",
+        "2. Auditar en modo simulación toda política nueva antes de activarla en producción (propagación de hasta 7 días).",
+        "3. Ajustar consultas KeyQL o clasificadores entrenables si la precisión muestral desciende por debajo del 92%."
+      ],
+      "rolResponsable": "Records Manager / Ingeniero DLCM",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-07",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Acta semanal de validación de precisión sobre muestra auditada en Content Explorer.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Simulación y límites verificados en MS Learn; meta de precisión >= 92% definida como estándar editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/apply-retention-labels-automatically"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría de membresía dinámica e higiene de atributos en Adaptive Policy Scopes",
+      "objetivo": "Garantizar que las consultas dinámicas cubran sin puntos ciegos usuarios Entra ID, sitios SharePoint, grupos M365 e Inactive Mailboxes.",
+      "consolaRuta": "purview.microsoft.com > Settings > Roles and scopes > Adaptive scopes",
+      "procedimiento": [
+        "1. Revisar Scope details en cada ámbito adaptable productivo.",
+        "2. Detectar cuentas o sitios nuevos con atributos vacíos (Department, Country, RefinableString) que impidan su inclusión.",
+        "3. Solicitar normalización de metadatos a los administradores de Entra ID y SharePoint."
+      ],
+      "rolResponsable": "Administrador DLCM",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-07",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Exportación semanal de membresía por Adaptive Scope y reporte de corrección de atributos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Evaluación diaria de atributos y vista Scope details verificadas en purview-adaptive-scopes.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-adaptive-scopes"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Ejecución de mesas semanales de revisión de disposición multi-etapa (etapas 1 a 5)",
+      "objetivo": "Resolver con justificación trazable los registros vencidos tras el recordatorio semanal automático por correo.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Records Management > Disposition",
+      "procedimiento": [
+        "1. Inspeccionar pestañas Details e History de los ítems pendientes por etiqueta.",
+        "2. Ejecutar Approve disposal (purga permanente dentro de 15 días tras la etapa final), Extend o Relabel documentando motivo.",
+        "3. Suspender eliminación y escalar a Legal si surge notificación de litigio."
+      ],
+      "rolResponsable": "Disposition Reviewers y Records Manager",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Registros semanales de Disposition review activities en Purview Audit.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Opciones de revisión, recordatorios semanales y plazo de 15 días verificados en disposition.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/disposition"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Monitoreo de crecimiento en Preservation Hold Libraries y paso a Microsoft 365 Archive",
+      "objetivo": "Optimizar almacenamiento consumido por versiones retenidas y Cloud Attachments en SharePoint/OneDrive.",
+      "consolaRuta": "SharePoint Admin Center > Active sites y Azure Cost Management",
+      "procedimiento": [
+        "1. Identificar los sitios SharePoint con mayor incremento semanal en Preservation Hold Library.",
+        "2. Aislar escrituras repetitivas automatizadas de archivos pesados bajo políticas de contenedor amplias.",
+        "3. Evaluar traslado de sitios inactivos de larga retención hacia Microsoft 365 Archive preservando etiquetas in-place."
+      ],
+      "rolResponsable": "Administrador SharePoint / FinOps / DLCM Lead",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-03",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Reporte semanal de consumo PHL y medidores Pay-As-You-Go de Microsoft 365 Archive.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Impacto en cuota de PHL y compatibilidad con Microsoft 365 Archive verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/microsoft-365/archive/archive-overview"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Revisión de intentos bloqueados o remoción administrativa de etiquetas en Records",
+      "objetivo": "Detectar acciones de ocultamiento (Clean-up) o cambios indebidos de etiquetas por administradores de contenedores.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit y Activity explorer",
+      "procedimiento": [
+        "1. Auditar eventos de remoción o cambio de etiquetas de registro efectuados por container admins en SharePoint/OneDrive.",
+        "2. Verificar integridad de ajustes globales en Settings > Solution settings > Records Management > Retention Labels.",
+        "3. Correlacionar usuarios con intentos anómalos de borrado con Purview Insider Risk Management."
+      ],
+      "rolResponsable": "Analista SOC L2 / Records Manager",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Defense Evasion & Impact (T1070 / T1485)",
+      "evidenciaAuditable": "Informe semanal de auditoría sobre integridad de etiquetas de registro.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Facultad de container admin sobre Record bloqueado estándar y ajustes de tenant verificados en records-management.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/records-management"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Gobernanza de ciclo de vida sobre nuevos sitios M365, Teams y agentes Copilot Studio",
+      "objetivo": "Asegurar que todo nuevo contenedor colaborativo o agente IA herede políticas de retención desde su creación.",
+      "consolaRuta": "SharePoint Admin Center, Power Platform Admin Center y purview.microsoft.com",
+      "procedimiento": [
+        "1. Extraer altas semanales de sitios SharePoint, equipos Teams y agentes en Copilot Studio / Foundry.",
+        "2. Validar metadatos requeridos para Adaptive Scopes y etiquetas predeterminadas en bibliotecas reguladas.",
+        "3. Confirmar cobertura efectiva en las políticas de Microsoft Copilot experiences y Enterprise AI apps."
+      ],
+      "rolResponsable": "Ingeniero de Gobierno de Datos",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-01",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Checklist semanal automatizado con 100% de activos nuevos bajo política base.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Control operativo preventivo alineado a capacidades de retención de SharePoint y Copilot Studio.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/retention-policies-copilot"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Exportación, conciliación y archivo firmado de Proof of Disposal",
+      "objetivo": "Preservar prueba legal inmutable de destrucción de registros extendiendo el resguardo nativo de 7 años.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Records Management > Disposition > Disposed items y Graph AuditLogQuery",
+      "procedimiento": [
+        "1. Exportar a CSV la pestaña Disposed items del mes cerrado para todas las etiquetas de registro.",
+        "2. Ejecutar consulta en Microsoft Graph AuditLogQuery para Approved disposal y Deleted file marked as a record.",
+        "3. Calcular hash SHA-256 del paquete mensual y resguardarlo en repositorio regulado de Auditoría Interna."
+      ],
+      "rolResponsable": "Records Manager",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Paquete mensual CSV + logs Audit + hash SHA-256 archivado (12 cierres anuales).",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Exportación CSV y retención nativa de 7 años verificadas en MS Learn; sellado SHA-256 externo propuesto para plazos mayores.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/disposition"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Medición y saneamiento de deuda de retención en Inactive Mailboxes y OneDrive",
+      "objetivo": "Eliminar retenciones indefinidas sobre exempleados sustituyendo holds perpetuos por Adaptive Scopes con expiración legal.",
+      "consolaRuta": "Exchange Online PowerShell (Get-Mailbox -InactiveMailboxOnly) y purview.microsoft.com > Adaptive scopes",
+      "procedimiento": [
+        "1. Inventariar todos los Inactive Mailboxes con antigüedad, InPlaceHolds, LitigationHoldEnabled y DelayHoldApplied.",
+        "2. Identificar buzones retenidos por políticas estáticas de solo retener o holds de casos eDiscovery cerrados.",
+        "3. Con aprobación de Legal, migrar hacia Adaptive Scopes dedicados a exempleados con acción Retain and then delete."
+      ],
+      "rolResponsable": "Oficial de Cumplimiento / Administrador Exchange",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-03",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Informe mensual de reducción de deuda de retención en exempleados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Uso recomendado de Adaptive Scopes sobre Inactive Mailboxes verificado en inactive-mailboxes-in-office-365.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/inactive-mailboxes-in-office-365"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Evaluación de superficie ROT pre-IA y verificación de purga en SubstrateHolds",
+      "objetivo": "Reducir el riesgo de oversharing en Microsoft 365 Copilot eliminando datos obsoletos y validando el purgado de interacciones IA.",
+      "consolaRuta": "purview.microsoft.com > Solutions > DSPM for AI y eDiscovery > Content search",
+      "procedimiento": [
+        "1. Cruzar sitios con alto riesgo de oversharing en DSPM for AI contra políticas activas de eliminación de ROT.",
+        "2. Ejecutar muestreo en eDiscovery verificando que prompts IA expirados salgan de SubstrateHolds tras el ciclo de timer jobs.",
+        "3. Presentar al CISO el volumen mensual de datos ROT purgados defensiblemente."
+      ],
+      "rolResponsable": "Data Governance Lead / Arquitecto Seguridad IA",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-05",
+      "mitreTactic": "Collection (TA0009)",
+      "evidenciaAuditable": "Tablero mensual de reducción de ROT y prueba muestral de purga en SubstrateHolds.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Verificación mediante herramientas eDiscovery sobre SubstrateHolds documentada oficialmente en retention-policies-copilot.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/retention-policies-copilot"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Conciliación mensual de registros basados en eventos sin Asset ID o con evento omitido",
+      "objetivo": "Detectar registros que quedarían retenidos indefinidamente por falta de ComplianceAssetID o evento no disparado.",
+      "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Content search y Records Management > Events",
+      "procedimiento": [
+        "1. Buscar elementos con etiquetas EventAgeInDays cuya propiedad ComplianceAssetID esté vacía.",
+        "2. Conciliar bajas de RR. HH. y vencimientos contractuales del mes contra eventos registrados en Purview.",
+        "3. Completar Asset IDs faltantes y disparar eventos omitidos vía Graph API."
+      ],
+      "rolResponsable": "Records Manager y Dueños de Proceso",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-07",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Acta mensual de conciliación de eventos sin registros huérfanos > 30 días.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Retención indefinida hasta disparo del evento y búsqueda por ComplianceAssetID verificadas en event-driven-retention.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/event-driven-retention"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría mensual de privilegios RBAC/PIM, límite de revisores y costos Pay-As-You-Go",
+      "objetivo": "Asegurar mínimo privilegio, vigilar el límite de 200 revisores por tenant y auditar facturación Pay-As-You-Go.",
+      "consolaRuta": "purview.microsoft.com > Settings > Roles and groups, Entra PIM y Azure Cost Management",
+      "procedimiento": [
+        "1. Auditar membresías activas y elegibles en roles de Records, Retention, Disposition, Content Viewer y Priority Cleanup.",
+        "2. Verificar que el total de revisores/grupos de disposición se mantenga bajo el límite de 200 por tenant.",
+        "3. Revisar cargos mensuales Pay-As-You-Go de captura IA externa y Microsoft 365 Archive."
+      ],
+      "rolResponsable": "Analista GRC / FinOps",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Privilege Escalation (TA0004)",
+      "evidenciaAuditable": "Reporte mensual de revisión RBAC/PIM y estado presupuestario Pay-As-You-Go.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Límite de 200 revisores por tenant y expiración de roles verificados en retention-limits y whats-new.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/retention-limits"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Revisión integral del File Plan frente a cambios normativos y simplificación de series",
+      "objetivo": "Alinear el File Plan con nuevas regulaciones evitando la proliferación excesiva de etiquetas.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Records Management > File plan > Export y Compliance Manager",
+      "procedimiento": [
+        "1. Exportar el File Plan completo a CSV revisando descriptores legales, plazos y flujos de disposición.",
+        "2. Contrastar contra reformas legales de privacidad y archivos (GDPR, SEC, leyes regionales LATAM 2025-2026) en Compliance Manager.",
+        "3. Consolidar categorías redundantes bajo enfoque big-bucket manteniendo holgura sobre el límite de 1.000 etiquetas."
+      ],
+      "rolResponsable": "Comité de Retención (Records Manager, Legal, DPO, CISO)",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Exportación CSV versionada del File Plan y acta firmada del Comité de Retención.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Exportación CSV verificada en file-plan-manager; cadencia trimestral y simplificación big-bucket propuestas.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/file-plan-manager"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Prueba controlada de los 4 principios de precedencia y validación de registros migrados",
+      "objetivo": "Comprobar empíricamente la resolución de conflictos de retención/borrado y la cadena de custodia en migraciones.",
+      "consolaRuta": "purview.microsoft.com > Data Lifecycle Management / Records Management / eDiscovery",
+      "procedimiento": [
+        "1. Ejecutar casos de prueba del diagrama oficial de precedencia sobre correo, SharePoint, Cloud Attachments y prompts Copilot.",
+        "2. Verificar suspensión por eDiscovery Hold y rechazo seguro de Priority Cleanup sobre Records.",
+        "3. Contrastar QuickXorHash Base64 contra vti_writevalidationtoken en muestras de archivos migrados."
+      ],
+      "rolResponsable": "Arquitecto Purview + Equipo Legal (eDiscovery)",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-11",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Protocolo trimestral de pruebas de precedencia y validación vti_writevalidationtoken.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo de precedencia y propiedad vti_writevalidationtoken verificados en retention-flowchart y records-management.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/retention-flowchart"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Auditoría de Preservation Lock, Regulatory Records y holgura de límites del tenant",
+      "objetivo": "Auditar configuraciones irreversibles y márgenes operativos frente a los topes arquitectónicos del servicio.",
+      "consolaRuta": "Security & Compliance PowerShell (Get-RetentionCompliancePolicy / Get-ComplianceTag)",
+      "procedimiento": [
+        "1. Auditar todas las políticas con RestrictiveRetention = True confirmando mandato regulatorio vigente.",
+        "2. Revisar etiquetas Regulatory = True y verificar que Set-RegulatoryComplianceUI permanezca en $false fuera de ventanas de cambio.",
+        "3. Validar holgura frente a topes del tenant (10.000 políticas, 25 recomendadas por buzón, 16M ítems en disposición)."
+      ],
+      "rolResponsable": "Auditoría Interna + CISO + Oficial de Cumplimiento",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-01",
+      "mitreTactic": "Impact (T1485)",
+      "evidenciaAuditable": "Informe semestral de auditoría de inmutabilidad regulatoria y capacidad del tenant.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Comandos y límites verificados en MS Learn; ocultación preventiva de UI regulatoria propuesta como control interno.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/retention-preservation-lock"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Recertificación ejecutiva de la Tabla de Retención (ISO 15489-1), RACI y simulacro tabletop",
+      "objetivo": "Renovar el mandato ejecutivo del programa y ejercitar la respuesta coordinada ante crisis de datos retenidos.",
+      "consolaRuta": "purview.microsoft.com (Records Management, Priority Cleanup, eDiscovery, Audit)",
+      "procedimiento": [
+        "1. Recertificar la Tabla de Retención Documental corporativa, la matriz RACI y los plazos de retención de IA generativa.",
+        "2. Ejecutar ejercicio tabletop simulando derrame clasificado (Priority Cleanup con triple aprobación) y sabotaje administrativo.",
+        "3. Consolidar el dossier anual de auditoría con los 12 paquetes mensuales de Proof of Disposal."
+      ],
+      "rolResponsable": "CISO, General Counsel, DPO y Comité Ejecutivo",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.IM-01",
+      "mitreTactic": "Impact & Exfiltration Readiness",
+      "evidenciaAuditable": "Acta anual del Comité Ejecutivo, TRD vigente y reporte post-ejercicio tabletop.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Práctica anual de gobierno ejecutivo alineada a ISO 15489-1:2016 y NIST CSF 2.0.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/retention-regulatory-requirements"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Ejecución de Priority Cleanup ante derrame crítico de datos sensibles (Data Spillage)",
+      "objetivo": "Purgar permanentemente elementos sensibles derramados en buzones o sitios bajo retención mediante triple aprobación.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Data Lifecycle Management > Priority cleanup",
+      "procedimiento": [
+        "1. Contener la difusión inicial y definir la consulta KQL quirúrgica de los elementos derramados.",
+        "2. Crear la política de Priority Cleanup y validar coincidencias en modo simulación.",
+        "3. Confirmar ausencia de etiquetas Record / Regulatory Record sobre los ítems (Priority Cleanup está bloqueado en registros).",
+        "4. Obtener las tres aprobaciones independientes (Retention Admin, eDiscovery Admin y Priority Cleanup Admin) y auditar por ID hasta completar."
+      ],
+      "rolResponsable": "Tríada Priority Cleanup + SOC",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Exfiltration Containment (TA0010)",
+      "evidenciaAuditable": "Expediente con simulación KQL, 3 aprobaciones nominales y log de purga en Purview Audit.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo de triple aprobación y bloqueo frente a Records verificados en priority-cleanup y records-management.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/priority-cleanup-exchange"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Congelamiento inmediato de disposición y aplicación de eDiscovery Hold ante litigio o brecha",
+      "objetivo": "Suspender toda purga automática o manual sobre custodios investigados preservando correo, documentos y chats IA.",
+      "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases y Records Management > Disposition",
+      "procedimiento": [
+        "1. Crear el caso en Purview eDiscovery y aplicar eDiscovery Hold sobre buzones (incluyendo SubstrateHolds), SharePoint y OneDrive.",
+        "2. Verificar que la precedencia del hold suspenda toda eliminación automática.",
+        "3. Ejecutar Extend sobre cualquier registro de los custodios presente en Pending dispositions documentando referencia legal.",
+        "4. Confirmar por PowerShell el estado activo del hold antes de permitir bajas de cuentas."
+      ],
+      "rolResponsable": "eDiscovery Manager (Legal) + Records Manager",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Confirmación de eDiscovery Hold en Success y registro de extensión en Disposition.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Precedencia absoluta de eDiscovery Hold sobre el flujo de retención verificada en retention-flowchart.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/retention-flowchart"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Respuesta ante desactivación o alteración maliciosa de políticas de retención",
+      "objetivo": "Contener compromisos administrativos y restaurar políticas antes de que venzan ventanas de Delay Hold o timer jobs.",
+      "consolaRuta": "security.microsoft.com, entra.microsoft.com y purview.microsoft.com",
+      "procedimiento": [
+        "1. Revocar sesiones y bloquear en Entra ID la identidad administrativa involucrada.",
+        "2. Restaurar inmediatamente la configuración de la política desde el respaldo versionado (aprovechando Delay Hold de 30 días y timer jobs de 1-7 días).",
+        "3. Evaluar con Legal y CISO la aplicación de Preservation Lock (-RestrictiveRetention $true) sobre políticas estáticas regulatorias.",
+        "4. Realizar investigación forense en Audit y Defender XDR."
+      ],
+      "rolResponsable": "SOC L2/L3 + Ingeniero Senior Purview",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Defense Evasion & Impact (T1562 / T1485)",
+      "evidenciaAuditable": "Incidente documentado, script de restauración y confirmación RestrictiveRetention cuando aplique.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Comportamiento de Delay Hold y Preservation Lock verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/retention-preservation-lock"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Incorporación masiva de nueva regulación o entidad adquirida (M&A) al File Plan",
+      "objetivo": "Importar en bloque series documentales validadas preservando cadena de custodia en archivos migrados.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Records Management > File plan > Import",
+      "procedimiento": [
+        "1. Homologar series nuevas contra el File Plan existente respetando el límite de 1.000 etiquetas.",
+        "2. Crear EventTypes previos e importar la plantilla CSV oficial; añadir luego etapas 2 a 5 de revisión en la interfaz web.",
+        "3. Si aplica Regulatory Record, habilitar temporalmente Set-RegulatoryComplianceUI antes de la importación.",
+        "4. Validar integridad de archivos migrados comparando QuickXorHash Base64 contra vti_writevalidationtoken."
+      ],
+      "rolResponsable": "Arquitecto de Gobierno + Records Manager + Legal",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Plantilla CSV importada exitosamente y reporte de validación vti_writevalidationtoken.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Restricciones de importación CSV y validación QuickXorHash verificadas en file-plan-manager y records-management.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/file-plan-manager"
+    },
+    {
+      "codigo": "AH-05",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Remediación de emergencia por saturación de Recoverable Items o Preservation Hold Library",
+      "objetivo": "Restablecer operatividad de buzones o sitios saturados bajo retención sin vulnerar obligaciones normativas.",
+      "consolaRuta": "Exchange Online PowerShell y SharePoint Admin Center",
+      "procedimiento": [
+        "1. En Exchange: confirmar licencia E5 con Records Management activo (hasta 3 TB), habilitar AutoExpandingArchive y ejecutar Start-ManagedFolderAssistant -HoldCleanup.",
+        "2. Contener procesos automatizados que superen la tasa máxima de crecimiento de 1 GB/día.",
+        "3. En SharePoint: ampliar cuota inmediata, archivar sitios cerrados en Microsoft 365 Archive y segregar cargas automatizadas no reguladas."
+      ],
+      "rolResponsable": "Administrador Exchange / SharePoint + DLCM Lead",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-03",
+      "mitreTactic": "Impact (T1499)",
+      "evidenciaAuditable": "Estadísticas de cuota restablecidas y registro aprobado del ajuste arquitectónico.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Límites y remediación de archivo auto-expandible verificados en autoexpanding-archiving.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/autoexpanding-archiving"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Inventario de políticas de retención, distribución y Preservation Lock",
+      "plataforma": "Security & Compliance PowerShell (Connect-IPPSSession)",
+      "tablaPrincipal": "Get-RetentionCompliancePolicy",
+      "consulta": "Connect-IPPSSession\nGet-RetentionCompliancePolicy -DistributionDetail | Select-Object Name, Enabled, Mode, Type, RestrictiveRetention, DistributionStatus, @{N=\"AdaptiveScopes\";E={$_.AdaptiveScopeLocation -join \";\"}}, WhenChangedUTC | Sort-Object RestrictiveRetention -Descending, Name | Format-Table -AutoSize",
+      "proposito": "Auditar el estado de distribución (Success vs Error), ámbitos adaptables asociados y políticas bloqueadas irreversiblemente con Preservation Lock.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Extracción completa del File Plan, Records y Regulatory Records",
+      "plataforma": "Security & Compliance PowerShell (Connect-IPPSSession)",
+      "tablaPrincipal": "Get-ComplianceTag",
+      "consulta": "Connect-IPPSSession\nGet-ComplianceTag | Select-Object Name, Workload, RetentionAction, RetentionDuration, RetentionType, IsRecordLabel, Regulatory, IsRecordUnlockedAsDefault, EventType, ReviewerEmail, AutoApprovalPeriod, WhenCreatedUTC | Export-Csv -Path \".\\Evidencia_FilePlan_Purview.csv\" -NoTypeInformation -Encoding UTF8",
+      "proposito": "Generar evidencia técnica completa del catálogo de etiquetas de retención, declaración de registros, eventos y revisores asignados.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Cuantificación de deuda de retención en Inactive Mailboxes",
+      "plataforma": "Exchange Online PowerShell (Connect-ExchangeOnline)",
+      "tablaPrincipal": "Get-Mailbox -InactiveMailboxOnly",
+      "consulta": "Connect-ExchangeOnline\nGet-Mailbox -InactiveMailboxOnly -ResultSize Unlimited | Select-Object DisplayName, UserPrincipalName, PrimarySmtpAddress, WhenSoftDeleted, LitigationHoldEnabled, DelayHoldApplied, ComplianceTagHoldApplied, AutoExpandingArchiveEnabled, @{N=\"InPlaceHolds\";E={$_.InPlaceHolds -join \";\"}} | Export-Csv -Path \".\\Auditoria_InactiveMailboxes_RetentionDebt.csv\" -NoTypeInformation -Encoding UTF8",
+      "proposito": "Detectar buzones de exempleados retenidos indefinidamente sin expiración y auditar holds o Delay Holds activos.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Monitoreo preventivo de cuotas Recoverable Items y Auto-Expanding Archiving (3 TB)",
+      "plataforma": "Exchange Online PowerShell (Connect-ExchangeOnline)",
+      "tablaPrincipal": "Get-Mailbox / Get-MailboxStatistics",
+      "consulta": "Connect-ExchangeOnline\nGet-Mailbox -ResultSize Unlimited -Filter {RecipientTypeDetails -eq \"UserMailbox\"} | ForEach-Object { $stats = Get-MailboxStatistics -Identity $_.UserPrincipalName -ErrorAction SilentlyContinue; [PSCustomObject]@{ UPN = $_.UserPrincipalName; ArchiveStatus = $_.ArchiveStatus; AutoExpandingArchive = $_.AutoExpandingArchiveEnabled; TotalDeletedItemSize = $stats.TotalDeletedItemSize; RecoverableItemsQuota = $_.RecoverableItemsQuota } }",
+      "proposito": "Identificar buzones bajo retención cercanos a saturar Recoverable Items y confirmar habilitación de archivo auto-expandible hasta 3 TB.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Disparo automatizado de evento de retención con Microsoft Graph API",
+      "plataforma": "Microsoft Graph PowerShell SDK",
+      "tablaPrincipal": "security/triggers/retentionEvents",
+      "consulta": "Connect-MgGraph -Scopes \"RecordsManagement.ReadWrite.All\"\n$params = @{ displayName = \"Fin Contrato CRIT-2026-089\"; eventQuery = @{ \"@odata.type\" = \"#microsoft.graph.security.retentionEventQuery\"; queryType = \"files\"; query = \"ComplianceAssetID:CRIT-2026-089\" }; eventTriggerDateTime = \"2026-11-11T00:00:00Z\"; retentionEventType = @{ \"@odata.id\" = \"https://graph.microsoft.com/v1.0/security/triggers/retentionEventTypes/<EVENT_TYPE_GUID>\" } }\nNew-MgSecurityTriggerRetentionEvent -BodyParameter $params",
+      "proposito": "Automatizar desde sistemas CLM/HRIS el disparo de retención basada en eventos usando el endpoint oficial de Microsoft Graph (sustituto de la antigua REST API retirada).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Consulta de auditoría de disposición y cambios vía Microsoft Graph AuditLogQuery",
+      "plataforma": "Microsoft Graph PowerShell SDK",
+      "tablaPrincipal": "security/auditLog/queries",
+      "consulta": "Connect-MgGraph -Scopes \"AuditLogsQuery.Read.All\"\n$auditQuery = @{ displayName = \"Auditoria Mensual DLCM\"; filterStartDateTime = (Get-Date).AddDays(-30).ToUniversalTime().ToString(\"o\"); filterEndDateTime = (Get-Date).ToUniversalTime().ToString(\"o\"); operationFilters = @(\"Set-RetentionCompliancePolicy\",\"Remove-RetentionCompliancePolicy\",\"Enabled regulatory record option for retention labels\",\"Approved disposal\",\"Deleted file marked as a record\") }\nNew-MgSecurityAuditLogQuery -BodyParameter $auditQuery",
+      "proposito": "Extraer evidencia programática de cambios administrativos y disposiciones usando Graph AuditLogQuery (GA oct-2026) ante el retiro de Search-UnifiedAuditLog el 15-oct-2027.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección KQL de alteración de políticas de retención y disposición en Sentinel",
+      "plataforma": "Microsoft Sentinel / Defender Portal Advanced Hunting",
+      "tablaPrincipal": "OfficeActivity",
+      "consulta": "OfficeActivity\n| where TimeGenerated > ago(7d)\n| where Operation in~ (\"New-RetentionCompliancePolicy\", \"Set-RetentionCompliancePolicy\", \"Remove-RetentionCompliancePolicy\", \"Set-ComplianceTag\", \"Remove-ComplianceTag\", \"Enabled regulatory record option for retention labels\", \"Approved disposal\", \"Deleted file marked as a record\")\n| project TimeGenerated, UserId, Operation, OfficeWorkload, ClientIP, Parameters, AuditData\n| order by TimeGenerated desc",
+      "proposito": "Correlacionar en el SOC modificaciones críticas sobre políticas de retención, habilitación de Regulatory Records y eliminación de registros.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Cobertura de Cargas de Trabajo con Directiva Base (Incluyendo IA)",
+      "definicion": "Porcentaje de cargas de trabajo Microsoft 365 y ubicaciones dedicadas de Copilot/IA en producción cubiertas por al menos una política de retención activa en estado Success.",
+      "formula": "(Cargas M365 y ubicaciones IA cubiertas en estado Success / Total de cargas activas) * 100",
+      "metaSugerida": "100%",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO / Oficial de Cumplimiento",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Meta ejecutiva de cobertura cero-brechas sobre correo, documentos, colaboración e IA."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Cumplimiento de SLA en Revisiones de Disposición",
+      "definicion": "Porcentaje de elementos pendientes en revisión de disposición resueltos por los revisores asignados dentro de 20 días hábiles.",
+      "formula": "(Ítems en Pending disposition resueltos en <= 20 días hábiles / Total de ítems vencidos en el período) * 100",
+      "metaSugerida": ">= 95% (0 ítems > 30 días)",
+      "frecuencia": "Semanal / Mensual",
+      "audiencia": "Records Manager / Legal",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "SLA operativo editorial para evitar acumulación o disparos inadvertidos de auto-aprobación."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Completitud de Resguardo Mensual de Proof of Disposal",
+      "definicion": "Proporción de cierres mensuales con exportación CSV de Disposed items y logs de auditoría conciliados y sellados con SHA-256.",
+      "formula": "(Meses con paquete Proof of Disposal firmado y archivado / Meses cerrados) * 100",
+      "metaSugerida": "100% (12/12 meses)",
+      "frecuencia": "Mensual",
+      "audiencia": "Auditoría Interna / GRC",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Garantiza disponibilidad probatoria continua más allá del límite nativo de 7 años."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Precisión en Políticas de Auto-Aplicación de Etiquetas",
+      "definicion": "Exactitud verificada por muestreo sobre elementos etiquetados automáticamente por SITs, KeyQL, sensibilidad o Trainable Classifiers.",
+      "formula": "(Ítems auto-etiquetados correctamente en muestra / Total de muestra auditada en Content Explorer) * 100",
+      "metaSugerida": ">= 92%",
+      "frecuencia": "Semanal / Mensual",
+      "audiencia": "Records Manager / Data Governance Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Umbral consultivo de calidad para minimizar sobre-retención o falsos positivos."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Conciliación de Eventos y Asset ID en Event-Based Retention",
+      "definicion": "Porcentaje de hitos de negocio ocurridos en CLM/HRIS que dispararon oportunamente su evento en Purview con ComplianceAssetID válido.",
+      "formula": "(Eventos disparados en Purview con Asset ID válido / Total de eventos ocurridos en sistemas origen) * 100",
+      "metaSugerida": ">= 99%",
+      "frecuencia": "Mensual",
+      "audiencia": "Records Manager / Dueños de Proceso",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Evita registros huérfanos retenidos indefinidamente por ausencia de evento."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Reducción de Deuda de Retención en Exempleados",
+      "definicion": "Variación porcentual trimestral de Inactive Mailboxes y cuentas OneDrive retenidos indefinidamente sin obligación legal activa.",
+      "formula": "((Buzones/OneDrive perpetuos trimestre actual - trimestre previo) / trimestre previo) * 100",
+      "metaSugerida": "Reducción sostenida hasta 0 retenciones infinitas sin causa legal",
+      "frecuencia": "Mensual / Trimestral",
+      "audiencia": "DPO / Oficial de Cumplimiento / FinOps",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en buenas prácticas de saneamiento con Adaptive Scopes."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Tasa de Minimización de Datos ROT Pre-IA",
+      "definicion": "Proporción del volumen identificado como redundante, obsoleto o trivial efectivamente eliminado por políticas en sitios en alcance de Copilot.",
+      "formula": "(Volumen TB de datos ROT eliminados defensiblemente / Volumen TB ROT elegible identificado) * 100",
+      "metaSugerida": ">= 85% anual",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO / Líder de Seguridad IA",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Indicador de reducción de superficie de oversharing IA y radio de impacto."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Integridad de Cambios Administrativos y Priority Cleanup",
+      "definicion": "Porcentaje de modificaciones administrativas y ejecuciones de Priority Cleanup respaldadas por ticket aprobado y triple autorización.",
+      "formula": "(Cambios y limpiezas con aprobaciones completas / Total de eventos detectados en Audit) * 100",
+      "metaSugerida": "100%",
+      "frecuencia": "Diaria / Mensual",
+      "audiencia": "CISO / SOC Manager / Auditoría Interna",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Tolerancia cero ante alteraciones de políticas o purgas no autorizadas."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.OC-03",
+      "descripcionResultado": "Los requisitos legales, regulatorios y contractuales sobre privacidad y registros se comprenden y gestionan.",
+      "capacidadMicrosoft": "File Plan en Purview Records Management con descriptores normativos (AuthorityType, CitationName, CitationJurisdiction) y evaluaciones en Compliance Manager.",
+      "evidenciaAuditoria": "Exportación CSV del File Plan firmada trimestralmente por el Comité de Retención con trazabilidad norma -> etiqueta.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles, responsabilidades y autoridades de ciberseguridad y datos están definidos, comunicados y aplicados.",
+      "capacidadMicrosoft": "Segregación RBAC entre Retention Manager, Records Management, grupo dedicado Disposition Management y triple aprobación en Priority Cleanup.",
+      "evidenciaAuditoria": "Matriz RACI aprobada, exportación de Role Groups con expiración y registros de elevación PIM.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RM-03",
+      "descripcionResultado": "Los riesgos estratégicos de seguridad y privacidad del dato se integran en la gestión de riesgos empresariales.",
+      "capacidadMicrosoft": "Eliminación automatizada de datos ROT, depuración de Inactive Mailboxes con Adaptive Scopes y políticas dedicadas para interacciones IA.",
+      "evidenciaAuditoria": "Reportes mensuales de reducción de ROT y deuda de retención (KPI-06 y KPI-07).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-07",
+      "descripcionResultado": "Se mantienen inventarios de datos designados y sus metadatos correspondientes según criticidad.",
+      "capacidadMicrosoft": "Content Explorer, clasificación automática por SITs y Trainable Classifiers, ComplianceAssetID y Adaptive Policy Scopes.",
+      "evidenciaAuditoria": "Exportación de Get-ComplianceTag e inventario de distribución de registros activos en Content Explorer.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-05",
+      "descripcionResultado": "Las amenazas, vulnerabilidades, probabilidad e impacto guían la priorización del riesgo.",
+      "capacidadMicrosoft": "Correlación entre Purview DSPM for AI y Data Lifecycle Management para priorizar purga de repositorios históricos sobreexpuestos a Copilot.",
+      "evidenciaAuditoria": "Informe mensual M-03 de sitios con riesgo de oversharing remediados mediante políticas de ciclo de vida.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.DS-01",
+      "descripcionResultado": "Se protegen la confidencialidad, integridad y disponibilidad de los datos en reposo.",
+      "capacidadMicrosoft": "Declaración inmutable de Records (Record Versioning), Regulatory Records (Set-RegulatoryComplianceUI) y Preservation Lock (-RestrictiveRetention $true).",
+      "evidenciaAuditoria": "Salida PowerShell de políticas con RestrictiveRetention: True y certificado de validación QuickXorHash (vti_writevalidationtoken).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.DS-11",
+      "descripcionResultado": "Las preservaciones de datos se crean, protegen, mantienen y verifican periódicamente.",
+      "capacidadMicrosoft": "Preservación in-place en Recoverable Items, SubstrateHolds, Preservation Hold Library, Cloud Attachments y Auto-Expanding Archiving hasta 3 TB.",
+      "evidenciaAuditoria": "Pruebas trimestrales T-02 de recuperación vía eDiscovery sobre elementos eliminados por usuarios bajo retención.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Los permisos y autorizaciones de acceso se gestionan bajo mínimo privilegio y separación de funciones.",
+      "capacidadMicrosoft": "Acceso JIT con Entra PIM, restricción de Content Explorer Content Viewer, Administrative Units y triple aprobación en Priority Cleanup.",
+      "evidenciaAuditoria": "Reporte mensual M-05 de auditoría RBAC/PIM e intentos administrativos bloqueados.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-09",
+      "descripcionResultado": "Los entornos de computación y sus datos se monitorean para detectar acciones potencialmente adversas.",
+      "capacidadMicrosoft": "Monitoreo continuo en Purview Audit / Microsoft Graph AuditLogQuery e ingesta KQL de OfficeActivity en Microsoft Sentinel.",
+      "evidenciaAuditoria": "Consultas mensuales AuditLogQuery archivadas y reglas analíticas activas en Sentinel sobre cambios de políticas y registros.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Los incidentes son contenidos para prevenir la propagación del daño o exposición de información.",
+      "capacidadMicrosoft": "Ejecución de Priority Cleanup con triple aprobación ante derrames sensibles y congelamiento inmediato mediante eDiscovery Hold.",
+      "evidenciaAuditoria": "Expedientes auditables por ID de Priority Cleanup con las 3 aprobaciones registradas y logs de activación de eDiscovery Hold.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-03",
+      "descripcionResultado": "Se verifica la integridad de los datos preservados o restaurados antes de su utilización.",
+      "capacidadMicrosoft": "Preservación automática de 120 días disparada por Adaptive Protection en usuarios de riesgo Elevated y extracción íntegra desde PHL e Inactive Mailboxes.",
+      "evidenciaAuditoria": "Políticas automáticas de retención de 120 días vinculadas a Adaptive Protection y logs de exportación eDiscovery.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.IM-01",
+      "descripcionResultado": "Los planes y controles mejoran continuamente incorporando lecciones aprendidas.",
+      "capacidadMicrosoft": "Revisiones trimestrales del File Plan, optimización de Adaptive Scopes y mejoras posteriores al ejercicio tabletop anual A-01.",
+      "evidenciaAuditoria": "Historial versionado de cambios del File Plan y actas de lecciones aprendidas firmadas por el Comité de Retención.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Revalidación integral ejecutada al 11 de noviembre de 2026 contra Microsoft Learn MCP y documentación oficial de Microsoft Purview. Se depuró por completo la contaminación cruzada de bloques genéricos SOC/Sentinel detectada en MSEOP-MD y se incorporaron todos los cambios arquitectónicos 2025-2026: ubicaciones de retención separadas para Copilot e IA, incremento de Auto-Expanding Archiving a 3 TB (octubre 2026), restricciones exactas de Regulatory Records y Preservation Lock, triple aprobación en Priority Cleanup y migración hacia Microsoft Graph Records Management API y AuditLogQuery.",
+    "correccionesAplicadas": [
+      "Saneamiento documental de MSEOP-MD\\Purview DLCM: se descartaron en 0404 - Purview DLCM - Bloques - SecOps y Version Consolidada (1) los bloques genéricos transversales del SOC centrados en Microsoft Sentinel (20 actividades SIEM, playbooks genéricos y MTTD/MTTR de red), sustituyéndolos por 28 actividades operacionales exclusivas de Purview DLCM y Records Management.",
+      "Actualización de licenciamiento a noviembre de 2026: homologación hacia Microsoft Purview Suite (antes Purview E5 Compliance) y precisión de que Trainable Classifiers exige M365 E5 / Purview Suite y no se incluye en Office 365 E5 aislado.",
+      "Gobierno separado de IA generativa: incorporación de las tres nuevas familias de ubicaciones de retención independientes de Teams chats (Microsoft Copilot experiences, Enterprise AI apps y Other AI apps), requisito de Collection Policies + Pay-As-You-Go para IA externa y ciclo técnico en SubstrateHolds.",
+      "Ampliación de Auto-Expanding Archiving de 1,5 TB a 3 TB (octubre de 2026): documentación del nuevo tope de 3 TB para licencias E5 / Purview Suite que mantengan habilitado el plan de servicio Records Management.",
+      "Precisión técnica sobre Regulatory Records y Preservation Lock: validación de Set-RegulatoryComplianceUI -Enabled $true, imposibilidad de auto-aplicar Regulatory Records, incompatibilidad actual de Adaptive Policy Scopes con Preservation Lock y exigencia de etiquetas exclusivamente regulatorias para bloquear políticas de etiquetas.",
+      "Límites exactos de Multi-Stage Disposition y Proof of Disposal: confirmación de hasta 5 etapas, máximo 10 revisores o mail-enabled security groups por etapa y 200 por tenant (grupos M365 no soportados), borrado dentro de 15 días tras aprobación final y Proof of Disposal conservada hasta 7 años.",
+      "Actualización de Priority Cleanup y retiro de APIs/cmdlets legados: inclusión de la regla vigente de tres aprobaciones independientes en Priority Cleanup (bloqueada sobre Records y Regulatory Records), uso de Microsoft Graph Records Management API en lugar de la antigua REST API retirada y transición de Search-UnifiedAuditLog (retiro el 15-oct-2027) a Graph AuditLogQuery (GA oct-2026)."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Umbrales numéricos de los 8 KPIs (KPI-01 a KPI-08) y SLA interno de revisión de disposición (<= 20 días hábiles)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft Learn fija los tiempos técnicos del motor (ej. purga dentro de 15 días post-aprobación), pero no impone SLAs humanos organizacionales; establecer <= 20 días previene cuellos de botella y auto-aprobaciones no revisadas."
+      },
+      {
+        "elemento": "Modelo de madurez operacional de 5 niveles orientado a Zero Trust y preparación para IA",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Ordena progresivamente la adopción priorizando higiene ROT pre-Copilot y ámbitos adaptables antes de activar controles irreversibles como Regulatory Records o Preservation Lock."
+      },
+      {
+        "elemento": "Ocultación preventiva de Set-RegulatoryComplianceUI ($false) fuera de ventanas de cambio aprobadas",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Mitiga el riesgo severo de aplicar accidentalmente una etiqueta Regulatory Record que ni siquiera un Global Administrator puede remover después."
+      },
+      {
+        "elemento": "Resguardo mensual externo firmado (CSV + SHA-256) de Disposed items complementario a los 7 años nativos",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Permite demostrar destrucción legalmente defendible en jurisdicciones o industrias cuyos plazos probatorios superan los 7 años retenidos nativamente por Purview."
+      },
+      {
+        "elemento": "Mapeo probatorio de 12 subcategorías sobre las 6 funciones de NIST CSF 2.0 (CSWP 29)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Traduce controles y evidencias técnicas de Purview DLCM y Records Management al estándar internacional de auditoría basada en resultados."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Data lifecycle and records management in Microsoft Purview",
+      "url": "https://learn.microsoft.com/en-us/purview/manage-data-governance",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Arquitectura funcional y comparativa de capacidades entre Data Lifecycle Management y Records Management.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Learn about retention policies and retention labels (The principles of retention)",
+      "url": "https://learn.microsoft.com/en-us/purview/retention",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Especificación oficial de los 4 principios de precedencia de retención y diferencias entre políticas y etiquetas.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Flowchart to determine when an item will be retained or permanently deleted",
+      "url": "https://learn.microsoft.com/en-us/purview/retention-flowchart",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Árbol de decisión oficial incluyendo precedencia de eDiscovery holds y excepción de Priority Cleanup.",
+      "verificacion": "Verificado vía Microsoft Learn al 2026-11-11"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Learn about records management",
+      "url": "https://learn.microsoft.com/en-us/purview/records-management",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Matriz comparativa de restricciones entre etiqueta estándar, Record (locked/unlocked) y Regulatory Record, más validación vti_writevalidationtoken.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Declare records by using retention labels",
+      "url": "https://learn.microsoft.com/en-us/purview/declare-records",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Habilitación por PowerShell de Set-RegulatoryComplianceUI y auditoría de declaración de registros.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Disposition of content",
+      "url": "https://learn.microsoft.com/en-us/purview/disposition",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Flujos de revisión de disposición de hasta 5 etapas, permisos Disposition Management, tiempos de purga (15 días) y exportación CSV.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Limits for retention policies and retention label policies",
+      "url": "https://learn.microsoft.com/en-us/purview/retention-limits",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Topes arquitectónicos por tenant, límites de ámbitos estáticos, máximo de 200 revisores y retención de Proof of Disposition hasta 7 años.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Use Preservation Lock to restrict changes to retention policies and retention label policies",
+      "url": "https://learn.microsoft.com/en-us/purview/retention-preservation-lock",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Bloqueo irreversible vía PowerShell (-RestrictiveRetention $true) y limitación frente a Adaptive Scopes.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Use file plan to create and manage retention labels",
+      "url": "https://learn.microsoft.com/en-us/purview/file-plan-manager",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Descriptores de File Plan y esquema detallado de validación para importación y exportación masiva CSV.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Start retention when an event occurs",
+      "url": "https://learn.microsoft.com/en-us/purview/event-driven-retention",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Arquitectura de retención basada en eventos con ComplianceAssetID, KeyQL y Microsoft Graph Records Management APIs.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Learn about retention for Copilot & AI apps",
+      "url": "https://learn.microsoft.com/en-us/purview/retention-policies-copilot",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Ubicaciones dedicadas para Microsoft Copilot experiences, Enterprise AI apps y Other AI apps, y almacenamiento en SubstrateHolds.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Adaptive scopes in Microsoft Purview",
+      "url": "https://learn.microsoft.com/en-us/purview/purview-adaptive-scopes",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Alcances dinámicos basados en atributos de Entra ID, sitios SharePoint y grupos Microsoft 365.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Learn about auto-expanding archiving",
+      "url": "https://learn.microsoft.com/en-us/purview/autoexpanding-archiving",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Incremento de capacidad máxima de 1,5 TB a 3 TB en octubre de 2026 para licencias E5 / Purview Suite con Records Management activo.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Learn about inactive mailboxes",
+      "url": "https://learn.microsoft.com/en-us/purview/inactive-mailboxes-in-office-365",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Retención de buzones de exempleados, Delay Hold de 30 días, precauciones de UPN y uso con Adaptive Scopes.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "New Microsoft 365 Copilot Data Lifecycle Management options",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-security-blog/new-m365-copilot-data-lifecycle-management-options/4304636",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Erica Toelle (Microsoft)",
+      "comentario": "Publicación oficial del equipo de producto explicando la ubicación separada de retención para interacciones de Microsoft 365 Copilot.",
+      "verificacion": "Verificado al 2026-11-11"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "Announcing general availability of Records Management",
+      "url": "https://techcommunity.microsoft.com/t5/security-compliance-and-identity/announcing-general-availability-of-records-management/bc-p/1462495/highlight/true",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Roberto Yglesias (Microsoft)",
+      "comentario": "Fundamentos arquitectónicos de clasificación automática, inmutabilidad y prueba de destrucción en Purview Records Management.",
+      "verificacion": "Verificado al 2026-11-11"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "Retention Schedule Hot Spots Blog Series for Purview",
+      "url": "https://joannecklein.com/category/microsoft-purview/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Joanne Klein (Microsoft MVP)",
+      "comentario": "Serie técnica 2026 de referencia sobre traducción de tablas reales de retención, eventos y revisiones de disposición en Purview.",
+      "verificacion": "Verificado al 2026-11-11"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "Mastering Records Management in Microsoft Purview: A Practical Guide for AI-Ready Governance",
+      "url": "https://nikkichapple.com/microsoft-purview-records-management-guide/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Nikki Chapple (Microsoft MVP)",
+      "comentario": "Lecciones reales de simplificación de miles de series documentales, preparación para IA y mitigación de deuda de retención.",
+      "verificacion": "Verificado al 2026-11-11"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)",
+      "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Marco normativo oficial de las 6 funciones (GV, ID, PR, DE, RS, RC) utilizado para el mapeo de evidencia auditable.",
+      "verificacion": "Verificado al 2026-11-11"
+    }
+  ]
+}

@@ -1,0 +1,1266 @@
+{
+  "schemaVersion": "2.0",
+  "id": "11_Microsoft_Intune_Suite",
+  "orden": 11,
+  "slug": "Microsoft_Intune_Suite",
+  "nombre": "Microsoft Intune Suite (Capacidades Avanzadas de Gestión y Seguridad de Endpoints)",
+  "nombreCorto": "Microsoft Intune Suite",
+  "categoria": "Endpoints, Dispositivos y Plataforma Windows",
+  "bloqueOrigen": "Nuevo desde Microsoft Learn MCP (Nov 2026)",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://intune.microsoft.com",
+    "https://security.microsoft.com",
+    "https://entra.microsoft.com",
+    "https://admin.microsoft.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "SOC Manager",
+    "Endpoint Engineering Lead",
+    "SOC L1",
+    "SOC L2",
+    "SOC L3 / Threat Hunter",
+    "Help Desk Manager",
+    "PKI Architect",
+    "Vulnerability Management Lead",
+    "GRC"
+  ],
+  "relacionM365E5": {
+    "estado": "Complemento / Add-on sobre M365 E5 (Capacidades selectas incluidas en M365 E5 desde 2026 + Suite completa / M365 E7)",
+    "licencias": [
+      "Microsoft Intune Plan 1 (base obligatoria incluida en Microsoft 365 E3, E5, E7, EMS E3/E5, Business Premium, F1/F3, A3/A5 o standalone)",
+      "Microsoft 365 E5 (desde el 1 de julio / 1 de agosto de 2026 incluye sin costo adicional: Endpoint Privilege Management, Microsoft Cloud PKI, Enterprise Application Management, Remote Help, Intune Advanced Analytics, Intune Plan 2 [Tunnel for MAM, Specialty Devices, FOTA] y Microsoft Security Copilot)",
+      "EMS E3 / Microsoft 365 E3 (desde el 1 de julio / 1 de agosto de 2026 incluye sin costo adicional: Remote Help, Intune Advanced Analytics e Intune Plan 2 [Tunnel for MAM, Specialty Devices, FOTA])",
+      "Microsoft 365 E7 - The Frontier Suite (GA 1 de mayo de 2026: incluye Microsoft 365 E5 completo con todas las capacidades avanzadas de Intune + Security Copilot, Microsoft Entra Suite, Microsoft 365 Copilot y Microsoft Agent 365)",
+      "Microsoft Intune Suite Add-on ($10 USD/usuario/mes) o Add-ons individuales ($2-$5 USD/usuario/mes) e Intune Plan 2 ($4 USD/usuario/mes) vigentes para poblaciones sin M365 E5 completo (Intune Plan 1 standalone, Frontline F1/F3, Business Premium, Educación A3/A5 o clientes E3 que requieran EPM/Cloud PKI/EAM)"
+    ],
+    "prerrequisitos": [
+      "Suscripción base activa de Microsoft Intune Plan 1 y Microsoft Entra ID P1/P2 para Acceso Condicional, grupos dinámicos y auto-enrolamiento",
+      "Endpoints Windows 11 Enterprise/Education de 64 bits (x64 o Arm64) unidos a Microsoft Entra ID o Hybrid Joined para EPM y Device Query (considerando el fin de soporte de Windows 10 el 14 de octubre de 2025)",
+      "Conectividad directa sin inspección SSL hacia endpoints de Microsoft Intune / MMP-C para EPM y disponibilidad obligatoria de Windows Push Notification Services (WNS) para Single-Device Device Query y Remote Launch en Remote Help",
+      "Dispositivos marcados como Corporate en Intune y política de Properties Catalog desplegada en Windows para habilitar Device Query for Multiple Devices",
+      "Infraestructura Linux contenedorizada de Microsoft Tunnel VPN Gateway desplegada previamente como base para extender Microsoft Tunnel for Mobile Application Management (MAM) en iOS/iPadOS y Android BYOD",
+      "Dotación de Security Compute Units (SCUs) de Microsoft Security Copilot para consultas NL-to-KQL y ejecución de Vulnerability Remediation Agent y Change Review Agent"
+    ],
+    "notaLicenciamiento": "Conforme a los anuncios oficiales de Microsoft del 4 de diciembre de 2025 y 18 de junio de 2026, efectivos el 1 de julio de 2026 (con aprovisionamiento automático en tenants elegibles existentes hacia el 1 de agosto de 2026), Microsoft incorporó capacidades avanzadas de Intune directamente en las suites empresariales: EMS E3 y Microsoft 365 E3 añadieron Remote Help, Intune Advanced Analytics e Intune Plan 2 (Microsoft Tunnel for MAM, Specialty Device Management y Firmware Over-The-Air); Microsoft 365 E5 añadió todo lo anterior más Endpoint Privilege Management (EPM), Microsoft Cloud PKI, Enterprise Application Management (EAM) y Microsoft Security Copilot. Microsoft 365 E7 (GA 1 de mayo de 2026) consolida M365 E5, Entra Suite, M365 Copilot y Agent 365. El SKU add-on Microsoft Intune Suite y los complementos individuales permanecen disponibles (incluyendo pruebas gratuitas de 90 días hasta 250 usuarios con 30 días de gracia en Tenant administration > Intune add-ons) para licenciar trabajadores Frontline, Educación, Business Premium o clientes E3 que demanden EPM, Cloud PKI o EAM sin migrar a E5."
+  },
+  "resumenEjecutivo": "Microsoft Intune Suite consolida en https://intune.microsoft.com las capacidades avanzadas de seguridad y operaciones de endpoints que eliminan herramientas fragmentadas de terceros sobre Microsoft Intune Plan 1: Endpoint Privilege Management (EPM) para erradicar administradores locales permanentes mediante elevación Just-In-Time aislada; Microsoft Cloud PKI respaldada por Azure Managed HSM para automatizar el ciclo de vida SCEP en nube o BYOCA sin depender de AD CS/NDES; Enterprise Application Management (EAM) para desplegar y parchear aplicaciones Win32 de terceros con SLO de 24 horas; Remote Help para asistencia remota autenticada en Entra ID con RBAC granular y sesiones desatendidas auditadas; Intune Advanced Analytics con detección proactiva de anomalías y consultas KQL en tiempo real (Device Query individual y multi-dispositivo); y Microsoft Tunnel for Mobile Application Management (MAM) para micro-VPN sin enrolamiento MDM en BYOD iOS/Android. Tras la actualización comercial de julio/agosto de 2026, los seis pilares están incluidos en Microsoft 365 E5 y Microsoft 365 E7, integrándose nativamente con Microsoft Defender XDR, Microsoft Sentinel y agentes de Security Copilot en Intune.",
+  "principiosRectores": [
+    {
+      "principio": "Erradicación de privilegios locales permanentes mediante elevación JIT aislada (EPM)",
+      "descripcion": "Operar el parque Windows al 100 % con cuentas de usuario estándar, concediendo elevación puntual sobre cuentas virtuales aisladas únicamente a ejecutables validados por hash SHA-256 o certificado de editor y rutas protegidas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/intune/epm/deployment-planning"
+    },
+    {
+      "principio": "Confianza criptográfica cloud-native respaldada por HSM (Microsoft Cloud PKI)",
+      "descripcion": "Automatizar emisión, renovación y revocación SCEP para Wi-Fi, VPN y Microsoft Entra CBA mediante autoridades en nube con claves en Azure Managed HSM o modelo híbrido BYOCA, reduciendo la huella de servidores AD CS y NDES.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/intune/cloud-pki/"
+    },
+    {
+      "principio": "Parcheo acelerado de aplicaciones de terceros guiado por riesgo de explotación (EAM + TVM)",
+      "descripcion": "Reducir la ventana de exposición de CVEs en software no-Microsoft combinando el catálogo preempaquetado de Enterprise Application Management (SLO de 24 h para el 80-90 % de actualizaciones) con Defender Vulnerability Management y el Vulnerability Remediation Agent.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/intune/app-management/deployment/enterprise-app-management"
+    },
+    {
+      "principio": "Soporte remoto Zero Trust autenticado, condicionado y auditable (Remote Help)",
+      "descripcion": "Exigir autenticación corporativa Microsoft Entra ID intratenant, Acceso Condicional MFA, advertencias previas de incumplimiento y permisos RBAC escalonados en toda sesión de asistencia atendida o desatendida.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/intune/remote-help/"
+    },
+    {
+      "principio": "Diagnóstico silencioso en tiempo real y analítica proactiva antes de interrumpir al usuario",
+      "descripcion": "Detectar degradaciones sistémicas mediante Anomalies y Device Timeline e investigar procesos, servicios, registro e inventario de flota con Device Query (KQL) antes de recurrir a sesiones remotas invasivas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/intune/advanced-analytics/"
+    },
+    {
+      "principio": "Acceso micro-VPN para BYOD sin enrolamiento invasivo (Tunnel for MAM)",
+      "descripcion": "Proteger el acceso móvil a recursos internos desde dispositivos personales iOS y Android no enrolados combinando Microsoft Tunnel for MAM, App Protection Policies, Strict Tunnel Mode en Edge y corte automático por detección de root en Defender.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/intune/device-security/microsoft-tunnel/mam"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Endpoint Privilege Management (EPM) y Motor WinDC",
+      "funcionOperativa": "Gobierna elevaciones de aplicaciones y ajustes de sistema (como red IPv4/IPv6/DNS offline) mediante políticas Elevation Settings y Elevation Rules (Automatic, User confirmed, Elevate as current user, Support approved y Deny), aislamiento en cuenta virtual, control de procesos hijos y módulo diagnóstico EpmTools.",
+      "portalRuta": "intune.microsoft.com > Endpoint security > Endpoint Privilege Management",
+      "integraciones": [
+        "Windows Declared Configuration (WinDC / MMP-C)",
+        "Microsoft Security Copilot & Defender Threat Intelligence",
+        "Microsoft Entra ID & Intune RBAC"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Cloud PKI (Cloud Root, Issuing CA, BYOCA y SCEP RA)",
+      "funcionOperativa": "Provee hasta 3 autoridades certificadoras por tenant respaldadas por Azure Managed HSM (jerarquía cloud de dos niveles o BYOCA anclada a PKI privada), Autoridad de Registro SCEP en nube y endpoints AIA/CDP con CRL de 7 días refrescada cada 3,5 días.",
+      "portalRuta": "intune.microsoft.com > Tenant administration > Cloud PKI",
+      "integraciones": [
+        "Azure Managed HSM",
+        "Microsoft Entra Certificate-Based Authentication (CBA)",
+        "Infraestructura Wi-Fi 802.1X / VPN y AD CS privado (BYOCA)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Enterprise Application Management (EAM) y Enterprise App Catalog",
+      "funcionOperativa": "Catálogo hospedado por Microsoft (*.manage.microsoft.com) de más de 1.000 aplicaciones Win32 preempaquetadas instaladas por IME con reglas de detección preconfiguradas, Auto-update para asignaciones Required y Guided Update Supersedence.",
+      "portalRuta": "intune.microsoft.com > Apps > Windows / Enterprise App Catalog apps with updates",
+      "integraciones": [
+        "Intune Management Extension (IME)",
+        "Windows Autopilot (ESP y Device Preparation DPP)",
+        "Microsoft Defender Vulnerability Management"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Remote Help (Atendido, Elevación UAC, Web App y Unattended Remote Sign-In)",
+      "funcionOperativa": "Solución cloud de soporte remoto autenticado en Entra ID para Windows, macOS y Android con RBAC granular (View screen, Take full control, Elevation, Unattended control y Remote sign-in en sesión Windows separada), Remote launch y Compliance warnings.",
+      "portalRuta": "intune.microsoft.com > Tenant administration > Remote Help",
+      "integraciones": [
+        "Microsoft Entra Conditional Access",
+        "Windows Push Notification Services (WNS)",
+        "Intune Device Compliance & Audit Logs"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Intune Advanced Analytics: Anomalies, Battery Health y STIG Audit Baseline",
+      "funcionOperativa": "Extiende Endpoint Analytics con detección estadística de anomalías (BSODs y cierres de apps con grupos de correlación), salud de baterías, rendimiento de recursos, Device Timeline por dispositivo, Device Scopes y línea base de auditoría DISA STIG.",
+      "portalRuta": "intune.microsoft.com > Reports > Endpoint analytics",
+      "integraciones": [
+        "Telemetría nativa de Windows 11",
+        "Intune Scope Tags",
+        "Procesos ITSM de Problem Management y DEX"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Device Query (Single-Device en Tiempo Real y Multi-Device Transversal)",
+      "funcionOperativa": "Motor KQL bajo demanda sobre un dispositivo Windows vivo vía WNS (21 entidades forenses/operativas) y consulta KQL de flota multi-dispositivo (Windows, macOS, iOS, Android Enterprise) con exportación de 50.000 filas y creación directa de grupos Entra.",
+      "portalRuta": "intune.microsoft.com > Devices > Device query / Devices > Windows > [Device] > Device Query",
+      "integraciones": [
+        "Windows Push Notification Services (WNS)",
+        "Intune Properties Catalog Policy",
+        "Microsoft Entra Security Groups & Copilot NL-to-KQL"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Tunnel for Mobile Application Management (MAM)",
+      "funcionOperativa": "Extiende el gateway Linux contenedorizado de Microsoft Tunnel hacia dispositivos BYOD iOS/iPadOS y Android no enrolados en MDM, habilitando micro-VPN por app, Strict Tunnel Mode e Identity Switch en Microsoft Edge.",
+      "portalRuta": "intune.microsoft.com > Tenant administration > Microsoft Tunnel Gateway",
+      "integraciones": [
+        "Microsoft Defender for Endpoint Mobile (detección de root en Android)",
+        "Intune App SDK, MSAL y Tunnel for MAM SDK",
+        "Intune App Protection & App Configuration Policies"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Security Copilot y Agentes Autónomos Supervisados en Intune",
+      "funcionOperativa": "Integra IA generativa y agentes con identidad agéntica delegada en Intune, destacando el Vulnerability Remediation Agent para priorización de CVEs y el Change Review Agent para evaluar riesgo de scripts PowerShell en Multi Admin Approval.",
+      "portalRuta": "intune.microsoft.com > Agents > Vulnerability Remediation Agent / Change Review Agent",
+      "integraciones": [
+        "Microsoft Security Copilot (SCUs)",
+        "Microsoft Defender XDR & Threat Intelligence",
+        "Microsoft Entra ID Protection"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "Intune Administrator (Rol integrado Microsoft Entra)",
+      "nivelSOC": "L3 / Global Service Owner",
+      "permisosClave": "Lectura/escritura completa sobre configuración, políticas, auditoría, habilitación tenant-wide de Remote Help, alta de CAs en Cloud PKI, Multi Admin Approval y agentes Copilot.",
+      "asignacionPIM": "Elegible en PIM (máximo 2 horas) con MFA resistente a phishing, justificación de cambio y aprobación dual.",
+      "responsabilidadOperativa": "Gobierno global del servicio Intune, alta inicial de jerarquías Cloud PKI y cambios estructurales sujetos a Multi Admin Approval.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Intune Role Administrator (Rol integrado Intune RBAC)",
+      "nivelSOC": "Identity & Governance Admin",
+      "permisosClave": "Gestión exclusiva de roles personalizados de Intune, asignación de roles integrados y asociación de Scope Tags administrativos.",
+      "asignacionPIM": "Elegible en PIM (máximo 2 horas), estrictamente segregado de operaciones cotidianas de soporte y empaquetado.",
+      "responsabilidadOperativa": "Creación y mantenimiento de roles de mínimo privilegio para Cloud PKI, Remote Help escalonado, EPM y Device Query.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Endpoint Privilege Manager (Rol integrado Intune RBAC)",
+      "nivelSOC": "L3 / Endpoint Security Engineer",
+      "permisosClave": "Derechos completos en Endpoint Privilege Management Policy Authoring (Create, Read, Update, Delete, Assign, View Reports) y Elevation Requests.",
+      "asignacionPIM": "Elegible en PIM (máximo 4 horas) durante ventanas de ingeniería de políticas.",
+      "responsabilidadOperativa": "Diseño de políticas de configuración y reglas EPM, gestión de certificados en Reusable Settings y reglas de bloqueo Deny.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "EPM Elevation Approver (Rol personalizado Intune RBAC)",
+      "nivelSOC": "SOC L1 / L2 / Help Desk L2",
+      "permisosClave": "Endpoint Privilege Management Elevation Requests (View y Modify elevation requests) más Policy Authoring (Read y View Reports únicamente).",
+      "asignacionPIM": "Activo en turno operativo mediante grupo PIM de 8 horas con MFA obligatoria.",
+      "responsabilidadOperativa": "Evaluación y aprobación/rechazo JIT de solicitudes Support approved sin facultad para crear reglas Automatic permanentes.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "rol": "Cloud PKI Authority Operator (Rol personalizado Intune RBAC)",
+      "nivelSOC": "L2 / L3 PKI Operations",
+      "permisosClave": "Permisos Cloud PKI: Read CAs y Revoke issued leaf certificates para L2; Create certificate authorities restringido exclusivamente a L3 PKI Architect.",
+      "asignacionPIM": "Elegible en PIM (máximo 4 horas) acotado por Scope Tags regionales o de entorno.",
+      "responsabilidadOperativa": "Monitoreo de emisión SCEP, salud de CRL/AIA y revocación inmediata de certificados hoja ante robo o compromiso.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Remote Help Tiered Operator (Roles personalizados L1 vs. L2/L3 Intune RBAC)",
+      "nivelSOC": "Help Desk L1 / L2 / Field Ops L3",
+      "permisosClave": "Permisos Remote Help app escalonados: L1 (View screen, Remote launch); L2 (+ Take full control, Elevation); L3 restringido (+ Unattended control).",
+      "asignacionPIM": "L1 activo en turno; L2 y L3 elegibles en PIM (máximo 4 horas) vinculados a ticket activo.",
+      "responsabilidadOperativa": "Soporte remoto con privilegio mínimo evitando uso indiscriminado de credenciales UAC o sesiones desatendidas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "rol": "Device Query & Analytics Hunter (Rol personalizado Intune RBAC)",
+      "nivelSOC": "SOC L2 / Threat Hunter / DEX Analyst",
+      "permisosClave": "Managed Devices/Query (requerido para Single-Device Query), Managed devices/Read y Organization/Read (para Multi-Device Query y Advanced Analytics).",
+      "asignacionPIM": "Activo en turno para analistas SOC y DEX con recertificación trimestral.",
+      "responsabilidadOperativa": "Investigación KQL en vivo e inventario transversal de flota sin permisos destructivos sobre endpoints.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Application Manager (Rol integrado Intune RBAC)",
+      "nivelSOC": "L2 / Endpoint Packaging & Patching",
+      "permisosClave": "Administración de aplicaciones Win32 y móviles, alta desde Enterprise App Catalog, configuración de Auto-update y Guided Update Supersedence.",
+      "asignacionPIM": "Elegible en PIM (máximo 4 horas) para ciclos semanales y emergencias de parcheo CVE.",
+      "responsabilidadOperativa": "Publicación, actualización por anillos y retiro de aplicaciones del catálogo empresarial en coordinación con TVM.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Triaje y resolución JIT de solicitudes Support approved en Endpoint Privilege Management",
+      "objetivo": "Resolver solicitudes puntuales de elevación de usuarios estándar validando reputación de amenaza y justificación de negocio sin otorgar permisos locales permanentes.",
+      "consolaRuta": "intune.microsoft.com > Endpoint security > Endpoint Privilege Management > Elevation requests",
+      "procedimiento": [
+        "Filtrar solicitudes en estado Pending y revisar usuario, endpoint corporativo, ruta completa del binario y justificación ingresada.",
+        "Consultar Copilot in Intune sobre la solicitud para evaluar hash SHA-256, editor firmante e inteligencia de amenazas de Microsoft Defender.",
+        "Denegar inmediatamente ejecutables ubicados en rutas escribibles por el usuario (Downloads, Temp, red) o intérpretes de comandos no autorizados.",
+        "Aprobar solicitudes legítimas documentando el ID de ticket ITSM para habilitar la ventana temporal de elevación en el cliente."
+      ],
+      "rolResponsable": "SOC L1/L2 / EPM Elevation Approver",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Privilege Escalation (T1548.002)",
+      "evidenciaAuditable": "Registro de decisión Approve/Deny en Tenant administration > Audit logs vinculado al ticket ITSM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo Support approved e integración de Copilot con Defender TI verificados en documentación oficial de EPM; SLA interno de 30 min es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/epm/deployment-planning"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo de anomalías críticas de dispositivos en Intune Advanced Analytics",
+      "objetivo": "Identificar tempranamente picos estadísticos de BSODs o cuelgues de aplicaciones correlacionados con drivers, actualizaciones o versiones de software.",
+      "consolaRuta": "intune.microsoft.com > Reports > Endpoint analytics > Anomalies",
+      "procedimiento": [
+        "Filtrar anomalías de severidad High y Medium detectadas en las últimas 24 horas.",
+        "Inspeccionar los Device correlation groups para aislar el factor común (driver, KB de Windows, modelo OEM o versión de app).",
+        "Revisar Device timeline en equipos afectados y detener el despliegue en anillos superiores si se confirma regresión."
+      ],
+      "rolResponsable": "Endpoint Operations L2 / DEX Analyst",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-03",
+      "mitreTactic": "Impact (T1499)",
+      "evidenciaAuditable": "Exportación diaria de anomalías activas y ticket preventivo en Problem Management.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Informes Anomalies, grupos de correlación y Device timeline verificados en Advanced Analytics overview.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/advanced-analytics/"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Supervisión de sesiones activas, Compliance Warnings y elevaciones UAC en Remote Help",
+      "objetivo": "Asegurar que las sesiones remotas cumplan el modelo RBAC y auditar conexiones hacia dispositivos no conformes o con elevación administrativa.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Remote Help > Monitor",
+      "procedimiento": [
+        "Revisar sesiones completadas y activas de las últimas 24 horas verificando helper, sharer, duración y modo de sesión.",
+        "Auditar conexiones realizadas sobre endpoints con Compliance Warning confirmando que no se expusieron credenciales privilegiadas indebidamente.",
+        "Conciliar toda sesión con Elevation o Unattended contra un ticket válido en ITSM y escalar anomalías al SOC."
+      ],
+      "rolResponsable": "Help Desk Manager / SOC L1",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Command and Control / Remote Access Software (T1219)",
+      "evidenciaAuditable": "Registros de sesión en Remote Help Monitor y Tenant administration > Audit logs.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Capacidades de monitoreo, Compliance Warnings y auditoría verificadas en documentación oficial de Remote Help.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/remote-help/"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Verificación de salud de sitios contenedorizados y bloqueos por root en Microsoft Tunnel for MAM",
+      "objetivo": "Mantener continuidad operativa del acceso micro-VPN BYOD y vigilar desconexiones automáticas por compromiso móvil.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Microsoft Tunnel Gateway > Health status",
+      "procedimiento": [
+        "Verificar estado Online, métricas de CPU/RAM, latencia y vigencia mayor a 30 días de certificados TLS en todos los servidores Linux del túnel.",
+        "Revisar alertas de clientes Android bloqueados automáticamente por detección de root en Microsoft Defender for Endpoint.",
+        "Confirmar integridad de políticas App Configuration con Strict Tunnel Mode activo para Microsoft Edge."
+      ],
+      "rolResponsable": "Mobility & Endpoint Network Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.IR-01",
+      "mitreTactic": "Initial Access / External Remote Services (T1133)",
+      "evidenciaAuditable": "Panel Health status de Microsoft Tunnel Gateway en estado saludable y bitácora de incidentes móviles.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Salud de servidores Linux, Strict Tunnel Mode y bloqueo automático por root en Android verificados en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/device-security/microsoft-tunnel/overview"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Revisión diaria de actualizaciones críticas en Enterprise App Catalog con Vulnerability Remediation Agent",
+      "objetivo": "Activar el parcheo rápido de CVEs explotados o críticos aprovechando el SLO de 24 horas del catálogo empresarial.",
+      "consolaRuta": "intune.microsoft.com > Apps > Enterprise App Catalog apps with updates / Agents > Vulnerability Remediation Agent",
+      "procedimiento": [
+        "Inspeccionar la vista Enterprise App Catalog apps with updates comparando Provisioned version contra Latest available version.",
+        "Contrastar con las prioridades generadas por el Vulnerability Remediation Agent basado en señales de Defender Vulnerability Management.",
+        "Iniciar Guided Update Supersedence hacia el anillo piloto 0 (o validar Auto-update) para toda actualización que corrija CVEs críticos/altos."
+      ],
+      "rolResponsable": "Application Manager / Vulnerability Analyst",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "Exploitation for Client Execution (T1203)",
+      "evidenciaAuditable": "Registro de paquetes supersedence creados y estado de sugerencias en Vulnerability Remediation Agent.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Vista de actualizaciones, SLO de 24 h y Vulnerability Remediation Agent verificados en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/app-management/deployment/update-enterprise-supersedence"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Control diario de emisión SCEP y disponibilidad de AIA/CDP en Microsoft Cloud PKI",
+      "objetivo": "Detectar errores tempranos de validación CSR/challenge en la Autoridad de Registro en nube antes de afectar conectividad Wi-Fi, VPN o Entra CBA.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Cloud PKI / Devices > Monitor > Certificates",
+      "procedimiento": [
+        "Confirmar estado Active en todas las Root CAs, Issuing CAs y BYOCA Issuing CAs del tenant.",
+        "Auditar errores de emisión de perfiles SCEP en las últimas 24 horas identificando causas de rechazo en el servicio de validación SCEP.",
+        "Corregir asignaciones faltantes de perfiles Trusted Certificate en grupos de dispositivos afectados."
+      ],
+      "rolResponsable": "Cloud PKI Authority Operator",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-03",
+      "mitreTactic": "Credential Access (T1556)",
+      "evidenciaAuditable": "Dashboard de Cloud PKI sin fallos sistémicos de emisión y disponibilidad verificada de endpoints AIA/CDP.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Arquitectura de validación SCEP RA y dashboard de reporte actualizados cada 24 h verificados en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/cloud-pki/"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Investigación táctica en tiempo real sobre endpoints mediante Single-Device Device Query",
+      "objetivo": "Diagnosticar incidentes de soporte y alertas de seguridad consultando procesos, servicios, registro y eventos en vivo vía WNS sin interrumpir al usuario.",
+      "consolaRuta": "intune.microsoft.com > Devices > Windows > [Dispositivo] > Monitor > Device Query",
+      "procedimiento": [
+        "Acceder al dispositivo corporativo conectado y abrir Device Query bajo permiso RBAC Managed Devices/Query.",
+        "Ejecutar consultas KQL acotadas (máximo 15/minuto) sobre Process, WindowsService, WindowsRegistry, LocalGroup o WindowsEvent, usando Copilot NL-to-KQL si se requiere.",
+        "Ejecutar acción remota correctiva (reinicio o script de remediación) directamente desde la interfaz según el hallazgo."
+      ],
+      "rolResponsable": "SOC L2 / Help Desk L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "Discovery / Persistence (T1543.003)",
+      "evidenciaAuditable": "Consulta KQL y salida adjuntas al ticket ITSM o incidente de seguridad.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Transporte WNS obligatorio, límite de 15 consultas/min y acciones remotas integradas verificados en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/advanced-analytics/device-query"
+    },
+    {
+      "codigo": "D-08",
+      "cadencia": "Diaria",
+      "actividad": "Auditoría de operaciones administrativas críticas y Multi Admin Approval con Change Review Agent",
+      "objetivo": "Fiscalizar cambios sensibles en políticas de Intune Suite y evaluar con IA el riesgo de scripts PowerShell antes de su aprobación dual.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Audit logs / Multi Admin Approval",
+      "procedimiento": [
+        "Filtrar Audit logs de las últimas 24 horas para categorías EndpointPrivilegeManagement, CloudPKI, RemoteHelp y Role.",
+        "Revisar las recomendaciones contextuales del Change Review Agent sobre scripts PowerShell pendientes de Multi Admin Approval.",
+        "Escalar como incidente de gobierno cualquier cambio privilegiado sin ticket CAB o creación de reglas EPM excesivamente permisivas."
+      ],
+      "rolResponsable": "SOC L2 / Governance Analyst",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Execution / PowerShell (T1059.001)",
+      "evidenciaAuditable": "Exportación diaria de Audit logs y registro de segunda aprobación informada por Change Review Agent.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Change Review Agent para scripts PowerShell en Multi Admin Approval verificado en Learn (agosto 2026).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/copilot/agents/change-review-agent"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Análisis de Managed vs. Unmanaged Elevations y conversión controlada de reglas EPM",
+      "objetivo": "Erradicar cuentas con permisos locales residuales y convertir solicitudes repetitivas legítimas en reglas seguras acotadas por hash o certificado.",
+      "consolaRuta": "intune.microsoft.com > Reports > Endpoint security > Endpoint Privilege Management > Elevation report",
+      "procedimiento": [
+        "Comparar el volumen semanal de Managed elevations frente a Unmanaged elevations e identificar equipos donde aún se ejecuta Run as administrator.",
+        "Detectar binarios con alta recurrencia de solicitudes Support approved aprobadas por grupo funcional.",
+        "Extraer metadatos y certificados con Get-FileAttributes (EpmTools) y publicar reglas User confirmed con ruta protegida obligatoria y restricción de procesos hijos."
+      ],
+      "rolResponsable": "Endpoint Privilege Manager",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Privilege Escalation (T1548)",
+      "evidenciaAuditable": "Informe semanal de reducción de Unmanaged elevations y cambios aprobados en políticas EPM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Conceptos de Managed vs. Unmanaged elevations y cmdlets EpmTools verificados en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/epm/deployment-planning"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Despliegue escalonado con Guided Update Supersedence y auditoría de Auto-update en EAM",
+      "objetivo": "Mantener al día el catálogo de software Win32 empresarial equilibrando celeridad de parcheo y estabilidad en producción.",
+      "consolaRuta": "intune.microsoft.com > Apps > Enterprise App Catalog apps with updates",
+      "procedimiento": [
+        "Procesar las actualizaciones semanales disponibles creando paquetes con Guided Update Supersedence asignados inicialmente al anillo piloto.",
+        "Promover a anillos amplios tras 72 horas sin anomalías reportadas en Intune Advanced Analytics.",
+        "Verificar en aplicaciones con Auto-update activo (Required) ausencia de errores de instalación o conflictos con paquetes LOB paralelos."
+      ],
+      "rolResponsable": "Application Manager",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-02",
+      "mitreTactic": "Initial Access / Supply Chain & App Exploitation (T1190)",
+      "evidenciaAuditable": "Reporte semanal de cumplimiento de versiones en Managed Apps.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mecanismos Auto-update y Guided Update Supersedence son oficiales de MS Learn; la cadencia semanal con ventana piloto de 72 h es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/app-management/deployment/enterprise-app-management"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Caza transversal de desviaciones de inventario con Device Query for Multiple Devices",
+      "objetivo": "Detectar brechas de cifrado, TPM, parches QFE o agentes IA no autorizados en toda la flota corporativa y agruparlos dinámicamente para remediación.",
+      "consolaRuta": "intune.microsoft.com > Devices > Device query",
+      "procedimiento": [
+        "Ejecutar consultas KQL de flota sobre EncryptableVolume, Tpm, BiosInfo, WindowsQfe y Local AI Agent usando uniones 'on Device'.",
+        "Utilizar la acción nativa Add all items to a group sobre los hallazgos para alimentar grupos de seguridad de Microsoft Entra.",
+        "Exportar evidencia detallada en CSV (hasta 50.000 registros) y disparar políticas correctivas sobre los grupos creados."
+      ],
+      "rolResponsable": "SOC L3 / Threat Hunter",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-01",
+      "mitreTactic": "Defense Evasion / Impair Defenses (T1562)",
+      "evidenciaAuditable": "Exportación CSV semanal y membresía auditada del grupo Entra generado desde Device Query.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Entidades multi-plataforma, sintaxis join on Device, exportación de 50.000 filas y Add all items to a group verificados en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/advanced-analytics/device-query-multiple-devices"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Supervisión de expiración de certificados hoja y refresco de CRL en Microsoft Cloud PKI",
+      "objetivo": "Asegurar continuidad de autenticación basada en certificados y revocación oportuna de equipos dados de baja.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Cloud PKI",
+      "procedimiento": [
+        "Revisar certificados hoja próximos a expirar en < 30 días verificando renovación automática SCEP en equipos activos.",
+        "Confirmar la publicación periódica de la CRL (validez 7 días, actualización cada 3,5 días) en el punto CDP hospedado por Intune.",
+        "Revocar certificados activos pertenecientes a dispositivos obsoletos o retirados del inventario."
+      ],
+      "rolResponsable": "Cloud PKI Authority Operator",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-03",
+      "mitreTactic": "Credential Access / Steal Application Access Token (T1528)",
+      "evidenciaAuditable": "Reporte semanal del dashboard de Cloud PKI y verificación de marca de tiempo de la CRL.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Ciclo de validez CRL de 7 días y refresco cada 3,5 días verificados en Microsoft Cloud PKI overview.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/cloud-pki/"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría de sesiones Unattended Remote Sign-In y postura de configuración en Remote Help",
+      "objetivo": "Garantizar que el acceso remoto sin usuario presente se mantenga 100 % trazado y libre de desviaciones de seguridad.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Remote Help > Settings / Remote Help sessions",
+      "procedimiento": [
+        "Conciliar todas las sesiones semanales de Unattended control (Windows físico corporativo y Android dedicado) contra tickets aprobados.",
+        "Confirmar que la opción de asistencia a dispositivos no enrolados continúe deshabilitada a nivel tenant.",
+        "Validar vigencia de las políticas de Acceso Condicional que exigen MFA y cumplimiento de equipo a los operadores Helper."
+      ],
+      "rolResponsable": "SOC L2 / Internal Controls",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Lateral Movement / Remote Services (T1021)",
+      "evidenciaAuditable": "Matriz semanal firmada de conciliación de sesiones desatendidas vs. órdenes ITSM.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Capacidades Unattended remote sign-in y Acceso Condicional son nativas de Learn; la conciliación semanal 100 % es control editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/remote-help/start-session"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Optimización proactiva de Battery Health, Resource Performance y Startup por Device Scopes",
+      "objetivo": "Mejorar la experiencia digital del empleado identificando degradaciones de hardware y cuellos de botella de arranque antes de generar incidentes.",
+      "consolaRuta": "intune.microsoft.com > Reports > Endpoint analytics > Battery health / Resource performance",
+      "procedimiento": [
+        "Filtrar por Device scopes equipos portátiles con capacidad máxima de batería < 60 % y alto número de ciclos.",
+        "Identificar modelos con presión sostenida de RAM/CPU o agentes que retrasen el inicio de sesión.",
+        "Emitir órdenes proactivas de reemplazo de batería, ampliación de hardware o depuración de scripts de inicio."
+      ],
+      "rolResponsable": "DEX Lead / Endpoint Engineering",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.IM-01",
+      "mitreTactic": "N/A (Resiliencia Operacional y Disponibilidad)",
+      "evidenciaAuditable": "Informe semanal de puntuación Endpoint Analytics y tickets preventivos generados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Informes Battery health, Resource performance y Device scopes verificados en Intune Advanced Analytics.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/advanced-analytics/"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Conciliación mensual de vulnerabilidades de terceros entre Defender TVM y Enterprise App Management",
+      "objetivo": "Maximizar la proporción de aplicaciones vulnerables del parque gestionadas y parcheadas automáticamente desde el catálogo empresarial.",
+      "consolaRuta": "security.microsoft.com > Vulnerability management / intune.microsoft.com > Agents > Vulnerability Remediation Agent",
+      "procedimiento": [
+        "Ejecutar Run Readiness Check y lanzar el Vulnerability Remediation Agent para consolidar las prioridades mensuales de remediación.",
+        "Migrar aplicaciones Win32 empaquetadas manualmente hacia sus equivalentes oficiales en el Enterprise App Catalog.",
+        "Registrar o votar solicitudes de nuevas aplicaciones requeridas en el Microsoft Feedback Portal bajo Enterprise App Management."
+      ],
+      "rolResponsable": "Vulnerability Management Lead + Application Manager",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-08",
+      "mitreTactic": "Exploitation for Client Execution (T1203)",
+      "evidenciaAuditable": "Acta mensual de cobertura TVM-EAM y porcentaje de reducción de exposición de software de terceros.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Operación del Vulnerability Remediation Agent y canal Feedback Portal verificados en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/copilot/agents/manage-vulnerability-remediation-agent"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Depuración mensual y endurecimiento de reglas de elevación en Endpoint Privilege Management",
+      "objetivo": "Eliminar privilegios excesivos revisando reglas Automatic, Elevate as current user y restricciones de rutas en certificados reutilizables.",
+      "consolaRuta": "intune.microsoft.com > Endpoint security > Endpoint Privilege Management > Policies / Reusable settings",
+      "procedimiento": [
+        "Revisar cada regla Automatic y Elevate as current user degradando a User confirmed en cuenta virtual aquellas sin excepción técnica vigente.",
+        "Validar que todas las reglas basadas en certificado exijan File path en carpetas de sistema no modificables por usuarios estándar.",
+        "Confirmar ausencia de conflictos en Windows elevation settings policy y respuesta predeterminada en Deny o Require support approval."
+      ],
+      "rolResponsable": "Endpoint Privilege Manager + Security Architect",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Privilege Escalation / Hijack Execution Flow (T1574)",
+      "evidenciaAuditable": "Inventario mensual auditado de reglas EPM sin reglas amplias de certificado sin ruta.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Recomendaciones de seguridad de EPM (default response, file path restriction, virtual account isolation) verificadas en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/epm/deployment-planning"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Evaluación mensual de postura BYOD y parcheo de nodos Linux en Microsoft Tunnel for MAM",
+      "objetivo": "Asegurar higiene de contenedores del gateway VPN y políticas de protección de datos en dispositivos personales no enrolados.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Microsoft Tunnel Gateway / Apps > App protection policies",
+      "procedimiento": [
+        "Confirmar aplicación de parches mensuales del sistema operativo Linux, motor de contenedores y versión del binario Microsoft Tunnel.",
+        "Auditar políticas App Protection y App Configuration en iOS y Android verificando bloqueo de fuga de datos, Strict Tunnel Mode e Identity Switch en Edge.",
+        "Comprobar que la política de riesgo de Microsoft Defender for Endpoint en Android bloquee acceso ante estado High."
+      ],
+      "rolResponsable": "Mobility Security Lead",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.IR-01",
+      "mitreTactic": "Exfiltration / Initial Access (T1133)",
+      "evidenciaAuditable": "Checklist mensual de mantenimiento de servidores Tunnel y conformidad de políticas MAM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Arquitectura iOS SDK vs. Android MDE e Identity Switch / Strict Tunnel Mode verificados en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/device-security/microsoft-tunnel/mam"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Gobierno FinOps de licenciamiento M365 E3/E5/E7, add-ons de Intune Suite y consumo SCU",
+      "objetivo": "Eliminar duplicidad de costos tras la inclusión de julio/agosto de 2026 en M365 E3/E5 y dimensionar correctamente las SCUs de Security Copilot.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Intune add-ons / admin.microsoft.com > Billing > Licenses",
+      "procedimiento": [
+        "Verificar que usuarios con licencia Microsoft 365 E5 o E7 no tengan asignados add-ons redundantes de EPM, Cloud PKI, EAM, Remote Help o Advanced Analytics.",
+        "Monitorear fechas de expiración de trials activos (90 días + 30 días de gracia) y asignaciones de licencias solo-dispositivo (kioscos/salas).",
+        "Revisar consumo mensual de SCUs generado por Copilot in Intune y sus agentes autónomos."
+      ],
+      "rolResponsable": "IT FinOps + Intune Service Owner",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-02",
+      "mitreTactic": "N/A (Gobierno Financiero y Continuidad del Servicio)",
+      "evidenciaAuditable": "Reporte mensual de conciliación de licencias M365 E5 vs. add-ons y tablero de consumo SCU.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Reglas de inclusión julio/agosto 2026 y límites de trials verificados en Intune Blog y Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/fundamentals/advanced-capabilities"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Evaluación mensual de cumplimiento contra DISA STIG Audit Baseline en Advanced Analytics",
+      "objetivo": "Auditar de forma continua la adherencia del parque Windows corporativo frente a controles técnicos rigurosos del estándar STIG.",
+      "consolaRuta": "intune.microsoft.com > Reports > Endpoint analytics (STIG audit baseline)",
+      "procedimiento": [
+        "Analizar la tasa de conformidad por control en el informe STIG audit baseline incluido en Intune Advanced Analytics.",
+        "Generar tareas de endurecimiento en Settings Catalog para controles fallidos no cubiertos por excepción formal.",
+        "Documentar tendencias mensuales de cumplimiento para auditoría interna y GRC."
+      ],
+      "rolResponsable": "GRC Analyst + Endpoint Security Engineer",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-01",
+      "mitreTactic": "Defense Evasion (T1562.001)",
+      "evidenciaAuditable": "Informe mensual exportado de STIG audit baseline y matriz de excepciones aprobadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Disponibilidad de STIG audit baseline dentro de Intune Advanced Analytics verificada en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/advanced-analytics/"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Recertificación trimestral de roles RBAC granulares de Intune Suite, Scope Tags y Unlicensed Admins",
+      "objetivo": "Garantizar mínimo privilegio administrativo y cumplimiento de límites técnicos en grupos de administración de Intune.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Roles / entra.microsoft.com > Identity governance > Access reviews",
+      "procedimiento": [
+        "Ejecutar Access Reviews trimestrales sobre todos los grupos PIM con roles de EPM, Cloud PKI, Remote Help, Device Query y Application Manager.",
+        "Confirmar que los grupos con Allow access to unlicensed admins tengan <= 1.000 miembros directos y ningún grupo anidado.",
+        "Auditar asignación consistente de Scope Tags en CAs, políticas de elevación y perfiles."
+      ],
+      "rolResponsable": "Intune Role Administrator + Identity Governance",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-02",
+      "mitreTactic": "Valid Accounts (T1078.004)",
+      "evidenciaAuditable": "Actas cerradas de Access Reviews en Entra ID y exportación de asignaciones Intune RBAC.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Límite de 1.000 unlicensed admins por grupo plano sin anidamiento verificado en Intune licensing.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/fundamentals/licensing"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Simulacro operativo de revocación SCEP y validación de propagación CRL en Cloud PKI / BYOCA",
+      "objetivo": "Comprobar que la revocación de un certificado hoja bloquea efectivamente el acceso en Wi-Fi, VPN y Microsoft Entra CBA.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Cloud PKI",
+      "procedimiento": [
+        "Emitir un certificado SCEP de prueba en laboratorio y validar autenticación exitosa contra RADIUS Wi-Fi, VPN y Entra CBA.",
+        "Revocar el certificado hoja en Cloud PKI verificando actualización inmediata de la CRL en el endpoint CDP.",
+        "Confirmar rechazo efectivo de conexión en cada relying party y ajustar cachés CRL si exceden umbrales aceptables."
+      ],
+      "rolResponsable": "PKI Architect + Network Security Lead",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-02",
+      "mitreTactic": "Credential Access / Use Alternate Authentication Material (T1550)",
+      "evidenciaAuditable": "Informe de prueba trimestral con número de serie revocado en CRL y logs de rechazo en relying parties.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Actualización inmediata de CRL tras revocación es oficial en Learn; el simulacro trimestral end-to-end es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/cloud-pki/configure-ca"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Ejercicio Purple Team sobre escape de procesos hijos EPM, sesiones desatendidas Remote Help y MAM Tunnel",
+      "objetivo": "Validar resistencia preventiva y cobertura de detección SIEM/XDR frente a abuso adversario de las capacidades avanzadas de Intune.",
+      "consolaRuta": "intune.microsoft.com / security.microsoft.com > Investigation & response > Hunting",
+      "procedimiento": [
+        "Simular intentos de elevación de subprocesos LOLBins o secuestro de argumentos desde aplicaciones permitidas en EPM.",
+        "Ejecutar sesión controlada de Remote Help Unattended remote sign-in verificando disparo de detecciones correlacionadas en Sentinel/Defender XDR.",
+        "Probar en Android de laboratorio la detección de root comprobando desconexión inmediata del túnel Microsoft Tunnel for MAM."
+      ],
+      "rolResponsable": "Purple Team + SOC L3 Detection Engineer",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Privilege Escalation / Command and Control (T1548, T1219)",
+      "evidenciaAuditable": "Informe semestral Purple Team y mejoras implementadas en reglas EPM y analíticas KQL.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Vectores técnicos basados en documentación oficial de EPM, Remote Help y Tunnel; cadencia Purple Team semestral es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/epm/deployment-planning"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Revisión arquitectónica anual de capacidad Microsoft Cloud PKI y descomisionamiento de AD CS / NDES",
+      "objetivo": "Gobernar el límite de 3 CAs mHSM por tenant, vigencia criptográfica de CAs raíz/emisoras y retiro planificado de infraestructura PKI local.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Cloud PKI",
+      "procedimiento": [
+        "Evaluar ocupación del límite máximo de 3 CAs en el tenant, fechas de vencimiento y fortaleza criptográfica (RSA 3072/4096, SHA-384/512).",
+        "Confirmar inexistencia en producción de CAs creadas durante periodos trial (claves software no convertibles a Azure Managed HSM).",
+        "Actualizar hoja de ruta de migración de plantillas remanentes para apagar servidores NDES e Intune Certificate Connectors heredados."
+      ],
+      "rolResponsable": "PKI Architect + Enterprise Security Architect + CISO",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.SC-02",
+      "mitreTactic": "N/A (Arquitectura Criptográfica y Reducción de Superficie)",
+      "evidenciaAuditable": "Revisión anual de arquitectura PKI firmada y actas de baja de servidores NDES locales.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tope de 3 CAs por tenant e imposibilidad de migrar claves software de trial a mHSM verificados en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/cloud-pki/"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de contención ante revocación de versión maliciosa o CVE 0-day en Enterprise App Catalog",
+      "objetivo": "Identificar y erradicar rápidamente en la flota una versión comprometida o con 0-day crítico supliendo la ausencia de rollback automático en EAM.",
+      "consolaRuta": "intune.microsoft.com > Devices > Device query / Apps > Windows / Endpoint security > EPM",
+      "procedimiento": [
+        "Ejecutar Device Query for Multiple Devices (y Advanced Hunting en Defender TVM) para localizar todos los equipos con la versión afectada.",
+        "Usar Add all items to a group desde los resultados de Device Query para conformar el grupo dinámico de contención inmediata.",
+        "Publicar una regla Deny de emergencia en EPM para bloquear cualquier elevación del ejecutable o instalador comprometido.",
+        "Desplegar asignación Uninstall, script de remediación o paquete Guided Update Supersedence limpio y validar erradicación en vivo."
+      ],
+      "rolResponsable": "SOC Incident Commander + Application Manager",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Initial Access / Supply Chain Compromise (T1195.002)",
+      "evidenciaAuditable": "Grupo de impacto, regla Deny EPM y reporte de desinstalación/actualización verificada >= 99 %.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Documentación oficial de EAM advierte explícitamente ausencia de rollback automático y caché de hasta 1 h ante revocaciones maliciosas.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/app-management/deployment/enterprise-app-management"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de emergencia ante abuso de regla de elevación o compromiso de certificado en EPM",
+      "objetivo": "Bloquear instantáneamente la elevación de un binario o editor abusado y determinar el radio de impacto en la flota.",
+      "consolaRuta": "intune.microsoft.com > Endpoint security > Endpoint Privilege Management > Policies",
+      "procedimiento": [
+        "Aislar el host comprometido en Defender XDR e identificar la regla involucrada mediante Device Query o cmdlets locales EpmTools (Get-ElevationRules).",
+        "Desplegar regla EPM de tipo Deny por hash SHA-256 o certificado sabiendo que Deny prevalece sobre toda otra regla de usuario o equipo.",
+        "Consultar el Elevation report de los últimos 30 días para identificar otros endpoints donde se elevó dicho binario e incorporarlos a la investigación."
+      ],
+      "rolResponsable": "Endpoint Privilege Manager + SOC L2/L3",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-02",
+      "mitreTactic": "Privilege Escalation (T1548.002)",
+      "evidenciaAuditable": "Política Deny activa, sincronización forzada y listado forense de equipos expuestos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Precedencia absoluta de reglas Deny verificada en la lógica de conflictos de EPM en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/epm/deployment-planning"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de revocación inmediata de certificados SCEP en Cloud PKI por robo o compromiso de endpoint",
+      "objetivo": "Invalidar credenciales criptográficas de red e identidad del dispositivo sustraído o comprometido en minutos.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Cloud PKI > [Issuing CA] > View all certificates",
+      "procedimiento": [
+        "Buscar todos los certificados hoja Active emitidos al dispositivo o usuario afectado en las Issuing CAs de Cloud PKI.",
+        "Ejecutar la acción Revoke seleccionando razón Key Compromise o Cessation of Operation para forzar publicación inmediata de CRL.",
+        "Ejecutar paralelamente Wipe/Retire en Intune, deshabilitar el objeto en Entra ID y revocar sesiones PRT del usuario."
+      ],
+      "rolResponsable": "Cloud PKI Authority Operator + SOC L1/L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Credential Access / Unsecured Credentials (T1552.004)",
+      "evidenciaAuditable": "Certificados en estado Revoked, CRL actualizada y traza en Tenant administration > Audit logs.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Revocación manual de certificados hoja y actualización instantánea de CRL verificadas en Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/cloud-pki/"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de investigación forense en vivo mediante Single y Multi-Device Device Query",
+      "objetivo": "Recolectar evidencia en vivo de persistencia y medir prevalencia de IOCs en la flota durante un incidente activo.",
+      "consolaRuta": "intune.microsoft.com > Devices > Windows > [Dispositivo] > Device Query / Devices > Device query",
+      "procedimiento": [
+        "Ejecutar consultas KQL en tiempo real sobre Process, WindowsService, WindowsRegistry, Certificate y LocalGroup en el host sospechoso.",
+        "Contrastar resultados con telemetría kernel de Defender for Endpoint si existe sospecha de manipulación local por un administrador.",
+        "Barrer el resto del parque corporativo con Multi-Device Device Query y exportar resultados CSV para el expediente forense."
+      ],
+      "rolResponsable": "SOC L2 / L3 Threat Hunter",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "Persistence / Discovery (T1057, T1012)",
+      "evidenciaAuditable": "Consultas KQL y archivo CSV de prevalencia incorporados al incidente en security.microsoft.com.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Capacidades y advertencia sobre posible alteración si el usuario es admin local verificadas en Device Query.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/advanced-analytics/device-query"
+    },
+    {
+      "codigo": "AH-05",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de recuperación remota mediante Remote Help Unattended Remote Sign-In",
+      "objetivo": "Restaurar operatividad de PCs físicos corporativos degradados sin usuario presente mediante sesión Windows aislada y auditada.",
+      "consolaRuta": "intune.microsoft.com > Devices > All devices > [Dispositivo] > New remote assistance session > Remote Help",
+      "procedimiento": [
+        "Activar en PIM el rol personalizado con permiso Unattended control vinculando el incidente crítico.",
+        "Iniciar Unattended control: Remote sign-in desde el centro de administración de Intune autenticándose en una sesión Windows independiente.",
+        "Ejecutar las acciones de recuperación, finalizar explícitamente la sesión con Leave y verificar la traza completa en auditoría."
+      ],
+      "rolResponsable": "Endpoint L3 / Field Recovery Engineer",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-03",
+      "mitreTactic": "N/A (Recuperación Controlada y Auditada)",
+      "evidenciaAuditable": "Log de sesión Unattended remote sign-in conciliado con activación PIM e incidente resuelto.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Unattended control: Remote sign-in en sesión separada sobre PCs físicos corporativos Windows verificado en Learn (agosto 2026).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/intune/remote-help/"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Multi-Device Device Query: Endpoints corporativos con volúmenes sin protección criptográfica",
+      "plataforma": "Microsoft Intune Admin Center (Devices > Device query)",
+      "tablaPrincipal": "EncryptableVolume / LogicalDrive",
+      "consulta": "EncryptableVolume\n| where ProtectionStatus != \"PROTECTED\"\n| join LogicalDrive on Device\n| project Device, DriveLetter, ProtectionStatus, EncryptionMethod, VolumeType, FreeSpaceBytes, SizeBytes",
+      "proposito": "Identificar masivamente en la flota corporativa unidades lógicas no protegidas usando la sintaxis vigente 'on Device' para poblar grupos de remediación.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Single-Device Device Query: Auditoría en tiempo real del grupo local Administrators",
+      "plataforma": "Microsoft Intune Admin Center (Devices > Windows > [Device] > Device Query)",
+      "tablaPrincipal": "LocalGroup",
+      "consulta": "LocalGroup\n| where GroupName contains 'Administrators'\n| project GroupName, GroupSid, Members, MemberCount",
+      "proposito": "Verificar en vivo sobre WNS que el dispositivo no conserve cuentas de usuario estándar dentro del grupo local Administrators tras adoptar EPM.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Multi-Device Device Query: Detección preventiva de baterías severamente degradadas",
+      "plataforma": "Microsoft Intune Admin Center (Devices > Device query)",
+      "tablaPrincipal": "Battery",
+      "consulta": "Battery\n| project Device, Manufacturer, Model, SerialNumber, CycleCount, DesignedCapacity, FullChargedCapacity, FullChargedCapacityPercent = (FullChargedCapacity * 100) / DesignedCapacity\n| where FullChargedCapacityPercent < 60\n| order by FullChargedCapacityPercent asc",
+      "proposito": "Anticipar reemplazos de hardware portátil identificando equipos cuya carga máxima cayó por debajo del 60 % de la capacidad de diseño.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Sentinel / Log Analytics KQL: Auditoría administrativa de EPM, Cloud PKI y Remote Help",
+      "plataforma": "Microsoft Sentinel / Log Analytics (security.microsoft.com)",
+      "tablaPrincipal": "IntuneAuditLogs",
+      "consulta": "IntuneAuditLogs\n| where TimeGenerated > ago(7d)\n| where Category in (\"EndpointPrivilegeManagement\", \"CloudPKI\", \"RemoteHelp\", \"Role\") or OperationName has_any (\"Elevation\", \"CertificateAuthority\", \"Revoke\", \"RemoteHelp\")\n| extend Actor = tostring(parse_json(Identity).Upn)\n| project TimeGenerated, Category, OperationName, ResultType, Actor, TargetDisplayNames, Properties\n| order by TimeGenerated desc",
+      "proposito": "Rastrear modificaciones de reglas de elevación, revocaciones/altas de CAs y cambios en Remote Help para gobierno SOC y cumplimiento.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Defender XDR Advanced Hunting: Caza de procesos hijos riesgosos lanzados desde EPM",
+      "plataforma": "Microsoft Defender XDR (security.microsoft.com > Advanced hunting)",
+      "tablaPrincipal": "DeviceProcessEvents",
+      "consulta": "DeviceProcessEvents\n| where Timestamp > ago(7d)\n| where InitiatingProcessFileName has_any (\"EpmService.exe\", \"EpmAgent\", \"epm\") or InitiatingProcessFolderPath startswith @\"C:\\Program Files\\Microsoft EPM Agent\"\n| where FileName in~ (\"powershell.exe\", \"pwsh.exe\", \"cmd.exe\", \"mshta.exe\", \"rundll32.exe\", \"regsvr32.exe\", \"certutil.exe\", \"wscript.exe\")\n| project Timestamp, DeviceName, AccountName, InitiatingProcessFileName, InitiatingProcessCommandLine, FileName, ProcessCommandLine, SHA256\n| order by Timestamp desc",
+      "proposito": "Detectar intentos de escape de privilegios donde una aplicación elevada por EPM invoque shells o LOLBins.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "nombre": "PowerShell Local (EpmTools): Diagnóstico WinDC y extracción de atributos/certificados EPM",
+      "plataforma": "Windows PowerShell x64 local en endpoint gestionado",
+      "tablaPrincipal": "EpmCmdlets.dll (Módulo oficial EpmTools)",
+      "consulta": "Import-Module 'C:\\Program Files\\Microsoft EPM Agent\\EpmTools\\EpmCmdlets.dll'\nGet-ClientSettings\nGet-DeclaredConfigurationAnalysis\nGet-FileAttributes -FilePath 'C:\\Program Files\\VendorApp\\Updater.exe' -CertOutputPath 'C:\\ProgramData\\Microsoft\\EPMCerts'",
+      "proposito": "Validar procesamiento local de políticas WinDC de EPM y extraer hash y cadena de certificados exactos para autoría segura de reglas.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Microsoft Graph PowerShell: Inventario de políticas EPM y autoridades Cloud PKI",
+      "plataforma": "Microsoft Graph PowerShell SDK (API Beta)",
+      "tablaPrincipal": "deviceManagement/configurationPolicies & cloudCertificationAuthority",
+      "consulta": "Connect-MgGraph -Scopes \"DeviceManagementConfiguration.Read.All\"\n$epm = Invoke-MgGraphRequest -Method GET -Uri \"https://graph.microsoft.com/beta/deviceManagement/configurationPolicies?`$filter=technologies eq 'mdm,endpointPrivilegeManagement'\"\n$epm.value | Select-Object id, name, lastModifiedDateTime, isAssigned\n$cas = Invoke-MgGraphRequest -Method GET -Uri \"https://graph.microsoft.com/beta/deviceManagement/cloudCertificationAuthority\"\n$cas.value | Select-Object id, commonName, cloudCertificationAuthorityType, certificationAuthorityStatus, validityEndDateTime",
+      "proposito": "Generar evidencia auditable automatizada de políticas EPM desplegadas y estado/vigencia de las CAs de Microsoft Cloud PKI.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Tasa de Endpoints Windows sin Administradores Locales Permanentes",
+      "definicion": "Porcentaje del parque corporativo Windows que opera exclusivamente con cuentas de usuario estándar gobernadas por Endpoint Privilege Management.",
+      "formula": "(Endpoints Windows corporativos operando como Standard User con EPM activo / Total endpoints Windows corporativos) * 100",
+      "metaSugerida": ">= 98 %",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO / Endpoint Engineering Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Meta consultiva Zero Trust para erradicar privilegios locales permanentes."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Proporción de Elevaciones Gestionadas vs. No Gestionadas (EPM)",
+      "definicion": "Porcentaje de elevaciones totales en la flota facilitadas por EPM frente a elevaciones nativas no gestionadas (Run as administrator).",
+      "formula": "(Managed elevations en Elevation report / (Managed elevations + Unmanaged elevations)) * 100",
+      "metaSugerida": ">= 99 % (< 1 % Unmanaged)",
+      "frecuencia": "Semanal",
+      "audiencia": "SOC Manager / Endpoint Privilege Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en las métricas oficiales Managed vs. Unmanaged elevations de Microsoft Learn."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Tiempo Medio de Resolución de Solicitudes JIT Support Approved (EPM)",
+      "definicion": "Tiempo promedio transcurrido desde que un usuario estándar envía una solicitud Support approved hasta su aprobación o rechazo documentado.",
+      "formula": "Promedio(Timestamp decisión Approve/Deny - Timestamp solicitud enviada) en horario hábil",
+      "metaSugerida": "<= 30 minutos",
+      "frecuencia": "Diaria / Semanal",
+      "audiencia": "Help Desk Manager / SOC L1-L2",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "SLA operativo recomendado para sostener productividad sin relajar controles."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Cumplimiento de Parcheo de Aplicaciones del Enterprise App Catalog (CVEs Críticos/Altos)",
+      "definicion": "Porcentaje de endpoints actualizados a la versión parcheada del catálogo empresarial dentro de la ventana objetivo tras publicación.",
+      "formula": "(Dispositivos en última versión parcheada de EAM / Total dispositivos con la aplicación instalada) * 100",
+      "metaSugerida": ">= 95 % en 7 días (>= 99 % en 48 h para 0-day)",
+      "frecuencia": "Semanal",
+      "audiencia": "CISO / Vulnerability Management Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Complementa el SLO oficial de Microsoft de 24 h para disponibilidad en catálogo."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Tasa de Éxito de Emisión y Renovación SCEP en Microsoft Cloud PKI",
+      "definicion": "Porcentaje de solicitudes CSR validadas y firmadas exitosamente por las Issuing CAs de Cloud PKI sin fallos de challenge RA.",
+      "formula": "(Certificados hoja SCEP emitidos o renovados con éxito / Total solicitudes SCEP procesadas) * 100",
+      "metaSugerida": ">= 99 %",
+      "frecuencia": "Semanal",
+      "audiencia": "PKI Architect / Network Security Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Umbral recomendado para asegurar acceso ininterrumpido a Wi-Fi 802.1X, VPN y Entra CBA."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Conformidad de Sesiones Privilegiadas Remote Help Conciliadas con Ticket",
+      "definicion": "Porcentaje de sesiones Remote Help con elevación UAC o modo Unattended vinculadas a un ticket o incidente válido en ITSM.",
+      "formula": "(Sesiones Remote Help con Elevation o Unattended conciliadas con ticket / Total sesiones privilegiadas Remote Help) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Semanal",
+      "audiencia": "Internal Audit / Help Desk Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Control interno estricto contra uso no autorizado de herramientas remotas."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Tasa de Diagnóstico Resuelto con Device Query sin Sesión Interactiva",
+      "definicion": "Proporción de tickets técnicos L1/L2 diagnosticados y resueltos mediante Device Query + acciones remotas sin interrumpir la pantalla del usuario.",
+      "formula": "(Tickets resueltos vía Device Query + Remote Action / Total tickets de diagnóstico de endpoint elegibles) * 100",
+      "metaSugerida": ">= 45 %",
+      "frecuencia": "Mensual",
+      "audiencia": "IT Operations Director / DEX Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Alineado a la recomendación oficial de Learn de sustituir sesiones remotas innecesarias por Single-Device Query."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Disponibilidad Operativa de Sitios Microsoft Tunnel for MAM",
+      "definicion": "Disponibilidad mensual de los gateways contenedorizados Linux de Microsoft Tunnel con certificados TLS vigentes y check-in saludable.",
+      "formula": "(Minutos operativos saludables de Tunnel Sites / Minutos totales del período) * 100",
+      "metaSugerida": ">= 99,9 %",
+      "frecuencia": "Mensual",
+      "audiencia": "Mobility Lead / Infrastructure Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Meta de alta disponibilidad para conectividad BYOD empresarial."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.OV-03",
+      "descripcionResultado": "El desempeño de la gestión de riesgos de ciberseguridad de la organización se evalúa y revisa para realizar los ajustes necesarios.",
+      "capacidadMicrosoft": "Evaluación continua mediante STIG Audit Baseline en Intune Advanced Analytics, gobierno de licenciamiento M365 E5/Intune Suite y tableros de KPIs.",
+      "evidenciaAuditoria": "Exportación mensual del informe STIG Audit Baseline y acta ejecutiva de indicadores operacionales.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles, responsabilidades y autoridades de ciberseguridad se establecen, comunican, comprenden y aplican.",
+      "capacidadMicrosoft": "Segregación RBAC en Intune (Endpoint Privilege Manager, Application Manager, roles custom de Cloud PKI, Remote Help y Device Query), Scope Tags y Multi Admin Approval con Change Review Agent.",
+      "evidenciaAuditoria": "Definiciones exportadas de roles personalizados Intune RBAC, registros de Multi Admin Approval y campañas trimestrales de Access Reviews.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-01",
+      "descripcionResultado": "Se mantienen inventarios de hardware gestionado por la organización.",
+      "capacidadMicrosoft": "Device Query for Multiple Devices consultando en KQL entidades Cpu, BiosInfo, Tpm, Battery, SystemEnclosure y Device en Windows, macOS, iOS y Android Enterprise.",
+      "evidenciaAuditoria": "Exportación CSV de inventario multi-dispositivo (hasta 50.000 registros) y política activa de Properties Catalog.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-01",
+      "descripcionResultado": "Se identifican, validan y registran las vulnerabilidades en los activos.",
+      "capacidadMicrosoft": "Integración entre Enterprise Application Management, Microsoft Defender Vulnerability Management y el Vulnerability Remediation Agent en Intune.",
+      "evidenciaAuditoria": "Listado priorizado del Vulnerability Remediation Agent y vista Enterprise App Catalog apps with updates.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-03",
+      "descripcionResultado": "Los usuarios, servicios y hardware son autenticados.",
+      "capacidadMicrosoft": "Emisión automatizada de certificados SCEP desde Microsoft Cloud PKI (Azure Managed HSM o BYOCA) para autenticación resistente a phishing en Microsoft Entra CBA, Wi-Fi 802.1X y VPN.",
+      "evidenciaAuditoria": "Autoridades Cloud PKI activas, perfiles SCEP desplegados y punto CDP con CRL vigente.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Los permisos de acceso, derechos y autorizaciones se definen en una política, se gestionan, aplican y revisan incorporando mínimo privilegio.",
+      "capacidadMicrosoft": "Endpoint Privilege Management (EPM): operación como usuario estándar, elevación JIT en cuenta virtual aislada, validación por hash/certificado/ruta y bloqueo de procesos hijos.",
+      "evidenciaAuditoria": "Políticas Elevation Settings (default Deny o Support approved), Elevation Rules y Elevation Report con < 1 % de elevaciones no gestionadas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.PS-02",
+      "descripcionResultado": "El software se mantiene, reemplaza y elimina de manera acorde al riesgo.",
+      "capacidadMicrosoft": "Actualización continua de aplicaciones Win32 desde el Enterprise App Catalog mediante Guided Update Supersedence por anillos y Auto-update.",
+      "evidenciaAuditoria": "Reporte Managed Apps por dispositivo e historial de despliegues supersedence en Intune.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.IR-01",
+      "descripcionResultado": "Las redes y entornos son protegidos contra accesos lógicos no autorizados y usos indebidos.",
+      "capacidadMicrosoft": "Microsoft Tunnel for Mobile Application Management (MAM) en iOS y Android no enrolados con Strict Tunnel Mode en Edge y corte automático ante detección de root por Defender.",
+      "evidenciaAuditoria": "Configuración de sitios Microsoft Tunnel, políticas MAM App Protection/Configuration y eventos de bloqueo por riesgo móvil.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.AE-03",
+      "descripcionResultado": "Se correlaciona información de múltiples fuentes para detectar eventos adversos y anomalías.",
+      "capacidadMicrosoft": "Informe Anomalies con grupos de correlación en Intune Advanced Analytics y correlación KQL de IntuneAuditLogs con DeviceProcessEvents en Sentinel/Defender XDR.",
+      "evidenciaAuditoria": "Reportes de anomalías correlacionadas y reglas analíticas SIEM sobre IntuneAuditLogs.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-03",
+      "descripcionResultado": "Las actividades del personal y el uso de tecnología son monitoreados para encontrar eventos potencialmente adversos.",
+      "capacidadMicrosoft": "Trazabilidad completa de sesiones Remote Help (incluyendo Elevation, Unattended remote sign-in y Compliance warnings) y auditoría de elevaciones en EPM.",
+      "evidenciaAuditoria": "Registros en Tenant administration > Remote Help > Monitor y Tenant administration > Audit logs.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.AN-03",
+      "descripcionResultado": "Se realiza análisis para establecer qué ha ocurrido durante un incidente y determinar la causa raíz.",
+      "capacidadMicrosoft": "Inspección forense en tiempo real con Single-Device Device Query (vía WNS) y búsqueda de prevalencia de IOCs en Multi-Device Device Query con agrupación dinámica Entra.",
+      "evidenciaAuditoria": "Consultas KQL ejecutadas, exportaciones CSV y grupos de contención creados desde Device Query.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-03",
+      "descripcionResultado": "La integridad de copias de seguridad y otros activos de restauración se verifica antes de emplearlos para la recuperación.",
+      "capacidadMicrosoft": "Revocación inmediata de certificados comprometidos en Cloud PKI, reglas Deny de emergencia en EPM e intervención remota segura mediante Remote Help Unattended Remote Sign-In.",
+      "evidenciaAuditoria": "CRL actualizada con serie revocada, registro auditado de sesión desatendida de recuperación y verificación post-incidente con Device Query.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Módulo construido y verificado íntegramente contra Microsoft Learn MCP y blogs oficiales de ingeniería de Microsoft Intune a corte 11 de noviembre de 2026. Se verificó de forma fehaciente el cambio estructural de licenciamiento efectivo en julio/agosto de 2026 para EMS E3 / Microsoft 365 E3 y Microsoft 365 E5, la disponibilidad general de Microsoft 365 E7 (1 de mayo de 2026), las nuevas rutas canónicas de documentación en learn.microsoft.com/en-us/intune/* y las capacidades técnicas recientes de los seis pilares y agentes de Security Copilot en Intune.",
+    "correccionesAplicadas": [
+      "Verificada e incorporada la actualización comercial de Microsoft efectiva el 1 de julio de 2026 (desplegada a tenants existentes hacia el 1 de agosto de 2026): EMS E3 / M365 E3 incluye Remote Help, Advanced Analytics e Intune Plan 2 (Tunnel for MAM, Specialty Devices, FOTA), mientras que Microsoft 365 E5 incluye todo lo anterior más Endpoint Privilege Management, Microsoft Cloud PKI, Enterprise Application Management y Security Copilot.",
+      "Documentado el posicionamiento de Microsoft 365 E7 (The Frontier Suite, GA 1 de mayo de 2026) junto con la vigencia del add-on Microsoft Intune Suite para poblaciones Frontline, Educación, Business Premium o Plan 1 standalone.",
+      "Actualizadas las capacidades de Endpoint Privilege Management a octubre de 2026: inclusión del modo 'Elevate as current user' frente al aislamiento en cuenta virtual, elevación de ajustes de red offline vía WinDC, precedencia exacta de conflictos de reglas y módulo PowerShell EpmTools.",
+      "Verificados los límites críticos de Microsoft Cloud PKI: máximo de 3 CAs por tenant, validez CRL de 7 días con publicación cada 3,5 días, claves en Azure Managed HSM sin suscripción Azure adicional e imposibilidad de convertir claves software creadas durante un trial a HSM.",
+      "Incorporadas las funciones de Enterprise Application Management actualizadas en noviembre de 2026: Auto-update para asignaciones Required (advirtiendo caché de hasta 1 h, sin anillos ni rollback automático), Guided Update Supersedence y SLO de 24 h para el 80-90 % de actualizaciones.",
+      "Documentado en Remote Help el soporte de 'Unattended control: Remote sign-in' creando una sesión Windows independiente y autenticada en PCs físicos corporativos, además de Web App view-only para Windows/macOS y Unattended en Android Enterprise dedicado.",
+      "Actualizada la sintaxis de Device Query for Multiple Devices (retiro de 'on Device.DeviceId' en favor de 'on Device', soporte multi-OS y acción directa 'Add all items to a group') y los agentes Vulnerability Remediation Agent y Change Review Agent en Intune."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Metas numéricas y SLAs internos en KPI-01 a KPI-08 (ej. <= 30 min en aprobaciones EPM, >= 98 % sin admin local, < 1 % Unmanaged elevations)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft documenta métricas de plataforma y SLOs del catálogo EAM, pero delega al cliente los umbrales internos de gobierno; se fijan metas exigentes alineadas a Zero Trust."
+      },
+      {
+        "elemento": "Segregación de roles personalizados (EPM Elevation Approver separado de Endpoint Privilege Manager y escalonamiento L1/L2/L3 en Remote Help)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Separar quién aprueba solicitudes JIT diarias de quién publica reglas Automatic permanentes y restringir Unattended control a L3 reduce drásticamente el riesgo de abuso interno."
+      },
+      {
+        "elemento": "Estrategia híbrida en Enterprise App Management: Guided Update Supersedence con anillo piloto de 72 h para software crítico vs. Auto-update en utilidades estándar",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Mitiga la limitación oficial documentada de que Auto-update carece de anillos escalonados y de rollback automático."
+      },
+      {
+        "elemento": "Ventanas de activación PIM (2 h para roles globales/arquitectura y 4 h para ingeniería) y conciliación semanal 100 % de sesiones desatendidas",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Acota la exposición de sesiones privilegiadas y garantiza evidencia trazable ante auditorías regulatorias."
+      },
+      {
+        "elemento": "Modelo de madurez de 5 niveles y mapeo probatorio sobre las 6 funciones de NIST CSF 2.0",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Proporciona al CISO y a GRC una hoja de ruta medible para maximizar el retorno operativo de las capacidades ahora incluidas en Microsoft 365 E5."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Microsoft Intune advanced capabilities (Intune Plan 2, Intune Suite & Trial subscriptions)",
+      "url": "https://learn.microsoft.com/en-us/intune/fundamentals/advanced-capabilities",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Describe el catálogo oficial de capacidades avanzadas de Intune y reglas de pruebas gratuitas de 90 días.",
+      "verificacion": "Verificado vía Microsoft Learn / web_fetch (actualizado jul-2026, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Microsoft Intune Licensing Plans and Options (Plan 1, Plan 2, Intune Suite & Unlicensed Admin Access)",
+      "url": "https://learn.microsoft.com/en-us/intune/fundamentals/licensing",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Detalla estructura de planes, licencias solo-dispositivo y límite de 1.000 administradores sin licencia por grupo plano.",
+      "verificacion": "Verificado vía Microsoft Learn / web_fetch (actualizado oct-2026, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Plan and Prepare for Endpoint Privilege Management (EPM) Deployment",
+      "url": "https://learn.microsoft.com/en-us/intune/epm/deployment-planning",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Documenta cuenta virtual vs. Elevate as current user, precedencia de reglas, RBAC y módulo PowerShell EpmTools.",
+      "verificacion": "Verificado vía Microsoft Learn / web_fetch (actualizado 2026-10-16, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Microsoft Cloud PKI for Microsoft Intune - Overview, Architecture and Limits",
+      "url": "https://learn.microsoft.com/en-us/intune/cloud-pki/",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Especifica arquitectura SCEP RA, respaldo Azure Managed HSM, CRL de 7 días / 3,5 días y límite de 3 CAs por tenant.",
+      "verificacion": "Verificado vía Microsoft Learn / web_fetch (actualizado 2026-09-25, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Deployment models for Microsoft Intune Cloud PKI (Cloud Root CA vs. BYOCA)",
+      "url": "https://learn.microsoft.com/en-us/intune/cloud-pki/deployment-models",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Explica la coexistencia entre jerarquías en nube de dos niveles y emisoras BYOCA ancladas a PKI privada.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado abr-2026, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Configure Microsoft Cloud PKI root and issuing CA for Microsoft Intune",
+      "url": "https://learn.microsoft.com/en-us/intune/cloud-pki/configure-ca",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Guía paso a paso de creación de CAs, descarga de claves públicas para relying parties y perfiles SCEP.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado ene-2026, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Microsoft Intune Enterprise Application Management (Catalog, Auto-update & SLOs)",
+      "url": "https://learn.microsoft.com/en-us/intune/app-management/deployment/enterprise-app-management",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Documenta el catálogo Win32 hospedado, SLO de 24 h / 7 días, Auto-update y limitaciones ante revocaciones.",
+      "verificacion": "Verificado vía Microsoft Learn / web_fetch (actualizado 2026-11-04, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Guided Update Supersedence for Enterprise App Management",
+      "url": "https://learn.microsoft.com/en-us/intune/app-management/deployment/update-enterprise-supersedence",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Procedimiento oficial para actualizar aplicaciones del catálogo creando relaciones de supersedence controladas.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado abr-2026, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Use Remote Help to Assist Users Authenticated by your Organization",
+      "url": "https://learn.microsoft.com/en-us/intune/remote-help/",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Cubre RBAC, Compliance Warnings, Acceso Condicional, Web App y Unattended control: Remote sign-in.",
+      "verificacion": "Verificado vía Microsoft Learn / web_fetch (actualizado 2026-08-25, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Advanced Analytics Overview - Microsoft Intune",
+      "url": "https://learn.microsoft.com/en-us/intune/advanced-analytics/",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Resume informes Anomalies, Battery health, Resource performance, Device timeline, Device scopes y STIG audit baseline.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado may-2026, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Device Query (Single-Device On-Demand KQL) - Microsoft Intune",
+      "url": "https://learn.microsoft.com/en-us/intune/advanced-analytics/device-query",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Detalla prerrequisito obligatorio WNS, permiso RBAC Managed Devices/Query, 21 entidades y límites de ejecución.",
+      "verificacion": "Verificado vía Microsoft Learn / web_fetch (actualizado 2026-09-02, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Device Query for Multiple Devices - Microsoft Intune",
+      "url": "https://learn.microsoft.com/en-us/intune/advanced-analytics/device-query-multiple-devices",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Especifica soporte multi-OS, Properties Catalog en Windows, sintaxis 'join on Device' y acción 'Add all items to a group'.",
+      "verificacion": "Verificado vía Microsoft Learn / web_fetch (actualizado 2026-09-02, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Learn about using Microsoft Tunnel with Mobile Application Management (MAM)",
+      "url": "https://learn.microsoft.com/en-us/intune/device-security/microsoft-tunnel/mam",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Compara arquitectura Tunnel for MAM en Android (Defender app) vs. iOS (SDK) y Strict Tunnel Mode en Edge.",
+      "verificacion": "Verificado vía Microsoft Learn / web_fetch (actualizado jul-2026, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Use the Vulnerability Remediation Agent and Change Review Agent in Microsoft Intune",
+      "url": "https://learn.microsoft.com/en-us/intune/copilot/agents/manage-vulnerability-remediation-agent",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Documenta la operación de agentes de Security Copilot en Intune bajo identidad agéntica delegada.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado may/ago-2026, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "Microsoft 365 adds advanced Microsoft Intune solutions at scale",
+      "url": "https://techcommunity.microsoft.com/blog/microsoftintuneblog/microsoft-365-adds-advanced-microsoft-intune-solutions-at-scale/4474272",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Microsoft Intune Product Team",
+      "comentario": "Anuncio oficial de la incorporación de capacidades de Intune Suite en EMS E3 / M365 E3 y Microsoft 365 E5.",
+      "verificacion": "Verificado vía web_fetch (publicado 2025-12-04, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "IT experts weigh in: Advanced Intune capabilities coming to Microsoft 365 E3 and E5",
+      "url": "https://techcommunity.microsoft.com/blog/microsoftintuneblog/it-experts-weigh-in-advanced-intune-capabilities-coming-to-microsoft-365-e3-and-/4516898",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Lior Bela (Microsoft)",
+      "comentario": "Confirma entrada en vigor el 1 de julio de 2026 y aprovisionamiento en tenants elegibles hacia el 1 de agosto de 2026.",
+      "verificacion": "Verificado vía web_fetch (publicado 2026-06-18, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "All about Microsoft Intune - Microsoft Intune Suite Series (EPM, Cloud PKI & Remote Help)",
+      "url": "https://petervanderwoude.nl/post/category/microsoft-intune-suite/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Peter van der Woude (Microsoft MVP)",
+      "comentario": "Guías prácticas profundas de implementación operativa de EPM, Cloud PKI y Remote Help Web App.",
+      "verificacion": "Verificado vía web_search (consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "Manage system settings with Endpoint Privilege Management & WinDC Internals",
+      "url": "https://call4cloud.nl/manage-system-settings-with-endpoint-privilege-management/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Rudy Ooms (Microsoft MVP)",
+      "comentario": "Análisis técnico profundo del motor WinDC, cuenta virtual y gestión de ajustes de red offline con EPM.",
+      "verificacion": "Verificado vía web_search (actualizado 2026-10-05, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)",
+      "url": "https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Marco normativo oficial de referencia para las seis funciones GV, ID, PR, DE, RS y RC.",
+      "verificacion": "Marco canónico CSWP 29 verificado (consultado 2026-11-11)"
+    }
+  ]
+}

@@ -1,0 +1,1250 @@
+{
+  "schemaVersion": "2.0",
+  "id": "19_Purview_Audit_Premium",
+  "orden": 19,
+  "slug": "Purview_Audit_Premium",
+  "nombre": "Microsoft Purview Audit (Standard vs. Premium, Forense Cloud y Retención de 10 Años)",
+  "nombreCorto": "Purview Audit (Premium)",
+  "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)",
+  "bloqueOrigen": "Nuevo desde Microsoft Learn MCP (Nov 2026)",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://purview.microsoft.com",
+    "https://security.microsoft.com",
+    "https://graph.microsoft.com/v1.0/security/auditLog/queries"
+  ],
+  "audiencia": [
+    "CISO",
+    "SOC Manager",
+    "DFIR / Incident Responder",
+    "Threat Hunter",
+    "Purview Compliance Admin",
+    "Exchange & Collaboration Admin",
+    "Legal / eDiscovery Lead",
+    "SIEM / SOAR Engineer",
+    "GRC / Internal Audit"
+  ],
+  "relacionM365E5": {
+    "estado": "Incluido en Microsoft 365 E5 / Microsoft Purview Suite (1 año por defecto; 10-Year Audit Log Retention como Add-on)",
+    "licencias": [
+      "Microsoft 365 E5 / E7 / A5 / G5 o Office 365 E5 / A5 / G5 (incluye Audit Premium)",
+      "Microsoft Purview Suite (antes Microsoft 365 E5 Compliance) o Microsoft 365 F5 Compliance / F5 Security + Compliance",
+      "Microsoft 365 E5 eDiscovery and Audit add-on (para elevar licencias base E3 a Audit Premium)",
+      "Microsoft 365 10-Year Audit Log Retention add-on (licencia per-user adicional sobre E5/Audit Premium para retener registros por 3, 5, 7 o 10 años)",
+      "Microsoft Purview Pay-As-You-Go en Azure (requerido únicamente para ingerir eventos AIAppInteraction de aplicaciones GenAI no-Microsoft, retenidos por 180 días)"
+    ],
+    "prerrequisitos": [
+      "Verificar UnifiedAuditLogIngestionEnabled = True ejecutando Get-AdminAuditLogConfig exclusivamente en Exchange Online PowerShell (en Security & Compliance PowerShell devuelve siempre False)",
+      "Verificar que el plan de servicio Microsoft 365 Advanced Auditing esté habilitado en cada usuario E5/Purview Suite para generar Intelligent Insights y aplicar retención de 1 año",
+      "Habilitar explícitamente SearchQueryInitiated en AuditOwner por buzón en Exchange Online PowerShell (SearchQueryInitiatedSharePoint viene activo por defecto, pero SearchQueryInitiatedExchange no)",
+      "Planificar y ejecutar la migración de scripts desde Search-UnifiedAuditLog (retiro definitivo el 15 de octubre de 2027 según MC1505599) hacia Microsoft Graph AuditLogQuery API v1.0 (GA octubre de 2026)",
+      "Habilitar la auditoría en el portal de administración de Microsoft Fabric / Power BI y conectar Office 365 Management Activity API hacia Microsoft Sentinel (OfficeActivity)"
+    ],
+    "notaLicenciamiento": "Audit (Standard) viene habilitado por defecto en suscripciones empresariales M365 con 180 días de retención (ampliado desde 90 días el 17-oct-2023) e incluye desde 2024 los eventos MailItemsAccessed, Send, SearchQueryInitiatedExchange y SearchQueryInitiatedSharePoint, además de CopilotInteraction para apps IA de Microsoft y Agent 365. Audit (Premium), incluido en M365 E5 y Microsoft Purview Suite, agrega: (1) retención predeterminada de 1 año para AzureActiveDirectory, Exchange, OneDrive y SharePoint; (2) hasta 50 políticas personalizadas de retención de hasta 1 año (o 3, 5, 7 y 10 años asignando el add-on per-user 10-Year Audit Log Retention); (3) Intelligent Insights exclusivos como SensitivityLabel en MailItemsAccessed y AppAccessContext/ParticipantInfo en 14 operaciones de Teams; y (4) cuota dedicada por tenant con ~2x ancho de banda dinámico en Office 365 Management Activity API. Las entidades no-usuario (service principals, apps, sistema) tienen retención fija no configurable de 1 año en Purview."
+  },
+  "resumenEjecutivo": "Microsoft Purview Audit constituye el sistema central de registro forense e investigación probatoria de Microsoft 365, capturando miles de operaciones de usuarios, administradores, aplicaciones y agentes autónomos (Microsoft Agent 365) en el Unified Audit Log (UAL). Mientras Audit (Standard) provee 180 días de retención base y acceso a eventos esenciales tras las mejoras SFI/CISA, Audit (Premium) en Microsoft 365 E5 y Microsoft Purview Suite habilita retención predeterminada de 1 año para cargas críticas (Entra ID, Exchange, OneDrive, SharePoint), hasta 50 políticas personalizadas de hasta 10 años (con add-on), telemetría forense enriquecida (SensitivityLabel sobre correos accedidos en MailItemsAccessed y AppAccessContext en Microsoft Teams) y doble ancho de banda dedicado hacia SIEM vía Office 365 Management Activity API. A noviembre de 2026, su excelencia operacional exige dominar el análisis de compromisos BEC/nación-estado (Bind vs. Sync, estrangulamiento >1.000 eventos en 24 h con IsThrottled, SearchQueryInitiated), auditar interacciones GenAI (CopilotInteraction, XPIADetected, JailbreakDetected) y completar la transición obligatoria hacia Microsoft Graph AuditLogQuery API v1.0 antes del retiro de Search-UnifiedAuditLog el 15 de octubre de 2027.",
+  "principiosRectores": [
+    {
+      "principio": "Delimitación Forense Determinista del Alcance de Compromiso (Breach Scoping)",
+      "descripcion": "Utilizar MailItemsAccessed (diferenciando Bind por InternetMessageId frente a Sync de carpeta), SensitivityLabel y SearchQueryInitiated para demostrar con precisión matemática qué activos fueron o no expuestos ante un incidente BEC o regulador.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/audit-log-investigate-accounts"
+    },
+    {
+      "principio": "Aprovisionamiento Preventivo por Inmutabilidad en Tiempo de Ingesta",
+      "descripcion": "Asignar licencias Audit (Premium), el plan Microsoft 365 Advanced Auditing y las políticas de retención de 1 a 10 años antes de cualquier incidente, dado que la expiración del evento se calcula al ingresar al pipeline y no es retroactiva.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/audit-log-retention-policies"
+    },
+    {
+      "principio": "Arquitectura Dual: Bóveda Probatoria en Purview + Detección Tiempo Real en Sentinel",
+      "descripcion": "Combinar la retención nativa de 1 a 10 años en Purview Audit (latencia típica de indexación de 60-90 min) con la ingesta continua de alta velocidad hacia Microsoft Sentinel (OfficeActivity) y Sentinel Data Lake para entidades no-usuario mayores a 1 año.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/audit-solutions-overview"
+    },
+    {
+      "principio": "Estandarización Asíncrona sobre Microsoft Graph AuditLogQuery API (MC1505599)",
+      "descripcion": "Reemplazar proactivamente el cmdlet síncrono Search-UnifiedAuditLog antes de su retiro el 15 de octubre de 2027 por trabajos asíncronos en Microsoft Graph v1.0/security/auditLog/queries (hasta 1 millón de registros y permisos granulares por servicio).",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/graph/api/resources/security-auditlogquery?view=graph-rest-1.0"
+    },
+    {
+      "principio": "Vigilancia Ininterrumpida Anti-Tampering y Anti-Throttling",
+      "descripcion": "Tratar como incidente severo cualquier alteración de UnifiedAuditLogIngestionEnabled, AuditDisabled, MailboxAuditBypassAssociation, degradación de DefaultAuditSet o disparo de IsThrottled = True (> 1.000 MailItemsAccessed en 24 h).",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/audit-mailboxes"
+    },
+    {
+      "principio": "Trazabilidad Integral de Interacciones GenAI y Agentes Autónomos",
+      "descripcion": "Auditar de extremo a extremo operaciones CopilotInteraction, ConnectedAIAppInteraction, AIAppInteraction y Microsoft Agent 365 inspeccionando AccessedResources, SensitivityLabelId, JailbreakDetected y XPIADetected.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/audit-copilot"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Unified Audit Log (UAL) Pipeline",
+      "funcionOperativa": "Motor central habilitado por defecto que normaliza e indexa miles de operaciones de usuarios, administradores y agentes en más de 150 tipos de registro (AuditLogRecordType).",
+      "portalRuta": "purview.microsoft.com > Solutions > Audit",
+      "integraciones": [
+        "Microsoft Entra ID",
+        "Exchange Online, SharePoint Online, OneDrive & Teams",
+        "Microsoft Fabric / Power BI, Dynamics 365 & Defender XDR"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Búsqueda Asíncrona en el Portal de Microsoft Purview (New Search)",
+      "funcionOperativa": "Ejecución de trabajos de búsqueda en segundo plano sin mantener el navegador abierto, retenidos por 30 días, con hasta 10 trabajos concurrentes por administrador (máx. 1 sin filtros) y rango máximo de 180 días por consulta.",
+      "portalRuta": "purview.microsoft.com > Solutions > Audit > Search",
+      "integraciones": [
+        "Microsoft Entra Administrative Units",
+        "Exportación CSV & Excel Power Query (AuditData JSON)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Graph AuditLogQuery API v1.0 (GA Octubre 2026)",
+      "funcionOperativa": "API REST y SDK oficial que reemplaza a Search-UnifiedAuditLog, permitiendo consultas asíncronas de hasta 1 millón de registros, validación isRecordCountLimitExceeded, keywordFilter sobre auditData no indexado y permisos RBAC por carga.",
+      "portalRuta": "https://graph.microsoft.com/v1.0/security/auditLog/queries",
+      "integraciones": [
+        "Microsoft Graph PowerShell SDK (Microsoft.Graph.Security)",
+        "Azure Logic Apps / SOAR Playbooks",
+        "Pipelines DFIR Python / C#"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Motor de Políticas de Retención de Auditoría (1 Año y Add-on 10 Años)",
+      "funcionOperativa": "Política predeterminada de 1 año (AzureActiveDirectory, Exchange, OneDrive, SharePoint) para E5, más hasta 50 políticas personalizadas (7d, 30d, 6m, 9m, 1y, 3y, 5y, 7y, 10y) con prioridad 1 a 10000.",
+      "portalRuta": "purview.microsoft.com > Solutions > Audit > Audit retention policies",
+      "integraciones": [
+        "Security & Compliance PowerShell (New/Get/Set-UnifiedAuditLogRetentionPolicy)",
+        "Licenciamiento 10-Year Audit Log Retention Add-on"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Exchange Online Mailbox Auditing y Conjunto Predeterminado (DefaultAuditSet)",
+      "funcionOperativa": "Auditoría activa por defecto (AuditDisabled = False) para Owner, Delegate y Admin sobre buzones de usuario, compartidos y Grupos M365, capturando MailItemsAccessed, Send, AttachmentAccess, UpdateInboxRules y SearchQueryInitiated.",
+      "portalRuta": "Exchange Online PowerShell (Get-OrganizationConfig, Get-Mailbox, Set-Mailbox)",
+      "integraciones": [
+        "Microsoft Defender for Office 365",
+        "Purview eDiscovery"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Audit (Premium) Intelligent Insights",
+      "funcionOperativa": "Enriquecimiento exclusivo para usuarios con el plan Microsoft 365 Advanced Auditing: propiedad SensitivityLabel en MailItemsAccessed y AppAccessContext, ParticipantInfo e IsJoinedFromLobby en 14 operaciones de Teams.",
+      "portalRuta": "AuditData JSON en Purview Audit / Graph / Management Activity API",
+      "integraciones": [
+        "Microsoft Purview Information Protection (MIP Sensitivity Labels)",
+        "Microsoft Teams",
+        "Microsoft Defender for Cloud Apps"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Subsistema de Auditoría para Copilot, Apps GenAI y Microsoft Agent 365",
+      "funcionOperativa": "Captura automática de CopilotInteraction, ConnectedAIAppInteraction, AIAppInteraction (PAYG) e interacciones de instancias Agent 365 con AccessedResources, SensitivityLabelId, JailbreakDetected, XPIADetected y DLPEvaluationDeferred.",
+      "portalRuta": "purview.microsoft.com > Solutions > Audit / DSPM > Activity explorer",
+      "integraciones": [
+        "Microsoft 365 Copilot & Copilot Studio",
+        "Microsoft Agent 365 & Security Copilot",
+        "Purview Pay-As-You-Go (para apps IA no-Microsoft)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Office 365 Management Activity API con Ancho de Banda Dedicado E5",
+      "funcionOperativa": "Interfaz de streaming continuo hacia soluciones SIEM con cuota aislada por tenant que escala dinámicamente otorgando ~2x ancho de banda sobre la base de 2.000 req/min a tenants E5/A5/G5.",
+      "portalRuta": "https://manage.office.com/api/v1.0/{tenant_id}/activity/feed",
+      "integraciones": [
+        "Microsoft Sentinel (Tabla OfficeActivity Analytics + Data Lake 12 años)",
+        "Microsoft Defender XDR (Tabla CloudAppEvents)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "Audit Reader (Rol subyacente: View-Only Audit Logs)",
+      "nivelSOC": "DFIR / SOC L2 / Threat Hunter / Auditoría Interna",
+      "permisosClave": "Ejecutar trabajos de búsqueda asíncrona en el portal de Microsoft Purview y exportar registros de auditoría a CSV (compatible con alcance por Administrative Units). Sin permiso para alterar configuración.",
+      "asignacionPIM": "Asignación con fecha de expiración en Purview o elegible vía Entra PIM for Groups (máx. 8 h JIT con justificación de caso).",
+      "responsabilidadOperativa": "Investigaciones forenses de cuentas comprometidas, búsquedas históricas de cumplimiento y respuesta a incidentes.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Audit Manager (Roles subyacentes: View-Only Audit Logs + Audit Logs)",
+      "nivelSOC": "Ingeniería Sénior de Plataforma Purview",
+      "permisosClave": "Buscar y exportar registros de auditoría y administrar la configuración global de auditoría del tenant (como habilitar o deshabilitar UnifiedAuditLogIngestionEnabled).",
+      "asignacionPIM": "Estrictamente elegible vía Entra PIM for Groups (máx. 4 h JIT, aprobación dual y MFA FIDO2/Passkey).",
+      "responsabilidadOperativa": "Gobierno de disponibilidad global del pipeline de auditoría y soporte de escalamiento de plataforma.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Organization Configuration",
+      "nivelSOC": "Arquitectura y Gobierno de Retención Purview",
+      "permisosClave": "Crear, modificar y eliminar políticas personalizadas de retención de auditoría (Audit log retention policies, hasta 50 por tenant, de 7 días a 10 años).",
+      "asignacionPIM": "Elegible JIT (máx. 2 h) separado de los investigadores operativos y sujeto a control formal de cambios (CAB).",
+      "responsabilidadOperativa": "Administrar la jerarquía de prioridades (1 a 10000) de políticas de retención de 1 a 10 años.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Exchange Administrator (con rol Audit Logs en EAC)",
+      "nivelSOC": "Ingeniería de Plataforma Exchange Online",
+      "permisosClave": "Ejecutar Get-AdminAuditLogConfig, gestionar AuditDisabled, habilitar SearchQueryInitiated por buzón, restaurar DefaultAuditSet y auditar MailboxAuditBypassAssociation.",
+      "asignacionPIM": "Elegible en Microsoft Entra PIM (máx. 4 h JIT con MFA resistente a phishing).",
+      "responsabilidadOperativa": "Mantener activa la auditoría de buzones por defecto, habilitar búsquedas Exchange en buzones y bloquear cualquier bypass no autorizado.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Permisos Granulares Graph AuditLogsQuery-<Workload>.Read.All",
+      "nivelSOC": "Automatización SOAR y Consultas Acotadas por Servicio",
+      "permisosClave": "Acceso API v1.0 limitado a una sola carga: AuditLogsQuery-Entra.Read.All, AuditLogsQuery-Exchange.Read.All, AuditLogsQuery-SharePoint.Read.All, AuditLogsQuery-OneDrive.Read.All, AuditLogsQuery-Endpoint.Read.All, AuditLogsQuery-CRM.Read.All.",
+      "asignacionPIM": "Asignado a Managed Identities o registros de aplicación con certificados X.509 de corta vida sin secretos de texto plano.",
+      "responsabilidadOperativa": "Ejecutar playbooks automatizados de recolección forense cumpliendo mínimo privilegio estricto por dominio.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Permiso Global Graph AuditLogsQuery.Read.All",
+      "nivelSOC": "Colector Forense Central DFIR Multi-Carga",
+      "permisosClave": "Crear y leer consultas asíncronas en /v1.0/security/auditLog/queries a través de todas las cargas de trabajo de Microsoft 365 (hasta 1 millón de registros por consulta).",
+      "asignacionPIM": "Restringido exclusivamente a la identidad administrada del orquestador DFIR central del SOC con revisión mensual.",
+      "responsabilidadOperativa": "Reconstrucción transversal de incidentes complejos (BEC, nación-estado e IA) reemplazando Search-UnifiedAuditLog.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Conector SIEM (ActivityFeed.Read / ActivityFeed.ReadDlp)",
+      "nivelSOC": "Ingesta Continua SIEM / Data Lake",
+      "permisosClave": "Consumir flujos de actividad general y DLP mediante Office 365 Management Activity API aprovechando la cuota dedicada de alta velocidad E5.",
+      "asignacionPIM": "Administrado de forma nativa mediante el conector Microsoft 365 en Microsoft Sentinel.",
+      "responsabilidadOperativa": "Alimentar detección casi en tiempo real en Sentinel Analytics y retención multianual en Sentinel Data Lake.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Verificación automatizada de integridad del pipeline UAL, AuditDisabled y cero cuentas en Audit Bypass",
+      "objetivo": "Garantizar que la ingesta unificada y la auditoría de buzones por defecto permanezcan encendidas sin exclusiones subrepticias.",
+      "consolaRuta": "Exchange Online PowerShell / security.microsoft.com > Incidents & alerts",
+      "procedimiento": [
+        "Ejecutar en Exchange Online PowerShell (nunca en SCC PowerShell) Get-AdminAuditLogConfig para confirmar UnifiedAuditLogIngestionEnabled = True.",
+        "Verificar en Get-OrganizationConfig que AuditDisabled = False y en Get-MailboxAuditBypassAssociation que existan 0 cuentas con AuditBypassEnabled = True.",
+        "Revisar alertas NRT/Scheduled en Sentinel ante cualquier invocación de Set-AdminAuditLogConfig, Set-MailboxAuditBypassAssociation o borrado de políticas de retención."
+      ],
+      "rolResponsable": "SOC L1 / Purview Platform Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-04",
+      "mitreTactic": "Defense Evasion — Impair Defenses: Disable or Modify Cloud Logs (T1562.008)",
+      "evidenciaAuditable": "Registro diario automatizado de estado saludable del pipeline UAL y 0 cuentas en bypass.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Comandos y advertencia sobre SCC PowerShell verificados en Search the audit log y Manage mailbox auditing.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-search"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Caza de estrangulamiento MailItemsAccessed (IsThrottled = True) y sincronizaciones masivas anómalas",
+      "objetivo": "Detectar buzones que superen los 1.000 eventos MailItemsAccessed en 24 horas como indicador temprano de raspado masivo BEC o nación-estado.",
+      "consolaRuta": "security.microsoft.com > Hunting > Advanced hunting (CloudAppEvents / OfficeActivity)",
+      "procedimiento": [
+        "Consultar eventos MailItemsAccessed de las últimas 24 h extrayendo IsThrottled y MailAccessType desde OperationProperties.",
+        "Filtrar casos con IsThrottled = True o sincronizaciones Sync desde direcciones IP, países o aplicaciones OAuth inusuales.",
+        "Abrir incidente prioritario ante cualquier estrangulamiento no justificado, asumiendo ceguera de 24 horas en MailItemsAccessed para ese buzón."
+      ],
+      "rolResponsable": "SOC L2 / Threat Hunter",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-03",
+      "mitreTactic": "Collection — Email Collection: Remote Email Collection (T1114.002)",
+      "evidenciaAuditable": "Resultados diarios de caza KQL y tickets de investigación cerrados sobre eventos IsThrottled.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Umbral de >1.000 registros en 24 h y suspensión por 24 h verificados en documentación forense oficial de Microsoft.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-log-investigate-accounts"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo de salud, latencia y cuota del conector OfficeActivity hacia Microsoft Sentinel",
+      "objetivo": "Confirmar que el streaming continuo vía Office 365 Management Activity API opere sin caídas ni estrangulamiento HTTP 429.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Data connectors > Microsoft 365 / SentinelHealth",
+      "procedimiento": [
+        "Medir el retraso de ingesta en la tabla OfficeActivity para Exchange, SharePoint y MicrosoftTeams verificando que se mantenga dentro del rango esperado (60-90 min).",
+        "Inspeccionar la tabla SentinelHealth para descartar errores de autenticación o límites de tasa.",
+        "Escalar si alguna carga crítica supera los 120 minutos sin eventos en horario hábil."
+      ],
+      "rolResponsable": "SIEM Engineer / SOC Platform",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "N/A (Continuous Telemetry Assurance)",
+      "evidenciaAuditable": "Métrica diaria de frescura de datos en SentinelHealth y OfficeActivity.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Latencia típica de 60-90 min y cuota dedicada ~2x en Audit Premium verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-solutions-overview#high-bandwidth-access-to-the-office-365-management-activity-api"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Detección de XPIADetected, JailbreakDetected y acceso IA a recursos altamente confidenciales en CopilotInteraction",
+      "objetivo": "Identificar ataques de inyección indirecta (XPIA), jailbreak o recolección masiva de documentos sensibles mediante Copilot y apps IA.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit / security.microsoft.com > Advanced hunting",
+      "procedimiento": [
+        "Analizar registros CopilotInteraction, ConnectedAIAppInteraction y AIAppInteraction de las últimas 24 horas.",
+        "Alertar sobre cualquier registro con XPIADetected == true en AccessedResources o JailbreakDetected == true en Messages.",
+        "Revisar accesos de alto volumen a archivos con SensitivityLabelId crítico y eventos con DLPEvaluationDeferred distinto de cero."
+      ],
+      "rolResponsable": "SOC L2 / AI Security Analyst",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "MITRE ATLAS AML.T0051 (Indirect / Cross-Prompt Injection)",
+      "evidenciaAuditable": "Bitácora diaria de eventos de seguridad en auditoría de IA investigados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Atributos AccessedResources, XPIADetected, JailbreakDetected y DLPEvaluationDeferred verificados en Audit logs for Copilot and AI applications.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-copilot"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Revisión de creación de reglas de ocultamiento/reenvío (UpdateInboxRules) y permisos delegados de buzón",
+      "objetivo": "Detectar persistencia BEC mediante reglas de bandeja de entrada, reenvíos externos o concesión de permisos SendAs/FullAccess.",
+      "consolaRuta": "security.microsoft.com > Hunting > Advanced hunting (OfficeActivity)",
+      "procedimiento": [
+        "Revisar operaciones UpdateInboxRules, New-InboxRule, Set-InboxRule, Add-MailboxPermission, Add-RecipientPermission y UpdateFolderPermissions.",
+        "Priorizar reglas que muevan mensajes a RSS Subscriptions, Notes o Deleted Items o reenvíen hacia dominios externos.",
+        "Cruzar SessionId y ClientIPAddress con eventos MailItemsAccessed del buzón afectado."
+      ],
+      "rolResponsable": "SOC L1 / L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Defense Evasion — Hide Artifacts: Email Hiding Rules (T1564.008)",
+      "evidenciaAuditable": "Registro diario de triaje de reglas y delegaciones sospechosas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Acciones predeterminadas de buzón y síntomas BEC verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/responding-to-a-compromised-email-account"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Control de trabajos asíncronos de búsqueda forense y validación de truncamiento (isRecordCountLimitExceeded)",
+      "objetivo": "Asegurar que las búsquedas DFIR y legales finalicen sin superar el límite de 1 millón de registros ni expirar a los 30 días.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit > Search / GET /v1.0/security/auditLog/queries",
+      "procedimiento": [
+        "Revisar el estado de trabajos en curso cuidando no bloquear el tope de 10 trabajos simultáneos por administrador.",
+        "Comprobar en toda consulta de Microsoft Graph AuditLogQuery que isRecordCountLimitExceeded sea false; si es true, dividir el rango de fechas.",
+        "Descargar y custodiar resultados de trabajos completados antes de su purga automática a los 30 días."
+      ],
+      "rolResponsable": "DFIR Lead / Audit Reader",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "N/A (Forensic Completeness Assurance)",
+      "evidenciaAuditable": "Metadatos de trabajos Graph con status = succeeded e isRecordCountLimitExceeded = false.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Límites de 10 jobs concurrentes, 30 días de retención de jobs y propiedad isRecordCountLimitExceeded verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/graph/api/resources/security-auditlogquery?view=graph-rest-1.0"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Vigilancia de accesos OAuth a mensajería Teams (AppAccessContext) y adjuntos vía Graph (AttachmentAccess)",
+      "objetivo": "Detectar aplicaciones de terceros maliciosas o comprometidas extrayendo conversaciones de Teams o archivos adjuntos de correo.",
+      "consolaRuta": "security.microsoft.com > Advanced hunting / purview.microsoft.com > Solutions > Audit",
+      "procedimiento": [
+        "Inspeccionar la propiedad exclusiva Audit (Premium) AppAccessContext en eventos ChatRetrieved, MessagesListed, MessageRead y SubscribedToMessages de Teams.",
+        "Analizar picos de la operación predeterminada AttachmentAccess ejecutada vía Microsoft Graph API sobre buzones ejecutivos.",
+        "Contrastar los ClientAppId observados contra el inventario de Enterprise Applications autorizadas en Entra ID."
+      ],
+      "rolResponsable": "SOC L2 / Cloud App Security Analyst",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Collection — Data from Information Repositories (T1213) / Steal App Access Token (T1528)",
+      "evidenciaAuditable": "Validación diaria de aplicaciones con acceso activo a APIs de Teams y Exchange.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Propiedad AppAccessContext en 14 eventos de Teams (Audit Premium) y operación AttachmentAccess verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-solutions-overview#audit-premium-activity-properties"
+    },
+    {
+      "codigo": "D-08",
+      "cadencia": "Diaria",
+      "actividad": "Auditoría de interacciones autónomas de agentes registrados en Microsoft Agent 365",
+      "objetivo": "Monitorear acciones agente-a-herramienta, agente-a-agente y agente-a-humano sobre datos sensibles.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit / DSPM > Activity explorer > AI activities",
+      "procedimiento": [
+        "Filtrar eventos de auditoría de instancias de Microsoft Agent 365 identificando AgentId, AgentName y AgentVersion.",
+        "Investigar accesos bloqueados por políticas (PolicyDetails, Status = failure) o lecturas masivas atípicas fuera del propósito del agente.",
+        "Notificar desvíos al propietario del agente y ajustar permisos en Entra ID."
+      ],
+      "rolResponsable": "AI Security Analyst / SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "MITRE ATLAS AML.T0048 (Autonomous Agent Misuse)",
+      "evidenciaAuditable": "Reporte diario de actividad auditada de instancias Agent 365.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Habilitación automática de auditoría al crear instancias en Agent 365 y tipos de interacción soportados verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/ai-agent-365"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Reconciliación del plan de servicio Microsoft 365 Advanced Auditing y licencias 10-Year Add-on",
+      "objetivo": "Asegurar que el 100 % de usuarios E5 tengan activo el service plan que habilita retención de 1 año e Intelligent Insights.",
+      "consolaRuta": "Microsoft Graph PowerShell (Get-MgUserLicenseDetail) / admin.microsoft.com",
+      "procedimiento": [
+        "Auditar semanalmente todos los usuarios con SKU E5/E7/Purview Suite verificando que el plan Microsoft 365 Advanced Auditing esté habilitado.",
+        "Comprobar que la totalidad de usuarios incluidos en políticas personalizadas de 3, 5, 7 o 10 años posean el add-on 10-Year Audit Log Retention.",
+        "Corregir brechas mediante grupos de licenciamiento en Entra ID (recordando hasta 24 h para inicio de insights y no-retroactividad)."
+      ],
+      "rolResponsable": "Identity & Licensing Admin + Purview Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "N/A (License Entitlement Assurance)",
+      "evidenciaAuditable": "Reporte semanal de 0 usuarios E5 con Advanced Auditing deshabilitado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Requisito explícito de activar el checkbox Microsoft 365 Advanced Auditing verificado en Get started with auditing solutions.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-get-started#step-4-set-up-audit-premium-for-users"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Habilitación automatizada de SearchQueryInitiatedExchange en buzones nuevos (Single y Multi-Geo)",
+      "objetivo": "Garantizar la captura de términos buscados en Outlook/OWA para todos los nuevos buzones creados o migrados.",
+      "consolaRuta": "Exchange Online PowerShell (Get-Mailbox, Set-Mailbox)",
+      "procedimiento": [
+        "Listar buzones aprovisionados en los últimos 7 días e identificar su bosque regional mediante MailboxLocations si el tenant es Multi-Geo.",
+        "Ejecutar en el bosque correspondiente Set-Mailbox <Identity> -AuditOwner @{Add=\"SearchQueryInitiated\"}.",
+        "Confirmar que AuditOwner conserve íntegras todas las acciones base predeterminadas tras la personalización."
+      ],
+      "rolResponsable": "Exchange Online Admin / Purview Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-04",
+      "mitreTactic": "Collection — Internal Spearphishing / Mailbox Reconnaissance",
+      "evidenciaAuditable": "Log de ejecución semanal mostrando SearchQueryInitiated activo en el 100 % de buzones objetivo.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Desactivación por defecto de SearchQueryInitiatedExchange y requisito de ejecución en el forest local Multi-Geo verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-get-started#step-3-enabledisable-searchqueryinitiatedexchangesearchqueryinitiatedsharepoint-events"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría de jerarquía de prioridades y cobertura de políticas de retención de auditoría (máx. 50)",
+      "objetivo": "Prevenir que políticas personalizadas mal priorizadas reduzcan la retención de 1 año de cargas críticas.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit > Audit retention policies / SCC PowerShell",
+      "procedimiento": [
+        "Ejecutar Get-UnifiedAuditLogRetentionPolicy ordenado por Priority (1 = máxima precedencia) para inspeccionar incluso políticas no editables en UI.",
+        "Verificar que ninguna política personalizada reduzca accidentalmente AzureActiveDirectory, Exchange, OneDrive o SharePoint por debajo de 1 año.",
+        "Confirmar la cobertura de 1 año o 10 años para MicrosoftTeams, CopilotInteraction, PowerBIAudit y DLP."
+      ],
+      "rolResponsable": "Purview Compliance Admin (Organization Configuration)",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "N/A (Retention Policy Governance)",
+      "evidenciaAuditable": "Exportación semanal firmada de Get-UnifiedAuditLogRetentionPolicy bajo el tope de 50 políticas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Precedencia de políticas personalizadas sobre la política por defecto y límite de 50 políticas verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-log-retention-policies"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Rastreo y erradicación de uso heredado del cmdlet Search-UnifiedAuditLog (MC1505599)",
+      "objetivo": "Completar la migración hacia Microsoft Graph AuditLogQuery API mucho antes del retiro definitivo del 15 de octubre de 2027.",
+      "consolaRuta": "Registros SecurityComplianceCenterEOPCmdlet / Repositorios de automatización SecOps",
+      "procedimiento": [
+        "Auditar en el propio UAL qué cuentas o scripts ejecutaron Search-UnifiedAuditLog durante los últimos 7 días.",
+        "Migrar cada script identificado hacia POST /v1.0/security/auditLog/queries o cmdlets de Microsoft.Graph.Security.",
+        "Reemplazar roles amplios de Exchange por permisos Graph específicos por servicio."
+      ],
+      "rolResponsable": "SecOps Automation Engineer",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.IM-02",
+      "mitreTactic": "N/A (API Modernization & Operational Continuity)",
+      "evidenciaAuditable": "Inventario actualizado con porcentaje de scripts migrados a Microsoft Graph AuditLogQuery.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Anuncio MC1505599 (octubre de 2026): GA de Graph AuditLogQuery y retiro de Search-UnifiedAuditLog el 15-oct-2027.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/graph/api/security-auditcoreroot-post-auditlogqueries?view=graph-rest-1.0"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Control FinOps de consumo Pay-As-You-Go por registros AIAppInteraction de IA no-Microsoft",
+      "objetivo": "Monitorear costos en Azure generados por auditoría de aplicaciones GenAI externas y bloquear Shadow AI ruidoso.",
+      "consolaRuta": "portal.azure.com > Cost Management + Billing / purview.microsoft.com > Solutions > Audit",
+      "procedimiento": [
+        "Revisar el volumen semanal facturado bajo el medidor de Audit solutions (número de registros de auditoría procesados para IA no-Microsoft).",
+        "Agrupar eventos AIAppInteraction por AppIdentity para identificar sitios GenAI externos no autorizados de alto tráfico.",
+        "Coordinar con Defender for Cloud Apps / Endpoint DLP el bloqueo de aplicaciones Shadow AI riesgosas."
+      ],
+      "rolResponsable": "Purview Admin + FinOps Analyst",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-02",
+      "mitreTactic": "Exfiltration — Shadow AI Usage",
+      "evidenciaAuditable": "Reporte semanal de consumo PAYG de auditoría IA alineado al presupuesto.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Facturación PAYG por registro procesado y retención de 180 días para AIAppInteraction verificadas en Audit logs for Copilot and AI applications.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-copilot#billing-for-auditing-non-microsoft-ai-applications"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Campaña semanal de Threat Hunting sobre términos críticos en SearchQueryInitiatedExchange y SharePoint",
+      "objetivo": "Descubrir reconocimiento interno silencioso en curso sobre contraseñas, claves API, transferencias o fusiones.",
+      "consolaRuta": "security.microsoft.com > Hunting > Advanced hunting (OfficeActivity / CloudAppEvents)",
+      "procedimiento": [
+        "Ejecutar consulta KQL semanal buscando términos de alto riesgo dentro de SearchQueryInitiatedExchange y SearchQueryInitiatedSharePoint.",
+        "Cruzar usuarios con búsquedas anómalas frente a inicios de sesión riesgosos en Entra ID y alertas de Insider Risk Management.",
+        "Documentar descartes o abrir investigación forense según hallazgos."
+      ],
+      "rolResponsable": "Threat Hunter / SOC L3",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-07",
+      "mitreTactic": "Discovery / Collection — Sensitive Keyword Reconnaissance",
+      "evidenciaAuditable": "Informe semanal de caza proactiva sobre consultas de búsqueda.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Eventos SearchQueryInitiated verificados en MS Learn; campaña semanal por diccionario de caza es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-get-started"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría de higiene de DefaultAuditSet en toda la flota de buzones y controles compensatorios Multi-Geo",
+      "objetivo": "Asegurar que la personalización de AuditOwner no deje fuera futuras acciones predeterminadas y gestionar brechas cross-geo.",
+      "consolaRuta": "Exchange Online PowerShell",
+      "procedimiento": [
+        "Inspeccionar todos los buzones cuyo DefaultAuditSet difiera de Admin, Delegate, Owner y comparar sus listas AuditOwner/Delegate/Admin contra la línea base oficial vigente.",
+        "Restaurar con Set-Mailbox -DefaultAuditSet Admin,Delegate,Owner cualquier buzón alterado sin justificación (reaplicando SearchQueryInitiated de forma controlada).",
+        "En tenants Multi-Geo, auditar permisos cross-geo sobre buzones compartidos sabiendo que las acciones delegadas entre geografías distintas no se registran en el log del buzón compartido."
+      ],
+      "rolResponsable": "Exchange Online Admin + Purview Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "Defense Evasion",
+      "evidenciaAuditable": "Reporte mensual de conformidad de acciones auditadas en el 100 % de buzones.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Efecto de personalizar acciones sobre DefaultAuditSet y limitación Multi-Geo en shared mailboxes verificados en Manage mailbox auditing.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-mailboxes"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Verificación de retención mayor a 1 año en Sentinel Data Lake para entidades no-usuario (Service Principals)",
+      "objetivo": "Compensar la regla fija no configurable de 1 año en Purview Audit para principales de servicio, aplicaciones y eventos de sistema.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Data management > Tables",
+      "procedimiento": [
+        "Confirmar la política de retención multianual (hasta 12 años) en Microsoft Sentinel Data Lake sobre tablas que almacenan actividad de aplicaciones y service principals.",
+        "Ejecutar una consulta de validación sobre registros de entidades no-usuario con antigüedad superior a 366 días.",
+        "Documentar la evidencia de recuperabilidad para auditorías SEC, PCI-DSS y DORA."
+      ],
+      "rolResponsable": "SIEM Architect + GRC Lead",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "N/A (Non-Human Identity Long-Term Audit Retention)",
+      "evidenciaAuditable": "Consulta mensual exitosa de registros > 1 año de service principals en Sentinel Data Lake.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Límite fijo de 1 año no extensible a 10 años para entidades no-usuario verificado en Learn about auditing solutions in Microsoft Purview.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-solutions-overview#comparison-of-key-capabilities"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Recertificación de roles Audit Manager, Audit Reader, Organization Configuration y permisos Graph",
+      "objetivo": "Garantizar mínimo privilegio sobre quién puede leer o administrar logs sensibles de toda la organización.",
+      "consolaRuta": "purview.microsoft.com > Settings > Roles and scopes > Role groups / entra.microsoft.com",
+      "procedimiento": [
+        "Revisar los integrantes de Audit Manager, Audit Reader y Organization Configuration y verificar el acotamiento por Administrative Units para equipos regionales.",
+        "Auditar todas las Enterprise Applications en Entra ID con permisos AuditLogsQuery.Read.All o AuditLogsQuery-*.Read.All.",
+        "Revocar accesos obsoletos y exigir autenticación con certificado o Managed Identity."
+      ],
+      "rolResponsable": "Identity Governance Admin + CISO Office",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Account Manipulation (T1098)",
+      "evidenciaAuditable": "Acta mensual de recertificación RBAC de auditoría y aplicaciones Graph.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Roles oficiales, alcance por Administrative Units y permisos por servicio en Graph verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-get-started#step-2-assign-permissions-to-search-the-audit-log"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Verificación Proof of Life de ingesta por carga de trabajo (Fabric/Power BI, Teams, Copilot, MIP, DLP)",
+      "objetivo": "Detectar silencios de telemetría en servicios que requieren configuración específica en su propio portal administrativo.",
+      "consolaRuta": "app.powerbi.com/admin-portal / purview.microsoft.com > Solutions > Audit",
+      "procedimiento": [
+        "Verificar en el portal de administración de Microsoft Fabric / Power BI que la auditoría permanezca habilitada.",
+        "Ejecutar conteo mensual de registros por AuditLogRecordType crítico (PowerBIAudit, MicrosoftTeams, CopilotInteraction, MIPLabel, ComplianceDLPSharePoint, DLPEndpoint).",
+        "Investigar cualquier caída abrupta o ausencia de eventos."
+      ],
+      "rolResponsable": "Purview Compliance Admin",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-06",
+      "mitreTactic": "Impair Defenses (T1562)",
+      "evidenciaAuditable": "Matriz mensual de presencia activa de eventos por carga de trabajo.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Requisito de habilitar auditoría en el portal admin de Power BI y catálogo de RecordTypes verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-supported-services"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Control interno sobre búsquedas ejecutadas en Purview Audit (Auditing the Auditors)",
+      "objetivo": "Auditar el historial de búsquedas realizadas por analistas y administradores para prevenir consultas abusivas sin caso asociado.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit > Search",
+      "procedimiento": [
+        "Inspeccionar el historial de 30 días del Search job dashboard revisando Search performed by, criterios aplicados y búsquedas sin filtros.",
+        "Cotejar una muestra representativa de consultas humanas y llamadas a security/auditLog/queries contra tickets válidos en ITSM/SOAR.",
+        "Escalar al DPO y CISO cualquier búsqueda no justificada sobre buzones ejecutivos o datos de RR. HH."
+      ],
+      "rolResponsable": "Internal Audit / Data Protection Officer (DPO)",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-01",
+      "mitreTactic": "Valid Accounts (T1078) — Insider Abuse Prevention",
+      "evidenciaAuditable": "Informe mensual de auditoría interna sobre consultas forenses ejecutadas.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en el historial de 30 días de Search jobs documentado en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-search#search-job-dashboard"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Prueba práctica de recuperación forense histórica a 1 año y 10 años vía Microsoft Graph AuditLogQuery",
+      "objetivo": "Demostrar empíricamente la recuperabilidad e integridad de registros antiguos cubiertos por políticas de 1 y 10 años.",
+      "consolaRuta": "POST /v1.0/security/auditLog/queries / purview.microsoft.com > Solutions > Audit",
+      "procedimiento": [
+        "Ejecutar consultas históricas sobre rangos de 11 meses atrás (población E5 general) y mayores a 12 meses (custodios con add-on de 10 años), respetando el máximo de 180 días por consulta.",
+        "Descargar los registros, validar isRecordCountLimitExceeded = false y parsear AuditData.",
+        "Confirmar la presencia íntegra de SensitivityLabel en MailItemsAccessed y AccessedResources en CopilotInteraction."
+      ],
+      "rolResponsable": "DFIR Lead + Legal / Compliance Officer",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-05",
+      "mitreTactic": "N/A (Long-Term Forensic Recoverability Test)",
+      "evidenciaAuditable": "Acta trimestral de prueba exitosa de recuperación histórica de 1 y 10 años.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Ventana máxima de 180 días por búsqueda y retención de 1 a 10 años verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-log-retention-policies"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Optimización de tiempos de búsqueda asíncrona y evaluación de cuotas dinámicas de API",
+      "objetivo": "Reducir tiempos de respuesta en investigaciones grandes y validar holgura en cuotas de Management Activity API y Graph.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel / Telemetría Microsoft Graph",
+      "procedimiento": [
+        "Analizar la duración de los trabajos de búsqueda del trimestre (evitando consultas amplias sin filtros que pueden demorar hasta 48 h).",
+        "Actualizar las plantillas de consulta DFIR para incluir siempre recordTypeFilters y operationFilters exactos.",
+        "Revisar el rendimiento de ingesta SIEM frente al crecimiento de asientos E5 del tenant."
+      ],
+      "rolResponsable": "SIEM / SecOps Architect",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.IM-01",
+      "mitreTactic": "N/A (Query Performance Optimization)",
+      "evidenciaAuditable": "Reporte trimestral de tiempos medios de extracción forense y salud de APIs.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tiempo de hasta 48 h en consultas amplias en tenants grandes y cuotas dinámicas E5 verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-search#get-started-with-search"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Simulacro DFIR de intrusión BEC / Nación-Estado con reconstrucción pericial de alcance de brecha",
+      "objetivo": "Validar en escenario controlado la delimitación exacta de correos y archivos comprometidos mediante Audit (Premium).",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit / Microsoft Graph AuditLogQuery / security.microsoft.com",
+      "procedimiento": [
+        "Ejecutar en cuentas de laboratorio un ataque simulado que incluya búsquedas en OWA/SharePoint, lectura Bind de correos etiquetados, interacción Copilot sobre archivo confidencial y regla de ocultamiento.",
+        "Reconstruir desde el SOC la cronología completa usando SessionId, InternetMessageId, SensitivityLabel y AccessedResources.",
+        "Emitir un dictamen legal simulado probando qué elementos exactos fueron expuestos y cuáles permanecieron intactos."
+      ],
+      "rolResponsable": "CISO + SOC Manager + DFIR Lead + General Counsel",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MA-01",
+      "mitreTactic": "Collection & Exfiltration (T1114.002 / T1530)",
+      "evidenciaAuditable": "Informe pericial del ejercicio semestral y plan de mejora continua.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en el procedimiento oficial de investigación con MailItemsAccessed de Microsoft Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-log-investigate-accounts"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Revisión anual de arquitectura regulatoria de retención (180d vs. 1y vs. 10y Add-on vs. Sentinel Data Lake)",
+      "objetivo": "Alinear inversiones de licenciamiento y políticas de retención de logs con obligaciones legales vigentes.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit > Audit retention policies / Compliance Manager",
+      "procedimiento": [
+        "Evaluar cambios regulatorios anuales (SEC 17a-4, DORA, HIPAA, PCI-DSS v4.0, CISA M-24-04, Ley 21.719 de Chile).",
+        "Actualizar el padrón de puestos sujetos a 10-Year Audit Log Retention add-on y las tablas retenidas en Sentinel Data Lake.",
+        "Validar el presupuesto anual para licencias add-on y medidores PAYG de auditoría IA externa."
+      ],
+      "rolResponsable": "CISO + Chief Compliance Officer + General Counsel + FinOps",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.PO-02",
+      "mitreTactic": "N/A (Annual Audit Governance Strategy)",
+      "evidenciaAuditable": "Matriz Corporativa Anual de Retención Forense aprobada por Dirección.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Gobierno anual recomendado integrando Purview Audit y Sentinel Data Lake.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-solutions-overview"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook forense de respuesta a compromiso BEC / robo de token (MailItemsAccessed Bind vs. Sync e IsThrottled)",
+      "objetivo": "Contener la cuenta comprometida y determinar con exactitud probatoria el alcance de exposición de correos y archivos.",
+      "consolaRuta": "Microsoft Graph AuditLogQuery v1.0 / Exchange Online PowerShell / entra.microsoft.com",
+      "procedimiento": [
+        "Deshabilitar cuenta o rotar credenciales, ejecutar Revoke-MgUserSignInSession, limpiar MFA/OAuth sospechosos e inspeccionar Get-InboxRule -IncludeHidden.",
+        "Consultar vía Graph AuditLogQuery todos los eventos MailItemsAccessed del periodo comprometido verificando primero si hubo Sync o IsThrottled = True bajo la sesión/IP del atacante (en cuyo caso se asume compromiso total de la carpeta/buzón).",
+        "Si solo existieron accesos Bind sin throttling, extraer cada InternetMessageId y su propiedad SensitivityLabel (Audit Premium) asociados al SessionId malicioso.",
+        "Correlacionar SearchQueryInitiatedExchange, SearchQueryInitiatedSharePoint, Send, SendAs y HardDelete para documentar intención y acciones del atacante."
+      ],
+      "rolResponsable": "DFIR Lead + SOC L2/L3 + Legal",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "Account Compromise & Remote Email Collection (T1078 / T1114.002)",
+      "evidenciaAuditable": "Paquete forense JSON/CSV con hash SHA-256 e inventario exacto de InternetMessageId y SensitivityLabel expuestos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Secuencia oficial verificada en Respond to a compromised email account y Use MailItemsAccessed to investigate compromised accounts.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-log-investigate-accounts"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de investigación forense de reconocimiento o exfiltración asistida por Copilot / Agent 365",
+      "objetivo": "Determinar qué documentos, correos y chats leyó un atacante o insider mediante prompts de IA o agentes autónomos.",
+      "consolaRuta": "POST /v1.0/security/auditLog/queries / purview.microsoft.com > Solutions > eDiscovery",
+      "procedimiento": [
+        "Ejecutar consulta Graph AuditLogQuery para el usuario o instancia de Agent 365 filtrando CopilotInteraction, ConnectedAIAppInteraction y AIAppInteraction.",
+        "Extraer de AccessedResources todos los archivos, sitios y correos utilizados como grounding junto con SensitivityLabelId, PolicyDetails y XPIADetected.",
+        "Abrir caso en Purview eDiscovery filtrando el buzón por Type = Copilot activity para preservar y exportar el contenido literal de prompts y respuestas."
+      ],
+      "rolResponsable": "DFIR Lead + AI Security Analyst + eDiscovery Manager",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "MITRE ATLAS AML.T0051 / Automated Collection via LLM",
+      "evidenciaAuditable": "Listado pericial de AccessedResources y colección preservada en eDiscovery.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo combinado Purview Audit (AccessedResources) + Purview eDiscovery (Type = Copilot activity) verificado en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-copilot"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook crítico ante desactivación maliciosa de auditoría o activación de Mailbox Audit Bypass",
+      "objetivo": "Restablecer de inmediato la recolección forense y contener la cuenta privilegiada responsable de la manipulación.",
+      "consolaRuta": "Exchange Online PowerShell / entra.microsoft.com / security.microsoft.com",
+      "procedimiento": [
+        "Ejecutar inmediatamente Set-AdminAuditLogConfig -UnifiedAuditLogIngestionEnabled $true, Set-OrganizationConfig -AuditDisabled $false y revertir cualquier Set-MailboxAuditBypassAssociation.",
+        "Bloquear y revocar sesiones de la identidad privilegiada que ejecutó el cambio tratándola como incidente Tier-0.",
+        "Reconstruir la actividad durante la ventana ciega utilizando Entra ID Sign-in/Audit Logs, Message Trace y telemetría Defender XDR."
+      ],
+      "rolResponsable": "SOC Manager + Exchange/Purview Tier-0 Admin",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Impair Defenses: Disable or Modify Cloud Logs (T1562.008)",
+      "evidenciaAuditable": "Evidencia de reactivación del pipeline y reporte de incidente crítico Tier-0.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Comandos de reactivación y comportamiento de override organizacional verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-mailboxes#turn-on-mailbox-auditing-on-by-default"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Extracción probatoria multianual (hasta 10 años) para litigios o inspecciones regulatorias",
+      "objetivo": "Exportar sin pérdida ni truncamiento años completos de actividad auditada cumpliendo cadena de custodia.",
+      "consolaRuta": "Microsoft Graph AuditLogQuery v1.0 / Microsoft Sentinel Data Lake",
+      "procedimiento": [
+        "Segmentar el horizonte multianual requerido en ventanas consecutivas de hasta 180 días y lanzar hasta 10 consultas paralelas en Graph AuditLogQuery.",
+        "Confirmar status = succeeded e isRecordCountLimitExceeded = false en cada segmento (subdividiendo si supera 1 millón de eventos).",
+        "Complementar desde Sentinel Data Lake cualquier registro de service principals o sistema con antigüedad mayor a 1 año."
+      ],
+      "rolResponsable": "DFIR Lead + Legal / eDiscovery Lead",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.CO-03",
+      "mitreTactic": "N/A (Multi-Year Regulatory & Legal Production)",
+      "evidenciaAuditable": "Repositorio sellado criptográficamente con la totalidad de segmentos semestrales exportados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tope de 180 días por consulta, límite de 1M de registros en Graph y tope de 1 año en SPNs verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/graph/api/resources/security-auditlogquery?view=graph-rest-1.0"
+    },
+    {
+      "codigo": "AH-05",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Blindaje urgente de auditoría de 10 años y SearchQueryInitiated para nuevos custodios críticos o M&A",
+      "objetivo": "Activar preventivamente la máxima profundidad y retención forense antes de operaciones corporativas sensibles.",
+      "consolaRuta": "admin.microsoft.com / purview.microsoft.com > Solutions > Audit > Audit retention policies / EXO PowerShell",
+      "procedimiento": [
+        "Asignar licencias E5/Purview Suite (con Microsoft 365 Advanced Auditing activo) más el add-on 10-Year Audit Log Retention a los custodios designados.",
+        "Agregar los usuarios a una política personalizada de retención TenYears con prioridad alta (recordando que aplica desde el momento de creación en adelante).",
+        "Habilitar SearchQueryInitiated y MailboxLogin en AuditOwner para sus buzones en el forest correspondiente."
+      ],
+      "rolResponsable": "Purview Compliance Admin + Exchange Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-04",
+      "mitreTactic": "N/A (High-Risk Custodian Forensic Readiness)",
+      "evidenciaAuditable": "Verificación de licencia 10Y, política activa y configuración AuditOwner del grupo de custodios.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "No-retroactividad de políticas de 10 años y configuración de acciones de buzón verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-log-retention-policies"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Búsqueda forense asíncrona BEC (MailItemsAccessed y SearchQueryInitiated) vía Microsoft Graph AuditLogQuery v1.0",
+      "plataforma": "Microsoft Graph PowerShell SDK v1.0 (GA octubre 2026)",
+      "tablaPrincipal": "security/auditLog/queries",
+      "consulta": "Connect-MgGraph -Scopes \"AuditLogsQuery-Exchange.Read.All\", \"AuditLogsQuery-SharePoint.Read.All\"\n$body = @{\n  \"@odata.type\" = \"#microsoft.graph.security.auditLogQuery\"\n  displayName = \"BEC-Forensic-MailItemsAccessed-SearchQuery\"\n  filterStartDateTime = (Get-Date).AddDays(-14).ToUniversalTime().ToString(\"o\")\n  filterEndDateTime = (Get-Date).ToUniversalTime().ToString(\"o\")\n  userPrincipalNameFilters = @(\"ejecutivo.afectado@contoso.com\")\n  operationFilters = @(\"MailItemsAccessed\", \"Send\", \"SendAs\", \"UpdateInboxRules\", \"SearchQueryInitiatedExchange\", \"SearchQueryInitiatedSharePoint\")\n}\n$job = Invoke-MgGraphRequest -Method POST -Uri \"https://graph.microsoft.com/v1.0/security/auditLog/queries\" -Body ($body | ConvertTo-Json -Depth 5)\nWrite-Output \"AuditLogQuery ID: $($job.id) - Status: $($job.status)\"",
+      "proposito": "Sustituir definitivamente Search-UnifiedAuditLog (retiro 15-oct-2027) ejecutando consultas escalables de hasta 1 millón de registros con permisos de mínimo privilegio.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección de estrangulamiento MailItemsAccessed (IsThrottled = True) y sincronización Sync sospechosa",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting (KQL)",
+      "tablaPrincipal": "CloudAppEvents",
+      "consulta": "CloudAppEvents\n| where Timestamp > ago(24h)\n| where ActionType == \"MailItemsAccessed\"\n| extend OpProps = parse_json(tostring(RawEventData.OperationProperties))\n| mv-apply Prop = OpProps on (\n    summarize\n      MailAccessType = take_anyif(tostring(Prop.Value), tostring(Prop.Name) == \"MailAccessType\"),\n      IsThrottled = take_anyif(tostring(Prop.Value), tostring(Prop.Name) == \"IsThrottled\")\n)\n| where IsThrottled =~ \"True\" or MailAccessType =~ \"Sync\"\n| project Timestamp, AccountDisplayName, IPAddress, CountryCode, MailAccessType, IsThrottled, SessionId = tostring(RawEventData.SessionId)",
+      "proposito": "Alertar cuando un buzón supera los 1.000 registros MailItemsAccessed en 24 h (quedando sin logs por 24 h) o sufre descarga completa de carpetas.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría forense de CopilotInteraction para detectar XPIADetected, JailbreakDetected y etiquetas sensibles",
+      "plataforma": "Microsoft Sentinel / Log Analytics (KQL)",
+      "tablaPrincipal": "OfficeActivity",
+      "consulta": "OfficeActivity\n| where TimeGenerated > ago(7d)\n| where Operation in (\"CopilotInteraction\", \"ConnectedAIAppInteraction\", \"AIAppInteraction\")\n| extend Data = parse_json(AuditData)\n| mv-expand Msg = Data.Messages\n| extend JailbreakDetected = tobool(Msg.JailbreakDetected)\n| mv-expand Res = Data.AccessedResources\n| extend ResourceName = tostring(Res.Name), SensitivityLabelId = tostring(Res.SensitivityLabelId), XPIADetected = tobool(Res.XPIADetected)\n| where JailbreakDetected == true or XPIADetected == true or isnotempty(SensitivityLabelId)\n| project TimeGenerated, UserId, Operation, AppHost = tostring(Data.AppHost), AgentId = tostring(Data.AgentId), ResourceName, SensitivityLabelId, JailbreakDetected, XPIADetected",
+      "proposito": "Rastrear recursos confidenciales leídos por Copilot/Agent 365 y detectar ataques de Cross-Prompt Injection (XPIA) o jailbreak.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Verificación del pipeline UAL, AuditDisabled, Bypass y habilitación de SearchQueryInitiatedExchange",
+      "plataforma": "Exchange Online PowerShell",
+      "tablaPrincipal": "AdminAuditLogConfig / OrganizationConfig / Mailbox",
+      "consulta": "Connect-ExchangeOnline -ShowBanner:$false\nGet-AdminAuditLogConfig | Format-List UnifiedAuditLogIngestionEnabled\nGet-OrganizationConfig | Format-List AuditDisabled\nGet-MailboxAuditBypassAssociation -ResultSize Unlimited | Where-Object { $_.AuditBypassEnabled -eq $true }\nSet-Mailbox -Identity \"cfo@contoso.com\" -AuditOwner @{Add=\"SearchQueryInitiated\"}\nGet-Mailbox -Identity \"cfo@contoso.com\" | Select-Object UserPrincipalName, DefaultAuditSet, AuditOwner",
+      "proposito": "Comprobar en Exchange Online PowerShell el estado real de la auditoría y activar la captura de búsquedas en buzones sin sobrescribir acciones existentes.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría de prioridades y creación de políticas de retención de 10 años",
+      "plataforma": "Security & Compliance PowerShell",
+      "tablaPrincipal": "UnifiedAuditLogRetentionPolicy",
+      "consulta": "Connect-IPPSSession\nGet-UnifiedAuditLogRetentionPolicy | Sort-Object Priority | Format-Table Priority, Name, RetentionDuration, RecordTypes, Operations, UserIds\nNew-UnifiedAuditLogRetentionPolicy -Name \"Retencion-10Y-Teams-Ejecutivos\" -Description \"Retencion de 10 anos para Microsoft Teams\" -RecordTypes MicrosoftTeams -RetentionDuration TenYears -Priority 50",
+      "proposito": "Auditar el orden de precedencia (1 a 10000) de las hasta 50 políticas personalizadas y extender retención decenal a cargas fuera del default de 1 año.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Caza de términos críticos buscados por atacantes en Exchange y SharePoint",
+      "plataforma": "Microsoft Sentinel / Defender Unified SecOps (KQL)",
+      "tablaPrincipal": "OfficeActivity",
+      "consulta": "OfficeActivity\n| where TimeGenerated > ago(14d)\n| where Operation in (\"SearchQueryInitiatedExchange\", \"SearchQueryInitiatedSharePoint\")\n| extend Details = parse_json(AuditData)\n| extend QueryText = coalesce(tostring(Details.QueryText), tostring(Details.SearchQueryText))\n| where QueryText has_any (\"password\", \"contraseña\", \"secret\", \"token\", \"swift\", \"wire\", \"confidencial\", \"keyvault\")\n| project TimeGenerated, UserId, Operation, QueryText, ClientIP",
+      "proposito": "Descubrir qué palabras exactas buscó un actor malicioso dentro del buzón o en sitios de SharePoint/OneDrive.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Regla analítica en tiempo real contra desactivación o evasión de auditoría (Anti-Tampering)",
+      "plataforma": "Microsoft Sentinel Analytics (KQL)",
+      "tablaPrincipal": "OfficeActivity",
+      "consulta": "OfficeActivity\n| where TimeGenerated > ago(1d)\n| where Operation in (\"Set-AdminAuditLogConfig\", \"Set-MailboxAuditBypassAssociation\", \"Remove-UnifiedAuditLogRetentionPolicy\", \"Set-UnifiedAuditLogRetentionPolicy\") or (Operation == \"Set-OrganizationConfig\" and AuditData has \"AuditDisabled\")\n| project TimeGenerated, UserId, Operation, ClientIP, Parameters, AuditData",
+      "proposito": "Disparar incidente crítico inmediato ante cualquier intento administrativo de apagar UAL, deshabilitar mailbox auditing, activar bypass o degradar políticas de retención.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Cobertura Efectiva del Plan Microsoft 365 Advanced Auditing en Población E5",
+      "definicion": "Porcentaje de usuarios con licencia E5 o Microsoft Purview Suite que tienen efectivamente habilitado el service plan Microsoft 365 Advanced Auditing.",
+      "formula": "(Usuarios E5/Purview Suite con Advanced Auditing habilitado / Total usuarios E5/Purview Suite activos) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Semanal",
+      "audiencia": "CISO, Purview Admin, Identity Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Garantiza generación de Intelligent Insights y retención predeterminada de 1 año."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Cobertura de Activación de SearchQueryInitiatedExchange en Buzones",
+      "definicion": "Porcentaje de buzones en alcance que cuentan con SearchQueryInitiated habilitado en AuditOwner conservando el conjunto completo de acciones base.",
+      "formula": "(Buzones con SearchQueryInitiated activo y acciones base íntegras / Total buzones en alcance) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Semanal",
+      "audiencia": "SOC Manager, DFIR Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Compensa que SearchQueryInitiatedExchange venga apagado de fábrica."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Integridad Continua del Pipeline UAL y Cero Bypass No Autorizado",
+      "definicion": "Porcentaje del tiempo en que UnifiedAuditLogIngestionEnabled es True, AuditDisabled es False y no existen cuentas no aprobadas en MailboxAuditBypassAssociation.",
+      "formula": "(Controles diarios de integridad conformes / Total verificaciones diarias del mes) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Diaria / Mensual",
+      "audiencia": "CISO, Internal Audit",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Control primario contra MITRE T1562.008."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Porcentaje de Migración a Microsoft Graph AuditLogQuery API (MC1505599)",
+      "definicion": "Proporción de scripts, playbooks e integraciones migradas desde Search-UnifiedAuditLog hacia Microsoft Graph AuditLogQuery v1.0.",
+      "formula": "(Automatizaciones operando en Graph AuditLogQuery v1.0 / Total automatizaciones que consultan Purview Audit) * 100",
+      "metaSugerida": "100 % antes de Q2 2027 (retiro definitivo 15-oct-2027)",
+      "frecuencia": "Semanal / Mensual",
+      "audiencia": "SecOps Engineering Lead, SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mitiga el riesgo de interrupción operativa anunciado en MC1505599."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Tiempo Medio de Triaje ante Estrangulamiento MailItemsAccessed (IsThrottled)",
+      "definicion": "Tiempo promedio desde la detección de un evento MailItemsAccessed con IsThrottled = True hasta la validación o contención por el SOC.",
+      "formula": "Promedio(Timestamp inicio triaje SOC - Timestamp evento IsThrottled = True)",
+      "metaSugerida": "<= 30 minutos",
+      "frecuencia": "Diaria",
+      "audiencia": "SOC Manager, DFIR Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Crítico dado que el buzón pierde registros MailItemsAccessed durante 24 horas."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Conformidad de Retención Regulatoria (1 Año / 10 Años / Data Lake SPN)",
+      "definicion": "Cumplimiento de licencias y políticas de 10 años para usuarios regulados junto con retención > 1 año en Sentinel Data Lake para principales de servicio.",
+      "formula": "(Ámbitos regulados humanos y no-humanos conformes / Total ámbitos regulados definidos) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Mensual / Trimestral",
+      "audiencia": "Chief Compliance Officer, Legal, GRC",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Cubre la brecha de 1 año fijo en entidades no-usuario dentro de Purview Audit."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Tasa de Extracciones Forenses Sin Truncamiento (isRecordCountLimitExceeded = false)",
+      "definicion": "Porcentaje de consultas probatorias en Microsoft Graph AuditLogQuery completadas sin exceder el límite de 1 millón de registros por trabajo.",
+      "formula": "(Consultas cerradas con isRecordCountLimitExceeded == false / Total consultas probatorias DFIR y Legal) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Mensual",
+      "audiencia": "DFIR Lead, General Counsel",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Garantiza completitud admisible en juicio o auditoría regulatoria."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Salud y Puntualidad del Streaming OfficeActivity hacia Microsoft Sentinel",
+      "definicion": "Porcentaje de ventanas horarias donde la ingesta continua desde Office 365 Management Activity API se mantiene activa y con latencia <= 90 minutos.",
+      "formula": "(Horas con ingesta saludable <= 90 min / Total horas del mes) * 100",
+      "metaSugerida": ">= 99,5 %",
+      "frecuencia": "Diaria / Semanal",
+      "audiencia": "SIEM Architect, SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Aprovecha el doble ancho de banda dinámico de Audit (Premium)."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.OC-03",
+      "descripcionResultado": "Los requisitos legales y regulatorios de preservación de trazas de auditoría y notificación de brechas se comprenden y gestionan.",
+      "capacidadMicrosoft": "Retención predeterminada de 1 año en E5, hasta 50 políticas personalizadas (hasta 10 años con add-on) y archivo complementario en Sentinel Data Lake.",
+      "evidenciaAuditoria": "Salida auditada de Get-UnifiedAuditLogRetentionPolicy y Matriz Anual de Retención aprobada.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles y autoridades sobre configuración de retención, administración del pipeline y lectura forense están segregados.",
+      "capacidadMicrosoft": "Separación entre Organization Configuration, Audit Manager, Audit Reader, Administrative Units y permisos Graph por carga.",
+      "evidenciaAuditoria": "Actas mensuales de recertificación de grupos de roles Purview y registros de aplicaciones Entra.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-03",
+      "descripcionResultado": "Se mantiene visibilidad autoritativa de aplicaciones conectadas, flujos de datos y agentes autónomos.",
+      "capacidadMicrosoft": "Propiedades AppAccessContext en Teams, AttachmentAccess en Graph e identificadores AppIdentity y AgentId (Microsoft Agent 365).",
+      "evidenciaAuditoria": "Inventario mensual de aplicaciones OAuth y agentes IA con actividad registrada en UAL.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-05",
+      "descripcionResultado": "La sensibilidad de los activos impactados guía la priorización de riesgos e investigaciones.",
+      "capacidadMicrosoft": "Propiedad exclusiva SensitivityLabel en MailItemsAccessed y SensitivityLabelId dentro de AccessedResources en CopilotInteraction.",
+      "evidenciaAuditoria": "Consultas forenses correlacionando accesos con etiquetas críticas de Purview Information Protection.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.PS-04",
+      "descripcionResultado": "Los registros de auditoría se generan de manera consistente y están protegidos frente a desactivación o borrado.",
+      "capacidadMicrosoft": "Inmutabilidad de registros en el pipeline UAL, UnifiedAuditLogIngestionEnabled = True, AuditDisabled = False y control de MailboxAuditBypassAssociation.",
+      "evidenciaAuditoria": "Verificaciones diarias automatizadas en EXO PowerShell y regla activa anti-tampering en Sentinel.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "El acceso de consulta al repositorio de auditoría aplica mínimo privilegio por región y carga de trabajo.",
+      "capacidadMicrosoft": "Alcance por Administrative Units en el portal Purview y permisos granulares AuditLogsQuery-<Workload>.Read.All en Microsoft Graph v1.0.",
+      "evidenciaAuditoria": "Revisión mensual de permisos de aplicaciones y control Auditing the Auditors sobre Search jobs.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-01",
+      "descripcionResultado": "El entorno cloud y los servicios colaborativos se monitorean continuamente para detectar eventos anómalos.",
+      "capacidadMicrosoft": "Streaming continuo con cuota dedicada de alta velocidad (~2x ancho de banda E5) vía Office 365 Management Activity API hacia Sentinel.",
+      "evidenciaAuditoria": "Registros de disponibilidad en SentinelHealth y frescura verificada en la tabla OfficeActivity.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.AE-03",
+      "descripcionResultado": "Se correlacionan señales multi-servicio para identificar raspado masivo, búsquedas de reconocimiento e inyecciones IA.",
+      "capacidadMicrosoft": "Detección de IsThrottled = True (> 1.000 MailItemsAccessed/24h), SearchQueryInitiatedExchange/SPO y banderas XPIADetected / JailbreakDetected.",
+      "evidenciaAuditoria": "Alertas de detección analítica y reportes semanales de caza de amenazas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.AN-03",
+      "descripcionResultado": "Se realiza análisis forense riguroso para determinar la cronología y el alcance exacto de los datos comprometidos.",
+      "capacidadMicrosoft": "Análisis de MailItemsAccessed (Bind por InternetMessageId vs. Sync), SessionId y AccessedResources mediante Graph AuditLogQuery.",
+      "evidenciaAuditoria": "Extracciones JSON/CSV certificadas con isRecordCountLimitExceeded = false.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Se ejecutan acciones inmediatas para contener sesiones comprometidas, reglas ocultas y evasión de logs.",
+      "capacidadMicrosoft": "Revocación de sesiones en Graph, remoción de reglas ocultas (Get-InboxRule -IncludeHidden) y reactivación inmediata ante audit tampering.",
+      "evidenciaAuditoria": "Registros de ejecución de playbooks de respuesta AH-01, AH-02 y AH-03.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-05",
+      "descripcionResultado": "Se restaura y valida la integridad completa de la telemetría de seguridad antes del retorno a operación normal.",
+      "capacidadMicrosoft": "Restauración de DefaultAuditSet = Admin, Delegate, Owner (más SearchQueryInitiated) y validación post-ventana de 24 h de IsThrottled.",
+      "evidenciaAuditoria": "Comprobación post-incidente de propiedades de auditoría en buzones afectados.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.CO-03",
+      "descripcionResultado": "Se comunica con respaldo probatorio irrefutable el alcance real de un incidente a reguladores y afectados.",
+      "capacidadMicrosoft": "Delimitación pericial hasta 10 años atrás demostrando qué elementos y SensitivityLabels fueron o no accedidos.",
+      "evidenciaAuditoria": "Informes periciales de notificación regulatoria y pruebas trimestrales T-01 de recuperación multianual.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Revalidación integral contra Microsoft Learn, documentación de Microsoft Graph v1.0 y Message Center a corte 11 de noviembre de 2026. Se verificaron el GA de Microsoft Graph AuditLogQuery API en octubre de 2026 y el retiro programado de Search-UnifiedAuditLog el 15 de octubre de 2027 (MC1505599), la ampliación de Audit (Standard) a 180 días y 4 eventos forenses bajo SFI, los diferenciadores exactos de Audit (Premium) y el add-on de 10 años, la regla fija de 1 año para entidades no-usuario, la activación manual obligatoria de SearchQueryInitiatedExchange y la cobertura de CopilotInteraction (XPIADetected/JailbreakDetected) y Microsoft Agent 365.",
+    "correccionesAplicadas": [
+      "Incorporación del hito crítico MC1505599 (octubre de 2026): disponibilidad general (GA) de Microsoft Graph AuditLogQuery API (v1.0/security/auditLog/queries, hasta 1 millón de registros por consulta y permisos por servicio) y retiro definitivo de Search-UnifiedAuditLog el 15 de octubre de 2027.",
+      "Clarificación forense exacta entre Audit (Standard) y Audit (Premium) tras las iniciativas SFI/CISA (2023-2026): Standard retiene 180 días e incluye MailItemsAccessed, Send y SearchQueryInitiatedExchange/SPO, mientras que Premium mantiene la exclusividad de 1 año por defecto, políticas personalizadas hasta 10 años, SensitivityLabel en MailItemsAccessed, AppAccessContext en Teams y ~2x ancho de banda en Management Activity API.",
+      "Documentación de la asimetría oficial en audit-get-started: SearchQueryInitiatedSharePoint viene habilitado por defecto, pero SearchQueryInitiatedExchange requiere activación explícita por buzón en el forest local Multi-Geo (modificando DefaultAuditSet).",
+      "Inclusión de dos reglas críticas no obvias de retención verificadas en MS Learn: (1) las entidades no-usuario (service principals, aplicaciones, sistema) tienen retención fija no configurable de 1 año a la que no aplican políticas de 10 años; y (2) el tiempo de vida se sella al ingresar al pipeline sin efecto retroactivo.",
+      "Documentación de la advertencia técnica oficial sobre Get-AdminAuditLogConfig: debe ejecutarse únicamente en Exchange Online PowerShell porque en Security & Compliance PowerShell UnifiedAuditLogIngestionEnabled devuelve siempre False.",
+      "Actualización completa del esquema de auditoría de IA y agentes (mayo-agosto 2026): CopilotInteraction y Microsoft Agent 365 incluidos en Audit Standard, propiedades AccessedResources, XPIADetected, JailbreakDetected y DLPEvaluationDeferred, y cobro Pay-As-You-Go (180 días) para AIAppInteraction de apps no-Microsoft.",
+      "Operacionalización del mecanismo de estrangulamiento de MailItemsAccessed (> 1.000 eventos en menos de 24 h activa IsThrottled = True y detiene registros por 24 h) como indicador de caza de exfiltración masiva."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Arquitectura combinada Purview Audit 10-Year Add-on (usuarios) + Microsoft Sentinel Data Lake (Service Principals > 1 año)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Cubre de forma técnicamente sólida el límite oficial no configurable de 1 año para entidades no humanas en Purview Audit cuando existen mandatos regulatorios multianuales."
+      },
+      {
+        "elemento": "Meta interna de migración al 100 % hacia Microsoft Graph AuditLogQuery antes de Q2 2027",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Asegura continuidad sin sobresaltos con meses de margen antes del apagado inapelable de Search-UnifiedAuditLog el 15 de octubre de 2027."
+      },
+      {
+        "elemento": "Activación sistemática de SearchQueryInitiatedExchange acompañada de auditoría mensual de línea base sobre DefaultAuditSet",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Equilibra la necesidad forense crítica de conocer qué buscó el atacante en el buzón con el mantenimiento de futuras acciones predeterminadas publicadas por Microsoft."
+      },
+      {
+        "elemento": "SLA de triaje <= 30 minutos ante IsThrottled = True, catálogo de 8 KPIs y Modelo de Madurez de 5 niveles",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Convierte el registro pasivo de auditoría en un control activo de detección temprana de raspado masivo y gobierno ejecutivo."
+      },
+      {
+        "elemento": "Control mensual Auditing the Auditors (M-05) y mapeo probatorio a las 6 funciones de NIST CSF 2.0",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Protege la confidencialidad de los metadatos del UAL frente a abuso interno y estandariza la entrega de evidencia ante auditores externos."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Learn about auditing solutions in Microsoft Purview",
+      "url": "https://learn.microsoft.com/en-us/purview/audit-solutions-overview",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Comparativa oficial entre Audit (Standard) (180 días) y Audit (Premium) (1 año, 10 años add-on, Intelligent Insights, 1 año fijo no-usuario y ~2x ancho de banda API).",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Get started with auditing solutions",
+      "url": "https://learn.microsoft.com/en-us/purview/audit-get-started",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Roles Audit Manager/Audit Reader, activación del service plan Microsoft 365 Advanced Auditing y configuración de SearchQueryInitiatedExchange/SharePoint.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Manage audit log retention policies",
+      "url": "https://learn.microsoft.com/en-us/purview/audit-log-retention-policies",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Política predeterminada de 1 año, límite de 50 políticas personalizadas, prioridades 1-10000, no-retroactividad y cmdlets PowerShell.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Manage mailbox auditing",
+      "url": "https://learn.microsoft.com/en-us/purview/audit-mailboxes",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Acciones auditadas por Owner/Delegate/Admin, comportamiento de DefaultAuditSet, AuditBypassAssociation y limitación Multi-Geo en buzones compartidos.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Use MailItemsAccessed to investigate compromised accounts",
+      "url": "https://learn.microsoft.com/en-us/purview/audit-log-investigate-accounts",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Metodología forense oficial diferenciando accesos Sync vs. Bind, agregación de 2 min, deduplicación horaria e InternetMessageId.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Search the audit log",
+      "url": "https://learn.microsoft.com/en-us/purview/audit-search",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": " Trabajos de búsqueda asíncrona retenidos 30 días, tope de 10 trabajos concurrentes, rango máximo de 180 días y advertencia sobre Get-AdminAuditLogConfig.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Audit logs for Copilot and AI applications",
+      "url": "https://learn.microsoft.com/en-us/purview/audit-copilot",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Esquema detallado de CopilotInteraction, ConnectedAIAppInteraction y AIAppInteraction (PAYG), incluyendo AccessedResources, XPIADetected y JailbreakDetected.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Use Microsoft Purview to manage data security & compliance for Microsoft Agent 365",
+      "url": "https://learn.microsoft.com/en-us/purview/ai-agent-365",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Habilitación automática de auditoría para instancias de agentes autónomos en Agent 365 (interacciones humano-agente, agente-herramienta y agente-agente).",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "auditLogQuery resource type - Microsoft Graph v1.0",
+      "url": "https://learn.microsoft.com/en-us/graph/api/resources/security-auditlogquery?view=graph-rest-1.0",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Graph Documentation",
+      "comentario": "Propiedades del recurso v1.0 en GA, incluyendo isRecordCountLimitExceeded y comportamiento de keywordFilter sobre auditData no indexado.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Create auditLogQuery - Microsoft Graph v1.0",
+      "url": "https://learn.microsoft.com/en-us/graph/api/security-auditcoreroot-post-auditlogqueries?view=graph-rest-1.0",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Graph Documentation",
+      "comentario": "Endpoint POST /security/auditLog/queries, catálogo completo de auditLogRecordType y permisos granulares AuditLogsQuery-<Workload>.Read.All.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Audit log activities",
+      "url": "https://learn.microsoft.com/en-us/purview/audit-log-activities",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Diccionario maestro actualizado de operaciones auditadas en todos los servicios de Microsoft 365, Copilot y Agent 365.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Microsoft services that support auditing",
+      "url": "https://learn.microsoft.com/en-us/purview/audit-supported-services",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Mapeo oficial entre servicios de Microsoft 365 y sus respectivos valores de RecordType.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Respond to a compromised email account in Microsoft 365",
+      "url": "https://learn.microsoft.com/en-us/defender-office-365/responding-to-a-compromised-email-account",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Defender for Office 365 Documentation",
+      "comentario": "Playbook oficial de contención BEC, revocación de sesiones en Graph e inspección de reglas ocultas con Get-InboxRule -IncludeHidden.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Office 365 Management Activity API reference",
+      "url": "https://learn.microsoft.com/en-us/office/office-365-management-api/office-365-management-activity-api-reference",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Office Developer Documentation",
+      "comentario": "Arquitectura de suscripción SIEM y política de escalado dinámico de ancho de banda por tenant (base 2.000 req/min).",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "Learn about Microsoft Purview billing models",
+      "url": "https://learn.microsoft.com/en-us/purview/purview-billing-models",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Modelo de cobro Pay-As-You-Go por número de registros de auditoría procesados para interacciones con aplicaciones IA no-Microsoft.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "MC1505599 - Microsoft Purview Audit: AuditLogQuery API generally available and Search-UnifiedAuditLog retiring",
+      "url": "https://mc.merill.net/message/MC1505599",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Merill Fernando (Microsoft Message Center Archive)",
+      "comentario": "Anuncio oficial (12-oct-2026) del GA de Microsoft Graph AuditLogQuery API (hasta 1M de registros) y retiro definitivo de Search-UnifiedAuditLog el 15-oct-2027.",
+      "verificacion": "Verificado Archivo Message Center (2026-11-11)"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "MailItemsAccessed Throttling [Nobelium] Official Hunting Query",
+      "url": "https://github.com/microsoft/Microsoft-365-Defender-Hunting-Queries/blob/master/Exfiltration/MailItemsAccessed%20Throttling%20%5BNobelium%5D.md",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Microsoft Threat Intelligence (MSTIC)",
+      "comentario": "Documentación oficial del umbral de >1.000 registros MailItemsAccessed en menos de 24 h y suspensión por 24 h (IsThrottled).",
+      "verificacion": "Verificado Repositorio Oficial Microsoft (2026-11-11)"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "Contextualizing attacker activity within sessions in Exchange Online",
+      "url": "https://techcommunity.microsoft.com/t5/exchange-team-blog/contextualizing-attacker-activity-within-sessions-in-exchange/ba-p/608801",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "The Exchange Team",
+      "comentario": "Guía técnica para aislar acciones del atacante respecto a la actividad cotidiana del usuario legítimo mediante SessionId.",
+      "verificacion": "Verificado Blog Oficial Microsoft (2026-11-11)"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)",
+      "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Marco normativo base para el mapeo de controles y evidencias a través de las seis funciones GV, ID, PR, DE, RS y RC.",
+      "verificacion": "Verificado NIST Publicación Oficial (2026-11-11)"
+    }
+  ]
+}

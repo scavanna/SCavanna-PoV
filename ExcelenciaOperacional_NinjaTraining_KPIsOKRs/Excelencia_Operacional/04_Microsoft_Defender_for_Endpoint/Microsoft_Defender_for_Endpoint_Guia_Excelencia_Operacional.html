@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Defender for Endpoint — Guía Operacional (Configuración, Rutinas y Playbooks)</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.72;
+}
+code, pre, .mono {
+  font-family: Consolas, "Courier New", Courier, monospace;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 0.88em;
+  color: var(--cp-text);
+  word-break: break-word;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Sticky Top Navigation */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--cp-panel-strong);
+  border-bottom: 1px solid var(--cp-border);
+  backdrop-filter: blur(10px);
+  padding: 12px 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.topbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border-strong);
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.btn-primary:hover {
+  background: var(--cp-accent-hover);
+  border-color: var(--cp-accent-hover);
+  color: var(--cp-accent-fg);
+}
+.btn-sm {
+  padding: 5px 11px;
+  font-size: 12.5px;
+}
+.select-input, .search-input {
+  padding: 9px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+}
+.search-input { min-width: 260px; flex: 1; }
+
+/* Two-Column Spacious App Layout */
+.app-shell {
+  max-width: 1520px;
+  margin: 0 auto;
+  padding: 28px 32px 56px 32px;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+.sidebar {
+  position: sticky;
+  top: 76px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 20px 16px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+}
+.nav-section-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cp-text-soft);
+  padding: 12px 12px 6px 12px;
+}
+.nav-section-label:first-child { padding-top: 2px; }
+.nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border-radius: 0.625rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.nav-item:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border);
+}
+.nav-item.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.nav-subitem {
+  padding-left: 24px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.nav-count {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--cp-surface-soft);
+  color: var(--cp-text-muted);
+  border: 1px solid var(--cp-border);
+}
+.nav-item.active .nav-count {
+  background: var(--cp-panel-strong);
+  color: var(--cp-text);
+  border-color: transparent;
+}
+.sidebar-progress {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cp-border);
+}
+.prog-row { margin-bottom: 12px; }
+.prog-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--cp-text-muted);
+  font-weight: 600;
+}
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--cp-accent);
+  width: 0%;
+  transition: width 0.25s ease;
+}
+
+/* Main Reading Area */
+.main-area {
+  max-width: 1080px;
+  width: 100%;
+}
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+
+/* Hero & Section Headers */
+.hero-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 32px 36px;
+  margin-bottom: 28px;
+}
+.hero-card h1 {
+  margin: 10px 0 14px 0;
+  font-size: 28px;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+}
+.hero-lead {
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: var(--cp-text-muted);
+  margin: 0;
+}
+.section-banner {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-left: 5px solid var(--cp-accent);
+  border-radius: 16px;
+  padding: 26px 32px;
+  margin-bottom: 28px;
+}
+.section-banner h2 {
+  margin: 0 0 8px 0;
+  font-size: 23px;
+  line-height: 1.3;
+}
+.section-banner p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15.5px;
+}
+
+/* Mode Selector Cards on Overview */
+.modes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.mode-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+}
+.mode-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cp-accent);
+}
+.mode-card h3 {
+  margin: 6px 0 10px 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+.mode-card p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15px;
+}
+
+/* Badges & Inline Tags */
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 0.625rem;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface-soft);
+  color: var(--cp-text);
+}
+.badge-accent {
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border-color: var(--cp-accent);
+}
+.badge-learn {
+  border-color: var(--cp-success);
+  color: var(--cp-success);
+  background: var(--cp-surface-soft);
+}
+.badge-editorial {
+  border-color: var(--cp-warning);
+  color: var(--cp-warning);
+  background: var(--cp-surface-soft);
+}
+.inline-tag {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 6px;
+  margin-left: 4px;
+  vertical-align: middle;
+  border: 1px solid var(--cp-border);
+}
+.tag-learn { color: var(--cp-success); border-color: var(--cp-success); background: var(--cp-surface-soft); }
+.tag-edit { color: var(--cp-warning); border-color: var(--cp-warning); background: var(--cp-surface-soft); }
+
+/* Sub-navigation Switcher */
+.subnav-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.subnav-pill {
+  padding: 10px 18px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.subnav-pill:hover { border-color: var(--cp-border-strong); background: var(--cp-surface-soft); }
+.subnav-pill.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.filter-toolbar {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Spacious Operational, Setup & Playbook Cards */
+.spacious-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 30px 34px;
+  margin-bottom: 24px;
+}
+.spacious-card.is-done {
+  border-color: var(--cp-success);
+  background: var(--cp-bg-elevated);
+}
+.adhoc-card {
+  border-left: 5px solid var(--cp-accent);
+}
+.card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.card-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 280px;
+}
+.task-checkbox {
+  width: 22px;
+  height: 22px;
+  margin-top: 4px;
+  accent-color: var(--cp-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.card-code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border: 1px solid var(--cp-accent);
+  display: inline-block;
+  margin-bottom: 6px;
+}
+.card-heading {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+/* Info Callout Boxes inside Cards */
+.info-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.info-box {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+.info-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-soft);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.info-content {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.trigger-banner {
+  background: var(--cp-accent-soft);
+  border: 1px solid var(--cp-accent);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+}
+.trigger-banner .info-label {
+  color: var(--cp-accent);
+}
+
+/* Step-by-Step Spacious List */
+.steps-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-muted);
+  margin: 0 0 12px 0;
+}
+.steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.step-row:hover { border-color: var(--cp-border-strong); }
+.step-row.step-checked {
+  border-color: var(--cp-success);
+  opacity: 0.88;
+}
+.step-num {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border-strong);
+  color: var(--cp-text);
+  font-weight: 700;
+  font-size: 13.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-row.step-checked .step-num {
+  background: var(--cp-success);
+  border-color: var(--cp-success);
+  color: var(--cp-accent-fg);
+}
+.step-body {
+  font-size: 15.5px;
+  line-height: 1.72;
+  flex: 1;
+}
+
+/* Validation & Evidence Footer Box */
+.validation-footer {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.validation-footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--cp-border);
+  font-size: 13.5px;
+  color: var(--cp-text-muted);
+}
+
+/* Grids & Tables for Secondary Views */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.subsection-heading {
+  font-size: 20px;
+  margin: 34px 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cp-border);
+}
+pre.code-block {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 14px 0 0 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.table-wrap {
+  overflow-x: auto;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th, td { padding: 16px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--cp-border); line-height: 1.6; }
+th { background: var(--cp-bg-elevated); font-weight: 700; }
+tr:last-child td { border-bottom: none; }
+.muted { color: var(--cp-text-muted); }
+
+.footer {
+  margin-top: 48px;
+  padding: 24px 0;
+  border-top: 1px solid var(--cp-border);
+  color: var(--cp-text-muted);
+  font-size: 13.5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 1080px) {
+  .app-shell { grid-template-columns: 1fr; padding: 18px; gap: 20px; }
+  .sidebar { position: static; max-height: none; }
+  .grid-2, .info-pair { grid-template-columns: 1fr; }
+  .spacious-card, .hero-card { padding: 22px; }
+}
+@media print {
+  .topbar, .sidebar, .filter-toolbar, .subnav-bar { display: none !important; }
+  .app-shell { display: block; padding: 0; }
+  .view-panel { display: block !important; margin-bottom: 32px; }
+  body { background: var(--cp-surface); font-size: 13px; }
+}
+</style></head>
+<body>
+<header class="topbar">
+  <div class="topbar-group">
+    <a class="btn btn-primary" href="../index.html">← Portal Maestro (23 Módulos)</a>
+    <a class="btn" id="prevModBtn" href="#">Anterior</a>
+    <select class="select-input" id="modJumpSelect" aria-label="Cambiar de módulo"></select>
+    <a class="btn" id="nextModBtn" href="#">Siguiente</a>
+  </div>
+  <div class="topbar-group">
+    <a class="btn" id="xlsxLink" href="#" download>Libro .XLSX</a>
+    <a class="btn" id="mdLink" href="#">Guía .MD</a>
+    <button class="btn" type="button" id="exportCsvBtn">Exportar CSV</button>
+    <button class="btn" type="button" id="printBtn">Imprimir / PDF</button>
+    <button class="btn" type="button" id="themeToggleBtn">Tema Claro / Oscuro</button>
+  </div>
+</header>
+
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Navegación de la guía operativa">
+    <div class="nav-section-label">Introducción</div>
+    <button class="nav-item active" type="button" data-view="view-overview">
+      <span>Visión General y Mapa</span>
+    </button>
+
+    <div class="nav-section-label">1 · Configuración Puntual</div>
+    <button class="nav-item" type="button" data-view="view-config">
+      <span>Configuración y Validaciones</span>
+      <span class="nav-count" id="navCntConfig">0</span>
+    </button>
+
+    <div class="nav-section-label">2 · Acciones Periódicas</div>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Diaria">
+      <span>Rutinas Diarias</span>
+      <span class="nav-count" id="navCntDiaria">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Semanal">
+      <span>Rutinas Semanales</span>
+      <span class="nav-count" id="navCntSemanal">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Mensual">
+      <span>Rutinas Mensuales</span>
+      <span class="nav-count" id="navCntMensual">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="CICLOS_LARGOS">
+      <span>Trimestral · Semestral · Anual</span>
+      <span class="nav-count" id="navCntLargos">0</span>
+    </button>
+
+    <div class="nav-section-label">3 · Respuesta a Señales</div>
+    <button class="nav-item" type="button" data-view="view-adhoc">
+      <span>Playbooks Ad-Hoc (Alertas)</span>
+      <span class="nav-count" id="navCntAdhoc">0</span>
+    </button>
+
+    <div class="nav-section-label">Verificación y Gobierno</div>
+    <button class="nav-item" type="button" data-view="view-queries">
+      <span>Consultas KQL / Graph / PS</span>
+      <span class="nav-count" id="navCntQueries">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-kpis">
+      <span>KPIs, Madurez y Formación</span>
+      <span class="nav-count" id="navCntKpis">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-nist">
+      <span>Auditoría NIST 2.0 y Fuentes</span>
+      <span class="nav-count" id="navCntNist">0</span>
+    </button>
+
+    <div class="sidebar-progress" id="sidebarProgress"></div>
+  </aside>
+
+  <main class="main-area">
+    <!-- VISTA 0: OVERVIEW & MAPA DE LOS 3 MODOS -->
+    <section class="view-panel active" id="view-overview">
+      <div class="hero-card">
+        <div class="pill-row" id="heroBadges"></div>
+        <h1 id="heroTitle"></h1>
+        <p class="hero-lead" id="heroSummary"></p>
+      </div>
+
+      <h2 class="subsection-heading" style="margin-top:0;">Cómo operar esta tecnología: Los 3 Niveles de Acción</h2>
+      <div class="modes-grid" id="modesSummaryGrid"></div>
+
+      <div class="spacious-card" id="licensingOverviewCard"></div>
+
+      <h2 class="subsection-heading">Principios Rectores Oficiales (Zero Trust)</h2>
+      <div class="grid-2" id="principlesGrid"></div>
+    </section>
+
+    <!-- VISTA 1: ACCIONES PUNTUALES DE CONFIGURACIÓN Y VALIDACIONES -->
+    <section class="view-panel" id="view-config">
+      <div class="section-banner">
+        <h2>1. Acciones Puntuales de Configuración y Validaciones sobre la Plataforma</h2>
+        <p>Controles que se ejecutan al desplegar la tecnología, activar nuevas capacidades o auditar su línea base. Distingue qué debes configurar una sola vez y cómo validar técnicamente ("Proof of Life") que cada ajuste está activo y protegiendo el entorno.</p>
+      </div>
+
+      <div class="subnav-bar" id="configSubnav">
+        <a class="subnav-pill" href="#cfg-prereqs">1A. Puesta en Marcha Inicial</a>
+        <a class="subnav-pill" href="#cfg-validations">1B. Validaciones de Configuración ("Proof of Life")</a>
+        <a class="subnav-pill" href="#cfg-components">1C. Configuración por Componente</a>
+        <a class="subnav-pill" href="#cfg-rbac">1D. Privilegio Mínimo RBAC y PIM</a>
+      </div>
+
+      <h3 class="subsection-heading" id="cfg-prereqs">1A. Checklist de Puesta en Marcha y Prerrequisitos Puntuales</h3>
+      <div id="prereqsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-validations">1B. Validaciones Técnicas sobre las Configuraciones ("Proof of Life")</h3>
+      <p class="muted" style="margin-top:-8px;margin-bottom:20px;">Comprueba cada uno de estos indicadores en consola o mediante consulta para confirmar que la configuración no quedó solo en papel o en modo auditoría incompleta.</p>
+      <div id="validationsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-components">1C. Configuración Base por Componente e Integraciones</h3>
+      <div id="componentsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-rbac">1D. Configuración Puntual de Roles Administrativos y Estrategia PIM / JIT</h3>
+      <div id="rbacContainer"></div>
+    </section>
+
+    <!-- VISTA 2: ACCIONES PERIÓDICAS PROGRAMADAS -->
+    <section class="view-panel" id="view-periodic">
+      <div class="section-banner">
+        <h2 id="periodicTitle">2. Acciones Periódicas Programadas</h2>
+        <p id="periodicSubtitle">Rutinas recurrentes preventivas, de higiene operativa, tuning y gobierno. Selecciona la frecuencia deseada para leer cómodamente solo las actividades de ese ciclo.</p>
+      </div>
+
+      <div class="subnav-bar" id="periodicCadBar">
+        <button class="subnav-pill active" type="button" data-pcad="Diaria">Diarias</button>
+        <button class="subnav-pill" type="button" data-pcad="Semanal">Semanales</button>
+        <button class="subnav-pill" type="button" data-pcad="Mensual">Mensuales</button>
+        <button class="subnav-pill" type="button" data-pcad="CICLOS_LARGOS">Trimestrales · Semestrales · Anuales</button>
+        <button class="subnav-pill" type="button" data-pcad="ALL_PERIODIC">Ver Todas las Periódicas</button>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="perSearch" placeholder="Buscar acción periódica, consola, tabla KQL, control a validar o rol...">
+        <select class="select-input" id="perRole"><option value="ALL">Rol Responsable: Todos</option></select>
+        <select class="select-input" id="perOrigin">
+          <option value="ALL">Origen: Todos</option>
+          <option value="Verificado MS Learn">Verificado MS Learn</option>
+          <option value="Propuesta Editorial">Propuesta Editorial</option>
+        </select>
+        <button class="btn btn-sm" type="button" id="resetChecksBtn">Reiniciar Progreso</button>
+      </div>
+
+      <p class="muted" id="perCountLabel" style="margin-bottom:18px;"></p>
+      <div id="periodicCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 3: ACCIONES AD-HOC ANTE SEÑALES, ALERTAS E INCIDENTES -->
+    <section class="view-panel" id="view-adhoc">
+      <div class="section-banner">
+        <h2>3. Acciones Ad-Hoc ante Señales, Alertas e Incidentes (Playbooks del Analista)</h2>
+        <p>Procedimientos reactivos bajo demanda. A diferencia de las rutinas periódicas, estos playbooks se activan únicamente cuando una señal de riesgo, alerta de detección, anomalía o emergencia exige la intervención inmediata de un analista.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="adhocSearch" placeholder="Filtrar playbooks por alerta disparadora, síntoma, técnica MITRE o acción de contención...">
+      </div>
+
+      <div id="adhocCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 4: CONSULTAS KQL / GRAPH / POWERSHELL -->
+    <section class="view-panel" id="view-queries">
+      <div class="section-banner">
+        <h2>4. Consultas Técnicas de Validación, Monitoreo y Threat Hunting</h2>
+        <p>Consultas KQL, llamadas Microsoft Graph API y scripts PowerShell listos para auditar configuraciones puntuales, medir salud periódica o investigar alertas ad-hoc.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="kqlSearch" placeholder="Buscar consulta por nombre, tabla (SigninLogs, DeviceEvents, SentinelHealth...), comando o propósito...">
+        <select class="select-input" id="kqlUsageFilter">
+          <option value="ALL">Momento de Uso: Todos</option>
+          <option value="Validación de Configuración y Postura">1. Validación de Configuración y Postura</option>
+          <option value="Control Periódico de Salud, Auditoría y KPIs">2. Control Periódico de Salud y KPIs</option>
+          <option value="Investigación Ad-Hoc y Threat Hunting">3. Investigación Ad-Hoc y Hunting</option>
+        </select>
+      </div>
+
+      <div id="queriesContainer"></div>
+    </section>
+
+    <!-- VISTA 5: KPIs, MADUREZ Y FORMACIÓN -->
+    <section class="view-panel" id="view-kpis">
+      <div class="section-banner">
+        <h2>5. Indicadores Clave (KPIs), Modelo de Madurez y Ruta de Formación</h2>
+        <p>Métricas objetivas para medir eficacia operativa ante el CISO, evolución en 5 niveles de madurez y habilitación técnica recomendada por rol.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Indicadores Clave de Desempeño (KPIs)</h3>
+      <div class="grid-2" id="kpiContainer"></div>
+
+      <h3 class="subsection-heading">Modelo de Madurez Operacional (Niveles 1 a 5)</h3>
+      <div id="maturityContainer"></div>
+
+      <h3 class="subsection-heading">Ruta de Habilitación y Formación por Rol</h3>
+      <div id="trainingContainer"></div>
+    </section>
+
+    <!-- VISTA 6: AUDITORÍA NIST CSF 2.0, TRANSPARENCIA Y REFERENCIAS -->
+    <section class="view-panel" id="view-nist">
+      <div class="section-banner">
+        <h2>6. Mapeo de Auditoría NIST CSF 2.0, Revalidación (Nov 2026) y Referencias</h2>
+        <p>Evidencia auditable reproducible para las seis funciones de NIST CSF 2.0 (CSWP 29), registro transparente de verificaciones en Microsoft Learn frente a propuestas editoriales y fuentes públicas.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Matriz de Evidencia Auditable NIST CSF 2.0</h3>
+      <div class="filter-toolbar">
+        <select class="select-input" id="nistFuncSelect">
+          <option value="ALL">Función NIST CSF 2.0: Todas (6 Funciones)</option>
+          <option value="GOVERN">GOVERN (GV)</option>
+          <option value="IDENTIFY">IDENTIFY (ID)</option>
+          <option value="PROTECT">PROTECT (PR)</option>
+          <option value="DETECT">DETECT (DE)</option>
+          <option value="RESPOND">RESPOND (RS)</option>
+          <option value="RECOVER">RECOVER (RC)</option>
+        </select>
+      </div>
+      <div id="nistCardsContainer"></div>
+
+      <h3 class="subsection-heading">Registro de Revalidación Técnica (Noviembre 2026) y Decisiones Editoriales</h3>
+      <div class="spacious-card" id="auditSummaryBox"></div>
+      <div class="grid-2">
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Hallazgos y Actualizaciones Verificadas en MS Learn</h3>
+          <div id="corrContainer"></div>
+        </div>
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Decisiones y Propuestas Editoriales Explícitas</h3>
+          <div id="decContainer"></div>
+        </div>
+      </div>
+
+      <h3 class="subsection-heading">Directorio de Referencias Públicas Verificadas</h3>
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="refSearch" placeholder="Filtrar referencias por título, autor, MVP o URL...">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Recurso Oficial / Comunitario</th>
+              <th>Tipo</th>
+              <th>Autor / Entidad</th>
+              <th>Comentario de Alcance</th>
+            </tr>
+          </thead>
+          <tbody id="refTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>Guía Maestra de Excelencia Operacional Microsoft — Edición Espaciada v3.0 (Validación: 2026-11-11)</div>
+      <div>Configuración Puntual · Rutinas Periódicas · Playbooks Ad-Hoc · NIST CSF 2.0</div>
+    </footer>
+  </main>
+</div>
+
+<script>
+const MODULE_DATA = {"schemaVersion": "2.0", "id": "04_Microsoft_Defender_for_Endpoint", "orden": 4, "slug": "Microsoft_Defender_for_Endpoint", "nombre": "Microsoft Defender for Endpoint (P1/P2) y Vulnerability Management", "nombreCorto": "Defender for Endpoint", "categoria": "SecOps, XDR y SIEM", "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn", "fechaValidacion": "2026-11-11", "portalesPrincipales": ["https://security.microsoft.com", "https://intune.microsoft.com", "https://admin.microsoft.com"], "audiencia": ["CISO", "SOC Manager", "SOC L1", "SOC L2", "SOC L3", "Incident Responder", "Endpoint Security Admin", "Intune / VDI Admin", "Security Architect", "GRC"], "relacionM365E5": {"estado": "Incluido en M365 E5 (Plan 2 + MDVM Core)", "licencias": ["Microsoft 365 E5 (incluye MDE Plan 2 + MDVM Core)", "Microsoft Defender Suite (antes M365 E5 Security)", "Microsoft 365 E7", "Windows 10/11 Enterprise E5", "Microsoft 365 E3 / Windows Enterprise E3 (incluyen únicamente MDE Plan 1)", "Complementos separados: Defender Vulnerability Management Add-on / Standalone y Microsoft Defender for Servers Plan 1/Plan 2"], "prerrequisitos": ["Conectividad HTTPS 443 directa o vía proxy sin autenticación ni inspección SSL hacia los endpoints del servicio (preferentemente Streamlined connectivity *.endpoint.security.microsoft.com)", "Microsoft Defender Antivirus en Active mode con Real-time protection y Cloud-delivered protection habilitados (requisito obligatorio para las 19 reglas ASR; si coexiste un AV primario de terceros en modo pasivo, habilitar EDR in block mode)", "Versiones de Platform y Engine de Microsoft Defender Antivirus con antigüedad máxima de 2 lanzamientos mensuales", "Conexión activa con Microsoft Intune para despliegue de políticas Endpoint Security, flujo de Security Tasks desde MDVM y señales de riesgo hacia Acceso Condicional en Entra ID", "En entornos VDI no persistentes: uso obligatorio del paquete VDI (Single entry con Onboard-NonPersistentMachine.ps1 tras hostname definitivo), exclusiones FSLogix (*.VHD/*.VHDX) y prohibición absoluta de incorporar la imagen maestra"], "notaLicenciamiento": "Microsoft 365 E5, Microsoft Defender Suite y Windows Enterprise E5 incluyen MDE Plan 2 completo y las capacidades núcleo (Core) de Defender Vulnerability Management para hasta 5 dispositivos cliente por usuario licenciado. Las 6 capacidades premium de MDVM (baselines CIS/STIG, bloqueo de apps vulnerables, extensiones de navegador, certificados digitales, recursos compartidos de red y hardware/firmware) requieren el complemento MDVM Add-on (o Defender for Servers Plan 2 en servidores). Las licencias de usuario M365 E3/E5 no cubren servidores Windows/Linux, que deben licenciarse aparte."}, "resumenEjecutivo": "Microsoft Defender for Endpoint (MDE) unifica protección preventiva pre-brecha (Next-Generation Protection, las 19 reglas Attack Surface Reduction en Windows, Device Control y Tamper Protection / Controlled Configuration), detección y respuesta de endpoints post-brecha (EDR con 6 meses de línea de tiempo de dispositivo y 30 días en Advanced Hunting), remediación automatizada integrada en la pila antivirus, investigación forense interactiva en tiempo real (Live Response) y gestión continua de vulnerabilidades basada en riesgo (Defender Vulnerability Management — MDVM) dentro del portal Microsoft Defender (security.microsoft.com). Revalidada en noviembre de 2026 contra Microsoft Learn, esta guía corrige el catálogo oficial a 19 reglas ASR (3 Standard protection rules + 16 Other ASR rules, incluyendo aprobación de administrador para Unblock en modo Warn desde plataforma 4.18.26060), incorpora el cambio arquitectónico del 1 de septiembre de 2026 mediante el cual AIR opera integrado automáticamente en la pila antivirus predeterminada, delimita con precisión MDVM Core vs. Add-on y establece la arquitectura operativa para escritorios virtuales VDI no persistentes (AVD, Citrix MCS/PVS y VMware Horizon).", "principiosRectores": [{"principio": "Defensa Better Together (Antivirus en modo activo + EDR + Remediación automática)", "descripcion": "Mantener Microsoft Defender Antivirus en modo activo con protección en la nube (MAPS) habilitada maximiza el intercambio de señales con el sensor EDR, habilita las 19 reglas ASR y ejecuta automáticamente las capacidades integradas de AIR.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/defender-endpoint/why-use-microsoft-defender-antivirus"}, {"principio": "Verificación explícita del riesgo del dispositivo en Zero Trust", "descripcion": "Integrar MDE con Microsoft Intune y Microsoft Entra Conditional Access para bloquear en tiempo real el acceso a aplicaciones corporativas desde dispositivos no conformes o con nivel de riesgo elevado.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/defender-endpoint/zero-trust-with-microsoft-defender-endpoint"}, {"principio": "Las defensas permanecen encendidas bajo ataque (Anti-Tampering por diseño)", "descripcion": "Exigir Tamper Protection / Controlled Configuration habilitado en toda la flota y tratar cualquier intento de manipulación (TamperingAttempt) o reinicio en modo seguro no autorizado como incidente de alta prioridad.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/defender-endpoint/prevent-changes-to-security-settings-with-tamper-protection"}, {"principio": "Reducción progresiva de superficie de ataque con exclusiones estrictamente por regla", "descripcion": "Desplegar las 3 reglas ASR estándar en Block y madurar las 16 reglas restantes mediante ciclos Audit -> Warn -> Block usando exclusivamente exclusiones por regla ASR específica, nunca exclusiones globales de carpeta.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction-rules-overview"}, {"principio": "Priorización de vulnerabilidades guiada por explotabilidad real y exposición", "descripcion": "Sustituir el parcheo lineal por puntaje CVSS aislado mediante la priorización continua en MDVM de CVEs con código de exploit disponible, amenazas activas en Threat Analytics y presencia en activos críticos.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/defender-vulnerability-management/defender-vulnerability-management-capabilities"}, {"principio": "Inmutabilidad de imágenes maestras y preservación forense inmediata en VDI efímero", "descripcion": "Jamás incorporar imágenes maestras VDI (evitar duplicación de senseGuid), emplear el modelo Single entry tras hostname final y recolectar evidencia vía Live Response e Investigation Package antes del reciclado de sesión.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/defender-endpoint/configure-endpoints-vdi"}], "arquitecturaYComponentes": [{"componente": "Sensor EDR y Device Timeline (6 meses)", "funcionOperativa": "Captura continua de procesos, red, sistema de archivos, registro, cargas de imágenes y eventos de kernel con retención histórica de 6 meses en la línea de tiempo y enriquecimiento con etiquetas de sensibilidad de Purview.", "portalRuta": "security.microsoft.com > Assets > Devices > [Dispositivo] > Timeline", "integraciones": ["Microsoft Defender XDR", "Microsoft Purview Information Protection", "Microsoft Sentinel"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Next-Generation Protection + AIR integrado en pila Antivirus", "funcionOperativa": "Protección antimalware conductual y en la nube (MAPS) con capacidades de investigación y remediación automática integradas nativamente desde el 1 de septiembre de 2026, gobernadas por niveles Full/Semi en Device groups.", "portalRuta": "security.microsoft.com > System > Settings > Endpoints > Rules > Device groups / Action center", "integraciones": ["Action Center", "Cloud-delivered protection (MAPS)", "Indicadores IoC"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Attack Surface Reduction (19 Reglas ASR) y Network/Web Protection", "funcionOperativa": "19 controles de endurecimiento en Windows (3 Standard protection rules + 16 Other ASR rules) en modos Disabled, Block, Audit, Not configured y Warn (con aprobación de admin para Unblock desde plataforma 4.18.26060).", "portalRuta": "intune.microsoft.com > Endpoint security > Attack surface reduction / security.microsoft.com > Reports > Endpoints > ASR rules", "integraciones": ["Microsoft Intune", "Microsoft Defender Portal", "Group Policy", "Microsoft Configuration Manager"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Tamper Protection y Controlled Configuration", "funcionOperativa": "Protección contra desactivación de defensas críticas y modificación no autorizada de exclusiones AV (Windows activo/pasivo, macOS Audit/Block y Linux Audit en Preview), gestionable con Troubleshooting mode temporal.", "portalRuta": "security.microsoft.com > System > Settings > Endpoints > General > Advanced features", "integraciones": ["Microsoft Intune", "Defender Vulnerability Management", "Advanced Hunting (DeviceEvents)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Live Response y Collect Investigation Package", "funcionOperativa": "Shell remoto interactivo auditado para análisis forense en vivo, descarga de muestras en segundo plano (getfile &), ejecución de scripts desde Library management y extracción del paquete forense completo.", "portalRuta": "security.microsoft.com > Assets > Devices > [Dispositivo] > Initiate live response session", "integraciones": ["Microsoft Defender Unified RBAC", "Live Response Library management", "Action Center"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Acciones de Contención de Endpoint, Red e Identidad", "funcionOperativa": "Isolate device (Full/Selective + Isolation exclusions), Contain device/IP (para equipos no incorporados), Contain user / Proactive user containment, Restrict app execution y EDR in block mode.", "portalRuta": "security.microsoft.com > Assets > Devices > [Dispositivo] > Actions", "integraciones": ["Automatic Attack Disruption", "Predictive Shielding", "Defender for Identity", "Microsoft Entra ID"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Microsoft Defender Vulnerability Management (MDVM Core y Add-on)", "funcionOperativa": "Inventario de software y EOS, evaluación continua de CVEs, Exposure Score (0-100), Security Tasks hacia Intune (Core) y líneas base CIS/STIG, bloqueo de apps vulnerables, certificados, extensiones y firmware (Add-on).", "portalRuta": "security.microsoft.com > Exposure management > Vulnerability management > Dashboard", "integraciones": ["Microsoft Security Exposure Management", "Microsoft Intune", "Microsoft Defender for Servers"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Standard Device Discovery y Arquitectura VDI No Persistente", "funcionOperativa": "Descubrimiento activo/pasivo en red de activos no gestionados (Can be onboarded) y paquete especializado Single entry (Onboard-NonPersistentMachine.ps1) para escritorios virtuales efímeros.", "portalRuta": "security.microsoft.com > System > Settings > Device discovery / Settings > Endpoints > Onboarding", "integraciones": ["Azure Virtual Desktop", "Citrix MCS/PVS", "VMware Horizon", "Windows 365"], "estadoValidacion": "Verificado MS Learn"}], "rbacYRoles": [{"rol": "Endpoint SOC Operator (Rol custom URBAC: MDE-Tier1-Operator)", "nivelSOC": "Tier 1 / L1", "permisosClave": "Security operations > Security data basics (Read), Alerts (Manage), Vulnerability management (Read), Execute query/soft actions.", "asignacionPIM": "Permanente sobre grupo Entra ID con alcance restringido a los Device groups asignados", "responsabilidadOperativa": "Triaje diario de incidentes y alertas de endpoint, clasificación inicial, recolección de paquetes de investigación y escalamiento sin capacidad de aislar servidores críticos ni usar Live Response.", "estadoValidacion": "Propuesta Editorial"}, {"rol": "Endpoint Incident Responder (Rol custom URBAC: MDE-Tier2-Responder)", "nivelSOC": "Tier 2 / L2", "permisosClave": "Suma Response (Manage), Execute hard actions, Basic live response (Manage) y File collection (Manage).", "asignacionPIM": "Elegible en Entra ID PIM (activación JIT máx. 8 horas por turno con MFA resistente a phishing)", "responsabilidadOperativa": "Aislamiento y contención de dispositivos, aprobación de acciones pendientes en Action Center, Live Response básico (inspección y getfile) y envío de muestras a Microsoft.", "estadoValidacion": "Propuesta Editorial"}, {"rol": "Senior DFIR & Endpoint Threat Hunter (Rol custom URBAC: MDE-Tier3-DFIR)", "nivelSOC": "Tier 3 / L3", "permisosClave": "Suma Advanced live response (Manage) y Custom detections (Manage); administración controlada de scripts firmados vía Library management.", "asignacionPIM": "Elegible en Entra ID PIM (activación JIT máx. 4 horas vinculada a ticket de incidente crítico)", "responsabilidadOperativa": "Forensia avanzada en vivo con ejecución de scripts firmados (run) y remediación directa (remediate), caza KQL sobre tablas Device* y validación Purple Team.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Endpoint Security Administrator (URBAC Core security settings + Intune Endpoint Security Manager)", "nivelSOC": "Ingeniería y Administración de Plataforma", "permisosClave": "Authorization and settings > Core security settings (Manage) en Defender + rol Endpoint Security Manager en Microsoft Intune.", "asignacionPIM": "Estricto JIT en Entra ID PIM (máx. 4 horas con cambio aprobado en CAB)", "responsabilidadOperativa": "Onboarding/offboarding (físico y VDI), configuración de NGAV, las 19 reglas ASR, Tamper Protection / Troubleshooting mode, Device Control, Device groups e indicadores IoC.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Vulnerability & Exposure Lead (URBAC Vulnerability & Exposure Management Manage)", "nivelSOC": "Gestión de Vulnerabilidades y Postura", "permisosClave": "Security posture > Vulnerability management (Read & Manage) y Exposure Management (Manage).", "asignacionPIM": "Asignación controlada por rol; aprobación formal del CISO/Risk Owner para excepciones CVE", "responsabilidadOperativa": "Priorización semanal de CVEs con exploit activo, generación de Security Tasks hacia Intune, seguimiento de Exposure Score, EOS y baselines CIS/STIG.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Auditor GRC / Compliance (Entra Security Reader / URBAC Read-Only)", "nivelSOC": "Gobierno, Riesgo y Cumplimiento (GRC)", "permisosClave": "Security data basics (Read), Security posture (Read) y Authorization (Read-only), sin permisos de Live Response ni descarga de archivos.", "asignacionPIM": "Asignación de solo lectura revisada trimestralmente", "responsabilidadOperativa": "Auditoría independiente de cobertura de endpoints, estado de Tamper Protection, reglas ASR, exclusiones y evidencias NIST CSF 2.0.", "estadoValidacion": "Propuesta Editorial"}], "actividadesOperacionales": [{"codigo": "D-01", "cadencia": "Diaria", "actividad": "Triaje de incidentes y alertas EDR/AV priorizando datos sensibles y hosts VDI efímeros", "objetivo": "Identificar compromisos post-brecha en endpoints antes de movimiento lateral o pérdida de evidencia volátil.", "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts > Incidents", "procedimiento": ["Filtrar últimas 24 horas con Service source = Microsoft Defender for Endpoint y Severity = High, Medium.", "Priorizar dispositivos etiquetados como VDI=NonPersistent, activos críticos o con etiquetas confidenciales en la columna Data sensitivity (Purview).", "Analizar árbol de procesos y pestaña Timeline del dispositivo asignando analista y pasando a In progress."], "rolResponsable": "SOC L1 / SOC L2", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-09 / DE.AE-02", "mitreTactic": "Execution / Credential Access (TA0002 / TA0006)", "evidenciaAuditable": "Incidentes MDE asignados con análisis inicial registrado en Comments & history.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tarea diaria oficial en MDE Security Operations Guide; SLAs internos son propuesta editorial.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide", "pasosDetallados": ["Filtrar incidentes de las últimas 24 h con `Service source = Microsoft Defender for Endpoint`, `Severity = High, Medium` y `Status = New, In progress` `[Verificado MS Learn]`.", "Priorizar inmediatamente incidentes que involucren etiquetas `VDI=NonPersistent` (por volatilidad de evidencia), activos críticos o dispositivos con columna **Data sensitivity** (etiquetas confidenciales de Microsoft Purview) `[Verificado MS Learn]`.", "Inspeccionar el árbol de procesos y la pestaña **Timeline** del dispositivo para distinguir actividad post-brecha real de herramientas administrativas legítimas `[Verificado MS Learn]`."], "disparadorAlerta": "Identificar compromisos post-brecha en endpoints antes de movimiento lateral o pérdida de evidencia volátil.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-02", "cadencia": "Diaria", "actividad": "Revisión y aprobación de remediaciones en Action Center (pila AV/AIR y acciones manuales)", "objetivo": "Ejecutar oportunamente remediaciones pendientes en grupos Semi-automation y auditar acciones automáticas.", "consolaRuta": "security.microsoft.com > Investigation & response > Actions & submissions > Action center", "procedimiento": ["Revisar la pestaña Pending para servidores o grupos con aprobación requerida antes del vencimiento de 7 días.", "Aprobar remediaciones confirmadas como maliciosas o rechazar falsos positivos documentando causa.", "Auditar la pestaña History confirmando que los grupos en Full automation estén remediando amenazas sin impacto operativo."], "rolResponsable": "SOC L1 / SOC L2", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01 / RS.MI-02", "mitreTactic": "Execution / Persistence (TA0002 / TA0003)", "evidenciaAuditable": "Exportación de Action Center con cero acciones críticas pendientes > 4 horas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Desde el 1-sep-2026 AIR corre integrado automáticamente en la pila antivirus predeterminada de Defender.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/automation-levels", "pasosDetallados": ["Revisar la pestaña **Pending** para grupos configurados en *Semi-automation* (ej. controladores de dominio o servidores críticos), aprobando o rechazando acciones de cuarentena de archivos, detención de procesos/servicios o limpieza de registro/tareas programadas antes de la expiración de 7 días `[Verificado MS Learn]`.", "Auditar la pestaña **History** validando que los grupos en *Full automation* estén ejecutando remediaciones automáticas de la pila AV/AIR sin afectar software de línea de negocio (usando *Undo* si corresponde) `[Verificado MS Learn]`."], "disparadorAlerta": "Ejecutar oportunamente remediaciones pendientes en grupos Semi-automation y auditar acciones automáticas.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-03", "cadencia": "Diaria", "actividad": "Detección y respuesta inmediata ante intentos de evasión en Tamper Protection", "objetivo": "Bloquear e investigar intentos de apagar el sensor EDR, protección en tiempo real o modificar exclusiones.", "consolaRuta": "security.microsoft.com > Incidents & alerts > Alerts / Advanced hunting (DeviceEvents)", "procedimiento": ["Investigar con prioridad crítica toda alerta de Tamper Protection bypass o manipulación del sensor MDE.", "Ejecutar consulta diaria sobre DeviceEvents | where ActionType == 'TamperingAttempt' para detectar intentos silenciosos.", "Validar contra tickets aprobados de Troubleshooting mode; si no está autorizado, aislar el host e investigar credenciales."], "rolResponsable": "SOC L2 / SOC L3", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-05 / DE.CM-09", "mitreTactic": "Defense Evasion - Impair Defenses (T1562.001)", "evidenciaAuditable": "Resultados diarios de consulta KQL TamperingAttempt conciliados con cambios autorizados.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Consulta KQL y flujo oficial documentados en la guía de Tamper Protection de Microsoft Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/prevent-changes-to-security-settings-with-tamper-protection", "pasosDetallados": ["Tratar toda alerta *Tamper Protection bypass* o *Tampering with the Microsoft Defender for Endpoint sensor* como posible preludio de ransomware operado por humanos `[Verificado MS Learn]`.", "Ejecutar consulta diaria sobre `DeviceEvents | where ActionType == \"TamperingAttempt\"` para capturar intentos bloqueados que no generaron alerta por sí solos `[Verificado MS Learn]`.", "Verificar si el dispositivo tenía *Troubleshooting mode* autorizado por ticket de cambio; en caso contrario, aislar el equipo e investigar la cuenta ejecutora `[Verificado MS Learn]`."], "disparadorAlerta": "Bloquear e investigar intentos de apagar el sensor EDR, protección en tiempo real o modificar exclusiones.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-04", "cadencia": "Diaria", "actividad": "Control diario de salud de sensores EDR y actualización de motor/plataforma Defender Antivirus", "objetivo": "Eliminar puntos ciegos por sensores detenidos/mal configurados o firmas desactualizadas.", "consolaRuta": "security.microsoft.com > Reports > Endpoints > Device health (Sensor health & OS / Antivirus health)", "procedimiento": ["Identificar equipos Misconfigured, Impaired communications o sin telemetría en >24h y ejecutar diagnóstico con MDE Client Analyzer.", "Verificar en Antivirus health que Platform, Engine y Security intelligence estén actualizados (máx. N-2 versiones).", "Confirmar que las estaciones corporativas operen con Defender Antivirus en Active mode."], "rolResponsable": "Endpoint Security Admin", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-09 / PR.PS-02", "mitreTactic": "Defense Evasion", "evidenciaAuditable": "Tarjetas de Device health >95% activas y tickets generados para sensores degradados.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Actividad diaria explícita para el equipo de administración en MDE Security Operations Guide.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide", "pasosDetallados": ["Identificar dispositivos con estado de sensor `Misconfigured`, `Inactive` (> 7 días) o `Impaired communications`, y diagnosticar con **MDE Client Analyzer** cuando persista fallo de comunicación `[Verificado MS Learn]`.", "Revisar en **Microsoft Defender Antivirus health** que las versiones de *Platform*, *Engine* y *Security intelligence* estén al día (nunca > 2 versiones atrás) y que los equipos sin AV de terceros operen en **Active mode** `[Verificado MS Learn]`."], "disparadorAlerta": "Eliminar puntos ciegos por sensores detenidos/mal configurados o firmas desactualizadas.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-05", "cadencia": "Diaria", "actividad": "Gestión estructurada de falsos positivos/negativos en endpoint y envíos WDSI", "objetivo": "Mantener alta fidelidad analítica aplicando el marco oficial de 5 pasos sin abrir brechas con exclusiones amplias.", "consolaRuta": "security.microsoft.com > Actions & submissions > Submissions / microsoft.com/wdsi/filesubmission", "procedimiento": ["Identificar fuente exacta de detección (AV, EDR, ASR, IoC custom o regla KQL).", "Enviar binarios, hashes o paquetes MpSupport.cab (para detecciones fileless) para reanálisis de Microsoft.", "Cuando se requiera excepción temporal validada, usar Allow Indicator por SHA-256 o exclusión per-ASR rule en lugar de exclusiones de carpeta AV."], "rolResponsable": "SOC L2 / Endpoint Security Admin", "funcionNIST": "RS", "subcategoriaNIST": "RS.AN-03", "mitreTactic": "Multi-tactic", "evidenciaAuditable": "Historial en Submissions y registro justificado de indicadores Allow temporales.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Marco oficial de 5 partes para FP/FN en Defender for Endpoint.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/defender-endpoint-false-positives-negatives", "pasosDetallados": ["Identificar la fuente exacta de detección (`Antivirus`, `EDR`, `ASR`, `Custom TI`, `Custom detection`) `[Verificado MS Learn]`.", "Enviar muestras o hashes a Microsoft (`Submissions` o portal WDSI; para detecciones comportamentales sin archivo recolectar `MpSupport.cab` con `MpCmdRun.exe -GetFiles`) `[Verificado MS Learn]`.", "Si se requiere mitigación temporal para una aplicación legítima firmada/verificada, priorizar un **Allow Indicator** por hash SHA-256 o una **exclusión por regla ASR específica**, evitando exclusiones amplias de carpeta en el antivirus `[Verificado MS Learn]`."], "disparadorAlerta": "Mantener alta fidelidad analítica aplicando el marco oficial de 5 pasos sin abrir brechas con exclusiones amplias.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-06", "cadencia": "Diaria", "actividad": "Revisión de amenazas de alto impacto en Threat Analytics y saltos en Exposure Score", "objetivo": "Detectar campañas activas que afecten endpoints propios o incrementos bruscos de superficie vulnerable.", "consolaRuta": "security.microsoft.com > Threat intelligence > Threat analytics / Exposure management > Vulnerability management", "procedimiento": ["Revisar la sección High-impact threats en Threat analytics verificando dispositivos con alertas activas o configuración vulnerable.", "Monitorear el Exposure Score organizacional identificando incrementos súbitos por publicación de CVEs 0-day.", "Notificar de inmediato a Vulnerability Management e IT ante exposición crítica activa."], "rolResponsable": "SOC L2 / Vulnerability & Exposure Lead", "funcionNIST": "ID", "subcategoriaNIST": "ID.RA-01", "mitreTactic": "Exploitation for Client Execution (T1203)", "evidenciaAuditable": "Bitácora diaria de revisión de Threat Analytics y evolución de Exposure Score.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Revisión diaria de High-impact threats incluida en MDE Security Operations Guide.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide", "pasosDetallados": ["Revisar en **Threat analytics** la tabla *High-impact threats* ordenada por dispositivos con alertas activas o vulnerables `[Verificado MS Learn]`.", "Monitorear saltos súbitos (> 3 puntos) en el **Exposure Score** organizacional (0–100, menor es mejor) causados por nuevas vulnerabilidades zero-day o activos recién descubiertos `[Verificado MS Learn]` / `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Detectar campañas activas que afecten endpoints propios o incrementos bruscos de superficie vulnerable.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-07", "cadencia": "Diaria", "actividad": "Supervisión de bloqueos ASR y solicitudes de aprobación de administrador en modo Warn", "objetivo": "Garantizar aplicación continua de las reglas ASR críticas y gobernar overrides temporales de usuarios.", "consolaRuta": "security.microsoft.com > Reports > Endpoints > Attack surface reduction rules", "procedimiento": ["Revisar eventos de bloqueo ASR y evaluar solicitudes de Unblock en modo Warn (sujetas a aprobación de administrador desde plataforma 4.18.26060).", "Confirmar que las 3 Standard protection rules permanezcan en Block sin regresión por conflictos GPO.", "Registrar procesos legítimos recurrentes para evaluación semanal de exclusión específica por regla."], "rolResponsable": "Endpoint Security Admin / SOC L1", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-05", "mitreTactic": "Credential Access / Execution (T1003.001 / T1059)", "evidenciaAuditable": "Consulta diaria de eventos ASR y registro de aprobaciones/rechazos de Unblock.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Refleja el requisito vigente de aprobación de administrador para Unblock en modo Warn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction-rules-overview", "pasosDetallados": ["Revisar bloqueos de reglas ASR y solicitudes de desbloqueo temporal (*Unblock* en modo `Warn`, sujetas a aprobación de administrador desde plataforma `4.18.26060+`) `[Verificado MS Learn]`.", "Confirmar que las 3 *Standard protection rules* y las reglas críticas de Office/scripts permanezcan en modo `Block` sin regresión accidental a `Audit` por conflicto de GPO `[Verificado MS Learn]`."], "disparadorAlerta": "Garantizar aplicación continua de las reglas ASR críticas y gobernar overrides temporales de usuarios.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-08", "cadencia": "Diaria", "actividad": "Conciliación diaria de dispositivos aislados/contenidos y handover de turno", "objetivo": "Evitar que equipos queden aislados indefinidamente sin seguimiento o se liberen sin validación forense.", "consolaRuta": "security.microsoft.com > Actions & submissions > Action center > History", "procedimiento": ["Listar todos los endpoints actualmente bajo Isolate device, Contain device o Restrict app execution.", "Verificar avance de erradicación y ETA de retorno a producción con el analista asignado y propietario del activo.", "Documentar estado completo en el traspaso formal de guardia."], "rolResponsable": "SOC L1 / SOC L2", "funcionNIST": "RS", "subcategoriaNIST": "RS.CO-02 / RC.RP-05", "mitreTactic": "Command and Control / Lateral Movement", "evidenciaAuditable": "Acta diaria de handover con inventario conciliado de dispositivos contenidos.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Control operativo consultivo para gobernar el ciclo de contención-liberación.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/respond-machine-alerts", "pasosDetallados": ["Listar todos los endpoints actualmente bajo Isolate device, Contain device o Restrict app execution.", "Verificar avance de erradicación y ETA de retorno a producción con el analista asignado y propietario del activo.", "Documentar estado completo en el traspaso formal de guardia."], "disparadorAlerta": "Evitar que equipos queden aislados indefinidamente sin seguimiento o se liberen sin validación forense.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-01", "cadencia": "Semanal", "actividad": "Priorización semanal de CVEs críticos con exploit activo y emisión de Security Tasks a Intune", "objetivo": "Reducir drásticamente la ventana de exposición sobre vulnerabilidades explotadas activamente.", "consolaRuta": "security.microsoft.com > Exposure management > Vulnerability management > Weaknesses / Recommendations", "procedimiento": ["Filtrar vulnerabilidades Critical y High con Exploit available = Yes y amenazas asociadas.", "Generar solicitudes formales de remediación (Request remediation) creando Security Tasks en Microsoft Intune con SLA diferenciado.", "Aplicar mitigaciones compensatorias (ASR o bloqueo de apps vulnerables con MDVM Add-on) cuando el parche requiera ventana extendida."], "rolResponsable": "Vulnerability & Exposure Lead", "funcionNIST": "ID", "subcategoriaNIST": "ID.RA-01 / RS.MI-03", "mitreTactic": "Exploit Public-Facing Application / LPE (T1190 / T1068)", "evidenciaAuditable": "Listado de Remediation activities creadas en MDVM y Security Tasks sincronizadas en Intune.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Actividad semanal oficial en MDE Security Operations Guide; SLAs específicos son propuesta editorial.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-vulnerability-management/defender-vulnerability-management-capabilities", "pasosDetallados": ["Filtrar en **Weaknesses** por `Severity = Critical, High` combinado con `Exploit available = Yes` (y amenazas activas / CISA KEV), ordenando por número de dispositivos expuestos `[Verificado MS Learn]`.", "Abrir la recomendación asociada y seleccionar **Request remediation** para generar automáticamente una **Security Task** en Microsoft Intune con fecha límite acorde a criticidad `[Verificado MS Learn]`.", "Si existe impedimento inmediato de parcheo, evaluar mitigación compensatoria (regla ASR o *Block vulnerable applications* si se dispone de MDVM Add-on y Defender AV en modo activo) `[Verificado MS Learn]`."], "disparadorAlerta": "Reducir drásticamente la ventana de exposición sobre vulnerabilidades explotadas activamente.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-02", "cadencia": "Semanal", "actividad": "Análisis semanal de reportes de las 19 reglas ASR y eventos de Web Protection", "objetivo": "Diseñar exclusiones quirúrgicas basadas en telemetría para avanzar reglas de Audit/Warn a Block y bloquear C2/phishing.", "consolaRuta": "security.microsoft.com > Reports > Endpoints > Attack surface reduction rules / Web protection", "procedimiento": ["Analizar en el reporte ASR las aplicaciones de negocio que generaron eventos Audited durante los últimos 7 días.", "Configurar exclusiones por regla ASR específica en Intune y promover reglas validadas de Audit a Warn o Block.", "Revisar dominios e IPs maliciosos bloqueados en el reporte de Web protection."], "rolResponsable": "Endpoint Security Admin", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-01", "mitreTactic": "Execution / Command and Control (TA0002 / TA0011)", "evidenciaAuditable": "Reporte semanal de progresión de las 19 reglas ASR y eventos de protección web.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tareas semanales explícitas en MDE Security Operations Guide.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide", "pasosDetallados": ["Analizar archivos y procesos legítimos que dispararon eventos `Audited` en las 19 reglas ASR durante la última semana, diseñando únicamente **exclusiones por regla ASR específica** con datos reales del reporte `[Verificado MS Learn]`.", "Promover a modo `Warn` o `Block` aquellas reglas que completaron al menos 14–30 días en `Audit` sin impacto operativo no mitigado (recordando que LSASS `9e6c4e1f-...` e inyección Office `75668c1f-...` pasan directo a `Block` al no soportar `Warn`) `[Verificado MS Learn]`.", "Revisar en **Web protection report** bloqueos de *SmartScreen*, *Network Protection* e indicadores URL/IP personalizados `[Verificado MS Learn]`."], "disparadorAlerta": "Diseñar exclusiones quirúrgicas basadas en telemetría para avanzar reglas de Audit/Warn a Block y bloquear C2/phishing.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-03", "cadencia": "Semanal", "actividad": "Threat Hunting semanal sobre procesos, red, archivos y persistencia en endpoints y VDI", "objetivo": "Descubrir abusos de LOLBins, persistencia encubierta y movimiento lateral no alertado.", "consolaRuta": "security.microsoft.com > Investigation & response > Hunting > Advanced hunting", "procedimiento": ["Ejecutar consultas KQL por hipótesis sobre DeviceProcessEvents, DeviceNetworkEvents, DeviceFileEvents, DeviceRegistryEvents y DeviceImageLoadEvents.", "Incluir filtros específicos sobre hosts etiquetados VDI=NonPersistent para detectar actividad adversaria en sesiones efímeras.", "Convertir patrones maliciosos recurrentes en Custom detection rules."], "rolResponsable": "SOC L3 / Threat Hunter", "funcionNIST": "DE", "subcategoriaNIST": "DE.AE-02 / DE.CM-09", "mitreTactic": "Persistence / Defense Evasion / Lateral Movement", "evidenciaAuditable": "Bitácora de cacería semanal con consultas KQL y detecciones creadas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Esquema oficial Device* en Advanced Hunting.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-schema-tables", "pasosDetallados": ["Ejecutar hipótesis semanales sobre `DeviceProcessEvents`, `DeviceNetworkEvents`, `DeviceFileEvents`, `DeviceRegistryEvents` y `DeviceImageLoadEvents` buscando abuso de *LOLBins* (`rundll32`, `regsvr32`, `mshta`, `certutil`, `wmic`), tareas programadas anómalas, carga lateral de DLLs y conexiones SMB/RDP inusuales `[Verificado MS Learn]`.", "Incluir búsquedas específicas sobre el pool `VDI=NonPersistent` para detectar herramientas de volcado de credenciales o túneles salientes efímeros `[Decisión / Propuesta Editorial]`.", "Promover hallazgos confirmados a *Custom detection rules* `[Verificado MS Learn]`."], "disparadorAlerta": "Descubrir abusos de LOLBins, persistencia encubierta y movimiento lateral no alertado.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-04", "cadencia": "Semanal", "actividad": "Auditoría de cobertura con Standard Device Discovery, limpieza de inactivos e higiene VDI", "objetivo": "Asegurar incorporación de dispositivos no gestionados y evitar contaminación del inventario con clones VDI duplicados.", "consolaRuta": "security.microsoft.com > System > Settings > Device discovery / Assets > Devices", "procedimiento": ["Verificar modo Standard discovery activo (con subredes OT sensibles en Ignore) y exportar equipos Can be onboarded hacia Intune/ConfigMgr.", "Cruzar equipos Inactive (>30 días) con bajas en AD/CMDB para ejecutar offboarding.", "Validar ausencia de registros duplicados en pools VDI no persistentes confirmando uso correcto del modelo Single entry."], "rolResponsable": "Endpoint Security Admin / VDI Admin", "funcionNIST": "ID", "subcategoriaNIST": "ID.AM-01", "mitreTactic": "Unmanaged Assets / Lateral Movement", "evidenciaAuditable": "Exportación semanal de brechas de onboarding y auditoría de unicidad de entradas VDI.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Integra Device Discovery oficial y controles de onboarding VDI no persistente.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/configure-endpoints-vdi", "pasosDetallados": ["Confirmar que **Standard discovery** esté activo en subredes corporativas (manteniendo subredes OT/ICS sensibles en lista *Ignore*) y exportar activos `Can be onboarded` para incorporación vía Intune, ConfigMgr o *Defender deployment tool* `[Verificado MS Learn]`.", "Conciliar dispositivos `Inactive` (> 30 días sin señal) contra bajas en Active Directory / Intune para ejecutar *offboarding* limpio `[Decisión / Propuesta Editorial]`.", "Auditar que los pools VDI no persistentes no estén generando entradas duplicadas por ejecución prematura del script antes del hostname definitivo `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar incorporación de dispositivos no gestionados y evitar contaminación del inventario con clones VDI duplicados.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-05", "cadencia": "Semanal", "actividad": "Revisión de Threat Protection Report, niveles de automatización por grupo e indicadores IoC", "objetivo": "Detectar infecciones recurrentes, maximizar adopción de Full automation y mantener limpia la tabla de indicadores.", "consolaRuta": "security.microsoft.com > Reports > Endpoints > Threat protection / Settings > Endpoints > Indicators", "procedimiento": ["Identificar en Threat protection report dispositivos con detecciones repetidas que sugieran persistencia activa.", "Revisar Device groups evaluando migrar grupos estables de Semi a Full automation.", "Eliminar indicadores IoC caducos manteniendo el inventario bajo el límite de 15.000 indicadores."], "rolResponsable": "SOC L2 / Endpoint Security Admin", "funcionNIST": "RS", "subcategoriaNIST": "RS.IM-01 / DE.CM-01", "mitreTactic": "Persistence / Command and Control", "evidenciaAuditable": "Informe semanal de tendencias de amenazas e inventario depurado de IoCs.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Revisión semanal de Threat reporting está en MDE Security Operations Guide.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide", "pasosDetallados": ["Analizar histogramas semanales en **Threat protection report** detectando reinfecciones repetidas en un mismo host (señal de persistencia no erradicada) `[Verificado MS Learn]`.", "Validar que la mayoría de *Device groups* operen en **Full - remediate threats automatically** (el cual remueve 40 % más muestras de malware de alta confianza según telemetría publicada por Microsoft Learn) `[Verificado MS Learn]`.", "Depurar indicadores IoC expirados o sin impactos manteniendo margen seguro bajo el límite del tenant (15.000 indicadores) `[Verificado MS Learn]`."], "disparadorAlerta": "Detectar infecciones recurrentes, maximizar adopción de Full automation y mantener limpia la tabla de indicadores.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-06", "cadencia": "Semanal", "actividad": "Revisión semanal del Microsoft 365 Message Center y verificación de firmas compartidas VDI", "objetivo": "Anticipar cambios funcionales del servicio MDE y asegurar rendimiento óptimo en granjas VDI.", "consolaRuta": "admin.microsoft.com > Health > Message center / Servidor UNC de firmas VDI", "procedimiento": ["Revisar anuncios de M365 Message Center relativos a Microsoft Defender for Endpoint y convertirlos en tareas operativas.", "Comprobar ejecución horaria de la descarga y extracción de Security intelligence en el recurso compartido UNC para clientes VDI.", "Verificar que todo sellado semanal de imagen maestra VDI haya ejecutado Windows Defender Cache Maintenance sin onboardear la imagen."], "rolResponsable": "Endpoint Security Admin / VDI Admin", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-02 / PR.PS-02", "mitreTactic": "N/A (Mantenimiento preventivo)", "evidenciaAuditable": "Registro de anuncios Message Center procesados y checklist de sellado VDI.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Message Center es tarea semanal oficial en MDE SecOps Guide; verificación UNC VDI consolidada de guías VDI.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide", "pasosDetallados": ["Revisar avisos de *Microsoft 365 Message Center* sobre cambios de MDE, nuevas reglas ASR o actualizaciones del sensor `[Verificado MS Learn]`.", "Verificar que el recurso compartido UNC de firmas para VDI no persistente esté actualizando definiciones horariamente (< 24 h de antigüedad) y que en cada mantenimiento de imagen maestra se ejecute *Windows Defender Cache Maintenance* sin dejar `senseGuid` activo `[Verificado MS Learn]` / `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Anticipar cambios funcionales del servicio MDE y asegurar rendimiento óptimo en granjas VDI.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-01", "cadencia": "Mensual", "actividad": "Auditoría mensual de dispositivos excluidos de políticas, exclusiones AV/ASR y Troubleshooting Mode", "objetivo": "Cerrar brechas de protección causadas por exclusiones excesivas o temporales olvidadas.", "consolaRuta": "intune.microsoft.com > Endpoint security / security.microsoft.com > Endpoints > Configuration management", "procedimiento": ["Revisar todos los dispositivos excluidos de políticas de seguridad MDE validando si aún requieren excepción.", "Auditar todas las exclusiones de Defender Antivirus y reglas ASR eliminando rutas amplias o comodines riesgosos y conservando solo exclusiones técnicas documentadas (ej. FSLogix *.VHD/*.VHDX).", "Auditar en registros el uso mensual de Troubleshooting mode verificando restablecimiento íntegro de Tamper Protection."], "rolResponsable": "Endpoint Security Admin / Security Architect", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-01 / PR.PS-05", "mitreTactic": "Defense Evasion - Impair Defenses (T1562.001)", "evidenciaAuditable": "Matriz mensual certificada de exclusiones AV/ASR y registro auditado de Troubleshooting mode.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tarea mensual oficial en MDE Security Operations Guide.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide", "pasosDetallados": ["Ejecutar la tarea mensual oficial de **revisión de dispositivos excluidos de políticas** y de todas las listas de exclusión de Microsoft Defender Antivirus y ASR `[Verificado MS Learn]`.", "Eliminar de inmediato exclusiones peligrosamente amplias (ej. `C:\\Users\\*`, `C:\\Program Files\\*`, variables de entorno de usuario o comodines `*.exe` globales), conservando solo exclusiones estrictas documentadas (como contenedores FSLogix `*.VHD(X)` o procesos específicos de Citrix PVS) protegidas por *Tamper Protection* `[Verificado MS Learn]`.", "Auditar todos los equipos donde se habilitó **Troubleshooting mode** en el mes confirmando retorno automático a estado protegido con *Tamper Protection* encendido `[Verificado MS Learn]`."], "disparadorAlerta": "Cerrar brechas de protección causadas por exclusiones excesivas o temporales olvidadas.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-02", "cadencia": "Mensual", "actividad": "Evaluación mensual completa en MDVM: Exposure Score, software End-of-Support y líneas base CIS/STIG", "objetivo": "Gobernar la reducción estructural de deuda técnica, software obsoleto y desviaciones de configuración.", "consolaRuta": "security.microsoft.com > Exposure management > Vulnerability management > Dashboard / Software inventory", "procedimiento": ["Evaluar tendencia mensual de Exposure Score, Secure Score for Devices y tiempos medios de parcheo.", "Extraer inventario de sistemas operativos y aplicaciones en End of Support (EOS) o próximos a vencer (<12 meses) para plan de retiro.", "Recertificar CVE exceptions activas y, con MDVM Add-on / Defender for Servers P2, auditar Security baselines assessment (CIS/STIG), certificados y firmware."], "rolResponsable": "Vulnerability & Exposure Lead / Security Architect", "funcionNIST": "ID", "subcategoriaNIST": "ID.AM-02 / PR.PS-02", "mitreTactic": "Exploitation / Initial Access", "evidenciaAuditable": "Informe mensual de gestión de vulnerabilidades, roadmap EOS y cumplimiento de baselines.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Separa explícitamente capacidades MDVM Core (E5/P2) y capacidades Premium (Add-on / Servers P2).", "urlSoporte": "https://learn.microsoft.com/en-us/defender-vulnerability-management/defender-vulnerability-management-capabilities", "pasosDetallados": ["Revisar evolución mensual del **Exposure Score** y del **Microsoft Secure Score for Devices**, midiendo cumplimiento de SLAs de parcheo por severidad `[Verificado MS Learn]`.", "Filtrar en **Software inventory** sistemas operativos y aplicaciones en *End of Support* (EOS) o próximos a EOS (< 12 meses) para planificar retiro o reemplazo `[Verificado MS Learn]`.", "Revisar *CVE exceptions* vigentes y, si se cuenta con MDVM Add-on / Defender for Servers P2, auditar cumplimiento contra perfiles **CIS / STIG** en *Security baselines assessment*, certificados vencidos y vulnerabilidades de firmware `[Verificado MS Learn]`."], "disparadorAlerta": "Gobernar la reducción estructural de deuda técnica, software obsoleto y desviaciones de configuración.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-03", "cadencia": "Mensual", "actividad": "Revisión de What's New in MDE, conformidad de versiones de motor/plataforma y resolución de conflictos GPO/Intune", "objetivo": "Asegurar soporte técnico oficial del agente y eliminar colisiones de directivas que degraden protecciones.", "consolaRuta": "security.microsoft.com > Endpoints > Configuration management > Endpoint security policies", "procedimiento": ["Revisar las publicaciones mensuales What's new in MDE y Microsoft Defender for Endpoint versions.", "Resolver cualquier política con estado Conflict o Error verificando precedencia GPO vs. MDM (MDMWinsOverGP o Controlled configuration).", "Confirmar habilitación activa de EDR in block mode en todo equipo que aún opere con un antivirus primario de terceros."], "rolResponsable": "Endpoint Security Admin", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-01 / PR.PS-02", "mitreTactic": "Defense Evasion", "evidenciaAuditable": "Reporte mensual de versiones de plataforma/motor y cero políticas de endpoint en conflicto.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Revisión mensual de What's new y versiones es tarea explícita en MDE SecOps Guide.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide", "pasosDetallados": ["Revisar las notas mensuales oficiales (*What's new in MDE* y *MDE versions*) verificando que el 100 % del parque Windows, macOS y Linux cumpla la ventana de soporte de versiones de plataforma y motor `[Verificado MS Learn]`.", "Auditar políticas en estado `Conflict` o `Error` (recordando que GPO prevalece por defecto sobre MDM si no se aplica `MDMWinsOverGP` o *Controlled configuration*) `[Verificado MS Learn]`.", "En cualquier segmento que aún utilice un antivirus primario de terceros con Defender AV en modo pasivo, verificar que **EDR in block mode** esté habilitado y operando correctamente `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar soporte técnico oficial del agente y eliminar colisiones de directivas que degraden protecciones.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-04", "cadencia": "Mensual", "actividad": "Auditoría de permisos Live Response, Command Logs de sesiones forenses y biblioteca de scripts", "objetivo": "Garantizar trazabilidad forense y prevenir abuso interno del shell remoto en endpoints y servidores.", "consolaRuta": "security.microsoft.com > Permissions > Microsoft Defender XDR > Roles / Library management", "procedimiento": ["Revisar asignaciones de Basic live response y Advanced live response en Unified RBAC.", "Auditar el Command log de todas las sesiones Live Response iniciadas en el mes validando vínculo con incidente autorizado.", "Verificar que Allow unsigned script execution continúe deshabilitado y auditar integridad/firma de todos los scripts en Library management."], "rolResponsable": "Endpoint Security Admin / GRC", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05 / RS.AN-07", "mitreTactic": "Remote Services / Execution", "evidenciaAuditable": "Bitácora mensual auditada de sesiones Live Response e inventario firmado de scripts en biblioteca.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Controles y permisos verificados en la documentación oficial de Live Response.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/live-response", "pasosDetallados": ["Auditar quién posee los permisos `Basic live response`, `Advanced live response` y `Core security settings (Manage)` en Unified RBAC `[Verificado MS Learn]`.", "Revisar el registro de comandos ejecutados (*Command log*) de todas las sesiones de **Live Response** del mes verificando correspondencia con incidentes abiertos `[Verificado MS Learn]`.", "Auditar los scripts alojados en **Library management**, confirmando firma digital válida y removiendo utilidades obsoletas `[Verificado MS Learn]` / `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Garantizar trazabilidad forense y prevenir abuso interno del shell remoto en endpoints y servidores.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-05", "cadencia": "Mensual", "actividad": "Prueba sintética mensual de extremo a extremo del pipeline de detección, alerta y remediación", "objetivo": "Confirmar empíricamente tiempos de detección del sensor, generación de incidente, remediación automática y envío a SIEM.", "consolaRuta": "security.microsoft.com > Evaluation & tutorials > Tutorials & simulations", "procedimiento": ["Ejecutar simulación oficial controlada sobre una máquina de validación dedicada.", "Cronometrar aparición de alerta en el portal Defender (<5 min), registro de acción automática en Action Center y sincronización en Microsoft Sentinel (<15 min).", "Corregir de inmediato cualquier retraso o fallo de notificación."], "rolResponsable": "SOC L2 / Endpoint Security Admin", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-09 / RS.MA-01", "mitreTactic": "Validation & Testing", "evidenciaAuditable": "Acta mensual de prueba end-to-end con marcas de tiempo verificadas.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Usa simulaciones oficiales del portal Defender con cadencia mensual consultiva.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide", "pasosDetallados": ["Ejecutar simulación oficial controlada sobre una máquina de validación dedicada.", "Cronometrar aparición de alerta en el portal Defender (<5 min), registro de acción automática en Action Center y sincronización en Microsoft Sentinel (<15 min).", "Corregir de inmediato cualquier retraso o fallo de notificación."], "disparadorAlerta": "Confirmar empíricamente tiempos de detección del sensor, generación de incidente, remediación automática y envío a SIEM.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-06", "cadencia": "Mensual", "actividad": "Generación del Monthly Security Summary y conciliación de licenciamiento cliente, VDI y servidores", "objetivo": "Entregar visibilidad ejecutiva al CISO y asegurar pleno cumplimiento contractual en estaciones y servidores.", "consolaRuta": "security.microsoft.com > Reports > Endpoints > Monthly Security Summary / admin.microsoft.com > Billing", "procedimiento": ["Exportar el reporte PDF Monthly Security Summary complementado con KPIs de MTTC, cobertura ASR y reducción de CVEs críticos.", "Conciliar total de clientes físicos/VDI contra licencias de usuario (M365 E5 / Defender Suite / Windows E5) y servidores contra Defender for Servers Plan 1/Plan 2.", "Presentar hallazgos y necesidades de capacidad al CISO y Procurement."], "rolResponsable": "SOC Manager / Endpoint Security Admin / CISO", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-01 / ID.AM-01", "mitreTactic": "N/A (Gobierno Ejecutivo)", "evidenciaAuditable": "PDF Monthly Security Summary archivado y tabla mensual de conciliación de licencias.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Reporte nativo de MDE combinado con control de licenciamiento cliente vs. servidor.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/threat-protection-reports", "pasosDetallados": ["Exportar el reporte PDF Monthly Security Summary complementado con KPIs de MTTC, cobertura ASR y reducción de CVEs críticos.", "Conciliar total de clientes físicos/VDI contra licencias de usuario (M365 E5 / Defender Suite / Windows E5) y servidores contra Defender for Servers Plan 1/Plan 2.", "Presentar hallazgos y necesidades de capacidad al CISO y Procurement."], "disparadorAlerta": "Entregar visibilidad ejecutiva al CISO y asegurar pleno cumplimiento contractual en estaciones y servidores.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-01", "cadencia": "Trimestral", "actividad": "Ejercicio práctico trimestral de investigación forense en endpoint y respuesta en VDI efímero", "objetivo": "Entrenar al SOC en recolección forense sin pérdida de evidencia volátil y contención quirúrgica.", "consolaRuta": "security.microsoft.com > Evaluation & tutorials > Evaluation lab + pool piloto VDI", "procedimiento": ["Desplegar escenario realista (ataque fileless, robo de credenciales o ransomware) en Evaluation lab y en un host piloto VDI no persistente.", "Evaluar uso de Device Timeline, Live Response (incluyendo getfile en segundo plano), Collect investigation package previo a logoff y aislamiento selectivo.", "Documentar brechas de procedimiento y actualizar runbooks de respuesta."], "rolResponsable": "SOC L2 / SOC L3 / SOC Manager", "funcionNIST": "RS", "subcategoriaNIST": "RS.AN-07 / RS.MA-04", "mitreTactic": "Execution / Defense Evasion / Impact", "evidenciaAuditable": "After-Action Report (AAR) trimestral con tiempos medidos y actualizaciones de SOP.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Basado en Evaluation Lab oficial de MDE aplicado a cadencia trimestral de preparación IR.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/live-response", "pasosDetallados": ["Desplegar escenario realista (ataque fileless, robo de credenciales o ransomware) en Evaluation lab y en un host piloto VDI no persistente.", "Evaluar uso de Device Timeline, Live Response (incluyendo getfile en segundo plano), Collect investigation package previo a logoff y aislamiento selectivo.", "Documentar brechas de procedimiento y actualizar runbooks de respuesta."], "disparadorAlerta": "Entrenar al SOC en recolección forense sin pérdida de evidencia volátil y contención quirúrgica.", "tipoAccion": "Periódica Programada"}, {"codigo": "SM-01", "cadencia": "Semestral", "actividad": "Ingeniería semestral del perímetro de las 19 reglas ASR y políticas de Device Control", "objetivo": "Maximizar la cobertura preventiva en modo Block y auditar vectores físicos de exfiltración o infección.", "consolaRuta": "intune.microsoft.com > Endpoint security > Attack surface reduction / Device control", "procedimiento": ["Auditar el estado efectivo de las 19 reglas ASR en todos los grupos de dispositivos cruzándolo con incidentes ocurridos en el semestre.", "Planificar transición de reglas restantes en Audit hacia Warn/Block y recertificar cada exclusión per-ASR rule.", "Revisar políticas de Device Control confirmando bloqueo de almacenamiento USB no autorizado o sin cifrado BitLocker."], "rolResponsable": "Security Architect / Endpoint Security Admin", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-01 / PR.DS-05", "mitreTactic": "Initial Access / Execution / Exfiltration over Physical Medium (T1052)", "evidenciaAuditable": "Informe semestral de postura ASR (sobre las 19 reglas oficiales) y políticas Device Control certificadas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Revisión periódica recomendada en MDE SecOps Guide actualizada al catálogo real de 19 reglas ASR.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction-rules-reference", "pasosDetallados": ["Auditar el estado efectivo de las 19 reglas ASR en todos los grupos de dispositivos cruzándolo con incidentes ocurridos en el semestre.", "Planificar transición de reglas restantes en Audit hacia Warn/Block y recertificar cada exclusión per-ASR rule.", "Revisar políticas de Device Control confirmando bloqueo de almacenamiento USB no autorizado o sin cifrado BitLocker."], "disparadorAlerta": "Maximizar la cobertura preventiva en modo Block y auditar vectores físicos de exfiltración o infección.", "tipoAccion": "Periódica Programada"}, {"codigo": "SM-02", "cadencia": "Semestral", "actividad": "Revisión semestral de Custom Detections de endpoint, reglas de Alert Tuning y auditoría de privilegios", "objetivo": "Depurar reglas obsoletas y certificar integridad del control de acceso administrativo en MDE e Intune.", "consolaRuta": "security.microsoft.com > Hunting > Custom detection rules / Settings > Alert tuning", "procedimiento": ["Evaluar tasa de verdaderos/falsos positivos de todas las reglas KQL personalizadas sobre tablas Device* retirando reglas sin vigencia.", "Revisar todas las reglas activas en Alert tuning confirmando que no enmascaren TTPs críticas.", "Realizar recertificación formal semestral de miembros en Unified RBAC e Intune Endpoint Security Manager."], "rolResponsable": "Detection Engineer / GRC", "funcionNIST": "DE", "subcategoriaNIST": "DE.AE-04 / GV.RR-02", "mitreTactic": "Multi-tactic", "evidenciaAuditable": "Catálogo actualizado de detecciones personalizadas y acta semestral de recertificación RBAC.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Alineado a la sección Periodically de MDE Security Operations Guide.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide", "pasosDetallados": ["Evaluar tasa de verdaderos/falsos positivos de todas las reglas KQL personalizadas sobre tablas Device* retirando reglas sin vigencia.", "Revisar todas las reglas activas en Alert tuning confirmando que no enmascaren TTPs críticas.", "Realizar recertificación formal semestral de miembros en Unified RBAC e Intune Endpoint Security Manager."], "disparadorAlerta": "Depurar reglas obsoletas y certificar integridad del control de acceso administrativo en MDE e Intune.", "tipoAccion": "Periódica Programada"}, {"codigo": "A-01", "cadencia": "Anual", "actividad": "Revisión anual integral del programa MDE multiplataforma, arquitectura VDI y simulacro Full-Scale", "objetivo": "Validar la madurez estratégica del pilar Endpoint en Zero Trust y alinear el presupuesto anual al roadmap Microsoft.", "consolaRuta": "security.microsoft.com + intune.microsoft.com + Microsoft Defender for Cloud", "procedimiento": ["Evaluar cobertura, salud y paridad de controles en Windows, Windows Server, macOS, Linux, iOS, Android y granjas VDI/AVD.", "Revisar necesidades de retención forense extendida en Microsoft Sentinel Data Lake más allá de los 30 días de Advanced Hunting.", "Conducir ejercicio anual de respuesta a incidentes de escala completa con participación ejecutiva y presentar informe anual al CISO."], "rolResponsable": "CISO / Security Architect / SOC Manager", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-03 / RC.IM-02", "mitreTactic": "Full Kill Chain Simulation", "evidenciaAuditable": "Informe anual de arquitectura y madurez MDE aprobado por la dirección.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Práctica anual de gobierno alineada a NIST CSF 2.0 y Zero Trust.", "urlSoporte": "https://learn.microsoft.com/en-us/security/zero-trust/deploy/endpoints", "pasosDetallados": ["Evaluar cobertura, salud y paridad de controles en Windows, Windows Server, macOS, Linux, iOS, Android y granjas VDI/AVD.", "Revisar necesidades de retención forense extendida en Microsoft Sentinel Data Lake más allá de los 30 días de Advanced Hunting.", "Conducir ejercicio anual de respuesta a incidentes de escala completa con participación ejecutiva y presentar informe anual al CISO."], "disparadorAlerta": "Validar la madurez estratégica del pilar Endpoint en Zero Trust y alinear el presupuesto anual al roadmap Microsoft.", "tipoAccion": "Periódica Programada"}, {"codigo": "AH-01", "cadencia": "Ad-Hoc", "actividad": "Contención quirúrgica y forensia en tiempo real con Isolate Device, Investigation Package y Live Response", "objetivo": "Cortar comando y control / movimiento lateral de inmediato preservando la cadena de custodia digital.", "consolaRuta": "security.microsoft.com > Assets > Devices > [Dispositivo] > Collect investigation package / Isolate device / Live response", "procedimiento": ["Disparar Collect investigation package y aplicar Isolate device (Full o Selective) sin apagar el equipo para preservar memoria volátil.", "Iniciar sesión Live Response ejecutando reconocimiento (processes, connections, persistence, fileinfo) y descargando evidencias en segundo plano (getfile &).", "Con rol Tier 3, erradicar artefactos maliciosos (remediate -auto o script firmado vía run), ejecutar escaneo AV completo y liberar aislamiento solo tras validación."], "rolResponsable": "SOC L2 / SOC L3 (DFIR)", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01 / RS.AN-07", "mitreTactic": "Command and Control / Execution / Persistence", "evidenciaAuditable": "ZIP de Investigation package con hash, Command log completo de Live Response e historial de aislamiento/liberación.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Procedimiento oficial de respuesta y Live Response en Microsoft Defender for Endpoint.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/live-response", "pasosDetallados": ["**Preservación y aislamiento inmediato:** Desde la página del dispositivo (`Assets > Devices > [Dispositivo]`), ejecutar **Collect investigation package** (captura Autoruns, conexiones activas, caché DNS/ARP, Prefetch, tareas programadas, sesiones SMB y registros de seguridad) y acto seguido **Isolate device** (eligiendo *Full isolation* para servidores/ransomware o *Selective isolation* permitiendo Outlook/Teams si se requiere coordinar con el usuario) — **no apagar ni reiniciar el equipo** `[Verificado MS Learn]`.", "**Investigación interactiva con Live Response:** Iniciar sesión (`Initiate live response session`), inspeccionar procesos (`processes`), conexiones (`connections`), persistencia (`persistence`, `scheduledtasks`, `services`) e información de binarios sospechosos (`fileinfo <ruta>`), descargando muestras en segundo plano (`getfile \"<ruta>\" &`) dentro de los límites operativos (máx. 3 GB, timeout de inactividad 30 min) `[Verificado MS Learn]`.", "**Remediación y liberación verificada:** Con rol Tier 3 (`Advanced live response`), ejecutar `remediate file <ruta> -auto` o scripts firmados de limpieza (`run <script.ps1>`), escanear con antivirus completo y liberar del aislamiento únicamente cuando se confirme ausencia total de persistencia `[Verificado MS Learn]`."], "disparadorAlerta": "Alerta crítica de C2 activo, volcado de credenciales LSASS, ejecución de implante o ransomware en estación o servidor `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-02", "cadencia": "Ad-Hoc", "actividad": "Contención de red sobre activos no gestionados (Contain Device / Contain IP) y cuentas comprometidas (Contain User)", "objetivo": "Frenar ataques originados desde dispositivos sin agente MDE o credenciales abusadas lateralmente.", "consolaRuta": "security.microsoft.com > Incidents / Assets > Devices > Contain device / Contain IP", "procedimiento": ["Ejecutar Contain device o Contain IP sobre el dispositivo no incorporado malicioso para que toda la flota MDE bloquee tráfico hacia/desde ese origen.", "Aplicar o verificar Contain user cuando exista abuso lateral de credenciales por RDP, SMB o RPC.", "Coordinar localización física/red del equipo rogue con IT Operations para desconexión de puerto switch/VLAN e incorporación obligatoria."], "rolResponsable": "SOC L2 / Network & IT Ops", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Lateral Movement (TA0008 - T1021)", "evidenciaAuditable": "Acción de contención registrada en Action Center y ticket de aislamiento en capa de red.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Capacidades oficiales de contención de red y usuario en MDE Plan 2.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/respond-machine-alerts", "pasosDetallados": ["**Bloqueo distribuido desde la flota MDE:** Ejecutar **Contain device** o **Contain IP** sobre el activo no gestionado; todos los endpoints incorporados a MDE aplican automáticamente una política de firewall que bloquea toda comunicación entrante/saliente con ese host/IP `[Verificado MS Learn]`.", "**Contención de identidad en capa endpoint:** Si hay credenciales comprometidas usadas vía RDP/SMB/RPC, verificar o activar **Contain user** (bloqueando sesiones entrantes de esa identidad hacia cualquier endpoint MDE) mientras IAM deshabilita la cuenta y rota credenciales `[Verificado MS Learn]`."], "disparadorAlerta": "Detección de movimiento lateral, escaneo interno o cifrado remoto originado desde una dirección IP o equipo descubierto pero aún sin agente MDE, o mediante una cuenta comprometida `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-03", "cadencia": "Ad-Hoc", "actividad": "Bloqueo de emergencia multi-motor de indicadores IoC y activación de Restrict App Execution", "objetivo": "Impedir ejecución de payloads de campañas emergentes en toda la flota en minutos.", "consolaRuta": "security.microsoft.com > System > Settings > Endpoints > Rules > Indicators / Device page > Restrict app execution", "procedimiento": ["Cargar hashes SHA-256, IPs, URLs/dominios o certificados confirmados con acción Alert and block, alcance organizacional y fecha de expiración.", "Activar temporalmente Restrict app execution en servidores o segmentos bajo ataque activo permitiendo solo binarios firmados por Microsoft.", "Verificar propagación y telemetría de bloqueos en Advanced Hunting."], "rolResponsable": "Endpoint Security Admin / SOC L2", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01 / PR.PS-05", "mitreTactic": "Execution / Command and Control (T1204 / T1071)", "evidenciaAuditable": "Registro de indicadores creados y acciones Restrict app execution en Action Center.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Enforcement multi-motor de indicadores y restricción de aplicaciones documentados en MDE Plan 2.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/indicators-overview", "pasosDetallados": ["**Publicación de IoCs:** En `System > Settings > Endpoints > Rules > Indicators`, cargar hashes SHA-256, direcciones IP, URLs/dominios o certificados con acción **Alert and block**, justificación, fuente y fecha de expiración `[Verificado MS Learn]`.", "**Modo de bloqueo estricto en segmento afectado:** Sobre servidores o estaciones de alto riesgo bajo ataque activo, activar temporalmente **Restrict app execution** para permitir únicamente ejecutables firmados por Microsoft mientras concluye el análisis forense `[Verificado MS Learn]`."], "disparadorAlerta": "Brote activo de malware nuevo o recepción de boletín urgente de inteligencia (MSTIC, CISA, ISAC) `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-04", "cadencia": "Ad-Hoc", "actividad": "Respuesta forense acelerada ante incidentes en escritorios virtuales VDI no persistentes", "objetivo": "Capturar artefactos volátiles antes de que el pool VDI destruya la máquina virtual y verificar integridad de imagen/FSLogix.", "consolaRuta": "security.microsoft.com > Assets > Devices (tag VDI=NonPersistent) + Consola Citrix/Horizon/AVD", "procedimiento": ["Solicitar de inmediato al equipo VDI colocar la VM afectada en modo mantenimiento evitando reciclado automático al cerrar sesión.", "Ejecutar sin demora Collect investigation package e iniciar Live Response para extraer artefactos residentes en disco temporal.", "Investigar en DeviceFileEvents/DeviceProcessEvents si hubo contaminación del contenedor de perfil FSLogix (*.VHDX) o de la imagen maestra, aislando el perfil y revocando sesiones del usuario."], "rolResponsable": "SOC L2 / SOC L3 / VDI Admin", "funcionNIST": "RS", "subcategoriaNIST": "RS.AN-07 / RS.MI-02", "mitreTactic": "Execution / Persistence in Virtualized Environments", "evidenciaAuditable": "Paquete forense recolectado antes del reciclado de VM y validación de integridad de imagen base y perfil FSLogix.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Playbook operativo derivado de las restricciones técnicas de entornos VDI efímeros y capacidades Live Response de MDE.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-endpoint/configure-endpoints-vdi", "pasosDetallados": ["**Congelamiento antes de destrucción de sesión:** Coordinar inmediatamente con el equipo VDI (Citrix/Horizon/AVD) para poner el host en modo mantenimiento/drenaje evitando que el cierre de sesión destruya el disco volátil, mientras SOC L2 lanza **Collect investigation package** y **Live Response** inmediato `[Decisión / Propuesta Editorial]`.", "**Verificación de la imagen base:** Comprobar mediante *Advanced hunting* (`DeviceFileEvents` / `DeviceProcessEvents`) si el artefacto malicioso provino de la sesión del usuario, del contenedor de perfil FSLogix o de contaminación previa de la imagen maestra; si hay compromiso en el contenedor FSLogix, poner en cuarentena el `.VHDX` afectado y revocar tokens del usuario `[Decisión / Propuesta Editorial]`.  ---"], "disparadorAlerta": "Incidente de severidad Alta o Crítica originado en un dispositivo con etiqueta `VDI=NonPersistent` `[Verificado MS Learn]` / `[Decisión / Propuesta Editorial]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}], "consultasKQLyVerificacion": [{"nombre": "Detección de fallos silenciosos de sensores EDR y endpoints sin reporte en 24h", "plataforma": "Microsoft Defender XDR Advanced Hunting", "tablaPrincipal": "DeviceInfo", "consulta": "DeviceInfo | summarize arg_max(Timestamp, *) by DeviceId | where OnboardingStatus == 'Onboarded' | where Timestamp < ago(24h) or SensorHealthState != 'Active' | project DeviceName, OSPlatform, OSVersion, SensorHealthState, ExposureLevel, Timestamp, PublicIP | extend HorasSinSenal = datetime_diff('hour', now(), Timestamp) | order by HorasSinSenal desc", "proposito": "Identificar dispositivos incorporados con sensor degradado o sin telemetría reciente para remediación inmediata.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Caza de procesos hijos sospechosos desde Office/PDF y comandos PowerShell ofuscados", "plataforma": "Microsoft Defender XDR Advanced Hunting", "tablaPrincipal": "DeviceProcessEvents", "consulta": "DeviceProcessEvents | where Timestamp > ago(7d) | where (InitiatingProcessFileName in~ ('winword.exe','excel.exe','powerpnt.exe','outlook.exe','acrord32.exe') and FileName in~ ('powershell.exe','pwsh.exe','cmd.exe','wscript.exe','cscript.exe','mshta.exe','rundll32.exe','regsvr32.exe')) or (FileName in~ ('powershell.exe','pwsh.exe') and ProcessCommandLine has_any ('-enc','-EncodedCommand','FromBase64String','DownloadString','comsvcs.dll')) | project Timestamp, DeviceName, AccountName, InitiatingProcessFileName, FileName, ProcessCommandLine, SHA256 | order by Timestamp desc", "proposito": "Detectar técnicas de ejecución inicial, abuso de LOLBins, scripts codificados y volcado de memoria.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Validación de Configuración y Postura"}, {"nombre": "Detección de barrido de movimiento lateral interno por SMB, RDP y WinRM", "plataforma": "Microsoft Defender XDR Advanced Hunting", "tablaPrincipal": "DeviceNetworkEvents", "consulta": "DeviceNetworkEvents | where Timestamp > ago(7d) | where ActionType == 'ConnectionSuccess' and RemotePort in (445, 3389, 5985, 5986, 135) and RemoteIPType == 'Private' | summarize DestinosUnicos = dcount(RemoteIP), ListaIPs = make_set(RemoteIP, 15) by DeviceId, DeviceName, InitiatingProcessAccountName, InitiatingProcessFileName, bin(Timestamp, 1h) | where DestinosUnicos >= 10 | order by DestinosUnicos desc", "proposito": "Identificar estaciones comprometidas que enumeran o se conectan lateralmente a múltiples hosts internos en una ventana corta.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Rastreo de creación de ejecutables y scripts en carpetas temporales desde navegadores o correo", "plataforma": "Microsoft Defender XDR Advanced Hunting", "tablaPrincipal": "DeviceFileEvents", "consulta": "DeviceFileEvents | where Timestamp > ago(7d) and ActionType == 'FileCreated' | where FileName endswith '.exe' or FileName endswith '.dll' or FileName endswith '.ps1' or FileName endswith '.vbs' or FileName endswith '.hta' | where FolderPath has_any ('\\\\AppData\\\\Local\\\\Temp\\\\','\\\\Downloads\\\\','\\\\Users\\\\Public\\\\') and InitiatingProcessFileName in~ ('msedge.exe','chrome.exe','firefox.exe','outlook.exe','teams.exe') | project Timestamp, DeviceName, InitiatingProcessFileName, FolderPath, FileName, SHA256, FileOriginUrl | order by Timestamp desc", "proposito": "Auditar el ingreso de payloads descargados por usuarios antes o durante fases iniciales de intrusión.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Auditoría de intentos de TamperingAttempt y eventos de las 19 reglas ASR", "plataforma": "Microsoft Defender XDR Advanced Hunting", "tablaPrincipal": "DeviceEvents", "consulta": "DeviceEvents | where Timestamp > ago(14d) | where ActionType == 'TamperingAttempt' or ActionType startswith 'Asr' | summarize TotalEventos = count(), DispositivosAfectados = dcount(DeviceId), ProcesosOrigen = make_set(InitiatingProcessFileName, 10) by ActionType | order by TotalEventos desc", "proposito": "Monitorear intentos de desactivar defensas y medir eventos Audit/Block/WarnBypassed de las reglas ASR para tuning.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Priorización de dispositivos afectados por CVEs críticos con código de exploit público", "plataforma": "Microsoft Defender XDR Advanced Hunting", "tablaPrincipal": "DeviceTvmSoftwareVulnerabilities / DeviceTvmSoftwareVulnerabilitiesKB", "consulta": "DeviceTvmSoftwareVulnerabilities | where VulnerabilitySeverityLevel == 'Critical' | join kind=inner (DeviceTvmSoftwareVulnerabilitiesKB | where IsExploitAvailable == 1 | project CveId, CvssScore, PublishedDate) on CveId | summarize DispositivosExpuestos = dcount(DeviceId), EjemplosHosts = make_set(DeviceName, 10), ParchesRecomendados = make_set(RecommendedSecurityUpdate) by CveId, CvssScore, SoftwareVendor, SoftwareName | order by DispositivosExpuestos desc, CvssScore desc", "proposito": "Enfocar las campañas semanales de parcheo e Intune Security Tasks sobre vulnerabilidades críticas explotables.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Validación de frescura de escaneo de inventario de vulnerabilidades por endpoint", "plataforma": "Microsoft Defender XDR Advanced Hunting", "tablaPrincipal": "DeviceTvmSoftwareInventory", "consulta": "DeviceInfo | summarize arg_max(Timestamp, *) by DeviceId | where OnboardingStatus == 'Onboarded' and SensorHealthState == 'Active' | join kind=leftanti (DeviceTvmSoftwareInventory | distinct DeviceId) on DeviceId | project DeviceName, OSPlatform, Timestamp", "proposito": "Detectar dispositivos activos que no están reportando inventario de software hacia Defender Vulnerability Management.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Validación de Configuración y Postura"}], "kpisYMetricas": [{"id": "KPI-01", "nombre": "Cobertura efectiva de incorporación MDE (Onboarding Coverage)", "definicion": "Porcentaje de endpoints y servidores elegibles descubiertos en la red que cuentan con el sensor MDE incorporado.", "formula": "(Dispositivos Onboarded / (Onboarded + Can be onboarded)) * 100 en Assets > Devices", "metaSugerida": ">= 98% en estaciones de trabajo/VDI y 100% en servidores críticos", "frecuencia": "Semanal", "audiencia": "Endpoint Security Admin / IT Operations / CISO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Calculado con Standard Device Discovery habilitado; el umbral del 98% es propuesta editorial."}, {"id": "KPI-02", "nombre": "Tasa de salud activa de sensores EDR y actualidad antimalware", "definicion": "Porcentaje de dispositivos activos con SensorHealthState == 'Active' y definiciones Security Intelligence menores a 48 horas.", "formula": "(Equipos activos saludables y actualizados / Total equipos activos) * 100", "metaSugerida": ">= 96% sostenido", "frecuencia": "Diaria", "audiencia": "Endpoint Security Admin / SOC Lead", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Basado en los reportes oficiales Sensor health & OS y Microsoft Defender Antivirus health."}, {"id": "KPI-03", "nombre": "Tiempo hasta aislamiento o contención de endpoint comprometido (MTTC-EP p50 / p90)", "definicion": "Tiempo transcurrido desde la detección de un incidente Crítico/Alto en endpoint hasta la ejecución de Isolate/Contain device.", "formula": "percentiles(Timestamp_Contencion - CreatedTime, 50, 90) cruzando incidentes con Action Center", "metaSugerida": "p50 < 15 minutos; p90 < 45 minutos", "frecuencia": "Semanal", "audiencia": "SOC Lead / CISO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Mide velocidad real de corte de movimiento lateral y C2 en la flota de endpoints."}, {"id": "KPI-04", "nombre": "Cobertura de las 19 reglas ASR en modo Block", "definicion": "Proporción de las reglas Attack Surface Reduction aplicables que operan efectivamente en modo Block (código 1) en producción.", "formula": "Reglas ASR en modo Block / Total reglas ASR aplicables (18 en estaciones Windows, 19 incluyendo Exchange)", "metaSugerida": "3/3 Standard protection rules en Block y >= 14 reglas totales en Block en estaciones corporativas", "frecuencia": "Mensual", "audiencia": "Security Architect / CISO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Indicador interno de madurez preventiva sobre el catálogo real de 19 reglas ASR de Microsoft Learn."}, {"id": "KPI-05", "nombre": "Cobertura efectiva de Tamper Protection / Controlled Configuration", "definicion": "Porcentaje de dispositivos elegibles protegidos activamente contra desactivación de controles y modificación de exclusiones.", "formula": "(Dispositivos con Tamper Protection Enabled o Block / Total dispositivos elegibles) * 100", "metaSugerida": ">= 99% (permitiendo únicamente ventanas temporales auditadas en Troubleshooting mode)", "frecuencia": "Semanal", "audiencia": "Endpoint Security Admin / GRC", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Verificable mediante la recomendación 'Turn on Tamper Protection' en MDVM e Intune."}, {"id": "KPI-06", "nombre": "Organizational Exposure Score en Defender Vulnerability Management", "definicion": "Puntaje global continuo de exposición a vulnerabilidades de dispositivos calculado por MDVM (escala 0 a 100, donde menor es mejor).", "formula": "Métrica nativa en Exposure management > Vulnerability management > Dashboard", "metaSugerida": "Exposure Score < 30 (Low exposure) o reducción neta trimestral sostenida", "frecuencia": "Semanal", "audiencia": "Vulnerability Lead / CISO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "La escala 0-100 es oficial de MDVM; el objetivo < 30 corresponde al tramo Low exposure."}, {"id": "KPI-07", "nombre": "Cumplimiento de SLA de remediación en CVEs Críticos con exploit activo", "definicion": "Porcentaje de exposiciones críticas con código de exploit público remediadas dentro del plazo objetivo.", "formula": "(Instancias CVE Críticas con exploit cerradas en plazo / Total detectadas en el período) * 100", "metaSugerida": ">= 90% en <= 7 días (<= 48 horas para activos expuestos o críticos)", "frecuencia": "Semanal", "audiencia": "IT Operations / Vulnerability Lead / CISO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Medido sobre DeviceTvmSoftwareVulnerabilities cruzado con IsExploitAvailable == 1."}, {"id": "KPI-08", "nombre": "Adopción del nivel Full Automation en grupos de dispositivos", "definicion": "Porcentaje de endpoints estándar cubiertos por Device groups configurados en 'Full - remediate threats automatically'.", "formula": "(Dispositivos en grupos Full automation / Total dispositivos incorporados) * 100", "metaSugerida": ">= 90% en estaciones de usuario (manteniendo supervisión Semi solo donde sea estrictamente necesario)", "frecuencia": "Mensual", "audiencia": "SOC Manager / Endpoint Security Admin", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Microsoft Learn recomienda explícitamente Full automation para maximizar remoción automática de malware."}], "mapeoNISTCSF20": [{"funcion": "GOVERN (GV)", "subcategoria": "GV.RR-02", "descripcionResultado": "Los roles, responsabilidades y autoridades relacionados con la gestión de riesgos de ciberseguridad están establecidos, comunicados y aplicados.", "capacidadMicrosoft": "Segregación granular en Unified RBAC (Basic vs. Advanced live response, Core security settings) e Intune Endpoint Security Manager, junto con niveles de automatización por Device group.", "evidenciaAuditoria": "Exportación de roles URBAC, configuración de Device groups y bitácora auditada de sesiones Live Response.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "GOVERN (GV)", "subcategoria": "GV.OV-01", "descripcionResultado": "Los resultados de la estrategia de gestión de riesgos de ciberseguridad se revisan para informar y ajustar la estrategia y dirección.", "capacidadMicrosoft": "Monthly Security Summary de MDE, evolución de Exposure Score y Microsoft Secure Score for Devices.", "evidenciaAuditoria": "Reportes PDF mensuales de los últimos 90 días y actas de revisión del CISO.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.AM-01", "descripcionResultado": "Se mantienen inventarios de hardware gestionado por la organización.", "capacidadMicrosoft": "Device Inventory multiplataforma (Windows, Server, macOS, Linux, iOS, Android, VDI) complementado por Standard Device Discovery.", "evidenciaAuditoria": "Exportación CSV de Assets > Devices y reportes de salud y cobertura de sensores.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.AM-02", "descripcionResultado": "Se mantienen inventarios de software, servicios y sistemas.", "capacidadMicrosoft": "Inventario continuo de software, versiones, estado End-of-Support (EOS) y uso real en Defender Vulnerability Management (DeviceTvmSoftwareInventory).", "evidenciaAuditoria": "Exportación de inventario de software instalado y plan de mitigación de activos EOS.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.RA-01", "descripcionResultado": "Se identifican, validan y registran las vulnerabilidades en los activos.", "capacidadMicrosoft": "Evaluación continua de CVEs y configuraciones en MDVM Core (DeviceTvmSoftwareVulnerabilities) más evaluación CIS/STIG, certificados, extensiones y firmware en MDVM Add-on.", "evidenciaAuditoria": "Listado priorizado de Weaknesses, Security Tasks en Intune y registro de CVE exceptions.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.PS-01", "descripcionResultado": "Se establecen y aplican prácticas de gestión de configuración.", "capacidadMicrosoft": "Endpoint Security Policies (Intune/Defender), catálogo de 19 reglas Attack Surface Reduction y vista Effective settings por dispositivo.", "evidenciaAuditoria": "Exportación de políticas ASR activas, consulta KQL de eventos Asr*Blocked y matriz firmada de exclusiones por regla.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.PS-05", "descripcionResultado": "Se previene la instalación y ejecución de software no autorizado.", "capacidadMicrosoft": "Next-Generation Protection, Tamper Protection / Controlled Configuration, Device Control (USB/periféricos), Restrict app execution y Block vulnerable applications (MDVM Add-on).", "evidenciaAuditoria": "Reporte de estado de Tamper Protection, políticas y eventos de Device Control e historial del Action Center.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.CM-09", "descripcionResultado": "El hardware, software, entornos de ejecución y sus datos se monitorean para encontrar eventos potencialmente adversos.", "capacidadMicrosoft": "Telemetría continua del sensor EDR (procesos, red, archivos, registro, DLLs, kernel) con 6 meses en Device Timeline y 30 días en tablas KQL de Advanced Hunting.", "evidenciaAuditoria": "Evidencia de retención en Device Timeline, consultas de caza guardadas y alertas EDR.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.AE-02", "descripcionResultado": "Los eventos potencialmente adversos se analizan para comprender mejor las actividades asociadas.", "capacidadMicrosoft": "Árbol de procesos EDR, correlación de alertas en incidentes XDR con etiquetas de sensibilidad de datos e informes contextuales de Threat Analytics.", "evidenciaAuditoria": "Muestra de incidentes de endpoint cerrados con análisis técnico y técnicas MITRE ATT&CK documentadas.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.MI-01", "descripcionResultado": "Los incidentes son contenidos.", "capacidadMicrosoft": "Isolate device (Full/Selective), Contain device, Contain IP, Contain user, indicadores IoC Alert and block y EDR in block mode.", "evidenciaAuditoria": "Exportación CSV de Action Center > History registrando acciones y tiempos de aislamiento/contención.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.AN-07", "descripcionResultado": "Los datos y metadatos del incidente se recolectan preservando su integridad y procedencia.", "capacidadMicrosoft": "Collect investigation package (ZIP forense integral) y consola interactiva Live Response con Command log inmutable.", "evidenciaAuditoria": "Registro de paquetes de investigación recolectados y auditoría del Command log por sesión Live Response.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RECOVER (RC)", "subcategoria": "RC.RP-05", "descripcionResultado": "Se verifica la integridad de los activos restaurados, se restauran los sistemas y servicios y se confirma el funcionamiento normal.", "capacidadMicrosoft": "Escaneo completo de validación, restauración o liberación controlada desde Action Center (Undo / Release from isolation) y reaprovisionamiento limpio en VDI.", "evidenciaAuditoria": "Trazabilidad completa en Action Center del ciclo aislamiento -> remediación -> verificación -> liberación.", "estadoValidacion": "Propuesta Editorial"}], "validacionYDecisionesEditoriales": {"fechaRevalidacion": "2026-11-11", "resumenAuditoria": "El módulo 04_Microsoft_Defender_for_Endpoint fue consolidado desde los documentos fuente de MSEOP-MD (incluyendo el anexo empresarial para VDI no persistente) y auditado exhaustivamente contra Microsoft Learn MCP en noviembre de 2026. Se corrigió el conteo erróneo de '13 reglas ASR' al catálogo oficial vigente de 19 reglas ASR (junto con sus GUIDs exactos, reglas sin soporte Warn y el requisito 2026 de aprobación de administrador en modo Warn), se incorporó el cambio arquitectónico del 1 de septiembre de 2026 sobre la integración de AIR en la pila predeterminada de Defender Antivirus, se precisaron los alcances de licenciamiento MDVM Core vs. Add-on y servidores, y se validaron límites técnicos de Live Response, Tamper Protection / Controlled Configuration y tablas KQL.", "correccionesAplicadas": ["Corrección del catálogo de reglas Attack Surface Reduction (ASR): se reemplazó la referencia desactualizada a '13 reglas ASR' del borrador previo por las 19 reglas ASR oficiales vigentes en Microsoft Learn (3 Standard protection rules + 16 Other ASR rules), incorporando las 6 reglas omitidas (Adobe Reader, prevalencia/edad/lista confiable, Outlook child process, Safe Mode reboot, herramientas de sistema copiadas/suplantadas y Webshell para Exchange), corrigiendo la errata del GUID de LSASS a 9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2 y eliminando porcentajes de eficacia ('80-90%' / '95%') no publicados por Microsoft.", "Actualización de modos, precedencia y controles 2026 en reglas ASR: se documentaron los 5 códigos de modo (0 Disabled, 1 Block, 2 Audit, 5 Not configured, 6 Warn), las 2 reglas que no soportan modo Warn (LSASS e inyección Office), el requisito de aprobación de administrador para usar Unblock en modo Warn introducido en la plataforma 4.18.26060, la precedencia predeterminada de GPO sobre MDM salvo MDMWinsOverGP y la exigencia de Defender Antivirus en Active mode.", "Incorporación del cambio oficial de Automated Investigation and Response (AIR) del 1 de septiembre de 2026: se precisó que en MDE AIR ya no corre como experiencia separada ni con disparo manual, sino integrada automáticamente dentro de la pila predeterminada de Microsoft Defender Antivirus (usando escaneo AV completo para inspecciones bajo demanda), manteniendo niveles por Device group y gestión en Action Center.", "Delimitación rigurosa de Microsoft Defender Vulnerability Management (MDVM) y licenciamiento de servidores: se actualizó la ruta bajo Exposure management en security.microsoft.com, separando las 9 capacidades Core incluidas en MDE P2 / M365 E5 de las 6 capacidades Premium del MDVM Add-on / Standalone (y Defender for Servers Plan 2), aclarando además que las licencias de usuario M365 E5 no cubren servidores y que el escaneo autenticado de Windows fue retirado.", "Actualización de Tamper Protection y Controlled Configuration multiplataforma: se incorporó el renombre en experiencias de gestión hacia Controlled configuration, la protección de listas de exclusiones AV administradas, el uso de Troubleshooting mode, los modos Disabled/Audit/Block en macOS, el modo Audit (Preview) en Linux y la consulta KQL oficial ActionType == 'TamperingAttempt'.", "Revalidación de capacidades y límites de Live Response: se añadió soporte para descargas en segundo plano (getfile <path> & y fg <command_id>), administración desde Library management y límites vigentes (50 sesiones por tenant, 5 por usuario, 1 por dispositivo, timeout 30 min, getfile 3 GB, library 250 MB, putfile 300 MB en Windows / 10 MB otras plataformas).", "Validación técnica del anexo para VDI no persistente contra configure-endpoints-vdi: confirmación del modelo Single entry (Onboard-NonPersistentMachine.ps1 ejecutado tras hostname definitivo), secuencia oficial de limpieza de senseGuid como SYSTEM con PsExec.exe en imágenes maestras, exclusiones FSLogix (*.VHD/*.VHDX) y protocolo forense inmediato antes del reciclado de sesiones."], "decisionesEditoriales": [{"elemento": "Acuerdos de nivel de servicio (SLA) para triaje, aislamiento (MTTC < 15-45 min) y remediación de CVEs (<= 7 días / <= 48 h)", "tipo": "Propuesta Editorial", "justificacion": "Microsoft Learn provee severidades, puntaje de exposición y explotabilidad, dejando a cada organización fijar sus objetivos de tiempo según criticidad y ventanas de cambio."}, {"elemento": "Métrica interna de madurez 'N/19 reglas ASR en modo Block' (meta >= 14 en estaciones)", "tipo": "Propuesta Editorial", "justificacion": "Microsoft recomienda las 3 reglas estándar en Block y pruebas en Audit para el resto; la fracción sobre 19 reglas es un indicador consultivo interno de endurecimiento, no un score oficial."}, {"elemento": "Parámetros específicos de ajuste de rendimiento en VDI de alta densidad (ScanAvgCPULoadFactor 25-30% y aleatorización de 30 min)", "tipo": "Propuesta Editorial", "justificacion": "Valores recomendados por experiencia de arquitectura empresarial y guías de la comunidad técnica sobre cmdlets soportados de Microsoft Defender Antivirus."}, {"elemento": "Perfiles de roles personalizados URBAC por nivel SOC (Tier 1, Tier 2, Tier 3 DFIR, SecAdmin, VM) y duraciones JIT en PIM", "tipo": "Propuesta Editorial", "justificacion": "Agrupación organizacional de mínimo privilegio construida sobre los permisos granulares oficiales de Microsoft Defender Unified RBAC y Microsoft Intune."}, {"elemento": "Modelo de madurez de 4 estadios y mapeo detallado de capacidades MDE/MDVM a subcategorías NIST CSF 2.0", "tipo": "Propuesta Editorial", "justificacion": "Mapeo auditable que vincula outcomes oficiales de NIST CSWP 29 con evidencias técnicas verificables generadas por MDE y MDVM."}]}, "referenciasVerificadas": [{"id": "REF-01", "titulo": "Microsoft Defender for Endpoint Security Operations Guide", "url": "https://learn.microsoft.com/en-us/defender-endpoint/mde-sec-ops-guide", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Guía oficial de actividades operativas diarias, semanales, mensuales y periódicas para equipos SecOps y SecAdmin sobre MDE.", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-02", "titulo": "Attack surface reduction (ASR) rules reference", "url": "https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction-rules-reference", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Referencia técnica canónica de las 19 reglas ASR, GUIDs, soporte por SO, métodos de despliegue y eventos Advanced Hunting.", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-03", "titulo": "Attack surface reduction (ASR) rules overview", "url": "https://learn.microsoft.com/en-us/defender-endpoint/attack-surface-reduction-rules-overview", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Modos ASR (0, 1, 2, 5, 6), aprobación de admin para Unblock en modo Warn (plataforma 4.18.26060), precedencia GPO vs. MDM y exclusiones por regla.", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-04", "titulo": "Automation levels in automated investigation and remediation capabilities", "url": "https://learn.microsoft.com/en-us/defender-endpoint/automation-levels", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Documenta la integración de AIR en la pila antivirus predeterminada desde el 1 de septiembre de 2026 y los niveles Full/Semi por Device group.", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-05", "titulo": "Tamper protection overview", "url": "https://learn.microsoft.com/en-us/defender-endpoint/prevent-changes-to-security-settings-with-tamper-protection", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Modos de Tamper Protection en Windows, macOS y Linux (Preview), Controlled configuration, protección de exclusiones y caza con TamperingAttempt.", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-06", "titulo": "Investigate entities on devices using live response", "url": "https://learn.microsoft.com/en-us/defender-endpoint/live-response", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Comandos básicos y avanzados de Live Response, descargas en segundo plano, Library management, permisos y límites de sesión.", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-07", "titulo": "Compare Microsoft Defender Vulnerability Management plans and capabilities", "url": "https://learn.microsoft.com/en-us/defender-vulnerability-management/defender-vulnerability-management-capabilities", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Matriz oficial comparativa entre capacidades MDVM Core (MDE Plan 2 / E5), MDVM Add-on / Standalone y Defender for Servers Plan 1/2.", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-08", "titulo": "Onboard non-persistent VDI devices to Microsoft Defender for Endpoint", "url": "https://learn.microsoft.com/en-us/defender-endpoint/configure-endpoints-vdi", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Guía oficial para incorporación de escritorios VDI no persistentes (modelo Single entry y limpieza de senseGuid con PsExec).", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-09", "titulo": "Take response actions on a device in Microsoft Defender for Endpoint", "url": "https://learn.microsoft.com/en-us/defender-endpoint/respond-machine-alerts", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Detalle operativo de Isolate device, Contain device/IP/user, Restrict app execution, Collect investigation package y Predictive Shielding.", "verificacion": "Verificado vía Microsoft Learn (Nov 2026)"}, {"id": "REF-10", "titulo": "Endpoint detection and response (EDR) in block mode", "url": "https://learn.microsoft.com/en-us/defender-endpoint/edr-in-block-mode", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Protección post-brecha activa cuando Microsoft Defender Antivirus opera en modo pasivo junto a un antivirus primario de terceros.", "verificacion": "Verificado vía Microsoft Learn (Nov 2026)"}, {"id": "REF-11", "titulo": "Become a Microsoft Defender for Endpoint Ninja", "url": "https://techcommunity.microsoft.com/blog/microsoftdefenderatpblog/become-a-microsoft-defender-for-endpoint-ninja/1515647", "tipoFuente": "Empleado Microsoft", "autor": "Heike Ritter (Microsoft)", "comentario": "Ruta oficial Ninja Training para roles SecOps y SecAdmin en Microsoft Defender for Endpoint (versión 45 actualizada en 2026).", "verificacion": "Verificado en directorio curado Ninja Training (Nov 2026)"}, {"id": "REF-12", "titulo": "MDE for Non-Persistent VDI — Implementation Guide & Best Practices", "url": "https://techcommunity.microsoft.com/blog/coreinfrastructureandsecurityblog/mde-for-non%E2%80%91persistent-vdi-%E2%80%94-implementation-guide--best-practices-/4470439", "tipoFuente": "Blog Oficial Microsoft", "autor": "Microsoft Core Infrastructure and Security Blog", "comentario": "Mejores prácticas de campo de Microsoft para exclusiones FSLogix, ajuste de CPU y despliegue a gran escala en VDI no persistente.", "verificacion": "Verificado en anexo técnico VDI y Microsoft Tech Community"}, {"id": "REF-13", "titulo": "Microsoft Defender XDR demonstrates 100% detection coverage in the 2024 MITRE ATT&CK Evaluations: Enterprise", "url": "https://www.microsoft.com/en-us/security/blog/2024/12/11/microsoft-defender-xdr-demonstrates-100-detection-coverage-across-all-cyberattack-stages-in-the-2024-mitre-attck-evaluations-enterprise/", "tipoFuente": "Blog Oficial Microsoft", "autor": "Microsoft Security", "comentario": "Evidencia pública de evaluación independiente sobre cobertura de detección en toda la cadena de ataque.", "verificacion": "Verificado en fuentes consolidadas y Microsoft Security Blog"}, {"id": "REF-14", "titulo": "Jeffrey Appel Technical Blog — Defender for Endpoint, ASR, VDI & Vulnerability Management", "url": "https://jeffreyappel.nl/", "tipoFuente": "MVP Seguridad", "autor": "Jeffrey Appel (Microsoft Security MVP)", "comentario": "Guías profundas de configuración, optimización de firmas VDI, reglas ASR y arquitectura MDE mantenidas por un MVP de Seguridad.", "verificacion": "Verificado en directorio de referentes Ninja Training (Nov 2026)"}, {"id": "REF-15", "titulo": "FalconFriday — Detection Engineering & KQL Queries for MDE", "url": "https://github.com/FalconForceTeam/FalconFriday/blob/main/README.md", "tipoFuente": "MVP Seguridad", "autor": "Olaf Hartong (Microsoft Security MVP, FalconForce)", "comentario": "Repositorio técnico de ingeniería de detecciones KQL sobre telemetría de endpoint mapeado a MITRE ATT&CK.", "verificacion": "Verificado en directorio de referentes Ninja Training (Nov 2026)"}, {"id": "REF-16", "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (CSWP 29)", "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf", "tipoFuente": "Marco Normativo", "autor": "National Institute of Standards and Technology (NIST)", "comentario": "Marco normativo oficial de resultados (outcomes) sobre las 6 funciones GV, ID, PR, DE, RS y RC.", "verificacion": "Verificado contra publicación oficial NIST"}], "validacionesConfiguracion": [{"control": "Cobertura de Onboarding y Salud del Sensor MDE", "comoValidar": "security.microsoft.com > Assets > Devices (filtrar Onboarding status = Onboarded vs. Can be onboarded y Sensor health state = Active).", "estadoEsperado": ">= 98 % de endpoints elegibles Onboarded, SensorHealthState = Active y definiciones antimalware < 48 horas.", "origen": "Verificado MS Learn"}, {"control": "Tamper Protection Global y Protección contra Manipulación", "comoValidar": "Settings > Endpoints > Advanced features > Tamper protection e Intune > Endpoint security > Antivirus + consulta DeviceEvents (TamperingAttempt).", "estadoEsperado": "Tamper Protection = On en todo el tenant; cualquier Troubleshooting mode temporal auditado y expirado en <= 3 horas.", "origen": "Verificado MS Learn"}, {"control": "Reglas Attack Surface Reduction (ASR) y Network Protection", "comoValidar": "intune.microsoft.com > Endpoint security > Attack surface reduction y Reports > Microsoft Defender Antivirus / ASR.", "estadoEsperado": "Reglas ASR estándar en modo Block, reglas sensibles evaluadas en Audit/Warn antes de Block y Network Protection en Block.", "origen": "Verificado MS Learn"}, {"control": "Nivel de Automatización AIR (Full Automation) en Device Groups", "comoValidar": "security.microsoft.com > Settings > Endpoints > Permissions > Device groups (columna Automation level).", "estadoEsperado": "Full - remediate threats automatically configurado en grupos de estaciones de trabajo estándar; cero grupos sin política explícita.", "origen": "Verificado MS Learn"}, {"control": "Integración Device Compliance con Intune y Acceso Condicional", "comoValidar": "Settings > Endpoints > Advanced features > Microsoft Intune connection = On y política de cumplimiento con nivel de riesgo MDE.", "estadoEsperado": "Señal de riesgo de dispositivo MDE fluyendo en minutos hacia Intune y bloqueando sesiones en Entra Conditional Access ante riesgo High.", "origen": "Verificado MS Learn"}, {"control": "Gobierno de Live Response y Exclusiones Antivirus", "comoValidar": "Settings > Endpoints > Advanced features > Live response y auditoría de perfiles de exclusiones AV en Intune.", "estadoEsperado": "Live response restringido por URBAC, unsigned scripts deshabilitados por defecto y cero exclusiones globales de rutas críticas (C:\\*, Temp).", "origen": "Verificado MS Learn"}], "modeloMadurez": [{"nivel": "**Nivel 1 — Básico (Solo Antivirus Reactivo)**", "estadio": "Protección basada únicamente en firmas o MDE sin gobernanza operativa.", "descripcion": "Reglas ASR sin configurar, *Tamper Protection* parcial, exclusiones AV amplias heredadas, sin uso de *Action Center* ni flujo MDVM."}, {"nivel": "**Nivel 2 — Estandarizado (EPP + EDR Operativo)**", "estadio": "Cobertura > 95 %, *Tamper Protection* al 99 %, las 3 *Standard ASR rules* en `Block` y triaje diario de incidentes MDE.", "descripcion": "*Full automation* activo en estaciones estándar; revisión diaria de salud de sensores y *Action Center*; onboarding VDI con *Single entry* sin duplicados."}, {"nivel": "**Nivel 3 — Proactivo (Hardening ASR + MDVM Basado en Riesgo + DFIR)**", "estadio": ">= 14 de las 19 reglas ASR en `Block` con exclusiones estrictamente por regla; ciclo semanal MDVM integrado con *Security Tasks* en Intune y uso experto de *Live Response*.", "descripcion": "Caza semanal KQL sobre `DeviceProcessEvents`/`DeviceNetworkEvents`; señales de riesgo MDE conectadas a políticas de Acceso Condicional en Entra ID."}, {"nivel": "**Nivel 4 — Optimizado (Zero Trust Continuo y Resiliencia Autónoma)**", "estadio": "Perímetro preventivo endurecido (*Controlled configuration*, *Device Control*, *Predictive Shielding*), forensia automatizada incluso en VDI efímero y validación trimestral Purple Team.", "descripcion": "*Exposure Score* bajo (< 30), cero exclusiones globales injustificadas, MTTC en minutos y evidencias continuas listas para auditoría NIST CSF 2.0."}], "rutaFormacion": {"headers": ["Rol Objetivo", "Ruta Oficial y Comunitaria Recomendada (Noviembre 2026)", "Certificación Asociada"], "rows": [["**SOC Operator (L1) e Incident Responder (L2)**", "*Become a Microsoft Defender for Endpoint Ninja* — Track **SecOps** (Heike Ritter, v45 actualizado ago/sep 2026), *MDE Security Operations Guide* y práctica guiada de *Live Response* y *Action Center*.", "**SC-200** (*Security Operations Analyst Associate*) `[Verificado MS Learn]`"], ["**Endpoint Security Admin y VDI Engineer**", "*MDE Ninja Training* — Track **SecAdmin**, guía oficial de despliegue en **VDI no persistente**, catálogo de las **19 reglas ASR** y guías de optimización de Jeffrey Appel (MVP).", "**MD-102** (*Endpoint Administrator*) / **MS-102** + **SC-300** `[Verificado MS Learn]` / `[Decisión / Propuesta Editorial]`"], ["**Threat Hunter (L3) y Detection Engineer**", "Consultas avanzadas sobre tablas `Device*` y `DeviceTvm*`, repositorio **FalconFriday** (Olaf Hartong, MVP) y repositorio de caza KQL de Alex Verboon (MVP).", "**SC-200** + validación práctica Purple Team `[Decisión / Propuesta Editorial]`"], ["**Vulnerability Lead, Architect y CISO / GRC**", "*Become a Microsoft Defender Vulnerability Management Ninja*, integración con *Microsoft Security Exposure Management* y arquitectura Zero Trust de endpoints.", "**SC-100** (*Cybersecurity Architect Expert*) `[Verificado MS Learn]`"]]}};
+const NAV_INDEX = [{"id": "00_Marco_Maestro_CISO_SOC_y_NIST", "orden": 0, "folder": "00_Marco_Maestro_CISO_SOC_y_NIST", "slug": "Marco_Maestro_CISO_SOC_y_NIST", "nombreCorto": "Marco Maestro CISO, SOC y NIST", "categoria": "Marco Transversal CISO, SOC y NIST", "htmlRel": "../00_Marco_Maestro_CISO_SOC_y_NIST/Marco_Maestro_CISO_SOC_y_NIST_Guia_Excelencia_Operacional.html"}, {"id": "01_Microsoft_Entra_ID", "orden": 1, "folder": "01_Microsoft_Entra_ID", "slug": "Microsoft_Entra_ID", "nombreCorto": "Microsoft Entra ID", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../01_Microsoft_Entra_ID/Microsoft_Entra_ID_Guia_Excelencia_Operacional.html"}, {"id": "02_Microsoft_Entra_ID_Governance", "orden": 2, "folder": "02_Microsoft_Entra_ID_Governance", "slug": "Microsoft_Entra_ID_Governance", "nombreCorto": "Microsoft Entra ID Governance", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../02_Microsoft_Entra_ID_Governance/Microsoft_Entra_ID_Governance_Guia_Excelencia_Operacional.html"}, {"id": "03_Microsoft_Defender_XDR", "orden": 3, "folder": "03_Microsoft_Defender_XDR", "slug": "Microsoft_Defender_XDR", "nombreCorto": "Defender XDR", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../03_Microsoft_Defender_XDR/Microsoft_Defender_XDR_Guia_Excelencia_Operacional.html"}, {"id": "04_Microsoft_Defender_for_Endpoint", "orden": 4, "folder": "04_Microsoft_Defender_for_Endpoint", "slug": "Microsoft_Defender_for_Endpoint", "nombreCorto": "Defender for Endpoint", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../04_Microsoft_Defender_for_Endpoint/Microsoft_Defender_for_Endpoint_Guia_Excelencia_Operacional.html"}, {"id": "05_Microsoft_Defender_for_Office_365", "orden": 5, "folder": "05_Microsoft_Defender_for_Office_365", "slug": "Microsoft_Defender_for_Office_365", "nombreCorto": "Defender for Office 365", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../05_Microsoft_Defender_for_Office_365/Microsoft_Defender_for_Office_365_Guia_Excelencia_Operacional.html"}, {"id": "06_Microsoft_Defender_for_Identity", "orden": 6, "folder": "06_Microsoft_Defender_for_Identity", "slug": "Microsoft_Defender_for_Identity", "nombreCorto": "Defender for Identity", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../06_Microsoft_Defender_for_Identity/Microsoft_Defender_for_Identity_Guia_Excelencia_Operacional.html"}, {"id": "07_Microsoft_Defender_for_Cloud_Apps", "orden": 7, "folder": "07_Microsoft_Defender_for_Cloud_Apps", "slug": "Microsoft_Defender_for_Cloud_Apps", "nombreCorto": "Defender for Cloud Apps", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../07_Microsoft_Defender_for_Cloud_Apps/Microsoft_Defender_for_Cloud_Apps_Guia_Excelencia_Operacional.html"}, {"id": "08_Microsoft_Sentinel", "orden": 8, "folder": "08_Microsoft_Sentinel", "slug": "Microsoft_Sentinel", "nombreCorto": "Microsoft Sentinel", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../08_Microsoft_Sentinel/Microsoft_Sentinel_Guia_Excelencia_Operacional.html"}, {"id": "09_Microsoft_Security_Copilot", "orden": 9, "folder": "09_Microsoft_Security_Copilot", "slug": "Microsoft_Security_Copilot", "nombreCorto": "Microsoft Security Copilot", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../09_Microsoft_Security_Copilot/Microsoft_Security_Copilot_Guia_Excelencia_Operacional.html"}, {"id": "10_Microsoft_Intune_Plan_1", "orden": 10, "folder": "10_Microsoft_Intune_Plan_1", "slug": "Microsoft_Intune_Plan_1", "nombreCorto": "Microsoft Intune Plan 1", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../10_Microsoft_Intune_Plan_1/Microsoft_Intune_Plan_1_Guia_Excelencia_Operacional.html"}, {"id": "11_Microsoft_Intune_Suite", "orden": 11, "folder": "11_Microsoft_Intune_Suite", "slug": "Microsoft_Intune_Suite", "nombreCorto": "Microsoft Intune Suite", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../11_Microsoft_Intune_Suite/Microsoft_Intune_Suite_Guia_Excelencia_Operacional.html"}, {"id": "12_Windows_Enterprise_Security_y_Cifrado", "orden": 12, "folder": "12_Windows_Enterprise_Security_y_Cifrado", "slug": "Windows_Enterprise_Security_y_Cifrado", "nombreCorto": "Windows Enterprise Security y Cifrado", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../12_Windows_Enterprise_Security_y_Cifrado/Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.html"}, {"id": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "orden": 13, "folder": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "slug": "Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "nombreCorto": "Microsoft Purview Suite", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno/Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.html"}, {"id": "14_Purview_Information_Protection", "orden": 14, "folder": "14_Purview_Information_Protection", "slug": "Purview_Information_Protection", "nombreCorto": "Purview Information Protection", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../14_Purview_Information_Protection/Purview_Information_Protection_Guia_Excelencia_Operacional.html"}, {"id": "15_Purview_Data_Loss_Prevention", "orden": 15, "folder": "15_Purview_Data_Loss_Prevention", "slug": "Purview_Data_Loss_Prevention", "nombreCorto": "Purview Data Loss Prevention", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../15_Purview_Data_Loss_Prevention/Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.html"}, {"id": "16_Purview_Data_Lifecycle_y_Records_Management", "orden": 16, "folder": "16_Purview_Data_Lifecycle_y_Records_Management", "slug": "Purview_Data_Lifecycle_y_Records_Management", "nombreCorto": "Purview DLCM y Records Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../16_Purview_Data_Lifecycle_y_Records_Management/Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.html"}, {"id": "17_Purview_Insider_Risk_Management", "orden": 17, "folder": "17_Purview_Insider_Risk_Management", "slug": "Purview_Insider_Risk_Management", "nombreCorto": "Purview Insider Risk Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../17_Purview_Insider_Risk_Management/Purview_Insider_Risk_Management_Guia_Excelencia_Operacional.html"}, {"id": "18_Purview_Communication_Compliance", "orden": 18, "folder": "18_Purview_Communication_Compliance", "slug": "Purview_Communication_Compliance", "nombreCorto": "Purview Communication Compliance", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../18_Purview_Communication_Compliance/Purview_Communication_Compliance_Guia_Excelencia_Operacional.html"}, {"id": "19_Purview_Audit_Premium", "orden": 19, "folder": "19_Purview_Audit_Premium", "slug": "Purview_Audit_Premium", "nombreCorto": "Purview Audit (Premium)", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../19_Purview_Audit_Premium/Purview_Audit_Premium_Guia_Excelencia_Operacional.html"}, {"id": "20_Purview_eDiscovery_Premium", "orden": 20, "folder": "20_Purview_eDiscovery_Premium", "slug": "Purview_eDiscovery_Premium", "nombreCorto": "Purview eDiscovery Premium", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../20_Purview_eDiscovery_Premium/Purview_eDiscovery_Premium_Guia_Excelencia_Operacional.html"}, {"id": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "orden": 21, "folder": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "slug": "Customer_Lockbox_Customer_Key_y_M365_PAM", "nombreCorto": "Customer Lockbox, Customer Key y M365 PAM", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../21_Customer_Lockbox_Customer_Key_y_M365_PAM/Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.html"}, {"id": "22_Microsoft_Agent_365", "orden": 22, "folder": "22_Microsoft_Agent_365", "slug": "Microsoft_Agent_365", "nombreCorto": "Microsoft Agent 365", "categoria": "Gobierno y Seguridad de Agentes IA", "htmlRel": "../22_Microsoft_Agent_365/Microsoft_Agent_365_Guia_Excelencia_Operacional.html"}];
+
+(() => {
+  const memStore = {};
+  const storageKey = "mseop_v3_state_" + MODULE_DATA.id;
+  function loadState() {
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      return raw ? JSON.parse(raw) : { tasks: {}, steps: {} };
+    } catch (_) {
+      return memStore[storageKey] || { tasks: {}, steps: {} };
+    }
+  }
+  function saveState(st) {
+    memStore[storageKey] = st;
+    try { window.localStorage.setItem(storageKey, JSON.stringify(st)); } catch (_) {}
+  }
+
+  let uiState = loadState();
+  if (!uiState.tasks) uiState.tasks = {};
+  if (!uiState.steps) uiState.steps = {};
+  let activeView = "view-overview";
+  let activePeriodicCad = "Diaria";
+
+  function esc(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // Converts inline Markdown (**bold**, `code`, [Verificado MS Learn], [Decisión / Propuesta Editorial]) into clean readable HTML
+  function richText(str) {
+    let s = esc(str);
+    s = s.replace(/`\[Verificado MS Learn\]`|\[Verificado MS Learn\]/g, '<span class="inline-tag tag-learn">Verificado MS Learn</span>');
+    s = s.replace(/`\[Decisión \/ Propuesta Editorial\]`|\[Decisión \/ Propuesta Editorial\]|`\[Propuesta Editorial\]`|\[Propuesta Editorial\]/g, '<span class="inline-tag tag-edit">Propuesta Editorial</span>');
+    s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    return s;
+  }
+
+  function valBadge(status) {
+    const isLearn = String(status).indexOf("Verificado") !== -1;
+    return '<span class="' + (isLearn ? "badge badge-learn" : "badge badge-editorial") + '">' + esc(status) + '</span>';
+  }
+
+  // Partition activities cleanly into Periodic vs Ad-Hoc
+  const allActs = MODULE_DATA.actividadesOperacionales || [];
+  const periodicActs = allActs.filter((a) => a.cadencia !== "Ad-Hoc");
+  const adhocActs = allActs.filter((a) => a.cadencia === "Ad-Hoc");
+  const prereqs = (MODULE_DATA.relacionM365E5 && MODULE_DATA.relacionM365E5.prerrequisitos) || [];
+  const validations = MODULE_DATA.validacionesConfiguracion || [];
+  const components = MODULE_DATA.arquitecturaYComponentes || [];
+  const rbacRoles = MODULE_DATA.rbacYRoles || [];
+
+  const dailyActs = periodicActs.filter((a) => a.cadencia === "Diaria");
+  const weeklyActs = periodicActs.filter((a) => a.cadencia === "Semanal");
+  const monthlyActs = periodicActs.filter((a) => a.cadencia === "Mensual");
+  const longCycleActs = periodicActs.filter((a) => ["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) !== -1);
+
+  // Topbar links & module switcher
+  const baseName = MODULE_DATA.slug + "_Guia_Excelencia_Operacional";
+  document.getElementById("xlsxLink").href = "./" + baseName + ".xlsx";
+  document.getElementById("mdLink").href = "./" + baseName + ".md";
+
+  const jumpSel = document.getElementById("modJumpSelect");
+  NAV_INDEX.forEach((m) => {
+    const opt = document.createElement("option");
+    opt.value = m.htmlRel;
+    opt.textContent = String(m.orden).padStart(2, "0") + " — " + m.nombreCorto;
+    if (m.id === MODULE_DATA.id) opt.selected = true;
+    jumpSel.appendChild(opt);
+  });
+  jumpSel.addEventListener("change", (e) => { if (e.target.value) window.location.href = e.target.value; });
+
+  const curIdx = NAV_INDEX.findIndex((m) => m.id === MODULE_DATA.id);
+  const prevBtn = document.getElementById("prevModBtn");
+  const nextBtn = document.getElementById("nextModBtn");
+  if (curIdx > 0) prevBtn.href = NAV_INDEX[curIdx - 1].htmlRel;
+  else { prevBtn.style.opacity = "0.4"; prevBtn.style.pointerEvents = "none"; }
+  if (curIdx >= 0 && curIdx < NAV_INDEX.length - 1) nextBtn.href = NAV_INDEX[curIdx + 1].htmlRel;
+  else { nextBtn.style.opacity = "0.4"; nextBtn.style.pointerEvents = "none"; }
+
+  document.getElementById("themeToggleBtn").addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+  });
+  document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+  // Sidebar counters
+  const totalConfigChecks = prereqs.length + validations.length;
+  document.getElementById("navCntConfig").textContent = totalConfigChecks;
+  document.getElementById("navCntDiaria").textContent = dailyActs.length;
+  document.getElementById("navCntSemanal").textContent = weeklyActs.length;
+  document.getElementById("navCntMensual").textContent = monthlyActs.length;
+  document.getElementById("navCntLargos").textContent = longCycleActs.length;
+  document.getElementById("navCntAdhoc").textContent = adhocActs.length;
+  document.getElementById("navCntQueries").textContent = (MODULE_DATA.consultasKQLyVerificacion || []).length;
+  document.getElementById("navCntKpis").textContent = (MODULE_DATA.kpisYMetricas || []).length;
+  document.getElementById("navCntNist").textContent = (MODULE_DATA.mapeoNISTCSF20 || []).length;
+
+  function switchView(viewId, periodicCadOverride) {
+    activeView = viewId;
+    if (periodicCadOverride) activePeriodicCad = periodicCadOverride;
+
+    document.querySelectorAll(".view-panel").forEach((p) => p.classList.remove("active"));
+    const target = document.getElementById(viewId);
+    if (target) target.classList.add("active");
+
+    document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+      const bv = btn.getAttribute("data-view");
+      const bc = btn.getAttribute("data-cad");
+      if (bv === viewId && (!bc || bc === activePeriodicCad)) btn.classList.add("active");
+      else btn.classList.remove("active");
+    });
+
+    if (viewId === "view-periodic") {
+      syncPeriodicSubnav();
+      renderPeriodicCards();
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      switchView(btn.getAttribute("data-view"), btn.getAttribute("data-cad") || null);
+    });
+  });
+
+  // Handle incoming URL hash (#config, #periodic-diaria, #adhoc, etc.)
+  function applyInitialHash() {
+    const h = (window.location.hash || "").replace("#", "");
+    if (h === "config") switchView("view-config");
+    else if (h === "periodic-diaria") switchView("view-periodic", "Diaria");
+    else if (h === "periodic-semanal") switchView("view-periodic", "Semanal");
+    else if (h === "periodic-mensual") switchView("view-periodic", "Mensual");
+    else if (h === "periodic-largos") switchView("view-periodic", "CICLOS_LARGOS");
+    else if (h === "adhoc") switchView("view-adhoc");
+    else if (h === "queries") switchView("view-queries");
+    else if (h === "nist") switchView("view-nist");
+  }
+
+  function updateProgressTracker() {
+    let cfgDone = 0;
+    prereqs.forEach((_, i) => { if (uiState.tasks["CFG-" + (i + 1)]) cfgDone++; });
+    validations.forEach((_, i) => { if (uiState.tasks["VAL-" + (i + 1)]) cfgDone++; });
+    const cfgPct = totalConfigChecks ? Math.round((cfgDone / totalConfigChecks) * 100) : 0;
+
+    const perDone = periodicActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const perPct = periodicActs.length ? Math.round((perDone / periodicActs.length) * 100) : 0;
+
+    const ahDone = adhocActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const ahPct = adhocActs.length ? Math.round((ahDone / adhocActs.length) * 100) : 0;
+
+    document.getElementById("sidebarProgress").innerHTML =
+      '<div class="nav-section-label" style="padding-left:0;">Tu Progreso de Revisión</div>' +
+      '<div class="prog-row"><div class="prog-head"><span>1. Configuración y Validación</span><span>' + cfgDone + '/' + totalConfigChecks + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + cfgPct + '%"></div></div></div>' +
+      '<div class="prog-row"><div class="prog-head"><span>2. Rutinas Periódicas</span><span>' + perDone + '/' + periodicActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + perPct + '%"></div></div></div>' +
+      '<div class="prog-row" style="margin-bottom:0;"><div class="prog-head"><span>3. Playbooks Ad-Hoc</span><span>' + ahDone + '/' + adhocActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + ahPct + '%"></div></div></div>';
+  }
+
+  // VISTA 0: OVERVIEW
+  document.getElementById("heroTitle").textContent = MODULE_DATA.nombre;
+  document.getElementById("heroSummary").textContent = MODULE_DATA.resumenEjecutivo;
+  document.getElementById("heroBadges").innerHTML = [
+    '<span class="badge badge-accent">Módulo ' + String(MODULE_DATA.orden).padStart(2, "0") + ' de 22</span>',
+    '<span class="badge">' + esc(MODULE_DATA.categoria) + '</span>',
+    '<span class="badge badge-learn">' + esc(MODULE_DATA.relacionM365E5.estado) + '</span>',
+    '<span class="badge">Validación: ' + esc(MODULE_DATA.fechaValidacion) + '</span>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").innerHTML = [
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 1 · Acciones Puntuales</div>' +
+        '<h3>Configuración Base y Validaciones</h3>' +
+        '<p>Qué debes habilitar al inicio (' + prereqs.length + ' prerrequisitos, ' + components.length + ' componentes y ' + rbacRoles.length + ' roles RBAC/PIM) y <strong>' + validations.length + ' validaciones "Proof of Life"</strong> para comprobar que todo quedó bien configurado.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-config">Ir a Configuración y Validaciones →</button></div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 2 · Operación Programada</div>' +
+        '<h3>Rutinas Periódicas por Frecuencia</h3>' +
+        '<p><strong>' + periodicActs.length + ' procedimientos preventivos</strong> separados con claridad en ciclos Diarios (' + dailyActs.length + '), Semanales (' + weeklyActs.length + '), Mensuales (' + monthlyActs.length + ') y Trimestrales/Anuales (' + longCycleActs.length + ').</p>' +
+      '</div>' +
+      '<div class="pill-row">' +
+        '<button class="btn btn-primary btn-sm" type="button" data-goto="view-periodic" data-gocad="Diaria">Diarias (' + dailyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Semanal">Semanales (' + weeklyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Mensual">Mensuales (' + monthlyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="CICLOS_LARGOS">Trim./Anual (' + longCycleActs.length + ')</button>' +
+      '</div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 3 · Reacción del Analista</div>' +
+        '<h3>Playbooks Ad-Hoc ante Alertas</h3>' +
+        '<p><strong>' + adhocActs.length + ' playbooks tácticos</strong> que no siguen calendario: se disparan cuando una alerta, señal de compromiso o incidente requiere contención e investigación del analista.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-adhoc">Abrir Playbooks Ad-Hoc →</button></div>' +
+    '</div>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-goto]");
+    if (!b) return;
+    switchView(b.getAttribute("data-goto"), b.getAttribute("data-gocad") || null);
+  });
+
+  const rel = MODULE_DATA.relacionM365E5;
+  document.getElementById("licensingOverviewCard").innerHTML =
+    '<h3 style="margin-top:0;font-size:20px;">Encaje de Licenciamiento en Microsoft 365 E5 y Portales Oficiales</h3>' +
+    '<p style="margin-bottom:16px;">' + richText(rel.notaLicenciamiento) + '</p>' +
+    '<div class="info-pair" style="margin-bottom:0;">' +
+      '<div class="info-box"><div class="info-label">Licencias y SKUs Aplicables</div><ul style="margin:6px 0 0 0;padding-left:20px;">' +
+        (rel.licencias || []).map((l) => '<li style="margin-bottom:6px;">' + richText(l) + '</li>').join("") +
+      '</ul></div>' +
+      '<div class="info-box"><div class="info-label">Consolas Oficiales de Administración y SOC</div><div class="pill-row" style="margin-top:10px;">' +
+        (MODULE_DATA.portalesPrincipales || []).map((u) => '<a class="btn" href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + ' ↗</a>').join("") +
+      '</div><div style="margin-top:16px;"><div class="info-label">Roles Involucrados</div><div class="pill-row" style="margin-top:6px;">' +
+        (MODULE_DATA.audiencia || []).map((au) => '<span class="badge">' + esc(au) + '</span>').join("") +
+      '</div></div></div>' +
+    '</div>';
+
+  document.getElementById("principlesGrid").innerHTML = (MODULE_DATA.principiosRectores || []).map((p) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:10px;">' +
+        '<h3 style="margin:0;font-size:17.5px;">' + esc(p.principio) + '</h3>' +
+        valBadge(p.estadoValidacion) +
+      '</div>' +
+      '<p class="muted" style="margin:0 0 12px 0;">' + richText(p.descripcion) + '</p>' +
+      (p.fuenteUrl ? '<a href="' + esc(p.fuenteUrl) + '" target="_blank" rel="noopener noreferrer">Consultar referencia en Microsoft Learn ↗</a>' : '') +
+    '</div>'
+  )).join("");
+
+  // VISTA 1: CONFIGURACIÓN PUNTUAL Y VALIDACIONES
+  function renderConfigView() {
+    document.getElementById("prereqsContainer").innerHTML = prereqs.map((pr, idx) => {
+      const code = "CFG-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '" style="padding:22px 28px;margin-bottom:16px;">' +
+          '<div class="card-title-group">' +
+            '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+            '<div style="flex:1;">' +
+              '<div class="pill-row" style="margin-bottom:6px;">' +
+                '<span class="card-code" style="margin-bottom:0;">' + code + '</span>' +
+                '<span class="badge">Acción Puntual de Puesta en Marcha</span>' +
+              '</div>' +
+              '<div style="font-size:16px;font-weight:600;">' + richText(pr) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("validationsContainer").innerHTML = validations.map((v, idx) => {
+      const code = "VAL-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + code + ' · Validación de Configuración</span>' +
+                '<h4 class="card-heading">' + richText(v.control) + '</h4>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' + valBadge(v.origen || "Verificado MS Learn") + '</div>' +
+          '</div>' +
+          '<div class="info-pair" style="margin-bottom:0;">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Dónde y Cómo Validar la Configuración</div>' +
+              '<div class="info-content">' + richText(v.comoValidar) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label">Estado / Resultado Esperado ("Proof of Life")</div>' +
+              '<div class="info-content">' + richText(v.estadoEsperado) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("componentsContainer").innerHTML = components.map((c, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">COMP-' + String(idx + 1).padStart(2, "0") + ' · Subsistema Técnico</span>' +
+            '<h4 class="card-heading">' + esc(c.componente) + '</h4>' +
+          '</div>' +
+          valBadge(c.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Qué Configurar y Habilitar en este Componente</div>' +
+            '<div class="info-content">' + richText(c.funcionOperativa) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Ruta Exacta en Consola</div>' +
+            '<div class="info-content"><code>' + esc(c.portalRuta) + '</code></div>' +
+            '<div class="info-label" style="margin-top:14px;">Integraciones que Validar</div>' +
+            '<div class="pill-row" style="margin-top:6px;">' + (c.integraciones || []).map((i) => '<span class="badge">' + esc(i) + '</span>').join("") + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+
+    document.getElementById("rbacContainer").innerHTML = rbacRoles.map((r) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">RBAC / PIM · ' + esc(r.nivelSOC) + '</span>' +
+            '<h4 class="card-heading">' + esc(r.rol) + '</h4>' +
+          '</div>' +
+          valBadge(r.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair" style="margin-bottom:14px;">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Configuración Puntual en PIM / Asignación</div>' +
+            '<div class="info-content">' + richText(r.asignacionPIM) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Alcance de Permisos a Validar</div>' +
+            '<div class="info-content">' + richText(r.permisosClave) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="validation-footer">' +
+          '<div><strong>Uso operativo autorizado:</strong> ' + richText(r.responsabilidadOperativa) + '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+
+  // Helper to render step-by-step lists with clickable step checkmarks
+  function renderStepRows(actCode, steps) {
+    return '<ol class="steps-list">' + (steps || []).map((st, idx) => {
+      const stepKey = actCode + "_S" + (idx + 1);
+      const isChecked = !!uiState.steps[stepKey];
+      return (
+        '<li class="step-row ' + (isChecked ? "step-checked" : "") + '" data-step="' + esc(stepKey) + '" title="Haz clic para marcar o desmarcar este paso">' +
+          '<span class="step-num">' + (isChecked ? "✓" : (idx + 1)) + '</span>' +
+          '<div class="step-body">' + richText(st) + '</div>' +
+        '</li>'
+      );
+    }).join("") + '</ol>';
+  }
+
+  // VISTA 2: ACCIONES PERIÓDICAS
+  const roleSet = new Set();
+  periodicActs.forEach((a) => {
+    String(a.rolResponsable || "").split(/[\/+,]/).forEach((r) => {
+      const clean = r.trim();
+      if (clean) roleSet.add(clean);
+    });
+  });
+  const perRoleSel = document.getElementById("perRole");
+  Array.from(roleSet).sort().forEach((r) => {
+    const o = document.createElement("option");
+    o.value = r; o.textContent = "Rol: " + r;
+    perRoleSel.appendChild(o);
+  });
+
+  function syncPeriodicSubnav() {
+    document.querySelectorAll("#periodicCadBar .subnav-pill").forEach((b) => {
+      b.classList.toggle("active", b.getAttribute("data-pcad") === activePeriodicCad);
+    });
+    const titles = {
+      "Diaria": ["2. Acciones Periódicas — Rutinas Diarias", "Controles diarios del turno SOC y administración para asegurar salud de plataforma, triaje a tiempo y cero caídas silenciosas."],
+      "Semanal": ["2. Acciones Periódicas — Rutinas Semanales", "Actividades semanales de tuning de falsos positivos, caza proactiva, revisión de postura e higiene operativa."],
+      "Mensual": ["2. Acciones Periódicas — Rutinas Mensuales", "Gobierno mensual de privilegios RBAC/PIM, optimización financiera/retención, pruebas de automatización y reporte ejecutivo al CISO."],
+      "CICLOS_LARGOS": ["2. Acciones Periódicas — Ciclos Trimestrales, Semestrales y Anuales", "Ejercicios Tabletop/Purple Team, análisis de cobertura MITRE ATT&CK, simulacros de continuidad y auditoría estratégica anual."],
+      "ALL_PERIODIC": ["2. Todas las Acciones Periódicas Programadas", "Listado consolidado de todas las rutinas preventivas y de gobierno del módulo (excluyendo playbooks reactivos Ad-Hoc)."]
+    };
+    const pair = titles[activePeriodicCad] || titles["ALL_PERIODIC"];
+    document.getElementById("periodicTitle").textContent = pair[0];
+    document.getElementById("periodicSubtitle").textContent = pair[1];
+  }
+
+  document.getElementById("periodicCadBar").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-pcad]");
+    if (!b) return;
+    activePeriodicCad = b.getAttribute("data-pcad");
+    syncPeriodicSubnav();
+    switchView("view-periodic", activePeriodicCad);
+  });
+
+  function getFilteredPeriodic() {
+    const q = document.getElementById("perSearch").value.trim().toLowerCase();
+    const rol = document.getElementById("perRole").value;
+    const orig = document.getElementById("perOrigin").value;
+
+    return periodicActs.filter((a) => {
+      if (activePeriodicCad === "CICLOS_LARGOS") {
+        if (["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) === -1) return false;
+      } else if (activePeriodicCad !== "ALL_PERIODIC") {
+        if (a.cadencia !== activePeriodicCad) return false;
+      }
+      if (rol !== "ALL" && String(a.rolResponsable).indexOf(rol) === -1) return false;
+      if (orig !== "ALL" && a.estadoValidacion !== orig) return false;
+      if (q) {
+        const hay = [a.codigo, a.cadencia, a.actividad, a.objetivo, a.consolaRuta, a.rolResponsable, a.evidenciaAuditable, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderPeriodicCards() {
+    const list = getFilteredPeriodic();
+    document.getElementById("perCountLabel").textContent =
+      "Mostrando " + list.length + " acciones periódicas en esta vista (haz clic en cada paso numerado para llevar control de lectura o ejecución).";
+
+    const box = document.getElementById("periodicCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay actividades periódicas que coincidan con los filtros seleccionados.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + ' aria-label="Completar ' + esc(a.codigo) + '">' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Rutina ' + esc(a.cadencia) + '</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge">' + esc(a.rolResponsable) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Objetivo de la Rutina</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Consola y Ruta Exacta</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Acciones Paso a Paso a Ejecutar y Validar (' + steps.length + ' pasos)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación de cierre y evidencia auditable:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<span>MITRE ATT&amp;CK: ' + esc(a.mitreTactic) + ' · ' + esc(a.notaValidacion) + '</span>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Ver guía oficial en MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+
+  ["perSearch", "perRole", "perOrigin"].forEach((id) => {
+    document.getElementById(id).addEventListener("input", renderPeriodicCards);
+    document.getElementById(id).addEventListener("change", renderPeriodicCards);
+  });
+
+  // VISTA 3: PLAYBOOKS AD-HOC (ALERTAS Y SEÑALES)
+  function renderAdhocCards() {
+    const q = document.getElementById("adhocSearch").value.trim().toLowerCase();
+    const list = adhocActs.filter((a) => {
+      if (!q) return true;
+      const hay = [a.codigo, a.actividad, a.disparadorAlerta, a.objetivo, a.consolaRuta, a.rolResponsable, a.mitreTactic, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+      return hay.indexOf(q) !== -1;
+    });
+
+    const box = document.getElementById("adhocCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay playbooks Ad-Hoc que coincidan con la búsqueda.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card adhoc-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Playbook Reactivo del Analista (Ad-Hoc)</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge badge-accent">MITRE: ' + esc(a.mitreTactic) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="trigger-banner">' +
+            '<div class="info-label">Señal, Alerta o Evento Disparador (Cuándo debe actuar el analista)</div>' +
+            '<div class="info-content" style="font-weight:600;">' + richText(a.disparadorAlerta) + '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Meta de Contención y Erradicación</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Analista Ejecutor y Consola de Intervención</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><strong>Rol:</strong> ' + esc(a.rolResponsable) + '<br><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Secuencia Táctica del Analista (' + steps.length + ' pasos de respuesta)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación post-contención y evidencia forense:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<button class="btn btn-sm go-queries-btn" type="button">Abrir Consultas KQL / Scripts de Apoyo →</button>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Documentación oficial de respuesta MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+  document.getElementById("adhocSearch").addEventListener("input", renderAdhocCards);
+
+  // Global delegation for task checkboxes, step rows, copy buttons & query jumps
+  document.addEventListener("change", (e) => {
+    const chk = e.target.closest(".task-checkbox");
+    if (!chk) return;
+    const key = chk.getAttribute("data-task");
+    uiState.tasks[key] = chk.checked;
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  document.addEventListener("click", (e) => {
+    const stepEl = e.target.closest(".step-row");
+    if (stepEl && !e.target.closest("a")) {
+      const sk = stepEl.getAttribute("data-step");
+      uiState.steps[sk] = !uiState.steps[sk];
+      saveState(uiState);
+      renderPeriodicCards();
+      renderAdhocCards();
+      return;
+    }
+    const copyBtn = e.target.closest(".copy-text-btn");
+    if (copyBtn) {
+      const txt = copyBtn.getAttribute("data-copy") || "";
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(() => {
+          const prev = copyBtn.textContent;
+          copyBtn.textContent = "¡Copiado!";
+          setTimeout(() => { copyBtn.textContent = prev; }, 1400);
+        });
+      }
+      return;
+    }
+    if (e.target.closest(".go-queries-btn")) {
+      switchView("view-queries");
+    }
+  });
+
+  document.getElementById("resetChecksBtn").addEventListener("click", () => {
+    uiState = { tasks: {}, steps: {} };
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  // Export CSV (all activities with action type distinction)
+  document.getElementById("exportCsvBtn").addEventListener("click", () => {
+    const hdr = ["TipoAccion", "Codigo", "Cadencia", "Actividad", "Disparador_u_Objetivo", "ConsolaRuta", "RolResponsable", "FuncionNIST", "SubcategoriaNIST", "MITRE", "EstadoValidacion", "Completado", "EvidenciaAuditable"];
+    const lines = [hdr.join(",")];
+    allActs.forEach((a) => {
+      const vals = [
+        a.tipoAccion, a.codigo, a.cadencia, a.actividad,
+        a.cadencia === "Ad-Hoc" ? a.disparadorAlerta : a.objetivo,
+        a.consolaRuta, a.rolResponsable, a.funcionNIST, a.subcategoriaNIST,
+        a.mitreTactic, a.estadoValidacion, uiState.tasks[a.codigo] ? "Si" : "No", a.evidenciaAuditable
+      ].map((v) => '"' + String(v || "").replace(/"/g, '""') + '"');
+      lines.push(vals.join(","));
+    });
+    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url; link.download = MODULE_DATA.slug + "_Guia_Operacional.csv";
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  });
+
+  // VISTA 4: QUERIES
+  function renderQueries() {
+    const q = document.getElementById("kqlSearch").value.trim().toLowerCase();
+    const uf = document.getElementById("kqlUsageFilter").value;
+    const list = (MODULE_DATA.consultasKQLyVerificacion || []).filter((it) => {
+      if (uf !== "ALL" && it.usoOperativo !== uf) return false;
+      if (q && [it.nombre, it.plataforma, it.tablaPrincipal, it.proposito, it.consulta, it.usoOperativo].join(" ").toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+
+    document.getElementById("queriesContainer").innerHTML = list.map((it, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">Q-' + String(idx + 1).padStart(2, "0") + ' · ' + esc(it.usoOperativo) + '</span>' +
+            '<h3 class="card-heading">' + esc(it.nombre) + '</h3>' +
+          '</div>' +
+          '<div class="pill-row">' +
+            '<span class="badge badge-accent">' + esc(it.plataforma) + '</span>' +
+            '<span class="badge mono">' + esc(it.tablaPrincipal) + '</span>' +
+            valBadge(it.estadoValidacion) +
+            '<button class="btn btn-sm copy-kql-btn" type="button" data-qidx="' + idx + '">Copiar consulta</button>' +
+          '</div>' +
+        '</div>' +
+        '<p style="margin:0 0 12px 0;"><strong>Qué valida o detecta:</strong> ' + richText(it.proposito) + '</p>' +
+        '<pre class="code-block">' + esc(it.consulta) + '</pre>' +
+      '</div>'
+    )).join("");
+
+    document.querySelectorAll(".copy-kql-btn").forEach((b) => {
+      b.addEventListener("click", () => {
+        const item = list[Number(b.getAttribute("data-qidx"))];
+        if (item && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(item.consulta).then(() => {
+            b.textContent = "¡Consulta copiada!";
+            setTimeout(() => { b.textContent = "Copiar consulta"; }, 1500);
+          });
+        }
+      });
+    });
+  }
+  document.getElementById("kqlSearch").addEventListener("input", renderQueries);
+  document.getElementById("kqlUsageFilter").addEventListener("change", renderQueries);
+
+  // VISTA 5: KPIs, MATURITY & TRAINING
+  document.getElementById("kpiContainer").innerHTML = (MODULE_DATA.kpisYMetricas || []).map((k) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:12px;">' +
+        '<div><span class="card-code">' + esc(k.id) + '</span><h4 class="card-heading" style="font-size:18px;">' + esc(k.nombre) + '</h4></div>' +
+        valBadge(k.estadoValidacion) +
+      '</div>' +
+      '<p style="margin:0 0 12px 0;">' + richText(k.definicion) + '</p>' +
+      '<pre class="code-block" style="margin:0 0 14px 0;">Fórmula: ' + esc(k.formula) + '</pre>' +
+      '<div class="pill-row">' +
+        '<span class="badge badge-accent">Meta: ' + esc(k.metaSugerida) + '</span>' +
+        '<span class="badge">Medición: ' + esc(k.frecuencia) + '</span>' +
+        '<span class="badge">' + esc(k.audiencia) + '</span>' +
+      '</div>' +
+      '<p class="muted" style="font-size:13px;margin:10px 0 0 0;">' + richText(k.notaValidacion) + '</p>' +
+    '</div>'
+  )).join("");
+
+  const mat = MODULE_DATA.modeloMadurez || [];
+  document.getElementById("maturityContainer").innerHTML = mat.map((m) => (
+    '<div class="spacious-card" style="padding:22px 28px;margin-bottom:14px;">' +
+      '<div class="pill-row" style="margin-bottom:6px;">' +
+        '<span class="card-code" style="margin-bottom:0;">' + richText(m.nivel) + '</span>' +
+        (m.estadio ? '<strong style="font-size:17px;">' + richText(m.estadio) + '</strong>' : '') +
+        '<span class="badge badge-editorial">Propuesta Editorial</span>' +
+      '</div>' +
+      '<div style="font-size:15.5px;">' + richText(m.descripcion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  const tr = MODULE_DATA.rutaFormacion || { headers: [], rows: [] };
+  if (tr.rows && tr.rows.length) {
+    document.getElementById("trainingContainer").innerHTML =
+      '<div class="table-wrap"><table><thead><tr>' +
+      tr.headers.map((h) => '<th>' + richText(h) + '</th>').join("") +
+      '</tr></thead><tbody>' +
+      tr.rows.map((row) => '<tr>' + row.map((cell, ci) => '<td>' + (ci === 0 ? '<strong>' + richText(cell) + '</strong>' : richText(cell)) + '</td>').join("") + '</tr>').join("") +
+      '</tbody></table></div>';
+  }
+
+  // VISTA 6: NIST CSF 2.0, AUDIT & REFS
+  function renderNist() {
+    const fn = document.getElementById("nistFuncSelect").value;
+    const rows = (MODULE_DATA.mapeoNISTCSF20 || []).filter((n) => fn === "ALL" || String(n.funcion).indexOf(fn) !== -1);
+    document.getElementById("nistCardsContainer").innerHTML = rows.map((n) => (
+      '<div class="spacious-card" style="padding:24px 30px;margin-bottom:16px;">' +
+        '<div class="card-top" style="margin-bottom:14px;">' +
+          '<div class="pill-row">' +
+            '<span class="card-code" style="margin-bottom:0;">' + esc(n.subcategoria) + '</span>' +
+            '<strong style="font-size:17px;">' + esc(n.funcion) + '</strong>' +
+          '</div>' +
+          valBadge(n.estadoValidacion) +
+        '</div>' +
+        '<p style="margin:0 0 14px 0;"><strong>Outcome NIST CSWP 29:</strong> ' + richText(n.descripcionResultado) + '</p>' +
+        '<div class="info-pair" style="margin-bottom:0;">' +
+          '<div class="info-box"><div class="info-label">Capacidad Habilitadora en Microsoft</div><div class="info-content">' + richText(n.capacidadMicrosoft) + '</div></div>' +
+          '<div class="info-box"><div class="info-label">Evidencia Auditable Reproducible</div><div class="info-content">' + richText(n.evidenciaAuditoria) + '</div></div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+  document.getElementById("nistFuncSelect").addEventListener("change", renderNist);
+
+  const vd = MODULE_DATA.validacionYDecisionesEditoriales || {};
+  document.getElementById("auditSummaryBox").innerHTML =
+    '<h4 style="margin:0 0 8px 0;font-size:18px;">Resumen de Auditoría Documental (' + esc(vd.fechaRevalidacion) + ')</h4>' +
+    '<p style="margin:0;">' + richText(vd.resumenAuditoria) + '</p>';
+
+  document.getElementById("corrContainer").innerHTML = '<ol style="padding-left:20px;margin:0;">' +
+    (vd.correccionesAplicadas || []).map((c) => '<li style="margin-bottom:12px;">' + richText(c) + '</li>').join("") + '</ol>';
+
+  document.getElementById("decContainer").innerHTML = (vd.decisionesEditoriales || []).map((d) => (
+    '<div class="info-box" style="margin-bottom:12px;">' +
+      '<div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;"><strong>' + esc(d.elemento) + '</strong>' + valBadge(d.tipo) + '</div>' +
+      '<div class="muted" style="font-size:14.5px;">' + richText(d.justificacion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  function renderRefs() {
+    const q = document.getElementById("refSearch").value.trim().toLowerCase();
+    const list = (MODULE_DATA.referenciasVerificadas || []).filter((r) => {
+      if (!q) return true;
+      return [r.id, r.titulo, r.tipoFuente, r.autor, r.comentario, r.url].join(" ").toLowerCase().indexOf(q) !== -1;
+    });
+    document.getElementById("refTableBody").innerHTML = list.map((r) => (
+      '<tr>' +
+        '<td class="mono"><strong>' + esc(r.id) + '</strong></td>' +
+        '<td><a href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer"><strong>' + esc(r.titulo) + ' ↗</strong></a><br><span class="mono muted" style="font-size:12px;">' + esc(r.url) + '</span></td>' +
+        '<td><span class="badge">' + esc(r.tipoFuente) + '</span></td>' +
+        '<td>' + esc(r.autor) + '</td>' +
+        '<td>' + richText(r.comentario) + '</td>' +
+      '</tr>'
+    )).join("");
+  }
+  document.getElementById("refSearch").addEventListener("input", renderRefs);
+
+  // Initial render
+  updateProgressTracker();
+  renderConfigView();
+  syncPeriodicSubnav();
+  renderPeriodicCards();
+  renderAdhocCards();
+  renderQueries();
+  renderNist();
+  renderRefs();
+  applyInitialHash();
+})();
+</script>
+</body>
+</html>
