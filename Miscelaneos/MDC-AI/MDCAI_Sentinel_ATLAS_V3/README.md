@@ -13,7 +13,7 @@
 | Saber qué clasificación estaba aplicada en una fecha | [04_Historial_DCR.arm.json](deploy/04_Historial_DCR.arm.json) + [Save-Snapshot.ps1](scripts/Save-Snapshot.ps1), opcional. |
 | Exportar actividad a ATLAS Navigator | KQL `12` → CSV → `scripts\export_navigator.py`. No reemplaza la matriz nativa ATT&CK. |
 
-El inventario y los SHA-256 quedan en `MANIFEST.sha256`. **No compartas externamente el ZIP completo:** el anexo `uso-interno\` conserva enlaces de Teams autorizados para el usuario, separados del Excel y de todos los artefactos de despliegue.
+ 
 
 ## 1. Antes de instalar
 
@@ -98,9 +98,7 @@ Alternativa manual: Log Analytics > *Summary rules* → `kql\10`, bin 1440 min, 
 | Incidente | Ejecución sin escritura correcta; luego comprobá repetición, incidente compuesto/mixto, nuevo tipo, 403/429 controlados y `includeModelScan=false`. No se pierde ningún tag ajeno ni se cierra ni crea otro incidente por enriquecimiento. |
 | Reportes | Los 14 escenarios aparecen aun sin actividad. Dos ediciones OWASP separadas. Snapshot/summary solo si habilitados; revisar volumen y latencia. Cargar el JSON de Navigator y confirmar que las técnicas se ubican en la matriz. |
 
-V3 no utiliza los alias, reglas, playbooks ni tablas v1/v2. Si ya desplegaste versiones anteriores, inventarialas; validá V3 de forma paralela **sin escritura**; desactivá primero la automatización anterior y cualquier regla que reemita alertas antes de activar escrituras de V3. Conservá historial y notas que todavía utilices. Para rollback, deshabilitá la automation rule V3 o redeplegá `02` sin escritura; las alertas siguen llegando sin enriquecimiento. No hace falta cerrar incidentes ni eliminar la configuración anterior para dar de baja este flujo.
-
-Para reemplazar los **archivos** antiguos, conservá el ZIP y/o la carpeta V3. Reemplazo detallado en [Migración de entregables](docs/Migracion_de_entregables.md). No descartes evidencia o notas que hayas agregado por tu cuenta en los originales.
+ 
 
 ## Mantenimiento y verificación local
 
