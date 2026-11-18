@@ -1,0 +1,159 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "3.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Región del workspace (no del grupo de recursos)."
+      }
+    },
+    "dcrName": {
+      "type": "string",
+      "defaultValue": "dcr-mdcai-v3-history"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/tables",
+      "apiVersion": "2025-07-01",
+      "name": "[concat(parameters('workspaceName'), '/MDCAI_EnrichmentV3_CL')]",
+      "properties": {
+        "plan": "Analytics",
+        "retentionInDays": 90,
+        "schema": {
+          "name": "MDCAI_EnrichmentV3_CL",
+          "columns": [
+            {
+              "name": "TimeGenerated",
+              "type": "datetime"
+            },
+            {
+              "name": "SourceAlertTime",
+              "type": "datetime"
+            },
+            {
+              "name": "AlertKey",
+              "type": "string"
+            },
+            {
+              "name": "AlertType",
+              "type": "string"
+            },
+            {
+              "name": "MappingVersion",
+              "type": "string"
+            },
+            {
+              "name": "Disposition",
+              "type": "string"
+            },
+            {
+              "name": "CandidateCAAT",
+              "type": "string"
+            },
+            {
+              "name": "CandidateATLAS",
+              "type": "string"
+            },
+            {
+              "name": "CandidateOWASP2025",
+              "type": "string"
+            },
+            {
+              "name": "CandidateOWASP2026",
+              "type": "string"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2023-03-11",
+      "kind": "Direct",
+      "name": "[parameters('dcrName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces/tables', parameters('workspaceName'), 'MDCAI_EnrichmentV3_CL')]"
+      ],
+      "properties": {
+        "streamDeclarations": {
+          "Custom-MDCAI_EnrichmentV3_CL": {
+            "columns": [
+              {
+                "name": "TimeGenerated",
+                "type": "datetime"
+              },
+              {
+                "name": "SourceAlertTime",
+                "type": "datetime"
+              },
+              {
+                "name": "AlertKey",
+                "type": "string"
+              },
+              {
+                "name": "AlertType",
+                "type": "string"
+              },
+              {
+                "name": "MappingVersion",
+                "type": "string"
+              },
+              {
+                "name": "Disposition",
+                "type": "string"
+              },
+              {
+                "name": "CandidateCAAT",
+                "type": "string"
+              },
+              {
+                "name": "CandidateATLAS",
+                "type": "string"
+              },
+              {
+                "name": "CandidateOWASP2025",
+                "type": "string"
+              },
+              {
+                "name": "CandidateOWASP2026",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('workspaceName'))]",
+              "name": "mdcaiHistory"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Custom-MDCAI_EnrichmentV3_CL"
+            ],
+            "destinations": [
+              "mdcaiHistory"
+            ],
+            "transformKql": "source",
+            "outputStream": "Custom-MDCAI_EnrichmentV3_CL"
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "dataCollectionRuleResourceId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('dcrName'))]"
+    }
+  }
+}

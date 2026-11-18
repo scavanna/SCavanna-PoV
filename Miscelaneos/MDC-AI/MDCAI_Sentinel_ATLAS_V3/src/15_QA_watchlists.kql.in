@@ -1,0 +1,22 @@
+let profile = _GetWatchlist('MDCAI_V3_Profiles')
+    | summarize Rows=count(), Versions=make_set(MappingVersion) by Key=tostring(SearchKey)
+    | extend Artefacto="Profiles";
+let caat = _GetWatchlist('MDCAI_V3_CAAT')
+    | summarize Rows=count(), Versions=make_set(MappingVersion) by Key=tostring(SearchKey)
+    | extend Artefacto="CAAT";
+let rel = _GetWatchlist('MDCAI_V3_Relations')
+    | summarize Rows=count(), Versions=make_set(MappingVersion) by Key=strcat(SearchKey, "/", Framework, "/", FrameworkVersion, "/", TargetId)
+    | extend Artefacto="Relations";
+let atlas = _GetWatchlist('MDCAI_V3_ATLAS')
+    | summarize Rows=count(), Versions=make_set(ATLASVersion) by Key=tostring(SearchKey)
+    | extend Artefacto="ATLAS";
+let counts = union
+    (profile | summarize Rows=count() | extend Artefacto="Profiles", ExpectedRows=tolong(__PROFILE_COUNT__)),
+    (caat | summarize Rows=count() | extend Artefacto="CAAT", ExpectedRows=tolong(__CAAT_COUNT__)),
+    (rel | summarize Rows=count() | extend Artefacto="Relations", ExpectedRows=tolong(__RELATION_COUNT__)),
+    (atlas | summarize Rows=count() | extend Artefacto="ATLAS", ExpectedRows=tolong(__ATLAS_COUNT__));
+union profile, caat, rel, atlas
+| extend Expected=iff(Artefacto == "ATLAS", "__ATLAS_VERSION__", "__RELEASE__")
+| where Rows != 1 or array_length(Versions) != 1 or tostring(Versions[0]) != Expected
+| project Artefacto, Key, Rows, Versions, Expected
+| union (counts | where Rows != ExpectedRows | project Artefacto, Key="CANTIDAD", Rows, Versions=dynamic([]), Expected=tostring(ExpectedRows))

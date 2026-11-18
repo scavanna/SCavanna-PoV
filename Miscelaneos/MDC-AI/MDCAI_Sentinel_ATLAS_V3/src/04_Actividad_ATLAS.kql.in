@@ -1,0 +1,10 @@
+MDCAI_V3_Enriched(30d)
+| mv-expand TechniqueId=DirectATLAS to typeof(string)
+| summarize Ultima=max(TimeGenerated) by TechniqueId, AlertKey
+| summarize Alertas=count(), Ultima=max(Ultima) by TechniqueId
+| lookup kind=leftouter (
+    _GetWatchlist('MDCAI_V3_ATLAS')
+    | where ATLASVersion == "__ATLAS_VERSION__"
+    | project TechniqueId=tostring(SearchKey), TechniqueName, TacticIds, TacticNames, ATLASVersion, TechniqueUrl
+  ) on TechniqueId
+| order by Alertas desc

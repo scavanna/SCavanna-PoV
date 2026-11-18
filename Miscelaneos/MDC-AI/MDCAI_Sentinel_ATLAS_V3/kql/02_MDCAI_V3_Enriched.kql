@@ -1,0 +1,16 @@
+// Guardar como función MDCAI_V3_Enriched; parámetro Lookback:timespan.
+let profiles = _GetWatchlist('MDCAI_V3_Profiles')
+    | where MappingVersion == "3.0.0"
+    | project AlertType=tostring(SearchKey), MappingVersion, OfficialName, DocumentedSeverity, DocumentedAttack,
+              ReleaseStatus, SignalScope, Signal, Disposition, AutoCAAT, AutoATLAS, AutoOWASP2025, AutoOWASP2026,
+              Meaning, Triage, EvidenceBoundary, LearnUrl;
+MDCAI_V3_Base(Lookback)
+| lookup kind=leftouter profiles on AlertType
+| extend Disposition = iff(isempty(MappingVersion), "unclassified", Disposition),
+         MappingVersion = iff(isempty(MappingVersion), "3.0.0", MappingVersion),
+         DirectCAAT = iff(isempty(AutoCAAT), dynamic([]), split(AutoCAAT, ";")),
+         DirectATLAS = iff(isempty(AutoATLAS), dynamic([]), split(AutoATLAS, ";")),
+         DirectOWASP2025 = iff(isempty(AutoOWASP2025), dynamic([]), split(AutoOWASP2025, ";")),
+         DirectOWASP2026 = iff(isempty(AutoOWASP2026), dynamic([]), split(AutoOWASP2026, ";")),
+         SignalScope = iff(isempty(SignalScope), "unclassified", SignalScope)
+| project-away AutoCAAT, AutoATLAS, AutoOWASP2025, AutoOWASP2026

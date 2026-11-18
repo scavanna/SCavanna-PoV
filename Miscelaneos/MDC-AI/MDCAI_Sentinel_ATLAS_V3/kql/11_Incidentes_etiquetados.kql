@@ -1,0 +1,10 @@
+// Solo cuenta estado actual de incidentes con una actualización en el rango.
+SecurityIncident
+| where TimeGenerated >= ago(30d) and isnotempty(IncidentName)
+| summarize arg_max(TimeGenerated, *) by TenantId, IncidentName
+| mv-expand Label=Labels
+| extend Tag=tostring(Label.labelName)
+| where Tag startswith "MDCAI:"
+| summarize Abierto=max(toint(Status !~ "Closed")) by TenantId, IncidentName, Tag
+| summarize Incidentes=count(), Abiertos=countif(Abierto == 1) by Tag
+| order by Incidentes desc

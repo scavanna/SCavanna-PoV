@@ -1,0 +1,7 @@
+// Ejecutar en Logs del workspace Sentinel, no en el scope de XDR puro.
+SecurityAlert
+| where TimeGenerated >= ago(30d)
+| where AlertType startswith "AI.Azure_" or AlertType startswith "AI.AIModelScan_"
+| summarize Filas = count(), SinId = countif(isempty(SystemAlertId)), Ultima = max(TimeGenerated)
+    by ProductName, ProviderName, AlertType, AlertSeverity
+| order by Ultima desc

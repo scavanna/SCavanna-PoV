@@ -1,0 +1,219 @@
+{
+  "release": "3.0.0",
+  "product_names": ["Azure Security Center", "Microsoft Defender for Cloud"],
+  "rules": {
+    "AI.Azure_Jailbreak.ContentFiltering.BlockedAttempt": {
+      "signal": "jailbreak_blocked",
+      "meaning": "Prompt Shields detectó y bloqueó un intento de inyección directa orientado a eludir salvaguardas.",
+      "triage": "Confirmar el veredicto bloqueado y el despliegue. Buscar otras alertas independientes del mismo recurso o sesión.",
+      "boundary": "El bloqueo de esta solicitud no confirma ni descarta compromiso en otras interacciones.",
+      "links": [
+        ["CAAT", "CAAT-02", "direct", "El detector documenta un intento de inyección directa."],
+        ["ATLAS", "AML.T0054", "direct", "Intento de jailbreak; no implica que el modelo acató la instrucción."],
+        ["ATLAS", "AML.T0051.000", "direct", "Microsoft describe explícitamente una técnica de inyección directa."],
+        ["OWASP-2025", "LLM01", "direct", "Categoría relacionada: Prompt Injection."],
+        ["OWASP-2026", "LLM01", "direct", "Categoría relacionada: Prompt Injection."]
+      ]
+    },
+    "AI.Azure_Jailbreak.ContentFiltering.DetectedAttempt": {
+      "signal": "jailbreak_detected_not_blocked",
+      "meaning": "Prompt Shields detectó un intento de inyección directa, pero no lo bloqueó.",
+      "triage": "Verificar configuración y veredicto de filtros. Revisar evidencia autorizada para saber si hubo salida o acción no prevista.",
+      "boundary": "No bloqueado no significa jailbreak exitoso ni exfiltración.",
+      "links": [
+        ["CAAT", "CAAT-02", "direct", "El detector documenta un intento de inyección directa."],
+        ["ATLAS", "AML.T0054", "direct", "Intento detectado, sin confirmación de éxito."],
+        ["ATLAS", "AML.T0051.000", "direct", "Microsoft describe explícitamente una técnica de inyección directa."],
+        ["OWASP-2025", "LLM01", "direct", "Categoría relacionada: Prompt Injection."],
+        ["OWASP-2026", "LLM01", "direct", "Categoría relacionada: Prompt Injection."]
+      ]
+    },
+    "AI.Azure_CredentialTheftAttempt": {
+      "signal": "credential_in_response",
+      "meaning": "El detector señala material que parece una credencial en una respuesta del modelo.",
+      "triage": "Verificar clasificación, validez, origen y destinatario en un canal restringido. Gestionar rotación si se confirma exposición.",
+      "boundary": "No prueba robo, uso posterior, origen en RAG/memoria ni transferencia no autorizada.",
+      "links": [
+        ["CAAT", "CAAT-07", "direct", "Señal de posible divulgación en la salida."],
+        ["OWASP-2025", "LLM02", "direct", "La categoría aplica al tipo de información señalado."],
+        ["OWASP-2026", "LLM02", "direct", "La categoría aplica al tipo de información señalado."],
+        ["ATLAS", "AML.T0085.002", "conditional", "Corroborar extracción de datos desde el contexto de conversación o la memoria."],
+        ["ATLAS", "AML.T0055", "conditional", "Verificar que se obtuvieron credenciales almacenadas de forma insegura."],
+        ["ATLAS", "AML.T0024", "conditional", "Demostrar transferencia no autorizada vía API de inferencia; la detección en la respuesta no basta."]
+      ]
+    },
+    "AI.Azure_MaliciousUrl.ModelResponse": {
+      "signal": "phishing_url_model_response",
+      "meaning": "Una URL de phishing conocida apareció en la respuesta del modelo hacia un usuario.",
+      "triage": "Correlacionar con telemetría de Click/Proxy autorizada y revisar procedencia del dato y controles de salida.",
+      "boundary": "La URL en la respuesta no distingue origen app/modelo/datos ni confirma compromiso del usuario.",
+      "links": [
+        ["ATLAS", "AML.T0052", "conditional", "Corroborar un intento de phishing dirigido a una persona, más allá del indicador."],
+        ["CAAT", "CAAT-14", "conditional", "Verificar alteración o procedencia de la fuente de grounding/retrieval."],
+        ["CAAT", "CAAT-03", "conditional", "Verificar manejo inseguro aguas abajo de la salida."],
+        ["OWASP-2026", "LLM10", "conditional", "Confirmar que la salida fue consumida sin controles adecuados."]
+      ]
+    },
+    "AI.Azure_MaliciousUrl.UnknownSource": {
+      "signal": "phishing_url_origin_unknown",
+      "meaning": "La conversación contiene una URL de phishing conocida; no se identificó si entró por el usuario o por la aplicación.",
+      "triage": "Determinar la dirección de la interacción y correlacionar el indicador sin abrir la URL.",
+      "boundary": "Por sí sola no prueba inyección indirecta ni envenenamiento.",
+      "links": [
+        ["ATLAS", "AML.T0052", "conditional", "Corroborar uso de la URL como señuelo de phishing."],
+        ["CAAT", "CAAT-02", "conditional", "Encontrar evidencia de manipulación de instrucciones y su origen."]
+      ]
+    },
+    "AI.Azure_MaliciousUrl.UserPrompt": {
+      "signal": "phishing_url_user_input",
+      "meaning": "Se observó una URL de phishing conocida en un mensaje del usuario a la aplicación.",
+      "triage": "Determinar si el usuario reportaba un indicador, era destinatario o actuaba como origen. Revisar el resultado de la interacción.",
+      "boundary": "Un indicador citado en un prompt no equivale a prompt injection ni atribuye intención.",
+      "links": [
+        ["ATLAS", "AML.T0052", "conditional", "Corroborar intención o entrega dirigida de phishing."],
+        ["CAAT", "CAAT-02", "conditional", "Confirmar modificación de instrucciones, no solo presencia de la URL."]
+      ]
+    },
+    "AI.Azure_AccessFromSuspiciousUserAgent": {
+      "signal": "user_agent_threat_intel",
+      "meaning": "El identificador de cliente se asocia a actividad sospechosa según inteligencia de amenazas.",
+      "triage": "Confirmar contexto mediante gateway y volumen; descartar automatización legítima.",
+      "boundary": "El User-Agent no demuestra escaneo, jailbreak, robo de modelo ni abuso de costos.",
+      "links": [
+        ["ATLAS", "AML.T0040", "context", "Si el acceso fue al endpoint de inferencia, usarlo como pivote; el indicador no prueba abuso."]
+      ]
+    },
+    "AI.Azure_ASCIISmuggling": {
+      "signal": "obfuscated_prompt",
+      "meaning": "El detector identifica instrucciones ocultas mediante caracteres que dificultan su visualización.",
+      "triage": "Establecer origen del contenido y si el modelo llegó a procesarlo; revisar los registros autorizados, sin redistribuir contenido.",
+      "boundary": "La opacidad no prueba que el contenido provino de una fuente externa o que el modelo obedeció.",
+      "links": [
+        ["CAAT", "CAAT-02", "direct", "Señal de manipulación de instrucciones."],
+        ["ATLAS", "AML.T0068", "direct", "La señal describe ofuscación de un prompt."],
+        ["ATLAS", "AML.T0051.001", "conditional", "Confirmar fuente de datos externa o no confiable como vector indirecto."],
+        ["OWASP-2025", "LLM01", "direct", "Categoría relacionada: Prompt Injection."],
+        ["OWASP-2026", "LLM01", "direct", "Categoría relacionada: Prompt Injection."]
+      ]
+    },
+    "AI.Azure_AccessFromAnonymizedIP": {
+      "signal": "tor_indicator",
+      "meaning": "La dirección de origen fue identificada como parte de la red Tor.",
+      "triage": "Validar el origen confiable y la ruta de red; revisar cambios en el patrón de uso.",
+      "boundary": "Tor puede tener uso legítimo. No atribuir una técnica ATLAS de ataque solo por la IP.",
+      "links": [
+        ["ATLAS", "AML.T0040", "context", "El acceso a inferencia confirmado aporta contexto, no atribución."]
+      ]
+    },
+    "AI.Azure_AccessFromSuspiciousIP": {
+      "signal": "ip_threat_intel",
+      "meaning": "La IP que accedió a un servicio de IA tiene reputación de amenaza según Microsoft.",
+      "triage": "Validar IP efectiva, fecha de inteligencia, autenticación y alcance; contrastar contra proxies o pools compartidos.",
+      "boundary": "La reputación IP no demuestra autenticación con credenciales robadas ni consumo excesivo.",
+      "links": [
+        ["ATLAS", "AML.T0040", "context", "El acceso a inferencia confirmado aporta contexto, no atribución."]
+      ]
+    },
+    "AI.Azure_DOWDuplicateRequests": {
+      "signal": "wallet_repeated_requests",
+      "meaning": "Muchas solicitudes idénticas a un recurso sugieren posible abuso de costo.",
+      "triage": "Correlacionar con solicitudes, cuotas y costos. Separar reintentos legítimos, pruebas de carga y errores de integración.",
+      "boundary": "No declara intención adversaria, pérdida financiera ni caída del servicio.",
+      "links": [
+        ["CAAT", "CAAT-05", "direct", "Señal de consumo potencialmente abusivo."],
+        ["OWASP-2025", "LLM10", "direct", "Categoría relacionada: Unbounded Consumption."],
+        ["OWASP-2026", "LLM06", "direct", "Categoría relacionada: Unbounded Consumption."],
+        ["ATLAS", "AML.T0034.000", "conditional", "Corroborar consultas excesivas y separar reintentos o picos explicables."],
+        ["ATLAS", "AML.T0034", "conditional", "Confirmar indicios de abuso de costo mediante telemetría de uso y contexto."],
+        ["ATLAS", "AML.T0029", "conditional", "Confirmar degradación o presión de disponibilidad y objetivo de denegación."]
+      ]
+    },
+    "AI.Azure_DOWVolumeAnomaly": {
+      "signal": "wallet_volume_anomaly",
+      "meaning": "El volumen de solicitudes y respuestas difiere del patrón histórico y podría señalar abuso de costo.",
+      "triage": "Comparar uso y costos con la línea base, despliegues y cambios de tráfico. Revisar atribución a aplicación o cuenta.",
+      "boundary": "Un pico anómalo no equivale a técnica confirmada, pérdida ni interrupción.",
+      "links": [
+        ["CAAT", "CAAT-05", "direct", "Señal de consumo potencialmente abusivo."],
+        ["OWASP-2025", "LLM10", "direct", "Categoría relacionada: Unbounded Consumption."],
+        ["OWASP-2026", "LLM06", "direct", "Categoría relacionada: Unbounded Consumption."],
+        ["ATLAS", "AML.T0034", "conditional", "Corroborar posible intención de aumentar costos con uso, calendario y contexto."],
+        ["ATLAS", "AML.T0029", "conditional", "Confirmar evidencia independiente de denegación del servicio."]
+      ]
+    },
+    "AI.Azure_AccessAnomaly": {
+      "signal": "access_anomaly",
+      "meaning": "El acceso al recurso se desvía del patrón previo en dimensiones como cliente, red o autenticación.",
+      "triage": "Verificar si hubo cambios aprobados de identidad, clientes o infraestructura; vincular solo con telemetría independiente.",
+      "boundary": "El cambio de patrón no prueba robo de modelo, abuso de volumen o credencial comprometida.",
+      "links": [
+        ["ATLAS", "AML.T0040", "context", "Pivote de contexto si la actividad observada corresponde a inferencia."],
+        ["ATLAS", "AML.T0012", "conditional", "Demostrar uso adversario de una cuenta válida con datos de autenticación."]
+      ]
+    },
+    "AI.Azure_AnomalousOperation.InitialAccess": {
+      "signal": "service_principal_high_risk_operation",
+      "meaning": "Una identidad de aplicación invocó una operación administrativa sensible relacionada con recursos de IA.",
+      "triage": "Consultar AzureActivity e inicios de sesión de service principals; confirmar operación exacta, identidad y cambio autorizado.",
+      "boundary": "No presupone un nombre de operación, robo de claves ni compromiso de la cadena de suministro.",
+      "links": [
+        ["ATLAS", "AML.T0012", "conditional", "Confirmar uso adversario de la identidad válida."],
+        ["ATLAS", "AML.T0055", "conditional", "Demostrar obtención de credenciales almacenadas de manera insegura."]
+      ]
+    },
+    "AI.Azure_AnomalousToolInvocation": {
+      "signal": "tool_invocation_anomaly",
+      "meaning": "La aplicación intentó invocar una herramienta de forma atípica frente a su comportamiento esperado.",
+      "triage": "Verificar qué herramienta y permisos intervinieron, si se ejecutó y qué resultado registró la aplicación.",
+      "boundary": "La anomalía no prueba agencia excesiva, invocación adversaria o envenenamiento de herramienta.",
+      "links": [
+        ["ATLAS", "AML.T0053", "conditional", "Corroborar intento de abuso de una herramienta por un adversario."],
+        ["CAAT", "CAAT-09", "conditional", "Confirmar que el agente dispuso de autoridad o acciones mayores que las permitidas."],
+        ["OWASP-2025", "LLM06", "conditional", "Confirmar desalineación entre autorización y alcance."],
+        ["OWASP-2026", "LLM03", "conditional", "Confirmar desalineación entre autorización y alcance."],
+        ["CAAT", "CAAT-08", "conditional", "Confirmar un problema de controles o diseño de la herramienta."]
+      ]
+    },
+    "AI.Azure_LLMReconnaissance": {
+      "signal": "llm_reconnaissance",
+      "meaning": "En preview: el detector reconoce interacción parecida a un sondeo de instrucciones, capacidades o guardrails.",
+      "triage": "Clasificar el objetivo del sondeo con evidencia autorizada. Mantener el estado de disponibilidad separado del plan general.",
+      "boundary": "No demuestra extracción, jailbreak ni acceso a datos; el objetivo exacto requiere contexto.",
+      "links": [
+        ["ATLAS", "AML.T0069", "conditional", "Corroborar que la actividad buscó información del sistema LLM."],
+        ["ATLAS", "AML.T0085.003", "conditional", "Corroborar obtención de instrucciones internas, no solo un intento."],
+        ["CAAT", "CAAT-02", "context", "El sondeo puede preceder a intentos de inyección; no los detecta por sí mismo."],
+        ["OWASP-2026", "LLM08", "conditional", "Corroborar exposición de contexto oculto, no inferirla del sondeo."],
+        ["OWASP-2025", "LLM07", "conditional", "Corroborar divulgación de instrucciones internas."]
+      ]
+    },
+    "AI.AIModelScan_MalwareDetected": {
+      "signal": "model_artifact_malware",
+      "meaning": "En preview: un escaneo detectó malware en un archivo de modelo registrado por el usuario.",
+      "triage": "Revisar procedencia del artefacto con el custodio; mantenerlo sin cargar y verificar la ruta de publicación.",
+      "boundary": "Es una señal de escaneo de artefacto, no de runtime. No confirma ejecución ni compromiso del proveedor.",
+      "links": [
+        ["CAAT", "CAAT-06", "conditional", "Vincular al escenario si se confirma compromiso en la cadena de suministro."],
+        ["ATLAS", "AML.T0010.003", "conditional", "Confirmar que la fuente fue un repositorio de modelos comprometido."],
+        ["OWASP-2025", "LLM03", "conditional", "Corroborar que el problema afecta la procedencia o cadena de suministro."],
+        ["OWASP-2026", "LLM04", "conditional", "Corroborar que el problema afecta la procedencia o cadena de suministro."]
+      ]
+    }
+  },
+  "scenario_assessment": [
+    ["CAAT-01", "Confianza y cadena de suministro", "Sin vínculo automático", "Requiere historial de versiones y cambios de herramientas; evaluar telemetría del gateway del agente."],
+    ["CAAT-02", "Manipulación de instrucciones", "Señal relacionada documentada", "Jailbreak y ofuscación. Distinguir intento, veredicto y acción observada."],
+    ["CAAT-03", "Ejecución y autonomía", "Hipótesis condicionada", "Se necesita evidencia de cómo un sistema consumió la salida, no solo una URL en la salida."],
+    ["CAAT-04", "Estado y memoria", "Sin vínculo automático", "Instrumentar cambios y procedencia de memoria, contexto persistente e índices."],
+    ["CAAT-05", "Recursos y extracción", "Señal relacionada documentada", "Wallet por recurrencia o volumen. No equivale a un fallo de disponibilidad."],
+    ["CAAT-06", "Confianza y cadena de suministro", "Hipótesis condicionada", "Escaneo de artefactos en preview puede aportar señal; corroborar cadena y procedencia por separado."],
+    ["CAAT-07", "Recursos y extracción", "Señal relacionada documentada", "Credenciales en respuesta; no asumir que la señal cubre cualquier tipo de dato sensible."],
+    ["CAAT-08", "Confianza y cadena de suministro", "Hipótesis condicionada", "Revisar autorización de la herramienta. La anomalía no prueba un defecto de diseño."],
+    ["CAAT-09", "Ejecución y autonomía", "Hipótesis condicionada", "Anomalía de invocación puede orientar el triage; falta evidencia de exceso de autoridad."],
+    ["CAAT-10", "Manipulación de instrucciones", "Sin vínculo automático", "Evaluar controles de calidad y supervisión humana, no atribuirlos a phishing por similitud."],
+    ["CAAT-11", "Recursos y extracción", "Sin vínculo automático", "Requiere señales de extracción de artefacto, API o replicación; Tor y anomalías genéricas no alcanzan."],
+    ["CAAT-12", "Ejecución y autonomía", "Sin vínculo automático", "Inventario y correlación de agentes y sesiones son fuentes distintas al catálogo MDC-AI."],
+    ["CAAT-13", "Estado y memoria", "Sin vínculo automático", "Usar trazas de datos de entrenamiento, registries e integridad; malware en un modelo no demuestra envenenamiento."],
+    ["CAAT-14", "Estado y memoria", "Hipótesis condicionada", "Para elevar una hipótesis sobre una salida anómala, verificar fuentes, modificaciones e índice de retrieval."]
+  ]
+}

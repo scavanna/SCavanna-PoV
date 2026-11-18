@@ -1,0 +1,6 @@
+// Exportar las dos columnas a CSV y usar scripts\export_navigator.py.
+MDCAI_V3_Enriched(30d)
+| mv-expand TechniqueId=DirectATLAS to typeof(string)
+| summarize by TechniqueId, AlertKey
+| summarize Alerts=count() by TechniqueId
+| order by TechniqueId asc

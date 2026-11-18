@@ -1,0 +1,6 @@
+// Requiere 03_Resumen_Diario.arm.json. Mantener el sentido "alertas distintas por día".
+MDCAI_V3_Daily_CL
+| where DiaUTC >= startofday(ago(30d))
+| summarize arg_max(TimeGenerated, *) by DiaUTC, AlertType
+| project DiaUTC, AlertType, Alertas, SeveridadAlta
+| order by DiaUTC desc, Alertas desc

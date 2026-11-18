@@ -1,0 +1,23 @@
+// Requiere SigninLogs y un único tenant de identidad validado en este workspace.
+let alerts =
+    SecurityAlert
+    | where TimeGenerated >= ago(7d) and ProductName in~ (__PRODUCT_NAMES__)
+    | where AlertType in ("AI.Azure_CredentialTheftAttempt", "AI.Azure_AccessAnomaly")
+    | where isnotempty(SystemAlertId)
+    | extend ep=parse_json(ExtendedProperties)
+    | extend IdentityKey=tolower(coalesce(tostring(ep["End user ID"]), tostring(ep["EndUserId"])))
+    | where IdentityKey matches regex @"^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+    | where IdentityKey != "00000000-0000-0000-0000-000000000000"
+    | extend AlertTime=iff(isnotnull(StartTime) and StartTime > datetime(2000-01-01) and StartTime <= TimeGenerated, StartTime, TimeGenerated)
+    | project TenantId, SystemAlertId, AlertType, IdentityKey, TimeGenerated, AlertTime
+    | summarize arg_max(TimeGenerated, *) by TenantId, SystemAlertId;
+alerts
+| join kind=inner (
+    SigninLogs
+    | where TimeGenerated >= ago(7d) and isnotempty(UserId)
+    | project SignTime=TimeGenerated, IdentityKey=tolower(UserId), WorkspaceScope=TenantId, ResultType, RiskLevelDuringSignIn
+) on $left.IdentityKey == $right.IdentityKey, $left.TenantId == $right.WorkspaceScope
+| where SignTime between (AlertTime - 1h .. AlertTime + 15m)
+| extend GapSeconds=abs(datetime_diff("second", SignTime, AlertTime))
+| summarize arg_min(GapSeconds, *) by TenantId, SystemAlertId
+| project AlertTime, SignTime, SystemAlertId, AlertType, GapSeconds, ResultType, RiskLevelDuringSignIn

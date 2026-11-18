@@ -1,0 +1,5 @@
+// Propuestas de triage; filtro opcional: | where AlertType == "<ID exacto>"
+_GetWatchlist('MDCAI_V3_Relations')
+| where MappingVersion == "__RELEASE__"
+| project AlertType=tostring(SearchKey), Framework, FrameworkVersion, TargetId, TargetName, Relation, EvidenceNeeded, TargetUrl
+| order by AlertType asc, Framework asc, TargetId asc

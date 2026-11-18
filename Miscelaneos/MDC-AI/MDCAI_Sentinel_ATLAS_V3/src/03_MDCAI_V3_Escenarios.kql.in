@@ -1,0 +1,12 @@
+// Guardar como función MDCAI_V3_Escenarios; parámetro Lookback:timespan.
+let obs = MDCAI_V3_Enriched(Lookback)
+    | mv-expand CAAT_Id=DirectCAAT to typeof(string)
+    | summarize Ultima=max(TimeGenerated) by CAAT_Id, AlertKey
+    | summarize AlertasDirectas=count(), Ultima=max(Ultima) by CAAT_Id;
+_GetWatchlist('MDCAI_V3_CAAT')
+| where MappingVersion == "__RELEASE__"
+| project CAAT_Id=tostring(SearchKey), Scenario, Family_Proposed, DocumentedLink, LearnUrl
+| lookup kind=leftouter obs on CAAT_Id
+| extend AlertasDirectas=coalesce(AlertasDirectas, tolong(0))
+| extend Lectura=iff(AlertasDirectas > 0, "Actividad con vínculo directo propuesto", "Sin actividad con vínculo directo en el período")
+| order by CAAT_Id asc

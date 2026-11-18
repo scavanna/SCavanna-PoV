@@ -1,0 +1,4 @@
+MDCAI_V3_Enriched(30d)
+| where Disposition == "unclassified"
+| summarize Alertas=count(), Ultima=max(TimeGenerated) by AlertType
+| order by Alertas desc

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "3.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string"
+    },
+    "firstBinStartUtc": {
+      "type": "string",
+      "metadata": {
+        "description": "Medianoche UTC vigente o siguiente, ISO 8601."
+      }
+    },
+    "binDelayMinutes": {
+      "type": "int",
+      "defaultValue": 60,
+      "minValue": 0,
+      "maxValue": 1440
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/summaryLogs",
+      "apiVersion": "2025-07-01",
+      "name": "[concat(parameters('workspaceName'), '/MDCAI-V3-Daily-Source')]",
+      "properties": {
+        "ruleType": "User",
+        "description": "MDCAI V3 - volumen diario por AlertType; no cubre taxonomías.",
+        "ruleDefinition": {
+          "query": "// Azure Monitor summary rule. Su bin determina el rango; no agregar ago()/now().\nSecurityAlert\n| where ProductName in~ (\"Azure Security Center\", \"Microsoft Defender for Cloud\")\n| where AlertType startswith_cs \"AI.Azure_\" or AlertType startswith_cs \"AI.AIModelScan_\"\n| where isnotempty(SystemAlertId)\n| extend DiaUTC=startofday(TimeGenerated)\n| summarize arg_max(TimeGenerated, AlertType, AlertSeverity) by DiaUTC, TenantId, SystemAlertId\n| summarize Alertas=count(), SeveridadAlta=countif(AlertSeverity =~ \"High\") by DiaUTC, AlertType",
+          "binSize": 1440,
+          "binStartTime": "[parameters('firstBinStartUtc')]",
+          "binDelay": "[parameters('binDelayMinutes')]",
+          "destinationTable": "MDCAI_V3_Daily_CL",
+          "displayName": "MDCAI V3 diario por tipo de alerta"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+// Requiere la tabla opcional. Una captura lógica por alerta/versión; llegada repetida no cuenta dos veces.
+MDCAI_EnrichmentV3_CL
+| where TimeGenerated >= ago(90d)
+| summarize arg_min(TimeGenerated, *) by AlertKey, MappingVersion
+| summarize Alertas=count() by DiaDeCapturaUTC=startofday(TimeGenerated), MappingVersion, Disposition
+| order by DiaDeCapturaUTC asc

@@ -1,0 +1,13 @@
+# Cómo validar V3
+
+La verificación local comprueba que la matriz, los CSV y los ARM compilan la misma política, que ningún vínculo operativo apunta a un ID retirado, que el workbook contiene las consultas esperadas, que las escrituras SOAR están deshabilitadas por defecto y que el ZIP contiene su inventario íntegro. No comprueba permisos, conectividad, comportamiento del conector regional ni rendimiento o resultados KQL con datos reales.
+
+## Ensayo en el tenant
+
+1. **Solo consulta.** Inspeccioná un caso autorizado o una alerta de muestra del plan. Confirmá que `ProductName`, `AlertType`, severidad y `SystemAlertId` corresponden entre portal/ARM/Logs. Una muestra valida transporte, no el rendimiento de detección. Ejecutá QA, Excel vs Logs y workbook.
+2. **Modo sin escritura.** Corré el playbook manualmente. El resultado `Plan` debe ignorar el producto ajeno y seleccionar por `alertType` de las alertas del incidente. Probá un tipo documentado con vínculo directo y uno condicional: solo el primero aporta tags de marco; ambos aportan guía. Un tipo IA nuevo genera revisión sin enlaces inferidos.
+3. **Escritura controlada.** Habilitá la escritura en el piloto; completá la misma ejecución dos veces. Verificá un solo comentario para la versión y tags no repetidos ni perdidos. Agregá una alerta de tipo distinto y repetí manualmente: se actualiza el mismo comentario. No cambia la alerta original ni el estado del incidente. Comprobá RBAC de lectura, escritura y ejecución en el portal seleccionado.
+4. **Correlación y volumen.** `08`: verificar que no se une por campos vacíos, que dos IDs distintos y la misma identidad/recurso sean obligatorios, y que un destino previo o más de dos horas después no aparezca. `09`: revisar que `SigninLogs.UserId` y el objeto de usuario reportado por la app representen lo mismo, dentro de un único tenant de identidad. `04`/`05`: con múltiples etiquetas una alerta puede contribuir a distintas categorías, pero cuenta una sola vez por categoría.
+5. **Histórico opcional.** Probá `Save-Snapshot.ps1` sin escritura, después con una ventana pequeña. Consultá la tabla custom para confirmar versión y tiempos. Una repetición no duplica el total lógico de `13`. Para Summary Rules, consultá el primer bin tras la latencia configurada. La regla no procesa ventanas históricas a voluntad.
+
+No usar prompts de ataque para comprobar el transporte. No incluir contenido de prompts, tokens, secretos, URLs maliciosas, usuarios reales o conversaciones en tickets de QA. Guardar evidencia autorizada en el sistema de casos y registrar en la hoja **Piloto** solo identificadores aprobados o enlaces con control de acceso.

@@ -1,0 +1,126 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "name": "intro",
+      "content": {
+        "json": "# Defender for Cloud AI Services · Sentinel · V3.0.0\n**Actividad observada y clasificación propuesta.** No es una medición de cobertura ni una atribución validada. Los conteos por técnica, escenario o riesgo no se suman entre categorías."
+      }
+    },
+    {
+      "type": 3,
+      "name": "Alertas distintas por clase y ámbito · 30 días",
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "MDCAI_V3_Enriched(30d)\n| summarize Alertas=count() by SignalScope, Disposition\n| order by Alertas desc",
+        "title": "Alertas distintas por clase y ámbito · 30 días",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 2592000000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table"
+      }
+    },
+    {
+      "type": 3,
+      "name": "14 escenarios CAAT · actividad y vínculo documentado",
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "MDCAI_V3_Escenarios(30d)",
+        "title": "14 escenarios CAAT · actividad y vínculo documentado",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 2592000000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table"
+      }
+    },
+    {
+      "type": 3,
+      "name": "ATLAS · técnicas vinculadas directamente",
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "MDCAI_V3_Enriched(30d)\n| mv-expand TechniqueId=DirectATLAS to typeof(string)\n| summarize Ultima=max(TimeGenerated) by TechniqueId, AlertKey\n| summarize Alertas=count(), Ultima=max(Ultima) by TechniqueId\n| lookup kind=leftouter (\n    _GetWatchlist('MDCAI_V3_ATLAS')\n    | where ATLASVersion == \"2026.10\"\n    | project TechniqueId=tostring(SearchKey), TechniqueName, TacticIds, TacticNames, ATLASVersion, TechniqueUrl\n  ) on TechniqueId\n| order by Alertas desc",
+        "title": "ATLAS · técnicas vinculadas directamente",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 2592000000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table"
+      }
+    },
+    {
+      "type": 3,
+      "name": "OWASP · separar las dos ediciones",
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "// Cada edición cuenta por separado. No sumar sobre riesgos ni sobre ediciones.\nlet observed = materialize(MDCAI_V3_Enriched(30d) | project AlertKey, DirectOWASP2025, DirectOWASP2026);\nunion\n    (observed | mv-expand RiskId=DirectOWASP2025 to typeof(string) | extend Edition=\"2025\"),\n    (observed | mv-expand RiskId=DirectOWASP2026 to typeof(string) | extend Edition=\"2026\")\n| summarize by Edition, RiskId, AlertKey\n| summarize Alertas=count() by Edition, RiskId\n| order by Edition desc, Alertas desc",
+        "title": "OWASP · separar las dos ediciones",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 2592000000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table"
+      }
+    },
+    {
+      "type": 3,
+      "name": "Triage · alertas originales, sin contenido de prompts",
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "MDCAI_V3_Enriched(7d)\n| project TimeGenerated, AlertType, AlertSeverity, AlertStatus, Disposition, DirectCAAT, DirectATLAS, DirectOWASP2026, Triage, EvidenceBoundary, AlertLink\n| top 100 by TimeGenerated desc",
+        "title": "Triage · alertas originales, sin contenido de prompts",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 604800000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table"
+      }
+    },
+    {
+      "type": 3,
+      "name": "QA · alertas observadas sin clasificar",
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "MDCAI_V3_Enriched(30d)\n| where Disposition == \"unclassified\"\n| summarize Alertas=count(), Ultima=max(TimeGenerated) by AlertType\n| order by Alertas desc",
+        "title": "QA · alertas observadas sin clasificar",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 2592000000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table"
+      }
+    },
+    {
+      "type": 3,
+      "name": "QA · duplicados y consistencia de versiones",
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let profile = _GetWatchlist('MDCAI_V3_Profiles')\n    | summarize Rows=count(), Versions=make_set(MappingVersion) by Key=tostring(SearchKey)\n    | extend Artefacto=\"Profiles\";\nlet caat = _GetWatchlist('MDCAI_V3_CAAT')\n    | summarize Rows=count(), Versions=make_set(MappingVersion) by Key=tostring(SearchKey)\n    | extend Artefacto=\"CAAT\";\nlet rel = _GetWatchlist('MDCAI_V3_Relations')\n    | summarize Rows=count(), Versions=make_set(MappingVersion) by Key=strcat(SearchKey, \"/\", Framework, \"/\", FrameworkVersion, \"/\", TargetId)\n    | extend Artefacto=\"Relations\";\nlet atlas = _GetWatchlist('MDCAI_V3_ATLAS')\n    | summarize Rows=count(), Versions=make_set(ATLASVersion) by Key=tostring(SearchKey)\n    | extend Artefacto=\"ATLAS\";\nlet counts = union\n    (profile | summarize Rows=count() | extend Artefacto=\"Profiles\", ExpectedRows=tolong(17)),\n    (caat | summarize Rows=count() | extend Artefacto=\"CAAT\", ExpectedRows=tolong(14)),\n    (rel | summarize Rows=count() | extend Artefacto=\"Relations\", ExpectedRows=tolong(61)),\n    (atlas | summarize Rows=count() | extend Artefacto=\"ATLAS\", ExpectedRows=tolong(221));\nunion profile, caat, rel, atlas\n| extend Expected=iff(Artefacto == \"ATLAS\", \"2026.10\", \"3.0.0\")\n| where Rows != 1 or array_length(Versions) != 1 or tostring(Versions[0]) != Expected\n| project Artefacto, Key, Rows, Versions, Expected\n| union (counts | where Rows != ExpectedRows | project Artefacto, Key=\"CANTIDAD\", Rows, Versions=dynamic([]), Expected=tostring(ExpectedRows))",
+        "title": "QA · duplicados y consistencia de versiones",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 2592000000
+        },
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table"
+      }
+    }
+  ],
+  "fallbackResourceIds": [],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

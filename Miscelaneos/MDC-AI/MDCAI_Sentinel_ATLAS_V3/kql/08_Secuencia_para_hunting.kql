@@ -1,0 +1,29 @@
+// Hipótesis defensiva: intento no bloqueado → credencial en respuesta. No es causalidad ni evidencia de extracción.
+// No usar IP como identidad. Validar que el objeto Entra venga de la autenticación de la aplicación.
+let scoped = materialize(
+    SecurityAlert
+    | where TimeGenerated >= ago(7d) and ProductName in~ ("Azure Security Center", "Microsoft Defender for Cloud")
+    | where AlertType in ("AI.Azure_Jailbreak.ContentFiltering.DetectedAttempt", "AI.Azure_CredentialTheftAttempt")
+    | where isnotempty(SystemAlertId) and isnotempty(ResourceId)
+    | extend ep = parse_json(ExtendedProperties)
+    | extend EndUserObjectId = tolower(coalesce(tostring(ep["End user ID"]), tostring(ep["EndUserId"]))),
+             ResourceKey=tolower(ResourceId),
+             ActivityTime=iff(isnotnull(StartTime) and StartTime > datetime(2000-01-01) and StartTime <= TimeGenerated, StartTime, TimeGenerated)
+    | where EndUserObjectId matches regex @"^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$"
+    | where EndUserObjectId != "00000000-0000-0000-0000-000000000000"
+    | project TenantId, ResourceKey, EndUserObjectId, SystemAlertId, AlertType, ActivityTime, TimeGenerated
+    | summarize arg_max(TimeGenerated, *) by TenantId, SystemAlertId
+);
+let first = scoped
+    | where AlertType == "AI.Azure_Jailbreak.ContentFiltering.DetectedAttempt"
+    | project TenantId, ResourceKey, EndUserObjectId, FirstTime=ActivityTime, FirstAlertId=SystemAlertId;
+let second = scoped
+    | where AlertType == "AI.Azure_CredentialTheftAttempt"
+    | project TenantId, ResourceKey, EndUserObjectId, SecondTime=ActivityTime, SecondAlertId=SystemAlertId;
+first
+| join kind=inner second on TenantId, ResourceKey, EndUserObjectId
+| where FirstAlertId != SecondAlertId and SecondTime > FirstTime and SecondTime <= FirstTime + 2h
+| extend Gap=SecondTime-FirstTime
+| summarize arg_min(Gap, *) by TenantId, SecondAlertId
+| project FirstTime, SecondTime, Gap, ResourceKey, FirstAlertId, SecondAlertId
+| order by SecondTime desc

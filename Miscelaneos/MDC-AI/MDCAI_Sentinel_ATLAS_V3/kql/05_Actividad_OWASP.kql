@@ -1,0 +1,8 @@
+// Cada edición cuenta por separado. No sumar sobre riesgos ni sobre ediciones.
+let observed = materialize(MDCAI_V3_Enriched(30d) | project AlertKey, DirectOWASP2025, DirectOWASP2026);
+union
+    (observed | mv-expand RiskId=DirectOWASP2025 to typeof(string) | extend Edition="2025"),
+    (observed | mv-expand RiskId=DirectOWASP2026 to typeof(string) | extend Edition="2026")
+| summarize by Edition, RiskId, AlertKey
+| summarize Alertas=count() by Edition, RiskId
+| order by Edition desc, Alertas desc

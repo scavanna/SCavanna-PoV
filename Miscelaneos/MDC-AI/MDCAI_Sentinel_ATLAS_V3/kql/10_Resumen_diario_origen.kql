@@ -1,0 +1,8 @@
+// Azure Monitor summary rule. Su bin determina el rango; no agregar ago()/now().
+SecurityAlert
+| where ProductName in~ ("Azure Security Center", "Microsoft Defender for Cloud")
+| where AlertType startswith_cs "AI.Azure_" or AlertType startswith_cs "AI.AIModelScan_"
+| where isnotempty(SystemAlertId)
+| extend DiaUTC=startofday(TimeGenerated)
+| summarize arg_max(TimeGenerated, AlertType, AlertSeverity) by DiaUTC, TenantId, SystemAlertId
+| summarize Alertas=count(), SeveridadAlta=countif(AlertSeverity =~ "High") by DiaUTC, AlertType

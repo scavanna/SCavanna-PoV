@@ -1,0 +1,11 @@
+// Guardar como función MDCAI_V3_Base; parámetro Lookback:timespan.
+SecurityAlert
+| where TimeGenerated >= ago(Lookback)
+| where ProductName in~ ("Azure Security Center", "Microsoft Defender for Cloud")
+| where AlertType startswith_cs "AI.Azure_" or AlertType startswith_cs "AI.AIModelScan_"
+| where isnotempty(SystemAlertId)
+| project TimeGenerated, StartTime, ProcessingEndTime, TenantId, SystemAlertId, VendorOriginalId, AlertType, AlertName,
+          AlertSeverity, AlertStatus=Status, AlertLink, ResourceId, LiveAttackTactics=Tactics, LiveAttackTechniques=Techniques
+| extend AlertKey = strcat(TenantId, "/", SystemAlertId),
+         ActivityTime = iff(isnotnull(StartTime) and StartTime > datetime(2000-01-01) and StartTime <= TimeGenerated, StartTime, TimeGenerated)
+| summarize arg_max(TimeGenerated, *) by AlertKey
