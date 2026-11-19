@@ -1,0 +1,1045 @@
+{
+ "ficha": {
+  "prefijo": "DP",
+  "agente": "DA",
+  "nombre": "Protección de la información y de los datos (Microsoft Purview: clasificación, etiquetado, DLP, DSPM / DSPM for AI, Insider Risk)",
+  "dominio_zt": "Datos (pilar Zero Trust); en reposo, en uso y en movimiento en M365, endpoints, SaaS, on-prem y en el uso por IA; interfaz con Productividad, Endpoints, Identidades y con las flotas de agentes (fuentes aprobadas)",
+  "tecnologia": "Purview Information Protection (labels, auto-labeling, encriptación), DLP (Exchange, SharePoint/OneDrive, Teams, Endpoint, Copilot), DSPM y DSPM for AI, Insider Risk Management, Activity/Content explorer, Compliance Manager; Defender for Cloud Apps; scanner; Purview APIs para agentes",
+  "funciones_csf": "GV.PO · ID.AM · ID.RA · PR.DS · PR.AA · DE.CM/DE.AE · RS.AN/RS.MI · ID.IM",
+  "fuente_oficial": "Deploy an information protection solution with Microsoft Purview (fases 1–3; roles); default labels & policies (DSPM setup tasks); plan for DLP; DLP alerts; Insider Risk Management; Defender for Cloud Apps information protection",
+  "objetivo": "Información sensible descubierta, clasificada y protegida; DLP en bloqueo para SITs críticos con FP controlados; sobrecompartición y uso por IA medidos y reducidos; alertas DLP/Insider triadas en SLA",
+  "slo": "Cobertura de etiquetado ≥90 %; DLP en bloqueo para SITs críticos en todas las ubicaciones; alertas DLP High ≤4 h; 'Anyone' en sitios sensibles = 0; recomendaciones DSPM críticas ≤30 días",
+  "diferencia": "Mayor dependencia de dueños de negocio y mayor costo de falso positivo en productividad. Ciclo iterativo (descubrir → etiquetar → proteger → medir). Provee las fuentes aprobadas y la DLP para IA a todas las flotas (AGC-07).",
+  "interfaz": "Productividad: DLP de correo y Safe Attachments en la misma ruta. Endpoints: Endpoint DLP depende del onboarding de MDE. Identidades: encriptación depende de identidades y CA. Dueños de datos: taxonomía y excepciones. Privacidad/Legal: Insider Risk.",
+  "personas": "Information Protection Admin · Analyst / Investigator · Reader · IRM Admin/Analysts/Investigators · Compliance Administrator · Data owners · Privacidad/Legal",
+  "permisos": "Purview: Information Protection Admin / Analyst / Investigator / Reader; IRM roles (solo humanos); MDA Security Operator; Graph: InformationProtectionPolicy.Read, SecurityAlert.Read.All, Sites.Read.All"
+ },
+ "tareas": [
+  [
+   "DP-D01",
+   "Triar alertas DLP (High/Medium) e Insider Risk correlacionadas; clasificar y resolver",
+   "Diaria",
+   "Information Protection Analyst",
+   "DE.AE, RS.MA",
+   "SOP",
+   "eo:OP-SOP-10 Triar incidentes por prioridad dentro del SLA",
+   "L2",
+   "DA-01",
+   "% High ≤4 h",
+   "Purview DLP alerts"
+  ],
+  [
+   "DP-D02",
+   "Investigar alertas DLP (Activity/Content explorer); decidir acción",
+   "Diaria",
+   "Information Protection Investigator",
+   "RS.AN, RS.MI",
+   "SOP",
+   "eo:OP-SOP-11 Investigar y remediar incidentes con evidencia",
+   "L2",
+   "DA-02",
+   "MTTR; revertidas <2 %",
+   "activity explorer"
+  ],
+  [
+   "DP-D03",
+   "Gestionar FP DLP: coincidencias de SIT, umbrales, excepciones con vencimiento; simulación antes de bloquear",
+   "Diaria",
+   "Information Protection Admin",
+   "ID.IM, PR.DS",
+   "SOP",
+   "eo:OP-SOP-15 Analizar causa raíz de errores de detección",
+   "L2",
+   "DA-03",
+   "FP recurrentes ↓",
+   "plan for DLP"
+  ],
+  [
+   "DP-D04",
+   "Revisar DSPM / DSPM for AI: uso de datos sensibles por Copilot y agentes, prompts riesgosos",
+   "Diaria",
+   "Data Security Management",
+   "ID.RA, DE.CM",
+   "POS",
+   "eo:OP-POS-19 Vigilar la postura de datos y su uso por IA",
+   "L3",
+   "DA-04",
+   "Recomendaciones críticas abiertas",
+   "DSPM for AI"
+  ],
+  [
+   "DP-D05",
+   "Revisar salud de la clasificación: auto-labeling, scanner, conectores MDA",
+   "Diaria",
+   "Information Protection Admin",
+   "PR.PS, DE.CM",
+   "POS",
+   "eo:OP-POS-15 Mantener la salud de la ingesta de señales",
+   "L3",
+   "DA-05",
+   "Políticas en error = 0",
+   "deploy-scanner"
+  ],
+  [
+   "DP-W01",
+   "Revisar simulación de auto-etiquetado y DLP en prueba; proponer producción",
+   "Semanal",
+   "Information Protection Admin + data owners",
+   "PR.DS, ID.IM",
+   "POS",
+   "eo:OP-POS-20 Promover políticas de protección de datos de simulación a producción con evidencia",
+   "L2",
+   "DA-06",
+   "Políticas promovidas",
+   "apply-sensitivity-label-automatically"
+  ],
+  [
+   "DP-W02",
+   "Revisar cobertura de etiquetado y tendencia",
+   "Semanal",
+   "Information Protection Analyst",
+   "ID.AM, PR.DS",
+   "POS",
+   "eo:OP-POS-11 Reportar la postura y su tendencia",
+   "L3",
+   "DA-07",
+   "Cobertura ≥90 %",
+   "data classification reports"
+  ],
+  [
+   "DP-W03",
+   "Revisar sobrecompartición: 'Anyone', externos, sitios sensibles",
+   "Semanal",
+   "Information Protection Analyst + SharePoint admin",
+   "ID.RA, PR.AA",
+   "POS",
+   "eo:OP-POS-21 Reducir la sobrecompartición de información sensible",
+   "L2",
+   "DA-08",
+   "'Anyone' en sensibles = 0",
+   "DSPM oversharing"
+  ],
+  [
+   "DP-W04",
+   "Hunting sobre CloudAppEvents / EmailEvents: egress, descargas masivas, etiquetas degradadas",
+   "Semanal",
+   "Investigator",
+   "DE.CM",
+   "SOP",
+   "eo:OP-SOP-02 Buscar amenazas por técnicas priorizadas y convertir hallazgos en detecciones",
+   "L1",
+   "DA-09",
+   "Hunts",
+   "advanced hunting"
+  ],
+  [
+   "DP-W05",
+   "Revisar Message Center y novedades de Purview",
+   "Semanal",
+   "Information Protection Admin",
+   "GV.OV, ID.IM",
+   "SIG",
+   "eo:OP-SIG-10 Vigilar cambios de la plataforma y evaluar impacto",
+   "L3",
+   "DA-10",
+   "Cambios evaluados ≤7 días",
+   "Message Center"
+  ],
+  [
+   "DP-W06",
+   "Revisar file policies de MDA (SaaS) y acciones de gobierno",
+   "Semanal",
+   "Information Protection Admin + SecOps",
+   "PR.DS, RS.MI",
+   "POS",
+   "eo:OP-POS-21 Reducir la sobrecompartición de información sensible",
+   "L2",
+   "DA-08",
+   "Archivos expuestos en SaaS ↓",
+   "Defender for Cloud Apps"
+  ],
+  [
+   "DP-M01",
+   "Revisar taxonomía de etiquetas y políticas de publicación con dueños de negocio",
+   "Mensual",
+   "Information Protection Admin + data owners",
+   "GV.PO, PR.DS",
+   "SIG",
+   "eo:OP-SIG-12 Revisar políticas y excepciones del control",
+   "L1",
+   "—",
+   "Taxonomía vigente",
+   "create-sensitivity-labels"
+  ],
+  [
+   "DP-M02",
+   "Revisar excepciones DLP y overrides de usuario con vencimiento",
+   "Mensual",
+   "Information Protection Admin",
+   "GV.PO, ID.IM",
+   "POS",
+   "eo:OP-POS-13 Revisar y depurar excepciones que debilitan la detección",
+   "L2",
+   "DA-03",
+   "Overrides sin justificación = 0",
+   "DLP overrides"
+  ],
+  [
+   "DP-M03",
+   "Revisar políticas de Insider Risk con Privacidad/Legal; casos abiertos",
+   "Mensual",
+   "IRM Admin + Privacidad",
+   "ID.RA, GV.PO",
+   "SIG",
+   "eo:OP-SOP-30 Investigar riesgo interno con proporcionalidad y privacidad",
+   "L1",
+   "—",
+   "Casos en SLA",
+   "insider-risk-management"
+  ],
+  [
+   "DP-M04",
+   "Informe mensual de protección de datos para CISO y CDO",
+   "Mensual",
+   "Data Security Management",
+   "GV.OV, RS.CO",
+   "SIG",
+   "eo:OP-SIG-13 Reportar resultados del SOC a la dirección",
+   "L3",
+   "DA-07",
+   "Informe a tiempo",
+   "purview-reports"
+  ],
+  [
+   "DP-M05",
+   "Revisar Compliance Manager: acciones de mejora y evidencias",
+   "Mensual",
+   "Compliance Administrator",
+   "GV.OV, ID.IM",
+   "POS",
+   "eo:OP-POS-11 Reportar la postura y su tendencia",
+   "L3",
+   "DA-07",
+   "Acciones cerradas",
+   "compliance-manager"
+  ],
+  [
+   "DP-M06",
+   "Revisar fuentes de conocimiento y DLP para IA de las flotas (todos los dominios)",
+   "Mensual",
+   "Information Protection Admin + PO-GAC de cada dominio",
+   "PR.DS, PR.AA",
+   "IA",
+   "eo:OP-IA-04 Gobernar los datos que alcanzan los agentes",
+   "L2",
+   "DA-04",
+   "Fuentes no aprobadas = 0",
+   "Purview APIs for AI apps; AMP-32"
+  ],
+  [
+   "DP-Q01",
+   "Revisar política de protección de datos, apetito y mapa de datos sensibles",
+   "Trimestral",
+   "PO-GAC Datos + CISO + CDO",
+   "GV.PO, GV.RM",
+   "SIG",
+   "eo:OP-SIG-12 Revisar políticas y excepciones del control",
+   "L1",
+   "—",
+   "Decisiones registradas",
+   "Propuesta"
+  ],
+  [
+   "DP-Q02",
+   "Revisar desempeño y costo de la flota Datos",
+   "Trimestral",
+   "PO-GAC Datos",
+   "GV.OV, ID.IM",
+   "IA",
+   "eo:OP-IA-02 Revisar desempeño, costo y riesgo de los agentes",
+   "L1",
+   "DA-11",
+   "KPIs vs. meta",
+   "Propuesta"
+  ],
+  [
+   "DP-Q03",
+   "Recertificar roles de Purview y permisos de agentes",
+   "Trimestral",
+   "PO-GAC + IAM",
+   "PR.AA",
+   "AYI",
+   "eo:OP-AYI-01 Recertificar accesos privilegiados, no humanos y de agentes",
+   "L2",
+   "DA-11",
+   "% recertificados",
+   "scc-permissions"
+  ],
+  [
+   "DP-Q04",
+   "Evaluaciones/regresión y red teaming (fuga de datos en salidas, evasión de DLP)",
+   "Trimestral",
+   "PO-GAC + AppSec",
+   "ID.IM",
+   "IA",
+   "eo:OP-IA-03 Evaluar y probar adversarialmente a los agentes",
+   "L2",
+   "—",
+   "% evaluados",
+   "Propuesta"
+  ],
+  [
+   "DP-A01",
+   "Respuesta a fuga de datos: alcance, quitar compartición, cuarentena, revocar, notificar (Legal)",
+   "Por evento",
+   "Investigator + SecOps + Legal",
+   "RS.MI, RS.CO",
+   "SOP",
+   "eo:OP-SOP-11 Investigar y remediar incidentes con evidencia",
+   "L2",
+   "DA-02",
+   "Tiempo a contención",
+   "DLP incident response"
+  ],
+  [
+   "DP-A02",
+   "Descubrimiento y etiquetado de un nuevo repositorio (on-prem, SaaS, Azure Storage)",
+   "Por evento",
+   "Information Protection Admin",
+   "ID.AM, PR.DS",
+   "POS",
+   "eo:OP-POS-16 Mantener el inventario de fuentes de señal",
+   "L2",
+   "DA-05",
+   "Repositorios sin descubrir ↓",
+   "deploy-scanner"
+  ],
+  [
+   "DP-A03",
+   "Alta de etiqueta/SIT/clasificador y su política (simulación → producción)",
+   "Por evento",
+   "Information Protection Admin + data owners",
+   "GV.PO, PR.DS",
+   "POS",
+   "eo:OP-POS-20 Promover políticas de protección de datos de simulación a producción con evidencia",
+   "L2",
+   "DA-06",
+   "Políticas promovidas",
+   "trainable classifiers"
+  ],
+  [
+   "DP-A04",
+   "Tabletop de fuga de datos / insider (incl. 'agente filtra datos')",
+   "Según necesidad",
+   "PO-GAC Datos + Legal + CSIRT",
+   "ID.IM, RS",
+   "SOP",
+   "eo:OP-SOP-26 Probar los planes de respuesta",
+   "L1",
+   "—",
+   "Ejercicios/año",
+   "AMP-43"
+  ]
+ ],
+ "agentes": [
+  {
+   "id": "DA-01",
+   "nombre": "Triage Copilot de alertas DLP e Insider",
+   "proposito": "Pre-triar alertas DLP por severidad, SIT, ubicación y usuario; correlar con Insider Risk.",
+   "tareas": "DP-D01",
+   "autonomia": "L2",
+   "gates": "Con aprobación; sin acciones sobre contenido ni usuarios",
+   "kpis": "Precisión ≥90 %",
+   "costo": "Tokens",
+   "riesgos_asi": "ASI01, ASI06",
+   "identidad": "Agent ID; SecurityAlert.Read.All; IP Reader",
+   "owner": "PO-GAC Datos",
+   "ruta": "R2",
+   "tools_propios": [
+    "DT-03",
+    "DT-04",
+    "T-04"
+   ],
+   "knowledge_propios": [
+    "DK-D1",
+    "KN-03"
+   ],
+   "skills_propios": [
+    "SK-07",
+    "DS-D1"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "DA-02",
+   "nombre": "Asistente de investigación y remediación de datos",
+   "proposito": "Reunir evidencia; proponer quitar compartición / cuarentena / notificación; ejecutar tras aprobación con límite.",
+   "tareas": "DP-D02, DP-A01",
+   "autonomia": "L2",
+   "gates": "Con aprobación; límite de archivos; nunca borra contenido ni toca casos IRM",
+   "kpis": "MTTR; revertidas <2 %",
+   "costo": "Tokens",
+   "riesgos_asi": "ASI02, ASI03, ASI09",
+   "identidad": "Agent ID; Sites.Read.All; governance MDA acotada",
+   "owner": "PO-GAC Datos + Legal",
+   "ruta": "R2",
+   "tools_propios": [
+    "DT-05",
+    "DT-04",
+    "DT-08",
+    "DT-10"
+   ],
+   "knowledge_propios": [
+    "DK-D2",
+    "KN-05"
+   ],
+   "skills_propios": [
+    "DS-D2",
+    "SK-04",
+    "SK-08"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "DA-03",
+   "nombre": "Analista de falsos positivos y excepciones DLP",
+   "proposito": "Analizar coincidencias de SIT, proponer ajustes y excepciones con vencimiento; detectar obsoletas.",
+   "tareas": "DP-D03, DP-M02",
+   "autonomia": "L2",
+   "gates": "Con aprobación; cambios solo en simulación primero",
+   "kpis": "FP recurrentes ↓",
+   "costo": "Tokens",
+   "riesgos_asi": "ASI01, ASI09",
+   "identidad": "Agent ID; IP Reader; propuestas vía runbook",
+   "owner": "PO-GAC Datos",
+   "ruta": "R2",
+   "tools_propios": [
+    "DT-02",
+    "DT-03",
+    "DT-05"
+   ],
+   "knowledge_propios": [
+    "DK-D3",
+    "KN-04"
+   ],
+   "skills_propios": [
+    "DS-D3",
+    "SK-09"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "DA-04",
+   "nombre": "Centinela de postura de datos e IA",
+   "proposito": "Resumir DSPM/DSPM for AI, verificar fuentes aprobadas y protection scopes de las flotas.",
+   "tareas": "DP-D04, DP-M06",
+   "autonomia": "L3 / L2 (propuestas)",
+   "gates": "Solo informa y propone",
+   "kpis": "Fuentes no aprobadas = 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI06, ASI10",
+   "identidad": "Agent ID; Data Security Management (lectura); ProtectionScopes.Compute.All",
+   "owner": "PO-GAC Datos + PO-GAC de cada dominio",
+   "ruta": "R2",
+   "tools_propios": [
+    "DT-06",
+    "DT-11",
+    "T-24"
+   ],
+   "knowledge_propios": [
+    "DK-D4",
+    "KN-08"
+   ],
+   "skills_propios": [
+    "DS-D4",
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "DA-05",
+   "nombre": "Centinela de salud de clasificación",
+   "proposito": "Detectar políticas en error, scanner desactualizado, conectores caídos, repositorios sin descubrir.",
+   "tareas": "DP-D05, DP-A02",
+   "autonomia": "L3 / L2 (tickets)",
+   "gates": "Solo lectura + ticket",
+   "kpis": "Políticas en error = 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI10",
+   "identidad": "Agent ID; lectura",
+   "owner": "PO-GAC Datos",
+   "ruta": "R2",
+   "tools_propios": [
+    "DT-02",
+    "DT-09",
+    "DT-08",
+    "T-15"
+   ],
+   "knowledge_propios": [
+    "DK-D5"
+   ],
+   "skills_propios": [
+    "XS-05",
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "DA-06",
+   "nombre": "Analista de simulación y promoción de políticas",
+   "proposito": "Leer simulaciones, estimar FP/impacto, proponer paso a producción.",
+   "tareas": "DP-W01, DP-A03",
+   "autonomia": "L2",
+   "gates": "Promoción solo humana",
+   "kpis": "Políticas promovidas con FP estimado",
+   "costo": "Tokens",
+   "riesgos_asi": "ASI09",
+   "identidad": "Agent ID; lectura de simulación",
+   "owner": "PO-GAC Datos + data owners",
+   "ruta": "R2",
+   "tools_propios": [
+    "DT-02",
+    "DT-05"
+   ],
+   "knowledge_propios": [
+    "DK-D3",
+    "DK-D1"
+   ],
+   "skills_propios": [
+    "DS-D3",
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "DA-07",
+   "nombre": "Reportero de cobertura y protección de datos",
+   "proposito": "Compilar cobertura, DLP, sobrecompartición, uso por IA, Compliance Manager; informe mensual.",
+   "tareas": "DP-W02, DP-M04, DP-M05",
+   "autonomia": "L3",
+   "gates": "Solo informa",
+   "kpis": "Informes a tiempo",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI09",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC Datos",
+   "ruta": "R2",
+   "tools_propios": [
+    "DT-05",
+    "DT-06",
+    "DT-12",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-10",
+    "DK-D4"
+   ],
+   "skills_propios": [
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "DA-08",
+   "nombre": "Steward de compartición y archivos en SaaS",
+   "proposito": "Detectar 'Anyone'/externos en sitios sensibles y archivos expuestos en SaaS; proponer corrección.",
+   "tareas": "DP-W03, DP-W06",
+   "autonomia": "L2",
+   "gates": "Con aprobación; límite por sitio/archivos",
+   "kpis": "'Anyone' en sensibles = 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI02, ASI03",
+   "identidad": "Agent ID; Sites.Read.All; governance MDA con aprobación",
+   "owner": "PO-GAC Datos + SharePoint admin",
+   "ruta": "R2",
+   "tools_propios": [
+    "DT-10",
+    "DT-08",
+    "DT-04"
+   ],
+   "knowledge_propios": [
+    "DK-D6",
+    "DK-D1"
+   ],
+   "skills_propios": [
+    "DS-D2",
+    "SK-04"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "DA-09",
+   "nombre": "Bibliotecario de hunting de datos",
+   "proposito": "Mantener consultas sobre CloudAppEvents/EmailEvents y proponer detecciones/políticas.",
+   "tareas": "DP-W04",
+   "autonomia": "L2",
+   "gates": "Detecciones con aprobación",
+   "kpis": "Consultas vigentes",
+   "costo": "Medio",
+   "riesgos_asi": "ASI02, ASI05",
+   "identidad": "Agent ID; hunting",
+   "owner": "PO-GAC Datos + Hunting",
+   "ruta": "R3 (alt. R2)",
+   "tools_propios": [
+    "DT-04",
+    "T-05",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-05",
+    "XK-06"
+   ],
+   "skills_propios": [
+    "SK-08",
+    "SK-17"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "DA-10",
+   "nombre": "Vigía de cambios de plataforma (Purview)",
+   "proposito": "Leer Message Center y novedades; evaluar impacto en etiquetas, DLP, DSPM y agentes.",
+   "tareas": "DP-W05",
+   "autonomia": "L3",
+   "gates": "Solo informa",
+   "kpis": "Cambios evaluados ≤7 días",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI06",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC Datos",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-09",
+    "T-03"
+   ],
+   "knowledge_propios": [
+    "KN-02"
+   ],
+   "skills_propios": [
+    "SK-14"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "DA-11",
+   "nombre": "Analista de la flota Datos",
+   "proposito": "Consolidar KPIs, costos y accesos para revisión trimestral.",
+   "tareas": "DP-Q02, DP-Q03",
+   "autonomia": "L1-L2",
+   "gates": "Decisiones humanas",
+   "kpis": "Informe trimestral",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI03",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC Datos",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-13",
+    "T-14",
+    "T-24",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-11",
+    "KN-08"
+   ],
+   "skills_propios": [
+    "SK-16"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  }
+ ],
+ "tools_nuevos": {
+  "DT-02": {
+   "tipo": "Security & Compliance PowerShell (runbook)",
+   "nombre": "Purview PowerShell · Get-DlpCompliancePolicy/Rule, Get-Label/LabelPolicy, Get-AutoSensitivityLabelPolicy",
+   "op": "Leer políticas DLP, etiquetas, auto-etiquetado; proponer cambios (simulación)",
+   "permiso": "Information Protection Admin; el agente solo invoca el runbook",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/powershell/module/exchange/get-dlpcompliancepolicy"
+  },
+  "DT-03": {
+   "tipo": "Microsoft Graph",
+   "nombre": "Microsoft Graph · security/alerts_v2 (DLP) y auditLogs",
+   "op": "Alertas DLP y auditoría de Purview",
+   "permiso": "SecurityAlert.Read.All; AuditLog.Read.All",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/graph/api/resources/security-alert"
+  },
+  "DT-04": {
+   "tipo": "Advanced Hunting (KQL)",
+   "nombre": "CloudAppEvents, EmailEvents (DLP), DataSecurityBehaviors/Events (preview)",
+   "op": "Hunting sobre actividad de datos, etiquetado y egress",
+   "permiso": "ThreatHunting.Read.All",
+   "estado": "GA (CloudAppEvents); verificar tablas IRM",
+   "fuente": "learn.microsoft.com/defender-xdr/advanced-hunting-schema-tables"
+  },
+  "DT-05": {
+   "tipo": "Portal / exportación",
+   "nombre": "Activity explorer, Content explorer, DLP reports, Data classification",
+   "op": "Actividad de etiquetas/DLP, contenido clasificado, informes",
+   "permiso": "Information Protection Analyst/Investigator",
+   "estado": "verificar (API de exportación)",
+   "fuente": "learn.microsoft.com/purview/data-classification-activity-explorer"
+  },
+  "DT-06": {
+   "tipo": "Portal / exportación",
+   "nombre": "DSPM y DSPM for AI (Purview)",
+   "op": "Postura de datos, sobrecompartición, uso de IA sobre datos sensibles",
+   "permiso": "Data Security Management / Compliance Administrator",
+   "estado": "verificar (API)",
+   "fuente": "learn.microsoft.com/purview/data-security-posture-management-learn-about"
+  },
+  "DT-08": {
+   "tipo": "Defender for Cloud Apps API",
+   "nombre": "Defender for Cloud Apps · file policies, files API, governance actions",
+   "op": "Descubrir y proteger archivos en SaaS; aplicar etiqueta / quitar compartición tras aprobación",
+   "permiso": "API token acotado; governance con aprobación",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/defender-cloud-apps/api-files"
+  },
+  "DT-09": {
+   "tipo": "Agent flow + scanner",
+   "nombre": "Information protection scanner (on-prem) · informes",
+   "op": "Descubrir y etiquetar repositorios on-prem",
+   "permiso": "Cuenta del scanner; agente solo lectura",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/purview/deploy-scanner"
+  },
+  "DT-10": {
+   "tipo": "Microsoft Graph",
+   "nombre": "Microsoft Graph · sites/drives (sharing links, permissions)",
+   "op": "Detectar sobrecompartición y proponer corrección",
+   "permiso": "Sites.Read.All; corrección con aprobación",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/graph/api/resources/sharinglink"
+  },
+  "DT-11": {
+   "tipo": "Microsoft Graph",
+   "nombre": "Microsoft Graph · security/dataSecurityAndGovernance (processContent, protectionScopes)",
+   "op": "Evaluar contenido de prompts/respuestas de agentes contra políticas de Purview (DLP para IA)",
+   "permiso": "Content.Process.All / ProtectionScopes.Compute.All",
+   "estado": "GA (Purview APIs for AI apps)",
+   "fuente": "learn.microsoft.com/purview/developer/"
+  },
+  "DT-12": {
+   "tipo": "Portal / PowerShell",
+   "nombre": "Compliance Manager · evaluaciones, improvement actions",
+   "op": "Evaluaciones y acciones de mejora de protección de datos",
+   "permiso": "Compliance Manager Reader",
+   "estado": "verificar (API)",
+   "fuente": "learn.microsoft.com/purview/compliance-manager"
+  }
+ },
+ "knowledge_nuevos": {
+  "DK-D1": {
+   "nombre": "Taxonomía de etiquetas, SITs críticos, ubicaciones y criterios de triaje DLP",
+   "tipo": "SharePoint / Dataverse",
+   "fuente": "Interno (G2.2-PA03 instancia Datos)"
+  },
+  "DK-D2": {
+   "nombre": "Playbooks de fuga de datos con ejecutores y coordinación Legal",
+   "tipo": "SharePoint",
+   "fuente": "Interno (M5.1-PA01 instancia Datos)"
+  },
+  "DK-D3": {
+   "nombre": "Registro de excepciones DLP, overrides y ajustes de SIT con vencimiento; simulaciones",
+   "tipo": "Dataverse",
+   "fuente": "Interno"
+  },
+  "DK-D4": {
+   "nombre": "Inventario de fuentes de conocimiento aprobadas por flota y protection scopes",
+   "tipo": "Dataverse",
+   "fuente": "Interno (AMP-32, AGC-07)"
+  },
+  "DK-D5": {
+   "nombre": "Inventario de repositorios, políticas de auto-etiquetado y estado del scanner",
+   "tipo": "Dataverse",
+   "fuente": "Interno (M2.1-PA01 instancia Datos)"
+  },
+  "DK-D6": {
+   "nombre": "Sitios sensibles, reglas de compartición y excepciones",
+   "tipo": "Dataverse",
+   "fuente": "Interno"
+  }
+ },
+ "skills_nuevos": {
+  "DS-D1": {
+   "nombre": "Triaje DLP por sensibilidad real",
+   "desc": "Ponderar SIT, confianza, cantidad, ubicación y usuario; distinguir error de exfiltración; correlar con IRM sin abrir casos."
+  },
+  "DS-D2": {
+   "nombre": "Remediación proporcional de datos",
+   "desc": "Educar → quitar compartición → cuarentena; nunca borrar; límite; coordinar notificación con Legal."
+  },
+  "DS-D3": {
+   "nombre": "Tuning de clasificación con simulación",
+   "desc": "Analizar coincidencias y confianza; proponer ajuste con vencimiento; siempre simular antes de bloquear."
+  },
+  "DS-D4": {
+   "nombre": "Postura de datos e IA",
+   "desc": "Leer DSPM/DSPM for AI; verificar fuentes aprobadas y protection scopes de agentes."
+  }
+ },
+ "instanciacion": [
+  [
+   "G2.2-PA03",
+   "Baseline = taxonomía de etiquetas + DLP en bloqueo para SITs críticos + etiquetas por defecto; excepciones = overrides con vencimiento."
+  ],
+  [
+   "G3.2-PA01",
+   "Deriva: políticas en simulación que debían pasar a producción; etiquetas por defecto removidas."
+  ],
+  [
+   "G3.1-PA01",
+   "Exposición regulatoria: datos personales, Insider Risk y privacidad."
+  ],
+  [
+   "M2.1-PA01",
+   "Inventario de repositorios y fuentes de conocimiento; DSPM como descubrimiento."
+  ],
+  [
+   "M2.2-PA01",
+   "Roles de Purview (IRM solo humanos) y Graph scopes de agentes."
+  ],
+  [
+   "M3.1-PA02",
+   "Instancia Datos: arquitectura de protección (clasificación → etiquetado → encriptación → DLP → DSPM → IRM)."
+  ],
+  [
+   "M4.1-PA01",
+   "Instancia Datos del modelo operativo (25 tareas)."
+  ],
+  [
+   "M4.1-PA03",
+   "Instancia Datos: FP de DLP, confianza de SIT, excepciones, simulación."
+  ],
+  [
+   "M4.2-PA01",
+   "Instancia Datos: exfiltración, sobrecompartición, insider, fuga por IA."
+  ],
+  [
+   "M3.2-PA01",
+   "Cadena objetivo → configuración → evidencia para 5 controles de Purview."
+  ],
+  [
+   "AMP-31",
+   "DSPM for AI: instancia directa."
+  ],
+  [
+   "AMP-32",
+   "Gobierno de datos para RAG: owner de las fuentes aprobadas de todas las flotas (AGC-07)."
+  ],
+  [
+   "AMP-11",
+   "Soberanía: residencia y claves de datos etiquetados."
+  ],
+  [
+   "HC-011",
+   "Flujo de información sensible en aplicaciones de IA: instancia directa."
+  ],
+  [
+   "HC-033",
+   "Soberanía y transferencias: etiquetas y DLP como instrumento."
+  ],
+  [
+   "AMP-52",
+   "Content safety: DLP para IA complementa guardrails de salida."
+  ],
+  [
+   "M4.1-K11",
+   "Señuelos: documentos cebo etiquetados como detección de exfiltración."
+  ],
+  [
+   "AMP-25",
+   "Ética: bloquear comunicación legítima e investigar insider exigen proporcionalidad."
+  ]
+ ]
+}

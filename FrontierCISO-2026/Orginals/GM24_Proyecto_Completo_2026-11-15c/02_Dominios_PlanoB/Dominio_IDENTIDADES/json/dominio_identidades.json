@@ -1,0 +1,1003 @@
+{
+ "ficha": {
+  "prefijo": "ID",
+  "agente": "IA",
+  "nombre": "Protección de identidades y acceso (Microsoft Defender for Identity + Microsoft Entra ID Protection + Conditional Access + Entra ID Governance)",
+  "dominio_zt": "Identidades (pilar Zero Trust); humanas y no humanas (incl. agentes), on-prem e híbridas; interfaz con Endpoints y XDR",
+  "tecnologia": "Defender for Identity, Entra ID Protection (risky users/sign-ins, unified risk; Entra ID P2), Conditional Access (basadas en riesgo), Entra ID Governance (access reviews, PIM), Entra Agent ID, Defender XDR",
+  "funciones_csf": "GV.RR · ID.AM · ID.RA · PR.AA · DE.CM/DE.AE · RS.AN/RS.MI · RC.RP",
+  "fuente_oficial": "Defender for Identity operational guide (daily/weekly/monthly/quarterly) + Microsoft Entra security operations guide + Entra ID Protection",
+  "objetivo": "Que toda identidad con riesgo medio/alto sea remediada en SLA, sensores saludables, postura en mejora y NHI (incl. agentes) con dueño y caducidad",
+  "slo": "Risky users High remediados ≤4 h; CA basadas en riesgo activas; sensores MDI sin issues; 100 % NHI con dueño; recertificaciones a tiempo",
+  "diferencia": "Mayor proporción de remediación automática legítima (self-remediation vía CA) y mayor sensibilidad a bloquear personas. Incluye el gobierno de identidades de agentes (Entra Agent ID): sostiene AGC-05/06/18 de todas las flotas.",
+  "interfaz": "Owner XDR: correlación. Owner Endpoints: cumplimiento de dispositivo como señal de CA. IAM/Entra admins: ejecutan cambios de CA y PIM; el owner Identidades propone y verifica.",
+  "personas": "SOC analysts · Security administrators · IAM administrators",
+  "permisos": "Security Reader/Operator (Entra) · Conditional Access Administrator (solo humano) · Identity Governance Administrator · Unified RBAC · Graph: IdentityRiskyUser.*, Policy.Read.All, AuditLog.Read.All"
+ },
+ "hitos": [],
+ "tareas": [
+  [
+   "ID-D01",
+   "Revisar el Identity Security dashboard",
+   "Diaria",
+   "SOC analysts + IAM admins",
+   "DE.CM, ID.RA",
+   "SOP",
+   "eo:OP-SOP-29 Revisar el tablero de postura y riesgo del dominio",
+   "L3",
+   "IA-08",
+   "Insights revisados",
+   "MDI ops-guide-daily"
+  ],
+  [
+   "ID-D02",
+   "Triar incidentes de identidad por prioridad y resolver remediados",
+   "Diaria",
+   "SOC analysts",
+   "DE.AE, RS.MA",
+   "SOP",
+   "eo:OP-SOP-10 Triar incidentes por prioridad dentro del SLA",
+   "L2",
+   "IA-01",
+   "% H/M en SLA",
+   "MDI ops-guide-daily"
+  ],
+  [
+   "ID-D03",
+   "Investigar risky users / sign-ins; confirmar o descartar; remediar o dejar que CA auto-remedie",
+   "Diaria",
+   "SOC analysts",
+   "RS.AN, RS.MI",
+   "SOP",
+   "eo:OP-SOP-11 Investigar y remediar incidentes con evidencia",
+   "L2",
+   "IA-02",
+   "Risky users High ≤4 h",
+   "ID Protection investigate-risk"
+  ],
+  [
+   "ID-D04",
+   "Configurar reglas de tuning para benign true positives de MDI",
+   "Diaria",
+   "SOC analysts + Security admins",
+   "ID.IM",
+   "SOP",
+   "eo:OP-SOP-15 Analizar causa raíz de errores de detección",
+   "L2",
+   "IA-04",
+   "Reglas con vencimiento",
+   "MDI ops-guide-daily"
+  ],
+  [
+   "ID-D05",
+   "Revisar salud de sensores MDI",
+   "Diaria",
+   "Security admins",
+   "PR.PS, DE.CM",
+   "POS",
+   "eo:OP-POS-15 Mantener la salud de la ingesta de señales",
+   "L3",
+   "IA-05",
+   "Health issues = 0",
+   "MDI ops-guide-daily"
+  ],
+  [
+   "ID-D06",
+   "Hunting proactivo sobre identidad",
+   "Diaria/Semanal",
+   "SOC analysts",
+   "DE.CM",
+   "SOP",
+   "eo:OP-SOP-02 Buscar amenazas por técnicas priorizadas y convertir hallazgos en detecciones",
+   "L1",
+   "IA-11",
+   "Hunts",
+   "MDI ops-guide-daily/weekly"
+  ],
+  [
+   "ID-W01",
+   "Revisar Secure Score y posture assessments; alimentar backlog",
+   "Semanal",
+   "Security admins + SOC",
+   "ID.IM, GV.OV",
+   "POS",
+   "eo:OP-POS-11 Reportar la postura y su tendencia",
+   "L3",
+   "IA-08",
+   "Secure Score ↑",
+   "MDI ops-guide-weekly"
+  ],
+  [
+   "ID-W02",
+   "Responder a amenazas emergentes con detecciones personalizadas",
+   "Semanal",
+   "Security admins + SOC",
+   "DE.AE, ID.RA",
+   "SOP",
+   "eo:OP-SOP-24 Convertir hunting en detecciones automatizadas",
+   "L2",
+   "IA-11",
+   "Detecciones vigentes",
+   "MDI ops-guide-weekly"
+  ],
+  [
+   "ID-W03",
+   "Revisar efectos de Conditional Access (report-only) y proponer ajustes",
+   "Semanal",
+   "IAM admins + SOC",
+   "PR.AA, GV.PO",
+   "POS",
+   "eo:OP-POS-18 Evaluar el efecto de las políticas de acceso y ajustarlas",
+   "L2",
+   "IA-07",
+   "Report-only → on",
+   "Entra security-operations"
+  ],
+  [
+   "ID-W04",
+   "Revisar riesgo de identidades de carga de trabajo (SPs, agentes)",
+   "Semanal",
+   "IAM admins + PO-GAC",
+   "ID.RA, PR.AA",
+   "AYI",
+   "eo:OP-AYI-02 Vigilar el riesgo de identidades no humanas",
+   "L2",
+   "IA-06",
+   "NHI sin dueño = 0",
+   "workload identity risk"
+  ],
+  [
+   "ID-W05",
+   "Revisar Message Center y novedades",
+   "Semanal",
+   "Security admins",
+   "GV.OV, ID.IM",
+   "SIG",
+   "eo:OP-SIG-10 Vigilar cambios de la plataforma y evaluar impacto",
+   "L3",
+   "IA-10",
+   "Cambios evaluados ≤7 días",
+   "MDI ops-guide-monthly"
+  ],
+  [
+   "ID-M01",
+   "Revisar alertas tuned y retirar reglas sin coincidencias",
+   "Mensual",
+   "Security admins + SOC",
+   "ID.IM",
+   "POS",
+   "eo:OP-POS-13 Revisar y depurar excepciones que debilitan la detección",
+   "L2",
+   "IA-04",
+   "Reglas obsoletas retiradas",
+   "MDI ops-guide-monthly"
+  ],
+  [
+   "ID-M02",
+   "Revisar cuentas sensibles, inactivas, admins sin PIM",
+   "Mensual",
+   "IAM admins",
+   "PR.AA, ID.AM",
+   "AYI",
+   "eo:OP-AYI-03 Mantener el inventario y la higiene de identidades privilegiadas",
+   "L2",
+   "IA-09",
+   "Admins fuera de PIM = 0",
+   "Entra security-operations"
+  ],
+  [
+   "ID-M03",
+   "Informe mensual de identidad para el CISO",
+   "Mensual",
+   "Security admins",
+   "GV.OV, RS.CO",
+   "SIG",
+   "eo:OP-SIG-13 Reportar resultados del SOC a la dirección",
+   "L3",
+   "IA-08",
+   "Informe a tiempo",
+   "Propuesta"
+  ],
+  [
+   "ID-M04",
+   "Revisar baseline de CA y excepciones (break-glass) con vencimiento",
+   "Mensual",
+   "IAM admins + SOC Oversight",
+   "GV.PO, PR.AA",
+   "POS",
+   "eo:OP-POS-12 Detectar y corregir deriva de configuración frente al baseline",
+   "L2",
+   "IA-07",
+   "Exclusiones justificadas",
+   "risk-based policies"
+  ],
+  [
+   "ID-Q01",
+   "Revisar service health, setup de sensores y configuración de dominio",
+   "Trimestral",
+   "Security admins",
+   "PR.PS, PR.IR",
+   "POS",
+   "eo:OP-POS-15 Mantener la salud de la ingesta de señales",
+   "L1",
+   "IA-05",
+   "Hallazgos cerrados",
+   "MDI ops-guide-quarterly"
+  ],
+  [
+   "ID-Q02",
+   "Revisar desempeño y costo de la flota Identidades",
+   "Trimestral",
+   "PO-GAC Identidades",
+   "GV.OV, ID.IM",
+   "IA",
+   "eo:OP-IA-02 Revisar desempeño, costo y riesgo de los agentes",
+   "L1",
+   "IA-13",
+   "KPIs vs. meta",
+   "Propuesta"
+  ],
+  [
+   "ID-Q03",
+   "Recertificación de accesos (humanos, grupos privilegiados, agentes)",
+   "Trimestral",
+   "IAM + PO-GAC",
+   "PR.AA",
+   "AYI",
+   "eo:OP-AYI-01 Recertificar accesos privilegiados, no humanos y de agentes",
+   "L2",
+   "IA-09",
+   "% a tiempo",
+   "Entra ID Governance"
+  ],
+  [
+   "ID-Q04",
+   "Evaluaciones/regresión y red teaming; prueba de bloqueo indebido y rollback",
+   "Trimestral",
+   "PO-GAC + AppSec",
+   "ID.IM",
+   "IA",
+   "eo:OP-IA-03 Evaluar y probar adversarialmente a los agentes",
+   "L2",
+   "—",
+   "% evaluados",
+   "Propuesta"
+  ],
+  [
+   "ID-A01",
+   "Respuesta a compromiso de identidad: revocar, reset, deshabilitar, bloquear por CA",
+   "Por evento",
+   "SOC + IAM",
+   "RS.MI",
+   "SOP",
+   "eo:OP-SOP-11 Investigar y remediar incidentes con evidencia",
+   "L2",
+   "IA-02",
+   "Tiempo a contención",
+   "investigate-risk"
+  ],
+  [
+   "ID-A02",
+   "Investigación de insider risk correlacionada con riesgo de identidad",
+   "Por evento",
+   "SOC + Privacidad",
+   "RS.AN",
+   "SOP",
+   "eo:OP-SOP-30 Investigar riesgo interno con proporcionalidad y privacidad",
+   "L1",
+   "—",
+   "Casos autorizados",
+   "Insider Risk Management"
+  ],
+  [
+   "ID-A03",
+   "Alta/baja de identidades de agentes (Entra Agent ID), sponsors y permisos",
+   "Por evento",
+   "IAM + PO-GAC",
+   "PR.AA, ID.AM",
+   "AYI",
+   "eo:OP-AYI-02 Vigilar el riesgo de identidades no humanas",
+   "L2",
+   "IA-06",
+   "Agentes sin sponsor = 0",
+   "agent-id-governance-overview"
+  ],
+  [
+   "ID-A04",
+   "Tabletop de compromiso de identidad privilegiada (incl. 'agente comprometido')",
+   "Según necesidad",
+   "SOC Oversight + IAM",
+   "ID.IM, RS",
+   "SOP",
+   "eo:OP-SOP-26 Probar los planes de respuesta",
+   "L1",
+   "—",
+   "Ejercicios/año",
+   "AMP-43"
+  ]
+ ],
+ "agentes": [
+  {
+   "id": "IA-01",
+   "nombre": "Triage Copilot de incidentes de identidad",
+   "proposito": "Pre-triar incidentes MDI/ID Protection por prioridad, cuenta sensible y riesgo compuesto.",
+   "tareas": "ID-D02",
+   "autonomia": "L2",
+   "gates": "Con aprobación; sin acciones sobre cuentas",
+   "kpis": "Precisión ≥90 %",
+   "costo": "Tokens/SCU",
+   "riesgos_asi": "ASI01, ASI06",
+   "identidad": "Agent ID; Security data basics; IdentityRiskyUser.Read.All",
+   "owner": "PO-GAC Identidades",
+   "ruta": "R1 (alt. R2)",
+   "tools_propios": [
+    "T-04",
+    "IT-01",
+    "IT-04",
+    "T-01"
+   ],
+   "knowledge_propios": [
+    "DK-I1",
+    "KN-03"
+   ],
+   "skills_propios": [
+    "SK-07",
+    "DS-I1"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "IA-02",
+   "nombre": "Asistente de investigación y remediación de identidad",
+   "proposito": "Reunir timeline de riesgo y sign-ins; proponer confirmar/descartar, revocar, reset o deshabilitar; ejecutar tras aprobación.",
+   "tareas": "ID-D03, ID-A01",
+   "autonomia": "L2",
+   "gates": "Toda acción con aprobación; nunca sobre break-glass ni admins sin segunda aprobación",
+   "kpis": "Risky users High ≤4 h; revertidas <2 %",
+   "costo": "Tokens/SCU",
+   "riesgos_asi": "ASI02, ASI03, ASI09",
+   "identidad": "Agent ID; IdentityRiskyUser.ReadWrite.All, User.RevokeSessions.All acotados",
+   "owner": "PO-GAC Identidades + IAM",
+   "ruta": "R1 (alt. R2)",
+   "tools_propios": [
+    "IT-01",
+    "IT-07",
+    "IT-05",
+    "IT-04",
+    "T-04"
+   ],
+   "knowledge_propios": [
+    "DK-I2",
+    "KN-05"
+   ],
+   "skills_propios": [
+    "DS-I2",
+    "SK-04",
+    "SK-08"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "IA-04",
+   "nombre": "Analista de tuning de alertas de identidad",
+   "proposito": "Proponer reglas de tuning con alcance mínimo y vencimiento; detectar reglas sin coincidencias.",
+   "tareas": "ID-D04, ID-M01",
+   "autonomia": "L2",
+   "gates": "Con aprobación",
+   "kpis": "Reglas obsoletas = 0",
+   "costo": "Tokens",
+   "riesgos_asi": "ASI01",
+   "identidad": "Agent ID; Alerts (Manage) acotado",
+   "owner": "PO-GAC Identidades",
+   "ruta": "R2",
+   "tools_propios": [
+    "XT-04",
+    "IT-04",
+    "T-04"
+   ],
+   "knowledge_propios": [
+    "KN-04",
+    "DK-I3"
+   ],
+   "skills_propios": [
+    "XS-04",
+    "SK-09"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "IA-05",
+   "nombre": "Centinela de salud de sensores de identidad",
+   "proposito": "Detectar health issues de sensores MDI, servidores sin sensor y service health; abrir tickets.",
+   "tareas": "ID-D05, ID-Q01",
+   "autonomia": "L3 (detección) / L2 (tickets)",
+   "gates": "Solo lectura + ticket",
+   "kpis": "Health issues = 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI10",
+   "identidad": "Agent ID; SecurityIdentitiesHealth.Read.All",
+   "owner": "PO-GAC Identidades + IAM",
+   "ruta": "R2",
+   "tools_propios": [
+    "IT-03",
+    "T-15",
+    "T-09"
+   ],
+   "knowledge_propios": [
+    "DK-I4"
+   ],
+   "skills_propios": [
+    "XS-05",
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "IA-06",
+   "nombre": "Steward de identidades no humanas y de agentes",
+   "proposito": "Inventariar SPs, app registrations y Agent IDs; detectar sin dueño o riesgosos; proponer sponsors, caducidad y migración.",
+   "tareas": "ID-W04, ID-A03",
+   "autonomia": "L2",
+   "gates": "Cambios con aprobación",
+   "kpis": "NHI sin dueño = 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI03, ASI10",
+   "identidad": "Agent ID; IdentityRiskyServicePrincipal.Read.All; Application.Read.All",
+   "owner": "PO-GAC Identidades + IAM",
+   "ruta": "R2",
+   "tools_propios": [
+    "IT-08",
+    "T-02",
+    "IT-06",
+    "T-24"
+   ],
+   "knowledge_propios": [
+    "DK-I5",
+    "KN-08"
+   ],
+   "skills_propios": [
+    "DS-I3",
+    "SK-16"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "IA-07",
+   "nombre": "Analista de Conditional Access",
+   "proposito": "Analizar efecto de políticas (report-only), detectar bloqueos indebidos y exclusiones sin justificación; proponer ajustes.",
+   "tareas": "ID-W03, ID-M04",
+   "autonomia": "L1-L2",
+   "gates": "Solo propuestas; cambios de CA los ejecuta un humano",
+   "kpis": "Report-only → on",
+   "costo": "Tokens",
+   "riesgos_asi": "ASI03",
+   "identidad": "Agent ID; Policy.Read.All, AuditLog.Read.All",
+   "owner": "PO-GAC Identidades + IAM",
+   "ruta": "R2",
+   "tools_propios": [
+    "IT-02",
+    "IT-07",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "DK-I6",
+    "KN-08"
+   ],
+   "skills_propios": [
+    "DS-I4",
+    "SK-10"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "IA-08",
+   "nombre": "Reportero de postura y riesgo de identidad",
+   "proposito": "Compilar dashboard, Secure Score, posture assessments e informe mensual.",
+   "tareas": "ID-D01, ID-W01, ID-M03",
+   "autonomia": "L3",
+   "gates": "Solo informa",
+   "kpis": "Informes a tiempo",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI09",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC Identidades",
+   "ruta": "R2",
+   "tools_propios": [
+    "IT-09",
+    "T-08",
+    "IT-03",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-10"
+   ],
+   "skills_propios": [
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "IA-09",
+   "nombre": "Steward de identidades privilegiadas y recertificación",
+   "proposito": "Detectar admins sin PIM, inactivas, sensibles sin etiqueta; preparar access reviews.",
+   "tareas": "ID-M02, ID-Q03",
+   "autonomia": "L2",
+   "gates": "Access reviews con aprobación; decisiones humanas",
+   "kpis": "Admins fuera de PIM = 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI03",
+   "identidad": "Agent ID; AccessReview.ReadWrite.All; RoleManagement.Read.Directory",
+   "owner": "PO-GAC Identidades + IAM",
+   "ruta": "R2",
+   "tools_propios": [
+    "IT-06",
+    "T-14",
+    "T-11"
+   ],
+   "knowledge_propios": [
+    "DK-I5",
+    "KN-11"
+   ],
+   "skills_propios": [
+    "DS-I3",
+    "SK-16"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "IA-10",
+   "nombre": "Vigía de cambios de plataforma (MDI/Entra)",
+   "proposito": "Leer Message Center; evaluar impacto en detecciones, CA, runbooks y agentes.",
+   "tareas": "ID-W05",
+   "autonomia": "L3",
+   "gates": "Solo informa",
+   "kpis": "Cambios evaluados ≤7 días",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI06",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC Identidades",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-09",
+    "T-03"
+   ],
+   "knowledge_propios": [
+    "KN-02"
+   ],
+   "skills_propios": [
+    "SK-14"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "IA-11",
+   "nombre": "Bibliotecario de hunting de identidad",
+   "proposito": "Mantener consultas sobre Identity*/AADSignIn y detecciones; medir precisión.",
+   "tareas": "ID-D06, ID-W02",
+   "autonomia": "L2",
+   "gates": "Detecciones con aprobación",
+   "kpis": "Consultas vigentes",
+   "costo": "Medio",
+   "riesgos_asi": "ASI02, ASI05",
+   "identidad": "Agent ID; hunting + custom detections",
+   "owner": "PO-GAC Identidades + Hunting",
+   "ruta": "R3 (alt. R2)",
+   "tools_propios": [
+    "IT-04",
+    "T-05",
+    "XT-08",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-05",
+    "XK-06"
+   ],
+   "skills_propios": [
+    "SK-08",
+    "SK-17"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "IA-13",
+   "nombre": "Analista de la flota Identidades",
+   "proposito": "Consolidar KPIs, costos y accesos para revisión trimestral.",
+   "tareas": "ID-Q02",
+   "autonomia": "L1-L2",
+   "gates": "Decisiones humanas",
+   "kpis": "Informe trimestral",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI03",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC Identidades",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-13",
+    "T-14",
+    "T-24",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-11",
+    "KN-08"
+   ],
+   "skills_propios": [
+    "SK-16"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  }
+ ],
+ "tools_nuevos": {
+  "IT-01": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "Microsoft Graph · identityProtection/riskyUsers, riskySignIns (riskDetections)",
+   "op": "Usuarios e inicios de sesión riesgosos; confirmar comprometido / descartar",
+   "permiso": "IdentityRiskyUser.Read.All / ReadWrite.All; IdentityRiskEvent.Read.All",
+   "estado": "GA (Entra ID P2)",
+   "fuente": "learn.microsoft.com/graph/api/resources/riskyuser"
+  },
+  "IT-02": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "Microsoft Graph · identity/conditionalAccess/policies (+ report-only insights)",
+   "op": "Leer políticas de CA; proponer cambios en report-only",
+   "permiso": "Policy.Read.All; escritura solo con aprobación",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/graph/api/resources/conditionalaccesspolicy"
+  },
+  "IT-03": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "Microsoft Graph · security/identities/healthIssues (MDI) e Identity Security dashboard",
+   "op": "Salud de sensores MDI; insights de identidad",
+   "permiso": "SecurityIdentitiesHealth.Read.All",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/graph/api/resources/security-healthissue"
+  },
+  "IT-04": {
+   "tipo": "Advanced Hunting (KQL)",
+   "nombre": "Tablas IdentityLogonEvents, IdentityDirectoryEvents, IdentityQueryEvents, AADSignInEventsBeta, IdentityInfo",
+   "op": "Hunting sobre autenticación y cambios de directorio",
+   "permiso": "ThreatHunting.Read.All",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/defender-xdr/advanced-hunting-schema-tables"
+  },
+  "IT-05": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "Microsoft Graph · users (revokeSignInSessions, accountEnabled), authentication methods",
+   "op": "Revocar sesiones, deshabilitar, forzar reset",
+   "permiso": "User.RevokeSessions.All; User.EnableDisableAccount.All; UserAuthenticationMethod.ReadWrite.All",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/graph/api/user-revokesigninsessions"
+  },
+  "IT-06": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "Microsoft Graph · identityGovernance (access reviews, PIM, entitlement)",
+   "op": "Recertificación, elegibilidad PIM, paquetes de acceso",
+   "permiso": "AccessReview.ReadWrite.All; RoleManagement.Read.Directory",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/graph/api/resources/identitygovernance-overview"
+  },
+  "IT-07": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "Microsoft Graph · auditLogs/signIns y directoryAudits",
+   "op": "Sign-in logs y auditoría de directorio",
+   "permiso": "AuditLog.Read.All",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/graph/api/resources/signin"
+  },
+  "IT-08": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "Microsoft Graph · identityProtection/riskyServicePrincipals (workload identities)",
+   "op": "Riesgo de identidades de carga de trabajo (incl. agentes)",
+   "permiso": "IdentityRiskyServicePrincipal.Read.All",
+   "estado": "GA (Workload Identities Premium)",
+   "fuente": "learn.microsoft.com/graph/api/resources/riskyserviceprincipal"
+  },
+  "IT-09": {
+   "tipo": "REST API / Hunting",
+   "nombre": "Secure Score (MDI / Entra) y posture assessments de MDI",
+   "op": "Postura de identidad (on-prem e híbrida)",
+   "permiso": "SecurityEvents.Read.All",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/defender-for-identity/security-assessment"
+  }
+ },
+ "knowledge_nuevos": {
+  "DK-I1": {
+   "nombre": "Criterios de triaje de identidad: cuentas sensibles, riesgo compuesto, detecciones MDI",
+   "tipo": "Dataverse",
+   "fuente": "Interno"
+  },
+  "DK-I2": {
+   "nombre": "Playbooks de compromiso de identidad con remediación automática vs. manual",
+   "tipo": "SharePoint",
+   "fuente": "Interno (M5.1-PA01 instancia Identidades)"
+  },
+  "DK-I3": {
+   "nombre": "Registro de reglas de tuning de MDI con vencimiento",
+   "tipo": "Dataverse",
+   "fuente": "Interno"
+  },
+  "DK-I4": {
+   "nombre": "Inventario de sensores MDI y umbrales de salud",
+   "tipo": "Dataverse",
+   "fuente": "Interno"
+  },
+  "DK-I5": {
+   "nombre": "Inventario de identidades privilegiadas, NHI y agentes (sponsor, caducidad, PIM)",
+   "tipo": "Dataverse",
+   "fuente": "Interno (AMP-33, M2.1-PA01)"
+  },
+  "DK-I6": {
+   "nombre": "Baseline de Conditional Access (riesgo, break-glass, exclusiones con vencimiento)",
+   "tipo": "SharePoint / Git",
+   "fuente": "Interno (G2.2-PA03 instancia Identidades)"
+  }
+ },
+ "skills_nuevos": {
+  "DS-I1": {
+   "nombre": "Triaje de identidad por sensibilidad y riesgo compuesto",
+   "desc": "Priorizar cuentas sensibles y riesgo High compuesto; distinguir benign true positives."
+  },
+  "DS-I2": {
+   "nombre": "Remediación proporcional de identidad",
+   "desc": "Dejar que CA auto-remedie cuando aplica; revocar antes que deshabilitar; nunca break-glass."
+  },
+  "DS-I3": {
+   "nombre": "Higiene de identidades privilegiadas y no humanas",
+   "desc": "PIM, caducidad, sponsors, migración a Agent ID; detectar huérfanas."
+  },
+  "DS-I4": {
+   "nombre": "Análisis de efecto de Conditional Access",
+   "desc": "Leer insights/report-only, estimar impacto, detectar bloqueos indebidos; solo proponer."
+  }
+ },
+ "instanciacion": [
+  [
+   "G2.2-PA03",
+   "Baseline = políticas de CA basadas en riesgo + break-glass + exclusiones con vencimiento; excepciones = reglas de tuning."
+  ],
+  [
+   "G3.2-PA01",
+   "Deriva: políticas CA en report-only que debían estar on; admins fuera de PIM."
+  ],
+  [
+   "M2.1-PA01",
+   "Inventario de identidades (humanas, NHI, agentes) y sensores."
+  ],
+  [
+   "M2.2-PA01",
+   "Permisos de humanos (roles Entra) y agentes (Graph scopes acotados)."
+  ],
+  [
+   "AMP-33",
+   "Identidades no humanas: owner natural; instancia directa."
+  ],
+  [
+   "AMP-34",
+   "Identidad propia, permisos mínimos, CA y ciclo de vida de agentes: sostiene AGC-05/06/18 de todas las flotas."
+  ],
+  [
+   "HC-009",
+   "Accountability de identidades no humanas: instancia directa."
+  ],
+  [
+   "M3.1-PA02",
+   "Instancia Identidades: arquitectura de protección (sensores MDI → ID Protection → unified risk → CA → Governance)."
+  ],
+  [
+   "M4.1-PA01",
+   "Instancia Identidades del modelo operativo (23 tareas)."
+  ],
+  [
+   "M4.1-PA03",
+   "Instancia Identidades: tuning de MDI y FP de riesgo."
+  ],
+  [
+   "M4.2-PA01",
+   "Instancia Identidades: credential theft, impossible travel, Golden Ticket, abuso de PIM."
+  ],
+  [
+   "M4.2-K11",
+   "Escalamiento de privilegios: dominio donde la táctica se detecta y previene."
+  ],
+  [
+   "M4.1-K11",
+   "Señuelos: cuentas honeytoken en AD (MDI)."
+  ],
+  [
+   "AMP-25",
+   "Ética de autonomía: bloquear personas es la acción más sensible."
+  ],
+  [
+   "G3.1-PA01",
+   "Exposición regulatoria: agentes que deciden sobre acceso de personas."
+  ]
+ ]
+}

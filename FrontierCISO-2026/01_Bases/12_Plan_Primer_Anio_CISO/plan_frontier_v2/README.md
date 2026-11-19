@@ -1,0 +1,32 @@
+# plan frontier v2
+
+Ruta: `FrontierCISO-2026\01_Bases\12_Plan_Primer_Anio_CISO\plan_frontier_v2`
+
+[Carpeta superior](../README.md)
+
+## Archivos de esta carpeta
+
+- [CISO365_v2.0_Diagnostico_interactivo.html](CISO365_v2.0_Diagnostico_interactivo.html)
+- [CISO365_v2.0_Explorador_del_plan.html](CISO365_v2.0_Explorador_del_plan.html)
+- [CISO365_v2.0_Tablero_OKR_y_KPIs.html](CISO365_v2.0_Tablero_OKR_y_KPIs.html)
+- [Frontier_CISO_Atlas_CISO365_00_Indice_y_Guia_de_Uso_v2.0.md](Frontier_CISO_Atlas_CISO365_00_Indice_y_Guia_de_Uso_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_01_Evaluacion_de_la_Actualizacion_v2.0.md](Frontier_CISO_Atlas_CISO365_01_Evaluacion_de_la_Actualizacion_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_02_Modelo_Operativo_v2.0.md](Frontier_CISO_Atlas_CISO365_02_Modelo_Operativo_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_03_Guia_del_Diagnostico_v2.0.md](Frontier_CISO_Atlas_CISO365_03_Guia_del_Diagnostico_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_04_Plan_Anual_y_OKR_v2.0.md](Frontier_CISO_Atlas_CISO365_04_Plan_Anual_y_OKR_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_05_Catalogo_de_Indicadores_v2.0.md](Frontier_CISO_Atlas_CISO365_05_Catalogo_de_Indicadores_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_06_Funciones_Externalizadas_v2.0.md](Frontier_CISO_Atlas_CISO365_06_Funciones_Externalizadas_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_07_Zero_Trust_y_Zero_Trust_para_la_IA_v2.0.md](Frontier_CISO_Atlas_CISO365_07_Zero_Trust_y_Zero_Trust_para_la_IA_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_08_Guia_de_Adopcion_v2.0.md](Frontier_CISO_Atlas_CISO365_08_Guia_de_Adopcion_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_09_Guia_de_Operacion_v2.0.md](Frontier_CISO_Atlas_CISO365_09_Guia_de_Operacion_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_10_Presupuesto_Organigrama_y_Dotacion_v2.0.md](Frontier_CISO_Atlas_CISO365_10_Presupuesto_Organigrama_y_Dotacion_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_11_Cultura_Clientes_Socios_y_Proveedores_v2.0.md](Frontier_CISO_Atlas_CISO365_11_Cultura_Clientes_Socios_y_Proveedores_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_12_Narrativa_CIO_y_CTO_v2.0.md](Frontier_CISO_Atlas_CISO365_12_Narrativa_CIO_y_CTO_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_13_Narrativa_CEO_y_CFO_v2.0.md](Frontier_CISO_Atlas_CISO365_13_Narrativa_CEO_y_CFO_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_14_Narrativa_Directorio_y_Sindicos_v2.0.md](Frontier_CISO_Atlas_CISO365_14_Narrativa_Directorio_y_Sindicos_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_15_Trazabilidad_Fuentes_Supuestos_y_Silencios_v2.0.md](Frontier_CISO_Atlas_CISO365_15_Trazabilidad_Fuentes_Supuestos_y_Silencios_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_16_Practicas_de_Operacion_v2.0.md](Frontier_CISO_Atlas_CISO365_16_Practicas_de_Operacion_v2.0.md)
+- [Frontier_CISO_Atlas_CISO365_Catalogo_v2.0.json](Frontier_CISO_Atlas_CISO365_Catalogo_v2.0.json)
+- [Frontier_CISO_Atlas_CISO365_Diagnostico_v2.0.xlsx](Frontier_CISO_Atlas_CISO365_Diagnostico_v2.0.xlsx)
+- [Frontier_CISO_Atlas_CISO365_KPIs_y_Tablero_v2.0.xlsx](Frontier_CISO_Atlas_CISO365_KPIs_y_Tablero_v2.0.xlsx)
+- [Frontier_CISO_Atlas_CISO365_Plan_Anual_y_OKR_v2.0.xlsx](Frontier_CISO_Atlas_CISO365_Plan_Anual_y_OKR_v2.0.xlsx)

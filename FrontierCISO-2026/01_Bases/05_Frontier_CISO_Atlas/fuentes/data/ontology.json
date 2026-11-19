@@ -1,0 +1,908 @@
+{
+  "name": "Frontier CISO Atlas Core Ontology",
+  "previous_name": "AI CISO Atlas Core Ontology",
+  "version": "2.2.0",
+  "previous_version": "1.0.0",
+  "date": "2026-11-16",
+  "status": "proposed baseline (extensión gobernada; requiere aprobación humana)",
+  "proposal_history": [
+    {
+      "version": "2.0.0",
+      "package": "Frontier CISO Atlas 1.0",
+      "status": "propuesta, sin aprobar"
+    },
+    {
+      "version": "2.1.0",
+      "package": "Frontier CISO Atlas 1.1",
+      "status": "propuesta, sin aprobar; contiene a la 2.0.0"
+    },
+    {
+      "version": "2.2.0",
+      "package": "Frontier CISO Atlas 1.4",
+      "status": "solicitud OCR-CAND-03 aprobada por el autor el 16-nov-2026 y aplicada; contiene a la 2.1.0. El grafo sigue siendo candidato"
+    }
+  ],
+  "changes_2_2": [
+    {
+      "propuesta": 3,
+      "tipo": "tipo nuevo",
+      "elemento": "LogicalFallacy",
+      "cambio": "Las falacias dejan de cargarse como sesgos."
+    },
+    {
+      "propuesta": 4,
+      "tipo": "tipo nuevo",
+      "elemento": "CognitiveState",
+      "cambio": "Estados y condiciones que sostienen o degradan la decisión; antes quedaban como Concept."
+    },
+    {
+      "propuesta": 1,
+      "tipo": "relación nueva",
+      "elemento": "SAME_CONCEPT_AS",
+      "cambio": "Relación simétrica para declarar que dos nodos nombran el mismo concepto sin fusionarlos."
+    },
+    {
+      "propuesta": 2,
+      "tipo": "relación ampliada o precisada",
+      "elemento": "RELATES_TO",
+      "cambio": "Admite los tipos del módulo de cognición como origen y como destino. «Relacionado» entre un elemento de la biblioteca y un pre-ensayo se carga con esta relación, familia ASOCIACION. Los vínculos editoriales viven en los nodos que los declaran: no se copian de los pre-ensayos a los conceptos."
+    },
+    {
+      "propuesta": 2,
+      "tipo": "relación ampliada o precisada",
+      "elemento": "SPECIALIZES",
+      "cambio": "Admite la especialización entre elementos del mismo tipo cognitivo y de un elemento cognitivo respecto de un concepto."
+    },
+    {
+      "propuesta": 8,
+      "tipo": "relación ampliada o precisada",
+      "elemento": "CLASSIFIED_IN",
+      "cambio": "Admite los dos tipos cognitivos nuevos. La propiedad «axis» pasa a ser obligatoria: de ella depende la regla de un primario por eje. La definición nombra ahora los ejes, las fuerzas, los mecanismos y las lentes."
+    },
+    {
+      "propuesta": 8,
+      "tipo": "relación ampliada o precisada",
+      "elemento": "COVERS_CONCEPT",
+      "cambio": "Admite los dos tipos cognitivos nuevos y pasa a exigir contexto, como dice su definición: la unidad y la edición del currículo."
+    },
+    {
+      "propuesta": 3,
+      "tipo": "relación ampliada o precisada",
+      "elemento": "DISTORTS",
+      "cambio": "Una falacia también puede distorsionar una decisión o un resultado de evaluación."
+    },
+    {
+      "propuesta": 5,
+      "tipo": "relación ampliada o precisada",
+      "elemento": "COUNTERS",
+      "cambio": "La definición pasa a expresar una posibilidad, se le asocia la regla de posibilidad frente a observación (SV-116) y exige la propiedad «basis»: propuesto por la fuente u observado con evidencia."
+    },
+    {
+      "propuesta": 8,
+      "tipo": "relación ampliada o precisada",
+      "elemento": "SEQUENCES",
+      "cambio": "La etapa pasa a ser obligatoria."
+    },
+    {
+      "propuesta": 8,
+      "tipo": "relación ampliada o precisada",
+      "elemento": "REGULATES",
+      "cambio": "Exige el nivel (modelo de referencia u observado) y el papel del mecanismo: referencia, sensor, decisor o efector (encargo RP-15.4)."
+    },
+    {
+      "propuesta": 8,
+      "tipo": "relación ampliada o precisada",
+      "elemento": "PRESSURES",
+      "cambio": "Exige el nivel (modelo de referencia u observado), el término de la variable sobre el que actúa la fuerza (demanda o capacidad) y el sentido (aumenta o reduce) (encargo RP-15.3)."
+    },
+    {
+      "propuesta": 9,
+      "tipo": "relación ampliada o precisada",
+      "elemento": "GATED_BY",
+      "cambio": "Cuando el origen es una tarea, la arista lleva en la propiedad «agente» el agente que la ejecuta: el punto de control queda unido al par de agente y tarea."
+    },
+    {
+      "propuesta": 9,
+      "tipo": "propiedad obligatoria",
+      "elemento": "ApprovalGate",
+      "cambio": "La clase del punto de control pasa a ser obligatoria."
+    },
+    {
+      "propuesta": 10,
+      "tipo": "relación nueva",
+      "elemento": "DELEGATES_TO",
+      "cambio": "Quién delega la autoridad que ejerce un agente."
+    },
+    {
+      "propuesta": 11,
+      "tipo": "relación ampliada o precisada",
+      "elemento": "BOUNDS",
+      "cambio": "Una tolerancia también limita un escenario de riesgo, además de una consecuencia."
+    },
+    {
+      "propuesta": 11,
+      "tipo": "relación nueva",
+      "elemento": "MAY_AFFECT",
+      "cambio": "Un escenario de riesgo puede afectar una capacidad, un servicio, un activo o un sistema. Es una posibilidad salvo evidencia."
+    },
+    {
+      "propuesta": 11,
+      "tipo": "relación nueva",
+      "elemento": "ACCEPTS_RISK",
+      "cambio": "Una autoridad acepta el riesgo residual de un escenario dentro de una tolerancia y con vencimiento."
+    },
+    {
+      "propuesta": 11,
+      "tipo": "relación nueva",
+      "elemento": "STATE_OF",
+      "cambio": "Un estado es la condición de una capacidad, de un control o de un producto-control en un contexto."
+    },
+    {
+      "propuesta": 12,
+      "tipo": "pares permitidos",
+      "elemento": "ENABLES",
+      "cambio": "Se declaran los pares de tipos admitidos: BusinessCapability → BusinessObjective; Catalyst → Transition."
+    },
+    {
+      "propuesta": 12,
+      "tipo": "pares permitidos",
+      "elemento": "DEPENDS_ON",
+      "cambio": "Se declaran los pares de tipos admitidos: System → Asset; System → System; System → BusinessCapability; Application → System; BusinessCapability → BusinessCapability; BusinessCapability → System."
+    },
+    {
+      "propuesta": 12,
+      "tipo": "pares permitidos",
+      "elemento": "CONTRIBUTES_TO",
+      "cambio": "Se declaran los pares de tipos admitidos: Vulnerability → RiskScenario; SecurityControl → SecurityOutcome."
+    },
+    {
+      "propuesta": 12,
+      "tipo": "pares permitidos",
+      "elemento": "EVALUATES",
+      "cambio": "Se declaran los pares de tipos admitidos: AssessmentResult → SecurityControl; AssessmentResult → ControlProduct; AssessmentResult → AIAgent."
+    },
+    {
+      "propuesta": 12,
+      "tipo": "pares permitidos",
+      "elemento": "EXPOSED_TO",
+      "cambio": "Se declaran los pares de tipos admitidos: AIAgent → FrameworkElement; AIAgent → RiskScenario; Tool → FrameworkElement; Tool → RiskScenario."
+    },
+    {
+      "propuesta": 12,
+      "tipo": "definiciones reescritas",
+      "elemento": "13 relaciones",
+      "cambio": "Nombran todos los tipos que admiten y dicen qué afirma la relación: ACCOUNTABLE_FOR, ASSERTS, DEVELOPS, EVALUATES, EXPLAINS, IMPLEMENTS, MAPS_TO, MEASURES, MITIGATES, OWNS, PART_OF, SUPERSEDES, SUPPORTED_BY."
+    },
+    {
+      "propuesta": 12,
+      "tipo": "definiciones reescritas",
+      "elemento": "Concept, Essay y TaxonomyCategory",
+      "cambio": "Se definen por lo que son y no por su nombre o su identificador."
+    },
+    {
+      "propuesta": 3,
+      "tipo": "definición reescrita",
+      "elemento": "CognitiveBias",
+      "cambio": "Deja de incluir a las falacias, que tienen tipo propio."
+    },
+    {
+      "propuesta": 12,
+      "tipo": "definición reescrita",
+      "elemento": "CONTRIBUTES_TO",
+      "cambio": "Dice qué afirma la relación y remite a MITIGATES para el control que reduce un escenario."
+    },
+    {
+      "propuesta": 12,
+      "tipo": "notas de frontera",
+      "elemento": "17 tipos",
+      "cambio": "Cada tipo de un grupo que se solapa dice qué lo distingue de sus vecinos."
+    },
+    {
+      "propuesta": 12,
+      "tipo": "pares que parecen inversos",
+      "elemento": "SUPPORTS y SUPPORTED_BY; IMPLEMENTS y REALIZES; CONTRIBUTES_TO y ENABLES",
+      "cambio": "Se documenta que no son inversos. No se renombran para conservar la compatibilidad con la ontología 1.0.0."
+    },
+    {
+      "propuesta": 12,
+      "tipo": "criterio por par",
+      "elemento": "20 pares de tipos que la ontología 2.1.0 admitía en más de una relación",
+      "cambio": "Cada par tiene un criterio escrito; dos se resolvieron quitando el par de una de las relaciones (EVALUATES y CONTRIBUTES_TO). Con el diccionario 2.2.0 los pares admitidos en más de una relación son 80, y 61 no tienen criterio escrito: los crean los cambios de esta revisión."
+    },
+    {
+      "propuesta": 15,
+      "tipo": "ancla corregida",
+      "elemento": "HumanCapability",
+      "cambio": "El ancla decía «pilar OS a escala individual» y la regla de pilar, que escribió el curador, deja en MM a la mayoría de los nodos de ese tipo. El ancla sigue ahora a la regla. El autor no confirmó la regla: confirmó que no revisar la biblioteca deja esas categorías en MM como consecuencia (D-15.3), y si la regla queda como está lo decide en D-17.1."
+    },
+    {
+      "propuesta": 15,
+      "tipo": "ancla precisada",
+      "elemento": "MentalModel, CognitiveBias y MetacognitivePractice",
+      "cambio": "El ancla nombra la biblioteca metacognitiva del autor, que es lo que él declaró que es el MCCS."
+    },
+    {
+      "propuesta": 13,
+      "tipo": "representación única",
+      "elemento": "Catalyst, Inhibitor, HomeostaticMechanism, HomeostaticVariable y ContextProfile",
+      "cambio": "Las categorías del eje H son categorías de la taxonomía; los tipos quedan para instancias observadas (regla SV-121)."
+    },
+    {
+      "propuesta": 7,
+      "tipo": "catálogos de valores",
+      "elemento": "confianza, rol, fuerza, tipo de vínculo, eje y otras siete propiedades",
+      "cambio": "Los valores admitidos se declaran en la ontología y la regla SV-009 los comprueba."
+    },
+    {
+      "propuesta": 8,
+      "tipo": "propiedades por tipo",
+      "elemento": "11 tipos",
+      "cambio": "Cada tipo declara las propiedades que su definición enuncia. La regla SV-212 informa, por tipo, cuántos nodos del grafo candidato no las traen."
+    },
+    {
+      "propuesta": 14,
+      "tipo": "propiedad obligatoria",
+      "elemento": "plano",
+      "cambio": "Los 28 tipos que pertenecen a un plano llevan la propiedad «plano» (A o B); con ella la regla SV-110 se puede comprobar."
+    },
+    {
+      "propuesta": 7,
+      "tipo": "regla nueva",
+      "elemento": "SV-009",
+      "cambio": "Valor de catálogo: Cuando una propiedad tiene catálogo de valores en la ontología (confianza, rol, fuerza, tipo de vínculo, eje, nivel, papel, término, sentido, base, clase y plano), el valor debe figurar en él."
+    },
+    {
+      "propuesta": 16,
+      "tipo": "regla nueva",
+      "elemento": "SV-119",
+      "cambio": "Neutralidad del plano A: Un nodo del plano A no nombra productos ni proveedores. El que los nombra queda marcado y no se promueve a ensayo hasta que se reescriba sin marca."
+    },
+    {
+      "propuesta": 1,
+      "tipo": "regla nueva",
+      "elemento": "SV-120",
+      "cambio": "Equivalencia declarada: SAME_CONCEPT_AS no fusiona nodos ni traslada clasificaciones, definiciones ni aprobación de uno a otro; exige evidencia, método y confianza."
+    },
+    {
+      "propuesta": 13,
+      "tipo": "regla nueva",
+      "elemento": "SV-121",
+      "cambio": "Una representación para el eje H: Las fuerzas, los mecanismos, las variables y los factores de contexto del catálogo son categorías de la taxonomía. Los tipos Catalyst, Inhibitor, HomeostaticMechanism, HomeostaticVariable y ContextProfile solo se usan para instancias observadas en una organización."
+    },
+    {
+      "propuesta": 8,
+      "tipo": "regla nueva",
+      "elemento": "SV-212",
+      "cambio": "Propiedades que la definición enuncia: Cada tipo declara las propiedades que su definición enuncia. La validación informa, por tipo, cuántos nodos no las traen."
+    },
+    {
+      "propuesta": 5,
+      "tipo": "regla precisada",
+      "elemento": "SV-116",
+      "cambio": "Alcanza también a COUNTERS."
+    },
+    {
+      "propuesta": 6,
+      "tipo": "regla precisada",
+      "elemento": "SV-114",
+      "cambio": "Agrega los roles «mecanismo» y «marcador»: los mecanismos homeostáticos ya no se cargan con el rol «fuerza»."
+    },
+    {
+      "propuesta": 14,
+      "tipo": "regla precisada",
+      "elemento": "SV-110",
+      "cambio": "Se apoya en la propiedad «plano» y dice qué comprueba."
+    },
+    {
+      "propuesta": 16,
+      "tipo": "origen de la regla",
+      "elemento": "SV-119",
+      "cambio": "La comprobación PAQ-01, que el paquete hacía por fuera de las reglas, pasa a ser la regla SV-119."
+    },
+    {
+      "propuesta": 14,
+      "tipo": "pregunta de competencia reformulada",
+      "elemento": "P22",
+      "cambio": "Decía «qué indicadores miden cada subfunción»; la regla SV-118 no admite MEASURES hacia una subfunción. Ahora pregunta qué indicadores están clasificados en cada una."
+    }
+  ],
+  "pair_disambiguation_coverage": {
+    "pares_admitidos_en_mas_de_una_relacion": 80,
+    "con_criterio_escrito": 19,
+    "sin_criterio_escrito": [
+      "CognitiveBias → CognitiveBias: RELATES_TO, SAME_CONCEPT_AS, SPECIALIZES",
+      "CognitiveBias → CognitiveState: RELATES_TO, SAME_CONCEPT_AS",
+      "CognitiveBias → Concept: RELATES_TO, SAME_CONCEPT_AS, SPECIALIZES",
+      "CognitiveBias → HumanCapability: RELATES_TO, SAME_CONCEPT_AS",
+      "CognitiveBias → LogicalFallacy: RELATES_TO, SAME_CONCEPT_AS",
+      "CognitiveBias → MentalModel: RELATES_TO, SAME_CONCEPT_AS",
+      "CognitiveBias → MetacognitivePractice: RELATES_TO, SAME_CONCEPT_AS",
+      "CognitiveBias → Precursor: RELATES_TO, SAME_CONCEPT_AS",
+      "CognitiveState → CognitiveBias: RELATES_TO, SAME_CONCEPT_AS",
+      "CognitiveState → CognitiveState: RELATES_TO, SAME_CONCEPT_AS, SPECIALIZES",
+      "CognitiveState → Concept: RELATES_TO, SAME_CONCEPT_AS, SPECIALIZES",
+      "CognitiveState → HumanCapability: RELATES_TO, SAME_CONCEPT_AS",
+      "CognitiveState → LogicalFallacy: RELATES_TO, SAME_CONCEPT_AS",
+      "CognitiveState → MentalModel: RELATES_TO, SAME_CONCEPT_AS",
+      "CognitiveState → MetacognitivePractice: RELATES_TO, SAME_CONCEPT_AS",
+      "CognitiveState → Precursor: RELATES_TO, SAME_CONCEPT_AS",
+      "Concept → CognitiveBias: RELATES_TO, SAME_CONCEPT_AS",
+      "Concept → CognitiveState: RELATES_TO, SAME_CONCEPT_AS",
+      "Concept → HumanCapability: RELATES_TO, SAME_CONCEPT_AS",
+      "Concept → LogicalFallacy: RELATES_TO, SAME_CONCEPT_AS",
+      "Concept → MentalModel: RELATES_TO, SAME_CONCEPT_AS",
+      "Concept → MetacognitivePractice: RELATES_TO, SAME_CONCEPT_AS",
+      "HumanCapability → CognitiveBias: RELATES_TO, SAME_CONCEPT_AS",
+      "HumanCapability → CognitiveState: RELATES_TO, SAME_CONCEPT_AS",
+      "HumanCapability → Concept: RELATES_TO, SAME_CONCEPT_AS, SPECIALIZES",
+      "HumanCapability → HumanCapability: RELATES_TO, SAME_CONCEPT_AS, SPECIALIZES",
+      "HumanCapability → LogicalFallacy: RELATES_TO, SAME_CONCEPT_AS",
+      "HumanCapability → MentalModel: RELATES_TO, SAME_CONCEPT_AS",
+      "HumanCapability → MetacognitivePractice: RELATES_TO, SAME_CONCEPT_AS",
+      "HumanCapability → Precursor: RELATES_TO, SAME_CONCEPT_AS",
+      "LogicalFallacy → CognitiveBias: RELATES_TO, SAME_CONCEPT_AS",
+      "LogicalFallacy → CognitiveState: RELATES_TO, SAME_CONCEPT_AS",
+      "LogicalFallacy → Concept: RELATES_TO, SAME_CONCEPT_AS, SPECIALIZES",
+      "LogicalFallacy → HumanCapability: RELATES_TO, SAME_CONCEPT_AS",
+      "LogicalFallacy → LogicalFallacy: RELATES_TO, SAME_CONCEPT_AS, SPECIALIZES",
+      "LogicalFallacy → MentalModel: RELATES_TO, SAME_CONCEPT_AS",
+      "LogicalFallacy → MetacognitivePractice: RELATES_TO, SAME_CONCEPT_AS",
+      "LogicalFallacy → Precursor: RELATES_TO, SAME_CONCEPT_AS",
+      "MentalModel → CognitiveBias: RELATES_TO, SAME_CONCEPT_AS",
+      "MentalModel → CognitiveState: RELATES_TO, SAME_CONCEPT_AS",
+      "MentalModel → Concept: RELATES_TO, SAME_CONCEPT_AS, SPECIALIZES",
+      "MentalModel → HumanCapability: RELATES_TO, SAME_CONCEPT_AS",
+      "MentalModel → LogicalFallacy: RELATES_TO, SAME_CONCEPT_AS",
+      "MentalModel → MentalModel: RELATES_TO, SAME_CONCEPT_AS, SPECIALIZES",
+      "MentalModel → MetacognitivePractice: RELATES_TO, SAME_CONCEPT_AS",
+      "MentalModel → Precursor: RELATES_TO, SAME_CONCEPT_AS",
+      "MetacognitivePractice → CognitiveBias: COUNTERS, RELATES_TO, SAME_CONCEPT_AS",
+      "MetacognitivePractice → CognitiveState: RELATES_TO, SAME_CONCEPT_AS",
+      "MetacognitivePractice → Concept: RELATES_TO, SAME_CONCEPT_AS, SPECIALIZES",
+      "MetacognitivePractice → HumanCapability: RELATES_TO, SAME_CONCEPT_AS, STRENGTHENS",
+      "MetacognitivePractice → LogicalFallacy: COUNTERS, RELATES_TO, SAME_CONCEPT_AS",
+      "MetacognitivePractice → MentalModel: RELATES_TO, SAME_CONCEPT_AS",
+      "MetacognitivePractice → MetacognitivePractice: RELATES_TO, SAME_CONCEPT_AS, SPECIALIZES",
+      "MetacognitivePractice → Precursor: RELATES_TO, SAME_CONCEPT_AS",
+      "Precursor → CognitiveBias: RELATES_TO, SAME_CONCEPT_AS",
+      "Precursor → CognitiveState: RELATES_TO, SAME_CONCEPT_AS",
+      "Precursor → HumanCapability: RELATES_TO, SAME_CONCEPT_AS",
+      "Precursor → LogicalFallacy: RELATES_TO, SAME_CONCEPT_AS",
+      "Precursor → MentalModel: RELATES_TO, SAME_CONCEPT_AS",
+      "Precursor → MetacognitivePractice: RELATES_TO, SAME_CONCEPT_AS",
+      "Role → AIAgent: DELEGATES_TO, OWNS"
+    ],
+    "nota": "Los criterios por par se escribieron para los 20 pares que había en la ontología 2.1.0. Los cambios de la 2.2.0 (los dos tipos cognitivos nuevos, las relaciones ampliadas y la relación de equivalencia) crean pares nuevos que no tienen criterio escrito. Es un pendiente declarado."
+  },
+  "value_catalogs": {
+    "confidence": [
+      "alta",
+      "media",
+      "baja",
+      "alta_editorial",
+      "sin evaluar"
+    ],
+    "role": [
+      "primario",
+      "secundario",
+      "fuerza",
+      "mecanismo",
+      "marcador",
+      "lente"
+    ],
+    "strength": [
+      "fuerte",
+      "parcial",
+      "afinidad",
+      "informativo",
+      "ancla primaria",
+      "ancla secundaria"
+    ],
+    "link_type": [
+      "cubre",
+      "referencia",
+      "ancla de lente"
+    ],
+    "axis": [
+      "X",
+      "Y",
+      "Z",
+      "Zs",
+      "H",
+      "HCV",
+      "HC",
+      "HI",
+      "HR",
+      "HX",
+      "HV",
+      "L-MCCS",
+      "L-PLANO",
+      "L-IA"
+    ],
+    "nivel": [
+      "modelo de referencia",
+      "observado"
+    ],
+    "papel (REGULATES)": [
+      "referencia",
+      "sensor",
+      "decisor",
+      "efector"
+    ],
+    "termino": [
+      "demanda",
+      "capacidad"
+    ],
+    "sentido": [
+      "aumenta",
+      "reduce"
+    ],
+    "basis": [
+      "propuesto por la fuente",
+      "observado con evidencia"
+    ],
+    "clase (ApprovalGate)": [
+      "aprobación previa",
+      "auditoría posterior",
+      "prohibición de delegar",
+      "sin clase declarada"
+    ],
+    "plano": [
+      "A",
+      "B"
+    ]
+  },
+  "pair_disambiguation": [
+    {
+      "pair": [
+        "Application",
+        "System"
+      ],
+      "relations": [
+        "DEPENDS_ON",
+        "RUNS_ON"
+      ],
+      "criterion": "RUNS_ON cuando la aplicación se ejecuta sobre ese sistema; DEPENDS_ON cuando lo necesita para funcionar sin ejecutarse en él."
+    },
+    {
+      "pair": [
+        "Assessment",
+        "LearningOutcome"
+      ],
+      "relations": [
+        "ASSESSES"
+      ],
+      "criterion": "Resuelto: EVALUATES ya no admite este par. La evaluación del aprendizaje es ASSESSES."
+    },
+    {
+      "pair": [
+        "BusinessProcess",
+        "BusinessCapability"
+      ],
+      "relations": [
+        "REALIZES",
+        "PART_OF"
+      ],
+      "criterion": "REALIZES: el proceso materializa la capacidad. PART_OF no se usa entre procesos y capacidades."
+    },
+    {
+      "pair": [
+        "Claim",
+        "Claim"
+      ],
+      "relations": [
+        "CONTRADICTS",
+        "SUPERSEDES"
+      ],
+      "criterion": "CONTRADICTS: las dos afirmaciones no pueden ser ciertas a la vez. SUPERSEDES: una reemplaza a la otra en el tiempo."
+    },
+    {
+      "pair": [
+        "Concept",
+        "Concept"
+      ],
+      "relations": [
+        "SPECIALIZES",
+        "MAPS_TO",
+        "RELATES_TO"
+      ],
+      "criterion": "SPECIALIZES: uno es un caso más específico del otro. MAPS_TO: correspondencia entre vocabularios o versiones. RELATES_TO: vínculo editorial con predicado."
+    },
+    {
+      "pair": [
+        "Concept",
+        "TaxonomyCategory"
+      ],
+      "relations": [
+        "CLASSIFIED_IN",
+        "MAPS_TO"
+      ],
+      "criterion": "CLASSIFIED_IN ubica el concepto en la taxonomía vigente. MAPS_TO queda para la correspondencia con una categoría de otra versión."
+    },
+    {
+      "pair": [
+        "FrameworkElement",
+        "FrameworkElement"
+      ],
+      "relations": [
+        "PART_OF",
+        "MAPS_TO"
+      ],
+      "criterion": "PART_OF: jerarquía dentro de un artefacto. MAPS_TO: correspondencia entre artefactos."
+    },
+    {
+      "pair": [
+        "Precursor",
+        "Concept"
+      ],
+      "relations": [
+        "EXPLAINS",
+        "SPECIALIZES",
+        "RELATES_TO",
+        "MAPS_TO"
+      ],
+      "criterion": "EXPLAINS: el pre-ensayo desarrolla ese concepto. SPECIALIZES: desarrolla un caso más específico. RELATES_TO: vínculo que el texto declara. MAPS_TO no se usa entre un pre-ensayo y un concepto del corpus."
+    },
+    {
+      "pair": [
+        "Precursor",
+        "Precursor"
+      ],
+      "relations": [
+        "SPECIALIZES",
+        "RELATES_TO"
+      ],
+      "criterion": "SPECIALIZES para el predicado de especialización; RELATES_TO para los demás predicados editoriales."
+    },
+    {
+      "pair": [
+        "Precursor",
+        "TaxonomyCategory"
+      ],
+      "relations": [
+        "CLASSIFIED_IN",
+        "MAPS_TO"
+      ],
+      "criterion": "Igual que para Concept: CLASSIFIED_IN ubica; MAPS_TO corresponde entre versiones."
+    },
+    {
+      "pair": [
+        "ProductPractice",
+        "Concept"
+      ],
+      "relations": [
+        "INSTANTIATES",
+        "MAPS_TO"
+      ],
+      "criterion": "INSTANTIATES: la tarea es una instancia del concepto en el plano B. MAPS_TO: afinidad temática sin instanciar."
+    },
+    {
+      "pair": [
+        "Role",
+        "AgentFleet"
+      ],
+      "relations": [
+        "OWNS",
+        "ACCOUNTABLE_FOR"
+      ],
+      "criterion": "OWNS: el rol administra la flota y decide sobre ella. ACCOUNTABLE_FOR: responde por su resultado ante un órgano."
+    },
+    {
+      "pair": [
+        "Role",
+        "ControlProduct"
+      ],
+      "relations": [
+        "OWNS",
+        "ACCOUNTABLE_FOR"
+      ],
+      "criterion": "Igual que para la flota."
+    },
+    {
+      "pair": [
+        "SecurityControl",
+        "RiskScenario"
+      ],
+      "relations": [
+        "MITIGATES"
+      ],
+      "criterion": "Resuelto: CONTRIBUTES_TO ya no admite este par. Que un control reduzca un escenario es MITIGATES."
+    },
+    {
+      "pair": [
+        "SecurityIndicator",
+        "TaxonomyCategory"
+      ],
+      "relations": [
+        "CLASSIFIED_IN",
+        "MEASURES"
+      ],
+      "criterion": "CLASSIFIED_IN ubica el indicador en un eje. MEASURES, hacia una categoría, solo vale para una variable homeostática del modelo de referencia (SV-118)."
+    },
+    {
+      "pair": [
+        "System",
+        "Asset"
+      ],
+      "relations": [
+        "CONTAINS",
+        "DEPENDS_ON"
+      ],
+      "criterion": "CONTAINS: el activo está dentro del sistema. DEPENDS_ON: el sistema lo necesita y no lo contiene."
+    },
+    {
+      "pair": [
+        "System",
+        "BusinessCapability"
+      ],
+      "relations": [
+        "PART_OF",
+        "DEPENDS_ON"
+      ],
+      "criterion": "PART_OF: el sistema forma parte de la capacidad. DEPENDS_ON: el sistema necesita esa capacidad para funcionar."
+    },
+    {
+      "pair": [
+        "System",
+        "System"
+      ],
+      "relations": [
+        "PART_OF",
+        "DEPENDS_ON"
+      ],
+      "criterion": "PART_OF: un sistema es componente de otro. DEPENDS_ON: lo necesita sin formar parte de él."
+    },
+    {
+      "pair": [
+        "TaxonomyCategory",
+        "TaxonomyCategory"
+      ],
+      "relations": [
+        "PART_OF",
+        "MAPS_TO",
+        "REGULATES",
+        "PRESSURES"
+      ],
+      "criterion": "PART_OF: jerarquía (una subfunción en su función). MAPS_TO: anclas de lentes y correspondencia entre versiones. REGULATES: un mecanismo y una variable. PRESSURES: una fuerza y una variable (SV-117)."
+    },
+    {
+      "pair": [
+        "Transition",
+        "CapabilityState"
+      ],
+      "relations": [
+        "FROM_STATE",
+        "TO_STATE"
+      ],
+      "criterion": "FROM_STATE: estado de origen. TO_STATE: estado de destino."
+    }
+  ],
+  "not_inverse": [
+    {
+      "par": [
+        "SUPPORTS",
+        "SUPPORTED_BY"
+      ],
+      "nota": "No son inversas: SUPPORTS une un servicio con un objetivo empresarial; SUPPORTED_BY une una afirmación o un resultado con su evidencia."
+    },
+    {
+      "par": [
+        "IMPLEMENTS",
+        "REALIZES"
+      ],
+      "nota": "No son inversas ni sinónimas: IMPLEMENTS une un control con su objetivo de control; REALIZES une un proceso con la capacidad que materializa."
+    },
+    {
+      "par": [
+        "CONTRIBUTES_TO",
+        "ENABLES"
+      ],
+      "nota": "No son inversas ni sinónimas: CONTRIBUTES_TO une una vulnerabilidad con un escenario o un control con un resultado; ENABLES une una capacidad con un objetivo o un catalizador con una transición."
+    }
+  ],
+  "planes": {
+    "A": [
+      "Concept",
+      "Precursor",
+      "Essay",
+      "Question",
+      "LearningUnit",
+      "LearningPath",
+      "Competency",
+      "MentalModel",
+      "CognitiveBias",
+      "LogicalFallacy",
+      "MetacognitivePractice",
+      "HumanCapability",
+      "CognitiveState"
+    ],
+    "B": [
+      "ControlProduct",
+      "TechnologyProduct",
+      "ProductPractice",
+      "OperatingModel",
+      "OperationalPractice",
+      "AIAgent",
+      "AgentFleet",
+      "AgentCharter",
+      "ApprovalGate",
+      "KnowledgeSource",
+      "AgentSkill",
+      "Tool",
+      "OperatingAuthorization",
+      "Role",
+      "SecurityControl"
+    ]
+  },
+  "changes_2_1": [
+    {
+      "tipo": "relación ampliada",
+      "elemento": "CLASSIFIED_IN",
+      "cambio": "Admite como origen los cuatro tipos cognitivos del módulo O09, para ubicar los conceptos de la Biblioteca cognitiva en territorios y en el pilar del MCCS."
+    },
+    {
+      "tipo": "relación ampliada",
+      "elemento": "MEASURES",
+      "cambio": "Admite como destino una variable homeostática del catálogo (categoría del eje HV) para expresar el modelo de referencia; la regla SV-118 lo limita a ese eje. La medición de una organización concreta sigue usando instancias de HomeostaticVariable."
+    },
+    {
+      "tipo": "relación nueva",
+      "elemento": "COVERS_CONCEPT",
+      "cambio": "Cobertura pedagógica propuesta entre una unidad del GM-24 y un concepto; exige confianza editorial y método. No equivale a DEVELOPS ni a CLASSIFIED_IN."
+    },
+    {
+      "tipo": "definición precisada",
+      "elemento": "MetacognitivePractice",
+      "cambio": "Incluye de forma expresa las prácticas de decisión y análisis, que son una categoría propia de la Biblioteca cognitiva."
+    },
+    {
+      "tipo": "regla nueva",
+      "elemento": "SV-118",
+      "cambio": "Limita MEASURES hacia categorías de la taxonomía al eje HV y al modelo de referencia."
+    },
+    {
+      "tipo": "preguntas de competencia nuevas",
+      "elemento": "P21 y P22",
+      "cambio": "Cobertura cognitiva por unidad del GM-24 (COVERS_CONCEPT) e indicadores por subfunción."
+    }
+  ],
+  "package_revision": "1.4",
+  "corrections_1_2": [
+    "La versión sigue siendo 2.1.0: no cambian los tipos, las relaciones ni las reglas.",
+    "version_control pasa de «Git» a «previsto: Git»: el control de versiones es un requisito pendiente (hallazgo C3-057).",
+    "OT es un grupo transversal y no se cuenta entre los 10 módulos: los 84 tipos se reparten en 10 módulos y ese grupo (hallazgos C1-021 y C3-050).",
+    "En predicados_editoriales.json se corrige la definición de la familia AFINIDAD_CON_DOMINIO para que diga lo que los datos hacen (hallazgos C1-015 y C3-026).",
+    "Las propuestas de cambio que dejó la revisión crítica están en data/solicitud_cambio_ontologia_OCR-CAND-03.json; la versión 1.2 no aplicó ninguna. La versión 1.4 las aplicó: es la ontología 2.2.0."
+  ],
+  "model": "property graph",
+  "persistence": "SQLite",
+  "exchange": "JSON",
+  "documentation": "Markdown",
+  "version_control": "previsto: Git (requisito R11, pendiente; el paquete no contiene un repositorio)",
+  "taxonomy_version": "6.1",
+  "curriculum_version": "TheNextCISO GM-24 V7.1",
+  "principles": [
+    "Identity",
+    "Explicit semantics",
+    "Conceptual separation",
+    "Provenance",
+    "Contextuality",
+    "Controlled evolution",
+    "No automatic equivalence",
+    "Human governance",
+    "Separation of planes (A corpus, B contracted capabilities)",
+    "Candidate before approved"
+  ],
+  "modules": [
+    {
+      "code": "O01",
+      "name": "Enterprise & Strategy",
+      "responsibility": "Organización, objetivos, capacidades y procesos empresariales.",
+      "entity_types": 6
+    },
+    {
+      "code": "O02",
+      "name": "Governance & Accountability",
+      "responsibility": "Gobierno, autoridad, políticas, decisiones y excepciones.",
+      "entity_types": 7
+    },
+    {
+      "code": "O03",
+      "name": "Risk & Resilience",
+      "responsibility": "Riesgos, amenazas, consecuencias y tolerancias.",
+      "entity_types": 6
+    },
+    {
+      "code": "O04",
+      "name": "Technology & Security",
+      "responsibility": "Activos, sistemas, identidades, datos, controles y productos-control.",
+      "entity_types": 9
+    },
+    {
+      "code": "O05",
+      "name": "AI & Autonomous Systems",
+      "responsibility": "Modelos, agentes, flotas, herramientas, autonomía y acciones autónomas.",
+      "entity_types": 13
+    },
+    {
+      "code": "O06",
+      "name": "Operations & Assurance",
+      "responsibility": "Eventos, incidentes, modelos operativos, prácticas y evidencia.",
+      "entity_types": 9
+    },
+    {
+      "code": "O07",
+      "name": "Competency & Learning",
+      "responsibility": "Competencias, formación, itinerarios y evaluación.",
+      "entity_types": 7
+    },
+    {
+      "code": "O08",
+      "name": "Evolution & Transformation",
+      "responsibility": "Estados, fuerzas, variables, contextos y transiciones.",
+      "entity_types": 7
+    },
+    {
+      "code": "O09",
+      "name": "Cognition & Metacognition",
+      "responsibility": "Modelos mentales, sesgos, prácticas metacognitivas y capacidades humanas.",
+      "entity_types": 7
+    },
+    {
+      "code": "O10",
+      "name": "Measurement & Value",
+      "responsibility": "Indicadores, objetivos y resultados clave.",
+      "entity_types": 3
+    },
+    {
+      "code": "OT",
+      "name": "Transversales",
+      "responsibility": "Conceptos, pre-ensayos, ensayos, preguntas, fuentes, referencias, taxonomía y cambios.",
+      "entity_types": 12
+    }
+  ],
+  "counts": {
+    "modules": 10,
+    "entity_types": 86,
+    "relationship_types": 98,
+    "semantic_rules": 42,
+    "competency_questions": 22
+  },
+  "counts_previous": {
+    "modules": 8,
+    "entity_types": 57,
+    "relationship_types": 58,
+    "semantic_rules": 21,
+    "competency_questions": 10
+  },
+  "dictionaries": {
+    "entities": "entity_dictionary.json",
+    "relationships": "relationship_dictionary.json",
+    "rules": "semantic_rules.json",
+    "editorial_predicates": "predicados_editoriales.json"
+  },
+  "competency_questions": [
+    "¿Qué activos sostienen una capacidad empresarial crítica?",
+    "¿Qué escenarios de riesgo pueden afectarla?",
+    "¿Qué controles contribuyen a mitigar esos escenarios?",
+    "¿Qué evidencia respalda la efectividad de los controles?",
+    "¿Qué autoridad puede aceptar el riesgo residual?",
+    "¿Qué agentes poseen autoridad sobre determinados activos?",
+    "¿Qué herramientas y acciones están disponibles para esos agentes?",
+    "¿Qué fuerzas condicionan la evolución de una capacidad?",
+    "¿Qué competencias necesita desarrollar un responsable?",
+    "¿Qué unidades GM-24 desarrollan y evalúan esas competencias?",
+    "¿Qué pre-ensayos cubren una coordenada (territorio × dominio × subfunción) y con qué confianza?",
+    "¿Qué elementos de qué artefactos de referencia respaldan un concepto y con qué fuerza?",
+    "¿Qué agentes ejecutan tareas de un producto-control, con qué nivel de autonomía y bajo qué puntos de control?",
+    "¿Qué conceptos del corpus instancia cada producto-control?",
+    "¿Qué fuerzas y qué mecanismos homeostáticos tratan los pre-ensayos de un dominio?",
+    "¿Qué indicadores miden una variable homeostática y a qué decisión informan?",
+    "¿Qué prácticas metacognitivas contrarrestan los sesgos que pueden distorsionar una decisión?",
+    "¿Qué preguntas tienen un pre-ensayo directo y todavía no tienen un ensayo aprobado?",
+    "¿Qué competencias requiere un rol y qué conceptos y unidades las sostienen?",
+    "¿Qué celdas del Atlas no tienen conocimiento (silencios)?",
+    "¿Qué conceptos de la Biblioteca cognitiva propone cubrir cada unidad del GM-24 y con qué confianza editorial?",
+    "¿Qué indicadores están clasificados en cada subfunción del Atlas y qué subfunciones no tienen ninguno?"
+  ]
+}

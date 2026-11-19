@@ -1,0 +1,433 @@
+{
+ "revision": 2,
+ "criterios": [
+  {
+   "codigo": "C1",
+   "nombre": "Respaldo externo",
+   "texto": "Al menos 5 artefactos independientes de al menos 3 organismos lo tratan como elemento de primer nivel o le dedican un artefacto completo.",
+   "cambio_respecto_de_la_6_0": "Sin cambio en el umbral. Se definen «artefacto independiente» y «primer nivel» (RP-16.5)."
+  },
+  {
+   "codigo": "C2",
+   "nombre": "No representable",
+   "texto": "Prueba de representación: se toman los elementos externos de primer nivel que respaldan al candidato. Es representable, y no cumple C2, si la mitad o más tiene como dominio primario un mismo dominio vigente cuya definición ya nombraba el objeto. No es representable, y cumple C2, si para alojarlos hizo falta un ajuste de alcance o quedan repartidos en tres o más dominios. Un candidato que no es un objeto ni una disciplina, sino una perspectiva, una función o una fuerza, no cumple C2.",
+   "cambio_respecto_de_la_6_0": "Reescrito con una prueba que se calcula sobre el cruce de elementos y dominios (RP-16.1)."
+  },
+  {
+   "codigo": "C3",
+   "nombre": "Presión del corpus o materialidad emergente",
+   "texto": "Al menos 10 pre-ensayos cuyo dominio queda forzado, medidos sin depender de la migración: pre-ensayos en que las dos lecturas a ciegas anotan el vacío que corresponde al candidato o, para los dominios ya admitidos, pre-ensayos alojados en el dominio. O bien una obligación o un plazo externo nuevo y verificable.",
+   "cambio_respecto_de_la_6_0": "La medida ya no sale de contar migraciones (RP-16.8). C3 y C4 se evalúan sobre el mismo objeto: el que define la frontera de C5 (RP-16.3)."
+  },
+  {
+   "codigo": "C4",
+   "nombre": "Permanencia",
+   "texto": "El objeto figura como elemento de primer nivel en dos ediciones sucesivas de al menos dos artefactos. La evidencia se rotula: verificada en la base de referencia de este paquete, o citada sin verificar en esta versión.",
+   "cambio_respecto_de_la_6_0": "Se documenta la evidencia y se dice qué está verificado (RP-16.4)."
+  },
+  {
+   "codigo": "C5",
+   "nombre": "Frontera clara",
+   "texto": "La regla de precedencia frente a cada dominio vecino se escribe en una oración.",
+   "cambio_respecto_de_la_6_0": "Sin cambio."
+  },
+  {
+   "codigo": "C6",
+   "nombre": "Completitud",
+   "texto": "Un candidato que cumple C1, C2, C4 y C5 y no cumple C3 puede admitirse con reserva, como espacio en blanco: la completitud del mapa es el propósito declarado del Atlas. La reserva se revisa en la versión siguiente del catálogo con la medida de C3.",
+   "cambio_respecto_de_la_6_0": "Nuevo: el argumento de completitud, que la 6.0 usó para admitir D27, pasa a ser un criterio escrito (RP-16.2)."
+  }
+ ],
+ "definiciones": {
+  "artefacto independiente": "Publicación con identificador y organismo emisor propios, que figura en la base de referencia del paquete. Dos ediciones del mismo artefacto cuentan una vez. Un perfil o un derivado cuenta aparte solo si lo emite otro organismo.",
+  "primer nivel": "El nivel superior de la estructura propia de cada artefacto, tal como está en el cruce de elementos y dominios: familias en NIST SP 800-53 y en CMMC; categorías en NIST CSF 2.0 (las funciones son el eje Z del Atlas); controles en CIS Controls; dominios en CSA CCM, C2M2 y CISSP; objetivos en el CAF del NCSC; requisitos en PCI DSS; pilares en los modelos de Zero Trust; prácticas en el SDL; capacidades operativas en ISO/IEC 27002; áreas de conocimiento en CyBOK.",
+  "dedicado completo": "Artefacto independiente cuyo objeto entero es el del candidato."
+ },
+ "evidencia_de_C4": {
+  "W02": {
+   "estado": "verificado",
+   "texto": "Sí: verificado el 16-nov-2026 en la fuente del organismo emisor para 4 artefactos, en dos ediciones sucesivas de cada uno: NIST CSF (1.1 y 2.0, categoría ID.AM); NIST SP 800-53 (Rev. 4 y Rev. 5, familia CM); CIS Controls (v7.1 y v8.1, controles de inventario y de configuración segura); C2M2 (2.0 y 2.1, dominio ASSET). No se pudo verificar: ISO/IEC 27002 (2013 y 2022) (el sitio del organismo solo muestra el resumen). En NIST CSF el elemento es una categoría, que es el primer nivel para este eje según la definición del paquete; un lector que cuente como primer nivel las funciones no lo contaría.",
+   "verificacion": {
+    "fecha": "2026-11-16",
+    "artefactos": [
+     {
+      "artefacto": "NIST Cybersecurity Framework (CSF)",
+      "organismo": "National Institute of Standards and Technology (NIST), EE. UU.",
+      "edicion_anterior": {
+       "edicion": "Versión 1.1 (16-04-2018), «Framework for Improving Critical Infrastructure Cybersecurity, Version 1.1»",
+       "elemento": "Categoría «Asset Management» (ID.AM), bajo la función «Identify» (ID)",
+       "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.04162018.pdf",
+       "verificado": true,
+       "nota": "Texto del PDF oficial, abierto con la herramienta de lectura web. Tabla 1, «Function and Category Unique Identifiers»: «ID | Identify | ID.AM | Asset Management». Tabla 2: «Asset Management (ID.AM): The data, personnel, devices, systems, and facilities that enable the organization to achieve business purposes are identified and managed consistent with their relative importance to organizational objectives and the organization’s risk strategy.» Nivel: es una categoría, el segundo nivel del Core (Function > Category > Subcategory; «Categories are the subdivisions of a Function»); el primer nivel son las cinco funciones. La ficha de CSRC (https://csrc.nist.gov/pubs/cswp/6/cybersecurity-framework-v11/final) confirma la fecha y avisa que NIST publicó después el CSF 2.0."
+      },
+      "edicion_vigente": {
+       "edicion": "Versión 2.0 (26-02-2024), «The NIST Cybersecurity Framework (CSF) 2.0», NIST CSWP 29",
+       "elemento": "Categoría «Asset Management» (ID.AM), bajo la función «Identify (ID)»",
+       "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+       "verificado": true,
+       "nota": "Texto del PDF oficial, abierto con la herramienta de lectura web. Tabla 1, «CSF 2.0 Core Function and Category names and identifiers»: «Identify (ID) | Asset Management | ID.AM». Apéndice A: «Asset Management (ID.AM): Assets (e.g., data, hardware, software, systems, facilities, services, people) that enable the organization to achieve business purposes are identified and managed consistent with their relative importance to organizational objectives and the organization’s risk strategy». Nivel: igual que en la 1.1, categoría bajo una función («Each Function is divided into Categories»), no primer nivel. Vigencia: https://www.nist.gov/cyberframework presenta el CSF 2.0 como versión actual y la ficha de CSRC (https://csrc.nist.gov/pubs/cswp/29/the-nist-cybersecurity-framework-csf-20/final) no indica ninguna versión posterior."
+      }
+     },
+     {
+      "artefacto": "NIST SP 800-53",
+      "organismo": "National Institute of Standards and Technology (NIST), EE. UU.",
+      "edicion_anterior": {
+       "edicion": "Revisión 4 (abril de 2013, con actualizaciones al 22-01-2015); retirada el 23-09-2021",
+       "elemento": "Familia «Configuration Management» (identificador CM)",
+       "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r4.pdf",
+       "verificado": true,
+       "nota": "Texto del PDF oficial, abierto con la herramienta de lectura web (lleva la carátula de publicación retirada: «SP 800-53 Rev. 4 is superseded in its entirety by SP 800-53 Rev. 5»). Sección 2.2, «TABLE 1: SECURITY CONTROL IDENTIFIERS AND FAMILY NAMES»: «CM | Configuration Management». Es primer nivel del catálogo: «controls are organized into eighteen families». La ficha de CSRC (https://csrc.nist.gov/pubs/sp/800/53/r4/upd3/final) también lista «Configuration Management» entre las Control Families y dice «Withdrawn on September 23, 2021. Superseded by SP 800-53 Rev. 5». Límite: la herramienta devolvió solo los primeros 330.000 bytes del PDF, aproximadamente; la Tabla 1 está en esa parte, pero el encabezado de la familia CM en el Apéndice F no lo llegué a ver."
+      },
+      "edicion_vigente": {
+       "edicion": "Revisión 5 (septiembre de 2020, con actualizaciones al 10-12-2020); última versión menor: Release 5.2.0 (27-08-2025)",
+       "elemento": "Familia «Configuration Management» (identificador CM)",
+       "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf",
+       "verificado": true,
+       "nota": "Texto del PDF oficial, abierto con la herramienta de lectura web. Sección 2.2, «TABLE 1: SECURITY AND PRIVACY CONTROL FAMILIES»: «CM | Configuration Management»; en el índice, dentro del capítulo 3: «3.5 CONFIGURATION MANAGEMENT». Es primer nivel: «controls are organized into 20 families». La ficha de CSRC (https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final) lista «Configuration Management» entre las Control Families y no marca la Rev. 5 como reemplazada. Límites: la herramienta devolvió solo los primeros 330.000 bytes del PDF, aproximadamente; además, ese PDF es el de la Rev. 5 con actualizaciones al 10-12-2020 y el catálogo de la Release 5.2.0 (publicado en CPRT) no lo abrí. La nota de planificación de CSRC enumera los cambios de la 5.2.0 (SA-15(13), SA-24, SI-02(07), SI-07(12), textos de discusión y controles relacionados) y ninguno cambia el nombre ni el identificador de la familia CM."
+      }
+     },
+     {
+      "artefacto": "CIS Critical Security Controls (CIS Controls)",
+      "organismo": "Center for Internet Security (CIS)",
+      "edicion_anterior": {
+       "edicion": "Versión 7.1 (1 de abril de 2019)",
+       "elemento": "CIS Control 1: «Inventory and Control of Hardware Assets»; CIS Control 2: «Inventory and Control of Software Assets»; CIS Control 5: «Secure Configuration for Hardware and Software on Mobile Devices, Laptops, Workstations and Servers». Hay un segundo control de configuración segura, CIS Control 11: «Secure Configuration for Network Devices, such as Firewalls, Routers, and Switches»",
+       "url": "https://downloads.cisecurity.org/controls/CIS-Controls-Version-7-1.pdf",
+       "verificado": true,
+       "nota": "Texto del PDF oficial de CIS, abierto con la herramienta de lectura web (fechado «April 1, 2019»; el propio texto habla de «the V7.1 update»). Encabezados: «CIS Control 1: Inventory and Control of Hardware Assets», «CIS Control 2: Inventory and Control of Software Assets», «CIS Control 5: Secure Configuration for Hardware and Software on Mobile Devices, Laptops, Workstations and Servers» y «CIS Control 11: Secure Configuration for Network Devices, such as Firewalls, Routers, and Switches» (en la página de contenidos este último figura sin la segunda coma: «Routers and Switches»). Los mismos números y nombres están en la CIS Controls Assessment Specification para la v7.1, también de CIS: https://cas7.1.docs.cisecurity.org/en/latest/. Son primer nivel: la v7.1 tiene 20 controles («CIS Controls 1 – 20») con Sub-Controls debajo. La página oficial de la versión (https://www.cisecurity.org/controls/v7-1) no lista los nombres de los controles."
+      },
+      "edicion_vigente": {
+       "edicion": "Versión 8.1 (la página oficial la presenta como «This latest version, CIS Controls v8.1»; no vi fecha de publicación en las páginas abiertas)",
+       "elemento": "CIS Control 1: «Inventory and Control of Enterprise Assets»; CIS Control 2: «Inventory and Control of Software Assets»; CIS Control 4: «Secure Configuration of Enterprise Assets and Software»",
+       "url": "https://www.cisecurity.org/controls/cis-controls-list",
+       "verificado": true,
+       "nota": "Página oficial «The 18 CIS Critical Security Controls», abierta con la herramienta de lectura web. Texto: «CIS Control 1: Inventory and Control of Enterprise Assets», «CIS Control 2: Inventory and Control of Software Assets», «CIS Control 4: Secure Configuration of Enterprise Assets and Software». Cambios respecto de la v7.1: el Control 1 ya no dice «Hardware Assets» sino «Enterprise Assets»; el Control 2 conserva número y nombre; la configuración segura pasa del número 5 al 4 con otro nombre, y en la lista de la v8.1 no hay ningún control con el nombre del antiguo Control 11. Son primer nivel (18 controles). https://www.cisecurity.org/controls/v8-1 dice «CIS Controls v8.1 is an iterative update to v8» y la ofrece como «the Latest Version». No abrí el PDF de la v8.1; los nombres salen de la página de la lista."
+      }
+     },
+     {
+      "artefacto": "ISO/IEC 27002",
+      "organismo": "ISO e IEC (comité técnico conjunto ISO/IEC JTC 1/SC 27)",
+      "edicion_anterior": {
+       "edicion": "ISO/IEC 27002:2013 (edición 2, 2013-10; retirada)",
+       "elemento": "Cláusula 8 «Asset management» (con 8.1 «Responsibility for assets», 8.2 «Information classification» y 8.3 «Media handling»), leída solo en el índice de la muestra oficial tal como la devuelve el buscador",
+       "url": "https://www.iso.org/standard/54533.html",
+       "verificado": false,
+       "nota": "no verificado: iso.org, abierto en directo, solo muestra el resumen, y la muestra con el índice exige aceptar los términos de uso de ISO, que no acepté. Qué muestra la ficha (esta URL): estado «Withdrawn», edición 2, fecha 2013-10, 80 páginas, el abstract y el ciclo de vida, que la da por revisada por ISO/IEC 27002:2022; no muestra el índice ni nombra la gestión de activos. Qué muestra la Online Browsing Platform (https://www.iso.org/obp/ui/) al abrirla: solo la pantalla «Before you continue — I have read and agree to the Terms of Use governing access to content on this platform». Qué vi por vía indirecta: el buscador devuelve el texto de la muestra de esa plataforma (dominio iso.org, documento «ISO/IEC 27002:2013 (en)», con el aviso «This standard has been withdrawn»), y su índice lista «5 Information security policies», «6 Organization of information security», «7 Human resource security», «8 Asset management», «8.1 Responsibility for assets», «8.2 Information classification», «8.3 Media handling», «9 Access control», «10 Cryptography» y «11 Physical and environmental security». Ahí «8 Asset management» figura como cláusula numerada de primer nivel. Qué no se pudo ver: el índice después de la cláusula 11 y el texto de las cláusulas 4 y 8. Es texto de ISO, no una fuente secundaria, pero no lo abrí en directo; por eso queda en false."
+      },
+      "edicion_vigente": {
+       "edicion": "ISO/IEC 27002:2022 (edición 3, 2022-02; versión corregida 2022-03; publicada)",
+       "elemento": "Controles 5.9 «Inventory of information and other associated assets», 5.10 «Acceptable use of information and other associated assets» y 5.11 «Return of assets», dentro de la cláusula 5 «Organizational controls»; leídos solo en el índice de la muestra oficial tal como la devuelve el buscador",
+       "url": "https://www.iso.org/standard/75652.html",
+       "verificado": false,
+       "nota": "no verificado: mismo motivo que la edición 2013. Qué muestra la ficha (esta URL): estado «Published», etapa 60.60, edición 3, 2022-02 con versión corregida 2022-03, 152 páginas, un texto de presentación (qué es, beneficios, preguntas frecuentes) y el enlace «Read sample» a la Online Browsing Platform; no muestra el índice, y como temas solo nombra «access control, cryptography, human resource security, and incident response». Qué vi por vía indirecta: el texto de la muestra oficial que devuelve el buscador (dominio iso.org, documento «ISO/IEC 27002:2022 (en)») lista en el índice «4 Structure of this document», «4.2 Themes and attributes», «5 Organizational controls», «5.9 Inventory of information and other associated assets», «5.10 Acceptable use of information and other associated assets», «5.11 Return of assets», «5.12 Classification of information» y «5.13 Labelling of information», y se corta en 5.17. El prólogo dice «the structure of the document has been changed, presenting the controls using a simple taxonomy and associated attributes». Nivel: en la parte visible no hay ninguna cláusula de primer nivel llamada «Asset management»; los activos aparecen como controles de segundo nivel dentro de la cláusula 5. Qué no se pudo ver: los títulos de las cláusulas 6, 7 y 8 y de los anexos, el texto de los controles y sus atributos; tampoco pude confirmar en fuente oficial si hay controles de gestión de la configuración o de cambios. Vigencia: la ficha no anuncia ninguna edición posterior y la tienda de IEC, coeditor (https://webstore.iec.ch/en/publication/74287), la da como «Valid»."
+      }
+     },
+     {
+      "artefacto": "Cybersecurity Capability Maturity Model (C2M2)",
+      "organismo": "U.S. Department of Energy (DOE), Office of Cybersecurity, Energy Security, and Emergency Response (CESER)",
+      "edicion_anterior": {
+       "edicion": "Versión 2.0 (julio de 2021)",
+       "elemento": "Dominio «Asset, Change, and Configuration Management (ASSET)»",
+       "url": "https://www.energy.gov/sites/default/files/2021-07/C2M2%20Version%202.0%20July%202021_508.pdf",
+       "verificado": true,
+       "nota": "Texto del PDF oficial, abierto con la herramienta de lectura web («Cybersecurity Capability Maturity Model (C2M2), Version 2.0, July 2021»). Índice y encabezado de la sección 6.1: «Asset, Change, and Configuration Management (ASSET)». Propósito: «Manage the organization’s IT and OT assets, including both hardware and software, and information assets commensurate with the risk to critical infrastructure and organizational objectives.» Es primer nivel: «The model is organized into 10 domains» y este es el primero. Reúne en un solo elemento activos, cambios y configuración; sus objetivos son «Manage IT and OT Asset Inventory», «Manage Information Asset Inventory», «Manage Asset Configuration», «Manage Changes to Assets» y «Management Activities»."
+      },
+      "edicion_vigente": {
+       "edicion": "Versión 2.1 (junio de 2022)",
+       "elemento": "Dominio «Asset, Change, and Configuration Management (ASSET)»",
+       "url": "https://www.energy.gov/sites/default/files/2022-06/C2M2%20Version%202.1%20June%202022.pdf",
+       "verificado": true,
+       "nota": "Texto del PDF oficial, abierto con la herramienta de lectura web («C2M2 Version 2.1 June 2022»). Índice y encabezado de la sección 6.1: «Asset, Change, and Configuration Management (ASSET)», con el mismo nombre, sigla, posición y texto de propósito que en la 2.0. Es primer nivel (10 dominios). Objetivos: «Manage IT and OT Asset Inventory», «Manage Information Asset Inventory», «Manage IT and OT Asset Configuration», «Manage Changes to IT and OT Assets» y «Management Activities for the ASSET domain». Vigencia: la página de DOE (https://www.energy.gov/ceser/cybersecurity-capability-maturity-model-c2m2, actualizada el 08-10-2026) dice «Access the latest version here: C2M2 Version 2.1»."
+      }
+     }
+    ],
+    "resumen": "4 de 5 artefactos quedaron con las dos ediciones verificadas abriendo el documento oficial: NIST CSF, NIST SP 800-53, CIS Controls y C2M2. ISO/IEC 27002 no quedó verificada en ninguna de las dos ediciones: iso.org en directo solo muestra el resumen y la muestra con el índice exige aceptar los términos de uso de ISO; los nombres («8 Asset management» en 2013; «5.9 Inventory of information and other associated assets», 5.10 y 5.11 en 2022) los leí únicamente en el texto de esa muestra oficial que devuelve el buscador. Salvedad de nivel: el elemento es de primer nivel en SP 800-53 (familia), CIS (control), C2M2 (dominio) e ISO/IEC 27002:2013 (cláusula 8, según el índice visto); no lo es en el CSF (categoría bajo la función Identify, en la 1.1 y en la 2.0) ni en ISO/IEC 27002:2022 (controles dentro de la cláusula 5). En CIS, entre la v7.1 y la v8.1 el Control 1 pasa de «Hardware Assets» a «Enterprise Assets» y la configuración segura pasa del Control 5 al 4. «Abierto» significa: texto que la herramienta de lectura web devolvió para la URL oficial el 2026-11-16.",
+    "origen": "Verificación hecha el 16-nov-2026 por un agente de investigación con acceso a la web, sobre las fuentes de cada organismo emisor. El agente devolvió el resultado en su respuesta y el curador lo guardó sin cambios."
+   }
+  }
+ },
+ "evaluacion_de_W02": {
+  "C1": true,
+  "C2": true,
+  "C3": true,
+  "C4": true,
+  "C5": true,
+  "situacion": "admisible",
+  "medida_de_C3": 10,
+  "umbral_de_C3": 10,
+  "C3_en_el_limite": true,
+  "respaldo": {
+   "elementos": 16,
+   "artefactos": 13,
+   "organismos": 11,
+   "alojados_por_ajuste_de_alcance": 16
+  },
+  "pre_ensayos_en_que_una_sola_lectura_anota_el_vacio": 2,
+  "pre_ensayos_que_cuenta_C3": [
+   "APA-159",
+   "APC-258",
+   "APF-17",
+   "APS-18",
+   "M2.1-K01",
+   "M2.1-K03",
+   "M2.1-K08",
+   "M2.1-K09",
+   "M3.2-K05",
+   "M5.2-PA02"
+  ],
+  "de_ellos_con_el_dominio_confirmado_por_el_autor": [
+   "M2.1-K01",
+   "M2.1-K03"
+  ],
+  "medida_de_C3_sin_los_ejes_que_el_autor_confirmo": 8,
+  "cumple_C3_sin_los_ejes_que_el_autor_confirmo": false,
+  "nota_sobre_C3": "La medida de C3 cuenta los pre-ensayos en que las dos lecturas anotan que el dominio vigente está forzado. Entre ellos hay pre-ensayos cuyo dominio el autor confirmó el 16 de noviembre de 2026: contarlos como forzados contradice esa confirmación. Sin ellos la medida baja. Admitir el dominio obligaría además a volver a mover esos pre-ensayos.",
+  "cambio_de_C2_respecto_de_la_6_0": "En la Taxonomía 6.0, que el autor confirmó, este candidato figuraba como «no cumple C2». El resultado cambió porque el curador reescribió el criterio en la revisión 2, no porque haya cambiado el respaldo."
+ },
+ "como_se_calcula_C2": "Sobre el cruce de elementos y dominios, en este orden: si la mitad o más de los elementos solo encontró dominio por un ajuste de alcance, el objeto no era representable (cumple C2); si no, y la mitad o más está en un mismo dominio sin ajuste, es representable (no cumple C2); si no, y quedan repartidos en tres o más dominios, no es representable. Un elemento alojado sin ajuste de alcance cuenta como alojado por un dominio cuya definición ya nombraba el objeto.",
+ "como_se_calcula_C3": "Se cuentan los pre-ensayos en que las dos lecturas a ciegas anotan el vacío del candidato. Cumple con 10 o más. El sí o el no sale de esa cuenta.",
+ "candidatos": [
+  {
+   "codigo": "W01",
+   "candidato": "Gobierno, riesgo y cumplimiento de la IA como dominio propio",
+   "C1": "Sí: ISO/IEC 42001, el Reglamento de IA de la UE y el Cyber AI Profile (borrador) lo tratan en primer nivel, y la base tiene además artefactos dedicados a la IA.",
+   "C2": "Por decidir. Con la prueba escrita cumpliría C2, porque sus elementos de primer nivel quedan repartidos en tres o más dominios. El curador lo dio por representable con una cláusula que el criterio no trae: el objeto ya tiene territorio propio (T07), y sus elementos reciben coordenada con T07 y D01, D02 o D03 (regla base 7 y RD-01) sin ningún ajuste de alcance. Si esa cláusula se agrega a C2 lo decide el autor (D-17.10).",
+   "C3": "No se evaluó.",
+   "C4": "No se evaluó.",
+   "C5": "No se evaluó.",
+   "C6": "Sin determinar: depende de C2.",
+   "resultado": "Sigue en vigilancia",
+   "cambia_respecto_de_la_6_0": "no"
+  },
+  {
+   "codigo": "W02",
+   "candidato": "Gestión de activos, configuración y cambios",
+   "C1": "Sí: 16 elementos de primer nivel de 13 artefactos de 11 organismos.",
+   "C2": "Sí: 16 de esos 16 elementos solo encontraron dominio por el ajuste de alcance que la 6.0 le hizo a D13. Con la misma prueba que se aplicó a D28, el objeto no era representable.",
+   "C3": "Sí: 10 pre-ensayos en que las dos lecturas a ciegas anotan el vacío VC-05; el umbral es 10. Se alcanza justo: con uno menos no cumpliría. No hay obligación ni plazo externo nuevo.",
+   "C4": "Sí: verificado el 16-nov-2026 en la fuente del organismo emisor para 4 artefactos, en dos ediciones sucesivas de cada uno: NIST CSF (1.1 y 2.0, categoría ID.AM); NIST SP 800-53 (Rev. 4 y Rev. 5, familia CM); CIS Controls (v7.1 y v8.1, controles de inventario y de configuración segura); C2M2 (2.0 y 2.1, dominio ASSET). No se pudo verificar: ISO/IEC 27002 (2013 y 2022) (el sitio del organismo solo muestra el resumen). En NIST CSF el elemento es una categoría, que es el primer nivel para este eje según la definición del paquete; un lector que cuente como primer nivel las funciones no lo contaría.",
+   "C5": "Sí, a juicio del curador (C5 no se mide: es una frontera que se escribe): Gestión de activos, configuración y cambios cuando el objeto es el inventario, la propiedad, la línea base de configuración o el control de cambios de los activos como disciplina general; el inventario de un tipo de activo queda en el dominio de ese activo (RP-08.2) y el inventario o la configuración leídos como exposición quedan en D13 (RP-08.1 y RP-08.3).",
+   "C6": "No hace falta: cumple C1 a C5.",
+   "resultado": "Admisible: cumple los cinco criterios, C3 en el límite (10 pre-ensayos y el umbral es 10). No se admite en esta versión: el cambio de catálogo no se le planteó al autor. Queda propuesto (ADR-041).",
+   "cambia_respecto_de_la_6_0": "sí: en la 6.0 figuraba como «no cumple C2»"
+  },
+  {
+   "codigo": "W03",
+   "candidato": "Seguridad del correo y la colaboración",
+   "C1": "No: 1 artefacto lo trata en primer nivel (CIS Controls, control 9).",
+   "C2": "No se evalúa: no cumple C1.",
+   "C3": "No se evalúa.",
+   "C4": "No se evalúa.",
+   "C5": "No se evalúa.",
+   "C6": "No aplica: no cumple C1.",
+   "resultado": "Sigue en vigilancia; está en el alcance de D09",
+   "cambia_respecto_de_la_6_0": "no"
+  },
+  {
+   "codigo": "W04",
+   "candidato": "Fraude y confianza digital",
+   "C1": "No: ningún artefacto del cruce lo trata en primer nivel.",
+   "C2": "No se evalúa: no cumple C1.",
+   "C3": "Se informa aparte: 2 pre-ensayos en que las dos lecturas a ciegas anotan el vacío VC-04.",
+   "C4": "No se evalúa.",
+   "C5": "No se evalúa.",
+   "C6": "No aplica: no cumple C1.",
+   "resultado": "Sigue en vigilancia",
+   "cambia_respecto_de_la_6_0": "no"
+  },
+  {
+   "codigo": "W05",
+   "candidato": "Protocolos e interoperabilidad de agentes (MCP, A2A)",
+   "C1": "No: ningún artefacto del cruce lo trata en primer nivel.",
+   "C2": "No se evalúa: no cumple C1.",
+   "C3": "No se evalúa.",
+   "C4": "No: son especificaciones de 2026 sin dos ediciones sucesivas.",
+   "C5": "No se evalúa.",
+   "C6": "No aplica.",
+   "resultado": "Sigue en vigilancia; está en el alcance de D20",
+   "cambia_respecto_de_la_6_0": "en la 6.0 el criterio que fallaba era C4; con la misma tabla falla también C1"
+  },
+  {
+   "codigo": "W06",
+   "candidato": "Soberanía digital y geopolítica",
+   "C1": "No se evalúa.",
+   "C2": "No: no es un objeto ni una disciplina, sino una fuerza. Está en el catálogo como CAT11 y se lee con el factor de contexto HX02.",
+   "C3": "No se evalúa.",
+   "C4": "No se evalúa.",
+   "C5": "No se evalúa.",
+   "C6": "No aplica.",
+   "resultado": "Sigue en vigilancia",
+   "cambia_respecto_de_la_6_0": "no"
+  },
+  {
+   "codigo": "W07",
+   "candidato": "Resiliencia operativa como dominio",
+   "C1": "Sí: 5 elementos de primer nivel de 5 artefactos de 4 organismos.",
+   "C2": "No: la mitad o más de los elementos (3 de 5) está en un mismo dominio, D25, sin ajuste de alcance (D25: 3, D16: 1, D28: 1). Están en tres dominios, pero la cláusula de los tres dominios rige solo cuando ninguno aloja a la mitad.",
+   "C3": "No se evalúa: no cumple C2.",
+   "C4": "No se evalúa.",
+   "C5": "No se evalúa.",
+   "C6": "No aplica.",
+   "resultado": "Sigue en vigilancia",
+   "cambia_respecto_de_la_6_0": "no"
+  },
+  {
+   "codigo": "W08",
+   "candidato": "Identidades no humanas y de agentes como dominio",
+   "C1": "No se evalúa.",
+   "C2": "No: la definición de D05 ya nombra las identidades no humanas.",
+   "C3": "No se evalúa.",
+   "C4": "No se evalúa.",
+   "C5": "No se evalúa.",
+   "C6": "No aplica.",
+   "resultado": "Sigue en vigilancia",
+   "cambia_respecto_de_la_6_0": "no"
+  },
+  {
+   "codigo": "W09",
+   "candidato": "Consolidar D21, D22 y D23 (IA para la seguridad)",
+   "C1": "No, ni por separado ni en conjunto: D21 tiene un elemento de primer nivel (Cyber AI Profile, borrador) y D22, ninguno; los dos de D23 son los pilares de automatización y orquestación de los modelos de Zero Trust, que no son específicos de la IA (RD-14).",
+   "C2": "No se evalúa.",
+   "C3": "No se evalúa.",
+   "C4": "No se evalúa.",
+   "C5": "No se evalúa.",
+   "C6": "No aplica.",
+   "resultado": "No se recomienda consolidar: unir los tres dominios no les da el respaldo externo que no tienen por separado. Quedan en observación.",
+   "cambia_respecto_de_la_6_0": "sí: la 6.0 dejaba la consolidación para revisar en la 6.1"
+  }
+ ],
+ "frontera_propuesta_para_W02": "Gestión de activos, configuración y cambios cuando el objeto es el inventario, la propiedad, la línea base de configuración o el control de cambios de los activos como disciplina general; el inventario de un tipo de activo queda en el dominio de ese activo (RP-08.2) y el inventario o la configuración leídos como exposición quedan en D13 (RP-08.1 y RP-08.3).",
+ "vacios_anotados_por_las_dos_lecturas": {
+  "VC-01": 27,
+  "VC-02": 25,
+  "VC-03": 31,
+  "VC-04": 2,
+  "VC-05": 10,
+  "VC-06": 2,
+  "VC-07": 13,
+  "VC-08": 40,
+  "VC-09": 4,
+  "VC-10": 9,
+  "VC-11": 1,
+  "VC-12": 3,
+  "VC-13": 49,
+  "VC-14": 15,
+  "VC-15": 3
+ },
+ "dominios_en_observacion": {
+  "nota": "Dominios vigentes que no cumplirían C1 o C3 si se evaluaran hoy como candidatos. No se retira ninguno: el Atlas no tiene un criterio de retiro y esa decisión no se le planteó al autor.",
+  "lista": [
+   {
+    "dominio": "D04",
+    "no_cumple": [
+     "C1"
+    ],
+    "artefactos": 4,
+    "organismos": 4,
+    "pre_ensayos": 62
+   },
+   {
+    "dominio": "D07",
+    "no_cumple": [
+     "C1"
+    ],
+    "artefactos": 4,
+    "organismos": 3,
+    "pre_ensayos": 15
+   },
+   {
+    "dominio": "D08",
+    "no_cumple": [
+     "C3 por corpus"
+    ],
+    "artefactos": 15,
+    "organismos": 11,
+    "pre_ensayos": 3
+   },
+   {
+    "dominio": "D10",
+    "no_cumple": [
+     "C3 por corpus"
+    ],
+    "artefactos": 6,
+    "organismos": 4,
+    "pre_ensayos": 5
+   },
+   {
+    "dominio": "D11",
+    "no_cumple": [
+     "C3 por corpus"
+    ],
+    "artefactos": 21,
+    "organismos": 14,
+    "pre_ensayos": 8
+   },
+   {
+    "dominio": "D18",
+    "no_cumple": [
+     "C3 por corpus"
+    ],
+    "artefactos": 5,
+    "organismos": 4,
+    "pre_ensayos": 4
+   },
+   {
+    "dominio": "D19",
+    "no_cumple": [
+     "C1",
+     "C3 por corpus"
+    ],
+    "artefactos": 4,
+    "organismos": 4,
+    "pre_ensayos": 0
+   },
+   {
+    "dominio": "D21",
+    "no_cumple": [
+     "C1"
+    ],
+    "artefactos": 1,
+    "organismos": 1,
+    "pre_ensayos": 15
+   },
+   {
+    "dominio": "D22",
+    "no_cumple": [
+     "C1",
+     "C3 por corpus"
+    ],
+    "artefactos": 0,
+    "organismos": 0,
+    "pre_ensayos": 3
+   },
+   {
+    "dominio": "D23",
+    "no_cumple": [
+     "C1",
+     "C3 por corpus"
+    ],
+    "artefactos": 2,
+    "organismos": 2,
+    "pre_ensayos": 6
+   },
+   {
+    "dominio": "D26",
+    "no_cumple": [
+     "C3 por corpus"
+    ],
+    "artefactos": 8,
+    "organismos": 6,
+    "pre_ensayos": 5
+   },
+   {
+    "dominio": "D27",
+    "no_cumple": [
+     "C3 por corpus"
+    ],
+    "artefactos": 7,
+    "organismos": 7,
+    "pre_ensayos": 1
+   }
+  ]
+ }
+}

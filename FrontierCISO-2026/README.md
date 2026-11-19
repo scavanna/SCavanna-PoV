@@ -1,0 +1,44 @@
+# Frontier CISO 2026
+
+Colección documental AF-20261118: 22 dossiers en tres secciones de consulta.
+
+[Inicio del repositorio](../README.md) · [Paquetes de origen y antecedentes](Orginals/README.md)
+
+Los índices Markdown son la entrada principal. Los HTML interactivos se conservan como recursos de cada dossier. Las referencias señaladas como no incluidas corresponden a material ausente de esta copia; no se crean entradas vacías para sustituirlo.
+
+## Artefactos base
+
+| Artefacto | Edición | Estado | Límite |
+| --- | --- | --- | --- |
+| [01 · Modelado de amenazas: MAGERIT v3 ampliado](01_Bases/01_Modelado_de_Amenazas/README.md) | Fuentes y matrices con corte 2026-11-18 | Identificado · adaptación no oficial | Las 15 categorías y 79 amenazas tienen las cuatro fases; no se demostró una relación nominal 1:1 de los 16 casos genéricos con cada amenaza. No equivale a MAGERIT oficial ni a controles desplegados. |
+| [02 · Zero Trust y su reinterpretación para IA](01_Bases/02_Zero_Trust_e_IA/README.md) | Investigación 2026-11-15; capítulo CISO 365 Frontier v2.0 rev. 2 | Identificado · investigación y aplicación propuesta | La aplicación a agentes y los indicadores se documentan como propuestas o criterios, no como una nueva norma transversal ni como KPIs del plan trazados uno a uno. |
+| [03 · MCCF: biblioteca de capacidades cognitivas del CISO](01_Bases/03_MCCF_Biblioteca_Cognitiva/README.md) | Consolidado 2026-11-11 | Identificado como biblioteca; rótulo MCCF no confirmado | Frontier denomina MCCS a la capa de 1.404. No se identificó un paquete separado rotulado literalmente MCCF ni se da por aprobado su grafo. |
+| [04 · AI CISO Atlas: base y continuidad](01_Bases/04_AI_CISO_Atlas/README.md) | Handoff v6.0 FINAL; v5.3 como coordenada de cruces históricos | Identificado · edición FINAL y linaje | Handoff no equivale a respaldo íntegro de los precursores, Excel históricos, PDF canónicos o scripts. No sustituir con Frontier ni asumir que el manifiesto acredita recuperación. |
+| [05 · Frontier CISO Atlas: taxonomía, ontología y grafo](01_Bases/05_Frontier_CISO_Atlas/README.md) | Frontier 1.4 · 2026-11-16; taxonomía 6.1; ontología 2.2.0 propuesta | Identificado · propuesta pendiente | La 1.4 es la última edición local localizada; la curaduría D-16, las aristas, la ontología y cambios no se presentan como aprobados. No confundir sus 739 clasificados con los 379 del corpus A06. |
+| [06 · TheNextCISO GM‑24 ampliado, con pre-ensayos](01_Bases/06_GM24_Corpus_Preensayos/README.md) | V7.1 · 2026-11-15; README maestro dice rev. b (carpeta 15c) | Identificado · corpus editorial | El sufijo de carpeta 15c no cambia la edición declarada. No fusiona el corpus 379 con la biblioteca 331 ni con la clasificación 739. Las correspondencias y el plano aplicado se conservan aparte. |
+| [07 · Microsoft Security × dominios Gartner × Atlas](01_Bases/07_Stack_MS_Gartner_Atlas/README.md) | Catálogo v2 2026-11-04 + entrega matricial 2026-11-05 | Parcial · cruce editorial, sin reseñas originales | No se halló un archivo original de reseñas Gartner Peer Insights ni una matriz Gartner × Frontier 1.4 recalculada. 'Validado' en un nombre no significa verificación externa de Gartner. |
+| [08 · Ninja Training de seguridad Microsoft](01_Bases/08_Ninja_Training_MS_Security/README.md) | Edición 2026 · 15 programas; instantánea 2026-11-08 en paquete integrado | Identificado · recurso formativo | Una sola copia de la familia standalone. Las instantáneas de otros paquetes no se vuelven a importar como ediciones distintas. No equivale a certificación. Los 15 libros alternativos difieren solo en sus metadatos de etiqueta, no en sus contenidos OOXML; se preservó el ejemplar original seleccionado. |
+| [09 · Excelencia Operacional sobre Microsoft Security](01_Bases/09_Excelencia_Operacional_MS/README.md) | Esquema 2.0; revisión declarada 2026-11-11 | Identificado · repositorio maestro | Los exports históricos HTML/MD, ZIP y GitHub Pages son otras presentaciones, no otra fuente vigente. La revisión declarada conserva las distinciones de hechos, recomendaciones y propuestas. |
+| [10 · Prevención, detección, respuesta y recuperación ante ransomware](01_Bases/10_Resiliencia_Ransomware/README.md) | v2.0 integrada · 2026-11-12 | Identificado · plantilla defensiva | Sustituye a v1.1 en esta colección. La correlación v2.0 usa Plan v1.0 y sus referencias KPI; no está demostrada su migración a Frontier. No es un assessment ejecutado. |
+| [11 · AI CoE: gobierno, protección y observabilidad](01_Bases/11_AI_CoE_99x2/README.md) | Marco 99×2 v2 + comparativo M365 del 21-09-2026 + matriz de consulta ABC | Identificado · propuesta de CoE y tres escenarios | Son escenarios de adopción/licenciamiento. No confundirlos con las tres perspectivas de la IA en seguridad. Una licencia no acredita control ni cobertura. |
+| [12 · Plan CISO del primer año + KPIs/OKRs](01_Bases/12_Plan_Primer_Anio_CISO/README.md) | Frontier v2.0 rev. 2 · 2026-11-15; catálogo KPI v1.2 · 2026-11-10 | Identificado · plan y calibración propuesta | No se identificó una edición autónoma con nombre exacto 90–360 o 100–365. El catálogo KPI v1.2 es una línea aparte. No implica actividades ejecutadas ni una matriz AI Zero Trust × KPI reconciliada. |
+| [18 · SOC agéntico, automatización defensiva y Logic Apps](01_Bases/18_SOC_Agentico_y_SOAR/README.md) | SOC v1.0 y v1.0.0 (ramas distintas); SOAR multi-SIEM v3.0 · 2026-11-11 | Parcial · arquitecturas y casos defensivos | Los índices distinguen casos operativos de referencias de producto. No se identificó un paquete validado de casos de MDASH/Perception/Power Platform de extremo a extremo. |
+| [20 · Microsoft 365 E7 / Agent 365 AI Framework](01_Bases/20_M365_E7_AI_Framework/README.md) | V4; XLSX final localizado al 2026-11-17 | Identificado · análisis de cobertura | La cobertura potencial no equivale a asegurada. Se selecciona un único HTML V4 y se registra su correspondencia con el Excel final según las verificaciones, no por identidad de nombre. |
+
+## Cruces documentados
+
+| Artefacto | Edición | Estado | Límite |
+| --- | --- | --- | --- |
+| [13 · Plan CISO × GM‑24](02_Cruces/13_Plan_CISO_x_GM24/README.md) | Trazabilidad del Plan Frontier v2.0 rev. 2 × GM‑24 V7.1 | Identificado · cruce en la fuente Plan | El plan AI CISO v1.0 hizo el cruce contra 240 conceptos; se registra como antecedente y no como edición equivalente al cruce Frontier contra 379. |
+| [14 · Plan CISO × Ninja Training × Excelencia Operacional](02_Cruces/14_Plan_CISO_x_Ninja_y_Excelencia/README.md) | Puente Product Owner · 2026-11-12; complemento en Microsoft v2.1 rev. 3 | Identificado · puente con bases versionadas | El puente de 130 actividades, 70 indicadores, 23 módulos de operación y 387 módulos Ninja se ancla a Plan v1.0. No se constató una migración de esa matriz al Plan Frontier; los módulos M05/M06/M10/M11 no son equivalentes. |
+| [15 · MCCF × GM‑24](02_Cruces/15_MCCF_x_GM24/README.md) | Integración Atlas 1.404 × GM‑24 v1.0.0-proposal · 2026-11-12 | Identificado · propuesta de cobertura | Las aristas son propuestas con confianza heterogénea. No se constató reconciliación fila a fila con el GM‑24 V7.1. |
+| [16 · GM‑24 × marcos y estándares](02_Cruces/16_GM24_x_Marcos_y_Estandares/README.md) | Mapeo V7.1 · 2026-11-15 | Identificado · correspondencias de referencia | La cantidad de marcos declarada no demuestra equivalencia ni cobertura normativa completa. El índice de marcos indica qué estándares aparecen y qué alcance se pudo comprobar. |
+| [17 · Microsoft Security × Plan CISO](02_Cruces/17_Stack_MS_x_Plan_CISO/README.md) | Edición Microsoft Frontier v2.1 rev. 3 · 2026-11-15 | Identificado · extensión del plan | Módulo complementario, no reemplaza el Plan base. Es una propuesta con cobertura parcial y dependencias; validar licencias, GA/preview y cambios del proveedor antes de usarla. |
+
+## Otros proyectos y desarrollos
+
+| Artefacto | Edición | Estado | Límite |
+| --- | --- | --- | --- |
+| [21 · Amenazas × capacidades Microsoft × Ninja y Excelencia](03_Adicionales/21_Amenazas_MS_Formacion_y_Operacion/README.md) | Corte FCA documentado 2026-11-18 | Identificado · cruce adicional | Cobertura documental directa, parcial o ausente no demuestra mitigación implementada ni efectividad del control. |
+| [22 · GM‑24: biblioteca de 331 y método mayéutico](03_Adicionales/22_GM24_Biblioteca_331/README.md) | Biblioteca de trabajo noviembre 2026 | Identificado · línea curricular distinta del corpus V7.1 | Las 308 tesis se distinguen de los conceptos; 800 horas son planteamiento curricular. No sustituye a los 379 pre-ensayos V7.1. |
+| [23 · GM‑24 aplicado: dominios, Product Owners y agentes](03_Adicionales/23_GM24_PO_GAC/README.md) | Plano B del paquete V7.1 · 2026-11-15 | Identificado · diseño aplicado | Las instancias y fichas son propuestas, no un SOC desplegado. El visor nativo presenta un paquete integral congelado y no sustituye índices de A06/A16. |

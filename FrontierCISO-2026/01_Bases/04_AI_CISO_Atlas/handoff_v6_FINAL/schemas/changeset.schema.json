@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiciso.local/schemas/changeset.schema.json",
+  "title": "AI CISO Atlas ChangeSet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "changeset_id",
+    "schema_version",
+    "ontology_version",
+    "taxonomy_version",
+    "essay_id",
+    "status",
+    "operations",
+    "semantic_validation",
+    "provenance"
+  ],
+  "properties": {
+    "changeset_id": {
+      "type": "string",
+      "pattern": "^CHG-[0-9]{6}$"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "ontology_version": {
+      "const": "1.0.0"
+    },
+    "taxonomy_version": {
+      "const": "5.3"
+    },
+    "essay_id": {
+      "type": "string",
+      "pattern": "^ESS-[0-9]{6}$"
+    },
+    "status": {
+      "enum": [
+        "proposed",
+        "schema_validated",
+        "semantically_validated",
+        "reviewed",
+        "approved",
+        "applied",
+        "rejected"
+      ]
+    },
+    "operations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "operation"
+        ],
+        "properties": {
+          "operation": {
+            "enum": [
+              "add_node",
+              "add_edge",
+              "update_node",
+              "update_edge",
+              "deprecate_node",
+              "deprecate_edge"
+            ]
+          },
+          "node": {
+            "type": "object"
+          },
+          "edge": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "semantic_validation": {
+      "type": "object",
+      "required": [
+        "status",
+        "violations",
+        "warnings"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "passed",
+            "failed"
+          ]
+        },
+        "violations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "provenance": {
+      "type": "object",
+      "required": [
+        "created_by",
+        "created_at",
+        "source_ids"
+      ],
+      "properties": {
+        "created_by": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "approval": {
+      "type": "object",
+      "properties": {
+        "approved_by": {
+          "type": "string"
+        },
+        "approved_at": {
+          "type": "string"
+        },
+        "decision": {
+          "enum": [
+            "approved",
+            "rejected"
+          ]
+        }
+      }
+    }
+  }
+}

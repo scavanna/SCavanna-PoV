@@ -1,0 +1,1574 @@
+{
+ "ontology_version": "2.2.0",
+ "count": 86,
+ "entities": [
+  {
+   "id": "O01-E01",
+   "name": "Organization",
+   "module": "O01",
+   "definition": "Entidad organizacional que persigue objetivos y administra recursos.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O01-E02",
+   "name": "BusinessObjective",
+   "module": "O01",
+   "definition": "Resultado empresarial que se pretende alcanzar.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O01-E03",
+   "name": "BusinessCapability",
+   "module": "O01",
+   "definition": "Capacidad que permite producir resultados.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O01-E04",
+   "name": "BusinessProcess",
+   "module": "O01",
+   "definition": "Conjunto organizado de actividades empresariales.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O01-E05",
+   "name": "Stakeholder",
+   "module": "O01",
+   "definition": "Parte interesada que puede afectar o verse afectada.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O01-E06",
+   "name": "BusinessService",
+   "module": "O01",
+   "definition": "Servicio que entrega valor a consumidores internos o externos.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O02-E01",
+   "name": "GovernanceBody",
+   "module": "O02",
+   "definition": "Órgano con responsabilidades de dirección o supervisión.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O02-E02",
+   "name": "Role",
+   "module": "O02",
+   "definition": "Conjunto definido de responsabilidades organizacionales.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "1.0.0",
+   "plane": "B"
+  },
+  {
+   "id": "O02-E03",
+   "name": "Authority",
+   "module": "O02",
+   "definition": "Facultad reconocida para autorizar decisiones.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0",
+   "boundary_note": "Facultad de un rol o de un órgano. La que se transfiere a un agente es DelegatedAuthority."
+  },
+  {
+   "id": "O02-E04",
+   "name": "Policy",
+   "module": "O02",
+   "definition": "Declaración de principios o reglas organizacionales.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O02-E05",
+   "name": "Decision",
+   "module": "O02",
+   "definition": "Selección documentada entre alternativas.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0",
+   "boundary_note": "La selección entre alternativas. Su asiento es DecisionRecord."
+  },
+  {
+   "id": "O02-E06",
+   "name": "Obligation",
+   "module": "O02",
+   "definition": "Requisito legal, regulatorio o contractual aplicable.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O03-E01",
+   "name": "RiskScenario",
+   "module": "O03",
+   "definition": "Situación plausible que puede producir consecuencias adversas.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O03-E02",
+   "name": "Threat",
+   "module": "O03",
+   "definition": "Circunstancia o fuente potencial de daño.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O03-E03",
+   "name": "Vulnerability",
+   "module": "O03",
+   "definition": "Debilidad susceptible de explotación o abuso.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O03-E04",
+   "name": "Consequence",
+   "module": "O03",
+   "definition": "Resultado adverso de un escenario.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O03-E05",
+   "name": "RiskTolerance",
+   "module": "O03",
+   "definition": "Límite aceptable de exposición o consecuencia.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O03-E06",
+   "name": "ResilienceCapability",
+   "module": "O03",
+   "definition": "Capacidad de resistir, adaptarse o recuperarse.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O04-E01",
+   "name": "Asset",
+   "module": "O04",
+   "definition": "Recurso de valor para la organización.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O04-E02",
+   "name": "System",
+   "module": "O04",
+   "definition": "Conjunto de componentes que ofrece una función.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O04-E03",
+   "name": "Application",
+   "module": "O04",
+   "definition": "Software que ejecuta funciones específicas.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O04-E04",
+   "name": "Identity",
+   "module": "O04",
+   "definition": "Representación de una entidad autenticable.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O04-E05",
+   "name": "Data",
+   "module": "O04",
+   "definition": "Información procesada, almacenada o transmitida.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O04-E06",
+   "name": "SecurityControl",
+   "module": "O04",
+   "definition": "Medida que modifica una condición de seguridad.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "1.0.0",
+   "boundary_note": "La medida. El resultado que busca es ControlObjective; el control tratado como producto, con dueño y evidencia, es ControlProduct.",
+   "plane": "B"
+  },
+  {
+   "id": "O04-E07",
+   "name": "ControlObjective",
+   "module": "O04",
+   "definition": "Resultado específico que un control busca conseguir.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O05-E01",
+   "name": "AIModel",
+   "module": "O05",
+   "definition": "Modelo computacional que produce inferencias o resultados.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O05-E02",
+   "name": "AIAgent",
+   "module": "O05",
+   "definition": "Sistema que utiliza IA para perseguir objetivos mediante acciones.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "1.0.0",
+   "declared_properties": [
+    "autonomia",
+    "dueño"
+   ],
+   "plane": "B"
+  },
+  {
+   "id": "O05-E03",
+   "name": "Tool",
+   "module": "O05",
+   "definition": "Capacidad externa invocable por un sistema o agente.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "1.0.0",
+   "boundary_note": "Capacidad que un agente invoca. El producto contratado que realiza un control es TechnologyProduct.",
+   "plane": "B"
+  },
+  {
+   "id": "O05-E04",
+   "name": "DelegatedAuthority",
+   "module": "O05",
+   "definition": "Autoridad transferida bajo condiciones definidas.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0",
+   "boundary_note": "Autoridad que un agente ejerce por delegación. Quién delega se expresa con DELEGATES_TO."
+  },
+  {
+   "id": "O05-E05",
+   "name": "AutonomousAction",
+   "module": "O05",
+   "definition": "Operación ejecutada mediante autonomía delegada.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O05-E06",
+   "name": "AIContext",
+   "module": "O05",
+   "definition": "Información o estado utilizado para orientar una operación de IA.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O06-E01",
+   "name": "SecurityEvent",
+   "module": "O06",
+   "definition": "Actividad o condición observable relevante para seguridad.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O06-E02",
+   "name": "SecurityAlert",
+   "module": "O06",
+   "definition": "Señal que requiere evaluación.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O06-E03",
+   "name": "Incident",
+   "module": "O06",
+   "definition": "Evento o conjunto de eventos evaluado como incidente.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O06-E04",
+   "name": "SecurityOutcome",
+   "module": "O06",
+   "definition": "Resultado de seguridad perseguido.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O06-E05",
+   "name": "Evidence",
+   "module": "O06",
+   "definition": "Información que respalda o cuestiona una afirmación.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O06-E06",
+   "name": "AssessmentResult",
+   "module": "O06",
+   "definition": "Resultado documentado de una evaluación.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O07-E01",
+   "name": "Competency",
+   "module": "O07",
+   "definition": "Capacidad demostrable de aplicar conocimiento y habilidades.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "1.0.0",
+   "boundary_note": "Lo que el currículo se propone desarrollar y evaluar en un rol. La capacidad humana que la sostiene es HumanCapability.",
+   "plane": "A"
+  },
+  {
+   "id": "O07-E02",
+   "name": "LearningUnit",
+   "module": "O07",
+   "definition": "Unidad organizada de formación.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "1.0.0",
+   "plane": "A"
+  },
+  {
+   "id": "O07-E03",
+   "name": "LearningOutcome",
+   "module": "O07",
+   "definition": "Resultado observable esperado del aprendizaje.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O07-E04",
+   "name": "LearningActivity",
+   "module": "O07",
+   "definition": "Actividad diseñada para desarrollar competencias.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O07-E05",
+   "name": "Assessment",
+   "module": "O07",
+   "definition": "Procedimiento de evaluación del aprendizaje.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O07-E06",
+   "name": "LearningArtifact",
+   "module": "O07",
+   "definition": "Producto utilizado como evidencia de desempeño.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O08-E01",
+   "name": "CapabilityState",
+   "module": "O08",
+   "definition": "Condición de una capacidad en un contexto determinado.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0",
+   "boundary_note": "Condición de una capacidad de la organización en una transición. El estado de una persona o de un equipo es CognitiveState."
+  },
+  {
+   "id": "O08-E02",
+   "name": "Catalyst",
+   "module": "O08",
+   "definition": "Fuerza que impulsa una transformación.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0",
+   "representation_note": "En el catálogo, este concepto es una categoría de la taxonomía (TaxonomyCategory con su eje). El tipo queda reservado para instancias observadas en una organización concreta; el grafo candidato no carga ninguna."
+  },
+  {
+   "id": "O08-E03",
+   "name": "Inhibitor",
+   "module": "O08",
+   "definition": "Fuerza que restringe una transformación.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0",
+   "representation_note": "En el catálogo, este concepto es una categoría de la taxonomía (TaxonomyCategory con su eje). El tipo queda reservado para instancias observadas en una organización concreta; el grafo candidato no carga ninguna."
+  },
+  {
+   "id": "O08-E04",
+   "name": "HomeostaticMechanism",
+   "module": "O08",
+   "definition": "Mecanismo que preserva condiciones aceptables.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0",
+   "representation_note": "En el catálogo, este concepto es una categoría de la taxonomía (TaxonomyCategory con su eje). El tipo queda reservado para instancias observadas en una organización concreta; el grafo candidato no carga ninguna."
+  },
+  {
+   "id": "O08-E05",
+   "name": "Transition",
+   "module": "O08",
+   "definition": "Cambio entre estados de capacidad.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O08-E06",
+   "name": "ContextProfile",
+   "module": "O08",
+   "definition": "Conjunto de condiciones que afectan la interpretación.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0",
+   "representation_note": "En el catálogo, este concepto es una categoría de la taxonomía (TaxonomyCategory con su eje). El tipo queda reservado para instancias observadas en una organización concreta; el grafo candidato no carga ninguna."
+  },
+  {
+   "id": "OT-E01",
+   "name": "Concept",
+   "module": "OT",
+   "definition": "Idea o noción del corpus académico del Atlas que puede definirse, enseñarse y clasificarse, independiente del texto que la desarrolla.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "1.0.0",
+   "definition_2_1": "Concepto abstracto del Atlas.",
+   "changed_in_2_2": true,
+   "plane": "A"
+  },
+  {
+   "id": "OT-E02",
+   "name": "Essay",
+   "module": "OT",
+   "definition": "Texto aprobado que desarrolla un concepto o responde una pregunta. Recibe un identificador ESS al aprobarse; hasta entonces es un pre-ensayo.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "1.0.0",
+   "definition_2_1": "Documento intelectual con ID ESS-######.",
+   "changed_in_2_2": true,
+   "plane": "A"
+  },
+  {
+   "id": "OT-E03",
+   "name": "Claim",
+   "module": "OT",
+   "definition": "Afirmación concreta que puede respaldarse o cuestionarse.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "OT-E04",
+   "name": "Source",
+   "module": "OT",
+   "definition": "Fuente documental o referencia.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0",
+   "boundary_note": "Fuente documental que respalda una evidencia. Los marcos, las normas y los informes versionados son ReferenceArtifact; las fuentes aprobadas para un agente son KnowledgeSource."
+  },
+  {
+   "id": "OT-E05",
+   "name": "FrameworkElement",
+   "module": "OT",
+   "definition": "Elemento perteneciente a un framework externo.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "OT-E06",
+   "name": "TaxonomyCategory",
+   "module": "OT",
+   "definition": "Categoría de la taxonomía del Atlas: un territorio, un dominio, una función, una subfunción, un horizonte, una fuerza, un mecanismo homeostático, un factor de contexto, una variable homeostática, un marcador o una lente.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0",
+   "definition_2_1": "Categoría X/Y/Z/H del Atlas.",
+   "changed_in_2_2": true
+  },
+  {
+   "id": "OT-E07",
+   "name": "OntologyVersion",
+   "module": "OT",
+   "definition": "Versión del modelo semántico.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "OT-E08",
+   "name": "ChangeSet",
+   "module": "OT",
+   "definition": "Conjunto de modificaciones propuestas.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "1.0.0"
+  },
+  {
+   "id": "O02-E07",
+   "name": "PolicyException",
+   "module": "O02",
+   "definition": "Excepción o anulación aprobada de una política, una línea base o un control, con alcance, justificación y vencimiento.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "2.0.0",
+   "anchor": "GM-24 V7.1: G2.2-PA03, AMP-10, HC-028; tarea MDO-M02",
+   "declared_properties": [
+    "alcance",
+    "justificacion",
+    "vencimiento"
+   ]
+  },
+  {
+   "id": "O04-E08",
+   "name": "ControlProduct",
+   "module": "O04",
+   "definition": "Control de seguridad tratado como producto: resultado esperado (función y categoría), alcance (dominio), tecnología que lo realiza y modelo operativo que lo mantiene efectivo; tiene dueño, backlog y evidencia.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "GM-24 V7.1: G1.1-PA01, M3.2-PA01; fichas de producto-control del plano B",
+   "boundary_note": "El control como producto del plano B. La medida en sí es SecurityControl.",
+   "declared_properties": [
+    "resultado_esperado",
+    "alcance",
+    "tecnologia",
+    "modelo_operativo",
+    "dueño"
+   ],
+   "plane": "B"
+  },
+  {
+   "id": "O04-E09",
+   "name": "TechnologyProduct",
+   "module": "O04",
+   "definition": "Producto o servicio tecnológico contratado que realiza uno o más controles; cambia con las versiones y las licencias del proveedor.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "GM-24 V7.1 plano B: fichas y documento 09 (bases agnósticas frente a implementación)",
+   "boundary_note": "Producto contratado que realiza un control. La capacidad que un agente invoca es Tool.",
+   "plane": "B"
+  },
+  {
+   "id": "O05-E07",
+   "name": "AutonomyLevel",
+   "module": "O05",
+   "definition": "Nivel de autonomía permitido para una acción o un agente (L0 informa; L1 propone; L2 ejecuta con aprobación; L3 ejecuta acciones reversibles con auditoría posterior; L4 autónomo con límites estrictos).",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "2.0.0",
+   "anchor": "GM-24 V7.1: documento 05 §3, AGC-04; CISO-OS (escala L0–L4)"
+  },
+  {
+   "id": "O05-E08",
+   "name": "AgentFleet",
+   "module": "O05",
+   "definition": "Conjunto de agentes que opera un producto-control bajo un mismo dueño, con registro, indicadores de riesgo y revisión de desempeño comunes.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "GM-24 V7.1: G4.1-PA01, G4.2-PA01, M4.1-PA05, M4.1-PA06",
+   "plane": "B"
+  },
+  {
+   "id": "O05-E09",
+   "name": "AgentCharter",
+   "module": "O05",
+   "definition": "Ficha aprobada de un agente: propósito, tareas, herramientas, límites, autonomía, dueño, indicadores y escalamiento.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "GM-24 V7.1: G2.2-PA02, AGC-03",
+   "declared_properties": [
+    "proposito",
+    "tareas",
+    "herramientas",
+    "limites",
+    "autonomia",
+    "dueño",
+    "indicadores",
+    "escalamiento"
+   ],
+   "plane": "B"
+  },
+  {
+   "id": "O05-E10",
+   "name": "ApprovalGate",
+   "module": "O05",
+   "definition": "Punto de control humano asociado a una acción, de una clase declarada: aprobación previa, auditoría posterior o prohibición de delegar. Se vincula con el agente y con cada tarea a la que se aplica.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "clase",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "GM-24 V7.1: AGC-09; columna «Gates» de los catálogos de agentes",
+   "changed_in_2_2": true,
+   "definition_2_1": "Punto de control humano asociado a una acción: aprobación previa, auditoría posterior o prohibición de delegar.",
+   "declared_properties": [
+    "clase",
+    "agente"
+   ],
+   "plane": "B"
+  },
+  {
+   "id": "O05-E11",
+   "name": "KnowledgeSource",
+   "module": "O05",
+   "definition": "Fuente de conocimiento aprobada para un agente, con dueño, etiqueta y procedencia.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "GM-24 V7.1: AGC-07; anexos de agentes (knowledge)",
+   "boundary_note": "Fuente aprobada para que la use un agente. No es un artefacto de la base de referencia (ReferenceArtifact).",
+   "declared_properties": [
+    "dueño",
+    "etiqueta",
+    "procedencia"
+   ],
+   "plane": "B"
+  },
+  {
+   "id": "O05-E12",
+   "name": "AgentSkill",
+   "module": "O05",
+   "definition": "Instrucción o habilidad reutilizable que orienta el comportamiento de un agente en una clase de tareas.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "GM-24 V7.1: anexos de agentes (skills)",
+   "plane": "B"
+  },
+  {
+   "id": "O05-E13",
+   "name": "OperatingAuthorization",
+   "module": "O05",
+   "definition": "Autorización formal para operar un agente o una flota, con expediente, vigencia y autoridad que la otorga.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "GM-24 V7.1: AGC-13, AMP-22",
+   "declared_properties": [
+    "expediente",
+    "vigencia",
+    "autoridad"
+   ],
+   "plane": "B"
+  },
+  {
+   "id": "O06-E07",
+   "name": "OperatingModel",
+   "module": "O06",
+   "definition": "Modelo operativo de un producto-control: tareas por cadencia, responsables, evidencia e indicadores.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "GM-24 V7.1: M4.1-PA01; documento 04 y modelos operativos del plano B",
+   "plane": "B"
+  },
+  {
+   "id": "O06-E08",
+   "name": "OperationalPractice",
+   "module": "O06",
+   "definition": "Práctica operativa independiente de producto que una tarea concreta ejemplifica.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "GM-24 V7.1: columna de práctica agnóstica de los modelos operativos (marco interno)",
+   "plane": "B"
+  },
+  {
+   "id": "O06-E09",
+   "name": "ProductPractice",
+   "module": "O06",
+   "definition": "Tarea concreta del modelo operativo sobre un producto, con cadencia, responsable, nivel de autonomía recomendado, agente e indicador.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "GM-24 V7.1: tareas MDO-, XDR-, EP-, ID-, DP-, SI- y CL- (180)",
+   "declared_properties": [
+    "cadencia",
+    "responsable",
+    "autonomia_recomendada",
+    "agente_declarado",
+    "indicador"
+   ],
+   "plane": "B"
+  },
+  {
+   "id": "O07-E07",
+   "name": "LearningPath",
+   "module": "O07",
+   "definition": "Itinerario formativo que ordena unidades y conceptos por etapas con evidencias de avance.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "GM-24 V7.1: sub-plan PO-GAC, etapas E0–E5 (documento 06)",
+   "plane": "A"
+  },
+  {
+   "id": "O08-E07",
+   "name": "HomeostaticVariable",
+   "module": "O08",
+   "definition": "Variable esencial que el sistema debe mantener dentro de límites aceptables mientras cambia.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "2.0.0",
+   "anchor": "Atlas 5.3 (glosario: «variables aceptables»); propuesta Frontier 6.0",
+   "representation_note": "En el catálogo, este concepto es una categoría de la taxonomía (TaxonomyCategory con su eje). El tipo queda reservado para instancias observadas en una organización concreta; el grafo candidato no carga ninguna."
+  },
+  {
+   "id": "O09-E01",
+   "name": "MentalModel",
+   "module": "O09",
+   "definition": "Modelo o marco de razonamiento que orienta cómo se interpreta una situación y se decide.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "MCCS (biblioteca metacognitiva del autor; pilar MM); GM-24 V7.1: AMP-01 a AMP-03; Biblioteca del CISO de frontera",
+   "anchor_2_1": "MCCS (pilar MM); GM-24 V7.1: AMP-01 a AMP-03; Biblioteca del CISO de frontera",
+   "plane": "A"
+  },
+  {
+   "id": "O09-E02",
+   "name": "CognitiveBias",
+   "module": "O09",
+   "definition": "Sesgo o heurística defectuosa: una desviación sistemática del juicio que puede distorsionarlo. Las falacias, que son defectos de un argumento, tienen tipo propio (LogicalFallacy).",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "MCCS (biblioteca metacognitiva del autor; pilar MM); CISO-OS (superficie de ataque cognitiva)",
+   "definition_2_1": "Sesgo, heurística defectuosa o falacia que puede distorsionar un juicio.",
+   "changed_in_2_2": true,
+   "boundary_note": "Desviación sistemática del juicio. El defecto de un argumento es LogicalFallacy.",
+   "anchor_2_1": "MCCS (pilar MM); CISO-OS (superficie de ataque cognitiva)",
+   "plane": "A"
+  },
+  {
+   "id": "O09-E03",
+   "name": "MetacognitivePractice",
+   "module": "O09",
+   "definition": "Práctica deliberada de decisión, de análisis o de revisión del propio razonamiento antes, durante o después de decidir.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "MCCS (biblioteca metacognitiva del autor); GM-24 V7.1: AMP-01; CISO-OS (higiene de decisión)",
+   "definition_2_0": "Práctica deliberada de revisión del propio razonamiento antes, durante o después de decidir.",
+   "changed_in_2_1": true,
+   "anchor_2_1": "MCCS; GM-24 V7.1: AMP-01; CISO-OS (higiene de decisión)",
+   "plane": "A"
+  },
+  {
+   "id": "O09-E04",
+   "name": "HumanCapability",
+   "module": "O09",
+   "definition": "Capacidad humana que sostiene el desempeño: función ejecutiva, capacidad cognitiva, habilidad socioemocional o mentalidad.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "MCCS (biblioteca metacognitiva del autor): capacidades cognitivas, habilidades socioemocionales y mindsets, con el pilar MM; funciones ejecutivas, con el pilar OS a escala individual",
+   "boundary_note": "Capacidad de la persona, descrita por la biblioteca metacognitiva. No es una competencia del currículo (Competency) ni un estado (CognitiveState).",
+   "anchor_2_1": "MCCS (pilar OS a escala individual); Biblioteca del CISO de frontera",
+   "changed_in_2_2": true,
+   "plane": "A"
+  },
+  {
+   "id": "O09-E05",
+   "name": "DecisionRecord",
+   "module": "O09",
+   "definition": "Registro de una decisión con sus supuestos, fuentes, alternativas, criterios de revisión y participación de IA.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "2.0.0",
+   "anchor": "GM-24 V7.1: AMP-01; CISO-OS",
+   "boundary_note": "El asiento de una decisión. La decisión es Decision.",
+   "declared_properties": [
+    "supuestos",
+    "fuentes",
+    "alternativas",
+    "criterios_de_revision",
+    "participacion_de_ia"
+   ]
+  },
+  {
+   "id": "O10-E01",
+   "name": "SecurityIndicator",
+   "module": "O10",
+   "definition": "Indicador de desempeño o de riesgo con definición, fuente, cadencia, umbrales y dueño.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "2.0.0",
+   "anchor": "EXT-IND-01 (catálogo de KPIs y OKR 1.2); GM-24 V7.1: KPI-01 a KPI-20, G4.2-PA01",
+   "declared_properties": [
+    "definicion",
+    "fuente",
+    "frecuencia",
+    "umbrales",
+    "dueño"
+   ]
+  },
+  {
+   "id": "O10-E02",
+   "name": "Objective",
+   "module": "O10",
+   "definition": "Objetivo cualitativo y acotado en el tiempo al que contribuyen resultados clave.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "2.0.0",
+   "anchor": "EXT-IND-01"
+  },
+  {
+   "id": "O10-E03",
+   "name": "KeyResult",
+   "module": "O10",
+   "definition": "Resultado clave medible que evidencia el avance de un objetivo.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "2.0.0",
+   "anchor": "EXT-IND-01"
+  },
+  {
+   "id": "OT-E09",
+   "name": "Precursor",
+   "module": "OT",
+   "definition": "Pre-ensayo: idea central desarrollada de un concepto o de una pregunta; todavía no es un ensayo ni tiene identificador ESS.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "GM-24 V7.1 (379 pre-ensayos); banco mayéutico del Atlas (691)",
+   "plane": "A"
+  },
+  {
+   "id": "OT-E10",
+   "name": "Question",
+   "module": "OT",
+   "definition": "Pregunta que el CISO formula, que le formulan, que plantea un marco o que integra una serie mayéutica.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.0.0",
+   "anchor": "Matriz consolidada de preguntas (595) y banco mayéutico",
+   "plane": "A"
+  },
+  {
+   "id": "OT-E11",
+   "name": "ReferenceBody",
+   "module": "OT",
+   "definition": "Organismo que publica artefactos de referencia: normalizador, regulador, asociación profesional, fabricante o comunidad.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "2.0.0",
+   "anchor": "Revisión de la base de referencia (Frontier 6.0)"
+  },
+  {
+   "id": "OT-E12",
+   "name": "ReferenceArtifact",
+   "module": "OT",
+   "definition": "Artefacto de referencia versionado: marco, norma, catálogo de controles, matriz de técnicas, regulación, cuerpo de conocimiento o informe.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status"
+   ],
+   "since": "2.0.0",
+   "anchor": "Revisión de la base de referencia (Frontier 6.0)",
+   "boundary_note": "Artefacto publicado por un organismo y versionado. No es una fuente aprobada para un agente (KnowledgeSource).",
+   "declared_properties": [
+    "version",
+    "fecha",
+    "estado",
+    "fecha_verificacion"
+   ]
+  },
+  {
+   "id": "O09-E06",
+   "name": "LogicalFallacy",
+   "module": "O09",
+   "definition": "Defecto de un argumento: una inferencia que parece válida y no lo es. Se distingue del sesgo cognitivo, que es una desviación sistemática del juicio.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.2.0",
+   "anchor": "MCCS (biblioteca metacognitiva del autor, categoría «falacia lógica»); OCR-CAND-03 n.º 3",
+   "boundary_note": "Defecto de un argumento. La desviación sistemática del juicio es CognitiveBias.",
+   "plane": "A"
+  },
+  {
+   "id": "O09-E07",
+   "name": "CognitiveState",
+   "module": "O09",
+   "definition": "Estado o condición de una persona o de un equipo que sostiene o degrada la calidad de la decisión: fatiga, estrés, carga cognitiva, flujo.",
+   "status": "proposed",
+   "required_properties": [
+    "id",
+    "type",
+    "name",
+    "description",
+    "version",
+    "review_status",
+    "plano"
+   ],
+   "since": "2.2.0",
+   "anchor": "MCCS (biblioteca metacognitiva del autor, categoría «factor humano»; pilar OS a escala individual); OCR-CAND-03 n.º 4",
+   "boundary_note": "Estado de una persona o de un equipo. La condición de una capacidad de la organización es CapabilityState.",
+   "plane": "A"
+  }
+ ]
+}

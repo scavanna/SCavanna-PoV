@@ -1,0 +1,1242 @@
+{
+  "schemaVersion": "2.0",
+  "id": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno",
+  "orden": 13,
+  "slug": "Microsoft_Purview_Suite_Arquitectura_y_Gobierno",
+  "nombre": "Microsoft Purview Suite (Arquitectura Integral, Gobierno, DSPM, Seguridad para IA y Compliance Manager)",
+  "nombreCorto": "Microsoft Purview Suite",
+  "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)",
+  "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://purview.microsoft.com",
+    "https://security.microsoft.com",
+    "https://entra.microsoft.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "Chief Data Officer (CDO)",
+    "DPO / Privacy Officer",
+    "Data Security Architect",
+    "SOC Manager",
+    "Data Security Analyst",
+    "GRC & Compliance Manager",
+    "AI Governance Lead",
+    "FinOps",
+    "Internal & External Auditors"
+  ],
+  "relacionM365E5": {
+    "estado": "Incluido en Microsoft 365 E5 (y modelo complementario Pay-As-You-Go en Azure)",
+    "licencias": [
+      "Microsoft 365 E5 / E7 / A5 / G5 (incluye nativamente los derechos por usuario de Microsoft Purview Suite)",
+      "Microsoft Purview Suite (nombre comercial vigente desde octubre de 2025 que reemplazó a Microsoft 365 E5 Compliance como add-on sobre M365 E3 u O365 E3 + EMS E3)",
+      "Microsoft Purview Suite FLW (Frontline Worker), Microsoft Purview Suite Gov, Microsoft Purview Suite EDU y Microsoft Purview Suite for Business Premium (hasta 300 usuarios)",
+      "Suscripción Azure vinculada para medidores Pay-As-You-Go (activos no-M365/Fabric, interacciones GenAI no-M365, Network Data Security, Data Security Investigations, Unified Catalog DGPUs y Security Compute Units)"
+    ],
+    "prerrequisitos": [
+      "Operación exclusiva sobre el nuevo portal unificado https://purview.microsoft.com (tras el retiro definitivo de compliance.microsoft.com en diciembre de 2024 y del eDiscovery clásico el 31 de agosto de 2025)",
+      "Habilitación de etiquetas de sensibilidad para archivos Office en SharePoint y OneDrive y configuración explícita de derechos de uso VIEW + EXTRACT para Microsoft 365 Copilot e instancias de Microsoft Agent 365",
+      "Onboarding activo de estaciones Windows y macOS a Microsoft Purview / Defender for Endpoint y despliegue de políticas en Microsoft Edge for Business para visibilidad Endpoint/Browser DLP e IA",
+      "Diseño de Role groups en Settings > Roles and scopes vinculados a Administrative Units de Microsoft Entra ID y grupos gobernados por Entra ID PIM (contemplando hasta 2 horas de propagación tras activación JIT)",
+      "Vinculación de suscripción Azure con presupuestos y alertas en Cost Management antes de activar medidores Pay-As-You-Go o Proactive AI insights en Data Security Investigations"
+    ],
+    "notaLicenciamiento": "Desde octubre de 2025, Microsoft renombró Microsoft 365 E5 Compliance como Microsoft Purview Suite. El modelo por usuario cubre cargas Microsoft 365, endpoints Windows/macOS, interacciones de Microsoft 365 Copilot (sin cargo adicional de consumo) y otorga 3 plantillas regulatorias Premium gratuitas adicionales al Microsoft Data Protection Baseline en Compliance Manager. El modelo complementario Pay-As-You-Go en Azure factura activos únicos protegidos/día en fuentes no-M365/Fabric (contados una sola vez aunque apliquen múltiples políticas), solicitudes/registros de IA generativa de terceros, Text records (1.000 caracteres) en Communication Compliance, GB/mes + compute units en Data Security Investigations (DSI), DGPUs (60 min) en Unified Catalog y bloques horarios de SCUs en Security Copilot."
+  },
+  "resumenEjecutivo": "Microsoft Purview Suite constituye el plano integral de seguridad de datos, cumplimiento regulatorio y gobierno del patrimonio de información e inteligencia artificial en arquitecturas Zero Trust sobre Microsoft 365 E5. Este Módulo 13 actúa como marco arquitectónico y de gobierno transversal sobre el nuevo portal unificado https://purview.microsoft.com, articulando los ocho módulos especializados subsiguientes (14 MIP, 15 DLP, 16 DLCM/Records, 17 IRM, 18 Communication Compliance, 19 Audit Premium, 20 eDiscovery y 21 Lockbox/Customer Key/PAM) junto con Microsoft Agent 365 (Módulo 22). Su operación moderna se centra en: (1) la nueva experiencia unificada de Data Security Posture Management (DSPM) guiada por Data security objectives, remediación de oversharing y AI observability sobre M365 Copilot, Copilot Studio, Microsoft Foundry, Agent 365 y apps GenAI externas; (2) investigaciones forenses asistidas por IA generativa mediante Data Security Investigations (DSI) con Vector search, Categorization, Examination y Soft/Hard Purge; (3) evaluación continua multicloud en Compliance Manager sobre más de 360 regulaciones (NIST CSF 2.0, ISO 27001, DORA, NIS2, EU AI Act) con puntuación ponderada por riesgo (27/9/3/1 puntos); (4) delegación jurisdiccional con Restricted Administrative Units; (5) convergencia bidireccional con Microsoft Defender XDR, Sentinel y Adaptive Protection; y (6) disciplina FinOps sobre medidores Pay-As-You-Go.",
+  "principiosRectores": [
+    {
+      "principio": "Seguridad de datos orientada a resultados (Outcome-Driven Data Security en DSPM)",
+      "descripcion": "Orquestar el descubrimiento, protección e investigación en purview.microsoft.com alrededor de los Data security objectives de DSPM en lugar de administrar políticas aisladas por silo.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about"
+    },
+    {
+      "principio": "Convergencia nativa entre Seguridad de Datos y SecOps XDR (Adaptive + Unified Incidents)",
+      "descripcion": "Correlacionar alertas de Purview DLP e Insider Risk Management en incidentes de Microsoft Defender XDR y ajustar bloqueos preventivos en tiempo real mediante Adaptive Protection.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/dlp-adaptive-protection-learn"
+    },
+    {
+      "principio": "Observabilidad y protección integral de IA y agentes autónomos (Copilot, Foundry & Agent 365)",
+      "descripcion": "Auditar prompts/respuestas, erradicar oversharing previo a la indexación y exigir explícitamente derechos VIEW y EXTRACT sobre archivos cifrados accedidos por Copilot e instancias de Microsoft Agent 365.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/ai-agent-365"
+    },
+    {
+      "principio": "Privacidad por diseño, segregación de lectura de contenido y Administrative Units",
+      "descripcion": "Mantener seudonimización nativa, separar configuración de políticas respecto de Content Viewer / Purge y restringir jurisdiccionalmente Role groups mediante Administrative Units de Entra ID.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/purview-admin-units"
+    },
+    {
+      "principio": "Cumplimiento continuo ponderado por riesgo (Continuous Compliance Scoring)",
+      "descripcion": "Gestionar más de 360 marcos normativos en Compliance Manager priorizando acciones Preventative mandatory (27 puntos) y distinguiendo controles de Microsoft, compartidos y propios.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/compliance-score-calculation"
+    },
+    {
+      "principio": "Gobierno FinOps proactivo sobre medidores Pay-As-You-Go, DSI y SCUs",
+      "descripcion": "Acotar el alcance de políticas multicloud/Fabric, controlar el refresco cada 24h de Proactive AI insights en DSI y gestionar SCUs en bloques horarios bajo presupuestos auditados en Azure.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/purview-billing-models"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Unified Microsoft Purview Portal & Settings Plane",
+      "funcionOperativa": "Superficie única de operación en purview.microsoft.com (tras el retiro de compliance.microsoft.com) que centraliza búsqueda global, Role groups, Administrative Units, conectores y Usage center.",
+      "portalRuta": "purview.microsoft.com > Home / Solutions / Settings",
+      "integraciones": [
+        "Microsoft Entra ID (PIM & Administrative Units)",
+        "Microsoft Defender Portal",
+        "Microsoft Fabric & Microsoft Priva"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Data Security Posture Management (DSPM Unificado y AI Observability)",
+      "funcionOperativa": "Consolida postura tradicional e IA con Data security objectives, Data risk assessments (oversharing), Asset explorer (con Data Security Posture Agent) y AI observability incluyendo Microsoft Agent 365.",
+      "portalRuta": "purview.microsoft.com > Solutions > DSPM",
+      "integraciones": [
+        "Microsoft 365 Copilot, Copilot Studio & Foundry",
+        "Microsoft Agent 365 & Microsoft Security Copilot",
+        "Microsoft Sentinel Data Lake (conectores GCP, Snowflake, Databricks)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Data Security Investigations (DSI)",
+      "funcionOperativa": "Investigación profunda asistida por IA generativa sobre brechas y fugas de datos mediante Vector search semántico, Categorization (Standard/Advanced AI), Examination y mitigación Soft/Hard Purge.",
+      "portalRuta": "purview.microsoft.com > Solutions > Data Security Investigations",
+      "integraciones": [
+        "Microsoft Defender XDR Incidents",
+        "Purview Insider Risk Management & DSPM",
+        "Endpoint DLP Evidence Collection & Unified Audit Log"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Purview Compliance Manager",
+      "funcionOperativa": "Evaluación automatizada multicloud sobre más de 360 plantillas regulatorias (NIST CSF 2.0, ISO 27001, DORA, NIS2, EU AI Act, ISO 42001) y cálculo continuo del Compliance Score.",
+      "portalRuta": "purview.microsoft.com > Solutions > Compliance Manager",
+      "integraciones": [
+        "Microsoft 365 & Microsoft Entra Signals",
+        "Microsoft Defender for Cloud (Multicloud)",
+        "Microsoft Agent 365 (AI Regulations)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Unified Catalog y Data Map (Data Governance)",
+      "funcionOperativa": "Descubrimiento, linaje, clasificación automática, Live view sin escaneo previo para Azure/Fabric, Data Map history y reportes de salud de datos empresariales.",
+      "portalRuta": "purview.microsoft.com > Solutions > Unified Catalog / Data Map",
+      "integraciones": [
+        "Microsoft Fabric & Power BI",
+        "Azure SQL, ADLS Gen2 & Blob Storage",
+        "AWS, Google Cloud, Snowflake & Databricks"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Information Protection (MIP) & Data Loss Prevention (DLP) [-> Módulos 14 y 15]",
+      "funcionOperativa": "Clasificadores SIT/entrenables, etiquetas de sensibilidad con cifrado (derechos VIEW/EXTRACT para IA) y protección DLP en M365, Endpoints, Edge for Business, Red y Fabric.",
+      "portalRuta": "purview.microsoft.com > Solutions > Information Protection / Data Loss Prevention",
+      "integraciones": [
+        "Microsoft 365 Apps & SharePoint/OneDrive",
+        "Microsoft Edge for Business & Network Data Security",
+        "Microsoft Defender XDR"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Insider Risk Management, Adaptive Protection & Comm Compliance [-> Módulos 17 y 18]",
+      "funcionOperativa": "Detección conductual seudonimizada (fuga de datos, Risky AI usage, Prompt shields) y asignación dinámica de perfiles de riesgo (Elevated/Moderate/Minor) hacia DLP y Conditional Access.",
+      "portalRuta": "purview.microsoft.com > Solutions > Insider Risk Management / Communication Compliance",
+      "integraciones": [
+        "Purview DLP (Adaptive Protection)",
+        "Microsoft Entra Conditional Access",
+        "Microsoft Defender XDR"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Data Lifecycle, Records, Audit, eDiscovery & Soberanía [-> Módulos 16, 19, 20 y 21]",
+      "funcionOperativa": "Retención/eliminación (incluyendo prompts IA), Records con Preservation Lock, Audit Standard/Premium, nuevo eDiscovery unificado (post ago-2025) y Lockbox/Customer Key/M365 PAM.",
+      "portalRuta": "purview.microsoft.com > Solutions > Data Lifecycle / Records / Audit / eDiscovery",
+      "integraciones": [
+        "Microsoft Sentinel (OfficeActivity & E5 Grant)",
+        "Exchange, SharePoint, Teams & Copilot Mailboxes",
+        "Azure Key Vault (Customer Key)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "Microsoft Purview Compliance Administrator",
+      "nivelSOC": "GRC Lead / Data Security Manager",
+      "permisosClave": "Administración transversal de soluciones de cumplimiento, DSPM y Compliance Manager sin otorgar lectura indiscriminada de casos eDiscovery o DSI.",
+      "asignacionPIM": "Elegible en Entra ID PIM (4-8h contemplando hasta 2 horas de propagación en Purview); prohibido el uso de Global Administrator.",
+      "responsabilidadOperativa": "Gobernar configuración global de postura de cumplimiento, plantillas regulatorias y objetivos estratégicos en DSPM.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Role Management (Purview Role Group)",
+      "nivelSOC": "Identity Governance Architect",
+      "permisosClave": "Único rol facultado para administrar Role groups y vincular Restricted Administrative Units dentro del portal de Microsoft Purview.",
+      "asignacionPIM": "Estrictamente elegible en PIM con aprobación dual y segregado de analistas operativos.",
+      "responsabilidadOperativa": "Mantener el modelo de mínimo privilegio y aislamiento jurisdiccional por unidades administrativas.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "DSPM & Data Security Viewer / Content Explorer List vs. Content Viewer",
+      "nivelSOC": "Data Security Analyst / AI Governance",
+      "permisosClave": "Acceso a Posture, Objectives, AI observability y Security Copilot en DSPM; separación estricta entre List Viewer (metadatos) y Content Viewer (texto real).",
+      "asignacionPIM": "List Viewer acotado por AU; Content Explorer Content Viewer exclusivamente JIT en PIM con aprobación del DPO.",
+      "responsabilidadOperativa": "Ejecutar monitoreo diario de postura de datos, oversharing y actividad de agentes IA sin exponer datos privados innecesariamente.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Data Loss Prevention Compliance Management",
+      "nivelSOC": "Data Security Engineer (Módulo 15)",
+      "permisosClave": "Diseño, simulación y despliegue de políticas DLP en M365, Endpoint, Browser, Network y Fabric, e integración con Adaptive Protection.",
+      "asignacionPIM": "Elegible vía grupo PIM y acotado a su Administrative Unit regional cuando aplique.",
+      "responsabilidadOperativa": "Operar y calibrar reglas preventivas de fuga de datos y su acoplamiento con niveles de riesgo interno.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Insider Risk Management (Admins / Analysts / Investigators)",
+      "nivelSOC": "Célula de Riesgo Interno + Legal / RRHH (Módulo 17)",
+      "permisosClave": "Sub-roles segregados: Admin define políticas/indicadores; Analyst realiza triaje seudonimizado; Investigator revisa evidencia y escala hacia DSI.",
+      "asignacionPIM": "Sub-roles asignados a personas distintas con Administrative Units regionales y seudonimización obligatoria.",
+      "responsabilidadOperativa": "Gestionar alertas conductuales de robo/fuga de datos, uso riesgoso de IA y perfiles de Adaptive Protection.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Data Security Investigations (Investigators vs. Mitigation Admins)",
+      "nivelSOC": "CSIRT / Respuesta a Brechas de Datos",
+      "permisosClave": "Creación de investigaciones, ejecución de Vector search, AI Categorization y Examination, segregado del permiso de ejecución Soft/Hard Purge.",
+      "asignacionPIM": "Activación JIT vinculada a incidente confirmado; purgado sujeto a autorización escrita de Legal/CISO.",
+      "responsabilidadOperativa": "Determinar con IA el impacto exacto de datos expuestos en brechas y ejecutar purgas autorizadas.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Compliance Manager (Admins / Assessors / Contributors / Readers)",
+      "nivelSOC": "GRC, Propietarios de Control TI y Auditores",
+      "permisosClave": "Segregación entre quien crea evaluaciones (Admin), quien implementa/carga evidencia (Contributor), quien audita pruebas (Assessor) y lectura externa (Reader).",
+      "asignacionPIM": "Asignación nominal por evaluación; Compliance Manager Reader temporal para auditores externos.",
+      "responsabilidadOperativa": "Mantener actualizado el Compliance Score y el repositorio probatorio frente a NIST CSF 2.0, ISO 27001, DORA, NIS2 y EU AI Act.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Data Source Administrator & Data Curator (Unified Catalog)",
+      "nivelSOC": "Oficina del CDO / Data Stewards",
+      "permisosClave": "Gestión de conectores y escaneos en Data Map, curación de activos y monitoreo de calidad de datos por Collections/Dominios.",
+      "asignacionPIM": "Delegado por dominio de datos bajo control presupuestario de DGPUs.",
+      "responsabilidadOperativa": "Gobernar el catálogo técnico, linaje y clasificación de activos en Azure, Microsoft Fabric y nubes externas.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Revisión del panel Posture y avance de Data Security Objectives en DSPM",
+      "objetivo": "Monitorear desviaciones diarias de exposición de datos sensibles, oversharing y recomendaciones de agentes en la versión unificada de DSPM.",
+      "consolaRuta": "purview.microsoft.com > Solutions > DSPM > Posture / Objectives",
+      "procedimiento": [
+        "Revisar la tendencia de 30 días en DSPM > Posture y variaciones abruptas de exposición en las tarjetas de Data security objectives.",
+        "Inspeccionar View agent activity para auditar recomendaciones y triajes del Data Security Posture Agent antes de aplicar políticas one-click.",
+        "Revisar hallazgos recientes en el objetivo de exfiltración si Proactive AI insights se encuentra habilitado."
+      ],
+      "rolResponsable": "Data Security Analyst / SOC L2",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-05",
+      "mitreTactic": "Exfiltration (TA0010)",
+      "evidenciaAuditable": "Instantánea diaria de métricas de Data security objectives y registro auditado de acciones de agentes.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Navegación y capacidades de la versión actual de DSPM verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo diario de AI observability: Copilot, agentes y Microsoft Agent 365",
+      "objetivo": "Detectar interacciones con datos sensibles, bloqueos DLP o riesgos elevados en copilotos, instancias de Agent 365 y sitios GenAI de terceros.",
+      "consolaRuta": "purview.microsoft.com > Solutions > DSPM > AI observability / Discover > Activity explorer > AI activities",
+      "procedimiento": [
+        "Revisar en AI observability las aplicaciones y agentes activos (incluyendo Agent 365) priorizados con mayor nivel de riesgo en Insider Risk Management.",
+        "Filtrar en Activity explorer > AI activities interacciones de las últimas 24h con SITs críticos, etiquetas Confidential o bloqueos en navegador/red.",
+        "Notificar al propietario registrado cuando una política DLP bloquee una instancia de agente para evitar fallos silenciosos de flujo."
+      ],
+      "rolResponsable": "Data Security Analyst / AI Governance Lead",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-06",
+      "mitreTactic": "Exfiltration Over Web Service (T1567)",
+      "evidenciaAuditable": "Resumen diario de metadatos de AI activities y alertas de agentes de alto riesgo.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Página AI observability y comportamiento de bloqueo DLP sobre instancias de Agent 365 verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/ai-agent-365"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Triaje convergente de alertas Purview (DLP e Insider Risk) en Microsoft Defender XDR",
+      "objetivo": "Correlacionar alertas de fuga de datos y riesgo interno con señales de amenaza externa en la cola unificada de incidentes XDR.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts > Incidents + purview.microsoft.com > Data Loss Prevention > Alerts",
+      "procedimiento": [
+        "Filtrar en security.microsoft.com incidentes enriquecidos con alertas de Microsoft Purview DLP o Insider Risk Management.",
+        "Cruzar la identidad afectada contra alertas de Entra ID Protection y Defender for Endpoint para distinguir compromiso externo de riesgo interno.",
+        "Ante exfiltración confirmada de alto impacto, abrir investigación directa en Data Security Investigations desde el incidente XDR."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2 + Data Security Analyst",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-03",
+      "mitreTactic": "Collection (TA0009) / Exfiltration (TA0010)",
+      "evidenciaAuditable": "Incidente documentado y clasificado en security.microsoft.com.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Correlación de alertas DLP/IRM en incidentes XDR y apertura de DSI verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/alerts-incidents-correlation"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Supervisión del bucle dinámico Adaptive Protection (IRM <-> DLP <-> Entra CA)",
+      "objetivo": "Confirmar que los niveles dinámicos de riesgo interno (Elevated, Moderate, Minor) apliquen controles preventivos efectivos en DLP y Acceso Condicional.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Adaptive protection",
+      "procedimiento": [
+        "Verificar el conteo diario de perfiles asignados a niveles Elevated, Moderate y Minor bajo seudonimización.",
+        "Comprobar que las políticas DLP asociadas a Insider risk level for Adaptive Protection estén activas en Exchange, Teams y Devices.",
+        "Confirmar que Advanced classification scanning and protection esté operativo para Endpoint DLP."
+      ],
+      "rolResponsable": "Data Security Analyst",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-02",
+      "mitreTactic": "Exfiltration (TA0010)",
+      "evidenciaAuditable": "Estado activo en el nodo Adaptive protection y conteo diario de bloqueos aplicados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Perfiles Elevated/Moderate/Minor y prerrequisito de Endpoint DLP verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-adaptive-protection-learn"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Auditoría diaria de cambios administrativos, permisos y accesos a contenido en Purview",
+      "objetivo": "Detectar alteraciones no autorizadas en políticas DLP/MIP/Retención, Role groups o inspecciones indebidas en Content Explorer y DSI.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit + security.microsoft.com > Advanced hunting",
+      "procedimiento": [
+        "Consultar eventos administrativos de las últimas 24h sobre políticas Purview, Role groups, Administrative Units y actividades de DSI.",
+        "Conciliar cada cambio de configuración y cada lectura de contenido contra tickets aprobados y elevaciones JIT en PIM.",
+        "Activar playbook AH-04 ante cualquier desactivación de control o lectura sin respaldo formal."
+      ],
+      "rolResponsable": "SOC L2 / GRC Security Auditor",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Impair Defenses (T1562)",
+      "evidenciaAuditable": "Bitácora diaria de auditoría sobre OfficeActivity conciliada con ITSM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Registro automático de actividades administrativas y de DSI en el Unified Audit Log verificado en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/data-security-investigations"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Vigilancia de salud de Device onboarding, navegador Edge y conectores de datos",
+      "objetivo": "Prevenir brechas silenciosas de visibilidad sobre estaciones Windows/macOS, sesiones de IA en navegador y conectores multicloud/RRHH.",
+      "consolaRuta": "purview.microsoft.com > Settings > Device onboarding / Data connectors",
+      "procedimiento": [
+        "Validar el volumen de endpoints Windows y macOS reportando activamente en Device onboarding.",
+        "Comprobar estado saludable del conector de RRHH (Insider Risk) y conectores de terceros / Sentinel Data Lake en DSPM.",
+        "Confirmar flujo continuo de telemetría de sitios GenAI desde Microsoft Edge for Business en Activity explorer."
+      ],
+      "rolResponsable": "Data Security Engineer",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Impair Defenses (T1562)",
+      "evidenciaAuditable": "Estado Healthy de conectores y conteo de endpoints activos en Device onboarding.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Rutas de Device onboarding y conectores en Settings del nuevo portal verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-portal"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Control diario FinOps de medidores Pay-As-You-Go, DSI y bloques horarios SCU",
+      "objetivo": "Monitorear el gasto diario de consumo Azure generado por Purview PAYG, investigaciones DSI y capacidad de Security Copilot.",
+      "consolaRuta": "purview.microsoft.com > Usage center + portal.azure.com > Cost Management + Billing",
+      "procedimiento": [
+        "Revisar consumo diario y alertas de presupuesto sobre medidores Purview PAYG (activos no-M365/Fabric, Requests, Text records, Processing units y DSI).",
+        "Confirmar si Proactive AI insights en DSPM/DSI está activo intencionalmente (recordando que refresca y factura cada 24h).",
+        "Programar cualquier escalado de Provisioned SCUs al inicio exacto de la hora para evitar doble facturación en el bloque horario."
+      ],
+      "rolResponsable": "FinOps Lead / Purview Platform Administrator",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-02",
+      "mitreTactic": "Resource Governance",
+      "evidenciaAuditable": "Panel diario de Azure Cost Management dentro del presupuesto asignado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Reglas de facturación PAYG, refresco de 24h en Proactive AI insights y bloques horarios SCU verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-billing-models"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Ejecución de Data risk assessments y remediación de oversharing frente a Copilot e IA",
+      "objetivo": "Detectar y corregir permisos excesivos sobre datos sensibles en SharePoint y OneDrive antes de que sean expuestos vía IA generativa.",
+      "consolaRuta": "purview.microsoft.com > Solutions > DSPM > Discover > Data risk assessments",
+      "procedimiento": [
+        "Analizar los resultados semanales de Data risk assessments priorizando sitios con alto volumen de SITs y vínculos Anyone u Organization-wide.",
+        "Aplicar remediaciones guiadas: revocación de vínculos públicos, aplicación de etiquetas de sensibilidad y restricción de acceso.",
+        "Verificar que etiquetas cifradas de alta confidencialidad restrinjan el derecho EXTRACT para impedir resumen no autorizado por Copilot o agentes."
+      ],
+      "rolResponsable": "Data Security Engineer + Propietarios de Datos",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Data from Information Repositories (T1213)",
+      "evidenciaAuditable": "Reporte semanal de Data risk assessments con reducción de sitios sobreexpuestos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Data risk assessments en DSPM y control del derecho EXTRACT para Copilot verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Gestión semanal de Improvement actions y evolución del Compliance Score",
+      "objetivo": "Impulsar el cierre priorizado por riesgo de acciones técnicas y documentales en Microsoft Purview Compliance Manager.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Compliance Manager > Improvement actions",
+      "procedimiento": [
+        "Revisar la evolución semanal del Compliance Score considerando la ventana de 24 horas de actualización automática de controles técnicos.",
+        "Priorizar implementación sobre controles Preventative mandatory (27 puntos) y Preventative discretionary (9 puntos).",
+        "Verificar adjuntos probatorios cargados por Contributors antes de aprobar el resultado de prueba como Assessor."
+      ],
+      "rolResponsable": "GRC & Compliance Manager",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Governance & Compliance Assurance",
+      "evidenciaAuditable": "Exportación semanal de Improvement actions y puntaje por evaluación.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Ponderación exacta 27/9/3/1 puntos y refresco de 24h verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/compliance-score-calculation"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Gobernanza semanal de inventario y políticas sobre agentes IA (Agent 365, Copilot Studio y Foundry)",
+      "objetivo": "Asegurar que toda instancia nueva de agente IA quede cubierta por políticas DLP, Insider Risk, Communication Compliance y retención.",
+      "consolaRuta": "purview.microsoft.com > Solutions > DSPM > AI observability / Discover > Apps and agents",
+      "procedimiento": [
+        "Conciliar nuevas instancias registradas en AI observability (Agent 365) y Apps and agents (Copilot Studio, Foundry, Entra-registered).",
+        "Incorporar las nuevas instancias de Agent 365 (individualmente o por grupo de seguridad) en políticas de DLP, IRM, Communication Compliance y DLM.",
+        "Revisar detecciones semanales de la plantilla Risky AI usage (IRM) y Prompt shields / Protected materials (Communication Compliance)."
+      ],
+      "rolResponsable": "AI Governance Lead / Data Security Engineer",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-07",
+      "mitreTactic": "Exfiltration Over Web Service (T1567)",
+      "evidenciaAuditable": "Inventario semanal de agentes IA con matriz de cobertura de políticas Purview al 100%.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Inclusión explícita requerida de instancias Agent 365 en DLP/IRM/CommComp/DLM verificada en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/ai-agent-365"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría semanal de Role groups, Restricted Administrative Units y activaciones PIM",
+      "objetivo": "Garantizar privilegio mínimo y segregación regional efectiva sobre todas las soluciones soportadas de Purview.",
+      "consolaRuta": "purview.microsoft.com > Settings > Roles and scopes > Role groups + entra.microsoft.com > PIM",
+      "procedimiento": [
+        "Auditar membresías de Role Management, Compliance Administrator, eDiscovery Manager, IRM Investigators, DSI y Content Viewer.",
+        "Confirmar la vinculación correcta de Administrative Units en DLP, IRM, Communication Compliance, DLM, Records, MIP, Audit y eDiscovery.",
+        "Conciliar activaciones JIT de grupos en Entra ID PIM contra casos autorizados."
+      ],
+      "rolResponsable": "Identity Governance Lead / Role Management Admin",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-02",
+      "mitreTactic": "Valid Accounts (T1078)",
+      "evidenciaAuditable": "Reporte semanal exportado de Role groups, Administrative Units y bitácora PIM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Soluciones soportadas por Administrative Units en Purview verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-admin-units"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Sintonización transversal de falsos positivos entre clasificadores, DLP, IRM y Comm Compliance",
+      "objetivo": "Mantener alta relación señal-ruido en alertas enviadas al SOC y células de investigación.",
+      "consolaRuta": "purview.microsoft.com > Solutions > DSPM > Reports / Data Loss Prevention / Insider Risk",
+      "procedimiento": [
+        "Identificar las reglas DLP y políticas IRM/Communication Compliance con mayor volumen de cierres por falso positivo en los últimos 7 días.",
+        "Ajustar umbrales de confianza de SITs, palabras clave de soporte o exclusiones documentadas junto a los responsables de los Módulos 14, 15, 17 y 18.",
+        "Validar los ajustes en modo simulación antes de promover a bloqueo productivo."
+      ],
+      "rolResponsable": "Data Security Engineer + SOC L3",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-07",
+      "mitreTactic": "Exfiltration (TA0010)",
+      "evidenciaAuditable": "Acta semanal de tuning con comparativa de precisión de alertas.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Práctica operativa consultiva sobre capacidades nativas de simulación Purview.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-policy-design"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Revisión semanal de investigaciones activas y huella de almacenamiento en DSI",
+      "objetivo": "Asegurar avance oportuno de investigaciones abiertas en Data Security Investigations y depurar datos cerrados facturables por GB/mes.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Data Security Investigations",
+      "procedimiento": [
+        "Revisar el estado de categorización IA, hallazgos críticos y mitigaciones pendientes en cada investigación activa de DSI.",
+        "Cerrar y depurar investigaciones concluidas que no requieran hold legal en eDiscovery para liberar cargos de almacenamiento mensual.",
+        "Auditar en el Unified Audit Log todas las actividades registradas por investigadores en DSI."
+      ],
+      "rolResponsable": "CSIRT Lead + FinOps",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "Automated Exfiltration (T1020)",
+      "evidenciaAuditable": "Inventario semanal de investigaciones DSI y volumen en GB almacenados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Medidor GB/mes de almacenamiento y auditoría de DSI verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/data-security-investigations"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría mensual de cobertura de descubrimiento y etiquetado en DSPM Asset Explorer",
+      "objetivo": "Reducir mensualmente el porcentaje de activos sensibles sin etiqueta de protección en M365 y fuentes multicloud conectadas.",
+      "consolaRuta": "purview.microsoft.com > Solutions > DSPM > Asset explorer / Reports",
+      "procedimiento": [
+        "Analizar en Asset explorer (pestañas Standard y Agent) la proporción de datos sensibles sin etiqueta por carga de trabajo.",
+        "Confirmar habilitación de etiquetas de sensibilidad para archivos Office en SharePoint y OneDrive.",
+        "Planificar políticas de auto-etiquetado (Módulo 14) o escaneos acotados de On-demand classification sobre repositorios descubiertos."
+      ],
+      "rolResponsable": "Data Security Architect",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-07",
+      "mitreTactic": "Data from Cloud Storage (T1530)",
+      "evidenciaAuditable": "Reporte mensual de cobertura de clasificación y etiquetado desde DSPM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Asset explorer y requisito de etiquetas en SharePoint/OneDrive para Copilot verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Comité mensual de cumplimiento regulatorio en Compliance Manager (NIST CSF 2.0, DORA, NIS2, EU AI Act)",
+      "objetivo": "Supervisar el estado de evaluaciones normativas multicloud y la vigencia de evidencias de controles propios y compartidos.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Compliance Manager > Assessments",
+      "procedimiento": [
+        "Evaluar el puntaje de Microsoft-managed controls, Your controls y Shared controls en Microsoft Data Protection Baseline y plantillas Premium activas.",
+        "Procesar actualizaciones regulatorias publicadas por Microsoft sobre evaluaciones en curso.",
+        "Exportar reportes ejecutivos para el comité GRC recordando que el puntaje guía priorización de riesgo y no sustituye validación jurídica."
+      ],
+      "rolResponsable": "GRC & Compliance Officer / DPO / CISO",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "Governance & Assurance",
+      "evidenciaAuditable": "Reportes mensuales exportados por evaluación desde Compliance Manager.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tipos de control, 3 plantillas Premium incluidas en E5 y nota legal oficial verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/compliance-manager"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Conciliación FinOps mensual de facturación Purview Pay-As-You-Go y optimización de alcance",
+      "objetivo": "Auditar el costo mensual por unidad de consumo en Azure y optimizar el alcance de políticas no-M365, Fabric, IA y SCUs.",
+      "consolaRuta": "portal.azure.com > Cost Management + Billing + purview.microsoft.com > Usage center",
+      "procedimiento": [
+        "Desglosar cargos mensuales por medidor (activos únicos/día en SQL/ADLS/Fabric/AWS, Processing units IRM, Text records, Requests de red/IA, DSI y DGPUs).",
+        "Depurar del alcance de políticas MIP/DLP espacios de trabajo sandbox o no productivos en Microsoft Fabric y nubes externas.",
+        "Ajustar la relación entre Provisioned SCUs y Overage SCUs según la demanda real observada."
+      ],
+      "rolResponsable": "FinOps Lead + Data Security Architect + CDO",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-02",
+      "mitreTactic": "Financial & Resource Governance",
+      "evidenciaAuditable": "Acta mensual de conciliación FinOps Purview y ajustes de scoping aplicados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Regla de conteo único de activos en alcance y unidades de medida PAYG verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-billing-models"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Revisión mensual de salud del Data Map y activos gobernados en Unified Catalog (Fabric & Multicloud)",
+      "objetivo": "Asegurar que los activos críticos analíticos y multicloud mantengan curadores asignados, linaje e historial auditado.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Unified Catalog > Health management > Reports / Data Map",
+      "procedimiento": [
+        "Revisar ejecución de escaneos, Data Map history y visibilidad automática Live view sobre Azure y Microsoft Fabric.",
+        "Identificar en Unified Catalog > Health management > Reports productos de datos sensibles sin propietario o con baja calidad.",
+        "Coordinar aplicación de políticas de protección MIP/DLP sobre workspaces críticos de Microsoft Fabric."
+      ],
+      "rolResponsable": "CDO Office / Data Governance Administrator",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-07",
+      "mitreTactic": "Data from Cloud Storage (T1530)",
+      "evidenciaAuditable": "Reporte mensual de Health management en Unified Catalog e historial Data Map history.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Reubicación de Data Estate Insights a Health management > Reports y Live view verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-portal"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Validación mensual de integración Purview <-> Defender XDR / Sentinel y retención Audit Premium",
+      "objetivo": "Certificar el flujo ininterrumpido de alertas y logs hacia XDR/Sentinel y la vigencia de políticas de retención forense.",
+      "consolaRuta": "security.microsoft.com > Advanced hunting / Sentinel > Data connectors + purview.microsoft.com > Audit",
+      "procedimiento": [
+        "Comprobar fusión normal de alertas DLP/IRM en incidentes XDR y disponibilidad de tablas en Advanced Hunting.",
+        "Verificar en Sentinel la ingesta gratuita de OfficeActivity y el uso del E5 Data Grant (5 MB/usuario/día) para MicrosoftPurviewInformationProtection.",
+        "Validar políticas de retención de Audit Premium (1 año incluido en E5 / 10 años con add-on) incluyendo registros de Copilot y Agent 365."
+      ],
+      "rolResponsable": "SOC L3 Engineer + Purview Audit Admin",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Disable or Modify Cloud Logs (T1562.008)",
+      "evidenciaAuditable": "Consulta KQL mensual de verificación de ingesta y captura de políticas Audit Retention.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Cobertura de OfficeActivity y Purview Information Protection en Sentinel verificada en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/billing"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Recertificación Access Reviews de Role groups, Administrative Units y Adaptive Scopes",
+      "objetivo": "Recertificar todos los privilegios Purview (especialmente acceso a contenido y purga) y validar integridad de alcances dinámicos.",
+      "consolaRuta": "entra.microsoft.com > Identity governance > Access reviews + purview.microsoft.com > Settings > Roles and scopes",
+      "procedimiento": [
+        "Completar Access Reviews trimestrales sobre Role Management, Compliance Admin, eDiscovery Manager, IRM Investigators, DSI y Content Viewer.",
+        "Auditar calidad de atributos de Entra ID que gobiernan Administrative Units y Adaptive Scopes.",
+        "Revisar en el eDiscovery moderno la liberación ordenada de holds legales sobre casos definitivamente cerrados."
+      ],
+      "rolResponsable": "Identity Governance Lead + DPO",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-02",
+      "mitreTactic": "Valid Accounts (T1078)",
+      "evidenciaAuditable": "Actas firmadas de Access Reviews trimestrales y reporte de consistencia de Adaptive Scopes.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Integración de Adaptive Scopes con Administrative Units y retiro de eDiscovery clásico verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-admin-units"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Comité trimestral de gobernanza de IA y evaluaciones regulatorias IA (EU AI Act / ISO 42001 / NIST AI RMF)",
+      "objetivo": "Evaluar el cumplimiento normativo y los controles de seguridad de datos sobre todos los sistemas y agentes de IA corporativos.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Compliance Manager / Solutions > DSPM > AI observability",
+      "procedimiento": [
+        "Evaluar el progreso trimestral en las plantillas EU Artificial Intelligence Act, ISO/IEC 42001:2023 y NIST AI RMF en Compliance Manager.",
+        "Actualizar el catálogo de aplicaciones GenAI externas detectadas definiendo controles inline de bloqueo o advertencia en DLP.",
+        "Auditar las políticas de retención y borrado en Data Lifecycle Management para prompts y respuestas de Copilot y agentes."
+      ],
+      "rolResponsable": "AI Governance Committee (CISO + CDO + DPO + Legal)",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "Exfiltration Over Web Service (T1567)",
+      "evidenciaAuditable": "Paquete trimestral de evaluación regulatoria de IA exportado desde Compliance Manager.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Plantillas EU AI Act, ISO/IEC 42001 y NIST AI RMF en Compliance Manager verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/compliance-manager-regulations-list"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Simulacro semestral integrado de brecha y fuga de datos (Defender XDR + Adaptive Protection + DSI + Legal)",
+      "objetivo": "Validar tiempos de contención, investigación con IA en DSI, propagación PIM de 2h y notificación regulatoria en menos de 72h.",
+      "consolaRuta": "security.microsoft.com + purview.microsoft.com > Solutions > Data Security Investigations",
+      "procedimiento": [
+        "Simular con datos sintéticos una alerta combinada XDR + DLP/IRM verificando elevación automática en Adaptive Protection.",
+        "Escalar hacia una investigación acotada en DSI probando Vector search, Categorization, Examination y flujo segregado de Soft Purge.",
+        "Medir impacto práctico de la ventana de hasta 2 horas de propagación PIM en Purview y actualizar procedimientos de guardia."
+      ],
+      "rolResponsable": "CISO + SOC Manager + CSIRT + DPO",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MA-01",
+      "mitreTactic": "Exfiltration (TA0010)",
+      "evidenciaAuditable": "Informe ejecutivo de simulacro semestral con métricas de respuesta y plan de mejora.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Ejercicio consultivo construido sobre capacidades verificadas de XDR, Adaptive Protection, DSI y PIM.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/data-security-investigations"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Revisión anual de taxonomía maestra de sensibilidad, portafolio regulatorio y soberanía (Módulo 21)",
+      "objetivo": "Alinear anualmente la taxonomía de clasificación, las plantillas de Compliance Manager y los controles de soberanía criptográfica.",
+      "consolaRuta": "purview.microsoft.com > Information Protection / Compliance Manager + admin.microsoft.com",
+      "procedimiento": [
+        "Recalibrar la jerarquía corporativa de etiquetas de sensibilidad, SITs personalizados y tabla maestra de retención.",
+        "Revalidar la selección de las 3 plantillas Premium gratuitas incluidas en E5 / Purview Suite y licencias adicionales en Compliance Manager.",
+        "Auditar junto al Módulo 21 el estado anual de Customer Lockbox, disponibilidad de claves en Customer Key y políticas M365 PAM."
+      ],
+      "rolResponsable": "CISO + CDO + General Counsel + DPO",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-01",
+      "mitreTactic": "Governance & Data Sovereignty",
+      "evidenciaAuditable": "Acta anual de gobierno de datos y soberanía aprobada por dirección ejecutiva.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Cadencia anual de gobierno alineada a ISO 27001 y NIST CSF 2.0.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/compliance-manager-regulations"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook DSI-01: Investigación con IA y mitigación ante brecha o exfiltración confirmada de datos",
+      "objetivo": "Determinar rápidamente qué secretos, PII o propiedad intelectual fueron comprometidos y purgar copias expuestas con autorización legal.",
+      "consolaRuta": "security.microsoft.com > Incidents -> purview.microsoft.com > Data Security Investigations",
+      "procedimiento": [
+        "Contener identidad/host en Defender XDR y verificar elevación a Elevated risk level en Adaptive Protection.",
+        "Abrir investigación en DSI desde el incidente XDR o caso IRM incorporando Audit search y evidencia de Endpoint DLP tras estimar volumen PAYG.",
+        "Ejecutar Categorization con IA, Vector search semántico y Examination para identificar credenciales, PII y activos críticos expuestos.",
+        "Con autorización escrita de Legal/CISO y rol segregado, aplicar Soft Purge o Hard Purge y entregar inventario exacto al DPO."
+      ],
+      "rolResponsable": "CSIRT / DSI Investigator + Mitigation Admin + DPO",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "Collection (TA0009) / Exfiltration (TA0010)",
+      "evidenciaAuditable": "Reporte de Examination en DSI, registros en Unified Audit Log y acta legal de mitigación/notificación.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Capacidades Vector search, Categorization, Examination y Soft/Hard Purge de DSI verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/data-security-investigations"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook AI-01: Contención de fuga de datos o abuso en Copilot, Foundry o Microsoft Agent 365",
+      "objetivo": "Cortar la exposición de información sensible a través de prompts/respuestas o agentes autónomos y purgar interacciones comprometidas.",
+      "consolaRuta": "purview.microsoft.com > Solutions > DSPM > AI observability / eDiscovery",
+      "procedimiento": [
+        "Identificar en AI observability y Activity explorer > AI activities el usuario o Agent user ID y los archivos fuente accedidos.",
+        "Restringir permisos de compartición en origen, aplicar etiqueta cifrada sin derecho EXTRACT para el agente/grupo o suspender la instancia en Agent 365.",
+        "Abrir caso en Purview eDiscovery moderno filtrando Type = Copilot activity para localizar y eliminar interacciones almacenadas con datos críticos."
+      ],
+      "rolResponsable": "AI Governance Lead + Data Security Engineer + SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Data from Information Repositories (T1213)",
+      "evidenciaAuditable": "Trazas de auditoría de Agent 365 / Copilot, revocación de permisos/EXTRACT y acta de eliminación en eDiscovery.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Condición Type > Copilot activity en eDiscovery y requisito EXTRACT verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/ai-agent-365"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook GOV-01: Despliegue acelerado de evaluación regulatoria ante requerimiento de supervisor",
+      "objetivo": "Instrumentar en menos de 48 horas una evaluación formal auditable en Compliance Manager ante una inspección o nueva norma.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Compliance Manager > Regulations / Assessments",
+      "procedimiento": [
+        "Seleccionar la plantilla regulatoria oficial entre las más de 360 disponibles (o plantilla personalizada) validando cupo de plantillas Premium.",
+        "Crear el Assessment sobre los servicios en alcance y aguardar 24h para el cálculo automático de acciones técnicas ya implementadas.",
+        "Asignar controles pendientes a Contributors/Assessors y habilitar acceso temporal Compliance Manager Reader para el equipo auditor."
+      ],
+      "rolResponsable": "GRC & Compliance Manager",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "Regulatory Compliance",
+      "evidenciaAuditable": "Paquete completo de evaluación y evidencias exportado desde Compliance Manager.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo oficial de creación de Assessments y ventana de 24h verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/compliance-manager"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook SEC-01: Respuesta ante compromiso o abuso administrativo dentro de Microsoft Purview",
+      "objetivo": "Revocar acceso privilegiado abusivo, auditar lecturas o debilitamiento de políticas y restaurar el estado íntegro de Purview.",
+      "consolaRuta": "entra.microsoft.com > Users / PIM + purview.microsoft.com > Settings > Roles and scopes / Audit",
+      "procedimiento": [
+        "Revocar sesiones en Entra ID, desactivar PIM y remover inmediatamente al actor de los Role groups en Purview.",
+        "Extraer en OfficeActivity / Audit Premium todas las operaciones del actor (cambios DLP/MIP/Retención, búsquedas eDiscovery y actividades en DSI).",
+        "Restaurar políticas modificadas, verificar Preservation Lock en políticas regulatorias y notificar al DPO si hubo lectura no autorizada de datos."
+      ],
+      "rolResponsable": "SOC Incident Commander + Role Management Admin + DPO",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-05",
+      "mitreTactic": "Impair Defenses (T1562) / Account Manipulation (T1098)",
+      "evidenciaAuditable": "Extracción forense de OfficeActivity y acta de restauración de políticas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Trazabilidad en Unified Audit Log y gestión de Role groups verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-permissions"
+    },
+    {
+      "codigo": "AH-05",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook FIN-01: Contención inmediata de desvío presupuestario en medidores Pay-As-You-Go",
+      "objetivo": "Frenar picos anómalos de facturación Azure en medidores Purview PAYG sin degradar la protección base de Microsoft 365 E5.",
+      "consolaRuta": "portal.azure.com > Cost Management + purview.microsoft.com > Usage center",
+      "procedimiento": [
+        "Aislar en Azure Cost Management el medidor exacto en desvío (activos no-M365/Fabric en alcance, Proactive AI insights en DSI, Network Data Security o SCUs).",
+        "Restringir el scope de la política no-M365 a repositorios críticos etiquetados, desactivar Proactive AI insights si fue encendido por error o fijar tope de Overage SCUs.",
+        "Registrar lección aprendida en el comité de cambios previo a futuros despliegues multicloud."
+      ],
+      "rolResponsable": "FinOps Lead + Purview Platform Admin",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-02",
+      "mitreTactic": "Resource & Cost Control",
+      "evidenciaAuditable": "Alerta Azure atendida, cambio de scope auditado y normalización de curva de gasto.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Comportamiento de medidores PAYG y Overage SCUs verificado en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-billing-models"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Auditoría de cambios críticos en políticas DLP, etiquetas, retención y Role groups",
+      "plataforma": "Microsoft Sentinel / Log Analytics",
+      "tablaPrincipal": "OfficeActivity",
+      "consulta": "OfficeActivity\n| where TimeGenerated > ago(24h)\n| where RecordType in (\"ComplianceDLPSharePoint\", \"ComplianceDLPExchange\", \"ExchangeAdmin\", \"SecurityComplianceCenterEOPCmdlet\", \"MipLabel\") or Operation has_any (\"DlpCompliancePolicy\", \"DlpComplianceRule\", \"RetentionCompliancePolicy\", \"RoleGroup\", \"AdministrativeUnit\", \"InsiderRisk\", \"SensitivityLabel\")\n| where Operation has_any (\"New-\", \"Set-\", \"Remove-\", \"Add-RoleGroupMember\", \"Remove-RoleGroupMember\", \"Disable-\")\n| project TimeGenerated, UserId, Operation, RecordType, ClientIP, ResultStatus, Parameters\n| order by TimeGenerated desc",
+      "proposito": "Detectar modificaciones administrativas sobre políticas y permisos de Purview aprovechando la ingesta gratuita de OfficeActivity en Sentinel.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Correlación XDR de usuarios con alertas simultáneas en Purview (DLP/IRM) y amenazas externas",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "AlertInfo, AlertEvidence",
+      "consulta": "let PurviewAlerts = AlertInfo\n    | where Timestamp > ago(7d)\n    | where ServiceSource in (\"Microsoft Purview Data Loss Prevention\", \"Microsoft Purview Insider Risk Management\", \"Microsoft Data Loss Prevention\")\n    | join kind=inner (AlertEvidence | where EntityType == \"User\") on AlertId\n    | summarize PurviewAlertCount = dcount(AlertId), PurviewTitles = make_set(Title, 5) by AccountUpn;\nAlertInfo\n| where Timestamp > ago(7d)\n| where ServiceSource !in (\"Microsoft Purview Data Loss Prevention\", \"Microsoft Purview Insider Risk Management\", \"Microsoft Data Loss Prevention\")\n| join kind=inner (AlertEvidence | where EntityType == \"User\") on AlertId\n| summarize ThreatAlertCount = dcount(AlertId), ThreatSources = make_set(ServiceSource, 5) by AccountUpn\n| join kind=inner PurviewAlerts on AccountUpn\n| order by PurviewAlertCount desc, ThreatAlertCount desc",
+      "proposito": "Identificar cuentas donde confluyen señales de exfiltración de datos en Purview con alertas de compromiso de identidad o endpoint en Defender XDR.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Observabilidad de volumen y aplicaciones en interacciones de Copilot y agentes IA",
+      "plataforma": "Microsoft Defender XDR / Sentinel",
+      "tablaPrincipal": "CloudAppEvents",
+      "consulta": "CloudAppEvents\n| where Timestamp > ago(7d)\n| where ActionType has_any (\"CopilotInteraction\", \"Agent\", \"AIPrompt\") or Application has \"Copilot\"\n| summarize TotalInteractions = count(), DistinctApps = make_set(Application, 10), LastActivityUTC = max(Timestamp) by AccountDisplayName, AccountId\n| order by TotalInteractions desc",
+      "proposito": "Monitorear adopción y picos anómalos de interacciones con copilotos y agentes registrados en la telemetría unificada.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección de creación de vínculos anónimos o compartición amplia (Oversharing)",
+      "plataforma": "Microsoft Sentinel / Log Analytics",
+      "tablaPrincipal": "OfficeActivity",
+      "consulta": "OfficeActivity\n| where TimeGenerated > ago(7d) and OfficeWorkload in (\"SharePoint\", \"OneDrive\")\n| where Operation in (\"AnonymousLinkCreated\", \"AnonymousLinkUpdated\", \"SharingInvitationCreated\", \"CompanyLinkCreated\")\n| summarize LinksCreated = count(), SampleUrls = make_set(OfficeObjectId, 5), LastShareUTC = max(TimeGenerated) by UserId, Operation, Site_Url\n| order by LinksCreated desc",
+      "proposito": "Complementar Data risk assessments de DSPM detectando en tiempo casi real nuevos vínculos Anyone u organizacionales que expongan datos a Copilot.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Monitoreo de aplicación y degradación de etiquetas en Purview Information Protection",
+      "plataforma": "Microsoft Sentinel",
+      "tablaPrincipal": "MicrosoftPurviewInformationProtection",
+      "consulta": "MicrosoftPurviewInformationProtection\n| where TimeGenerated > ago(7d)\n| summarize EventsCount = count(), UniqueUsers = dcount(UserId), DowngradesOrRemovals = countif(Activity has_any (\"Downgrade\", \"RemoveLabel\")) by Activity\n| order by EventsCount desc",
+      "proposito": "Auditar el uso de etiquetas de sensibilidad y detectar degradaciones de clasificación ingeridas bajo el beneficio E5 Data Grant de Sentinel.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría de búsquedas, vistas previas y purgas en eDiscovery y Data Security Investigations",
+      "plataforma": "Microsoft Sentinel / Log Analytics",
+      "tablaPrincipal": "OfficeActivity",
+      "consulta": "OfficeActivity\n| where TimeGenerated > ago(7d)\n| where Operation has_any (\"SearchCreated\", \"SearchExported\", \"Preview\", \"Purge\", \"Investigation\", \"ContentExplorer\")\n| project TimeGenerated, UserId, Operation, RecordType, ClientIP, ObjectId\n| order by TimeGenerated desc",
+      "proposito": "Garantizar trazabilidad inmutable sobre quién inspecciona, exporta o purga contenido sensible dentro de Purview.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Extracción auditable de miembros de Role Groups críticos en Security & Compliance PowerShell",
+      "plataforma": "Security & Compliance PowerShell (Connect-IPPSSession)",
+      "tablaPrincipal": "Get-RoleGroup / Get-RoleGroupMember",
+      "consulta": "Connect-IPPSSession -ShowBanner:$false\n$groups = @(\"Organization Management\",\"Compliance Administrator\",\"Data Loss Prevention\",\"Insider Risk Management\",\"Insider Risk Management Investigators\",\"eDiscovery Manager\",\"Content Explorer Content Viewer\")\n$report = foreach ($g in $groups) { $m = Get-RoleGroupMember -Identity $g -ErrorAction SilentlyContinue; [PSCustomObject]@{ RoleGroup = $g; Count = ($m | Measure-Object).Count; Members = ($m.Name -join \"; \") } }\n$report | Export-Csv -Path \".\\Purview_RoleGroups_Audit.csv\" -NoTypeInformation -Encoding UTF8",
+      "proposito": "Generar evidencia semanal y trimestral de membresías efectivas en Role groups críticos de Microsoft Purview.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Cobertura de etiquetado de sensibilidad sobre activos con datos sensibles",
+      "definicion": "Porcentaje de archivos y activos con tipos de información sensible detectados en DSPM Asset Explorer que cuentan con etiqueta de sensibilidad aplicada.",
+      "formula": "(Activos sensibles con etiqueta aplicada / Total activos con SITs en DSPM Asset Explorer) * 100",
+      "metaSugerida": ">= 90 % en repositorios críticos M365 y Fabric",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO / Chief Data Officer",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Medido sobre DSPM Asset Explorer; el umbral >= 90% es objetivo consultivo."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Índice de sitios con oversharing crítico expuestos a IA",
+      "definicion": "Porcentaje de sitios SharePoint y cuentas OneDrive con datos sensibles que mantienen vínculos Anyone u Organization-wide sin remediación.",
+      "formula": "(Sitios con datos sensibles y vínculos abiertos en Data risk assessments / Total sitios con datos sensibles) * 100",
+      "metaSugerida": "< 2 % (0 vínculos Anyone en sitios Highly Confidential)",
+      "frecuencia": "Semanal",
+      "audiencia": "CISO / AI Governance Committee",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Meta consultiva clave para preparación y operación segura de Microsoft 365 Copilot y agentes."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Cobertura de políticas Purview sobre agentes IA activos",
+      "definicion": "Porcentaje de instancias activas en AI observability (Agent 365, Copilot Studio y Foundry) incluidas en políticas DLP, IRM y retención DLM.",
+      "formula": "(Agentes activos cubiertos por políticas DLP + IRM + DLM / Total agentes activos últimos 30 días en AI observability) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Semanal",
+      "audiencia": "AI Governance Lead / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en el requisito oficial de incluir instancias de agentes explícitamente en políticas DLP/IRM/DLM."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Compliance Score sobre controles gestionados por el cliente",
+      "definicion": "Porcentaje de puntos obtenidos en Your controls y Shared controls dentro de las evaluaciones regulatorias activas en Compliance Manager.",
+      "formula": "(Puntos logrados por el cliente en evaluaciones activas / Total puntos posibles del cliente) * 100",
+      "metaSugerida": ">= 85 % (100 % en controles Preventative mandatory de 27 puntos)",
+      "frecuencia": "Mensual",
+      "audiencia": "GRC / DPO / Comité de Auditoría",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "El motor de puntaje 27/9/3/1 es oficial en MS Learn; el umbral >= 85% es meta consultiva."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Tiempo medio de triaje (MTTA) en incidentes convergentes Datos + XDR",
+      "definicion": "Tiempo promedio desde la creación de un incidente XDR con alertas Purview DLP o Insider Risk de severidad High hasta la primera acción del analista.",
+      "formula": "Avg(Timestamp primera acción - Timestamp creación incidente XDR con alerta Purview High)",
+      "metaSugerida": "<= 30 minutos (High) / <= 4 horas (Medium)",
+      "frecuencia": "Diaria / Semanal",
+      "audiencia": "SOC Manager / CSIRT Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "SLA interno consultivo para operación convergente SOC + Data Security."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Efectividad operativa de Adaptive Protection y Device Onboarding",
+      "definicion": "Porcentaje de políticas DLP de Adaptive Protection en modo enforcement activo combinada con la tasa de endpoints corporativos incorporados a Purview.",
+      "formula": "(Políticas Adaptive Protection en modo On / Total requeridas) * 100 y % endpoints activos en Device onboarding",
+      "metaSugerida": "100 % políticas activas y >= 98 % endpoints con onboarding saludable",
+      "frecuencia": "Semanal",
+      "audiencia": "Data Security Lead / Endpoint Security",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Meta consultiva para evitar estancamiento indefinido en modo simulación."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Cumplimiento de segregación jurisdiccional y acceso JIT a contenido",
+      "definicion": "Porcentaje de administradores delegados restringidos por Administrative Units y proporción de roles Content Viewer asignados exclusivamente vía PIM JIT.",
+      "formula": "(Admins regionales con AU + Content Viewers solo elegibles PIM / Total cuentas administrativas Purview) * 100",
+      "metaSugerida": "100 % (0 accesos permanentes a texto plano de archivos/prompts)",
+      "frecuencia": "Trimestral",
+      "audiencia": "DPO / Internal Audit",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Meta de control interno de privacidad y mínimo privilegio."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Adherencia presupuestaria FinOps en medidores Purview PAYG y SCUs",
+      "definicion": "Relación mensual entre el consumo real facturado en Azure por medidores Purview PAYG, DSI y SCUs frente al presupuesto aprobado.",
+      "formula": "(Consumo mensual real Azure Purview PAYG + DSI + SCUs / Presupuesto mensual aprobado) * 100",
+      "metaSugerida": "<= 100 % (variación no planificada < 10 %)",
+      "frecuencia": "Semanal / Mensual",
+      "audiencia": "FinOps / CIO / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Meta consultiva de disciplina financiera cloud."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.OC-03",
+      "descripcionResultado": "Los requisitos legales, regulatorios y contractuales sobre seguridad de datos, privacidad e IA se comprenden y gestionan continuamente.",
+      "capacidadMicrosoft": "Microsoft Purview Compliance Manager con más de 360 plantillas regulatorias (NIST CSF 2.0, GDPR, DORA, NIS2, EU AI Act, ISO 27001/42001) y Compliance Score.",
+      "evidenciaAuditoria": "Evaluaciones exportadas desde Compliance Manager mostrando controles de Microsoft, compartidos y del cliente con pruebas aprobadas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles, responsabilidades y autoridades de seguridad y privacidad de datos están establecidos y reforzados técnicamente.",
+      "capacidadMicrosoft": "Role groups en purview.microsoft.com, seudonimización nativa, Restricted Administrative Units de Entra ID y elevación JIT mediante PIM.",
+      "evidenciaAuditoria": "Reporte PowerShell de Get-RoleGroup, mapeo de Administrative Units y certificaciones trimestrales de Access Reviews.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-07",
+      "descripcionResultado": "Se mantienen inventarios de datos y metadatos correspondientes clasificados según su sensibilidad.",
+      "capacidadMicrosoft": "DSPM Asset Explorer, clasificadores SIT/entrenables, Data Map con Live view para Azure/Fabric y Unified Catalog.",
+      "evidenciaAuditoria": "Reportes mensuales de DSPM > Asset explorer y Unified Catalog > Health management > Reports.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-05",
+      "descripcionResultado": "Las amenazas, sobreexposiciones de permisos y riesgos de uso de IA se utilizan para priorizar resultados de seguridad.",
+      "capacidadMicrosoft": "Data security objectives en DSPM, Data risk assessments de oversharing y AI observability (incluyendo Microsoft Agent 365).",
+      "evidenciaAuditoria": "Resultados semanales de Data risk assessments e inventario priorizado de agentes en AI observability.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.DS-01",
+      "descripcionResultado": "La confidencialidad, integridad y disponibilidad de los datos en reposo están protegidas criptográficamente.",
+      "capacidadMicrosoft": "Etiquetas de sensibilidad MIP con cifrado y control explícito de derechos VIEW y EXTRACT frente a Copilot y Agent 365, más Customer Key (Módulo 21).",
+      "evidenciaAuditoria": "Configuración de etiquetas cifradas en SharePoint/OneDrive y telemetría en MicrosoftPurviewInformationProtection.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.DS-02",
+      "descripcionResultado": "La confidencialidad, integridad y disponibilidad de los datos en tránsito, en uso y en prompts de IA están protegidas.",
+      "capacidadMicrosoft": "Purview DLP omnicanal (M365, Endpoint, Edge Browser, Network Data Security y Fabric) acoplado dinámicamente a Adaptive Protection.",
+      "evidenciaAuditoria": "Políticas DLP activas con condición Insider risk level for Adaptive Protection y métricas de bloqueos preventivos.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Los permisos de acceso y compartición sobre datos sensibles respetan el principio de mínimo privilegio.",
+      "capacidadMicrosoft": "Remediación de vínculos Anyone/Org-wide en DSPM, Acceso Condicional basado en riesgo interno y Customer Lockbox / M365 PAM.",
+      "evidenciaAuditoria": "Consulta KQL sobre OfficeActivity auditando vínculos anónimos y actas de remediación semanal S-01.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-06",
+      "descripcionResultado": "Se monitorean actividades con proveedores externos, nubes SaaS y servicios de IA generativa de terceros.",
+      "capacidadMicrosoft": "Activity explorer > AI activities, protección inline en Microsoft Edge for Business, Network Data Security y conectores multicloud.",
+      "evidenciaAuditoria": "Registros de AI activities y detecciones de políticas Risky AI usage y Prompt shields.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.AE-03",
+      "descripcionResultado": "Se correlaciona información de múltiples fuentes para detectar incidentes complejos de robo o compromiso de datos.",
+      "capacidadMicrosoft": "Correlación nativa de alertas Purview DLP e Insider Risk Management dentro de incidentes unificados en Microsoft Defender XDR y Microsoft Sentinel.",
+      "evidenciaAuditoria": "Incidentes fusionados en security.microsoft.com y resultados de la consulta KQL de correlación multi-dominio.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.AN-03",
+      "descripcionResultado": "Se realiza análisis profundo para establecer el alcance exacto de los datos comprometidos durante un incidente.",
+      "capacidadMicrosoft": "Data Security Investigations (DSI) empleando Vector search, Categorization con IA y Examination de credenciales, código fuente y PII.",
+      "evidenciaAuditoria": "Informes de Examination exportados desde DSI y trazas de Audit search en el Unified Audit Log.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Los incidentes de fuga de datos son contenidos rápidamente para impedir mayor exposición.",
+      "capacidadMicrosoft": "Elevación automática a Elevated risk en Adaptive Protection, suspensión de instancias Agent 365 riesgosas y Soft/Hard Purge en DSI.",
+      "evidenciaAuditoria": "Registros auditados de purga en OfficeActivity y bloqueos aplicados por Adaptive Protection.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-05",
+      "descripcionResultado": "Se asegura la integridad de la evidencia, las retenciones regulatorias y la restauración de políticas tras un incidente.",
+      "capacidadMicrosoft": "Retenciones con Preservation Lock (Módulo 16), holds legales en el nuevo eDiscovery unificado (Módulo 20) y playbook AH-04 de restauración.",
+      "evidenciaAuditoria": "Holds verificados en eDiscovery moderno e informe del simulacro semestral SM-01.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Compilación y evolución del corpus estratégico MSEOP-MD de Purview cruzado con los programas Ninja Training 2026 (Módulos 11 Compliance Manager y 12 DSPM/IA) y revalidado contra Microsoft Learn MCP al 11 de noviembre de 2026. Se incorporó el rebranding oficial a Microsoft Purview Suite (oct-2025), el retiro definitivo de compliance.microsoft.com y de las soluciones clásicas de eDiscovery (31-ago-2025), la nueva versión unificada de DSPM con Data security objectives y AI observability para Microsoft Agent 365, Data Security Investigations (DSI) asistido por IA, el cálculo exacto del Compliance Score (27/9/3/1), la propagación de hasta 2 horas de PIM en Purview, las Restricted Administrative Units y el modelo financiero Pay-As-You-Go.",
+    "correccionesAplicadas": [
+      "Actualización contractual de Microsoft 365 E5 Compliance al nombre vigente Microsoft Purview Suite (efectivo desde octubre de 2025, incluyendo variantes FLW, Gov, EDU y Business Premium hasta 300 usuarios).",
+      "Eliminación total de rutas heredadas en compliance.microsoft.com (retirado en diciembre de 2024, MC939918) y consolidación exclusiva en https://purview.microsoft.com documentando la reubicación de Classifiers, Roles and scopes y Unified Catalog > Health management > Reports.",
+      "Actualización a la versión unificada actual de Data Security Posture Management (Solutions > DSPM), diferenciándola de DSPM (classic) y DSPM for AI (classic) e incorporando Data security objectives, Data Security Posture Agent e inventario de Microsoft Agent 365 en AI observability.",
+      "Incorporación de Microsoft Purview Data Security Investigations (DSI) con Vector search, Categorization, Examination y Soft/Hard Purge, incluyendo la advertencia FinOps sobre el refresco continuo cada 24h al activar Proactive AI insights.",
+      "Reflejo del retiro definitivo de todas las soluciones clásicas de eDiscovery y Content Search el 31 de agosto de 2025 en favor del nuevo eDiscovery unificado (incluyendo búsqueda y purga de Copilot activity).",
+      "Incorporación de reglas exactas de permisos y cifrado para IA: exigencia explícita de derechos VIEW + EXTRACT para Copilot y compartición directa con instancias de Agent 365, además de la ventana oficial de hasta 2 horas de propagación para grupos activados en Entra ID PIM.",
+      "Documentación detallada del modelo complementario Pay-As-You-Go en Azure (conteo único diario de activos en alcance, Processing units de 10.000 actividades, Text records de 1.000 caracteres, DGPUs de 60 minutos y bloques horarios de SCUs) y de las 3 plantillas regulatorias Premium gratuitas en Compliance Manager para E5 / Purview Suite."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Posicionamiento del Módulo 13 como capa arquitectónica y de gobierno transversal sobre los Módulos 14 a 22",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Transforma el material previo puramente estratégico de MSEOP-MD en un modelo operativo SOC/GRC/CDO ejecutable sin duplicar la ingeniería granular de los ocho submódulos especializados de Purview."
+      },
+      {
+        "elemento": "Metas cuantitativas de KPI-01 a KPI-08 y SLAs de triaje convergente (<= 30 min High en XDR)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft proporciona los tableros de postura y puntaje pero no fija porcentajes universales obligatorios; estos umbrales establecen gobernanza medible para el comité ejecutivo."
+      },
+      {
+        "elemento": "Segregación obligatoria entre List Viewer y Content Viewer (solo PIM JIT con DPO) y entre Investigator y Mitigation Admin en DSI",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Evita exposición innecesaria de información confidencial o ejecuciones unilaterales de Hard Purge durante investigaciones sensibles."
+      },
+      {
+        "elemento": "Matriz RACI pentapartita entre CISO/DataSec, GRC/Legal/DPO, SOC/XDR, CDO/AI y FinOps",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Resuelve la superposición de responsabilidades propia de un portal unificado donde convergen seguridad, cumplimiento legal, gobierno de datos y facturación por consumo."
+      },
+      {
+        "elemento": "Mapeo de auditoría a 12 subcategorías de las 6 funciones de NIST CSF 2.0 y modelo de madurez de 5 niveles",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Alinea los controles de Purview Suite a un estándar probatorio auditable para directorios y supervisores sectoriales."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Learn about the Microsoft Purview portal",
+      "url": "https://learn.microsoft.com/en-us/purview/purview-portal",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Arquitectura del portal unificado purview.microsoft.com, retiro del portal clásico y mapa de características reubicadas.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Microsoft Purview service description",
+      "url": "https://learn.microsoft.com/en-us/office365/servicedescriptions/microsoft-365-service-descriptions/microsoft-365-tenantlevel-services-licensing-guidance/microsoft-purview-service-description",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Referencia canónica de licenciamiento para Microsoft 365 E3/E5 y Microsoft Purview Suite / EDU / FLW.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Learn about Data Security Posture Management",
+      "url": "https://learn.microsoft.com/en-us/purview/data-security-posture-management-learn-about",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Documenta la versión actual unificada de DSPM, Data security objectives, AI observability, Data risk assessments e integraciones multicloud.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Use Microsoft Purview to manage data security & compliance for AI agents",
+      "url": "https://learn.microsoft.com/en-us/purview/ai-agents",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Matriz oficial de cobertura de Purview sobre agentes de M365 Copilot, Security Copilot, Fabric, Copilot Studio, Foundry, Entra y terceros.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Use Microsoft Purview to manage data security & compliance for Microsoft Agent 365",
+      "url": "https://learn.microsoft.com/en-us/purview/ai-agent-365",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Detalla soporte de AI observability, derechos explícitos VIEW y EXTRACT, no herencia automática en contenido nuevo e inclusión en políticas DLP/IRM/DLM.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Learn about Data Security Investigations",
+      "url": "https://learn.microsoft.com/en-us/purview/data-security-investigations",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Documenta Vector search, Categorization, Examination, Soft/Hard Purge, integraciones con XDR/IRM/DSPM/Endpoint DLP y facturación PAYG.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Microsoft Purview Compliance Manager",
+      "url": "https://learn.microsoft.com/en-us/purview/compliance-manager",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Arquitectura de controles (Microsoft-managed, Your controls, Shared controls), evaluaciones y más de 360 plantillas regulatorias.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Compliance Manager scoring",
+      "url": "https://learn.microsoft.com/en-us/purview/compliance-score-calculation",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Fórmula oficial de puntuación por tipo de acción (27, 9, 3 y 1 puntos), Microsoft Data Protection Baseline y actualización en 24 horas.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Compliance Manager regulations list",
+      "url": "https://learn.microsoft.com/en-us/purview/compliance-manager-regulations-list",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Catálogo de plantillas incluidas, 3 regulaciones Premium gratuitas para E5 y marcos de IA (EU AI Act, ISO/IEC 42001:2023, NIST AI RMF).",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Learn about Microsoft Purview billing models",
+      "url": "https://learn.microsoft.com/en-us/purview/purview-billing-models",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Unidades exactas de medida Pay-As-You-Go: activos únicos en alcance, Processing units, Text records (1.000 chars), GB/mes, Requests y bloques horarios SCU.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Permissions in the Microsoft Purview portal",
+      "url": "https://learn.microsoft.com/en-us/purview/purview-permissions",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Gestión de Role groups en Settings > Roles and scopes y nota crítica de propagación de hasta 2 horas al usar Entra ID PIM for Groups.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Administrative units in Microsoft Purview",
+      "url": "https://learn.microsoft.com/en-us/purview/purview-admin-units",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Alcance oficial de Restricted Administrative Units en DLP, IRM, Communication Compliance, DLM, Records, MIP, Audit y eDiscovery.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Learn about Adaptive Protection in Data Loss Prevention",
+      "url": "https://learn.microsoft.com/en-us/purview/dlp-adaptive-protection-learn",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Acoplamiento dinámico entre niveles de riesgo de Insider Risk Management (Elevated, Moderate, Minor) y políticas preventivas DLP.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Alert correlation and incident merging in the Microsoft Defender portal",
+      "url": "https://learn.microsoft.com/en-us/defender-xdr/alerts-incidents-correlation",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Correlación multi-fuente en Microsoft Defender XDR integrando alertas de Microsoft Purview DLP e Insider Risk Management.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "Microsoft Purview eDiscovery legacy solutions",
+      "url": "https://learn.microsoft.com/en-us/purview/edisc-legacy",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Confirma el retiro total de Content Search, eDiscovery Standard y eDiscovery Premium clásicos el 31 de agosto de 2025.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "Microsoft Certified: Information Security Administrator Associate (Exam SC-401)",
+      "url": "https://learn.microsoft.com/en-us/credentials/certifications/information-security-administrator/",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Certificación oficial vigente centrada en administración de seguridad de la información y protección de datos para IA con Microsoft Purview.",
+      "verificacion": "Verificado (2026-11-11)"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "Microsoft Purview Blog — Microsoft Tech Community",
+      "url": "https://techcommunity.microsoft.com/category/security/blog/microsoftpurviewblog",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Microsoft Purview Product Engineering",
+      "comentario": "Canal oficial de anuncios de ingeniería sobre DSPM, seguridad para agentes IA, Data Security Investigations y gobierno.",
+      "verificacion": "Verificado (2026-11-11)"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)",
+      "url": "https://doi.org/10.6028/NIST.CSWP.29",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Marco normativo base para el mapeo de auditoría en las seis funciones GV, ID, PR, DE, RS y RC.",
+      "verificacion": "Verificado (2026-11-11)"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "Artificial Intelligence Risk Management Framework (AI RMF 1.0 — NIST AI 100-1)",
+      "url": "https://doi.org/10.6028/NIST.AI.100-1",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Marco de referencia para gobernanza, mapeo, medición y gestión de riesgos en sistemas y agentes de IA.",
+      "verificacion": "Verificado (2026-11-11)"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+# 16 Purview Data Lifecycle y Records Management
+
+Ruta: `MS-Security_Excelencia-Op\guias_v2\16_Purview_Data_Lifecycle_y_Records_Management`
+
+[Carpeta superior](../indice-catalogo.md)
+
+## Archivos de esta carpeta
+
+- [Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.html](Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.html)
+- [Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.json](Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.json)
+- [Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.md](Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.md)
+- [Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.xlsx](Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.xlsx)

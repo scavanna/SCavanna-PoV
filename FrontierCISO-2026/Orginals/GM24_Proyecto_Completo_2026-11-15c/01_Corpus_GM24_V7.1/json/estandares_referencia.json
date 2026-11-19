@@ -1,0 +1,924 @@
+{
+ "fuentes": {
+  "NIST-CSF": [
+   "NIST Cybersecurity Framework 2.0 (feb-2024): 6 funciones, 22 categorías",
+   "https://www.nist.gov/cyberframework"
+  ],
+  "NIST-RMF": [
+   "NIST SP 800-37 Rev. 2 RMF: 7 pasos",
+   "https://csrc.nist.gov/pubs/sp/800/37/r2/final"
+  ],
+  "NIST-53": [
+   "NIST SP 800-53 Rev. 5: 20 familias",
+   "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final"
+  ],
+  "NIST-AIRMF": [
+   "NIST AI RMF 1.0 (ene-2023) GOVERN/MAP/MEASURE/MANAGE; NIST AI 600-1 perfil GenAI (jul-2024): 12 riesgos",
+   "https://www.nist.gov/itl/ai-risk-management-framework"
+  ],
+  "NIST-OTROS": [
+   "SP 800-61 Rev. 3, SP 800-207, SP 800-161 Rev. 1, SP 800-30, SP 800-84, Privacy Framework 1.0",
+   "https://csrc.nist.gov"
+  ],
+  "ISACA-CISM": [
+   "CISM ECO 2026 (vigente 3-nov-2026; 18/20/33/29 %; + arquitectura empresarial y de seguridad)",
+   "https://www.isaca.org/credentialing/cism"
+  ],
+  "ISACA-CRISC": [
+   "CRISC ECO 2025 (vigente 3-nov-2025; 26/22/32/20 %; 9 subdominios)",
+   "https://www.isaca.org/credentialing/crisc"
+  ],
+  "ISACA-AAISM": [
+   "ISACA AAISM (ago-2025): 3 dominios (31/31/38 %), 13 subdominios",
+   "https://www.isaca.org/credentialing/aaism"
+  ],
+  "MITRE": [
+   "ATT&CK Enterprise (14 tácticas); ATLAS (tácticas IA); D3FEND (7 tácticas defensivas); Engage",
+   "https://attack.mitre.org · https://atlas.mitre.org · https://d3fend.mitre.org"
+  ],
+  "OWASP": [
+   "Top 10 for LLM Applications 2025 (LLM01–10); Top 10 for Agentic Applications 2026 v2.01 (ASI01–10); SAMM v2; ASVS; Top 10 for NHI",
+   "https://genai.owasp.org · https://owaspsamm.org"
+  ],
+  "CIS": [
+   "CIS Critical Security Controls v8.1 (18); CIS Benchmarks (incl. Microsoft 365 Foundations); CIS RAM",
+   "https://www.cisecurity.org/controls"
+  ],
+  "CSA": [
+   "CCM v4.x (17 dominios); AI Controls Matrix v1.1 (18 dominios, 247 objetivos; AIS-11, IAM-19, MDS); MAESTRO; STAR / STAR for AI; Zero Trust Advancement Center; NIST AI RMF Agentic Profile (borrador)",
+   "https://cloudsecurityalliance.org"
+  ]
+ },
+ "elementos": {
+  "NIST CSF 2.0": [
+   {
+    "id": "GV.OC",
+    "nombre": "Organizational Context"
+   },
+   {
+    "id": "GV.RM",
+    "nombre": "Risk Management Strategy"
+   },
+   {
+    "id": "GV.RR",
+    "nombre": "Roles, Responsibilities, and Authorities"
+   },
+   {
+    "id": "GV.PO",
+    "nombre": "Policy"
+   },
+   {
+    "id": "GV.OV",
+    "nombre": "Oversight"
+   },
+   {
+    "id": "GV.SC",
+    "nombre": "Cybersecurity Supply Chain Risk Management"
+   },
+   {
+    "id": "ID.AM",
+    "nombre": "Asset Management"
+   },
+   {
+    "id": "ID.RA",
+    "nombre": "Risk Assessment"
+   },
+   {
+    "id": "ID.IM",
+    "nombre": "Improvement"
+   },
+   {
+    "id": "PR.AA",
+    "nombre": "Identity Management, Authentication, and Access Control"
+   },
+   {
+    "id": "PR.AT",
+    "nombre": "Awareness and Training"
+   },
+   {
+    "id": "PR.DS",
+    "nombre": "Data Security"
+   },
+   {
+    "id": "PR.PS",
+    "nombre": "Platform Security"
+   },
+   {
+    "id": "PR.IR",
+    "nombre": "Technology Infrastructure Resilience"
+   },
+   {
+    "id": "DE.CM",
+    "nombre": "Continuous Monitoring"
+   },
+   {
+    "id": "DE.AE",
+    "nombre": "Adverse Event Analysis"
+   },
+   {
+    "id": "RS.MA",
+    "nombre": "Incident Management"
+   },
+   {
+    "id": "RS.AN",
+    "nombre": "Incident Analysis"
+   },
+   {
+    "id": "RS.CO",
+    "nombre": "Incident Response Reporting and Communication"
+   },
+   {
+    "id": "RS.MI",
+    "nombre": "Incident Mitigation"
+   },
+   {
+    "id": "RC.RP",
+    "nombre": "Incident Recovery Plan Execution"
+   },
+   {
+    "id": "RC.CO",
+    "nombre": "Incident Recovery Communication"
+   }
+  ],
+  "NIST RMF": [
+   {
+    "id": "Prepare",
+    "nombre": "Prepare"
+   },
+   {
+    "id": "Categorize",
+    "nombre": "Categorize"
+   },
+   {
+    "id": "Select",
+    "nombre": "Select"
+   },
+   {
+    "id": "Implement",
+    "nombre": "Implement"
+   },
+   {
+    "id": "Assess",
+    "nombre": "Assess"
+   },
+   {
+    "id": "Authorize",
+    "nombre": "Authorize"
+   },
+   {
+    "id": "Monitor",
+    "nombre": "Monitor"
+   }
+  ],
+  "NIST SP 800-53": [
+   {
+    "id": "AC",
+    "nombre": "Access Control"
+   },
+   {
+    "id": "AT",
+    "nombre": "Awareness and Training"
+   },
+   {
+    "id": "AU",
+    "nombre": "Audit and Accountability"
+   },
+   {
+    "id": "CA",
+    "nombre": "Assessment, Authorization, and Monitoring"
+   },
+   {
+    "id": "CM",
+    "nombre": "Configuration Management"
+   },
+   {
+    "id": "CP",
+    "nombre": "Contingency Planning"
+   },
+   {
+    "id": "IA",
+    "nombre": "Identification and Authentication"
+   },
+   {
+    "id": "IR",
+    "nombre": "Incident Response"
+   },
+   {
+    "id": "MA",
+    "nombre": "Maintenance"
+   },
+   {
+    "id": "MP",
+    "nombre": "Media Protection"
+   },
+   {
+    "id": "PE",
+    "nombre": "Physical and Environmental Protection"
+   },
+   {
+    "id": "PL",
+    "nombre": "Planning"
+   },
+   {
+    "id": "PM",
+    "nombre": "Program Management"
+   },
+   {
+    "id": "PS",
+    "nombre": "Personnel Security"
+   },
+   {
+    "id": "PT",
+    "nombre": "PII Processing and Transparency"
+   },
+   {
+    "id": "RA",
+    "nombre": "Risk Assessment"
+   },
+   {
+    "id": "SA",
+    "nombre": "System and Services Acquisition"
+   },
+   {
+    "id": "SC",
+    "nombre": "System and Communications Protection"
+   },
+   {
+    "id": "SI",
+    "nombre": "System and Information Integrity"
+   },
+   {
+    "id": "SR",
+    "nombre": "Supply Chain Risk Management"
+   }
+  ],
+  "NIST AI RMF": [
+   {
+    "id": "GOVERN-1",
+    "nombre": "Policies, processes, procedures and practices"
+   },
+   {
+    "id": "GOVERN-2",
+    "nombre": "Accountability structures"
+   },
+   {
+    "id": "GOVERN-3",
+    "nombre": "Workforce diversity, equity, inclusion, accessibility"
+   },
+   {
+    "id": "GOVERN-4",
+    "nombre": "Culture of risk"
+   },
+   {
+    "id": "GOVERN-5",
+    "nombre": "Engagement with AI actors"
+   },
+   {
+    "id": "GOVERN-6",
+    "nombre": "Third-party and supply chain risks"
+   },
+   {
+    "id": "MAP-1",
+    "nombre": "Context established"
+   },
+   {
+    "id": "MAP-2",
+    "nombre": "Categorization of the AI system"
+   },
+   {
+    "id": "MAP-3",
+    "nombre": "Capabilities, usage, goals, benefits/costs"
+   },
+   {
+    "id": "MAP-4",
+    "nombre": "Risks and benefits of components incl. third-party"
+   },
+   {
+    "id": "MAP-5",
+    "nombre": "Impacts to individuals, groups, organizations, society"
+   },
+   {
+    "id": "MEASURE-1",
+    "nombre": "Appropriate methods and metrics"
+   },
+   {
+    "id": "MEASURE-2",
+    "nombre": "Trustworthy characteristics evaluated"
+   },
+   {
+    "id": "MEASURE-3",
+    "nombre": "Mechanisms for tracking risks over time"
+   },
+   {
+    "id": "MEASURE-4",
+    "nombre": "Feedback on measurement efficacy"
+   },
+   {
+    "id": "MANAGE-1",
+    "nombre": "Risks prioritized, responded to and managed"
+   },
+   {
+    "id": "MANAGE-2",
+    "nombre": "Strategies to maximize benefits and minimize negative impacts"
+   },
+   {
+    "id": "MANAGE-3",
+    "nombre": "Third-party risks managed"
+   },
+   {
+    "id": "MANAGE-4",
+    "nombre": "Risk treatments documented and monitored"
+   }
+  ],
+  "NIST AI 600-1": [
+   {
+    "id": "GAI-CBRN",
+    "nombre": "CBRN information or capabilities"
+   },
+   {
+    "id": "GAI-Confab",
+    "nombre": "Confabulation"
+   },
+   {
+    "id": "GAI-Dangerous",
+    "nombre": "Dangerous, violent or hateful content"
+   },
+   {
+    "id": "GAI-Privacy",
+    "nombre": "Data privacy"
+   },
+   {
+    "id": "GAI-Env",
+    "nombre": "Environmental impacts"
+   },
+   {
+    "id": "GAI-Bias",
+    "nombre": "Harmful bias and homogenization"
+   },
+   {
+    "id": "GAI-HAI",
+    "nombre": "Human-AI configuration"
+   },
+   {
+    "id": "GAI-InfoInt",
+    "nombre": "Information integrity"
+   },
+   {
+    "id": "GAI-InfoSec",
+    "nombre": "Information security"
+   },
+   {
+    "id": "GAI-IP",
+    "nombre": "Intellectual property"
+   },
+   {
+    "id": "GAI-Obscene",
+    "nombre": "Obscene, degrading or abusive content"
+   },
+   {
+    "id": "GAI-ValueChain",
+    "nombre": "Value chain and component integration"
+   }
+  ],
+  "ISACA CISM 2026": [
+   {
+    "id": "CISM-1A",
+    "nombre": "D1 Governance · A Enterprise Governance"
+   },
+   {
+    "id": "CISM-1B",
+    "nombre": "D1 · B Information Security Strategy (2026: + enterprise architecture, information governance)"
+   },
+   {
+    "id": "CISM-2A",
+    "nombre": "D2 Risk Management · A Risk Identification and Assessment"
+   },
+   {
+    "id": "CISM-2B",
+    "nombre": "D2 · B Risk Response"
+   },
+   {
+    "id": "CISM-3A",
+    "nombre": "D3 Program · A Program Development (2026: + information security architecture)"
+   },
+   {
+    "id": "CISM-3B",
+    "nombre": "D3 · B Program Management"
+   },
+   {
+    "id": "CISM-4A",
+    "nombre": "D4 Incident Management · A Readiness"
+   },
+   {
+    "id": "CISM-4B",
+    "nombre": "D4 · B Operations"
+   }
+  ],
+  "ISACA CRISC 2025": [
+   {
+    "id": "CRISC-1A",
+    "nombre": "D1 Governance · A Organizational Governance"
+   },
+   {
+    "id": "CRISC-1B",
+    "nombre": "D1 · B Risk Governance"
+   },
+   {
+    "id": "CRISC-2A",
+    "nombre": "D2 Risk Assessment · A Risk Identification"
+   },
+   {
+    "id": "CRISC-2B",
+    "nombre": "D2 · B Risk Analysis"
+   },
+   {
+    "id": "CRISC-3A",
+    "nombre": "D3 Risk Response and Reporting · A Risk Response"
+   },
+   {
+    "id": "CRISC-3B",
+    "nombre": "D3 · B Control Design and Implementation"
+   },
+   {
+    "id": "CRISC-3C",
+    "nombre": "D3 · C Risk Monitoring and Reporting"
+   },
+   {
+    "id": "CRISC-4A",
+    "nombre": "D4 Technology and Security · A Technology Principles"
+   },
+   {
+    "id": "CRISC-4B",
+    "nombre": "D4 · B Information Security Principles"
+   }
+  ],
+  "ISACA AAISM": [
+   {
+    "id": "AAISM-1A",
+    "nombre": "D1 AI Governance and Program Management · A Stakeholders, frameworks, regulatory"
+   },
+   {
+    "id": "AAISM-1B",
+    "nombre": "D1 · B AI strategies, policies, procedures"
+   },
+   {
+    "id": "AAISM-1C",
+    "nombre": "D1 · C AI asset and data life cycle management"
+   },
+   {
+    "id": "AAISM-1D",
+    "nombre": "D1 · D AI security program development and management"
+   },
+   {
+    "id": "AAISM-1E",
+    "nombre": "D1 · E Business continuity and incident response"
+   },
+   {
+    "id": "AAISM-2A",
+    "nombre": "D2 AI Risk Management · A Risk assessment, thresholds, treatment"
+   },
+   {
+    "id": "AAISM-2B",
+    "nombre": "D2 · B AI threat and vulnerability management"
+   },
+   {
+    "id": "AAISM-2C",
+    "nombre": "D2 · C AI vendor and supply chain management"
+   },
+   {
+    "id": "AAISM-3A",
+    "nombre": "D3 AI Technologies and Controls · A Security architecture and design"
+   },
+   {
+    "id": "AAISM-3B",
+    "nombre": "D3 · B AI life cycle"
+   },
+   {
+    "id": "AAISM-3C",
+    "nombre": "D3 · C Data management controls"
+   },
+   {
+    "id": "AAISM-3D",
+    "nombre": "D3 · D Privacy, ethical, trust and safety controls"
+   },
+   {
+    "id": "AAISM-3E",
+    "nombre": "D3 · E Security controls and monitoring"
+   }
+  ],
+  "MITRE ATT&CK": [
+   {
+    "id": "TA0043 Reconnaissance",
+    "nombre": "TA0043 Reconnaissance"
+   },
+   {
+    "id": "TA0042 Resource Development",
+    "nombre": "TA0042 Resource Development"
+   },
+   {
+    "id": "TA0001 Initial Access",
+    "nombre": "TA0001 Initial Access"
+   },
+   {
+    "id": "TA0002 Execution",
+    "nombre": "TA0002 Execution"
+   },
+   {
+    "id": "TA0003 Persistence",
+    "nombre": "TA0003 Persistence"
+   },
+   {
+    "id": "TA0004 Privilege Escalation",
+    "nombre": "TA0004 Privilege Escalation"
+   },
+   {
+    "id": "TA0005 Defense Evasion",
+    "nombre": "TA0005 Defense Evasion"
+   },
+   {
+    "id": "TA0006 Credential Access",
+    "nombre": "TA0006 Credential Access"
+   },
+   {
+    "id": "TA0007 Discovery",
+    "nombre": "TA0007 Discovery"
+   },
+   {
+    "id": "TA0008 Lateral Movement",
+    "nombre": "TA0008 Lateral Movement"
+   },
+   {
+    "id": "TA0009 Collection",
+    "nombre": "TA0009 Collection"
+   },
+   {
+    "id": "TA0011 Command and Control",
+    "nombre": "TA0011 Command and Control"
+   },
+   {
+    "id": "TA0010 Exfiltration",
+    "nombre": "TA0010 Exfiltration"
+   },
+   {
+    "id": "TA0040 Impact",
+    "nombre": "TA0040 Impact"
+   }
+  ],
+  "MITRE ATLAS": [
+   {
+    "id": "ATLAS Reconnaissance",
+    "nombre": "ATLAS Reconnaissance"
+   },
+   {
+    "id": "ATLAS Resource Development",
+    "nombre": "ATLAS Resource Development"
+   },
+   {
+    "id": "ATLAS Initial Access",
+    "nombre": "ATLAS Initial Access"
+   },
+   {
+    "id": "ATLAS AI Model Access",
+    "nombre": "ATLAS AI Model Access"
+   },
+   {
+    "id": "ATLAS Execution",
+    "nombre": "ATLAS Execution"
+   },
+   {
+    "id": "ATLAS Persistence",
+    "nombre": "ATLAS Persistence"
+   },
+   {
+    "id": "ATLAS Privilege Escalation",
+    "nombre": "ATLAS Privilege Escalation"
+   },
+   {
+    "id": "ATLAS Defense Evasion",
+    "nombre": "ATLAS Defense Evasion"
+   },
+   {
+    "id": "ATLAS Credential Access",
+    "nombre": "ATLAS Credential Access"
+   },
+   {
+    "id": "ATLAS Discovery",
+    "nombre": "ATLAS Discovery"
+   },
+   {
+    "id": "ATLAS Collection",
+    "nombre": "ATLAS Collection"
+   },
+   {
+    "id": "ATLAS AI Attack Staging",
+    "nombre": "ATLAS AI Attack Staging"
+   },
+   {
+    "id": "ATLAS Exfiltration",
+    "nombre": "ATLAS Exfiltration"
+   },
+   {
+    "id": "ATLAS Impact",
+    "nombre": "ATLAS Impact"
+   }
+  ],
+  "MITRE D3FEND": [
+   {
+    "id": "D3FEND Model",
+    "nombre": "D3FEND Model"
+   },
+   {
+    "id": "D3FEND Harden",
+    "nombre": "D3FEND Harden"
+   },
+   {
+    "id": "D3FEND Detect",
+    "nombre": "D3FEND Detect"
+   },
+   {
+    "id": "D3FEND Isolate",
+    "nombre": "D3FEND Isolate"
+   },
+   {
+    "id": "D3FEND Deceive",
+    "nombre": "D3FEND Deceive"
+   },
+   {
+    "id": "D3FEND Evict",
+    "nombre": "D3FEND Evict"
+   },
+   {
+    "id": "D3FEND Restore",
+    "nombre": "D3FEND Restore"
+   }
+  ],
+  "OWASP LLM Top 10 2025": [
+   {
+    "id": "LLM01",
+    "nombre": "Prompt Injection"
+   },
+   {
+    "id": "LLM02",
+    "nombre": "Sensitive Information Disclosure"
+   },
+   {
+    "id": "LLM03",
+    "nombre": "Supply Chain"
+   },
+   {
+    "id": "LLM04",
+    "nombre": "Data and Model Poisoning"
+   },
+   {
+    "id": "LLM05",
+    "nombre": "Improper Output Handling"
+   },
+   {
+    "id": "LLM06",
+    "nombre": "Excessive Agency"
+   },
+   {
+    "id": "LLM07",
+    "nombre": "System Prompt Leakage"
+   },
+   {
+    "id": "LLM08",
+    "nombre": "Vector and Embedding Weaknesses"
+   },
+   {
+    "id": "LLM09",
+    "nombre": "Misinformation"
+   },
+   {
+    "id": "LLM10",
+    "nombre": "Unbounded Consumption"
+   }
+  ],
+  "OWASP Agentic Top 10 2026": [
+   {
+    "id": "ASI01",
+    "nombre": "Agent Goal Hijack"
+   },
+   {
+    "id": "ASI02",
+    "nombre": "Tool Misuse and Exploitation"
+   },
+   {
+    "id": "ASI03",
+    "nombre": "Agent Identity and Privilege Abuse"
+   },
+   {
+    "id": "ASI04",
+    "nombre": "Agentic Supply Chain Vulnerabilities"
+   },
+   {
+    "id": "ASI05",
+    "nombre": "Unexpected Code Execution"
+   },
+   {
+    "id": "ASI06",
+    "nombre": "Memory and Context Poisoning"
+   },
+   {
+    "id": "ASI07",
+    "nombre": "Insecure Inter-Agent Communication"
+   },
+   {
+    "id": "ASI08",
+    "nombre": "Cascading Failures"
+   },
+   {
+    "id": "ASI09",
+    "nombre": "Human-Agent Trust Exploitation"
+   },
+   {
+    "id": "ASI10",
+    "nombre": "Rogue Agents"
+   }
+  ],
+  "OWASP SAMM": [
+   {
+    "id": "SAMM Governance",
+    "nombre": "SAMM Governance"
+   },
+   {
+    "id": "SAMM Design",
+    "nombre": "SAMM Design"
+   },
+   {
+    "id": "SAMM Implementation",
+    "nombre": "SAMM Implementation"
+   },
+   {
+    "id": "SAMM Verification",
+    "nombre": "SAMM Verification"
+   },
+   {
+    "id": "SAMM Operations",
+    "nombre": "SAMM Operations"
+   }
+  ],
+  "CIS Controls v8.1": [
+   {
+    "id": "CIS 1",
+    "nombre": "Inventory and Control of Enterprise Assets"
+   },
+   {
+    "id": "CIS 2",
+    "nombre": "Inventory and Control of Software Assets"
+   },
+   {
+    "id": "CIS 3",
+    "nombre": "Data Protection"
+   },
+   {
+    "id": "CIS 4",
+    "nombre": "Secure Configuration of Enterprise Assets and Software"
+   },
+   {
+    "id": "CIS 5",
+    "nombre": "Account Management"
+   },
+   {
+    "id": "CIS 6",
+    "nombre": "Access Control Management"
+   },
+   {
+    "id": "CIS 7",
+    "nombre": "Continuous Vulnerability Management"
+   },
+   {
+    "id": "CIS 8",
+    "nombre": "Audit Log Management"
+   },
+   {
+    "id": "CIS 9",
+    "nombre": "Email and Web Browser Protections"
+   },
+   {
+    "id": "CIS 10",
+    "nombre": "Malware Defenses"
+   },
+   {
+    "id": "CIS 11",
+    "nombre": "Data Recovery"
+   },
+   {
+    "id": "CIS 12",
+    "nombre": "Network Infrastructure Management"
+   },
+   {
+    "id": "CIS 13",
+    "nombre": "Network Monitoring and Defense"
+   },
+   {
+    "id": "CIS 14",
+    "nombre": "Security Awareness and Skills Training"
+   },
+   {
+    "id": "CIS 15",
+    "nombre": "Service Provider Management"
+   },
+   {
+    "id": "CIS 16",
+    "nombre": "Application Software Security"
+   },
+   {
+    "id": "CIS 17",
+    "nombre": "Incident Response Management"
+   },
+   {
+    "id": "CIS 18",
+    "nombre": "Penetration Testing"
+   }
+  ],
+  "CSA CCM v4": [
+   {
+    "id": "A&A",
+    "nombre": "Audit & Assurance"
+   },
+   {
+    "id": "AIS",
+    "nombre": "Application & Interface Security"
+   },
+   {
+    "id": "BCR",
+    "nombre": "Business Continuity Management & Operational Resilience"
+   },
+   {
+    "id": "CCC",
+    "nombre": "Change Control & Configuration Management"
+   },
+   {
+    "id": "CEK",
+    "nombre": "Cryptography, Encryption & Key Management"
+   },
+   {
+    "id": "DCS",
+    "nombre": "Datacenter Security"
+   },
+   {
+    "id": "DSP",
+    "nombre": "Data Security & Privacy Lifecycle Management"
+   },
+   {
+    "id": "GRC",
+    "nombre": "Governance, Risk & Compliance"
+   },
+   {
+    "id": "HRS",
+    "nombre": "Human Resources"
+   },
+   {
+    "id": "IAM",
+    "nombre": "Identity & Access Management"
+   },
+   {
+    "id": "IPY",
+    "nombre": "Interoperability & Portability"
+   },
+   {
+    "id": "IVS",
+    "nombre": "Infrastructure & Virtualization Security"
+   },
+   {
+    "id": "LOG",
+    "nombre": "Logging & Monitoring"
+   },
+   {
+    "id": "SEF",
+    "nombre": "Security Incident Management, E-Discovery & Cloud Forensics"
+   },
+   {
+    "id": "STA",
+    "nombre": "Supply Chain Management, Transparency & Accountability"
+   },
+   {
+    "id": "TVM",
+    "nombre": "Threat & Vulnerability Management"
+   },
+   {
+    "id": "UEM",
+    "nombre": "Universal Endpoint Management"
+   }
+  ],
+  "CSA AICM": [
+   {
+    "id": "MDS",
+    "nombre": "Model Security (AICM)"
+   },
+   {
+    "id": "AIS-11",
+    "nombre": "Agents Security Boundaries (AICM)"
+   },
+   {
+    "id": "IAM-19",
+    "nombre": "Agent Access Restriction (AICM)"
+   },
+   {
+    "id": "AICM (dominios CCM)",
+    "nombre": "AICM reutiliza los 17 dominios CCM + MDS"
+   }
+  ]
+ }
+}

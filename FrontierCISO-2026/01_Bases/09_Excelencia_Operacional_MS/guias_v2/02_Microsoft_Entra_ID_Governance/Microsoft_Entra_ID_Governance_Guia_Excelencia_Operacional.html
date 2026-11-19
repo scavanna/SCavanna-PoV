@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft Entra ID Governance — Guía Operacional (Configuración, Rutinas y Playbooks)</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.72;
+}
+code, pre, .mono {
+  font-family: Consolas, "Courier New", Courier, monospace;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 0.88em;
+  color: var(--cp-text);
+  word-break: break-word;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Sticky Top Navigation */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--cp-panel-strong);
+  border-bottom: 1px solid var(--cp-border);
+  backdrop-filter: blur(10px);
+  padding: 12px 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.topbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border-strong);
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.btn-primary:hover {
+  background: var(--cp-accent-hover);
+  border-color: var(--cp-accent-hover);
+  color: var(--cp-accent-fg);
+}
+.btn-sm {
+  padding: 5px 11px;
+  font-size: 12.5px;
+}
+.select-input, .search-input {
+  padding: 9px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+}
+.search-input { min-width: 260px; flex: 1; }
+
+/* Two-Column Spacious App Layout */
+.app-shell {
+  max-width: 1520px;
+  margin: 0 auto;
+  padding: 28px 32px 56px 32px;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+.sidebar {
+  position: sticky;
+  top: 76px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 20px 16px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+}
+.nav-section-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cp-text-soft);
+  padding: 12px 12px 6px 12px;
+}
+.nav-section-label:first-child { padding-top: 2px; }
+.nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border-radius: 0.625rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.nav-item:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border);
+}
+.nav-item.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.nav-subitem {
+  padding-left: 24px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.nav-count {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--cp-surface-soft);
+  color: var(--cp-text-muted);
+  border: 1px solid var(--cp-border);
+}
+.nav-item.active .nav-count {
+  background: var(--cp-panel-strong);
+  color: var(--cp-text);
+  border-color: transparent;
+}
+.sidebar-progress {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cp-border);
+}
+.prog-row { margin-bottom: 12px; }
+.prog-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--cp-text-muted);
+  font-weight: 600;
+}
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--cp-accent);
+  width: 0%;
+  transition: width 0.25s ease;
+}
+
+/* Main Reading Area */
+.main-area {
+  max-width: 1080px;
+  width: 100%;
+}
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+
+/* Hero & Section Headers */
+.hero-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 32px 36px;
+  margin-bottom: 28px;
+}
+.hero-card h1 {
+  margin: 10px 0 14px 0;
+  font-size: 28px;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+}
+.hero-lead {
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: var(--cp-text-muted);
+  margin: 0;
+}
+.section-banner {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-left: 5px solid var(--cp-accent);
+  border-radius: 16px;
+  padding: 26px 32px;
+  margin-bottom: 28px;
+}
+.section-banner h2 {
+  margin: 0 0 8px 0;
+  font-size: 23px;
+  line-height: 1.3;
+}
+.section-banner p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15.5px;
+}
+
+/* Mode Selector Cards on Overview */
+.modes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.mode-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+}
+.mode-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cp-accent);
+}
+.mode-card h3 {
+  margin: 6px 0 10px 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+.mode-card p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15px;
+}
+
+/* Badges & Inline Tags */
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 0.625rem;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface-soft);
+  color: var(--cp-text);
+}
+.badge-accent {
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border-color: var(--cp-accent);
+}
+.badge-learn {
+  border-color: var(--cp-success);
+  color: var(--cp-success);
+  background: var(--cp-surface-soft);
+}
+.badge-editorial {
+  border-color: var(--cp-warning);
+  color: var(--cp-warning);
+  background: var(--cp-surface-soft);
+}
+.inline-tag {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 6px;
+  margin-left: 4px;
+  vertical-align: middle;
+  border: 1px solid var(--cp-border);
+}
+.tag-learn { color: var(--cp-success); border-color: var(--cp-success); background: var(--cp-surface-soft); }
+.tag-edit { color: var(--cp-warning); border-color: var(--cp-warning); background: var(--cp-surface-soft); }
+
+/* Sub-navigation Switcher */
+.subnav-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.subnav-pill {
+  padding: 10px 18px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.subnav-pill:hover { border-color: var(--cp-border-strong); background: var(--cp-surface-soft); }
+.subnav-pill.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.filter-toolbar {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Spacious Operational, Setup & Playbook Cards */
+.spacious-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 30px 34px;
+  margin-bottom: 24px;
+}
+.spacious-card.is-done {
+  border-color: var(--cp-success);
+  background: var(--cp-bg-elevated);
+}
+.adhoc-card {
+  border-left: 5px solid var(--cp-accent);
+}
+.card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.card-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 280px;
+}
+.task-checkbox {
+  width: 22px;
+  height: 22px;
+  margin-top: 4px;
+  accent-color: var(--cp-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.card-code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border: 1px solid var(--cp-accent);
+  display: inline-block;
+  margin-bottom: 6px;
+}
+.card-heading {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+/* Info Callout Boxes inside Cards */
+.info-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.info-box {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+.info-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-soft);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.info-content {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.trigger-banner {
+  background: var(--cp-accent-soft);
+  border: 1px solid var(--cp-accent);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+}
+.trigger-banner .info-label {
+  color: var(--cp-accent);
+}
+
+/* Step-by-Step Spacious List */
+.steps-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-muted);
+  margin: 0 0 12px 0;
+}
+.steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.step-row:hover { border-color: var(--cp-border-strong); }
+.step-row.step-checked {
+  border-color: var(--cp-success);
+  opacity: 0.88;
+}
+.step-num {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border-strong);
+  color: var(--cp-text);
+  font-weight: 700;
+  font-size: 13.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-row.step-checked .step-num {
+  background: var(--cp-success);
+  border-color: var(--cp-success);
+  color: var(--cp-accent-fg);
+}
+.step-body {
+  font-size: 15.5px;
+  line-height: 1.72;
+  flex: 1;
+}
+
+/* Validation & Evidence Footer Box */
+.validation-footer {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.validation-footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--cp-border);
+  font-size: 13.5px;
+  color: var(--cp-text-muted);
+}
+
+/* Grids & Tables for Secondary Views */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.subsection-heading {
+  font-size: 20px;
+  margin: 34px 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cp-border);
+}
+pre.code-block {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 14px 0 0 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.table-wrap {
+  overflow-x: auto;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th, td { padding: 16px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--cp-border); line-height: 1.6; }
+th { background: var(--cp-bg-elevated); font-weight: 700; }
+tr:last-child td { border-bottom: none; }
+.muted { color: var(--cp-text-muted); }
+
+.footer {
+  margin-top: 48px;
+  padding: 24px 0;
+  border-top: 1px solid var(--cp-border);
+  color: var(--cp-text-muted);
+  font-size: 13.5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 1080px) {
+  .app-shell { grid-template-columns: 1fr; padding: 18px; gap: 20px; }
+  .sidebar { position: static; max-height: none; }
+  .grid-2, .info-pair { grid-template-columns: 1fr; }
+  .spacious-card, .hero-card { padding: 22px; }
+}
+@media print {
+  .topbar, .sidebar, .filter-toolbar, .subnav-bar { display: none !important; }
+  .app-shell { display: block; padding: 0; }
+  .view-panel { display: block !important; margin-bottom: 32px; }
+  body { background: var(--cp-surface); font-size: 13px; }
+}
+</style></head>
+<body>
+<header class="topbar">
+  <div class="topbar-group">
+    <a class="btn btn-primary" href="../index.html">← Portal Maestro (23 Módulos)</a>
+    <a class="btn" id="prevModBtn" href="#">Anterior</a>
+    <select class="select-input" id="modJumpSelect" aria-label="Cambiar de módulo"></select>
+    <a class="btn" id="nextModBtn" href="#">Siguiente</a>
+  </div>
+  <div class="topbar-group">
+    <a class="btn" id="xlsxLink" href="#" download>Libro .XLSX</a>
+    <a class="btn" id="mdLink" href="#">Guía .MD</a>
+    <button class="btn" type="button" id="exportCsvBtn">Exportar CSV</button>
+    <button class="btn" type="button" id="printBtn">Imprimir / PDF</button>
+    <button class="btn" type="button" id="themeToggleBtn">Tema Claro / Oscuro</button>
+  </div>
+</header>
+
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Navegación de la guía operativa">
+    <div class="nav-section-label">Introducción</div>
+    <button class="nav-item active" type="button" data-view="view-overview">
+      <span>Visión General y Mapa</span>
+    </button>
+
+    <div class="nav-section-label">1 · Configuración Puntual</div>
+    <button class="nav-item" type="button" data-view="view-config">
+      <span>Configuración y Validaciones</span>
+      <span class="nav-count" id="navCntConfig">0</span>
+    </button>
+
+    <div class="nav-section-label">2 · Acciones Periódicas</div>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Diaria">
+      <span>Rutinas Diarias</span>
+      <span class="nav-count" id="navCntDiaria">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Semanal">
+      <span>Rutinas Semanales</span>
+      <span class="nav-count" id="navCntSemanal">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Mensual">
+      <span>Rutinas Mensuales</span>
+      <span class="nav-count" id="navCntMensual">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="CICLOS_LARGOS">
+      <span>Trimestral · Semestral · Anual</span>
+      <span class="nav-count" id="navCntLargos">0</span>
+    </button>
+
+    <div class="nav-section-label">3 · Respuesta a Señales</div>
+    <button class="nav-item" type="button" data-view="view-adhoc">
+      <span>Playbooks Ad-Hoc (Alertas)</span>
+      <span class="nav-count" id="navCntAdhoc">0</span>
+    </button>
+
+    <div class="nav-section-label">Verificación y Gobierno</div>
+    <button class="nav-item" type="button" data-view="view-queries">
+      <span>Consultas KQL / Graph / PS</span>
+      <span class="nav-count" id="navCntQueries">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-kpis">
+      <span>KPIs, Madurez y Formación</span>
+      <span class="nav-count" id="navCntKpis">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-nist">
+      <span>Auditoría NIST 2.0 y Fuentes</span>
+      <span class="nav-count" id="navCntNist">0</span>
+    </button>
+
+    <div class="sidebar-progress" id="sidebarProgress"></div>
+  </aside>
+
+  <main class="main-area">
+    <!-- VISTA 0: OVERVIEW & MAPA DE LOS 3 MODOS -->
+    <section class="view-panel active" id="view-overview">
+      <div class="hero-card">
+        <div class="pill-row" id="heroBadges"></div>
+        <h1 id="heroTitle"></h1>
+        <p class="hero-lead" id="heroSummary"></p>
+      </div>
+
+      <h2 class="subsection-heading" style="margin-top:0;">Cómo operar esta tecnología: Los 3 Niveles de Acción</h2>
+      <div class="modes-grid" id="modesSummaryGrid"></div>
+
+      <div class="spacious-card" id="licensingOverviewCard"></div>
+
+      <h2 class="subsection-heading">Principios Rectores Oficiales (Zero Trust)</h2>
+      <div class="grid-2" id="principlesGrid"></div>
+    </section>
+
+    <!-- VISTA 1: ACCIONES PUNTUALES DE CONFIGURACIÓN Y VALIDACIONES -->
+    <section class="view-panel" id="view-config">
+      <div class="section-banner">
+        <h2>1. Acciones Puntuales de Configuración y Validaciones sobre la Plataforma</h2>
+        <p>Controles que se ejecutan al desplegar la tecnología, activar nuevas capacidades o auditar su línea base. Distingue qué debes configurar una sola vez y cómo validar técnicamente ("Proof of Life") que cada ajuste está activo y protegiendo el entorno.</p>
+      </div>
+
+      <div class="subnav-bar" id="configSubnav">
+        <a class="subnav-pill" href="#cfg-prereqs">1A. Puesta en Marcha Inicial</a>
+        <a class="subnav-pill" href="#cfg-validations">1B. Validaciones de Configuración ("Proof of Life")</a>
+        <a class="subnav-pill" href="#cfg-components">1C. Configuración por Componente</a>
+        <a class="subnav-pill" href="#cfg-rbac">1D. Privilegio Mínimo RBAC y PIM</a>
+      </div>
+
+      <h3 class="subsection-heading" id="cfg-prereqs">1A. Checklist de Puesta en Marcha y Prerrequisitos Puntuales</h3>
+      <div id="prereqsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-validations">1B. Validaciones Técnicas sobre las Configuraciones ("Proof of Life")</h3>
+      <p class="muted" style="margin-top:-8px;margin-bottom:20px;">Comprueba cada uno de estos indicadores en consola o mediante consulta para confirmar que la configuración no quedó solo en papel o en modo auditoría incompleta.</p>
+      <div id="validationsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-components">1C. Configuración Base por Componente e Integraciones</h3>
+      <div id="componentsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-rbac">1D. Configuración Puntual de Roles Administrativos y Estrategia PIM / JIT</h3>
+      <div id="rbacContainer"></div>
+    </section>
+
+    <!-- VISTA 2: ACCIONES PERIÓDICAS PROGRAMADAS -->
+    <section class="view-panel" id="view-periodic">
+      <div class="section-banner">
+        <h2 id="periodicTitle">2. Acciones Periódicas Programadas</h2>
+        <p id="periodicSubtitle">Rutinas recurrentes preventivas, de higiene operativa, tuning y gobierno. Selecciona la frecuencia deseada para leer cómodamente solo las actividades de ese ciclo.</p>
+      </div>
+
+      <div class="subnav-bar" id="periodicCadBar">
+        <button class="subnav-pill active" type="button" data-pcad="Diaria">Diarias</button>
+        <button class="subnav-pill" type="button" data-pcad="Semanal">Semanales</button>
+        <button class="subnav-pill" type="button" data-pcad="Mensual">Mensuales</button>
+        <button class="subnav-pill" type="button" data-pcad="CICLOS_LARGOS">Trimestrales · Semestrales · Anuales</button>
+        <button class="subnav-pill" type="button" data-pcad="ALL_PERIODIC">Ver Todas las Periódicas</button>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="perSearch" placeholder="Buscar acción periódica, consola, tabla KQL, control a validar o rol...">
+        <select class="select-input" id="perRole"><option value="ALL">Rol Responsable: Todos</option></select>
+        <select class="select-input" id="perOrigin">
+          <option value="ALL">Origen: Todos</option>
+          <option value="Verificado MS Learn">Verificado MS Learn</option>
+          <option value="Propuesta Editorial">Propuesta Editorial</option>
+        </select>
+        <button class="btn btn-sm" type="button" id="resetChecksBtn">Reiniciar Progreso</button>
+      </div>
+
+      <p class="muted" id="perCountLabel" style="margin-bottom:18px;"></p>
+      <div id="periodicCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 3: ACCIONES AD-HOC ANTE SEÑALES, ALERTAS E INCIDENTES -->
+    <section class="view-panel" id="view-adhoc">
+      <div class="section-banner">
+        <h2>3. Acciones Ad-Hoc ante Señales, Alertas e Incidentes (Playbooks del Analista)</h2>
+        <p>Procedimientos reactivos bajo demanda. A diferencia de las rutinas periódicas, estos playbooks se activan únicamente cuando una señal de riesgo, alerta de detección, anomalía o emergencia exige la intervención inmediata de un analista.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="adhocSearch" placeholder="Filtrar playbooks por alerta disparadora, síntoma, técnica MITRE o acción de contención...">
+      </div>
+
+      <div id="adhocCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 4: CONSULTAS KQL / GRAPH / POWERSHELL -->
+    <section class="view-panel" id="view-queries">
+      <div class="section-banner">
+        <h2>4. Consultas Técnicas de Validación, Monitoreo y Threat Hunting</h2>
+        <p>Consultas KQL, llamadas Microsoft Graph API y scripts PowerShell listos para auditar configuraciones puntuales, medir salud periódica o investigar alertas ad-hoc.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="kqlSearch" placeholder="Buscar consulta por nombre, tabla (SigninLogs, DeviceEvents, SentinelHealth...), comando o propósito...">
+        <select class="select-input" id="kqlUsageFilter">
+          <option value="ALL">Momento de Uso: Todos</option>
+          <option value="Validación de Configuración y Postura">1. Validación de Configuración y Postura</option>
+          <option value="Control Periódico de Salud, Auditoría y KPIs">2. Control Periódico de Salud y KPIs</option>
+          <option value="Investigación Ad-Hoc y Threat Hunting">3. Investigación Ad-Hoc y Hunting</option>
+        </select>
+      </div>
+
+      <div id="queriesContainer"></div>
+    </section>
+
+    <!-- VISTA 5: KPIs, MADUREZ Y FORMACIÓN -->
+    <section class="view-panel" id="view-kpis">
+      <div class="section-banner">
+        <h2>5. Indicadores Clave (KPIs), Modelo de Madurez y Ruta de Formación</h2>
+        <p>Métricas objetivas para medir eficacia operativa ante el CISO, evolución en 5 niveles de madurez y habilitación técnica recomendada por rol.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Indicadores Clave de Desempeño (KPIs)</h3>
+      <div class="grid-2" id="kpiContainer"></div>
+
+      <h3 class="subsection-heading">Modelo de Madurez Operacional (Niveles 1 a 5)</h3>
+      <div id="maturityContainer"></div>
+
+      <h3 class="subsection-heading">Ruta de Habilitación y Formación por Rol</h3>
+      <div id="trainingContainer"></div>
+    </section>
+
+    <!-- VISTA 6: AUDITORÍA NIST CSF 2.0, TRANSPARENCIA Y REFERENCIAS -->
+    <section class="view-panel" id="view-nist">
+      <div class="section-banner">
+        <h2>6. Mapeo de Auditoría NIST CSF 2.0, Revalidación (Nov 2026) y Referencias</h2>
+        <p>Evidencia auditable reproducible para las seis funciones de NIST CSF 2.0 (CSWP 29), registro transparente de verificaciones en Microsoft Learn frente a propuestas editoriales y fuentes públicas.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Matriz de Evidencia Auditable NIST CSF 2.0</h3>
+      <div class="filter-toolbar">
+        <select class="select-input" id="nistFuncSelect">
+          <option value="ALL">Función NIST CSF 2.0: Todas (6 Funciones)</option>
+          <option value="GOVERN">GOVERN (GV)</option>
+          <option value="IDENTIFY">IDENTIFY (ID)</option>
+          <option value="PROTECT">PROTECT (PR)</option>
+          <option value="DETECT">DETECT (DE)</option>
+          <option value="RESPOND">RESPOND (RS)</option>
+          <option value="RECOVER">RECOVER (RC)</option>
+        </select>
+      </div>
+      <div id="nistCardsContainer"></div>
+
+      <h3 class="subsection-heading">Registro de Revalidación Técnica (Noviembre 2026) y Decisiones Editoriales</h3>
+      <div class="spacious-card" id="auditSummaryBox"></div>
+      <div class="grid-2">
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Hallazgos y Actualizaciones Verificadas en MS Learn</h3>
+          <div id="corrContainer"></div>
+        </div>
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Decisiones y Propuestas Editoriales Explícitas</h3>
+          <div id="decContainer"></div>
+        </div>
+      </div>
+
+      <h3 class="subsection-heading">Directorio de Referencias Públicas Verificadas</h3>
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="refSearch" placeholder="Filtrar referencias por título, autor, MVP o URL...">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Recurso Oficial / Comunitario</th>
+              <th>Tipo</th>
+              <th>Autor / Entidad</th>
+              <th>Comentario de Alcance</th>
+            </tr>
+          </thead>
+          <tbody id="refTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>Guía Maestra de Excelencia Operacional Microsoft — Edición Espaciada v3.0 (Validación: 2026-11-11)</div>
+      <div>Configuración Puntual · Rutinas Periódicas · Playbooks Ad-Hoc · NIST CSF 2.0</div>
+    </footer>
+  </main>
+</div>
+
+<script>
+const MODULE_DATA = {"schemaVersion": "2.0", "id": "02_Microsoft_Entra_ID_Governance", "orden": 2, "slug": "Microsoft_Entra_ID_Governance", "nombre": "Microsoft Entra ID Governance (Gobierno de Ciclo de Vida JML, Derechos, Recertificación IA y Agentes)", "nombreCorto": "Microsoft Entra ID Governance", "categoria": "Identidad y Acceso (Microsoft Entra)", "bloqueOrigen": "Nuevo desde Microsoft Learn MCP (Nov 2026)", "fechaValidacion": "2026-11-11", "portalesPrincipales": ["https://entra.microsoft.com", "https://myaccess.microsoft.com", "https://myaccount.microsoft.com", "https://portal.azure.com"], "audiencia": ["CISO", "Identity Architect", "Identity Governance Administrator", "Lifecycle Workflows Administrator", "Privileged Role Administrator", "SOC L2", "SOC L3", "HRIS Integration Lead", "Application Owners", "GRC", "FinOps"], "relacionM365E5": {"estado": "Complemento / Add-on sobre M365 E5 (Incluido en Microsoft Entra Suite / M365 E7)", "licencias": ["Microsoft Entra ID Governance Step Up for Microsoft Entra ID P2 (complemento recomendado para clientes con Microsoft 365 E5 / E5 Security / EMS E5)", "Microsoft Entra ID Governance (User SL standalone sobre prerrequisito Entra ID P1 o Microsoft 365 E3/E5)", "Microsoft Entra Suite / Microsoft Entra Suite Add-on for Microsoft Entra ID P2 (incluye Entra ID Governance, Private Access, Internet Access, ID Protection y Verified ID)", "Microsoft 365 E7 - The Frontier Suite (GA 1 de mayo de 2026; unifica Microsoft 365 E5, Microsoft Copilot, Microsoft Entra Suite y Microsoft Agent 365)", "Microsoft Agent 365 (sobre prerrequisito Entra ID P1 o M365 E3 para gobierno específico de identidades de agentes IA y service principals)", "Suscripción Azure vinculada al tenant para facturación Monthly Active Users (MAU) del complemento Microsoft Entra ID Governance for guests"], "prerrequisitos": ["Suscripción activa en el tenant con plan de servicio AAD_PREMIUM_P2 para el SKU Step-Up P2 (ej. Microsoft 365 E5) o AAD_PREMIUM para el SKU completo Entra ID Governance", "Cantidad de licencias adquiridas suficiente para cubrir a todos los usuarios miembros gobernados o que configuran capacidades de Entra ID Governance en el tenant", "Atributos autoritativos poblados desde HRIS en objetos de usuario (employeeHireDate, employeeLeaveDateTime, department, mail y referencia jerárquica manager)", "Suscripción y grupo de recursos de Azure vinculados en ID Governance > Dashboard > Guest governance (rol Azure Owner) para gobernar usuarios Guest B2B fuera de MTO", "Configuración de Diagnostic Settings en Microsoft Entra ID enviando AuditLogs y ProvisioningLogs hacia Azure Monitor Log Analytics / Microsoft Sentinel para retención superior a 30 días"], "notaLicenciamiento": "Microsoft 365 E5 incluye Microsoft Entra ID P2, el cual conserva todas las capacidades IGA previamente GA (Access Reviews básicos, Entitlement Management básico con Separation of Duties elemental de paquetes/grupos incompatibles, portal My Access y PIM para roles Entra, recursos Azure y grupos), pero Microsoft Learn establece explícitamente que ninguna nueva capacidad IGA se añade ni se añadirá al SKU Entra ID P2. Las capacidades avanzadas —Lifecycle Workflows (hasta 100 workflows y 100 Custom Task Extensions en Logic Apps), revisiones de acceso asistidas por ML (User-to-Group Affiliation e inactivos puros), Access Review Agent (con SCUs de Security Copilot), Verified ID + Face Check en Access Packages, Auto-assignment policies, aprobaciones condicionadas por ID Protection / Insider Risk, Account Discovery de cuentas huérfanas y cuota API /bulkUpload ampliada a 300K registros/24h— exigen Microsoft Entra ID Governance (o Step-Up for P2 / Entra Suite / M365 E7). Los invitados B2B (userType Guest) solo generan cobro MAU en Azure cuando ejecutan acciones exclusivas de ID Governance (GovernanceLicenseFeatureUsed = True, máximo un cargo por huésped/mes; exento en Multi-Tenant Organizations). El gobierno de identidades Microsoft Entra Agent ID en Access Packages y tareas de sponsor exige Microsoft Agent 365 o Microsoft 365 E7."}, "resumenEjecutivo": "Microsoft Entra ID Governance constituye el plano cloud-native avanzado de Identity Governance and Administration (IGA) dentro del ecosistema Microsoft Entra, diseñado para asegurar de forma automatizada y verificable que las identidades correctas —empleados, colaboradores externos B2B, administradores privilegiados e identidades autónomas de agentes IA— posean únicamente el acceso necesario a los recursos adecuados durante el tiempo estrictamente requerido. Construido como capa de evolución sobre Microsoft Entra ID P2 (incluido en M365 E5) e integrado de serie en Microsoft Entra Suite y Microsoft 365 E7, unifica aprovisionamiento autoritativo desde RR. HH. (Workday, SuccessFactors y API /bulkUpload de hasta 300.000 registros/día), automatización Joiner-Mover-Leaver con Lifecycle Workflows y Azure Logic Apps, paquetes de derechos delegados en Entitlement Management con Separation of Duties y pruebas criptográficas/biométricas Verified ID + Face Check, recertificaciones inteligentes asistidas por ML y por el Access Review Agent en Microsoft Teams, elevación Just-In-Time en PIM y gobierno integral de Microsoft Entra Agent ID con patrocinadores humanos obligatorios.", "principiosRectores": [{"principio": "Fuente autoritativa única impulsada por RR. HH. (HR-Driven Source of Truth)", "descripcion": "Vincular el nacimiento, movilidad y baja de identidades corporativas directamente a sistemas HCM como Workday, SAP SuccessFactors o API-driven inbound provisioning (/bulkUpload) hacia Active Directory y Microsoft Entra ID sin altas manuales.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/entra/id-governance/identity-governance-overview"}, {"principio": "Automatización determinista Joiner-Mover-Leaver (Zero-Touch JML)", "descripcion": "Ejecutar incorporación día-1 con Temporary Access Pass (TAP), reajuste de accesos por cambio departamental y revocación inmediata de tokens, paquetes, grupos y licencias en bajas mediante Lifecycle Workflows y Custom Task Extensions en Logic Apps.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/entra/id-governance/what-are-lifecycle-workflows"}, {"principio": "Acceso empaquetado por rol de negocio, temporal y delegado (Entitlement-by-Design)", "descripcion": "Agrupar grupos, Teams, aplicaciones, sitios SharePoint, roles Entra y roles SAP IAG en Access Packages dentro de catálogos delegados al negocio, imponiendo expiración, Separation of Duties y credenciales Verified ID + Face Check.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-delegate"}, {"principio": "Recertificación inteligente asistida por ML e IA (Anti-Rubber-Stamping)", "descripcion": "Erradicar aprobaciones mecánicas en campañas de Access Reviews integrando señales de inactividad (>30 días), afiliación organizacional ML (User-to-Group Affiliation) y asistencia conversacional del Access Review Agent en Microsoft Teams.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/entra/id-governance/review-recommendations-access-reviews"}, {"principio": "Cero privilegios permanentes (Zero Standing Privileges en PIM)", "descripcion": "Convertir toda asignación privilegiada sobre Microsoft Entra roles, recursos Azure y PIM for Groups en elegible Just-In-Time (JIT), exigiendo Conditional Access Authentication Context y MFA resistente al phishing al activar.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure"}, {"principio": "Paridad de gobierno para externos B2B e identidades de Agentes IA", "descripcion": "Someter cuentas Guest B2B e identidades Microsoft Entra Agent ID (agent blueprints, agent identities y agent users) a patrocinadores humanos responsables, transferencia automática de patrocinio al gerente y expiración determinista.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/entra/id-governance/agent-id-governance-overview"}], "arquitecturaYComponentes": [{"componente": "HR-Driven & API-Driven Inbound Provisioning", "funcionOperativa": "Sincronización entrante autoritativa desde Workday, SAP SuccessFactors o endpoint Graph /bulkUpload (hasta 300.000 registros/24h y 20 jobs AD + 20 jobs Entra con licencia ID Governance).", "portalRuta": "entra.microsoft.com > Entra ID > Enterprise apps > Provisioning", "integraciones": ["Workday & SAP SuccessFactors", "Microsoft Graph synchronization bulkUpload API", "Active Directory on-premises & Microsoft Entra Cloud Sync"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Lifecycle Workflows (LCW) y Custom Task Extensions", "funcionOperativa": "Motor JML con hasta 100 workflows por tenant, 25 tareas por workflow, más de 30 tareas nativas, disparadores por tiempo (V1/V2), atributo, grupo o inactividad y hasta 100 extensiones en Azure Logic Apps.", "portalRuta": "entra.microsoft.com > ID Governance > Lifecycle workflows", "integraciones": ["Azure Logic Apps (Managed Identity)", "Temporary Access Pass (TAP) & Microsoft Teams", "Microsoft Security Copilot en Entra (creación NL)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Entitlement Management (Catálogos, Access Packages y My Access)", "funcionOperativa": "Gobierno delegado con hasta 7.500 catálogos, 20.000 paquetes, 300.000 asignaciones, Auto-assignment policies (15.000/política), aprobaciones multietapa con riesgo y portal de autoservicio My Access.", "portalRuta": "entra.microsoft.com > ID Governance > Entitlement management / myaccess.microsoft.com", "integraciones": ["Grupos M365/Seguridad, Enterprise Apps, SharePoint Online", "SAP Cloud Identity Access Governance (IAG) & Entra Roles (Preview)", "Microsoft Entra ID Protection & Purview Insider Risk Management"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Controles de Separation of Duties (SoD) y Verified ID + Face Check", "funcionOperativa": "Prevención de acumulación de privilegios mediante paquetes/grupos incompatibles y exigencia de credenciales verificables W3C y selfie biométrico en tiempo real (Face Check) antes de solicitar acceso.", "portalRuta": "entra.microsoft.com > ID Governance > Entitlement management > Access packages > Separation of duties / Requests", "integraciones": ["Microsoft Entra Verified ID Network", "Socios IDV en Microsoft Security Store", "Microsoft Authenticator (presentación QR y Face Check)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Access Reviews Inteligentes y Access Review Agent", "funcionOperativa": "Campañas recurrentes de recertificación con foco en inactivos puros, recomendaciones ML User-to-Group Affiliation (grupos <=600 miembros), Catalog Access Reviews y asistente conversacional IA en Teams.", "portalRuta": "entra.microsoft.com > ID Governance > Access reviews / Agents > Access Review Agent", "integraciones": ["Microsoft Security Copilot", "Microsoft Teams (flujo conversacional para revisores)", "My Access Portal"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Privileged Identity Management (PIM para Roles, Azure y Grupos)", "funcionOperativa": "Activación Just-In-Time (JIT) acotada en el tiempo con aprobación, MFA/Authentication Context, alertas de asignaciones fuera de banda y Custom Extensions al activar roles (Preview).", "portalRuta": "entra.microsoft.com > ID Governance > Privileged Identity Management", "integraciones": ["Microsoft Entra Conditional Access Authentication Context", "Azure Resource Manager RBAC", "Azure Logic Apps (PIM Custom Extensions)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Outbound App Provisioning y Account Discovery", "funcionOperativa": "Aprovisionamiento y desaprovisionamiento automático SCIM 2.0, LDAP, SQL y REST/SOAP hacia aplicaciones SaaS y on-premises, descubriendo cuentas locales existentes y cuentas huérfanas.", "portalRuta": "entra.microsoft.com > Entra ID > Enterprise apps > Provisioning > Account Discovery", "integraciones": ["Aplicaciones SaaS SCIM 2.0 (ServiceNow, Salesforce, AWS, Google)", "Microsoft Entra Provisioning Agent (LDAP, SQL, REST/SOAP)", "Active Directory Group Writeback"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Gobierno de Identidades de Agentes IA (Microsoft Entra Agent ID)", "funcionOperativa": "Ciclo de vida y gobierno de acceso para agent identity blueprints, agent identities y agent users con human sponsor obligatorio, paquetes de acceso con expiración y transferencia automática de patrocinio.", "portalRuta": "entra.microsoft.com > Entra ID > Agent ID / myaccount.microsoft.com", "integraciones": ["Microsoft Agent 365 & Microsoft 365 E7", "Microsoft Foundry & Microsoft Copilot Studio", "Azure App Service / Functions & Conditional Access for Agents"], "estadoValidacion": "Verificado MS Learn"}], "rbacYRoles": [{"rol": "Identity Governance Administrator", "nivelSOC": "IAM / IGA Lead", "permisosClave": "Crear y administrar catálogos, Access Packages, políticas EM, Connected Organizations, Access Reviews y paneles de ID Governance.", "asignacionPIM": "Elegible en PIM (máximo 4 horas, MFA resistente al phishing + justificación + ticket ITSM; cero asignaciones permanentes).", "responsabilidadOperativa": "Gobierno central de Entitlement Management, políticas SoD y campañas de recertificación; segregado de Privileged Role Administrator.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Lifecycle Workflows Administrator", "nivelSOC": "IAM Automation Engineer", "permisosClave": "Crear, modificar, versionar, programar, ejecutar on-demand y consultar reportes de Lifecycle Workflows y Custom Task Extensions (LifecycleWorkflows.ReadWrite.All).", "asignacionPIM": "Elegible en PIM (máximo 4 horas, MFA resistente al phishing y aprobación par para flujos Leaver productivos).", "responsabilidadOperativa": "Diseño y operación diaria de automatizaciones Joiner-Mover-Leaver y remediación de tareas fallidas en My Feed.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Privileged Role Administrator", "nivelSOC": "Tier-0 Identity Custodian", "permisosClave": "Administrar configuraciones PIM para roles Entra y PIM for Groups, asignaciones elegibles/activas, alertas PIM y Access Reviews de roles privilegiados.", "asignacionPIM": "Elegible en PIM (máximo 2 horas, aprobación dual + Conditional Access Authentication Context con FIDO2/Passkey desde PAW).", "responsabilidadOperativa": "Custodia de privilegios administrativos y cumplimiento Zero Standing Privileges sin autoaprobación.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Groups Administrator + Catalog Owner", "nivelSOC": "IAM Resource Integrator", "permisosClave": "Permite incorporar grupos de seguridad y grupos Microsoft 365 dentro de un catálogo específico de Entitlement Management sin requerir Global Administrator.", "asignacionPIM": "Groups Administrator elegible en PIM (máximo 2 horas); Catalog owner asignado a grupo de seguridad gobernado.", "responsabilidadOperativa": "Onboarding controlado de grupos corporativos en catálogos departamentales respetando mínimo privilegio.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Application Administrator + Catalog Owner", "nivelSOC": "App & HRIS Integration Engineer", "permisosClave": "Configurar conectores HR inbound, API /bulkUpload, aprovisionamiento SCIM saliente, Account Discovery y agregar Enterprise Apps a catálogos EM.", "asignacionPIM": "Application Administrator elegible en PIM (máximo 4 horas, MFA resistente al phishing + control de cambios).", "responsabilidadOperativa": "Integración de fuentes autoritativas HCM, conectores SCIM/on-premises y saneamiento de cuentas huérfanas.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Catalog Creator & Catalog Owner (Delegado EM)", "nivelSOC": "Business Unit Resource Owner", "permisosClave": "Crear catálogos propios (ba92d953-d8e0-4e39-a797-0cbedb0a89e8) y administrar recursos/delegados dentro de su catálogo (ae79f266-94d4-4dab-b730-feca7e132178) sin visibilidad transversal.", "asignacionPIM": "Asignado mediante grupo de seguridad gobernado sujeto a Access Review trimestral (sin rol de directorio Entra).", "responsabilidadOperativa": "Gobierno descentralizado de recursos por unidad de negocio (Finanzas, Legal, Ingeniería, Operaciones).", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Access Package Manager & Assignment Manager (Delegado EM)", "nivelSOC": "Business Access Operations", "permisosClave": "Access package manager (7f480852-...) crea/edita paquetes y políticas en el catálogo; Assignment manager (e2182095-...) gestiona asignaciones directas y reprocesa entregas fallidas.", "asignacionPIM": "Asignación delegada acotada al catálogo con expiración semestral revisada por el Catalog owner.", "responsabilidadOperativa": "Mantenimiento operativo de paquetes de negocio, soporte a solicitudes y resolución de errores de entrega.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Security Reader / Reports Reader + Log Analytics Reader", "nivelSOC": "SOC L2 / SOC L3 / GRC Auditor", "permisosClave": "Lectura sin mutación sobre AuditLogs, AADProvisioningLogs, reportes de Lifecycle Workflows, alertas PIM y Workbooks en Azure Monitor / Sentinel.", "asignacionPIM": "Activo acotado para monitoreo SOC continuo o elegible PIM (8 horas) para auditores internos/externos.", "responsabilidadOperativa": "Detección de desvíos de gobierno, caza de asignaciones fuera de banda y verificación forense de cumplimiento.", "estadoValidacion": "Verificado MS Learn"}], "actividadesOperacionales": [{"codigo": "D-01", "cadencia": "Diaria", "actividad": "Supervisión y remediación de ejecuciones fallidas en Lifecycle Workflows (JML)", "objetivo": "Detectar y corregir en menos de 4 horas cualquier tarea fallida en flujos Joiner, Mover y especialmente Leaver.", "consolaRuta": "entra.microsoft.com > ID Governance > Lifecycle workflows > Overview (My Feed) / Workflow history", "procedimiento": ["Revisar en My Feed las métricas Processed users with failures y Failed tasks de las últimas 24 horas.", "Filtrar Workflow history (pestañas Runs y Tasks) por estado Failed priorizando workflows de categoría Leaver.", "Inspeccionar Status Reason en Audit logs (ej. atributo manager/mail vacío o fallo en Logic App) y corregir la causa raíz.", "Ejecutar Run on demand sobre los usuarios afectados (hasta 10 por lote) confirmando Status = Succeeded."], "rolResponsable": "Lifecycle Workflows Administrator", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-01", "mitreTactic": "Persistence / Valid Accounts (T1078.004)", "evidenciaAuditable": "Eventos en AuditLogs (LoggedByService = Lifecycle Workflows) con reprocesamiento exitoso documentado.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Flujos y límites verificados en understanding-lifecycle-workflows; SLA de 4 h propuesto editorialmente.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/understanding-lifecycle-workflows", "pasosDetallados": ["Revisar los indicadores globales de `My Feed`: *Total processed users*, *Processed users with failures* y *Failed tasks* de las últimas 24 horas `[Verificado MS Learn]`.", "Filtrar en `Workflow history` la pestaña `Runs` y `Tasks` por estado `Failed`, priorizando flujos de categoría **Leaver** `[Verificado MS Learn]`.", "Inspeccionar la razón del error en `Audit logs` (ej. atributo `manager` o `mail` faltante, timeout de Custom Task Extension >3 h o bloqueo de directorio híbrido) `[Verificado MS Learn]`.", "Corregir el atributo origen o la Logic App asociada y ejecutar **Run on demand** sobre los usuarios afectados (en lotes de hasta 10 usuarios por ejecución manual) verificando que `Status == Succeeded` `[Verificado MS Learn]`."], "disparadorAlerta": "Detectar y corregir en menos de 4 horas cualquier tarea fallida en flujos Joiner, Mover y especialmente Leaver.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-02", "cadencia": "Diaria", "actividad": "Monitoreo de salud y cuarentenas en HR-Driven / API-Driven Inbound Provisioning", "objetivo": "Asegurar que altas, movimientos y bajas desde Workday, SuccessFactors o API /bulkUpload sincronicen sin errores ni cuarentena.", "consolaRuta": "entra.microsoft.com > Entra ID > Enterprise apps > Provisioning > Provisioning logs", "procedimiento": ["Comprobar que ningún job de aprovisionamiento entrante esté en estado Quarantine ni detenido.", "Filtrar Provisioning logs por Status = Failure en las últimas 24 horas identificando colisiones de atributos o errores de directorio.", "Verificar consumo diario de llamadas API /bulkUpload frente al límite de 300.000 registros/24h (6.000 llamadas).", "Escalar correcciones de datos maestros al equipo HRIS preservando la fuente autoritativa."], "rolResponsable": "Application Administrator (HRIS Integration Lead)", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-01", "mitreTactic": "Initial Access / Valid Accounts (T1078)", "evidenciaAuditable": "Tabla AADProvisioningLogs sin fallos críticos abiertos >24 horas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Cuota de 300K registros y 20 jobs verificada en licensing-fundamentals.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/licensing-fundamentals", "pasosDetallados": ["Verificar que el estado del job de aprovisionamiento no se encuentre en **Quarantine** y que el último ciclo haya finalizado dentro del intervalo esperado `[Verificado MS Learn]`.", "Filtrar `Provisioning logs` por `Status == Failure` en las últimas 24 horas (colisiones de `userPrincipalName`, DN inválido en AD o reglas de scoping).", "Para flujos API-driven, validar el consumo diario respecto a la cuota de **300.000 registros/24h** (6.000 peticiones `/bulkUpload`) `[Verificado MS Learn]`.", "Coordinar con RR. HH. la corrección de datos maestros erróneos en el sistema origen (evitando ediciones manuales directas en Entra ID que rompan la precedencia autoritativa) `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Asegurar que altas, movimientos y bajas desde Workday, SuccessFactors o API /bulkUpload sincronicen sin errores ni cuarentena.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-03", "cadencia": "Diaria", "actividad": "Resolución de solicitudes de Access Packages en estado DeliveryFailed o por expirar", "objetivo": "Garantizar la entrega completa de recursos asignados en paquetes y evitar interrupciones por aprobadores ausentes.", "consolaRuta": "entra.microsoft.com > ID Governance > Entitlement management > Access packages > Requests", "procedimiento": ["Filtrar Requests por estados DeliveryFailed, PartiallyDelivered y PendingApproval próximos a expirar.", "Diagnosticar el fallo en el recurso subyacente (conector SCIM, grupo o SharePoint Online) y subsanar el bloqueo.", "Ejecutar la acción Reprocess sobre la solicitud afectada hasta alcanzar estado Delivered.", "Confirmar el enrutamiento oportuno hacia Alternate approvers en aprobaciones multietapa estancadas."], "rolResponsable": "Identity Governance Administrator / Access Package Assignment Manager", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Privilege Escalation / Account Manipulation (T1098)", "evidenciaAuditable": "Registros en AuditLogs (Category = EntitlementManagement) reflejando transición a Delivered.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Acción Reprocess y roles delegados verificados en entitlement-management-delegate.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-delegate", "pasosDetallados": ["Filtrar la vista global de `Requests` por estados `DeliveryFailed`, `PartiallyDelivered` y `PendingApproval` próximos a vencer `[Verificado MS Learn]`.", "Seleccionar las solicitudes con fallo de entrega, inspeccionar la pestaña de errores de recurso (ej. fallo SCIM en app destino o licencia agotada en grupo de licenciamiento) `[Verificado MS Learn]`.", "Una vez subsanada la causa raíz en el recurso destino, ejecutar la acción nativa **Reprocess** sobre la asignación afectada `[Verificado MS Learn]`.", "Verificar que las políticas con aprobadores ausentes estén enrutando correctamente hacia **Alternate approvers** `[Verificado MS Learn]`."], "disparadorAlerta": "Garantizar la entrega completa de recursos asignados en paquetes y evitar interrupciones por aprobadores ausentes.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-04", "cadencia": "Diaria", "actividad": "Revisión de alertas PIM y auditoría de activaciones JIT en roles Tier-0", "objetivo": "Verificar correspondencia entre activaciones de roles críticos y tickets autorizados, manteniendo cero alertas PIM sin mitigar.", "consolaRuta": "entra.microsoft.com > ID Governance > Privileged Identity Management > Microsoft Entra roles > Alerts", "procedimiento": ["Revisar todas las PIM Alerts activas (asignaciones fuera de PIM, exceso de Global Admins, roles sin MFA).", "Contrastar las activaciones de las últimas 24 horas en Audit history contra tickets de cambio/incidente válidos.", "Escalar a SOC L2 cualquier activación fuera de ventana horaria habitual o sin justificación verificable."], "rolResponsable": "Privileged Role Administrator / SOC L2", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-03", "mitreTactic": "Privilege Escalation / Additional Cloud Roles (T1098.003)", "evidenciaAuditable": "Vista de PIM Alerts limpia y bitácora diaria de correlación en AuditLogs (Category = RoleManagement).", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Alertas nativas PIM verificadas en documentación oficial de Microsoft Entra PIM.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-configure", "pasosDetallados": ["Inspeccionar las **PIM Alerts** integradas (*Roles are being assigned outside of Privileged Identity Management*, *Too many global administrators*, *Roles don't require multifactor authentication for activation*) `[Verificado MS Learn]`.", "Revisar el historial de activaciones de las últimas 24 horas contrastando el número de ticket/justificación contra la herramienta ITSM `[Decisión / Propuesta Editorial]`.", "Investigar de inmediato con SOC L2 cualquier asignación directa fuera de PIM o activación desde ubicación/dispositivo inusual `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Verificar correspondencia entre activaciones de roles críticos y tickets autorizados, manteniendo cero alertas PIM sin mitigar.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-05", "cadencia": "Diaria", "actividad": "Verificación de bajas inmediatas y revocación de sesiones/tokens (Emergency Leaver Check)", "objetivo": "Confirmar que toda desvinculación urgente del día completó bloqueo de cuenta, revocación de refresh tokens y retiro de accesos en <15 min.", "consolaRuta": "entra.microsoft.com > ID Governance > Lifecycle workflows > Workflow history", "procedimiento": ["Cruzar listado diario de bajas inmediatas de RR. HH. contra ejecuciones del workflow de terminación en tiempo real.", "Verificar éxito de las tareas Disable user account, Revoke all refresh tokens for user y Remove all access package assignments.", "Confirmar transferencia automática de patrocinio (Transfer agent identity sponsorships to manager) si el usuario patrocinaba agentes IA."], "rolResponsable": "Lifecycle Workflows Administrator / SOC L1", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Defense Evasion / Use Alternate Authentication Material (T1550.001)", "evidenciaAuditable": "Trazas completas por usuario en Workflow history con accountEnabled = false y tokens revocados.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Tareas LCW verificadas en lifecycle-workflow-tasks; SLA de 15 minutos definido como criterio operativo.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/lifecycle-workflow-tasks", "pasosDetallados": ["Confirmar recepción del evento de baja inmediata desde HRIS/Legal o disparo manual de workflow **Real-time employee termination** `[Verificado MS Learn]`.", "Verificar la ejecución secuencial exitosa de las tareas integradas: `Disable user account`, `Revoke all refresh tokens for user`, `Cancel all pending access package assignment requests for user`, `Remove all access package assignments for user`, `Remove users from all groups`, `Remove user from all teams` y `Remove all license assignments from user` `[Verificado MS Learn]`.", "Si el empleado saliente era sponsor de agentes IA o invitados B2B, confirmar la ejecución de `Transfer agent identity sponsorships to manager` `[Verificado MS Learn]`."], "disparadorAlerta": "Confirmar que toda desvinculación urgente del día completó bloqueo de cuenta, revocación de refresh tokens y retiro de accesos en <15 min.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-06", "cadencia": "Diaria", "actividad": "Triaje de solicitudes de acceso escaladas por riesgo (ID Protection / Insider Risk)", "objetivo": "Evaluar con contexto de seguridad las solicitudes de Access Packages condicionadas por nivel de riesgo de identidad o riesgo interno.", "consolaRuta": "myaccess.microsoft.com > Approvals / entra.microsoft.com > Protection > Identity Protection", "procedimiento": ["Revisar en My Access las solicitudes retenidas en etapas de aprobación activadas por señal de ID Protection o Purview Insider Risk.", "Consultar en Entra Copilot chat el historial de inicios de sesión riesgosos y alertas recientes del usuario solicitante.", "Rechazar la solicitud e iniciar remediación de cuenta si persiste riesgo activo no justificado."], "rolResponsable": "SOC L2 / Identity Governance Administrator", "funcionNIST": "DE", "subcategoriaNIST": "DE.AE-02", "mitreTactic": "Credential Access / Valid Accounts (T1078)", "evidenciaAuditable": "Decisión de aprobación/rechazo documentada en AuditLogs y expediente de riesgo cerrado.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Integración de ID Protection e Insider Risk en políticas EM verificada en licensing-fundamentals.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/licensing-fundamentals", "pasosDetallados": ["Identificar solicitudes enrutadas a la etapa de aprobación de riesgo configurada mediante la integración de **Entra ID Protection** o **Purview Insider Risk Management** en Entitlement Management `[Verificado MS Learn]`.", "Consultar en **Entra Copilot chat** el resumen de inicios de sesión riesgosos y actividad reciente del solicitante antes de emitir veredicto `[Verificado MS Learn]`.", "Denegar la solicitud y disparar remediación de credenciales si se confirma riesgo no mitigado `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Evaluar con contexto de seguridad las solicitudes de Access Packages condicionadas por nivel de riesgo de identidad o riesgo interno.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-07", "cadencia": "Diaria", "actividad": "Supervisión operativa de Custom Task Extensions en Azure Logic Apps", "objetivo": "Asegurar disponibilidad, autenticación Managed Identity y tiempos de respuesta óptimos en Logic Apps invocadas por LCW, EM y PIM.", "consolaRuta": "entra.microsoft.com > ID Governance > Lifecycle workflows > Custom extensions / portal.azure.com > Logic apps", "procedimiento": ["Inspeccionar el historial de ejecuciones de Logic Apps vinculadas a Custom Extensions buscando estados Failed o TimedOut.", "Comprobar que las tareas asíncronas respondan dentro del rango configurado durationBeforeTimeout (30 min a 3 h).", "Remediar fallos de conectores downstream (ITSM, bases de datos o Active Directory) y relanzar las tareas pendientes."], "rolResponsable": "Lifecycle Workflows Administrator / Platform Engineer", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-01", "mitreTactic": "Execution / Cloud Administration Command (T1651)", "evidenciaAuditable": "Métricas de Azure Monitor para Logic Apps con 0 ejecuciones fallidas sin resolver.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Límite durationBeforeTimeout (30m-3h) y tope de 100 extensiones verificados en governance-service-limits.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/governance-service-limits", "pasosDetallados": ["Revisar en Azure Monitor / Logic Apps las ejecuciones con estado `Failed` o `TimedOut` de las últimas 24 horas `[Verificado MS Learn]`.", "Confirmar que el tiempo de ejecución se mantenga muy por debajo del límite `durationBeforeTimeout` (30 minutos a 3 horas) en tareas de tipo *callback* `[Verificado MS Learn]`.", "Validar permisos de Managed Identity sobre sistemas externos conectados (ServiceNow, Jira, Active Directory, cmdb) `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Asegurar disponibilidad, autenticación Managed Identity y tiempos de respuesta óptimos en Logic Apps invocadas por LCW, EM y PIM.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-08", "cadencia": "Diaria", "actividad": "Detección de asignaciones directas de privilegios o roles de aplicación fuera de banda", "objetivo": "Identificar y revertir asignaciones directas hechas por administradores al margen de Entitlement Management o PIM.", "consolaRuta": "entra.microsoft.com > Entra ID > Monitoring & health > Workbooks > Application role assignment activity", "procedimiento": ["Revisar el workbook Application role assignment activity y ejecutar consulta KQL sobre AuditLogs de las últimas 24 horas.", "Identificar asignaciones a aplicaciones críticas o roles Entra que no provengan del servicio EntitlementManagement o PIM.", "Remover la asignación directa no autorizada y encauzar el requerimiento por su Access Package o elegibilidad PIM."], "rolResponsable": "SOC L2 / Identity Governance Administrator", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-03", "mitreTactic": "Persistence / Account Manipulation (T1098)", "evidenciaAuditable": "Resultado diario de workbook/KQL y registro de reversión en AuditLogs.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Workbook Application role assignment activity verificado en entitlement-management-logs-and-reporting.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-logs-and-reporting", "pasosDetallados": ["Ejecutar consulta KQL diaria sobre `AuditLogs` buscando operaciones `Add member to role` (fuera de PIM) o asignaciones directas a aplicaciones empresariales Tier-1 no originadas por `EntitlementManagement` `[Verificado MS Learn]`.", "Contrastar con el workbook oficial *Application role assignment activity* para identificar cambios realizados directamente por administradores globales o de aplicaciones `[Verificado MS Learn]`.", "Revertir la asignación directa no autorizada y migrar al usuario al Access Package o rol elegible PIM correspondiente `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Identificar y revertir asignaciones directas hechas por administradores al margen de Entitlement Management o PIM.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-01", "cadencia": "Semanal", "actividad": "Control de progreso de Access Reviews activas y supervisión del Access Review Agent", "objetivo": "Asegurar tasas de revisión humana superiores al 95 % antes del cierre y auditar recomendaciones conversacionales en Teams.", "consolaRuta": "entra.microsoft.com > ID Governance > Access reviews / Agents > Access Review Agent", "procedimiento": ["Listar campañas de Access Reviews en curso con cierre previsto en los próximos 7 días.", "Revisar el Agent summary y el mapa de actividad de 30 días del Access Review Agent validando adopción de revisores en Teams.", "Gestionar delegación de revisiones o escalamiento a gerentes cuando existan revisores sin avance."], "rolResponsable": "Identity Governance Administrator", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Privilege Escalation / Valid Accounts (T1078)", "evidenciaAuditable": "Panel de seguimiento semanal de campañas activas y métricas de 30 días del Access Review Agent.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Access Review Agent en Entra/Teams verificado en blog oficial Microsoft Entra y documentación Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview", "pasosDetallados": ["Revisar todas las instancias de Access Reviews en estado `In progress` cuya fecha de cierre ocurra en los próximos 7 días `[Verificado MS Learn]`.", "Inspeccionar el mapa de actividad y métricas de 30 días del **Access Review Agent**, validando que los revisores estén interactuando con los resúmenes conversacionales en Microsoft Teams `[Verificado MS Learn]`.", "Enviar recordatorios dirigidos o activar delegación de revisión (*delegate review tasks*) cuando un revisor se encuentre de licencia o fuera de oficina `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar tasas de revisión humana superiores al 95 % antes del cierre y auditar recomendaciones conversacionales en Teams.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-02", "cadencia": "Semanal", "actividad": "Saneamiento de cuentas Guest B2B inactivas y sin patrocinador interno", "objetivo": "Eliminar accesos externos obsoletos mediante Inactive guest insights, campañas solo de inactivos y políticas de expiración.", "consolaRuta": "entra.microsoft.com > ID Governance > Dashboard > Inactive guest accounts", "procedimiento": ["Consultar el reporte Inactive guest accounts (exclusivo de ID Governance) para invitados sin actividad >60/90 días.", "Auditar alertas y correos enviados por la tarea LCW Send email about unsponsored guest removal (Preview).", "Confirmar bloqueo y posterior eliminación automática de invitados que llevan 30 días sin asignaciones de Access Packages."], "rolResponsable": "Identity Governance Administrator", "funcionNIST": "ID", "subcategoriaNIST": "ID.RA-01", "mitreTactic": "Initial Access / Trusted Relationship (T1199)", "evidenciaAuditable": "Reporte semanal de huéspedes depurados y registros Guest user disabled/deleted by lifecycle policy.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Informe Inactive guest accounts y tarea de invitados sin sponsor verificados en Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/microsoft-entra-id-governance-licensing-for-guest-users", "pasosDetallados": ["Consultar el informe nativo **Inactive guest accounts** (exclusivo de Entra ID Governance) filtrando invitados sin autenticación en los últimos 60/90 días `[Verificado MS Learn]`.", "Revisar las ejecuciones de la tarea LCW `Send email about unsponsored guest removal (Preview)` y atestaciones de sponsors pendientes `[Verificado MS Learn]`.", "Confirmar que la política de usuarios externos en Entitlement Management bloquee el inicio de sesión y elimine la cuenta invitada tras 30 días sin asignaciones de Access Packages `[Verificado MS Learn]`."], "disparadorAlerta": "Eliminar accesos externos obsoletos mediante Inactive guest insights, campañas solo de inactivos y políticas de expiración.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-03", "cadencia": "Semanal", "actividad": "Auditoría de conflictos preexistentes en Separation of Duties (SoD)", "objetivo": "Garantizar cero asignaciones simultáneas no autorizadas entre paquetes o grupos incompatibles y validar reciprocidad bidireccional.", "consolaRuta": "entra.microsoft.com > ID Governance > Entitlement management > Access packages > Separation of duties", "procedimiento": ["Inspeccionar el contador Additional access en paquetes críticos con reglas de incompatibilidad configuradas.", "Verificar que cada par de paquetes mutuamente excluyentes tenga declarada la regla en ambas direcciones.", "Descargar CSV de solapamientos existentes o ejecutar script Graph PowerShell para revocar el acceso redundante."], "rolResponsable": "Identity Governance Administrator / GRC", "funcionNIST": "GV", "subcategoriaNIST": "GV.RR-02", "mitreTactic": "Privilege Escalation / Valid Accounts (T1078.004)", "evidenciaAuditable": "Exportación CSV semanal con Additional access = 0 fuera de paquetes de excepción documentados.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Unidireccionalidad de reglas SoD y columna Additional access verificadas en entitlement-management-access-package-incompatible.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-access-package-incompatible", "pasosDetallados": ["Revisar en paquetes críticos (ej. *Desarrollo* vs. *Producción*, *Creación de Proveedores* vs. *Aprobación de Pagos*) la columna **Additional access** en la pestaña `Incompatible access packages` `[Verificado MS Learn]`.", "Verificar que toda relación de incompatibilidad que deba operar en ambos sentidos esté configurada bidireccionalmente en ambos paquetes (dado que cada regla en Entra EM es unidireccional por diseño) `[Verificado MS Learn]`.", "Auditar los miembros de cualquier paquete dedicado a *override* excepcional de SoD validando vigencia temporal y compensación de controles `[Verificado MS Learn]`."], "disparadorAlerta": "Garantizar cero asignaciones simultáneas no autorizadas entre paquetes o grupos incompatibles y validar reciprocidad bidireccional.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-04", "cadencia": "Semanal", "actividad": "Revisión de Account Discovery y remediación de cuentas huérfanas en aplicaciones", "objetivo": "Descubrir y cerrar cuentas locales en aplicaciones conectadas que no correspondan a identidades activas gobernadas en Entra ID.", "consolaRuta": "entra.microsoft.com > Entra ID > Enterprise apps > Provisioning > Account Discovery", "procedimiento": ["Revisar los reportes de Account Discovery generados sobre aplicaciones SaaS y on-premises críticas.", "Separar cuentas de servicio inventariadas de cuentas huérfanas de ex-colaboradores o altas manuales no autorizadas.", "Correlacionar con identidades Entra válidas o deshabilitar/eliminar las cuentas huérfanas en la aplicación destino."], "rolResponsable": "Application Administrator / Identity Governance Administrator", "funcionNIST": "ID", "subcategoriaNIST": "ID.AM-05", "mitreTactic": "Persistence / Local Account (T1078.003)", "evidenciaAuditable": "Listado conciliado de Account Discovery con tickets de baja de cuentas huérfanas cerrados.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Account Discovery confirmado como exclusivo de Entra ID Governance / Entra Suite en licensing-fundamentals.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/licensing-fundamentals", "pasosDetallados": ["Ejecutar o revisar los resultados semanales de **Account Discovery** sobre las aplicaciones empresariales críticas conectadas `[Verificado MS Learn]`.", "Clasificar las cuentas no correlacionadas (*unmatched/orphan accounts*) distinguiendo cuentas técnicas legítimas documentadas de cuentas residuales de ex-empleados o altas fuera de proceso `[Verificado MS Learn]`.", "Deshabilitar/eliminar cuentas huérfanas no justificadas o vincularlas a un Access Package gobernado `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Descubrir y cerrar cuentas locales en aplicaciones conectadas que no correspondan a identidades activas gobernadas en Entra ID.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-05", "cadencia": "Semanal", "actividad": "Gobierno semanal de identidades de agentes IA (Microsoft Entra Agent ID) y patrocinadores", "objetivo": "Asegurar que cada agente IA tenga un sponsor humano activo, políticas Conditional Access heredadas de su blueprint y accesos temporales.", "consolaRuta": "entra.microsoft.com > Entra ID > Agent ID / myaccess.microsoft.com", "procedimiento": ["Inventariar nuevos agent identity blueprints, agent identities y agent users originados en Foundry, Copilot Studio, Teams o Agent 365.", "Validar que cada agent identity cuente con un sponsor humano vigente y políticas Conditional Access aplicadas al blueprint.", "Auditar los Access Packages asignados a agentes (grupos, permisos OAuth Graph y roles Entra) verificando fecha de expiración."], "rolResponsable": "Identity Governance Administrator / AI Governance Lead", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-01", "mitreTactic": "Persistence / Additional Cloud Credentials (T1098.001)", "evidenciaAuditable": "Reporte semanal de identidades de agentes con 100 % de cobertura de sponsor y expiración activa.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Arquitectura de 4 objetos de agente, blueprints y sponsors verificada en agent-id-governance-overview (nov-2026).", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/agent-id-governance-overview", "pasosDetallados": ["Enumerar los objetos `agent identity blueprint`, `agent identity` y `agent user` dados de alta en los últimos 7 días `[Verificado MS Learn]`.", "Confirmar que cada `agent identity` tenga asignado al menos un **sponsor** humano activo y herede políticas de Conditional Access desde su blueprint `[Verificado MS Learn]`.", "Revisar solicitudes de Access Packages realizadas programáticamente por agentes o en su nombre por sponsors (incluyendo permisos OAuth de Microsoft Graph o roles Entra) `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar que cada agente IA tenga un sponsor humano activo, políticas Conditional Access heredadas de su blueprint y accesos temporales.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-06", "cadencia": "Semanal", "actividad": "Auditoría de verificaciones criptográficas Verified ID y Face Check en Access Packages", "objetivo": "Detectar anomalías o intentos de suplantación durante la presentación de credenciales verificables en solicitudes de alto impacto.", "consolaRuta": "entra.microsoft.com > ID Governance > Entitlement management > Access packages > Requests", "procedimiento": ["Filtrar solicitudes de paquetes protegidos con Required Verified IDs y Require Face Check.", "Analizar rechazos repetidos de coincidencia biométrica Face Check escalando posibles intentos de impersonación al SOC.", "Comprobar operatividad de los emisores en Microsoft Entra Verified ID Network y socios IDV de Security Store."], "rolResponsable": "Identity Governance Administrator / SOC L2", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-02", "mitreTactic": "Defense Evasion / Impersonation (T1656)", "evidenciaAuditable": "Bitácora semanal de validaciones Verified ID / Face Check sin incidentes de fraude pendientes.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Configuración de Verified ID Network, socios Security Store y Face Check verificada en entitlement-management-verified-id-settings.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-verified-id-settings", "pasosDetallados": ["Revisar las solicitudes de paquetes que exigen **Required Verified IDs** y **Require Face Check** `[Verificado MS Learn]`.", "Investigar fallos reiterados de coincidencia biométrica (*Face Check*) sobre una misma cuenta corporativa o externa como posible señal de suplantación durante onboarding remoto o elevación de acceso `[Decisión / Propuesta Editorial]`.", "Validar disponibilidad y certificados vigentes de los emisores de **Microsoft Entra Verified ID Network** o socios IDV de **Security Store** `[Verificado MS Learn]`."], "disparadorAlerta": "Detectar anomalías o intentos de suplantación durante la presentación de credenciales verificables en solicitudes de alto impacto.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-01", "cadencia": "Mensual", "actividad": "Reconciliación FinOps de licencias Entra ID Governance, Agent 365 y facturación MAU de Guests", "objetivo": "Garantizar suficiencia de licencias para miembros gobernados y optimizar cargos MAU de huéspedes B2B en la suscripción Azure.", "consolaRuta": "entra.microsoft.com > Billing > Licenses / ID Governance > Dashboard > Guest governance", "procedimiento": ["Comparar licencias activas de Entra ID Governance / Step-Up P2 / Entra Suite / M365 E7 y Agent 365 contra usuarios y agentes gobernados.", "Ejecutar consulta KQL mensual filtrando TargetUserType = Guest y GovernanceLicenseFeatureUsed = True en AuditLogs.", "Evaluar conversión de tenants socios con alto volumen de huéspedes hacia Multi-Tenant Organization (MTO) exenta de cobro MAU."], "rolResponsable": "Identity Governance Administrator / FinOps", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-03", "mitreTactic": "Resource Development", "evidenciaAuditable": "Informe mensual FinOps conciliando asientos licenciados y conteo exacto de MAU facturados en Azure.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Propiedad GovernanceLicenseFeatureUsed = True y exención MTO verificadas en microsoft-entra-id-governance-licensing-for-guest-users.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/microsoft-entra-id-governance-licensing-for-guest-users", "pasosDetallados": ["Comparar el total de asientos activos de `Microsoft Entra ID Governance` / `Step Up for P2` / `Entra Suite` / `M365 E7` (y `Microsoft Agent 365` si aplica) contra el conteo de miembros únicos gobernados y verificar vigencia del prerrequisito `AAD_PREMIUM_P2` `[Verificado MS Learn]`.", "Ejecutar consulta KQL mensual en `AuditLogs` filtrando `TargetUserType == \"Guest\"` y `GovernanceLicenseFeatureUsed == True` para auditar exactamente qué invitados devengaron un cargo MAU en el mes `[Verificado MS Learn]`.", "Verificar si existen organizaciones socias recurrentes que deban integrarse como **Multi-Tenant Organization (MTO)** para evitar cobros MAU innecesarios `[Verificado MS Learn]`."], "disparadorAlerta": "Garantizar suficiencia de licencias para miembros gobernados y optimizar cargos MAU de huéspedes B2B en la suscripción Azure.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-02", "cadencia": "Mensual", "actividad": "Calibración de recomendaciones ML (User-to-Group Affiliation) y cobertura del atributo manager", "objetivo": "Maximizar la efectividad del motor ML en revisiones de grupos asegurando jerarquía organizacional poblada y grupos <=600 miembros.", "consolaRuta": "entra.microsoft.com > ID Governance > Access reviews > Review history", "procedimiento": ["Medir porcentaje de revocaciones efectivas impulsadas por señales de baja afiliación organizacional e inactividad (>30 días).", "Detectar grupos gobernados que superen el límite técnico de 600 usuarios para subdividirlos funcionalmente.", "Auditar usuarios internos sin atributo manager poblado y gestionar su saneamiento en el sistema HRIS."], "rolResponsable": "Identity Governance Administrator", "funcionNIST": "ID", "subcategoriaNIST": "ID.RA-01", "mitreTactic": "Privilege Escalation / Valid Accounts (T1078)", "evidenciaAuditable": "Reporte mensual de higiene jerárquica (manager poblado) y efectividad de recomendaciones ML.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Requisito del atributo manager y tope de 600 miembros por grupo verificados en review-recommendations-access-reviews.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/review-recommendations-access-reviews", "pasosDetallados": ["Analizar las campañas cerradas en el mes comparando decisiones del revisor humano frente a las recomendaciones del sistema (`Deny` por inactividad >30 días o baja afiliación organizacional) `[Verificado MS Learn]`.", "Identificar grupos de seguridad con más de **600 miembros** (donde **User-to-Group Affiliation** no está soportado) para segmentarlos en grupos funcionales por unidad de negocio o Access Packages `[Verificado MS Learn]`.", "Auditar porcentajes de usuarios sin atributo `manager` poblado en el directorio, corrigiéndolos con RR. HH. para maximizar la precisión del grafo de afiliación ML `[Verificado MS Learn]`."], "disparadorAlerta": "Maximizar la efectividad del motor ML en revisiones de grupos asegurando jerarquía organizacional poblada y grupos <=600 miembros.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-03", "cadencia": "Mensual", "actividad": "Optimización de cuotas, intervalos horarios y versionado de Lifecycle Workflows", "objetivo": "Mantener el inventario de workflows limpio dentro del tope de 100 flujos y ajustar la frecuencia de ejecución (1 a 24 h) a los SLAs.", "consolaRuta": "entra.microsoft.com > ID Governance > Lifecycle workflows > Workflow settings / Versions", "procedimiento": ["Auditar uso actual respecto a los límites del tenant (100 workflows, 25 tareas/workflow, 100 custom task extensions).", "Revisar el intervalo global de programación (por defecto 3 h, reducible a 1 h) según métricas de tiempo de alta y baja.", "Documentar nuevas versiones (Workflow versions) y evaluar adopción de comparaciones relativas en Time based attribute V2."], "rolResponsable": "Lifecycle Workflows Administrator", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-03", "mitreTactic": "Persistence", "evidenciaAuditable": "Registro mensual de cuotas consumidas e historial de versiones aprobadas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Límites de 100 workflows y horario 1-24 h verificados en governance-service-limits.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/governance-service-limits", "pasosDetallados": ["Revisar el consumo de cuotas del tenant frente a los límites de servicio (**100 workflows**, **25 tareas/workflow**, **100 custom task extensions**) depurando flujos obsoletos `[Verificado MS Learn]`.", "Evaluar si el intervalo global programado (por defecto **3 horas**, ajustable a **1 hora**) cumple los SLAs de onboarding y offboarding del negocio `[Verificado MS Learn]`.", "Validar migración ordenada desde disparadores `Time based attribute` clásicos hacia comparaciones relativas (`Time based attribute V2`) donde agregue valor operativo `[Verificado MS Learn]`."], "disparadorAlerta": "Mantener el inventario de workflows limpio dentro del tope de 100 flujos y ajustar la frecuencia de ejecución (1 a 24 h) a los SLAs.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-04", "cadencia": "Mensual", "actividad": "Auditoría de Auto-Assignment Policies y sugerencias de paquetes en My Access", "objetivo": "Confirmar precisión de reglas dinámicas de asignación/remoción en paquetes y vigilar el límite de 15.000 asignaciones por política.", "consolaRuta": "entra.microsoft.com > ID Governance > Entitlement management > Access packages > Policies", "procedimiento": ["Revisar el conteo de asignaciones por cada Auto-assignment policy asegurando margen frente al límite de 15.000.", "Verificar que el retiro automático al cambiar el atributo del usuario esté habilitado en todas las políticas dinámicas.", "Depurar la visibilidad de Suggested access packages en My Access para mostrar solo paquetes relevantes al usuario final."], "rolResponsable": "Identity Governance Administrator / Catalog Owners", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Privilege Escalation", "evidenciaAuditable": "Inventario mensual exportado de Auto-assignment policies y conteo de asignaciones activas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tope de 15.000 asignaciones por política automática verificado en governance-service-limits.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/governance-service-limits", "pasosDetallados": ["Auditar todas las **Auto-assignment policies** verificando que el volumen de asignaciones activas por política permanezca holgadamente bajo el tope de **15.000 asignaciones** `[Verificado MS Learn]`.", "Confirmar que la opción de remoción automática al dejar de cumplir la condición de atributos esté activada en el 100 % de las políticas automáticas `[Verificado MS Learn]`.", "Revisar las sugerencias de paquetes de acceso (*Suggested access packages*) en `My Access` ocultando paquetes técnicos internos que no deban solicitarse manualmente `[Verificado MS Learn]`."], "disparadorAlerta": "Confirmar precisión de reglas dinámicas de asignación/remoción en paquetes y vigilar el límite de 15.000 asignaciones por política.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-05", "cadencia": "Mensual", "actividad": "Verificación de archivo continuo y retención >30 días de logs IGA en Azure Monitor / Sentinel", "objetivo": "Asegurar preservación forense multianual de AuditLogs y AADProvisioningLogs superando la ventana nativa de 30 días de Entra.", "consolaRuta": "entra.microsoft.com > Entra ID > Monitoring & health > Diagnostic settings / Workbooks", "procedimiento": ["Comprobar salud de exportación en Diagnostic settings hacia el workspace corporativo de Log Analytics / Microsoft Sentinel.", "Ejecutar el workbook Archived Log Date Range y Access Package Activity validando ausencia de brechas de ingesta.", "Confirmar aplicación del Data Grant de 5 MB/usuario/día de Microsoft 365 E5 para registros de auditoría de Entra ID en Sentinel."], "rolResponsable": "Platform Engineer / Security Reader", "funcionNIST": "RS", "subcategoriaNIST": "RS.AN-03", "mitreTactic": "Defense Evasion / Impair Defenses (T1562)", "evidenciaAuditable": "Evidencia de rango min/max de TimeGenerated en Log Analytics conforme a política regulatoria (>=365 días).", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Retención nativa de 30 días y workbook Archived Log Date Range verificados en entitlement-management-logs-and-reporting.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-logs-and-reporting", "pasosDetallados": ["Verificar en `Diagnostic settings` que `AuditLogs` y `ProvisioningLogs` continúen enviándose sin interrupción al workspace de Log Analytics / Microsoft Sentinel `[Verificado MS Learn]`.", "Abrir el workbook oficial **Archived Log Date Range** y **Access Package Activity** confirmando continuidad diaria de ingesta y retención alineada a política regulatoria (ej. 365 días en Analytics/Data Lake) `[Verificado MS Learn]`.", "Validar que el conector de Entra ID en Sentinel esté aprovechando correctamente el beneficio de Data Grant de 5 MB/usuario/día de M365 E5 para `AuditLogs` `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar preservación forense multianual de AuditLogs y AADProvisioningLogs superando la ventana nativa de 30 días de Entra.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-01", "cadencia": "Trimestral", "actividad": "Campaña trimestral de recertificación de roles privilegiados PIM, grupos críticos y agentes IA", "objetivo": "Recertificar el 100 % de roles Entra, Azure RBAC, PIM for Groups y paquetes de agentes con revocación automática ante no respuesta.", "consolaRuta": "entra.microsoft.com > ID Governance > Privileged Identity Management > Access reviews", "procedimiento": ["Confirmar ejecución de campañas trimestrales con Auto-apply results to resource = Enabled e If reviewers don't respond = Remove access.", "Verificar que ningún titular privilegiado realice auto-revisión (Self-review prohibido en Tier-0 y Tier-1).", "Descargar evidencias cerradas y verificar en AuditLogs la remoción efectiva de accesos denegados."], "rolResponsable": "Privileged Role Administrator / Identity Governance Administrator", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Privilege Escalation / Valid Accounts (T1078.004)", "evidenciaAuditable": "Paquetes CSV/PDF de Access Reviews trimestrales firmados y archivados para auditoría SOX / ISO 27001.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Capacidad técnica verificada en Learn; periodicidad trimestral y prohibición de self-review definidas como política de referencia.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/access-reviews-overview", "pasosDetallados": ["Verificar el disparo automático de las campañas trimestrales recurrentes con `If reviewers don't respond == Remove access` y `Auto-apply results to resource == Enabled` `[Verificado MS Learn]`.", "Asegurar que ningún administrador revise su propio acceso privilegiado (prohibir *Self-review* en Tier-0/Tier-1) `[Decisión / Propuesta Editorial]`.", "Auditar al cierre de la ventana (14 días recomendados) la revocación efectiva de todos los usuarios, invitados y agentes IA denegados o no respondidos `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Recertificar el 100 % de roles Entra, Azure RBAC, PIM for Groups y paquetes de agentes con revocación automática ante no respuesta.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-02", "cadencia": "Trimestral", "actividad": "Onboarding trimestral de aplicaciones empresariales a catálogos EM, SCIM y Account Discovery", "objetivo": "Incrementar sostenidamente el porcentaje de aplicaciones SaaS y on-premises gobernadas bajo Access Packages y aprovisionamiento automático.", "consolaRuta": "entra.microsoft.com > ID Governance > Entitlement management > Catalogs > Resources", "procedimiento": ["Priorizar aplicaciones Tier-1/Tier-2 incorporadas al tenant en el último trimestre.", "Habilitar conector SCIM 2.0, conector on-premises (LDAP/SQL/REST) o SAP IAG e integrar sus roles en Access Packages.", "Importar asignaciones existentes al paquete gobernado y bloquear asignaciones manuales directas."], "rolResponsable": "Identity Architect / Application Administrator", "funcionNIST": "ID", "subcategoriaNIST": "ID.AM-05", "mitreTactic": "Persistence / Account Manipulation (T1098)", "evidenciaAuditable": "Inventario actualizado de cobertura IGA de aplicaciones empresariales.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Flujo oficial de preparación e integración de aplicaciones existente en identity-governance-overview.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/identity-governance-overview", "pasosDetallados": ["Identificar nuevas aplicaciones Enterprise registradas en el trimestre y clasificarlas por criticidad de datos `[Verificado MS Learn]`.", "Integrar aprovisionamiento automático (SCIM 2.0, conector on-premises LDAP/SQL/REST o integración **SAP Cloud IAG**) e incorporar sus roles de aplicación en Access Packages con revisión periódica `[Verificado MS Learn]`.", "Migrar los usuarios existentes de la aplicación al modelo gobernado revocando asignaciones estáticas previas `[Verificado MS Learn]`."], "disparadorAlerta": "Incrementar sostenidamente el porcentaje de aplicaciones SaaS y on-premises gobernadas bajo Access Packages y aprovisionamiento automático.", "tipoAccion": "Periódica Programada"}, {"codigo": "SM-01", "cadencia": "Semestral", "actividad": "Recertificación arquitectónica de Connected Organizations, roles delegados EM y matriz SoD", "objetivo": "Depurar organizaciones externas B2B sin contrato vigente, recertificar Catalog owners y actualizar reglas corporativas de separación de funciones.", "consolaRuta": "entra.microsoft.com > ID Governance > Entitlement management > Connected organizations / Catalogs", "procedimiento": ["Cruzar inventario de Connected organizations contra contratos activos en Compras/Legal y dar de baja terceros inactivos.", "Ejecutar Catalog Access Reviews y revisar membresías en Catalog creators, Catalog owners y Access package managers.", "Actualizar junto a Auditoría Interna y Finanzas la matriz bidireccional de paquetes incompatibles (SoD)."], "rolResponsable": "Identity Architect / GRC Lead", "funcionNIST": "GV", "subcategoriaNIST": "GV.SC-07", "mitreTactic": "Initial Access / Trusted Relationship (T1199)", "evidenciaAuditable": "Acta semestral firmada con catálogo depurado de Connected Organizations y matriz SoD vigente.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Funciones verificadas en MS Learn; cadencia semestral y gobierno conjunto con Legal/GRC definidos editorialmente.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-delegate", "pasosDetallados": ["Revisar las **Connected organizations** eliminando proveedores cuyos contratos hayan finalizado y auditando sus sponsors internos y externos `[Verificado MS Learn]`.", "Ejecutar **Catalog Access Reviews** y validar la lista de usuarios delegados en roles administrativos de Entitlement Management `[Verificado MS Learn]`.", "Contrastar con Auditoría Interna y Finanzas la matriz de riesgos de negocio para añadir nuevas reglas bidireccionales de **Separation of Duties** `[Verificado MS Learn]`."], "disparadorAlerta": "Depurar organizaciones externas B2B sin contrato vigente, recertificar Catalog owners y actualizar reglas corporativas de separación de funciones.", "tipoAccion": "Periódica Programada"}, {"codigo": "A-01", "cadencia": "Anual", "actividad": "Simulacro anual de resiliencia IGA, respaldo declarativo Graph y evaluación automatizada Maester", "objetivo": "Validar recuperación ante desastres de configuraciones IGA/PIM y auditar extremo a extremo la postura Zero Trust de identidad.", "consolaRuta": "entra.microsoft.com > ID Governance / Microsoft Graph PowerShell / Maester", "procedimiento": ["Ejecutar suite completa de pruebas Maester y Zero Trust Assessment documentando desviaciones y planes de cierre.", "Exportar respaldo JSON completo de workflows LCW, catálogos EM, paquetes, políticas y configuraciones PIM vía Microsoft Graph.", "Simular en tenant de prueba la recuperación de políticas ante eventual caducidad de licencia o borrado accidental y muestrear 90 casos JML."], "rolResponsable": "CISO / Identity Architect / Internal Audit", "funcionNIST": "RC", "subcategoriaNIST": "RC.RP-03", "mitreTactic": "Impact / Inhibit System Recovery (T1490)", "evidenciaAuditable": "Informe anual de auditoría IGA, respaldo versionado en repositorio seguro y resultados de Maester.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Comportamiento ante expiración de licencia PIM verificado en licensing-fundamentals; simulacro anual propuesto editorialmente.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/licensing-fundamentals", "pasosDetallados": ["Ejecutar pruebas automatizadas de postura con **Maester** y **Zero Trust Assessment** verificando controles de PIM, cuentas de emergencia (*break-glass*), Conditional Access y gobierno de acceso `[Verificado MS Learn]`.", "Exportar mediante `Microsoft.Graph.Identity.Governance` el respaldo documental completo de definiciones de workflows, catálogos, paquetes, políticas y configuraciones PIM (mitigando el impacto documentado ante eventual expiración accidental de suscripción, donde las asignaciones elegibles PIM y revisiones activas se eliminan y las asignaciones activas temporales pasan a permanentes) `[Verificado MS Learn]`.", "Realizar un muestreo forense anual de 30 altas, 30 movimientos y 30 bajas verificando cumplimiento de SLA minuto a minuto en Log Analytics `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Validar recuperación ante desastres de configuraciones IGA/PIM y auditar extremo a extremo la postura Zero Trust de identidad.", "tipoAccion": "Periódica Programada"}, {"codigo": "AH-01", "cadencia": "Ad-Hoc", "actividad": "Playbook de desvinculación hostil o compromiso crítico de identidad empleada/privilegiada", "objetivo": "Cortar en menos de 15 minutos todo acceso activo, tokens, paquetes, membresías, elegibilidades PIM y agentes patrocinados.", "consolaRuta": "entra.microsoft.com > ID Governance > Lifecycle workflows / Privileged Identity Management", "procedimiento": ["Disparar Run on demand del workflow de terminación inmediata (omite condiciones de alcance y ejecuta tareas al instante).", "Confirmar ejecución de Disable user account, Revoke all refresh tokens, Remove all access package assignments y Remove users from all groups.", "Revocar asignaciones elegibles y activas en PIM para Entra roles, Azure RBAC y PIM for Groups.", "Ejecutar Transfer agent identity sponsorships to manager y auditar/deshabilitar agentes creados por el usuario."], "rolResponsable": "Lifecycle Workflows Administrator / SOC L2", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Valid Accounts (T1078) / Application Access Token (T1550.001)", "evidenciaAuditable": "Expediente de incidente con marcas de tiempo <15 min en AuditLogs para revocación integral.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Comportamiento de Run on demand y tareas de revocación/transferencia de sponsor verificados en Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/understanding-lifecycle-workflows", "pasosDetallados": ["Ejecutar inmediatamente **Run on demand** del workflow de terminación inmediata sobre el usuario afectado (recordando que `Run on demand` ejecuta las tareas sin evaluar las condiciones de alcance regulares) `[Verificado MS Learn]`.", "Confirmar la ejecución instantánea de `Disable user account`, `Revoke all refresh tokens for user`, `Remove all access package assignments for user`, `Cancel all pending access package assignment requests for user` y `Remove users from all groups` `[Verificado MS Learn]`.", "En **PIM**, remover cualquier asignación elegible o activa en roles de Entra ID, Azure RBAC y PIM for Groups `[Verificado MS Learn]`.", "Si el usuario poseía identidades **Microsoft Entra Agent ID** bajo su patrocinio o propiedad, transferir el patrocinio al manager (`Transfer agent identity sponsorships to manager`) y auditar/deshabilitar los agentes creados por dicho usuario desde `myaccount.microsoft.com` o el centro de administración de Entra `[Verificado MS Learn]`."], "disparadorAlerta": "Notificación urgente de RR. HH./Legal por despido hostil, alerta crítica de Purview Insider Risk Management o incidente confirmado de robo de sesión/credenciales en Microsoft Defender XDR `[Decisión / Propuesta Editorial]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-02", "cadencia": "Ad-Hoc", "actividad": "Playbook Kill-Switch sobre identidad de Agente IA o Agent Identity Blueprint comprometido", "objetivo": "Contener de inmediato una instancia o familia completa de agentes IA revocando permisos OAuth, paquetes y acceso condicional.", "consolaRuta": "entra.microsoft.com > Entra ID > Agent ID / ID Governance > Entitlement management", "procedimiento": ["Identificar el agent identity anómalo y su agent identity blueprint padre en el centro de administración de Entra.", "Bloquear acceso mediante Conditional Access o revocar permisos heredables en el agent identity blueprint para contener toda la clase de agentes en un paso.", "Remover todas las asignaciones activas de Access Packages del agent identity / agent user involucrado.", "Notificar al sponsor humano responsable y preservar evidencias en AuditLogs y Purview Audit."], "rolResponsable": "Identity Governance Administrator / SOC L2", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Execution / Exploitation for Client Execution", "evidenciaAuditable": "Registro en AuditLogs de bloqueo de blueprint y revocación de paquetes sobre el agente IA.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Modelo de contención centralizada por agent identity blueprint verificado en identity-governance-overview y agent-id-governance-overview.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/agent-id-governance-overview", "pasosDetallados": ["Identificar el `agent identity` específico o el `agent identity blueprint` padre involucrado en el incidente `[Verificado MS Learn]`.", "Si el fallo afecta a toda una clase de agentes, aplicar bloqueo en Conditional Access o revocar permisos heredables a nivel del **agent identity blueprint** para contener en una sola operación todas las instancias actuales y futuras `[Verificado MS Learn]`.", "Remover de inmediato las asignaciones activas de Access Packages del `agent identity` / `agent user` (revocando membresías de grupos, permisos OAuth Graph y roles Entra) `[Verificado MS Learn]`.", "Notificar al sponsor humano registrado y registrar lección aprendida antes de cualquier reactivación `[Verificado MS Learn]`."], "disparadorAlerta": "Comportamiento anómalo, acceso excesivo a datos sensibles o detección de prompt injection/abuso OAuth por parte de una instancia o familia de agentes IA `[Decisión / Propuesta Editorial]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-03", "cadencia": "Ad-Hoc", "actividad": "Playbook de desconexión de emergencia de proveedor externo B2B comprometido (Supply Chain Cutoff)", "objetivo": "Aislar un tenant socio o proveedor vulnerado revocando políticas de solicitud externa, paquetes entregados y sesiones Guest.", "consolaRuta": "entra.microsoft.com > ID Governance > Entitlement management > Connected organizations", "procedimiento": ["Ubicar la Connected organization del proveedor afectado y listar todos los Access Packages vinculados.", "Deshabilitar políticas de solicitud externas para dicho proveedor y remover todas las asignaciones Delivered de sus usuarios Guest.", "Bloquear inicio de sesión y revocar refresh tokens de todas las cuentas Guest pertenecientes al dominio comprometido.", "Ejecutar Access Review de emergencia sobre sitios SharePoint y Teams compartidos con ese tercero."], "rolResponsable": "Identity Governance Administrator / SOC L2", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Initial Access / Trusted Relationship (T1199)", "evidenciaAuditable": "Cero asignaciones Delivered y cero sesiones activas para cuentas del dominio externo aislado.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Controles de Connected organizations y ciclo de vida externo verificados en Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/identity-governance-overview", "pasosDetallados": ["Localizar la **Connected organization** del proveedor afectado e identificar todos los Access Packages cuyas políticas admiten solicitudes desde dicho dominio/tenant `[Verificado MS Learn]`.", "Deshabilitar o eliminar las políticas de solicitud externas para esa organización conectada y remover todas las asignaciones entregadas (`Delivered`) de usuarios pertenecientes a ese proveedor `[Verificado MS Learn]`.", "Ejecutar bloqueo de inicio de sesión y revocación de refresh tokens sobre todas las cuentas `Guest` asociadas al dominio externo comprometido `[Verificado MS Learn]`.", "Lanzar una Access Review extraordinaria de emergencia sobre cualquier grupo colaborativo M365 o sitio SharePoint donde dicho proveedor haya participado `[Verificado MS Learn]`."], "disparadorAlerta": "Brecha de seguridad notificada en un proveedor externo o rescisión contractual inmediata de una **Connected Organization** `[Decisión / Propuesta Editorial]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-04", "cadencia": "Ad-Hoc", "actividad": "Onboarding masivo controlado por fusión o adquisición (M&A) con MTO y API /bulkUpload", "objetivo": "Incorporar grandes volúmenes de identidades de empresas adquiridas con acceso día-1 gobernado y exención de cargos MAU entre tenants propios.", "consolaRuta": "entra.microsoft.com > Entra ID > External Identities > Cross-tenant synchronization / Enterprise apps", "procedimiento": ["Establecer relación Multi-Tenant Organization (MTO) y Cross-tenant sync de usuarios y grupos (evitando facturación MAU de Guests).", "Ejecutar ingesta autoritativa mediante API-driven inbound provisioning (/bulkUpload hasta 300.000 registros/24h).", "Aplicar Auto-assignment policies en Entitlement Management para otorgar paquetes iniciales trazables con revisión a 90 días."], "rolResponsable": "Identity Architect / Application Administrator", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-01", "mitreTactic": "Valid Accounts (T1078)", "evidenciaAuditable": "Logs de sincronización /bulkUpload exitosos y asignaciones de paquetes trazadas en AuditLogs.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Cross-tenant sync de grupos, MTO sin cobro MAU y cuota de 300K /bulkUpload verificados en Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/licensing-fundamentals", "pasosDetallados": ["Configurar relación **Multi-Tenant Organization (MTO)** y **Cross-tenant synchronization** (incluyendo sincronización de grupos habilitada por Entra ID Governance) para evitar cargos MAU de huéspedes entre tenants del mismo grupo empresarial `[Verificado MS Learn]`.", "Para empleados que migran directamente al directorio corporativo sin conector Workday/SuccessFactors unificado aún, utilizar **API-driven inbound provisioning** (`/bulkUpload` hasta 300.000 registros/24h) con reglas de mapeo normalizadas `[Verificado MS Learn]`.", "Habilitar **Auto-assignment policies** en Entitlement Management basadas en `companyName` / `department` para otorgar acceso día-1 trazable y revocable `[Verificado MS Learn]`."], "disparadorAlerta": "Integración acelerada de cientos o miles de colaboradores provenientes de una empresa adquirida `[Decisión / Propuesta Editorial]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-05", "cadencia": "Ad-Hoc", "actividad": "Contención y reversión ante corrupción masiva de datos desde HRIS (Mass Leaver / Feed Poisoning)", "objetivo": "Frenar bajas masivas accidentales originadas por errores de carga en RR. HH. y restaurar cuentas afectadas con trazabilidad completa.", "consolaRuta": "entra.microsoft.com > Entra ID > Enterprise apps > Provisioning / ID Governance > Lifecycle workflows", "procedimiento": ["Detener inmediatamente (Stop provisioning) el job HR-driven inbound y desactivar el Schedule de los workflows Leaver/Mover.", "Extraer de AADProvisioningLogs y Workflow history el universo exacto de usuarios impactados antes del corte.", "Validada la corrección en Workday/SuccessFactors, ejecutar workflow on-demand de rehabilitación (Enable user account + paquetes + licencias) y reanudar el calendario."], "rolResponsable": "Application Administrator / Lifecycle Workflows Administrator", "funcionNIST": "RC", "subcategoriaNIST": "RC.RP-03", "mitreTactic": "Impact / Account Access Removal (T1531)", "evidenciaAuditable": "Línea de tiempo forense de contención y 100 % de cuentas impactadas restablecidas en AuditLogs.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Controles de pausa de provisioning y tarea Enable user account verificados en Learn; playbook integrado como práctica de resiliencia.", "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/lifecycle-workflow-tasks", "pasosDetallados": ["Pausar de inmediato (`Stop provisioning`) el job de **HR-driven inbound provisioning** y deshabilitar temporalmente el `Schedule` de los Lifecycle Workflows de categoría **Leaver** y **Mover** afectados `[Verificado MS Learn]`.", "Auditar en `AADProvisioningLogs` y `Workflow history` la lista exacta de cuentas alcanzadas antes de la pausa `[Verificado MS Learn]`.", "Una vez corregido el archivo/tabla en Workday o SuccessFactors, ejecutar workflow de restablecimiento on-demand (`Enable user account`, reasignación de paquetes y licencias) para los usuarios impactados antes de reanudar la programación automática `[Verificado MS Learn]`."], "disparadorAlerta": "Error de carga en RR. HH. que marca accidentalmente a cientos de empleados activos con fecha de baja hoy o altera masivamente departamentos `[Decisión / Propuesta Editorial]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}], "consultasKQLyVerificacion": [{"nombre": "Políticas de Access Packages creadas o modificadas sin requerir aprobación", "plataforma": "Azure Monitor Log Analytics / Microsoft Sentinel", "tablaPrincipal": "AuditLogs", "consulta": "AuditLogs\n| where TimeGenerated > ago(30d)\n| where Category == 'EntitlementManagement' and Result == 'success'\n| where AADOperationType in ('CreateEntitlementGrantPolicy', 'UpdateEntitlementGrantPolicy')\n| mv-expand TargetResources\n| where tostring(TargetResources.type) == 'AccessPackageAssignmentPolicy'\n| extend PolicyId = tostring(TargetResources.id), PolicyName = tostring(TargetResources.displayName)\n| mv-expand ModifiedProp = TargetResources.modifiedProperties\n| where tostring(ModifiedProp.displayName) == 'IsApprovalRequiredForAdd' and tostring(ModifiedProp.newValue) has 'False'\n| project TimeGenerated, OperationName, Actor = tostring(InitiatedBy.user.userPrincipalName), PolicyName, PolicyId\n| order by TimeGenerated desc", "proposito": "Detectar debilitamiento de controles preventivos cuando se habilita autoaprobación en paquetes de acceso.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Control Periódico de Salud, Auditoría y KPIs"}, {"nombre": "Monitoreo de ejecuciones y tareas fallidas en Lifecycle Workflows (JML)", "plataforma": "Azure Monitor Log Analytics / Microsoft Sentinel", "tablaPrincipal": "AuditLogs", "consulta": "AuditLogs\n| where TimeGenerated > ago(7d)\n| where LoggedByService == 'Lifecycle Workflows'\n| where Category in ('WorkflowManagement', 'TaskManagement', 'Other')\n| where Result != 'success'\n| mv-expand TargetResources\n| project TimeGenerated, Category, OperationName, Result, ResultReason, TargetName = tostring(TargetResources.displayName), TargetId = tostring(TargetResources.id), CorrelationId\n| order by TimeGenerated desc", "proposito": "Identificar rápidamente errores en automatizaciones Joiner, Mover y Leaver o fallos de Custom Task Extensions.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Auditoría FinOps de huéspedes B2B que generan cobro MAU en Entra ID Governance", "plataforma": "Azure Monitor Log Analytics / Microsoft Sentinel", "tablaPrincipal": "AuditLogs", "consulta": "AuditLogs\n| where TimeGenerated > ago(30d)\n| mv-expand AdditionalDetails\n| where tostring(AdditionalDetails.key) == 'GovernanceLicenseFeatureUsed' and tostring(AdditionalDetails.value) =~ 'True'\n| mv-expand TargetResources\n| extend TargetId = tostring(TargetResources.id), TargetUPN = tostring(TargetResources.userPrincipalName)\n| summarize EventosGobernados = count(), Operaciones = make_set(OperationName, 10), PrimeraAccion = min(TimeGenerated) by TargetId, TargetUPN\n| order by EventosGobernados desc", "proposito": "Contabilizar con precisión los invitados únicos facturables en el mes (GovernanceLicenseFeatureUsed = True).", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Control Periódico de Salud, Auditoría y KPIs"}, {"nombre": "Seguimiento de decisiones y revocaciones aplicadas por Access Reviews", "plataforma": "Azure Monitor Log Analytics / Microsoft Sentinel", "tablaPrincipal": "AuditLogs", "consulta": "AuditLogs\n| where TimeGenerated > ago(90d)\n| where LoggedByService == 'Access Reviews' or Category == 'AccessReviews'\n| summarize TotalEventos = count(), Exitosos = countif(Result == 'success'), Fallidos = countif(Result != 'success') by OperationName, bin(TimeGenerated, 7d)\n| order by TimeGenerated desc", "proposito": "Generar evidencia trimestral de ejecución y auto-aplicación de campañas de recertificación de acceso.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Detección de asignaciones permanentes de roles Entra realizadas fuera de PIM", "plataforma": "Azure Monitor Log Analytics / Microsoft Sentinel", "tablaPrincipal": "AuditLogs", "consulta": "AuditLogs\n| where TimeGenerated > ago(7d)\n| where Category == 'RoleManagement'\n| where OperationName has 'Add member to role' and OperationName !has 'PIM' and LoggedByService != 'PIM'\n| extend Actor = coalesce(tostring(InitiatedBy.user.userPrincipalName), tostring(InitiatedBy.app.displayName))\n| mv-expand TargetResources\n| project TimeGenerated, OperationName, Actor, Target = tostring(TargetResources.userPrincipalName), Result\n| order by TimeGenerated desc", "proposito": "Alertar ante violaciones de Zero Standing Privileges cuando se otorgan roles administrativos estáticos.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Diagnóstico de fallos en conectores HR Inbound y aprovisionamiento SCIM saliente", "plataforma": "Azure Monitor Log Analytics / Microsoft Sentinel", "tablaPrincipal": "AADProvisioningLogs", "consulta": "AADProvisioningLogs\n| where TimeGenerated > ago(24h)\n| where ResultType != 'Success' and ResultType != 'Skipped'\n| summarize Fallos = count(), ErroresMuestra = make_set(ResultDescription, 5) by ServicePrincipalName, Action, ResultType\n| order by Fallos desc", "proposito": "Supervisar errores diarios de sincronización desde Workday/SuccessFactors/API o hacia aplicaciones SaaS.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Detección de asignaciones incompatibles preexistentes (SoD) vía Microsoft Graph PowerShell", "plataforma": "Microsoft Graph PowerShell (Microsoft.Graph.Identity.Governance)", "tablaPrincipal": "identityGovernance/entitlementManagement/assignments", "consulta": "Connect-MgGraph -Scopes 'EntitlementManagement.Read.All'\n$apA = '00aa00aa-bb11-cc22-dd33-44ee44ee44ee'\n$apB = '11bb11bb-cc22-dd33-ee44-55ff55ff55ff'\n$listA = @(Get-MgEntitlementManagementAssignment -Filter \"accessPackage/id eq '$apA' and state eq 'Delivered'\" -ExpandProperty target -All)\n$listB = @(Get-MgEntitlementManagementAssignment -Filter \"accessPackage/id eq '$apB' and state eq 'Delivered'\" -ExpandProperty target -All)\n$idxB = @{}; foreach ($b in $listB) { if ($null -ne $b.Target.Id) { $idxB[$b.Target.Id] = $b } }\nforeach ($a in $listA) { if ($null -ne $a.Target.Id -and $idxB.ContainsKey($a.Target.Id)) { Write-Output $a.Target.Email } }", "proposito": "Identificar usuarios que ya poseían asignaciones entregadas simultáneas en dos paquetes declarados incompatibles.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Validación de Configuración y Postura"}], "kpisYMetricas": [{"id": "KPI-01", "nombre": "SLA de Revocación Integral Leaver (Offboarding Time-to-Revoke)", "definicion": "Tiempo transcurrido desde la efectividad de baja en HRIS o disparo urgente hasta el bloqueo de cuenta y revocación de refresh tokens en Lifecycle Workflows.", "formula": "Mediana/P95(Timestamp_TareaRevocacionCompletada - Timestamp_EventoBaja)", "metaSugerida": "< 15 min (bajas urgentes) / < 3 h (bajas programadas)", "frecuencia": "Diaria / Mensual", "audiencia": "CISO, SOC Manager, Internal Audit", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Alineado al intervalo mínimo/defecto de LCW (1-3 h) y ejecución Run on demand inmediata."}, {"id": "KPI-02", "nombre": "Tasa de Onboarding Día-1 Automatizado sin Intervención Manual", "definicion": "Porcentaje de nuevos ingresos que reciben cuenta activa, TAP al gerente y paquetes de acceso base de forma totalmente automatizada antes de su primer turno.", "formula": "(Altas Joiner exitosas en LCW sin ticket manual / Total de ingresos del mes) * 100", "metaSugerida": ">= 98 %", "frecuencia": "Mensual", "audiencia": "CIO, Identity Architect, RR. HH.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Mide retorno directo de inversión de HR-driven provisioning + Lifecycle Workflows."}, {"id": "KPI-03", "nombre": "Tasa de Decisión Explícita en Access Reviews (Efectividad Anti-Rubber-Stamping)", "definicion": "Porcentaje de ítems de revisión decididos explícitamente por revisores humanos asistidos por ML o por el Access Review Agent antes del vencimiento.", "formula": "(Ítems aprobados o denegados explícitamente por revisor / Total de ítems en campaña) * 100", "metaSugerida": ">= 95 %", "frecuencia": "Trimestral", "audiencia": "CISO, GRC, Dueños de Negocio", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Evita depender únicamente del cierre forzoso por inacción del revisor."}, {"id": "KPI-04", "nombre": "Índice de Cero Privilegios Permanentes (ZSP Ratio en Roles Críticos)", "definicion": "Proporción de asignaciones administrativas sobre roles críticos de Entra ID gestionadas como elegibles JIT en PIM frente al total (excluyendo 2 cuentas break-glass).", "formula": "(Asignaciones elegibles PIM / (Asignaciones elegibles PIM + Asignaciones permanentes no break-glass)) * 100", "metaSugerida": "100 %", "frecuencia": "Semanal", "audiencia": "CISO, Privileged Role Administrator", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Meta estricta Zero Trust para erradicar privilegios administrativos permanentes."}, {"id": "KPI-05", "nombre": "Cobertura de Aplicaciones Tier-1 y Tier-2 bajo Entitlement Management", "definicion": "Porcentaje de aplicaciones críticas del negocio cuyos permisos se solicitan, aprueban y revocan mediante Access Packages.", "formula": "(Aplicaciones Tier-1/Tier-2 integradas en catálogos EM / Total de aplicaciones Tier-1/Tier-2 inventariadas) * 100", "metaSugerida": ">= 90 %", "frecuencia": "Trimestral", "audiencia": "Identity Architect, GRC", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Indicador estructural de adopción del modelo de gobierno de acceso."}, {"id": "KPI-06", "nombre": "Higiene de Cuentas Huérfanas (Account Discovery Remediation Rate)", "definicion": "Porcentaje de cuentas locales no correlacionadas descubiertas en aplicaciones destino que son eliminadas o vinculadas en menos de 7 días.", "formula": "(Cuentas no correlacionadas remediadas en <= 7 días / Total de cuentas no correlacionadas detectadas) * 100", "metaSugerida": ">= 99 %", "frecuencia": "Semanal", "audiencia": "Identity Governance Administrator, Internal Audit", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Mide eficacia operativa de Account Discovery exclusivo de Entra ID Governance."}, {"id": "KPI-07", "nombre": "Cobertura de Patrocinio Humano sobre Guests B2B y Agentes IA", "definicion": "Porcentaje de usuarios Guest gobernados e identidades Microsoft Entra Agent ID que cuentan con sponsor humano activo y expiración definida.", "formula": "((Guests gobernados + Agent IDs con sponsor activo y expiración) / Total de Guests + Agent IDs) * 100", "metaSugerida": "100 %", "frecuencia": "Semanal", "audiencia": "CISO, AI Governance Lead", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Previene proliferación de agentes huérfanos (shadow AI) y cuentas externas permanentes."}, {"id": "KPI-08", "nombre": "Cumplimiento de Separation of Duties (SoD Zero-Conflict Rate)", "definicion": "Porcentaje de usuarios con paquetes de acceso libres de combinaciones tóxicas de permisos declaradas incompatibles.", "formula": "(1 - (Usuarios con Additional access incompatible no exento / Total de usuarios con Access Packages)) * 100", "metaSugerida": "100 %", "frecuencia": "Semanal", "audiencia": "GRC, CFO / SOX Compliance", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Control clave para auditorías financieras SOX ITGC e ISO 27001 A.5.3."}], "mapeoNISTCSF20": [{"funcion": "GOVERN (GV)", "subcategoria": "GV.RR-02", "descripcionResultado": "Los roles, responsabilidades y autoridades relacionados con la gestión de riesgos de ciberseguridad se establecen, comunican, comprenden y aplican.", "capacidadMicrosoft": "Delegación granular en catálogos EM (Catalog owner, Access package manager), segregación RBAC en PIM y reglas de Separation of Duties (SoD).", "evidenciaAuditoria": "Exportación Graph de asignaciones delegadas por catálogo e informe semanal con Additional access = 0.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "GOVERN (GV)", "subcategoria": "GV.SC-07", "descripcionResultado": "Los riesgos planteados por un proveedor, sus productos y sus servicios se comprenden, registran, priorizan, evalúan, responden y monitorean a lo largo de la relación.", "capacidadMicrosoft": "Gobierno de Connected Organizations, conversión Mark guest as governed, expiración automática B2B y trazabilidad MAU en AuditLogs.", "evidenciaAuditoria": "Inventario semestral recertificado de Connected Organizations y decisiones de Access Reviews sobre invitados.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.AM-05", "descripcionResultado": "Los recursos se priorizan según su clasificación, criticidad, recursos y valor comercial.", "capacidadMicrosoft": "Clasificación de aplicaciones SaaS/on-premises, grupos, SharePoint y roles SAP IAG en catálogos segmentados y detección de cuentas locales con Account Discovery.", "evidenciaAuditoria": "Inventario de catálogos por nivel de criticidad y reportes semanales conciliados de Account Discovery.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.RA-01", "descripcionResultado": "Las vulnerabilidades en los activos se identifican, validan y registran.", "capacidadMicrosoft": "Detección de privilegios anómalos mediante ML User-to-Group Affiliation, Inactive guest insights, Access Review Agent y evaluaciones Maester.", "evidenciaAuditoria": "Reportes mensuales de outliers organizacionales en Access Reviews e informes automatizados de Maester.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.AA-01", "descripcionResultado": "Las identidades y credenciales para usuarios, servicios y hardware autorizados son gestionadas por la organización.", "capacidadMicrosoft": "HR-driven / API-driven inbound provisioning, Lifecycle Workflows JML (emisión TAP día-1, baja automática) y gobierno de Microsoft Entra Agent ID con sponsors humanos.", "evidenciaAuditoria": "Registros exitosos en AADProvisioningLogs, Workflow history e inventario de sponsors de identidades de agentes.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.AA-02", "descripcionResultado": "Las identidades son verificadas (identity proofing) y vinculadas a credenciales basadas en el contexto de las interacciones.", "capacidadMicrosoft": "Exigencia de credenciales verificables Microsoft Entra Verified ID (red Entra o socios IDV en Security Store) y selfie biométrico Face Check en Access Packages.", "evidenciaAuditoria": "Políticas de solicitud EM con Required Verified IDs + Require Face Check habilitados y trazas de validación.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.AA-05", "descripcionResultado": "Los permisos de acceso, derechos y autorizaciones se definen en una política, se gestionan, aplican y revisan incorporando los principios de mínimo privilegio y separación de funciones.", "capacidadMicrosoft": "Access Packages con expiración obligatoria, Auto-assignment policies, elevación JIT en PIM y Access Reviews periódicos con auto-aplicación.", "evidenciaAuditoria": "Historial trimestral de Access Reviews al 100 % y reporte de 0 asignaciones permanentes no break-glass en PIM.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.CM-03", "descripcionResultado": "Las actividades del personal y el uso de tecnología se monitorean para encontrar eventos potencialmente adversos.", "capacidadMicrosoft": "PIM Alerts nativas, workbook Application role assignment activity y evaluación de riesgo en solicitudes EM con Entra ID Protection e Insider Risk Management.", "evidenciaAuditoria": "Reglas analíticas KQL en Microsoft Sentinel sobre AuditLogs (EntitlementManagement, RoleManagement, AccessReviews).", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.AE-02", "descripcionResultado": "Los eventos potencialmente adversos se analizan para comprender mejor las actividades asociadas.", "capacidadMicrosoft": "Correlación SIEM entre tareas Leaver fallidas, intentos repetidos fallidos de Face Check y alertas de inicio de sesión riesgoso en Entra ID.", "evidenciaAuditoria": "Incidentes correlacionados en security.microsoft.com integrando AuditLogs, AADProvisioningLogs y SigninLogs.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.MI-01", "descripcionResultado": "Los incidentes son contenidos.", "capacidadMicrosoft": "Ejecución Run on demand de workflows de terminación inmediata (bloqueo de cuenta, revocación de refresh tokens y retiro total de paquetes/grupos) y bloqueo central por Agent Identity Blueprint.", "evidenciaAuditoria": "Trazas de ejecución en <15 minutos en AuditLogs (LoggedByService = Lifecycle Workflows) durante respuesta a incidentes.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.AN-03", "descripcionResultado": "Se realiza un análisis para establecer qué tuvo lugar durante un incidente y la causa raíz del incidente.", "capacidadMicrosoft": "Archivo extendido (>365 días) de AuditLogs y AADProvisioningLogs en Azure Monitor / Sentinel Data Lake reconstruyendo solicitante, aprobador y entrega de cada permiso.", "evidenciaAuditoria": "Workbook Access Package Activity y consultas forenses KQL sobre el historial completo de una identidad comprometida.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RECOVER (RC)", "subcategoria": "RC.RP-03", "descripcionResultado": "La integridad de las copias de seguridad y otros activos de restauración se verifica antes de utilizarlos para la recuperación.", "capacidadMicrosoft": "Exportación declarativa vía Microsoft Graph de definiciones LCW, catálogos EM y políticas PIM, combinada con Entra Backup and Recovery y flujos de rehabilitación ante errores masivos HRIS.", "evidenciaAuditoria": "Artefactos JSON respaldados en control de versiones y acta de prueba exitosa en simulacro anual A-01.", "estadoValidacion": "Propuesta Editorial"}], "validacionYDecisionesEditoriales": {"fechaRevalidacion": "2026-11-11", "resumenAuditoria": "Módulo construido íntegramente desde cero y verificado contra la documentación viva de Microsoft Learn a corte 11 de noviembre de 2026 (incluyendo actualizaciones de octubre y noviembre de 2026 sobre licenciamiento Entra ID Governance vs. Entra ID P2, Microsoft 365 E7 Frontier Suite, Microsoft Agent 365, gobierno de Microsoft Entra Agent ID, límites ampliados de Lifecycle Workflows, Access Review Agent, Verified ID + Face Check y facturación MAU para Guests B2B).", "correccionesAplicadas": ["Verificado en licensing-fundamentals.md (oct-2026) que todas las capacidades GA previas de Entra ID P2 se mantienen en M365 E5, pero ninguna nueva función IGA se añadirá al SKU P2; el acceso a LCW, ML User-to-Group Affiliation, Verified ID en EM y Account Discovery exige Entra ID Governance / Step-Up for P2 / Entra Suite / M365 E7.", "Resuelta discrepancia documental interna en Learn sobre el límite de Lifecycle Workflows: governance-service-limits.md y what-are-lifecycle-workflows.md confirman el tope vigente de 100 workflows por tenant, 25 tareas por workflow y 100 Custom Task Extensions (frente a un párrafo heredado de 50 workflows en licensing-fundamentals.md).", "Documentada la coexistencia temporal en preview de 'Time based attribute' y 'Time based attribute V2 (Preview)' con comparaciones relativas en Lifecycle Workflows, advirtiendo que V2 Preview no aplica el comportamiento catch-up de 3 días ante retrasos de RR. HH.", "Precisado que Separation of Duties básico (paquetes y grupos incompatibles, unidireccionales por regla) está soportado desde Entra ID P2, mientras que las aprobaciones condicionadas por ID Protection / Insider Risk, Auto-assignment policies, Verified ID + Face Check, Entra Roles (Preview) y SAP IAG (Preview) requieren Entra ID Governance.", "Incorporado el marco oficial de gobierno de identidades de agentes IA (agent-id-governance-overview.md, actualizado el 2026-11-07): objetos agent identity blueprint, agent identity y agent user, patrocinio humano obligatorio con transferencia automática al manager y licenciamiento mediante Microsoft Agent 365 o Microsoft 365 E7 (GA 1 de mayo de 2026).", "Verificado el modelo MAU en Azure para Guests B2B (oct-2026): solo genera cargo cuando GovernanceLicenseFeatureUsed = True sobre funciones exclusivas de ID Governance (máximo una vez por mes por invitado) y quedan exentos los invitados miembros de una Multi-Tenant Organization (MTO).", "Incorporado el cambio de seguridad en delegación EM (entitlement-management-delegate.md, ago-2026) por el cual User Administrator ya no puede crear catálogos ni gestionar paquetes en catálogos ajenos, debiendo migrarse a Identity Governance Administrator y roles delegados de catálogo."], "decisionesEditoriales": [{"elemento": "SLAs operativos JML (< 15 min baja urgente, < 3 h baja programada, < 4 h remediación de fallos en LCW)", "tipo": "Propuesta Editorial", "justificacion": "Microsoft Learn provee intervalos técnicos de evaluación (1-24 h, defecto 3 h) y ejecución Run on demand, pero los compromisos de tiempo de respuesta dependen del estándar operativo del SOC e IAM."}, {"elemento": "Duración máxima de activación JIT en PIM (2 h para Privileged Role / Groups Admin y 4 h para Identity Governance / LCW Admin)", "tipo": "Propuesta Editorial", "justificacion": "Equilibra la reducción de ventana de exposición de sesiones administrativas con la continuidad operativa diaria sin fatiga de reautenticación."}, {"elemento": "Metas cuantitativas de los 8 KPIs (>= 98 % onboarding día-1, >= 95 % revisión explícita, 100 % ZSP, SoD y patrocinio)", "tipo": "Propuesta Editorial", "justificacion": "Establece umbrales auditables de referencia ejecutiva para comités de riesgo, SOX ITGC e ISO/IEC 27001."}, {"elemento": "Modelo de Madurez Operacional de 5 niveles desde operación manual hasta gobierno agéntico Frontier", "tipo": "Propuesta Editorial", "justificacion": "Permite trazar una hoja de ruta progresiva desde el aprovechamiento base de Entra ID P2 en M365 E5 hasta el despliegue completo de Entra ID Governance y Agent 365."}, {"elemento": "Mapeo estructurado de 12 subcategorías sobre las 6 funciones de NIST CSF 2.0 y tácticas MITRE ATT&CK v18", "tipo": "Propuesta Editorial", "justificacion": "Conecta la telemetría técnica nativa (AuditLogs, AADProvisioningLogs, Workbooks) con resultados verificables de auditoría regulatoria."}]}, "referenciasVerificadas": [{"id": "REF-01", "titulo": "Microsoft Entra ID Governance overview", "url": "https://learn.microsoft.com/en-us/entra/id-governance/identity-governance-overview", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Entra Documentation Team (OWinfreyATL / Mark Wahl)", "comentario": "Arquitectura integral de ciclo de vida de identidades, ciclo de vida de acceso, acceso privilegiado y gobierno de identidades de agentes.", "verificacion": "Verificado 2026-11-11 (actualizado 2026-10-29)"}, {"id": "REF-02", "titulo": "Microsoft Entra ID Governance licensing fundamentals", "url": "https://learn.microsoft.com/en-us/entra/id-governance/licensing-fundamentals", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Entra Documentation Team", "comentario": "Matriz oficial comparativa entre Free, P1, P2, Entra ID Governance (6 SKUs), Entra Suite, Agent 365 y Microsoft 365 E7, más cuotas /bulkUpload.", "verificacion": "Verificado 2026-11-11 (actualizado 2026-10-16)"}, {"id": "REF-03", "titulo": "Microsoft Entra ID Governance licensing for guest users", "url": "https://learn.microsoft.com/en-us/entra/id-governance/microsoft-entra-id-governance-licensing-for-guest-users", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Entra Documentation Team", "comentario": "Modelo de facturación MAU en Azure, tabla de acciones facturables (GovernanceLicenseFeatureUsed = True) y exención en Multi-Tenant Organizations.", "verificacion": "Verificado 2026-11-11 (actualizado 2026-10-06)"}, {"id": "REF-04", "titulo": "Governing Agent Identities - Microsoft Entra ID Governance", "url": "https://learn.microsoft.com/en-us/entra/id-governance/agent-id-governance-overview", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Entra Documentation Team", "comentario": "Gobierno de agent identity blueprints, agent identities y agent users con sponsors humanos, Access Packages y Conditional Access.", "verificacion": "Verificado 2026-11-11 (actualizado 2026-11-07)"}, {"id": "REF-05", "titulo": "What are lifecycle workflows? - Microsoft Entra ID Governance", "url": "https://learn.microsoft.com/en-us/entra/id-governance/what-are-lifecycle-workflows", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Entra Documentation Team", "comentario": "Fundamentos del modelo Joiner-Mover-Leaver, integración con HR provisioning, Logic Apps y Microsoft Security Copilot.", "verificacion": "Verificado 2026-11-11"}, {"id": "REF-06", "titulo": "Understanding lifecycle workflows", "url": "https://learn.microsoft.com/en-us/entra/id-governance/understanding-lifecycle-workflows", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Entra Documentation Team", "comentario": "Disparadores programados (incluyendo Time based attribute V2 Preview), intervalo por defecto de 3 horas, Run on demand y versionado.", "verificacion": "Verificado 2026-11-11 (actualizado 2026-08-24)"}, {"id": "REF-07", "titulo": "Lifecycle Workflows tasks and definitions", "url": "https://learn.microsoft.com/en-us/entra/id-governance/lifecycle-workflow-tasks", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Entra Documentation Team", "comentario": "Catálogo completo de taskDefinitionId para Joiner, Mover y Leaver, incluyendo revocación de refresh tokens y transferencia de patrocinio de agentes.", "verificacion": "Verificado 2026-11-11 (actualizado 2026-08-19)"}, {"id": "REF-08", "titulo": "Microsoft Entra ID Governance service limits", "url": "https://learn.microsoft.com/en-us/entra/id-governance/governance-service-limits", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Entra Documentation Team", "comentario": "Límites autoritativos de Entitlement Management (20K paquetes, 300K asignaciones, 15K auto-assignment) y Lifecycle Workflows (100 workflows, 25 tareas, 100 custom extensions).", "verificacion": "Verificado 2026-11-11 (actualizado 2026-05-18)"}, {"id": "REF-09", "titulo": "Delegation and roles in entitlement management", "url": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-delegate", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Entra Documentation Team", "comentario": "Roles delegados de catálogo, GUIDs oficiales de definición de rol y combinaciones de mínimo privilegio para añadir grupos, apps y sitios SharePoint.", "verificacion": "Verificado 2026-11-11 (actualizado 2026-08-13)"}, {"id": "REF-10", "titulo": "Configure separation of duties for an access package in entitlement management", "url": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-access-package-incompatible", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Entra Documentation Team", "comentario": "Configuración de paquetes y grupos incompatibles, carácter unidireccional de reglas y scripts Microsoft Graph PowerShell para auditar solapamientos.", "verificacion": "Verificado 2026-11-11"}, {"id": "REF-11", "titulo": "Configure Verified ID settings for an access package in entitlement management", "url": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-verified-id-settings", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Entra Documentation Team", "comentario": "Integración de Microsoft Entra Verified ID Network, socios IDV en Security Store y verificación biométrica Face Check en solicitudes My Access.", "verificacion": "Verificado 2026-11-11"}, {"id": "REF-12", "titulo": "Review recommendations for Access reviews", "url": "https://learn.microsoft.com/en-us/entra/id-governance/review-recommendations-access-reviews", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Entra Documentation Team", "comentario": "Funcionamiento técnico de recomendaciones por inactividad (30 días) y Machine Learning User-to-Group Affiliation (jerarquía manager, <=600 miembros).", "verificacion": "Verificado 2026-11-11"}, {"id": "REF-13", "titulo": "Archive & report with Azure Monitor - entitlement management", "url": "https://learn.microsoft.com/en-us/entra/id-governance/entitlement-management-logs-and-reporting", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Entra Documentation Team", "comentario": "Retención extendida en Log Analytics más allá de 30 días, Workbooks oficiales y consultas KQL sobre Category == EntitlementManagement.", "verificacion": "Verificado 2026-11-11"}, {"id": "REF-14", "titulo": "Auditing Lifecycle Workflows", "url": "https://learn.microsoft.com/en-us/entra/id-governance/lifecycle-workflow-audits", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Entra Documentation Team", "comentario": "Categorías de auditoría de Lifecycle Workflows (WorkflowManagement, TaskManagement, Other) y campos de diagnóstico.", "verificacion": "Verificado 2026-11-11"}, {"id": "REF-15", "titulo": "The Microsoft Entra agent for smarter access governance: Access Review Agent", "url": "https://techcommunity.microsoft.com/blog/microsoft-entra-blog/the-microsoft-entra-agent-for-smarter-access-governance-access-review-agent/4279689", "tipoFuente": "Blog Oficial Microsoft", "autor": "Manmeet Bawa (Partner Director Product Management, Microsoft)", "comentario": "Arquitectura operativa del Access Review Agent en Microsoft Entra y experiencia conversacional guiada para revisores en Microsoft Teams.", "verificacion": "Verificado 2026-11-11"}, {"id": "REF-16", "titulo": "Maester: Open-Source Microsoft Entra & M365 Security Testing Framework", "url": "https://maester.dev/", "tipoFuente": "Empleado Microsoft", "autor": "Merill Fernando & Comunidad Maester", "comentario": "Automatización continua de pruebas de postura sobre Entra ID, Conditional Access, PIM y gobierno de identidad.", "verificacion": "Verificado 2026-11-11"}, {"id": "REF-17", "titulo": "Cloudbrothers - Identity, Conditional Access & Entra Governance Research", "url": "https://cloudbrothers.info/en/", "tipoFuente": "MVP Seguridad", "autor": "Fabian Bader (Microsoft Security MVP)", "comentario": "Investigación técnica profunda sobre protección de tokens, detección en registros de actividad Graph y endurecimiento de Entra ID.", "verificacion": "Verificado 2026-11-11"}, {"id": "REF-18", "titulo": "Cloud-Architekt - Enterprise Identity Governance & Workload Identities", "url": "https://www.cloud-architekt.net/blog/", "tipoFuente": "MVP Seguridad", "autor": "Thomas Naunheim (Microsoft Security MVP)", "comentario": "Patrones de arquitectura empresarial para gobierno de identidades humanas, identidades de carga de trabajo, agentes y privilegios Tier-0.", "verificacion": "Verificado 2026-11-11"}, {"id": "REF-19", "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)", "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf", "tipoFuente": "Marco Normativo", "autor": "National Institute of Standards and Technology (NIST)", "comentario": "Marco normativo de referencia para las seis funciones (GV, ID, PR, DE, RS, RC) y subcategorías de gestión de identidad y control de acceso.", "verificacion": "Verificado 2026-11-11"}], "validacionesConfiguracion": [{"control": "**Licencias y Prerrequisito P2**", "comoValidar": "`entra.microsoft.com > Billing > Licenses > Licensed features`", "estadoEsperado": "Plan `Microsoft Entra ID Governance` activo + `AAD_PREMIUM_P2` vigente + suscripción Azure vinculada para Guests.", "origen": "Verificado MS Learn"}, {"control": "**Lifecycle Workflows Activos**", "comoValidar": "`AuditLogs` (`LoggedByService == \"Lifecycle Workflows\"`)", "estadoEsperado": "Eventos regulares de ejecución programada con `Result == \"success\"` y 0 fallos Leaver >4 h.", "origen": "Verificado MS Learn"}, {"control": "**Entitlement Management & SoD**", "comoValidar": "`AuditLogs` (`Category == \"EntitlementManagement\"`) + Workbook *Access Package Activity*", "estadoEsperado": "Solicitudes en estado `Delivered`, `DeliveryFailed == 0` sin reprocesar y `Additional access == 0` en reglas SoD.", "origen": "Verificado MS Learn"}, {"control": "**Access Reviews + ML / Agent**", "comoValidar": "`ID Governance > Access reviews > History`", "estadoEsperado": "100 % de campañas trimestrales cerradas a tiempo con `Auto-apply` ejecutado y decisión registrada.", "origen": "Verificado MS Learn"}, {"control": "**Retención Extendida en SIEM**", "comoValidar": "Workbook *Archived Log Date Range* en Log Analytics", "estadoEsperado": "Ingesta continua de `AuditLogs` y `AADProvisioningLogs` con retención >= 365 días en Sentinel / Log Analytics.", "origen": "Verificado MS Learn"}], "modeloMadurez": [{"nivel": "**Nivel 1**", "estadio": "**Inicial / Ad-Hoc**", "descripcion": "Altas y bajas gestionadas por tickets manuales; grupos estáticos sin expiración; roles administrativos permanentes; retención de logs limitada a los 30 días por defecto del portal Entra."}, {"nivel": "**Nivel 2**", "estadio": "**Base P2 (Repetible)**", "descripcion": "Uso exclusivo de capacidades base de Entra ID P2: PIM habilitado para Global Admins, primeros Access Packages manuales y Access Reviews anuales básicos sin automatización HRIS ni Lifecycle Workflows."}, {"nivel": "**Nivel 3**", "estadio": "**Definido y Automatizado**", "descripcion": "Despliegue de **Entra ID Governance Step-Up**: HR-driven inbound provisioning activo, Lifecycle Workflows JML en producción, delegación por catálogos a unidades de negocio, reglas SoD y exportación continua de `AuditLogs` a Sentinel/Log Analytics."}, {"nivel": "**Nivel 4**", "estadio": "**Gestionado por Riesgo e IA**", "descripcion": "**Auto-assignment policies**, **Verified ID + Face Check** en paquetes sensibles, aprobaciones condicionadas por **Entra ID Protection** y **Purview Insider Risk**, **Account Discovery** semanal, recomendaciones ML **User-to-Group Affiliation** y **Access Review Agent** en Teams."}, {"nivel": "**Nivel 5**", "estadio": "**Optimizado y Agéntico (Frontier)**", "descripcion": "Gobierno unificado humano + no humano con **Microsoft Entra Agent ID** / **Agent 365**, blueprints con Conditional Access heredado, transferencia automática de sponsors, gestión como código en Graph/IaC con pruebas diarias **Maester** y 0 privilegios permanentes."}], "rutaFormacion": {"headers": ["Rol Operativo", "Ruta Oficial Microsoft Learn / Credenciales", "Recursos Avanzados Ninja, Comunidad MVP y Laboratorios Prácticos", "Cadencia de Reentrenamiento"], "rows": [["**Identity Governance Administrator & Identity Architect**", "- **Exam SC-300:** *Microsoft Identity and Access Administrator* `[Verificado MS Learn]`<br>- Learning Path: *Implement an identity management solution using Microsoft Entra ID* `[Verificado MS Learn]`<br>- Applied Skills: *Get started with identities and access using Microsoft Entra* `[Verificado MS Learn]`", "- *TechLab: Entra Suite for Frontier Transformation* (`github.com/microsoft/TechLab-Entra-Suite-for-Frontier-Transformation`) `[Verificado MS Learn]`<br>- Newsletter semanal *Entra.News* (Merill Fernando, Microsoft PM) y automatización de postura con **Maester** (`maester.dev`) `[Verificado MS Learn]`", "Trimestral + seguimiento semanal de `entra/fundamentals/whats-new`"], ["**Lifecycle Workflows & Provisioning Engineer**", "- Módulos Learn de *Plan cloud HR to Microsoft Entra user provisioning*, *Lifecycle Workflows* y *Custom Task Extensions with Azure Logic Apps* `[Verificado MS Learn]`", "- Prácticas con el módulo PowerShell `Microsoft.Graph.Identity.Governance` y plantillas de API-driven inbound provisioning (`/bulkUpload`) `[Verificado MS Learn]`", "Semestral"], ["**Privileged Role Admin & SOC L2/L3**", "- Documentación oficial de *Microsoft Entra Privileged Identity Management (PIM)*, *Securing privileged access* y *Security Copilot in Microsoft Entra* `[Verificado MS Learn]`", "- Investigación avanzada de bypasses y gobernanza de tokens/roles por MVPs (Fabian Bader — *Cloudbrothers*, Thomas Naunheim — *cloud-architekt.net*, Nathan McNulty) `[Verificado MS Learn]`", "Trimestral"], ["**Catalog Owners, Managers & Agent Sponsors**", "- Guías interactivas de **My Access** (`myaccess.microsoft.com`), delegación de aprobaciones, uso del **Access Review Agent** en Microsoft Teams y administración de agentes en **My Account** (`myaccount.microsoft.com`) `[Verificado MS Learn]`", "- Cápsulas internas de 20 minutos enfocadas en prevención de *rubber-stamping*, validación de claims **Verified ID** y responsabilidad del sponsor sobre agentes IA `[Decisión / Propuesta Editorial]`", "Semestral"]]}};
+const NAV_INDEX = [{"id": "00_Marco_Maestro_CISO_SOC_y_NIST", "orden": 0, "folder": "00_Marco_Maestro_CISO_SOC_y_NIST", "slug": "Marco_Maestro_CISO_SOC_y_NIST", "nombreCorto": "Marco Maestro CISO, SOC y NIST", "categoria": "Marco Transversal CISO, SOC y NIST", "htmlRel": "../00_Marco_Maestro_CISO_SOC_y_NIST/Marco_Maestro_CISO_SOC_y_NIST_Guia_Excelencia_Operacional.html"}, {"id": "01_Microsoft_Entra_ID", "orden": 1, "folder": "01_Microsoft_Entra_ID", "slug": "Microsoft_Entra_ID", "nombreCorto": "Microsoft Entra ID", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../01_Microsoft_Entra_ID/Microsoft_Entra_ID_Guia_Excelencia_Operacional.html"}, {"id": "02_Microsoft_Entra_ID_Governance", "orden": 2, "folder": "02_Microsoft_Entra_ID_Governance", "slug": "Microsoft_Entra_ID_Governance", "nombreCorto": "Microsoft Entra ID Governance", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../02_Microsoft_Entra_ID_Governance/Microsoft_Entra_ID_Governance_Guia_Excelencia_Operacional.html"}, {"id": "03_Microsoft_Defender_XDR", "orden": 3, "folder": "03_Microsoft_Defender_XDR", "slug": "Microsoft_Defender_XDR", "nombreCorto": "Defender XDR", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../03_Microsoft_Defender_XDR/Microsoft_Defender_XDR_Guia_Excelencia_Operacional.html"}, {"id": "04_Microsoft_Defender_for_Endpoint", "orden": 4, "folder": "04_Microsoft_Defender_for_Endpoint", "slug": "Microsoft_Defender_for_Endpoint", "nombreCorto": "Defender for Endpoint", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../04_Microsoft_Defender_for_Endpoint/Microsoft_Defender_for_Endpoint_Guia_Excelencia_Operacional.html"}, {"id": "05_Microsoft_Defender_for_Office_365", "orden": 5, "folder": "05_Microsoft_Defender_for_Office_365", "slug": "Microsoft_Defender_for_Office_365", "nombreCorto": "Defender for Office 365", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../05_Microsoft_Defender_for_Office_365/Microsoft_Defender_for_Office_365_Guia_Excelencia_Operacional.html"}, {"id": "06_Microsoft_Defender_for_Identity", "orden": 6, "folder": "06_Microsoft_Defender_for_Identity", "slug": "Microsoft_Defender_for_Identity", "nombreCorto": "Defender for Identity", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../06_Microsoft_Defender_for_Identity/Microsoft_Defender_for_Identity_Guia_Excelencia_Operacional.html"}, {"id": "07_Microsoft_Defender_for_Cloud_Apps", "orden": 7, "folder": "07_Microsoft_Defender_for_Cloud_Apps", "slug": "Microsoft_Defender_for_Cloud_Apps", "nombreCorto": "Defender for Cloud Apps", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../07_Microsoft_Defender_for_Cloud_Apps/Microsoft_Defender_for_Cloud_Apps_Guia_Excelencia_Operacional.html"}, {"id": "08_Microsoft_Sentinel", "orden": 8, "folder": "08_Microsoft_Sentinel", "slug": "Microsoft_Sentinel", "nombreCorto": "Microsoft Sentinel", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../08_Microsoft_Sentinel/Microsoft_Sentinel_Guia_Excelencia_Operacional.html"}, {"id": "09_Microsoft_Security_Copilot", "orden": 9, "folder": "09_Microsoft_Security_Copilot", "slug": "Microsoft_Security_Copilot", "nombreCorto": "Microsoft Security Copilot", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../09_Microsoft_Security_Copilot/Microsoft_Security_Copilot_Guia_Excelencia_Operacional.html"}, {"id": "10_Microsoft_Intune_Plan_1", "orden": 10, "folder": "10_Microsoft_Intune_Plan_1", "slug": "Microsoft_Intune_Plan_1", "nombreCorto": "Microsoft Intune Plan 1", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../10_Microsoft_Intune_Plan_1/Microsoft_Intune_Plan_1_Guia_Excelencia_Operacional.html"}, {"id": "11_Microsoft_Intune_Suite", "orden": 11, "folder": "11_Microsoft_Intune_Suite", "slug": "Microsoft_Intune_Suite", "nombreCorto": "Microsoft Intune Suite", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../11_Microsoft_Intune_Suite/Microsoft_Intune_Suite_Guia_Excelencia_Operacional.html"}, {"id": "12_Windows_Enterprise_Security_y_Cifrado", "orden": 12, "folder": "12_Windows_Enterprise_Security_y_Cifrado", "slug": "Windows_Enterprise_Security_y_Cifrado", "nombreCorto": "Windows Enterprise Security y Cifrado", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../12_Windows_Enterprise_Security_y_Cifrado/Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.html"}, {"id": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "orden": 13, "folder": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "slug": "Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "nombreCorto": "Microsoft Purview Suite", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno/Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.html"}, {"id": "14_Purview_Information_Protection", "orden": 14, "folder": "14_Purview_Information_Protection", "slug": "Purview_Information_Protection", "nombreCorto": "Purview Information Protection", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../14_Purview_Information_Protection/Purview_Information_Protection_Guia_Excelencia_Operacional.html"}, {"id": "15_Purview_Data_Loss_Prevention", "orden": 15, "folder": "15_Purview_Data_Loss_Prevention", "slug": "Purview_Data_Loss_Prevention", "nombreCorto": "Purview Data Loss Prevention", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../15_Purview_Data_Loss_Prevention/Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.html"}, {"id": "16_Purview_Data_Lifecycle_y_Records_Management", "orden": 16, "folder": "16_Purview_Data_Lifecycle_y_Records_Management", "slug": "Purview_Data_Lifecycle_y_Records_Management", "nombreCorto": "Purview DLCM y Records Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../16_Purview_Data_Lifecycle_y_Records_Management/Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.html"}, {"id": "17_Purview_Insider_Risk_Management", "orden": 17, "folder": "17_Purview_Insider_Risk_Management", "slug": "Purview_Insider_Risk_Management", "nombreCorto": "Purview Insider Risk Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../17_Purview_Insider_Risk_Management/Purview_Insider_Risk_Management_Guia_Excelencia_Operacional.html"}, {"id": "18_Purview_Communication_Compliance", "orden": 18, "folder": "18_Purview_Communication_Compliance", "slug": "Purview_Communication_Compliance", "nombreCorto": "Purview Communication Compliance", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../18_Purview_Communication_Compliance/Purview_Communication_Compliance_Guia_Excelencia_Operacional.html"}, {"id": "19_Purview_Audit_Premium", "orden": 19, "folder": "19_Purview_Audit_Premium", "slug": "Purview_Audit_Premium", "nombreCorto": "Purview Audit (Premium)", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../19_Purview_Audit_Premium/Purview_Audit_Premium_Guia_Excelencia_Operacional.html"}, {"id": "20_Purview_eDiscovery_Premium", "orden": 20, "folder": "20_Purview_eDiscovery_Premium", "slug": "Purview_eDiscovery_Premium", "nombreCorto": "Purview eDiscovery Premium", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../20_Purview_eDiscovery_Premium/Purview_eDiscovery_Premium_Guia_Excelencia_Operacional.html"}, {"id": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "orden": 21, "folder": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "slug": "Customer_Lockbox_Customer_Key_y_M365_PAM", "nombreCorto": "Customer Lockbox, Customer Key y M365 PAM", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../21_Customer_Lockbox_Customer_Key_y_M365_PAM/Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.html"}, {"id": "22_Microsoft_Agent_365", "orden": 22, "folder": "22_Microsoft_Agent_365", "slug": "Microsoft_Agent_365", "nombreCorto": "Microsoft Agent 365", "categoria": "Gobierno y Seguridad de Agentes IA", "htmlRel": "../22_Microsoft_Agent_365/Microsoft_Agent_365_Guia_Excelencia_Operacional.html"}];
+
+(() => {
+  const memStore = {};
+  const storageKey = "mseop_v3_state_" + MODULE_DATA.id;
+  function loadState() {
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      return raw ? JSON.parse(raw) : { tasks: {}, steps: {} };
+    } catch (_) {
+      return memStore[storageKey] || { tasks: {}, steps: {} };
+    }
+  }
+  function saveState(st) {
+    memStore[storageKey] = st;
+    try { window.localStorage.setItem(storageKey, JSON.stringify(st)); } catch (_) {}
+  }
+
+  let uiState = loadState();
+  if (!uiState.tasks) uiState.tasks = {};
+  if (!uiState.steps) uiState.steps = {};
+  let activeView = "view-overview";
+  let activePeriodicCad = "Diaria";
+
+  function esc(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // Converts inline Markdown (**bold**, `code`, [Verificado MS Learn], [Decisión / Propuesta Editorial]) into clean readable HTML
+  function richText(str) {
+    let s = esc(str);
+    s = s.replace(/`\[Verificado MS Learn\]`|\[Verificado MS Learn\]/g, '<span class="inline-tag tag-learn">Verificado MS Learn</span>');
+    s = s.replace(/`\[Decisión \/ Propuesta Editorial\]`|\[Decisión \/ Propuesta Editorial\]|`\[Propuesta Editorial\]`|\[Propuesta Editorial\]/g, '<span class="inline-tag tag-edit">Propuesta Editorial</span>');
+    s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    return s;
+  }
+
+  function valBadge(status) {
+    const isLearn = String(status).indexOf("Verificado") !== -1;
+    return '<span class="' + (isLearn ? "badge badge-learn" : "badge badge-editorial") + '">' + esc(status) + '</span>';
+  }
+
+  // Partition activities cleanly into Periodic vs Ad-Hoc
+  const allActs = MODULE_DATA.actividadesOperacionales || [];
+  const periodicActs = allActs.filter((a) => a.cadencia !== "Ad-Hoc");
+  const adhocActs = allActs.filter((a) => a.cadencia === "Ad-Hoc");
+  const prereqs = (MODULE_DATA.relacionM365E5 && MODULE_DATA.relacionM365E5.prerrequisitos) || [];
+  const validations = MODULE_DATA.validacionesConfiguracion || [];
+  const components = MODULE_DATA.arquitecturaYComponentes || [];
+  const rbacRoles = MODULE_DATA.rbacYRoles || [];
+
+  const dailyActs = periodicActs.filter((a) => a.cadencia === "Diaria");
+  const weeklyActs = periodicActs.filter((a) => a.cadencia === "Semanal");
+  const monthlyActs = periodicActs.filter((a) => a.cadencia === "Mensual");
+  const longCycleActs = periodicActs.filter((a) => ["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) !== -1);
+
+  // Topbar links & module switcher
+  const baseName = MODULE_DATA.slug + "_Guia_Excelencia_Operacional";
+  document.getElementById("xlsxLink").href = "./" + baseName + ".xlsx";
+  document.getElementById("mdLink").href = "./" + baseName + ".md";
+
+  const jumpSel = document.getElementById("modJumpSelect");
+  NAV_INDEX.forEach((m) => {
+    const opt = document.createElement("option");
+    opt.value = m.htmlRel;
+    opt.textContent = String(m.orden).padStart(2, "0") + " — " + m.nombreCorto;
+    if (m.id === MODULE_DATA.id) opt.selected = true;
+    jumpSel.appendChild(opt);
+  });
+  jumpSel.addEventListener("change", (e) => { if (e.target.value) window.location.href = e.target.value; });
+
+  const curIdx = NAV_INDEX.findIndex((m) => m.id === MODULE_DATA.id);
+  const prevBtn = document.getElementById("prevModBtn");
+  const nextBtn = document.getElementById("nextModBtn");
+  if (curIdx > 0) prevBtn.href = NAV_INDEX[curIdx - 1].htmlRel;
+  else { prevBtn.style.opacity = "0.4"; prevBtn.style.pointerEvents = "none"; }
+  if (curIdx >= 0 && curIdx < NAV_INDEX.length - 1) nextBtn.href = NAV_INDEX[curIdx + 1].htmlRel;
+  else { nextBtn.style.opacity = "0.4"; nextBtn.style.pointerEvents = "none"; }
+
+  document.getElementById("themeToggleBtn").addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+  });
+  document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+  // Sidebar counters
+  const totalConfigChecks = prereqs.length + validations.length;
+  document.getElementById("navCntConfig").textContent = totalConfigChecks;
+  document.getElementById("navCntDiaria").textContent = dailyActs.length;
+  document.getElementById("navCntSemanal").textContent = weeklyActs.length;
+  document.getElementById("navCntMensual").textContent = monthlyActs.length;
+  document.getElementById("navCntLargos").textContent = longCycleActs.length;
+  document.getElementById("navCntAdhoc").textContent = adhocActs.length;
+  document.getElementById("navCntQueries").textContent = (MODULE_DATA.consultasKQLyVerificacion || []).length;
+  document.getElementById("navCntKpis").textContent = (MODULE_DATA.kpisYMetricas || []).length;
+  document.getElementById("navCntNist").textContent = (MODULE_DATA.mapeoNISTCSF20 || []).length;
+
+  function switchView(viewId, periodicCadOverride) {
+    activeView = viewId;
+    if (periodicCadOverride) activePeriodicCad = periodicCadOverride;
+
+    document.querySelectorAll(".view-panel").forEach((p) => p.classList.remove("active"));
+    const target = document.getElementById(viewId);
+    if (target) target.classList.add("active");
+
+    document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+      const bv = btn.getAttribute("data-view");
+      const bc = btn.getAttribute("data-cad");
+      if (bv === viewId && (!bc || bc === activePeriodicCad)) btn.classList.add("active");
+      else btn.classList.remove("active");
+    });
+
+    if (viewId === "view-periodic") {
+      syncPeriodicSubnav();
+      renderPeriodicCards();
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      switchView(btn.getAttribute("data-view"), btn.getAttribute("data-cad") || null);
+    });
+  });
+
+  // Handle incoming URL hash (#config, #periodic-diaria, #adhoc, etc.)
+  function applyInitialHash() {
+    const h = (window.location.hash || "").replace("#", "");
+    if (h === "config") switchView("view-config");
+    else if (h === "periodic-diaria") switchView("view-periodic", "Diaria");
+    else if (h === "periodic-semanal") switchView("view-periodic", "Semanal");
+    else if (h === "periodic-mensual") switchView("view-periodic", "Mensual");
+    else if (h === "periodic-largos") switchView("view-periodic", "CICLOS_LARGOS");
+    else if (h === "adhoc") switchView("view-adhoc");
+    else if (h === "queries") switchView("view-queries");
+    else if (h === "nist") switchView("view-nist");
+  }
+
+  function updateProgressTracker() {
+    let cfgDone = 0;
+    prereqs.forEach((_, i) => { if (uiState.tasks["CFG-" + (i + 1)]) cfgDone++; });
+    validations.forEach((_, i) => { if (uiState.tasks["VAL-" + (i + 1)]) cfgDone++; });
+    const cfgPct = totalConfigChecks ? Math.round((cfgDone / totalConfigChecks) * 100) : 0;
+
+    const perDone = periodicActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const perPct = periodicActs.length ? Math.round((perDone / periodicActs.length) * 100) : 0;
+
+    const ahDone = adhocActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const ahPct = adhocActs.length ? Math.round((ahDone / adhocActs.length) * 100) : 0;
+
+    document.getElementById("sidebarProgress").innerHTML =
+      '<div class="nav-section-label" style="padding-left:0;">Tu Progreso de Revisión</div>' +
+      '<div class="prog-row"><div class="prog-head"><span>1. Configuración y Validación</span><span>' + cfgDone + '/' + totalConfigChecks + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + cfgPct + '%"></div></div></div>' +
+      '<div class="prog-row"><div class="prog-head"><span>2. Rutinas Periódicas</span><span>' + perDone + '/' + periodicActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + perPct + '%"></div></div></div>' +
+      '<div class="prog-row" style="margin-bottom:0;"><div class="prog-head"><span>3. Playbooks Ad-Hoc</span><span>' + ahDone + '/' + adhocActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + ahPct + '%"></div></div></div>';
+  }
+
+  // VISTA 0: OVERVIEW
+  document.getElementById("heroTitle").textContent = MODULE_DATA.nombre;
+  document.getElementById("heroSummary").textContent = MODULE_DATA.resumenEjecutivo;
+  document.getElementById("heroBadges").innerHTML = [
+    '<span class="badge badge-accent">Módulo ' + String(MODULE_DATA.orden).padStart(2, "0") + ' de 22</span>',
+    '<span class="badge">' + esc(MODULE_DATA.categoria) + '</span>',
+    '<span class="badge badge-learn">' + esc(MODULE_DATA.relacionM365E5.estado) + '</span>',
+    '<span class="badge">Validación: ' + esc(MODULE_DATA.fechaValidacion) + '</span>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").innerHTML = [
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 1 · Acciones Puntuales</div>' +
+        '<h3>Configuración Base y Validaciones</h3>' +
+        '<p>Qué debes habilitar al inicio (' + prereqs.length + ' prerrequisitos, ' + components.length + ' componentes y ' + rbacRoles.length + ' roles RBAC/PIM) y <strong>' + validations.length + ' validaciones "Proof of Life"</strong> para comprobar que todo quedó bien configurado.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-config">Ir a Configuración y Validaciones →</button></div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 2 · Operación Programada</div>' +
+        '<h3>Rutinas Periódicas por Frecuencia</h3>' +
+        '<p><strong>' + periodicActs.length + ' procedimientos preventivos</strong> separados con claridad en ciclos Diarios (' + dailyActs.length + '), Semanales (' + weeklyActs.length + '), Mensuales (' + monthlyActs.length + ') y Trimestrales/Anuales (' + longCycleActs.length + ').</p>' +
+      '</div>' +
+      '<div class="pill-row">' +
+        '<button class="btn btn-primary btn-sm" type="button" data-goto="view-periodic" data-gocad="Diaria">Diarias (' + dailyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Semanal">Semanales (' + weeklyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Mensual">Mensuales (' + monthlyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="CICLOS_LARGOS">Trim./Anual (' + longCycleActs.length + ')</button>' +
+      '</div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 3 · Reacción del Analista</div>' +
+        '<h3>Playbooks Ad-Hoc ante Alertas</h3>' +
+        '<p><strong>' + adhocActs.length + ' playbooks tácticos</strong> que no siguen calendario: se disparan cuando una alerta, señal de compromiso o incidente requiere contención e investigación del analista.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-adhoc">Abrir Playbooks Ad-Hoc →</button></div>' +
+    '</div>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-goto]");
+    if (!b) return;
+    switchView(b.getAttribute("data-goto"), b.getAttribute("data-gocad") || null);
+  });
+
+  const rel = MODULE_DATA.relacionM365E5;
+  document.getElementById("licensingOverviewCard").innerHTML =
+    '<h3 style="margin-top:0;font-size:20px;">Encaje de Licenciamiento en Microsoft 365 E5 y Portales Oficiales</h3>' +
+    '<p style="margin-bottom:16px;">' + richText(rel.notaLicenciamiento) + '</p>' +
+    '<div class="info-pair" style="margin-bottom:0;">' +
+      '<div class="info-box"><div class="info-label">Licencias y SKUs Aplicables</div><ul style="margin:6px 0 0 0;padding-left:20px;">' +
+        (rel.licencias || []).map((l) => '<li style="margin-bottom:6px;">' + richText(l) + '</li>').join("") +
+      '</ul></div>' +
+      '<div class="info-box"><div class="info-label">Consolas Oficiales de Administración y SOC</div><div class="pill-row" style="margin-top:10px;">' +
+        (MODULE_DATA.portalesPrincipales || []).map((u) => '<a class="btn" href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + ' ↗</a>').join("") +
+      '</div><div style="margin-top:16px;"><div class="info-label">Roles Involucrados</div><div class="pill-row" style="margin-top:6px;">' +
+        (MODULE_DATA.audiencia || []).map((au) => '<span class="badge">' + esc(au) + '</span>').join("") +
+      '</div></div></div>' +
+    '</div>';
+
+  document.getElementById("principlesGrid").innerHTML = (MODULE_DATA.principiosRectores || []).map((p) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:10px;">' +
+        '<h3 style="margin:0;font-size:17.5px;">' + esc(p.principio) + '</h3>' +
+        valBadge(p.estadoValidacion) +
+      '</div>' +
+      '<p class="muted" style="margin:0 0 12px 0;">' + richText(p.descripcion) + '</p>' +
+      (p.fuenteUrl ? '<a href="' + esc(p.fuenteUrl) + '" target="_blank" rel="noopener noreferrer">Consultar referencia en Microsoft Learn ↗</a>' : '') +
+    '</div>'
+  )).join("");
+
+  // VISTA 1: CONFIGURACIÓN PUNTUAL Y VALIDACIONES
+  function renderConfigView() {
+    document.getElementById("prereqsContainer").innerHTML = prereqs.map((pr, idx) => {
+      const code = "CFG-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '" style="padding:22px 28px;margin-bottom:16px;">' +
+          '<div class="card-title-group">' +
+            '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+            '<div style="flex:1;">' +
+              '<div class="pill-row" style="margin-bottom:6px;">' +
+                '<span class="card-code" style="margin-bottom:0;">' + code + '</span>' +
+                '<span class="badge">Acción Puntual de Puesta en Marcha</span>' +
+              '</div>' +
+              '<div style="font-size:16px;font-weight:600;">' + richText(pr) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("validationsContainer").innerHTML = validations.map((v, idx) => {
+      const code = "VAL-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + code + ' · Validación de Configuración</span>' +
+                '<h4 class="card-heading">' + richText(v.control) + '</h4>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' + valBadge(v.origen || "Verificado MS Learn") + '</div>' +
+          '</div>' +
+          '<div class="info-pair" style="margin-bottom:0;">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Dónde y Cómo Validar la Configuración</div>' +
+              '<div class="info-content">' + richText(v.comoValidar) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label">Estado / Resultado Esperado ("Proof of Life")</div>' +
+              '<div class="info-content">' + richText(v.estadoEsperado) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("componentsContainer").innerHTML = components.map((c, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">COMP-' + String(idx + 1).padStart(2, "0") + ' · Subsistema Técnico</span>' +
+            '<h4 class="card-heading">' + esc(c.componente) + '</h4>' +
+          '</div>' +
+          valBadge(c.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Qué Configurar y Habilitar en este Componente</div>' +
+            '<div class="info-content">' + richText(c.funcionOperativa) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Ruta Exacta en Consola</div>' +
+            '<div class="info-content"><code>' + esc(c.portalRuta) + '</code></div>' +
+            '<div class="info-label" style="margin-top:14px;">Integraciones que Validar</div>' +
+            '<div class="pill-row" style="margin-top:6px;">' + (c.integraciones || []).map((i) => '<span class="badge">' + esc(i) + '</span>').join("") + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+
+    document.getElementById("rbacContainer").innerHTML = rbacRoles.map((r) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">RBAC / PIM · ' + esc(r.nivelSOC) + '</span>' +
+            '<h4 class="card-heading">' + esc(r.rol) + '</h4>' +
+          '</div>' +
+          valBadge(r.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair" style="margin-bottom:14px;">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Configuración Puntual en PIM / Asignación</div>' +
+            '<div class="info-content">' + richText(r.asignacionPIM) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Alcance de Permisos a Validar</div>' +
+            '<div class="info-content">' + richText(r.permisosClave) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="validation-footer">' +
+          '<div><strong>Uso operativo autorizado:</strong> ' + richText(r.responsabilidadOperativa) + '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+
+  // Helper to render step-by-step lists with clickable step checkmarks
+  function renderStepRows(actCode, steps) {
+    return '<ol class="steps-list">' + (steps || []).map((st, idx) => {
+      const stepKey = actCode + "_S" + (idx + 1);
+      const isChecked = !!uiState.steps[stepKey];
+      return (
+        '<li class="step-row ' + (isChecked ? "step-checked" : "") + '" data-step="' + esc(stepKey) + '" title="Haz clic para marcar o desmarcar este paso">' +
+          '<span class="step-num">' + (isChecked ? "✓" : (idx + 1)) + '</span>' +
+          '<div class="step-body">' + richText(st) + '</div>' +
+        '</li>'
+      );
+    }).join("") + '</ol>';
+  }
+
+  // VISTA 2: ACCIONES PERIÓDICAS
+  const roleSet = new Set();
+  periodicActs.forEach((a) => {
+    String(a.rolResponsable || "").split(/[\/+,]/).forEach((r) => {
+      const clean = r.trim();
+      if (clean) roleSet.add(clean);
+    });
+  });
+  const perRoleSel = document.getElementById("perRole");
+  Array.from(roleSet).sort().forEach((r) => {
+    const o = document.createElement("option");
+    o.value = r; o.textContent = "Rol: " + r;
+    perRoleSel.appendChild(o);
+  });
+
+  function syncPeriodicSubnav() {
+    document.querySelectorAll("#periodicCadBar .subnav-pill").forEach((b) => {
+      b.classList.toggle("active", b.getAttribute("data-pcad") === activePeriodicCad);
+    });
+    const titles = {
+      "Diaria": ["2. Acciones Periódicas — Rutinas Diarias", "Controles diarios del turno SOC y administración para asegurar salud de plataforma, triaje a tiempo y cero caídas silenciosas."],
+      "Semanal": ["2. Acciones Periódicas — Rutinas Semanales", "Actividades semanales de tuning de falsos positivos, caza proactiva, revisión de postura e higiene operativa."],
+      "Mensual": ["2. Acciones Periódicas — Rutinas Mensuales", "Gobierno mensual de privilegios RBAC/PIM, optimización financiera/retención, pruebas de automatización y reporte ejecutivo al CISO."],
+      "CICLOS_LARGOS": ["2. Acciones Periódicas — Ciclos Trimestrales, Semestrales y Anuales", "Ejercicios Tabletop/Purple Team, análisis de cobertura MITRE ATT&CK, simulacros de continuidad y auditoría estratégica anual."],
+      "ALL_PERIODIC": ["2. Todas las Acciones Periódicas Programadas", "Listado consolidado de todas las rutinas preventivas y de gobierno del módulo (excluyendo playbooks reactivos Ad-Hoc)."]
+    };
+    const pair = titles[activePeriodicCad] || titles["ALL_PERIODIC"];
+    document.getElementById("periodicTitle").textContent = pair[0];
+    document.getElementById("periodicSubtitle").textContent = pair[1];
+  }
+
+  document.getElementById("periodicCadBar").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-pcad]");
+    if (!b) return;
+    activePeriodicCad = b.getAttribute("data-pcad");
+    syncPeriodicSubnav();
+    switchView("view-periodic", activePeriodicCad);
+  });
+
+  function getFilteredPeriodic() {
+    const q = document.getElementById("perSearch").value.trim().toLowerCase();
+    const rol = document.getElementById("perRole").value;
+    const orig = document.getElementById("perOrigin").value;
+
+    return periodicActs.filter((a) => {
+      if (activePeriodicCad === "CICLOS_LARGOS") {
+        if (["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) === -1) return false;
+      } else if (activePeriodicCad !== "ALL_PERIODIC") {
+        if (a.cadencia !== activePeriodicCad) return false;
+      }
+      if (rol !== "ALL" && String(a.rolResponsable).indexOf(rol) === -1) return false;
+      if (orig !== "ALL" && a.estadoValidacion !== orig) return false;
+      if (q) {
+        const hay = [a.codigo, a.cadencia, a.actividad, a.objetivo, a.consolaRuta, a.rolResponsable, a.evidenciaAuditable, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderPeriodicCards() {
+    const list = getFilteredPeriodic();
+    document.getElementById("perCountLabel").textContent =
+      "Mostrando " + list.length + " acciones periódicas en esta vista (haz clic en cada paso numerado para llevar control de lectura o ejecución).";
+
+    const box = document.getElementById("periodicCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay actividades periódicas que coincidan con los filtros seleccionados.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + ' aria-label="Completar ' + esc(a.codigo) + '">' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Rutina ' + esc(a.cadencia) + '</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge">' + esc(a.rolResponsable) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Objetivo de la Rutina</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Consola y Ruta Exacta</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Acciones Paso a Paso a Ejecutar y Validar (' + steps.length + ' pasos)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación de cierre y evidencia auditable:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<span>MITRE ATT&amp;CK: ' + esc(a.mitreTactic) + ' · ' + esc(a.notaValidacion) + '</span>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Ver guía oficial en MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+
+  ["perSearch", "perRole", "perOrigin"].forEach((id) => {
+    document.getElementById(id).addEventListener("input", renderPeriodicCards);
+    document.getElementById(id).addEventListener("change", renderPeriodicCards);
+  });
+
+  // VISTA 3: PLAYBOOKS AD-HOC (ALERTAS Y SEÑALES)
+  function renderAdhocCards() {
+    const q = document.getElementById("adhocSearch").value.trim().toLowerCase();
+    const list = adhocActs.filter((a) => {
+      if (!q) return true;
+      const hay = [a.codigo, a.actividad, a.disparadorAlerta, a.objetivo, a.consolaRuta, a.rolResponsable, a.mitreTactic, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+      return hay.indexOf(q) !== -1;
+    });
+
+    const box = document.getElementById("adhocCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay playbooks Ad-Hoc que coincidan con la búsqueda.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card adhoc-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Playbook Reactivo del Analista (Ad-Hoc)</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge badge-accent">MITRE: ' + esc(a.mitreTactic) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="trigger-banner">' +
+            '<div class="info-label">Señal, Alerta o Evento Disparador (Cuándo debe actuar el analista)</div>' +
+            '<div class="info-content" style="font-weight:600;">' + richText(a.disparadorAlerta) + '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Meta de Contención y Erradicación</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Analista Ejecutor y Consola de Intervención</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><strong>Rol:</strong> ' + esc(a.rolResponsable) + '<br><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Secuencia Táctica del Analista (' + steps.length + ' pasos de respuesta)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación post-contención y evidencia forense:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<button class="btn btn-sm go-queries-btn" type="button">Abrir Consultas KQL / Scripts de Apoyo →</button>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Documentación oficial de respuesta MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+  document.getElementById("adhocSearch").addEventListener("input", renderAdhocCards);
+
+  // Global delegation for task checkboxes, step rows, copy buttons & query jumps
+  document.addEventListener("change", (e) => {
+    const chk = e.target.closest(".task-checkbox");
+    if (!chk) return;
+    const key = chk.getAttribute("data-task");
+    uiState.tasks[key] = chk.checked;
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  document.addEventListener("click", (e) => {
+    const stepEl = e.target.closest(".step-row");
+    if (stepEl && !e.target.closest("a")) {
+      const sk = stepEl.getAttribute("data-step");
+      uiState.steps[sk] = !uiState.steps[sk];
+      saveState(uiState);
+      renderPeriodicCards();
+      renderAdhocCards();
+      return;
+    }
+    const copyBtn = e.target.closest(".copy-text-btn");
+    if (copyBtn) {
+      const txt = copyBtn.getAttribute("data-copy") || "";
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(() => {
+          const prev = copyBtn.textContent;
+          copyBtn.textContent = "¡Copiado!";
+          setTimeout(() => { copyBtn.textContent = prev; }, 1400);
+        });
+      }
+      return;
+    }
+    if (e.target.closest(".go-queries-btn")) {
+      switchView("view-queries");
+    }
+  });
+
+  document.getElementById("resetChecksBtn").addEventListener("click", () => {
+    uiState = { tasks: {}, steps: {} };
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  // Export CSV (all activities with action type distinction)
+  document.getElementById("exportCsvBtn").addEventListener("click", () => {
+    const hdr = ["TipoAccion", "Codigo", "Cadencia", "Actividad", "Disparador_u_Objetivo", "ConsolaRuta", "RolResponsable", "FuncionNIST", "SubcategoriaNIST", "MITRE", "EstadoValidacion", "Completado", "EvidenciaAuditable"];
+    const lines = [hdr.join(",")];
+    allActs.forEach((a) => {
+      const vals = [
+        a.tipoAccion, a.codigo, a.cadencia, a.actividad,
+        a.cadencia === "Ad-Hoc" ? a.disparadorAlerta : a.objetivo,
+        a.consolaRuta, a.rolResponsable, a.funcionNIST, a.subcategoriaNIST,
+        a.mitreTactic, a.estadoValidacion, uiState.tasks[a.codigo] ? "Si" : "No", a.evidenciaAuditable
+      ].map((v) => '"' + String(v || "").replace(/"/g, '""') + '"');
+      lines.push(vals.join(","));
+    });
+    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url; link.download = MODULE_DATA.slug + "_Guia_Operacional.csv";
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  });
+
+  // VISTA 4: QUERIES
+  function renderQueries() {
+    const q = document.getElementById("kqlSearch").value.trim().toLowerCase();
+    const uf = document.getElementById("kqlUsageFilter").value;
+    const list = (MODULE_DATA.consultasKQLyVerificacion || []).filter((it) => {
+      if (uf !== "ALL" && it.usoOperativo !== uf) return false;
+      if (q && [it.nombre, it.plataforma, it.tablaPrincipal, it.proposito, it.consulta, it.usoOperativo].join(" ").toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+
+    document.getElementById("queriesContainer").innerHTML = list.map((it, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">Q-' + String(idx + 1).padStart(2, "0") + ' · ' + esc(it.usoOperativo) + '</span>' +
+            '<h3 class="card-heading">' + esc(it.nombre) + '</h3>' +
+          '</div>' +
+          '<div class="pill-row">' +
+            '<span class="badge badge-accent">' + esc(it.plataforma) + '</span>' +
+            '<span class="badge mono">' + esc(it.tablaPrincipal) + '</span>' +
+            valBadge(it.estadoValidacion) +
+            '<button class="btn btn-sm copy-kql-btn" type="button" data-qidx="' + idx + '">Copiar consulta</button>' +
+          '</div>' +
+        '</div>' +
+        '<p style="margin:0 0 12px 0;"><strong>Qué valida o detecta:</strong> ' + richText(it.proposito) + '</p>' +
+        '<pre class="code-block">' + esc(it.consulta) + '</pre>' +
+      '</div>'
+    )).join("");
+
+    document.querySelectorAll(".copy-kql-btn").forEach((b) => {
+      b.addEventListener("click", () => {
+        const item = list[Number(b.getAttribute("data-qidx"))];
+        if (item && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(item.consulta).then(() => {
+            b.textContent = "¡Consulta copiada!";
+            setTimeout(() => { b.textContent = "Copiar consulta"; }, 1500);
+          });
+        }
+      });
+    });
+  }
+  document.getElementById("kqlSearch").addEventListener("input", renderQueries);
+  document.getElementById("kqlUsageFilter").addEventListener("change", renderQueries);
+
+  // VISTA 5: KPIs, MATURITY & TRAINING
+  document.getElementById("kpiContainer").innerHTML = (MODULE_DATA.kpisYMetricas || []).map((k) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:12px;">' +
+        '<div><span class="card-code">' + esc(k.id) + '</span><h4 class="card-heading" style="font-size:18px;">' + esc(k.nombre) + '</h4></div>' +
+        valBadge(k.estadoValidacion) +
+      '</div>' +
+      '<p style="margin:0 0 12px 0;">' + richText(k.definicion) + '</p>' +
+      '<pre class="code-block" style="margin:0 0 14px 0;">Fórmula: ' + esc(k.formula) + '</pre>' +
+      '<div class="pill-row">' +
+        '<span class="badge badge-accent">Meta: ' + esc(k.metaSugerida) + '</span>' +
+        '<span class="badge">Medición: ' + esc(k.frecuencia) + '</span>' +
+        '<span class="badge">' + esc(k.audiencia) + '</span>' +
+      '</div>' +
+      '<p class="muted" style="font-size:13px;margin:10px 0 0 0;">' + richText(k.notaValidacion) + '</p>' +
+    '</div>'
+  )).join("");
+
+  const mat = MODULE_DATA.modeloMadurez || [];
+  document.getElementById("maturityContainer").innerHTML = mat.map((m) => (
+    '<div class="spacious-card" style="padding:22px 28px;margin-bottom:14px;">' +
+      '<div class="pill-row" style="margin-bottom:6px;">' +
+        '<span class="card-code" style="margin-bottom:0;">' + richText(m.nivel) + '</span>' +
+        (m.estadio ? '<strong style="font-size:17px;">' + richText(m.estadio) + '</strong>' : '') +
+        '<span class="badge badge-editorial">Propuesta Editorial</span>' +
+      '</div>' +
+      '<div style="font-size:15.5px;">' + richText(m.descripcion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  const tr = MODULE_DATA.rutaFormacion || { headers: [], rows: [] };
+  if (tr.rows && tr.rows.length) {
+    document.getElementById("trainingContainer").innerHTML =
+      '<div class="table-wrap"><table><thead><tr>' +
+      tr.headers.map((h) => '<th>' + richText(h) + '</th>').join("") +
+      '</tr></thead><tbody>' +
+      tr.rows.map((row) => '<tr>' + row.map((cell, ci) => '<td>' + (ci === 0 ? '<strong>' + richText(cell) + '</strong>' : richText(cell)) + '</td>').join("") + '</tr>').join("") +
+      '</tbody></table></div>';
+  }
+
+  // VISTA 6: NIST CSF 2.0, AUDIT & REFS
+  function renderNist() {
+    const fn = document.getElementById("nistFuncSelect").value;
+    const rows = (MODULE_DATA.mapeoNISTCSF20 || []).filter((n) => fn === "ALL" || String(n.funcion).indexOf(fn) !== -1);
+    document.getElementById("nistCardsContainer").innerHTML = rows.map((n) => (
+      '<div class="spacious-card" style="padding:24px 30px;margin-bottom:16px;">' +
+        '<div class="card-top" style="margin-bottom:14px;">' +
+          '<div class="pill-row">' +
+            '<span class="card-code" style="margin-bottom:0;">' + esc(n.subcategoria) + '</span>' +
+            '<strong style="font-size:17px;">' + esc(n.funcion) + '</strong>' +
+          '</div>' +
+          valBadge(n.estadoValidacion) +
+        '</div>' +
+        '<p style="margin:0 0 14px 0;"><strong>Outcome NIST CSWP 29:</strong> ' + richText(n.descripcionResultado) + '</p>' +
+        '<div class="info-pair" style="margin-bottom:0;">' +
+          '<div class="info-box"><div class="info-label">Capacidad Habilitadora en Microsoft</div><div class="info-content">' + richText(n.capacidadMicrosoft) + '</div></div>' +
+          '<div class="info-box"><div class="info-label">Evidencia Auditable Reproducible</div><div class="info-content">' + richText(n.evidenciaAuditoria) + '</div></div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+  document.getElementById("nistFuncSelect").addEventListener("change", renderNist);
+
+  const vd = MODULE_DATA.validacionYDecisionesEditoriales || {};
+  document.getElementById("auditSummaryBox").innerHTML =
+    '<h4 style="margin:0 0 8px 0;font-size:18px;">Resumen de Auditoría Documental (' + esc(vd.fechaRevalidacion) + ')</h4>' +
+    '<p style="margin:0;">' + richText(vd.resumenAuditoria) + '</p>';
+
+  document.getElementById("corrContainer").innerHTML = '<ol style="padding-left:20px;margin:0;">' +
+    (vd.correccionesAplicadas || []).map((c) => '<li style="margin-bottom:12px;">' + richText(c) + '</li>').join("") + '</ol>';
+
+  document.getElementById("decContainer").innerHTML = (vd.decisionesEditoriales || []).map((d) => (
+    '<div class="info-box" style="margin-bottom:12px;">' +
+      '<div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;"><strong>' + esc(d.elemento) + '</strong>' + valBadge(d.tipo) + '</div>' +
+      '<div class="muted" style="font-size:14.5px;">' + richText(d.justificacion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  function renderRefs() {
+    const q = document.getElementById("refSearch").value.trim().toLowerCase();
+    const list = (MODULE_DATA.referenciasVerificadas || []).filter((r) => {
+      if (!q) return true;
+      return [r.id, r.titulo, r.tipoFuente, r.autor, r.comentario, r.url].join(" ").toLowerCase().indexOf(q) !== -1;
+    });
+    document.getElementById("refTableBody").innerHTML = list.map((r) => (
+      '<tr>' +
+        '<td class="mono"><strong>' + esc(r.id) + '</strong></td>' +
+        '<td><a href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer"><strong>' + esc(r.titulo) + ' ↗</strong></a><br><span class="mono muted" style="font-size:12px;">' + esc(r.url) + '</span></td>' +
+        '<td><span class="badge">' + esc(r.tipoFuente) + '</span></td>' +
+        '<td>' + esc(r.autor) + '</td>' +
+        '<td>' + richText(r.comentario) + '</td>' +
+      '</tr>'
+    )).join("");
+  }
+  document.getElementById("refSearch").addEventListener("input", renderRefs);
+
+  // Initial render
+  updateProgressTracker();
+  renderConfigView();
+  syncPeriodicSubnav();
+  renderPeriodicCards();
+  renderAdhocCards();
+  renderQueries();
+  renderNist();
+  renderRefs();
+  applyInitialHash();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,527 @@
+{
+ "ficha": {
+  "nombre": "Detección y respuesta unificada (Microsoft Defender XDR)",
+  "dominio_zt": "SecOps — visibilidad, automatización y orquestación (pilar transversal de Zero Trust); protege incidentes que cruzan identidades, endpoints, correo, apps en la nube e identidades híbridas",
+  "tecnologia": "Microsoft Defender XDR (portal unificado: cola de incidentes, AIR, Action center, Advanced Hunting, Threat analytics, custom detections, Unified RBAC, Exposure Management) + sensores: Defender for Endpoint, Defender for Identity, Defender for Office 365, Defender for Cloud Apps; integración con Microsoft Sentinel",
+  "funciones_csf": "GV.RR/GV.OV · ID.RA/ID.IM · PR.PS · DE.CM/DE.AE · RS.MA/RS.AN/RS.MI/RS.CO · RC.RP",
+  "fuente_oficial": "Microsoft Defender XDR Security Operations Guide (pasos 1–6) + guías operativas de Defender for Endpoint, Defender for Identity y Defender for Cloud Apps",
+  "objetivo": "Que todo incidente multi-señal sea triado, investigado, contenido y resuelto dentro del SLA, con automatización gobernada (AIR, automation rules, agentes) y con la cadena de sensores saludable",
+  "slo": "Incidentes High triados ≤30 min, Medium ≤4 h; MTTR High ≤8 h; sensores EDR saludables ≥98 %; AIR en nivel 'full' en grupos acordados",
+  "diferencia_vs_productividad": "Productividad protege un canal con un sensor; XDR gobierna la correlación entre sensores y la automatización transversal. El owner XDR es dueño de la cola, de la automatización, de Unified RBAC y de la salud de la ingesta; no de la configuración de cada sensor.",
+  "interfaz_con_otros_owners": "Owners de dominio (productividad, endpoints, identidades, apps) configuran sus sensores; el owner XDR gobierna cómo sus alertas se correlacionan y automatizan. Es el 'integrador' del portafolio."
+ },
+ "tareas": [
+  [
+   "XDR-D01",
+   "Triar la cola de incidentes unificada (todas las fuentes; High/Medium primero)",
+   "Diaria",
+   "Monitoring (Tier 1-2)",
+   "DE.AE, RS.MA",
+   "SOP",
+   "eo:OP-SOP-10 Triar incidentes por prioridad dentro del SLA",
+   "L2",
+   "XA-01",
+   "% H/M triados en SLA",
+   "Learn: integrate-microsoft-365-defender-secops-tasks"
+  ],
+  [
+   "XDR-D02",
+   "Investigar incidentes correlacionados y ejecutar/aprobar acciones de respuesta",
+   "Diaria",
+   "Monitoring (Tier 2) + CSIRT",
+   "RS.AN, RS.MI",
+   "SOP",
+   "eo:OP-SOP-11 Investigar y remediar incidentes con evidencia",
+   "L2",
+   "XA-02",
+   "MTTR por severidad",
+   "Learn: manage-incidents; m365d-autoir"
+  ],
+  [
+   "XDR-D03",
+   "Revisar el Action center: acciones pendientes y ejecutadas (AIR)",
+   "Diaria",
+   "Monitoring + Engineering",
+   "RS.MI, GV.OV",
+   "SOP",
+   "eo:OP-SOP-27 Supervisar la remediación automatizada",
+   "L2",
+   "XA-03",
+   "Pendientes >4 h = 0",
+   "Learn: m365d-autoir-actions"
+  ],
+  [
+   "XDR-D04",
+   "Clasificar incidentes y resolver los remediados",
+   "Diaria",
+   "Monitoring",
+   "RS.AN, ID.IM",
+   "SOP",
+   "eo:OP-SOP-13 Clasificar incidentes para aprender patrones",
+   "L2",
+   "XA-01",
+   "% clasificados",
+   "Learn: ops-guide-daily (MDA)"
+  ],
+  [
+   "XDR-D05",
+   "Gestionar FP/FN y tuning de alertas en todos los sensores",
+   "Diaria",
+   "Monitoring + Security Administration",
+   "ID.IM, PR.PS",
+   "SOP",
+   "eo:OP-SOP-15 Analizar causa raíz de errores de detección",
+   "L2",
+   "XA-04",
+   "Alertas suprimidas con justificación",
+   "Learn: mde-sec-ops-guide"
+  ],
+  [
+   "XDR-D06",
+   "Revisar salud de sensores (EDR/AV, MDI, conectores de apps)",
+   "Diaria",
+   "Security Administration",
+   "PR.PS, DE.CM",
+   "POS",
+   "eo:OP-POS-15 Mantener la salud de la ingesta de señales",
+   "L3",
+   "XA-05",
+   "% EDR saludable; MDI issues = 0",
+   "Learn: mde-sec-ops-guide; ops-guide-daily (MDI)"
+  ],
+  [
+   "XDR-D07",
+   "Revisar Threat analytics de alto impacto y derivar acciones",
+   "Diaria/Semanal",
+   "Threat Intelligence & Analytics",
+   "ID.RA, DE.AE",
+   "SOP",
+   "eo:OP-SOP-20 Revisar inteligencia de amenazas y derivar acciones",
+   "L2",
+   "XA-06",
+   "Acciones derivadas",
+   "Learn: mde-sec-ops-guide"
+  ],
+  [
+   "XDR-D08",
+   "Actualizar tickets de escalamiento (ITSM) y notificaciones",
+   "Diaria",
+   "Todos los equipos SOC",
+   "RS.MA, RS.CO",
+   "SOP",
+   "eo:OP-SOP-25 Mantener trazabilidad de escalamientos",
+   "L3",
+   "XA-15",
+   "Tickets sincronizados",
+   "Learn: secops-tasks"
+  ],
+  [
+   "XDR-W01",
+   "Hunting proactivo cross-domain y guided hunting para Tier 1",
+   "Semanal",
+   "Monitoring (Tier 2-3) + TI",
+   "DE.CM, ID.RA",
+   "SOP",
+   "eo:OP-SOP-02 Buscar amenazas por técnicas priorizadas y convertir hallazgos en detecciones",
+   "L1",
+   "XA-07",
+   "Hunts/semana",
+   "Learn: advanced-hunting-overview"
+  ],
+  [
+   "XDR-W02",
+   "Crear/revisar detecciones personalizadas y automation rules",
+   "Semanal",
+   "Engineering & SecOps",
+   "DE.AE, PR.PS",
+   "SOP",
+   "eo:OP-SOP-24 Convertir hunting en detecciones automatizadas",
+   "L2",
+   "XA-07",
+   "Detecciones vigentes; precisión",
+   "Learn: custom-detections-overview"
+  ],
+  [
+   "XDR-W03",
+   "Revisar Secure Score y Exposure Management; alimentar backlog",
+   "Semanal",
+   "SOC Monitoring + Security Administration",
+   "ID.IM, GV.OV",
+   "POS",
+   "eo:OP-POS-11 Reportar la postura y su tendencia",
+   "L3",
+   "XA-08",
+   "Secure Score por producto",
+   "Learn: secops-tasks"
+  ],
+  [
+   "XDR-W04",
+   "Revisar informes de amenazas y protección",
+   "Semanal",
+   "Monitoring + Security Administration",
+   "DE.CM, ID.RA",
+   "POS",
+   "eo:OP-SOP-19 Revisar tendencias de detección y ajustar políticas",
+   "L3",
+   "XA-09",
+   "Informe semanal",
+   "Learn: mde-sec-ops-guide"
+  ],
+  [
+   "XDR-W05",
+   "Revisar Message Center y novedades; evaluar impacto",
+   "Semanal",
+   "SOC Oversight",
+   "GV.OV, ID.IM",
+   "SIG",
+   "eo:OP-SIG-10 Vigilar cambios de la plataforma y evaluar impacto",
+   "L3",
+   "XA-10",
+   "Cambios evaluados ≤7 días",
+   "Learn: mde-sec-ops-guide"
+  ],
+  [
+   "XDR-W06",
+   "Desplegar/probar automatizaciones aprobadas; verificar conectividad SIEM",
+   "Semanal",
+   "Engineering & SecOps",
+   "PR.PS, DE.CM",
+   "SOP",
+   "eo:OP-SOP-22 Mantener la automatización operativa",
+   "L1",
+   "—",
+   "Automatizaciones probadas",
+   "Learn: configure-siem-defender"
+  ],
+  [
+   "XDR-M01",
+   "Revisar niveles de automatización por grupo de dispositivos y políticas de alertas",
+   "Mensual",
+   "Security Administration + SOC Oversight",
+   "PR.PS, GV.PO",
+   "POS",
+   "eo:OP-POS-12 Detectar y corregir deriva de configuración frente al baseline",
+   "L2",
+   "XA-11",
+   "Grupos fuera de baseline = 0",
+   "Learn: m365d-configure-auto-investigation-response"
+  ],
+  [
+   "XDR-M02",
+   "Revisar Unified RBAC: roles, permisos y asignaciones de humanos y agentes",
+   "Mensual",
+   "SOC Oversight + IAM",
+   "PR.AA, GV.RR",
+   "AYI",
+   "eo:OP-AYI-01 Recertificar accesos privilegiados, no humanos y de agentes",
+   "L2",
+   "XA-11",
+   "Asignaciones sin justificación = 0",
+   "Learn: custom-permissions-details"
+  ],
+  [
+   "XDR-M03",
+   "Revisar alertas tuned/suprimidas y reglas sin coincidencias",
+   "Mensual",
+   "Security Administration",
+   "ID.IM, DE.AE",
+   "POS",
+   "eo:OP-POS-13 Revisar y depurar excepciones que debilitan la detección",
+   "L2",
+   "XA-04",
+   "Reglas obsoletas retiradas",
+   "Learn: ops-guide-monthly (MDI)"
+  ],
+  [
+   "XDR-M04",
+   "Informe mensual de seguridad para el CISO",
+   "Mensual",
+   "SOC Oversight",
+   "GV.OV, RS.CO",
+   "SIG",
+   "eo:OP-SIG-13 Reportar resultados del SOC a la dirección",
+   "L3",
+   "XA-09",
+   "Informe a tiempo",
+   "Learn: threat-protection-reports"
+  ],
+  [
+   "XDR-M05",
+   "Actualizar entrenamiento del SOC con lecciones; ejercicios Blue/Red/Purple",
+   "Mensual",
+   "SOC Oversight",
+   "PR.AT, ID.IM",
+   "SIG",
+   "eo:OP-SIG-11 Convertir lecciones del SOC en concientización",
+   "L1",
+   "XA-12",
+   "Ejercicios realizados",
+   "Learn: secops-roles"
+  ],
+  [
+   "XDR-Q01",
+   "Revisar casos de uso del SOC, playbooks del CSIRT y modelo de amenazas por sensor",
+   "Trimestral",
+   "SOC Oversight + CSIRT + TI",
+   "GV.PO, RS.MA",
+   "SIG",
+   "eo:OP-SIG-12 Revisar políticas y excepciones del control",
+   "L1",
+   "—",
+   "Casos de uso vigentes",
+   "Learn: secops-use-cases"
+  ],
+  [
+   "XDR-Q02",
+   "Revisar desempeño y costo de la flota de agentes XDR",
+   "Trimestral",
+   "PO-GAC",
+   "GV.OV, ID.IM",
+   "IA",
+   "eo:OP-IA-02 Revisar desempeño, costo y riesgo de los agentes",
+   "L1",
+   "XA-13",
+   "KPIs vs. meta",
+   "Propuesta (sub-plan)"
+  ],
+  [
+   "XDR-Q03",
+   "Recertificar accesos de humanos y agentes (Unified RBAC + Entra Agent ID)",
+   "Trimestral",
+   "PO-GAC + IAM",
+   "PR.AA",
+   "AYI",
+   "eo:OP-AYI-01 Recertificar accesos privilegiados, no humanos y de agentes",
+   "L2",
+   "XA-13",
+   "% recertificados",
+   "Propuesta (sub-plan)"
+  ],
+  [
+   "XDR-Q04",
+   "Evaluaciones/regresión y red teaming de agentes; service health; setup de sensores",
+   "Trimestral",
+   "PO-GAC + AppSec + Security Administration",
+   "ID.IM, PR.PS",
+   "IA",
+   "eo:OP-IA-03 Evaluar y probar adversarialmente a los agentes",
+   "L2",
+   "—",
+   "% agentes evaluados",
+   "Propuesta; ops-guide-quarterly (MDI)"
+  ],
+  [
+   "XDR-A01",
+   "Responder a incidentes mayores con el CSIRT (aislar, revocar, deshabilitar, contener)",
+   "Por evento",
+   "CSIRT + Monitoring",
+   "RS.MI, RS.CO",
+   "SOP",
+   "eo:OP-SOP-11 Investigar y remediar incidentes con evidencia",
+   "L2",
+   "XA-02",
+   "Tiempo a contención",
+   "Learn: secops-roles (CSIRT)"
+  ],
+  [
+   "XDR-A02",
+   "Live response / recolección de paquetes de investigación",
+   "Por evento",
+   "Tier 3 / CSIRT",
+   "RS.AN",
+   "SOP",
+   "eo:OP-SOP-28 Recolectar evidencia forense con autoridad y registro",
+   "L1",
+   "—",
+   "Paquetes con registro",
+   "Learn: custom-permissions-details"
+  ],
+  [
+   "XDR-A03",
+   "Crear incidentes/alertas manuales; fusionar o dividir incidentes",
+   "Por evento",
+   "Monitoring",
+   "RS.MA",
+   "SOP",
+   "eo:OP-SOP-12 Cerrar incidentes con criterio documentado",
+   "L2",
+   "XA-01",
+   "Incidentes manuales trazados",
+   "Learn: manually-create-incident"
+  ],
+  [
+   "XDR-A04",
+   "Onboarding/offboarding de dispositivos y fuentes; device discovery",
+   "Por evento",
+   "Engineering & SecOps",
+   "ID.AM, PR.PS",
+   "POS",
+   "eo:OP-POS-16 Mantener el inventario de fuentes de señal",
+   "L2",
+   "XA-05",
+   "Dispositivos no onboarded",
+   "Learn: mde-sec-ops-guide"
+  ],
+  [
+   "XDR-A05",
+   "Tabletop / Purple team cross-domain (incl. 'agente comprometido')",
+   "Según necesidad",
+   "SOC Oversight + CSIRT",
+   "ID.IM, RS",
+   "SOP",
+   "eo:OP-SOP-26 Probar los planes de respuesta",
+   "L1",
+   "—",
+   "Ejercicios/año",
+   "Learn: secops-roles; AMP-43"
+  ]
+ ],
+ "instanciacion": [
+  [
+   "G1.1-PA01",
+   "Ficha de rol PO-GAC XDR: owner de la cola, la automatización, Unified RBAC y la salud de ingesta."
+  ],
+  [
+   "G2.1-PA01",
+   "Grilla CSF × ZT para el pilar SecOps."
+  ],
+  [
+   "G2.2-PA03",
+   "Baseline de automatización (AIR por grupo) y de políticas de alertas; excepciones = reglas de tuning con vencimiento."
+  ],
+  [
+   "G3.2-PA01",
+   "Deriva: niveles AIR, políticas de alertas, RBAC vs. baseline."
+  ],
+  [
+   "G4.2-PA01",
+   "KRIs de la flota XDR: acciones revertidas, aislamientos erróneos, tuning sin vencimiento."
+  ],
+  [
+   "M1.1-PA02",
+   "El owner XDR como integrador del portafolio de productos-control."
+  ],
+  [
+   "M1.1-PA03",
+   "Modelo operativo por cadencias derivado de la SecOps guide de Defender XDR + guías MDE/MDI/MDA."
+  ],
+  [
+   "M2.2-PA01",
+   "Matriz tarea→rol→permiso con Unified RBAC para humanos y agentes."
+  ],
+  [
+   "M3.1-PA01",
+   "Arquitectura del SOC agéntico: XDR es la capa de plataforma."
+  ],
+  [
+   "M3.1-PA02",
+   "Instancia XDR: arquitectura de correlación (sensores → incidentes → AIR → Action center → Sentinel)."
+  ],
+  [
+   "M3.2-PA01",
+   "Cadena objetivo → configuración → evidencia para 5 controles XDR."
+  ],
+  [
+   "M3.2-PA02",
+   "Evaluación de la flota XDR contra los 24 AGC."
+  ],
+  [
+   "M3.2-PA03",
+   "Dataset dorado de incidentes unificados para XA-01."
+  ],
+  [
+   "M4.1-PA01",
+   "Instancia XDR del modelo operativo (28 tareas)."
+  ],
+  [
+   "M4.1-PA02",
+   "Gestión de incidentes en Defender XDR: instancia natural."
+  ],
+  [
+   "M4.1-PA03",
+   "Instancia XDR: tuning multi-sensor y FP/FN."
+  ],
+  [
+   "M4.1-PA04",
+   "Hunting cross-domain y detecciones personalizadas."
+  ],
+  [
+   "M4.1-PA05",
+   "Observabilidad de la flota XDR en Sentinel."
+  ],
+  [
+   "M4.1-PA06",
+   "Revisión trimestral de desempeño de los 15 agentes XDR."
+  ],
+  [
+   "M4.2-PA01",
+   "Instancia XDR: amenazas cross-domain."
+  ],
+  [
+   "M4.2-PA02",
+   "Matriz amenaza→agente→control para los 15 agentes XDR."
+  ],
+  [
+   "M5.1-PA01",
+   "Playbooks híbridos del CSIRT con ejecutores humano/AIR/agente."
+  ],
+  [
+   "M5.2-PA01",
+   "Respuesta con AIR, acciones manuales y acciones de agentes con aprobación."
+  ],
+  [
+   "M6.1-PA01",
+   "Operación degradada del SOC sin agentes ni AIR."
+  ],
+  [
+   "M6.2-PA01",
+   "Rutas de construcción: XA-01/02/06 preferentemente R1."
+  ],
+  [
+   "AMP-39",
+   "SOC agéntico: redistribución del runbook XDR."
+  ],
+  [
+   "AMP-40",
+   "HITL por riesgo aplicado a acciones de respuesta cross-domain."
+  ],
+  [
+   "AMP-44",
+   "Kill switch probado para agentes con permisos Response (Manage)."
+  ],
+  [
+   "HC-019",
+   "XDR, SOAR, IA y decisiones de contención gobernadas: instancia directa."
+  ],
+  [
+   "M4.1-K11",
+   "Señuelos (cuentas honeytoken en MDI, dispositivos señuelo) en la cola unificada."
+  ],
+  [
+   "M4.2-K11",
+   "Escalamiento de privilegios detectado cross-domain."
+  ]
+ ],
+ "generalizar_v71": [
+  [
+   "M3.1-PA02",
+   "Arquitectura de protección de correo y colaboración",
+   "Arquitectura de protección del dominio Zero Trust (instancias: correo y colaboración · detección y respuesta unificada · endpoints · identidades · datos)"
+  ],
+  [
+   "M4.2-PA01",
+   "Amenazas al correo y la colaboración",
+   "Amenazas del dominio Zero Trust (instancias: correo y colaboración · cross-domain · endpoints · identidades · datos)"
+  ],
+  [
+   "M4.1-PA01",
+   "Modelo operativo de Defender for Office 365 en Defender XDR",
+   "Modelo operativo del producto-control por cadencias (instancias: Defender for Office 365 · Defender XDR · Defender for Endpoint · Defender for Identity/Entra · Purview · Sentinel · Defender for Cloud)"
+  ],
+  [
+   "M4.1-PA03",
+   "Gestión de falsos positivos/negativos y listas",
+   "Gestión de la calidad de detección del dominio: FP/FN, tuning, listas, indicadores y supresiones (instancias: MDO · XDR · MDE · MDI/ID Protection · Purview DLP · Sentinel)"
+  ]
+ ]
+}

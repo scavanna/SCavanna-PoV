@@ -1,0 +1,110 @@
+version: 0.1.0
+owner: dueño_del_registro
+required_fields_by_type:
+  threat:
+    - id
+    - name
+    - domain
+    - description
+    - threat_source
+    - event
+    - affected_assets
+    - preconditions
+    - business_consequences
+    - privacy_impacts
+    - reference_mappings
+    - status
+    - owner
+    - reviewed_at
+  use_case:
+    - id
+    - name
+    - objective
+    - trigger
+    - inputs
+    - activities
+    - outputs
+    - roles
+    - evidence
+    - acceptance_criteria
+    - cadence
+    - owner
+  method:
+    - id
+    - name
+    - purpose
+    - level
+    - inputs
+    - outputs
+    - limitations
+    - suitable_when
+    - not_suitable_as
+  reference:
+    - id
+    - name
+    - organization
+    - type
+    - purpose
+    - scope
+    - version_or_release
+    - official_url
+    - reviewed_at
+compatibility:
+  canonical_core: MAGERIT v3
+  adaptation_status: non_official
+  official_namespace: "[N/E/I/A].<code>"
+  extension_namespace: "EXT-*"
+  domain_namespace: "DOM-*"
+  rules:
+    - never_change_official_magerit_codes_or_names
+    - modern_detail_must_reference_magerit_base_when_reasonable
+    - use_separate_extension_when_base_mapping_would_distort_meaning
+    - keep_external_mapping_id_and_source_version
+controlled_values:
+  domain:
+    - security
+    - privacy
+    - resilience
+    - safety
+    - physical
+    - third_party
+    - ai
+    - compliance
+  status:
+    - proposed
+    - designed
+    - deployed
+    - tested
+    - effective
+    - ineffective
+    - not_applicable
+  treatment:
+    - avoid
+    - reduce_likelihood
+    - reduce_consequence
+    - transfer
+    - accept
+  evidence_type:
+    - design
+    - implementation
+    - operating_effectiveness
+    - incident_or_exercise
+traceability_chain:
+  - threat
+  - scenario
+  - asset_or_process
+  - privacy_scope
+  - control
+  - evidence
+  - risk_inherent
+  - risk_residual
+  - owner
+  - review_date
+minimum_quality_gates:
+  - source_or_basis_identified
+  - framework_role_not_confused
+  - actor_event_impact_separated
+  - assumptions_recorded
+  - evidence_status_explicit
+  - external_ids_versioned
+  - owner_and_review_date_present

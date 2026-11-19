@@ -1,0 +1,23 @@
+# extension v2 1
+
+Ruta: `FrontierCISO-2026\02_Cruces\17_Stack_MS_x_Plan_CISO\extension_v2_1`
+
+[Carpeta superior](../README.md)
+
+## Archivos de esta carpeta
+
+- [CISO365_v2.1_Edicion_Microsoft.html](CISO365_v2.1_Edicion_Microsoft.html)
+- [Frontier_CISO_Atlas_CISO365_Edicion_Microsoft_Catalogo_v2.1.json](Frontier_CISO_Atlas_CISO365_Edicion_Microsoft_Catalogo_v2.1.json)
+- [Frontier_CISO_Atlas_CISO365_Edicion_Microsoft_v2.1.xlsx](Frontier_CISO_Atlas_CISO365_Edicion_Microsoft_v2.1.xlsx)
+- [Frontier_CISO_Atlas_CISO365_M00_Indice_y_Guia_de_Uso_v2.1.md](Frontier_CISO_Atlas_CISO365_M00_Indice_y_Guia_de_Uso_v2.1.md)
+- [Frontier_CISO_Atlas_CISO365_M01_Que_Agrega_la_Edicion_Microsoft_v2.1.md](Frontier_CISO_Atlas_CISO365_M01_Que_Agrega_la_Edicion_Microsoft_v2.1.md)
+- [Frontier_CISO_Atlas_CISO365_M02_Capacidades_por_Funcion_y_Licencias_v2.1.md](Frontier_CISO_Atlas_CISO365_M02_Capacidades_por_Funcion_y_Licencias_v2.1.md)
+- [Frontier_CISO_Atlas_CISO365_M03_Cobertura_Multicloud_v2.1.md](Frontier_CISO_Atlas_CISO365_M03_Cobertura_Multicloud_v2.1.md)
+- [Frontier_CISO_Atlas_CISO365_M04_Diagnostico_con_Herramientas_de_Microsoft_v2.1.md](Frontier_CISO_Atlas_CISO365_M04_Diagnostico_con_Herramientas_de_Microsoft_v2.1.md)
+- [Frontier_CISO_Atlas_CISO365_M05_Operacion_por_Cadencias_v2.1.md](Frontier_CISO_Atlas_CISO365_M05_Operacion_por_Cadencias_v2.1.md)
+- [Frontier_CISO_Atlas_CISO365_M06_Plan_de_Formacion_Ninja_v2.1.md](Frontier_CISO_Atlas_CISO365_M06_Plan_de_Formacion_Ninja_v2.1.md)
+- [Frontier_CISO_Atlas_CISO365_M07_OKR_e_Indicadores_en_la_Plataforma_v2.1.md](Frontier_CISO_Atlas_CISO365_M07_OKR_e_Indicadores_en_la_Plataforma_v2.1.md)
+- [Frontier_CISO_Atlas_CISO365_M08_Narrativas_para_Clientes_de_Microsoft_v2.1.md](Frontier_CISO_Atlas_CISO365_M08_Narrativas_para_Clientes_de_Microsoft_v2.1.md)
+- [Frontier_CISO_Atlas_CISO365_M09_Fuentes_Supuestos_y_Silencios_v2.1.md](Frontier_CISO_Atlas_CISO365_M09_Fuentes_Supuestos_y_Silencios_v2.1.md)
+- [Frontier_CISO_Atlas_CISO365_M10_Guias_de_Excelencia_Operacional_del_Autor_v2.1.md](Frontier_CISO_Atlas_CISO365_M10_Guias_de_Excelencia_Operacional_del_Autor_v2.1.md)
+- [Frontier_CISO_Atlas_CISO365_M11_Puente_con_el_Repositorio_del_Autor_v2.1.md](Frontier_CISO_Atlas_CISO365_M11_Puente_con_el_Repositorio_del_Autor_v2.1.md)

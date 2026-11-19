@@ -1,0 +1,348 @@
+{
+ "ontology_version": "2.2.0",
+ "count": 42,
+ "rules": [
+  {
+   "id": "SV-001",
+   "level": "structural",
+   "name": "Identificador válido",
+   "description": "Todo nodo persistente debe tener un ID único.",
+   "severity": "error",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-002",
+   "level": "structural",
+   "name": "Tipo reconocido",
+   "description": "El tipo debe existir en la versión ontológica declarada.",
+   "severity": "error",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-003",
+   "level": "structural",
+   "name": "Propiedades obligatorias",
+   "description": "ID, tipo, nombre, descripción, versión y estado de revisión son obligatorios.",
+   "severity": "error",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-004",
+   "level": "structural",
+   "name": "Integridad referencial",
+   "description": "Toda relación apunta a nodos existentes o definidos en el ChangeSet.",
+   "severity": "error",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-005",
+   "level": "structural",
+   "name": "Operación autorizada",
+   "description": "Solo se admiten operaciones declarativas permitidas.",
+   "severity": "error",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-006",
+   "level": "structural",
+   "name": "Versionado",
+   "description": "El ChangeSet declara versión de esquema, ontología y taxonomía.",
+   "severity": "error",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-101",
+   "level": "semantic",
+   "name": "Compatibilidad de dominio",
+   "description": "El tipo origen está permitido para la relación.",
+   "severity": "error",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-102",
+   "level": "semantic",
+   "name": "Compatibilidad de rango",
+   "description": "El tipo destino está permitido para la relación.",
+   "severity": "error",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-103",
+   "level": "semantic",
+   "name": "Dirección",
+   "description": "Se respeta origen y destino de relaciones dirigidas.",
+   "severity": "error",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-104",
+   "level": "semantic",
+   "name": "Posibilidad versus observación",
+   "description": "Una relación potencial no se presenta como hecho observado.",
+   "severity": "error",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-105",
+   "level": "semantic",
+   "name": "Evidencia material",
+   "description": "Las relaciones materiales registran evidencia o hipótesis explícita.",
+   "severity": "error",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-106",
+   "level": "semantic",
+   "name": "Contexto obligatorio",
+   "description": "Las relaciones contextuales registran contexto.",
+   "severity": "error",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-107",
+   "level": "semantic",
+   "name": "No equivalencia automática",
+   "description": "Una correspondencia externa no implica identidad conceptual.",
+   "severity": "error",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-108",
+   "level": "semantic",
+   "name": "Separación de conceptos",
+   "description": "No fusionar Threat/RiskScenario, Event/Incident, Control/ControlObjective, Role/Authority, LearningUnit/Competency ni Horizon/Maturity.",
+   "severity": "error",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-201",
+   "level": "governance",
+   "name": "Procedencia",
+   "description": "Toda afirmación relevante se vincula con ensayo, fuente, evidencia o inferencia.",
+   "severity": "warning",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-202",
+   "level": "governance",
+   "name": "Calidad de evidencia",
+   "description": "Registrar fuente primaria, secundaria, inferencia experta o hipótesis.",
+   "severity": "warning",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-203",
+   "level": "governance",
+   "name": "Contradicciones",
+   "description": "Registrar contradicciones y solicitar revisión; no eliminarlas automáticamente.",
+   "severity": "warning",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-204",
+   "level": "governance",
+   "name": "Duplicados",
+   "description": "No fusionar por similitud de nombre; comparar tipo, definición, contexto, relaciones y fuente.",
+   "severity": "warning",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-205",
+   "level": "governance",
+   "name": "Extensiones ontológicas",
+   "description": "Proponer extensión cuando no haya encaje; no modificar Core automáticamente.",
+   "severity": "warning",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-206",
+   "level": "governance",
+   "name": "Aprobación",
+   "description": "Todo ChangeSet debe aprobarse antes de aplicarse.",
+   "severity": "warning",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-207",
+   "level": "governance",
+   "name": "Trazabilidad histórica",
+   "description": "Conservar versión anterior/nueva, justificación, autor/aprobador y fecha.",
+   "severity": "warning",
+   "since": "1.0.0"
+  },
+  {
+   "id": "SV-007",
+   "level": "structural",
+   "name": "Catálogo de la versión declarada",
+   "description": "Todo código de categoría (territorio, dominio, función, subfunción, horizonte, fuerza, contexto, variable o lente) debe existir en la versión de taxonomía declarada.",
+   "severity": "error",
+   "since": "2.0.0"
+  },
+  {
+   "id": "SV-008",
+   "level": "structural",
+   "name": "Par permitido",
+   "description": "Cuando la relación define pares permitidos, el par (tipo origen, tipo destino) debe figurar en la lista.",
+   "severity": "error",
+   "since": "2.0.0"
+  },
+  {
+   "id": "SV-109",
+   "level": "semantic",
+   "name": "Pre-ensayo no es ensayo",
+   "description": "Un pre-ensayo no recibe identificador ESS ni se presenta como ensayo; la derivación se expresa con DERIVED_FROM y no traslada aprobación.",
+   "severity": "error",
+   "since": "2.0.0"
+  },
+  {
+   "id": "SV-110",
+   "level": "semantic",
+   "name": "Separación de planos",
+   "description": "Cada nodo de un tipo que pertenece a un plano declara su plano. Una instancia del plano B puede instanciar un concepto del plano A (INSTANTIATES va de B a A), pero ningún cambio originado en el plano B modifica un concepto; una brecha se tramita como candidato.",
+   "severity": "error",
+   "since": "2.0.0",
+   "description_2_1": "Una instancia del plano B puede instanciar un concepto del plano A, pero ningún cambio originado en el plano B modifica un concepto; una brecha se tramita como candidato.",
+   "changed_in_2_2": true
+  },
+  {
+   "id": "SV-111",
+   "level": "semantic",
+   "name": "Capacidad, permiso, delegación y ejecución",
+   "description": "No fusionar la capacidad técnica (Tool), el permiso, la delegación (DelegatedAuthority) y la ejecución (AutonomousAction).",
+   "severity": "error",
+   "since": "2.0.0"
+  },
+  {
+   "id": "SV-112",
+   "level": "semantic",
+   "name": "Autonomía con compuerta",
+   "description": "Toda relación OPERATES_AT con nivel L2 o superior exige una ApprovalGate o la justificación registrada de su ausencia.",
+   "severity": "error",
+   "since": "2.0.0"
+  },
+  {
+   "id": "SV-113",
+   "level": "semantic",
+   "name": "Mapeo con fuerza y versión",
+   "description": "MAPS_TO exige fuerza, tipo de vínculo, versión del artefacto y método; un mapeo nunca afirma conformidad ni equivalencia.",
+   "severity": "error",
+   "since": "2.0.0"
+  },
+  {
+   "id": "SV-114",
+   "level": "semantic",
+   "name": "Clasificación con rol",
+   "description": "CLASSIFIED_IN exige rol (primario, secundario, fuerza, mecanismo, marcador o lente), eje, versión de taxonomía, método y confianza; a lo sumo un primario por eje.",
+   "severity": "error",
+   "since": "2.0.0",
+   "description_2_1": "CLASSIFIED_IN exige rol (primario, secundario, fuerza o lente), versión de taxonomía, método y confianza; a lo sumo un primario por eje.",
+   "changed_in_2_2": true
+  },
+  {
+   "id": "SV-115",
+   "level": "semantic",
+   "name": "Indicador no es resultado",
+   "description": "Que un indicador mida un resultado no prueba el resultado; la afirmación de eficacia requiere evidencia.",
+   "severity": "error",
+   "since": "2.0.0"
+  },
+  {
+   "id": "SV-116",
+   "level": "semantic",
+   "name": "Sesgo y contramedida como posibilidad",
+   "description": "DISTORTS y COUNTERS expresan una posibilidad; solo se presentan como observadas con evidencia.",
+   "severity": "error",
+   "since": "2.0.0",
+   "description_2_1": "DISTORTS expresa una posibilidad; solo se presenta como observada con evidencia.",
+   "changed_in_2_2": true
+  },
+  {
+   "id": "SV-117",
+   "level": "semantic",
+   "name": "Modelo de referencia de la homeostasis",
+   "description": "Entre categorías de la taxonomía, REGULATES solo une un mecanismo homeostático (HOM) con una variable (HV), y PRESSURES solo une un catalizador (CAT) o un inhibidor (INH) con una variable (HV).",
+   "severity": "error",
+   "since": "2.0.0"
+  },
+  {
+   "id": "SV-118",
+   "level": "semantic",
+   "name": "Medición en el modelo de referencia",
+   "description": "Cuando MEASURES apunta a una categoría de la taxonomía, esa categoría debe ser una variable homeostática (eje HV) y la arista debe declarar que expresa el modelo de referencia; medir una organización concreta requiere instancias de HomeostaticVariable.",
+   "severity": "error",
+   "since": "2.1.0"
+  },
+  {
+   "id": "SV-208",
+   "level": "governance",
+   "name": "Estado de candidato",
+   "description": "Los nodos y aristas generados por carga masiva o por un agente quedan como candidatos hasta la aprobación humana y no integran el grafo aprobado.",
+   "severity": "warning",
+   "since": "2.0.0"
+  },
+  {
+   "id": "SV-209",
+   "level": "governance",
+   "name": "Vigencia de la referencia",
+   "description": "Todo artefacto de referencia registra versión, fecha, estado y fecha de verificación; lo no verificado se marca.",
+   "severity": "warning",
+   "since": "2.0.0"
+  },
+  {
+   "id": "SV-210",
+   "level": "governance",
+   "name": "Silencio declarado",
+   "description": "La ausencia de fuente o de dato se registra como silencio; no se completa por inferencia.",
+   "severity": "warning",
+   "since": "2.0.0"
+  },
+  {
+   "id": "SV-211",
+   "level": "governance",
+   "name": "Edición pública",
+   "description": "Los atributos con fuente interna se marcan y se excluyen de la exportación pública.",
+   "severity": "warning",
+   "since": "2.0.0"
+  },
+  {
+   "id": "SV-009",
+   "level": "structural",
+   "name": "Valor de catálogo",
+   "description": "Cuando una propiedad tiene catálogo de valores en la ontología (confianza, rol, fuerza, tipo de vínculo, eje, nivel, papel, término, sentido, base, clase y plano), el valor debe figurar en él.",
+   "severity": "error",
+   "since": "2.2.0"
+  },
+  {
+   "id": "SV-119",
+   "level": "semantic",
+   "name": "Neutralidad del plano A",
+   "description": "Un nodo del plano A no nombra productos ni proveedores. El que los nombra queda marcado y no se promueve a ensayo hasta que se reescriba sin marca.",
+   "severity": "warning",
+   "since": "2.2.0"
+  },
+  {
+   "id": "SV-120",
+   "level": "semantic",
+   "name": "Equivalencia declarada",
+   "description": "SAME_CONCEPT_AS no fusiona nodos ni traslada clasificaciones, definiciones ni aprobación de uno a otro; exige evidencia, método y confianza.",
+   "severity": "error",
+   "since": "2.2.0"
+  },
+  {
+   "id": "SV-121",
+   "level": "semantic",
+   "name": "Una representación para el eje H",
+   "description": "Las fuerzas, los mecanismos, las variables y los factores de contexto del catálogo son categorías de la taxonomía. Los tipos Catalyst, Inhibitor, HomeostaticMechanism, HomeostaticVariable y ContextProfile solo se usan para instancias observadas en una organización.",
+   "severity": "error",
+   "since": "2.2.0"
+  },
+  {
+   "id": "SV-212",
+   "level": "governance",
+   "name": "Propiedades que la definición enuncia",
+   "description": "Cada tipo declara las propiedades que su definición enuncia. La validación informa, por tipo, cuántos nodos no las traen.",
+   "severity": "warning",
+   "since": "2.2.0"
+  }
+ ]
+}

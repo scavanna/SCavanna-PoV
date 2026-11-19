@@ -1,0 +1,564 @@
+{
+ "fecha": "2026-11-16",
+ "version_producto": "1.4",
+ "ontologia": "2.2.0",
+ "taxonomia": "6.1",
+ "sv_212": {
+  "ControlProduct": {
+   "alcance": 7,
+   "modelo_operativo": 7,
+   "dueño": 7
+  },
+  "KnowledgeSource": {
+   "dueño": 51,
+   "etiqueta": 51,
+   "procedencia": 51
+  },
+  "SecurityIndicator": {
+   "definicion": 244,
+   "fuente": 20,
+   "umbrales": 244,
+   "dueño": 244
+  }
+ },
+ "tareas_vinculadas_con_el_punto_de_control_de_su_agente": 134,
+ "equivalencias_cargadas": {
+  "mismo_concepto": 21,
+  "relacionado": 91
+ },
+ "reglas": {
+  "definidas": 42,
+  "comprobadas": 25,
+  "detalle_comprobadas": {
+   "SV-001": "en parte: un identificador repetido con otro tipo es error; las repeticiones del mismo tipo se cuentan y se conserva la primera declaración",
+   "SV-002": "tipo de nodo y de relación contra los diccionarios",
+   "SV-003": "nombre y descripción no vacíos en todos los nodos; identificador, tipo, versión y estado los fija la carga",
+   "SV-004": "origen y destino de cada arista existen",
+   "SV-006": "por construcción: cada conjunto de cambios declara esquema, ontología y taxonomía",
+   "SV-007": "cada clasificación apunta a una categoría del eje que declara, y el eje está en el catálogo de ejes",
+   "SV-008": "par de tipos permitido cuando la relación lo define",
+   "SV-101": "tipo de origen permitido",
+   "SV-102": "tipo de destino permitido",
+   "SV-105": "en parte: el campo de evidencia no está vacío; no se comprueba que sea evidencia y no solo procedencia",
+   "SV-106": "contexto presente en las relaciones que lo exigen",
+   "SV-109": "en parte: ningún nodo que no sea ensayo lleva identificador de ensayo; no hay ensayos cargados",
+   "SV-112": "cada agente en L2 o superior tiene punto de control; cada tarea en L2 o superior tiene un agente ejecutor con punto de control o no tiene agente",
+   "SV-113": "fuerza, tipo de vínculo, versión del artefacto y método presentes en cada MAPS_TO",
+   "SV-114": "rol, versión de taxonomía, método y confianza presentes y dentro de catálogo; a lo sumo un primario por eje",
+   "SV-117": "ejes permitidos en REGULATES y PRESSURES entre categorías",
+   "SV-118": "MEASURES hacia una categoría solo sobre el eje HV y como modelo de referencia",
+   "SV-208": "todos los nodos y aristas quedan en estado candidato",
+   "SV-209": "cada artefacto de referencia tiene versión, fecha, estado y fecha de verificación",
+   "SV-009": "cada propiedad con catálogo de valores (confianza, rol, fuerza, tipo de vínculo, eje, nivel, papel, término, sentido, base, clase y plano) trae un valor del catálogo",
+   "SV-110": "en parte: cada nodo de un tipo que pertenece a un plano declara su plano; no se comprueba que un cambio del plano B no modifique un concepto",
+   "SV-119": "los pre-ensayos del plano A que nombran un producto o un proveedor quedan marcados (advertencia)",
+   "SV-120": "cada equivalencia declarada trae evidencia, método y confianza; ninguna fusiona nodos",
+   "SV-121": "ningún nodo usa los tipos reservados para instancias observadas del eje H",
+   "SV-212": "por tipo, cuántos nodos no traen las propiedades que la definición enuncia (advertencia por tipo)"
+  },
+  "no_comprobadas": [
+   "SV-005",
+   "SV-103",
+   "SV-104",
+   "SV-107",
+   "SV-108",
+   "SV-111",
+   "SV-115",
+   "SV-116",
+   "SV-201",
+   "SV-202",
+   "SV-203",
+   "SV-204",
+   "SV-205",
+   "SV-206",
+   "SV-207",
+   "SV-210",
+   "SV-211"
+  ]
+ },
+ "reconstruccion_desde_los_conjuntos_de_cambios": {
+  "nodos_en_las_operaciones": 5059,
+  "aristas_en_las_operaciones": 28553,
+  "nodos_iguales": true,
+  "aristas_iguales": true
+ },
+ "sv_112": {
+  "tareas en L2 o superior": 139,
+  "tareas en L2 o superior con agente y punto de control": 132,
+  "tareas en L2 o superior sin agente ejecutor en el catálogo": 7,
+  "agentes en L2 o superior": 92,
+  "agentes en L2 o superior con punto de control": 92
+ },
+ "puntos_de_control": {
+  "total": 85,
+  "sin_clase_declarada": 16,
+  "como_se_asigna": "La clase sale de una regla de palabras sobre el texto del anexo de cada agente. Donde el texto no describe un punto de control (por ejemplo, «Solo informa»), el nodo queda «sin clase declarada». La regla SV-112 cuenta igual esos nodos como punto de control."
+ },
+ "identificadores_redeclarados": {
+  "idéntica": 282,
+  "con otra etiqueta": 2
+ },
+ "textos_cortados_en_limite_de_palabra": 8,
+ "nodos_sin_definicion": 0,
+ "nodos_aislados": {
+  "total": 48,
+  "por_tipo": {
+   "AgentSkill": 33,
+   "TaxonomyCategory": 8,
+   "Tool": 5,
+   "AutonomyLevel": 2
+  }
+ },
+ "etiquetas_repetidas_dentro_de_un_tipo": {
+  "grupos": 34,
+  "nodos": 93,
+  "por_tipo": {
+   "ApprovalGate": 11,
+   "FrameworkElement": 9,
+   "Concept": 6,
+   "Precursor": 6,
+   "ProductPractice": 1,
+   "SecurityIndicator": 1
+  }
+ },
+ "preensayos_del_plano_A_que_nombran_productos": 77,
+ "clasificaciones_por_version_de_taxonomia": {
+  "6.1": 11937,
+  "5.3 (código vigente en 6.1)": 1065
+ },
+ "clasificaciones_5_3_por_tipo_de_origen": {
+  "preguntas heredadas de la matriz": 705,
+  "indicadores del catálogo 1.2": 360
+ },
+ "clasificaciones_por_confianza": {
+  "alta": 7010,
+  "media": 5742,
+  "baja": 250
+ },
+ "clasificaciones_por_rol": {
+  "primario": 6438,
+  "lente": 3435,
+  "secundario": 2001,
+  "mecanismo": 705,
+  "fuerza": 412,
+  "marcador": 11
+ },
+ "clasificaciones_por_eje": {
+  "Y": 2596,
+  "Zs": 2253,
+  "L-MCCS": 2158,
+  "X": 1873,
+  "Z": 979,
+  "L-PLANO": 762,
+  "H": 738,
+  "HR": 705,
+  "L-IA": 515,
+  "HI": 231,
+  "HC": 181,
+  "HCV": 11
+ },
+ "mapeos_por_version_de_artefacto": {
+  "2.0 (feb-2024)": 1657,
+  "Rev. 5": 1082,
+  "v4.x (el GM-24 no precisa; usa el código IVS, anterior a la v4.1)": 855,
+  "ago-2025": 762,
+  "ECO 2025": 679,
+  "ECO 2026": 621,
+  "v8.1": 542,
+  "SP 800-37 Rev. 2": 433,
+  "1.0 (ene-2023)": 275,
+  "2026 v2.01": 187,
+  "no declarada por el GM-24": 177,
+  "2025": 155,
+  "no declarada por el GM-24 (usa 14 tácticas: anterior a la v19)": 141,
+  "v1.1": 86,
+  "sin revisión declarada por el GM-24": 77,
+  "jul-2024": 69,
+  "Rev. 3": 66,
+  "no declarada por el GM-24 (usa «AI Attack Staging»: anterior a la v2026.08)": 64,
+  "v2026.10": 32,
+  "2.0 (CSWP 29)": 30,
+  "Rev. 5, Release 5.2.0": 28,
+  "(UE) 2022/2555 y (UE) 2024/2690": 28,
+  "Rev. 1": 28,
+  "v4.1": 25,
+  "1.2": 24,
+  "6.1": 21,
+  "1.0": 19,
+  "Model Overview v2.13": 18,
+  "Edición 3": 17,
+  "4.0": 17,
+  "2024": 15,
+  "v20": 15,
+  "v4.0.1": 14,
+  "Components v2.2.0": 13,
+  "sin versión; página del 6-nov-2026": 13,
+  "v2 (versión preliminar); v1 heredada": 13,
+  "2.1": 12,
+  "10 prácticas; SDL for AI": 12,
+  "Edición 1": 11,
+  "2026": 10,
+  "2.0": 9,
+  "sin versión": 9,
+  "v1.0": 8,
+  "COBIT 2019": 8,
+  "noviembre de 2023": 8,
+  "marzo de 2021": 8,
+  "por parte": 7,
+  "v2026 (v2027 publicado)": 7,
+  "(UE) 2024/1689, modificado por (UE) 2026/1744": 7,
+  "v2 (core v2.2.0)": 5,
+  "(UE) 2022/2554": 5,
+  "ATT&CK v20": 5,
+  "Initial Preliminary Draft": 3,
+  "ATLAS v2026.10": 2
+ },
+ "mapeos_por_metodo": {
+  "herencia de unidad + regla por palabra clave": 3971,
+  "herencia de unidades (multi) + explícito HC": 1514,
+  "herencia de unidad + explícito AMP": 985,
+  "herencia de unidad + explícito PA": 796,
+  "cruce editorial Frontier 6.0": 478,
+  "declarado en el modelo operativo": 300,
+  "herencia de unidad + regla por palabra clave (nuevo V7)": 157,
+  "herencia de unidad + explícito PA (promovido V7)": 97,
+  "declarado en el catálogo AGC": 69,
+  "herencia de unidad + explícito AMP (nuevo V7)": 39,
+  "derivadas de los territorios que traen los elementos de la biblioteca": 10,
+  "hipótesis de diseño: el pilar no tiene elementos en la biblioteca": 6,
+  "agenda de IA del CISO (tres pilares v4.0)": 5,
+  "propuesta de remapeo Frontier · R2": 5,
+  "propuesta de remapeo Frontier · R5": 2
+ },
+ "mapeos_por_fuerza": {
+  "fuerte": 4326,
+  "parcial": 3594,
+  "afinidad": 478,
+  "informativo": 15,
+  "ancla primaria": 11,
+  "ancla secundaria": 10
+ },
+ "aristas_cuya_evidencia_es_un_rotulo_de_procedencia": 16132,
+ "aristas_con_evidencia_propia": 12421,
+ "comprobaciones_propias": {},
+ "nota_comprobaciones_propias": "La comprobación PAQ-01 de las versiones anteriores es desde la ontología 2.2.0 la regla SV-119.",
+ "referencias_de_agentes_sin_resolver": [],
+ "recursos_de_agentes": {
+  "agentes": 85,
+  "agentes_con_herramientas": 85,
+  "agentes_con_fuentes_de_conocimiento": 85,
+  "herramientas_declaradas": 268,
+  "vinculos_INVOKES": 268,
+  "vinculos_USES_KNOWLEDGE": 150,
+  "vinculos_APPLIES_SKILL": 21,
+  "agentes_con_habilidades": 15
+ },
+ "integracion": {
+  "conceptos_de_la_biblioteca": 1404,
+  "biblioteca_solo_con_clasificacion": 1214,
+  "indicadores_ciso365": 224,
+  "aristas_entre_biblioteca_y_corpus": 112,
+  "aristas_entre_medicion_y_corpus": 0
+ },
+ "edicion_por_tipo": {
+  "AIAgent": {
+   "revisar": 85
+  },
+  "AgentFleet": {
+   "revisar": 7
+  },
+  "AgentSkill": {
+   "revisar": 46
+  },
+  "ApprovalGate": {
+   "revisar": 85
+  },
+  "AutonomyLevel": {
+   "publica": 5
+  },
+  "CognitiveBias": {
+   "revisar": 479
+  },
+  "CognitiveState": {
+   "revisar": 14
+  },
+  "Competency": {
+   "publica": 41
+  },
+  "Concept": {
+   "publica": 379,
+   "revisar": 94
+  },
+  "ControlProduct": {
+   "revisar": 7
+  },
+  "FrameworkElement": {
+   "publica": 469
+  },
+  "GovernanceBody": {
+   "revisar": 3
+  },
+  "HumanCapability": {
+   "revisar": 392
+  },
+  "KeyResult": {
+   "revisar": 72
+  },
+  "KnowledgeSource": {
+   "revisar": 51
+  },
+  "LearningPath": {
+   "publica": 2
+  },
+  "LearningUnit": {
+   "publica": 24
+  },
+  "LogicalFallacy": {
+   "revisar": 45
+  },
+  "MentalModel": {
+   "revisar": 214
+  },
+  "MetacognitivePractice": {
+   "revisar": 166
+  },
+  "Objective": {
+   "revisar": 24
+  },
+  "OperatingModel": {
+   "revisar": 7
+  },
+  "OperationalPractice": {
+   "revisar": 50
+  },
+  "Precursor": {
+   "publica": 662,
+   "revisar": 93
+  },
+  "ProductPractice": {
+   "revisar": 180
+  },
+  "Question": {
+   "publica": 595
+  },
+  "ReferenceArtifact": {
+   "publica": 146
+  },
+  "ReferenceBody": {
+   "publica": 42
+  },
+  "Role": {
+   "publica": 1,
+   "revisar": 84
+  },
+  "SecurityControl": {
+   "revisar": 24
+  },
+  "SecurityIndicator": {
+   "revisar": 244
+  },
+  "TaxonomyCategory": {
+   "publica": 138
+  },
+  "TechnologyProduct": {
+   "revisar": 7
+  },
+  "Tool": {
+   "revisar": 82
+  }
+ },
+ "nodos": 5059,
+ "aristas": 28553,
+ "aristas_duplicadas_descartadas": 0,
+ "nodos_por_tipo": {
+  "Precursor": 755,
+  "Question": 595,
+  "CognitiveBias": 479,
+  "Concept": 473,
+  "FrameworkElement": 469,
+  "HumanCapability": 392,
+  "SecurityIndicator": 244,
+  "MentalModel": 214,
+  "ProductPractice": 180,
+  "MetacognitivePractice": 166,
+  "ReferenceArtifact": 146,
+  "TaxonomyCategory": 138,
+  "Role": 85,
+  "AIAgent": 85,
+  "ApprovalGate": 85,
+  "Tool": 82,
+  "KeyResult": 72,
+  "KnowledgeSource": 51,
+  "OperationalPractice": 50,
+  "AgentSkill": 46,
+  "LogicalFallacy": 45,
+  "ReferenceBody": 42,
+  "Competency": 41,
+  "LearningUnit": 24,
+  "SecurityControl": 24,
+  "Objective": 24,
+  "CognitiveState": 14,
+  "ControlProduct": 7,
+  "TechnologyProduct": 7,
+  "OperatingModel": 7,
+  "AgentFleet": 7,
+  "AutonomyLevel": 5,
+  "GovernanceBody": 3,
+  "LearningPath": 2
+ },
+ "aristas_por_relacion": {
+  "CLASSIFIED_IN": 13002,
+  "MAPS_TO": 8434,
+  "RELATES_TO": 1396,
+  "PART_OF": 1271,
+  "ADDRESSES": 595,
+  "SPECIALIZES": 413,
+  "EXPLAINS": 379,
+  "INFORMS": 371,
+  "PERFORMS": 336,
+  "OPERATES_AT": 283,
+  "INVOKES": 268,
+  "GATED_BY": 219,
+  "EXEMPLIFIES": 180,
+  "COVERS_CONCEPT": 165,
+  "SUSTAINED_BY": 154,
+  "USES_KNOWLEDGE": 150,
+  "PUBLISHES": 146,
+  "MEASURES": 122,
+  "INSTANTIATES": 120,
+  "EXPOSED_TO": 117,
+  "TRACKED_BY": 108,
+  "ADVANCES": 72,
+  "COUNTERS": 57,
+  "REQUIRES_COMPETENCY": 41,
+  "SEQUENCES": 29,
+  "PRESSURES": 27,
+  "REGULATES": 21,
+  "APPLIES_SKILL": 21,
+  "SAME_CONCEPT_AS": 21,
+  "OWNS": 14,
+  "REALIZED_BY": 7,
+  "OPERATED_UNDER": 7,
+  "SERVES": 7
+ },
+ "tipos_usados": 34,
+ "tipos_definidos": 86,
+ "relaciones_usadas": 33,
+ "relaciones_definidas": 98,
+ "errores": 0,
+ "errores_por_regla": {},
+ "advertencias": 80,
+ "advertencias_por_regla": {
+  "SV-119": 77,
+  "SV-212": 3
+ },
+ "elementos_de_marco_no_resueltos": {},
+ "conjuntos_de_cambios": [
+  {
+   "id": "CHG-CAND-01",
+   "titulo": "Taxonomía 6.1: categorías, jerarquía, modelo de equilibrio y lentes",
+   "nodos": 138,
+   "aristas": 104
+  },
+  {
+   "id": "CHG-CAND-02",
+   "titulo": "Base de referencia: organismos, artefactos, elementos y cruce con dominios",
+   "nodos": 657,
+   "aristas": 1093
+  },
+  {
+   "id": "CHG-CAND-03",
+   "titulo": "Currículo TheNextCISO GM-24 V7.1: itinerarios, unidades, conceptos y competencias",
+   "nodos": 447,
+   "aristas": 726
+  },
+  {
+   "id": "CHG-CAND-04",
+   "titulo": "Pre-ensayos (739) y su categorización con la Taxonomía 6.1",
+   "nodos": 739,
+   "aristas": 8492
+  },
+  {
+   "id": "CHG-CAND-05",
+   "titulo": "Vínculos editoriales entre pre-ensayos (predicado original y familia normalizada)",
+   "nodos": 0,
+   "aristas": 1700
+  },
+  {
+   "id": "CHG-CAND-06",
+   "titulo": "Mapeo de conceptos del GM-24 V7.1 a elementos de marcos (tres niveles; no afirma conformidad)",
+   "nodos": 0,
+   "aristas": 7559
+  },
+  {
+   "id": "CHG-CAND-07",
+   "titulo": "Preguntas del CISO, al CISO y de los marcos (595) y su cobertura directa",
+   "nodos": 595,
+   "aristas": 2765
+  },
+  {
+   "id": "CHG-CAND-08",
+   "titulo": "Productos-control, modelos operativos y tareas por cadencia (siete instancias de dominio)",
+   "nodos": 347,
+   "aristas": 1189
+  },
+  {
+   "id": "CHG-CAND-09",
+   "titulo": "Agentes, flotas, herramientas, conocimiento, habilidades, autonomía y controles de gobierno de agentes",
+   "nodos": 373,
+   "aristas": 1188
+  },
+  {
+   "id": "CHG-CAND-10",
+   "titulo": "Indicadores: sub-plan PO-GAC (20, sin coordenada en el Atlas) y catálogo del Modelo Operativo CISO 365 2.0 (224, con coordenada)",
+   "nodos": 244,
+   "aristas": 1173
+  },
+  {
+   "id": "CHG-CAND-11",
+   "titulo": "Medición: indicadores que miden las variables homeostáticas, órganos de gobierno a los que informan, objetivos y resultados clave",
+   "nodos": 99,
+   "aristas": 622
+  },
+  {
+   "id": "CHG-CAND-12",
+   "titulo": "Biblioteca metacognitiva (MCCS): 1.404 elementos tipificados, con su categoría y su pilar (los territorios de la base quedan como propiedad, sin afirmarse como clasificación)",
+   "nodos": 1404,
+   "aristas": 1403
+  },
+  {
+   "id": "CHG-CAND-13",
+   "titulo": "Cobertura pedagógica propuesta entre unidades del GM-24 y conceptos de la Biblioteca (solo los vínculos de selección editorial o de ancla expresa)",
+   "nodos": 0,
+   "aristas": 165
+  },
+  {
+   "id": "CHG-CAND-14",
+   "titulo": "Prácticas que la Biblioteca propone para contrarrestar sesgos (solo los vínculos que la segunda lectura juzgó sostenibles; no afirman eficacia probada)",
+   "nodos": 0,
+   "aristas": 57
+  },
+  {
+   "id": "CHG-CAND-15",
+   "titulo": "Propuesta de remapeo a matrices vigentes: vínculos que se agregan (no aplicada al GM-24)",
+   "nodos": 0,
+   "aristas": 7
+  },
+  {
+   "id": "CHG-CAND-16",
+   "titulo": "Capa de ampliación: 16 pre-ensayos de la serie APX para celdas en blanco (decisión D-10 confirmada por el autor el 16-nov-2026, D-14.3; redacción asistida)",
+   "nodos": 16,
+   "aristas": 198
+  },
+  {
+   "id": "CHG-CAND-17",
+   "titulo": "Equivalencias entre pre-ensayos y elementos de la biblioteca metacognitiva halladas por la revisión crítica de la versión 1.2 (una lectura; no se fusionan nodos)",
+   "nodos": 0,
+   "aristas": 112
+  }
+ ],
+ "nodos_edicion": {
+  "publica": 2504,
+  "revisar": 2555
+ }
+}

@@ -1,0 +1,5199 @@
+{
+  "schema_version": "1.0",
+  "atlas_version": "5.3-proposed",
+  "created_date": "2026-11-03",
+  "status": "proposed_not_accredited",
+  "assumptions": [
+    "GM-24 fixed 24 units, 12 axes, two pillars",
+    "800h original; 1200h expansion option",
+    "Hours are proposed allocation, not a verified original per-unit schedule",
+    "Editorial subfunctions are not NIST categories",
+    "Framework alignments are curricular inferences, not certification/accreditation"
+  ],
+  "model": {
+    "dimensions": {
+      "X": "Territory",
+      "Y": "Domain",
+      "Z": "CSFFunction plus AtlasSubfunction",
+      "H": "EvolutionaryDynamics"
+    },
+    "views": [
+      "ATLAS-STRUCT",
+      "ATLAS-EVOL",
+      "GM24"
+    ],
+    "curriculum": {
+      "base_hours": 800,
+      "expanded_hours": 1200,
+      "semesters_base": 4,
+      "semesters_expanded_proposal": 6,
+      "hours_per_semester_proposal": 200
+    }
+  },
+  "schema": {
+    "node_types": [
+      "Assessment",
+      "AtlasSubfunction",
+      "AtlasView",
+      "CSFFunction",
+      "CapabilityAssessment",
+      "Competency",
+      "ContextProfile",
+      "Control",
+      "CurriculumAxis",
+      "CurriculumPillar",
+      "Decision",
+      "Domain",
+      "Essay",
+      "Evidence",
+      "EvolutionForce",
+      "ExternalFramework",
+      "HorizonType",
+      "LearningActivity",
+      "LearningArtifact",
+      "LearningOutcome",
+      "LearningProgram",
+      "LearningUnit",
+      "MentalModel",
+      "Prerequisite",
+      "Regulation",
+      "RiskScenario",
+      "Source",
+      "Stakeholder",
+      "Territory",
+      "ThreatActor",
+      "Transition"
+    ],
+    "edge_types": [
+      "ALIGNS_WITH_CSA",
+      "ALIGNS_WITH_ISACA",
+      "ASSESSES",
+      "ASSESSES_CAPABILITY",
+      "CONTRADICTS",
+      "CURRICULAR_ALIGNMENT",
+      "DEPENDS_ON",
+      "DEVELOPS_COMPETENCY",
+      "DEVELOPS_SUBFUNCTION",
+      "ENABLES",
+      "EVIDENCES_COMPETENCY",
+      "GROUNDED_IN",
+      "HAS_ACTIVITY",
+      "HAS_ASSESSMENT",
+      "HAS_AXIS",
+      "HAS_DOMAIN",
+      "HAS_FUNCTION",
+      "HAS_LEARNING_OUTCOME",
+      "HAS_PILLAR",
+      "HAS_TERRITORY",
+      "HAS_UNIT",
+      "INHIBITS",
+      "MAPS_TO_CSF_FUNCTION",
+      "MAPS_TO_DOMAIN",
+      "MAPS_TO_TERRITORY",
+      "PRODUCES",
+      "PRODUCES_ARTIFACT",
+      "REFINES",
+      "REQUIRES_APPROVAL",
+      "STABILIZES",
+      "SUPERSEDES",
+      "TRANSITIONS_TO",
+      "USES_HORIZON"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "ATLAS-STRUCT",
+      "type": "AtlasView",
+      "label": "Atlas estructural",
+      "description": "Responsabilidad X, dominio Y y función Z"
+    },
+    {
+      "id": "ATLAS-EVOL",
+      "type": "AtlasView",
+      "label": "Atlas evolutivo",
+      "description": "H, fuerzas, contexto y trayectorias"
+    },
+    {
+      "id": "GM24",
+      "type": "LearningProgram",
+      "label": "TheNextCISO GM-24",
+      "description": "24 unidades, 12 ejes, dos pilares; baseline 800h y opción 1200h",
+      "base_hours": 800,
+      "expanded_hours": 1200
+    },
+    {
+      "id": "T01",
+      "type": "Territory",
+      "label": "SELF & JUDGMENT",
+      "description": "Criterio, metacognición y decisiones individuales"
+    },
+    {
+      "id": "T02",
+      "type": "Territory",
+      "label": "LEADERSHIP & ORGANIZATION",
+      "description": "Personas, cultura, incentivos, roles y autoridad"
+    },
+    {
+      "id": "T03",
+      "type": "Territory",
+      "label": "STRATEGY & BUSINESS",
+      "description": "Outcomes, estrategia, portafolio e inversión"
+    },
+    {
+      "id": "T04",
+      "type": "Territory",
+      "label": "RISK & RESILIENCE",
+      "description": "Exposición, tolerancias, continuidad y riesgos de transición"
+    },
+    {
+      "id": "T05",
+      "type": "Territory",
+      "label": "SECURITY ARCHITECTURE",
+      "description": "Diseño de sistemas, controles y fronteras técnicas"
+    },
+    {
+      "id": "T06",
+      "type": "Territory",
+      "label": "SECURITY OPERATIONS",
+      "description": "Operación, monitoreo, inteligencia, incidentes"
+    },
+    {
+      "id": "T07",
+      "type": "Territory",
+      "label": "AI & AUTONOMOUS SYSTEMS",
+      "description": "Modelos, agentes y autoridad no humana"
+    },
+    {
+      "id": "T08",
+      "type": "Territory",
+      "label": "TRUST & ASSURANCE",
+      "description": "Evidencia, confiabilidad, auditoría y legitimidad"
+    },
+    {
+      "id": "D01",
+      "type": "Domain",
+      "label": "Cybersecurity Governance",
+      "description": "Políticas, gobierno y supervisión"
+    },
+    {
+      "id": "D02",
+      "type": "Domain",
+      "label": "Cyber Risk Management",
+      "description": "Evaluación, tratamiento y aceptación de riesgos"
+    },
+    {
+      "id": "D03",
+      "type": "Domain",
+      "label": "Compliance & Regulatory Security",
+      "description": "Obligaciones, auditoría y conformidad"
+    },
+    {
+      "id": "D04",
+      "type": "Domain",
+      "label": "Security Program & Investment Management",
+      "description": "Portafolio, presupuesto, métricas y valor"
+    },
+    {
+      "id": "D05",
+      "type": "Domain",
+      "label": "Identity & Access Security",
+      "description": "Identidades, PAM, autenticación y autorización"
+    },
+    {
+      "id": "D06",
+      "type": "Domain",
+      "label": "Data Security & Information Protection",
+      "description": "Clasificación, DLP y protección de información"
+    },
+    {
+      "id": "D07",
+      "type": "Domain",
+      "label": "Privacy & Data Protection Engineering",
+      "description": "Tratamiento personal, finalidad, derechos y minimización"
+    },
+    {
+      "id": "D08",
+      "type": "Domain",
+      "label": "Network & Infrastructure Security",
+      "description": "Redes, segmentación e infraestructura"
+    },
+    {
+      "id": "D09",
+      "type": "Domain",
+      "label": "Endpoint & Workplace Security",
+      "description": "Endpoints y dispositivos de usuario"
+    },
+    {
+      "id": "D10",
+      "type": "Domain",
+      "label": "Cloud & Platform Security",
+      "description": "Cloud, plataformas y workloads"
+    },
+    {
+      "id": "D11",
+      "type": "Domain",
+      "label": "Application & Software Security",
+      "description": "AppSec y desarrollo seguro"
+    },
+    {
+      "id": "D12",
+      "type": "Domain",
+      "label": "Threat Intelligence & Threat Modeling",
+      "description": "Adversarios, escenarios y TTP"
+    },
+    {
+      "id": "D13",
+      "type": "Domain",
+      "label": "Vulnerability & Exposure Management",
+      "description": "Descubrimiento y gestión de exposición"
+    },
+    {
+      "id": "D14",
+      "type": "Domain",
+      "label": "Security Monitoring & Detection",
+      "description": "Telemetría, detección y hunting"
+    },
+    {
+      "id": "D15",
+      "type": "Domain",
+      "label": "Incident Response & Crisis Management",
+      "description": "Investigación, contención y crisis"
+    },
+    {
+      "id": "D16",
+      "type": "Domain",
+      "label": "Business Continuity & Cyber Recovery",
+      "description": "Continuidad, restauración y recuperación"
+    },
+    {
+      "id": "D17",
+      "type": "Domain",
+      "label": "Third-Party & Supply Chain Security",
+      "description": "Dependencias, proveedores y supply chain"
+    },
+    {
+      "id": "D18",
+      "type": "Domain",
+      "label": "Operational Technology & Industrial Control Security",
+      "description": "ICS, SCADA, PLC y safety industrial"
+    },
+    {
+      "id": "D19",
+      "type": "Domain",
+      "label": "IoT & Cyber-Physical Systems Security",
+      "description": "Dispositivos conectados y sistemas ciberfísicos"
+    },
+    {
+      "id": "D20",
+      "type": "Domain",
+      "label": "AI & Agent Security",
+      "description": "Seguridad de modelos, agentes y runtime"
+    },
+    {
+      "id": "D21",
+      "type": "Domain",
+      "label": "AI for Cyber Defense & Security Operations",
+      "description": "IA para investigar, detectar y responder"
+    },
+    {
+      "id": "D22",
+      "type": "Domain",
+      "label": "AI for Security Assessment & Testing",
+      "description": "IA para pruebas y evaluación de seguridad"
+    },
+    {
+      "id": "D23",
+      "type": "Domain",
+      "label": "AI for Security Engineering & Automation",
+      "description": "IA para generar controles y automatizaciones"
+    },
+    {
+      "id": "D24",
+      "type": "Domain",
+      "label": "Security Workforce & Human Factors",
+      "description": "Talento, cultura y factores humanos"
+    },
+    {
+      "id": "GV",
+      "type": "CSFFunction",
+      "label": "Govern",
+      "description": "Establecer y supervisar estrategia y riesgo"
+    },
+    {
+      "id": "ID",
+      "type": "CSFFunction",
+      "label": "Identify",
+      "description": "Identificar activos, exposición y riesgos"
+    },
+    {
+      "id": "PR",
+      "type": "CSFFunction",
+      "label": "Protect",
+      "description": "Implementar salvaguardas"
+    },
+    {
+      "id": "DE",
+      "type": "CSFFunction",
+      "label": "Detect",
+      "description": "Detectar eventos adversos"
+    },
+    {
+      "id": "RS",
+      "type": "CSFFunction",
+      "label": "Respond",
+      "description": "Responder a incidentes"
+    },
+    {
+      "id": "RC",
+      "type": "CSFFunction",
+      "label": "Recover",
+      "description": "Recuperar capacidades y servicios"
+    },
+    {
+      "id": "GV01",
+      "type": "AtlasSubfunction",
+      "label": "Contexto empresarial y estrategia",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "GV02",
+      "type": "AtlasSubfunction",
+      "label": "Estructura de gobierno y autoridad",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "GV03",
+      "type": "AtlasSubfunction",
+      "label": "Políticas y estándares",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "GV04",
+      "type": "AtlasSubfunction",
+      "label": "Apetito, tolerancia y aceptación de riesgo",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "GV05",
+      "type": "AtlasSubfunction",
+      "label": "Gobierno de programas, recursos e inversión",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "GV06",
+      "type": "AtlasSubfunction",
+      "label": "Obligaciones legales y contractuales",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "GV07",
+      "type": "AtlasSubfunction",
+      "label": "Supervisión y reporting ejecutivo",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "GV08",
+      "type": "AtlasSubfunction",
+      "label": "Assurance y revisión independiente",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "GV09",
+      "type": "AtlasSubfunction",
+      "label": "Gobierno de terceros y ecosistemas",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "GV10",
+      "type": "AtlasSubfunction",
+      "label": "Ética, cultura y rendición de cuentas",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "ID01",
+      "type": "AtlasSubfunction",
+      "label": "Inventario y clasificación de activos",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "ID02",
+      "type": "AtlasSubfunction",
+      "label": "Dependencias y criticidad del negocio",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "ID03",
+      "type": "AtlasSubfunction",
+      "label": "Amenazas, vulnerabilidades y exposición",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "ID04",
+      "type": "AtlasSubfunction",
+      "label": "Análisis de escenarios y cuantificación de riesgos",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "ID05",
+      "type": "AtlasSubfunction",
+      "label": "Evaluación de capacidades y brechas",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "PR01",
+      "type": "AtlasSubfunction",
+      "label": "Identidad y autorización",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "PR02",
+      "type": "AtlasSubfunction",
+      "label": "Protección de datos y privacidad por diseño",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "PR03",
+      "type": "AtlasSubfunction",
+      "label": "Hardening y arquitectura segura",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "PR04",
+      "type": "AtlasSubfunction",
+      "label": "Desarrollo seguro y gestión de cambios",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "PR05",
+      "type": "AtlasSubfunction",
+      "label": "Preparación de personas y procedimientos",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "DE01",
+      "type": "AtlasSubfunction",
+      "label": "Telemetría y observabilidad",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "DE02",
+      "type": "AtlasSubfunction",
+      "label": "Ingeniería de detección y análisis",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "DE03",
+      "type": "AtlasSubfunction",
+      "label": "Hunting, validación y mejora de detecciones",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "DE04",
+      "type": "AtlasSubfunction",
+      "label": "Evaluación de cobertura y calidad de detección",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "RS01",
+      "type": "AtlasSubfunction",
+      "label": "Preparación y coordinación de respuesta",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "RS02",
+      "type": "AtlasSubfunction",
+      "label": "Contención, erradicación y preservación de evidencia",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "RS03",
+      "type": "AtlasSubfunction",
+      "label": "Comunicación de crisis y decisiones ejecutivas",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "RS04",
+      "type": "AtlasSubfunction",
+      "label": "Gestión de incidentes con terceros",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "RC01",
+      "type": "AtlasSubfunction",
+      "label": "Restauración y recuperación técnica",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "RC02",
+      "type": "AtlasSubfunction",
+      "label": "Continuidad y operación degradada",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "RC03",
+      "type": "AtlasSubfunction",
+      "label": "Validación de recuperación y retorno seguro",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "RC04",
+      "type": "AtlasSubfunction",
+      "label": "Aprendizaje, corrección y mejora continua",
+      "description": "Subfunción editorial propuesta; no categoría oficial NIST"
+    },
+    {
+      "id": "H01",
+      "type": "HorizonType",
+      "label": "Foundational",
+      "description": "Capacidad consolidada vigente"
+    },
+    {
+      "id": "H02",
+      "type": "HorizonType",
+      "label": "Evolving",
+      "description": "Capacidad existente en transformación"
+    },
+    {
+      "id": "H03",
+      "type": "HorizonType",
+      "label": "Emerging",
+      "description": "Capacidad nueva o en consolidación"
+    },
+    {
+      "id": "H04",
+      "type": "HorizonType",
+      "label": "Convergent",
+      "description": "Convergencia de disciplinas"
+    },
+    {
+      "id": "CAT01",
+      "type": "EvolutionForce",
+      "label": "Innovación tecnológica",
+      "description": "",
+      "force_class": "CAT"
+    },
+    {
+      "id": "CAT02",
+      "type": "EvolutionForce",
+      "label": "Presión competitiva",
+      "description": "",
+      "force_class": "CAT"
+    },
+    {
+      "id": "CAT03",
+      "type": "EvolutionForce",
+      "label": "Regulación",
+      "description": "",
+      "force_class": "CAT"
+    },
+    {
+      "id": "CAT04",
+      "type": "EvolutionForce",
+      "label": "Evolución de amenazas",
+      "description": "",
+      "force_class": "CAT"
+    },
+    {
+      "id": "CAT05",
+      "type": "EvolutionForce",
+      "label": "Transformación empresarial",
+      "description": "",
+      "force_class": "CAT"
+    },
+    {
+      "id": "CAT06",
+      "type": "EvolutionForce",
+      "label": "Presión económica",
+      "description": "",
+      "force_class": "CAT"
+    },
+    {
+      "id": "CAT07",
+      "type": "EvolutionForce",
+      "label": "Incidentes",
+      "description": "",
+      "force_class": "CAT"
+    },
+    {
+      "id": "CAT08",
+      "type": "EvolutionForce",
+      "label": "Ecosistema/proveedores",
+      "description": "",
+      "force_class": "CAT"
+    },
+    {
+      "id": "CAT09",
+      "type": "EvolutionForce",
+      "label": "Clientes",
+      "description": "",
+      "force_class": "CAT"
+    },
+    {
+      "id": "CAT10",
+      "type": "EvolutionForce",
+      "label": "Patrocinio ejecutivo",
+      "description": "",
+      "force_class": "CAT"
+    },
+    {
+      "id": "INH01",
+      "type": "EvolutionForce",
+      "label": "Deuda tecnológica",
+      "description": "",
+      "force_class": "INH"
+    },
+    {
+      "id": "INH02",
+      "type": "EvolutionForce",
+      "label": "Presupuesto",
+      "description": "",
+      "force_class": "INH"
+    },
+    {
+      "id": "INH03",
+      "type": "EvolutionForce",
+      "label": "Brecha de capacidades",
+      "description": "",
+      "force_class": "INH"
+    },
+    {
+      "id": "INH04",
+      "type": "EvolutionForce",
+      "label": "Silos",
+      "description": "",
+      "force_class": "INH"
+    },
+    {
+      "id": "INH05",
+      "type": "EvolutionForce",
+      "label": "Restricciones regulatorias",
+      "description": "",
+      "force_class": "INH"
+    },
+    {
+      "id": "INH06",
+      "type": "EvolutionForce",
+      "label": "Lock-in",
+      "description": "",
+      "force_class": "INH"
+    },
+    {
+      "id": "INH07",
+      "type": "EvolutionForce",
+      "label": "Calidad de datos",
+      "description": "",
+      "force_class": "INH"
+    },
+    {
+      "id": "INH08",
+      "type": "EvolutionForce",
+      "label": "Resistencia cultural",
+      "description": "",
+      "force_class": "INH"
+    },
+    {
+      "id": "INH09",
+      "type": "EvolutionForce",
+      "label": "Limitaciones operativas",
+      "description": "",
+      "force_class": "INH"
+    },
+    {
+      "id": "INH10",
+      "type": "EvolutionForce",
+      "label": "Incertidumbre técnica",
+      "description": "",
+      "force_class": "INH"
+    },
+    {
+      "id": "HOM01",
+      "type": "EvolutionForce",
+      "label": "Apetito/tolerancia",
+      "description": "",
+      "force_class": "HOM"
+    },
+    {
+      "id": "HOM02",
+      "type": "EvolutionForce",
+      "label": "Change management",
+      "description": "",
+      "force_class": "HOM"
+    },
+    {
+      "id": "HOM03",
+      "type": "EvolutionForce",
+      "label": "Segregación",
+      "description": "",
+      "force_class": "HOM"
+    },
+    {
+      "id": "HOM04",
+      "type": "EvolutionForce",
+      "label": "Monitoreo",
+      "description": "",
+      "force_class": "HOM"
+    },
+    {
+      "id": "HOM05",
+      "type": "EvolutionForce",
+      "label": "Respuesta",
+      "description": "",
+      "force_class": "HOM"
+    },
+    {
+      "id": "HOM06",
+      "type": "EvolutionForce",
+      "label": "Continuidad",
+      "description": "",
+      "force_class": "HOM"
+    },
+    {
+      "id": "HOM07",
+      "type": "EvolutionForce",
+      "label": "Rollback",
+      "description": "",
+      "force_class": "HOM"
+    },
+    {
+      "id": "HOM08",
+      "type": "EvolutionForce",
+      "label": "Supervisión",
+      "description": "",
+      "force_class": "HOM"
+    },
+    {
+      "id": "HOM09",
+      "type": "EvolutionForce",
+      "label": "Assurance",
+      "description": "",
+      "force_class": "HOM"
+    },
+    {
+      "id": "HOM10",
+      "type": "EvolutionForce",
+      "label": "Aprendizaje",
+      "description": "",
+      "force_class": "HOM"
+    },
+    {
+      "id": "CISM-2026",
+      "type": "ExternalFramework",
+      "label": "ISACA CISM 2026",
+      "description": "Marco/certificado de referencia; correspondencias editoriales, no acreditación",
+      "url": "https://www.isaca.org/about-us/newsroom/press-releases/2026/isaca-updates-cism-exam-content-outline-factoring-in-todays-technologies-security-responsibilities",
+      "topics": [
+        "Governance",
+        "Risk Management",
+        "Information Security Program",
+        "Incident Management"
+      ]
+    },
+    {
+      "id": "CRISC-2025",
+      "type": "ExternalFramework",
+      "label": "ISACA CRISC 2025",
+      "description": "Marco/certificado de referencia; correspondencias editoriales, no acreditación",
+      "url": "https://www.isaca.org/credentialing/crisc/crisc-exam-content-outline",
+      "topics": [
+        "Governance",
+        "Risk Assessment",
+        "Risk Response and Reporting",
+        "Technology and Security"
+      ]
+    },
+    {
+      "id": "CSA-CCSK-v5",
+      "type": "ExternalFramework",
+      "label": "CSA CCSK v5",
+      "description": "Marco/certificado de referencia; correspondencias editoriales, no acreditación",
+      "url": "https://cloudsecurityalliance.org/artifacts/ccsk-v5-curriculum",
+      "topics": [
+        "Cloud Governance",
+        "Risk",
+        "IAM",
+        "Cloud Operations",
+        "Data Security",
+        "Zero Trust",
+        "AI"
+      ]
+    },
+    {
+      "id": "CSA-CCZT",
+      "type": "ExternalFramework",
+      "label": "CSA CCZT",
+      "description": "Marco/certificado de referencia; correspondencias editoriales, no acreditación",
+      "url": "https://exams.cloudsecurityalliance.org/about",
+      "topics": [
+        "Zero Trust Strategy",
+        "Zero Trust Architecture",
+        "Zero Trust Implementation"
+      ]
+    },
+    {
+      "id": "CSA-TAISE",
+      "type": "ExternalFramework",
+      "label": "CSA TAISE",
+      "description": "Marco/certificado de referencia; correspondencias editoriales, no acreditación",
+      "url": "https://cloudsecurityalliance.org/education/taise/",
+      "topics": [
+        "AI Safety",
+        "AI Governance",
+        "AI Security",
+        "Privacy",
+        "Cloud Security"
+      ]
+    },
+    {
+      "id": "CSA-AICM-1.1",
+      "type": "ExternalFramework",
+      "label": "CSA AI Controls Matrix 1.1",
+      "description": "Marco/certificado de referencia; correspondencias editoriales, no acreditación",
+      "url": "https://cloudsecurityalliance.org/artifacts/ai-controls-matrix-v1-1",
+      "topics": [
+        "AI Controls",
+        "AI Roles",
+        "AI Lifecycle",
+        "AI Assurance"
+      ]
+    },
+    {
+      "id": "NIST-CSF-2.0",
+      "type": "ExternalFramework",
+      "label": "NIST CSF 2.0",
+      "description": "Marco/certificado de referencia; correspondencias editoriales, no acreditación",
+      "url": "https://csrc.nist.gov/projects/cybersecurity-framework/filters",
+      "topics": [
+        "Govern",
+        "Identify",
+        "Protect",
+        "Detect",
+        "Respond",
+        "Recover"
+      ]
+    },
+    {
+      "id": "P-G",
+      "type": "CurriculumPillar",
+      "label": "Gobierno",
+      "description": ""
+    },
+    {
+      "id": "G1",
+      "type": "CurriculumAxis",
+      "label": "Eje G1",
+      "description": ""
+    },
+    {
+      "id": "G2",
+      "type": "CurriculumAxis",
+      "label": "Eje G2",
+      "description": ""
+    },
+    {
+      "id": "G3",
+      "type": "CurriculumAxis",
+      "label": "Eje G3",
+      "description": ""
+    },
+    {
+      "id": "G4",
+      "type": "CurriculumAxis",
+      "label": "Eje G4",
+      "description": ""
+    },
+    {
+      "id": "G5",
+      "type": "CurriculumAxis",
+      "label": "Eje G5",
+      "description": ""
+    },
+    {
+      "id": "G6",
+      "type": "CurriculumAxis",
+      "label": "Eje G6",
+      "description": ""
+    },
+    {
+      "id": "P-M",
+      "type": "CurriculumPillar",
+      "label": "Gestión",
+      "description": ""
+    },
+    {
+      "id": "M1",
+      "type": "CurriculumAxis",
+      "label": "Eje M1",
+      "description": ""
+    },
+    {
+      "id": "M2",
+      "type": "CurriculumAxis",
+      "label": "Eje M2",
+      "description": ""
+    },
+    {
+      "id": "M3",
+      "type": "CurriculumAxis",
+      "label": "Eje M3",
+      "description": ""
+    },
+    {
+      "id": "M4",
+      "type": "CurriculumAxis",
+      "label": "Eje M4",
+      "description": ""
+    },
+    {
+      "id": "M5",
+      "type": "CurriculumAxis",
+      "label": "Eje M5",
+      "description": ""
+    },
+    {
+      "id": "M6",
+      "type": "CurriculumAxis",
+      "label": "Eje M6",
+      "description": ""
+    },
+    {
+      "id": "G1.1",
+      "type": "LearningUnit",
+      "label": "Principios de gobierno, contexto organizacional y arquetipos CISO",
+      "description": "",
+      "base_hours": 32,
+      "extension_hours": 16,
+      "total_expanded_hours": 48,
+      "pillar": "Gobierno",
+      "axis": "G1"
+    },
+    {
+      "id": "COMP-G1.1",
+      "type": "Competency",
+      "label": "Competencia aplicada: Principios de gobierno, contexto organizacional y arquetipos CISO",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-G1.1",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Principios de gobierno, contexto organizacional y arquetipos CISO",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-G1.1",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Principios de gobierno, contexto organizacional y arquetipos CISO",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-G1.1",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Principios de gobierno, contexto organizacional y arquetipos CISO",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-G1.1",
+      "type": "LearningArtifact",
+      "label": "Mapa de stakeholders, modelo de gobierno y arquetipo contextual",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "G1.2",
+      "type": "LearningUnit",
+      "label": "Desarrollo de estrategia y alineación con el negocio",
+      "description": "",
+      "base_hours": 36,
+      "extension_hours": 16,
+      "total_expanded_hours": 52,
+      "pillar": "Gobierno",
+      "axis": "G1"
+    },
+    {
+      "id": "COMP-G1.2",
+      "type": "Competency",
+      "label": "Competencia aplicada: Desarrollo de estrategia y alineación con el negocio",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-G1.2",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Desarrollo de estrategia y alineación con el negocio",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-G1.2",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Desarrollo de estrategia y alineación con el negocio",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-G1.2",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Desarrollo de estrategia y alineación con el negocio",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-G1.2",
+      "type": "LearningArtifact",
+      "label": "Estrategia y business case vinculados a outcomes",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "G2.1",
+      "type": "LearningUnit",
+      "label": "Selección e integración de marcos y estándares",
+      "description": "",
+      "base_hours": 30,
+      "extension_hours": 16,
+      "total_expanded_hours": 46,
+      "pillar": "Gobierno",
+      "axis": "G2"
+    },
+    {
+      "id": "COMP-G2.1",
+      "type": "Competency",
+      "label": "Competencia aplicada: Selección e integración de marcos y estándares",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-G2.1",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Selección e integración de marcos y estándares",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-G2.1",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Selección e integración de marcos y estándares",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-G2.1",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Selección e integración de marcos y estándares",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-G2.1",
+      "type": "LearningArtifact",
+      "label": "Matriz de correspondencias y perfil de controles",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "G2.2",
+      "type": "LearningUnit",
+      "label": "Ciclo de vida de políticas, estándares y procedimientos",
+      "description": "",
+      "base_hours": 30,
+      "extension_hours": 12,
+      "total_expanded_hours": 42,
+      "pillar": "Gobierno",
+      "axis": "G2"
+    },
+    {
+      "id": "COMP-G2.2",
+      "type": "Competency",
+      "label": "Competencia aplicada: Ciclo de vida de políticas, estándares y procedimientos",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-G2.2",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Ciclo de vida de políticas, estándares y procedimientos",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-G2.2",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Ciclo de vida de políticas, estándares y procedimientos",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-G2.2",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Ciclo de vida de políticas, estándares y procedimientos",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-G2.2",
+      "type": "LearningArtifact",
+      "label": "Jerarquía documental y ciclo de aprobación",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "G3.1",
+      "type": "LearningUnit",
+      "label": "Requisitos legales, regulatorios y contractuales",
+      "description": "",
+      "base_hours": 34,
+      "extension_hours": 18,
+      "total_expanded_hours": 52,
+      "pillar": "Gobierno",
+      "axis": "G3"
+    },
+    {
+      "id": "COMP-G3.1",
+      "type": "Competency",
+      "label": "Competencia aplicada: Requisitos legales, regulatorios y contractuales",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-G3.1",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Requisitos legales, regulatorios y contractuales",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-G3.1",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Requisitos legales, regulatorios y contractuales",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-G3.1",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Requisitos legales, regulatorios y contractuales",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-G3.1",
+      "type": "LearningArtifact",
+      "label": "Registro de obligaciones por jurisdicción y evidencia",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "G3.2",
+      "type": "LearningUnit",
+      "label": "Gestión del cumplimiento y aseguramiento continuo",
+      "description": "",
+      "base_hours": 34,
+      "extension_hours": 18,
+      "total_expanded_hours": 52,
+      "pillar": "Gobierno",
+      "axis": "G3"
+    },
+    {
+      "id": "COMP-G3.2",
+      "type": "Competency",
+      "label": "Competencia aplicada: Gestión del cumplimiento y aseguramiento continuo",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-G3.2",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Gestión del cumplimiento y aseguramiento continuo",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-G3.2",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Gestión del cumplimiento y aseguramiento continuo",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-G3.2",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Gestión del cumplimiento y aseguramiento continuo",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-G3.2",
+      "type": "LearningArtifact",
+      "label": "Plan de assurance y pruebas de efectividad",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "G4.1",
+      "type": "LearningUnit",
+      "label": "Gobernanza del riesgo: marcos y estructuras",
+      "description": "",
+      "base_hours": 32,
+      "extension_hours": 16,
+      "total_expanded_hours": 48,
+      "pillar": "Gobierno",
+      "axis": "G4"
+    },
+    {
+      "id": "COMP-G4.1",
+      "type": "Competency",
+      "label": "Competencia aplicada: Gobernanza del riesgo: marcos y estructuras",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-G4.1",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Gobernanza del riesgo: marcos y estructuras",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-G4.1",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Gobernanza del riesgo: marcos y estructuras",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-G4.1",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Gobernanza del riesgo: marcos y estructuras",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-G4.1",
+      "type": "LearningArtifact",
+      "label": "RACI, tres líneas y articulación ERM",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "G4.2",
+      "type": "LearningUnit",
+      "label": "Definición y comunicación del apetito de riesgo",
+      "description": "",
+      "base_hours": 34,
+      "extension_hours": 18,
+      "total_expanded_hours": 52,
+      "pillar": "Gobierno",
+      "axis": "G4"
+    },
+    {
+      "id": "COMP-G4.2",
+      "type": "Competency",
+      "label": "Competencia aplicada: Definición y comunicación del apetito de riesgo",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-G4.2",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Definición y comunicación del apetito de riesgo",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-G4.2",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Definición y comunicación del apetito de riesgo",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-G4.2",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Definición y comunicación del apetito de riesgo",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-G4.2",
+      "type": "LearningArtifact",
+      "label": "Declaración de apetito y umbrales de decisión",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "G5.1",
+      "type": "LearningUnit",
+      "label": "Supervisión de evaluación y análisis de riesgos",
+      "description": "",
+      "base_hours": 34,
+      "extension_hours": 18,
+      "total_expanded_hours": 52,
+      "pillar": "Gobierno",
+      "axis": "G5"
+    },
+    {
+      "id": "COMP-G5.1",
+      "type": "Competency",
+      "label": "Competencia aplicada: Supervisión de evaluación y análisis de riesgos",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-G5.1",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Supervisión de evaluación y análisis de riesgos",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-G5.1",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Supervisión de evaluación y análisis de riesgos",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-G5.1",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Supervisión de evaluación y análisis de riesgos",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-G5.1",
+      "type": "LearningArtifact",
+      "label": "Escenarios cuantificados y reporte de incertidumbre",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "G5.2",
+      "type": "LearningUnit",
+      "label": "Supervisión de tratamiento y aceptación de riesgos",
+      "description": "",
+      "base_hours": 34,
+      "extension_hours": 18,
+      "total_expanded_hours": 52,
+      "pillar": "Gobierno",
+      "axis": "G5"
+    },
+    {
+      "id": "COMP-G5.2",
+      "type": "Competency",
+      "label": "Competencia aplicada: Supervisión de tratamiento y aceptación de riesgos",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-G5.2",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Supervisión de tratamiento y aceptación de riesgos",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-G5.2",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Supervisión de tratamiento y aceptación de riesgos",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-G5.2",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Supervisión de tratamiento y aceptación de riesgos",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-G5.2",
+      "type": "LearningArtifact",
+      "label": "Registro de riesgo residual y autoridad de aceptación",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "G6.1",
+      "type": "LearningUnit",
+      "label": "Comunicación estratégica",
+      "description": "",
+      "base_hours": 32,
+      "extension_hours": 16,
+      "total_expanded_hours": 48,
+      "pillar": "Gobierno",
+      "axis": "G6"
+    },
+    {
+      "id": "COMP-G6.1",
+      "type": "Competency",
+      "label": "Competencia aplicada: Comunicación estratégica",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-G6.1",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Comunicación estratégica",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-G6.1",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Comunicación estratégica",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-G6.1",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Comunicación estratégica",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-G6.1",
+      "type": "LearningArtifact",
+      "label": "Board memo y narrativa de decisiones",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "G6.2",
+      "type": "LearningUnit",
+      "label": "Liderazgo ético y medición de efectividad",
+      "description": "",
+      "base_hours": 38,
+      "extension_hours": 18,
+      "total_expanded_hours": 56,
+      "pillar": "Gobierno",
+      "axis": "G6"
+    },
+    {
+      "id": "COMP-G6.2",
+      "type": "Competency",
+      "label": "Competencia aplicada: Liderazgo ético y medición de efectividad",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-G6.2",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Liderazgo ético y medición de efectividad",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-G6.2",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Liderazgo ético y medición de efectividad",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-G6.2",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Liderazgo ético y medición de efectividad",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-G6.2",
+      "type": "LearningArtifact",
+      "label": "Scorecard, dilema ético y evaluación de liderazgo",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "M1.1",
+      "type": "LearningUnit",
+      "label": "Desarrollo, gestión y operaciones del programa de seguridad",
+      "description": "",
+      "base_hours": 28,
+      "extension_hours": 16,
+      "total_expanded_hours": 44,
+      "pillar": "Gestión",
+      "axis": "M1"
+    },
+    {
+      "id": "COMP-M1.1",
+      "type": "Competency",
+      "label": "Competencia aplicada: Desarrollo, gestión y operaciones del programa de seguridad",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-M1.1",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Desarrollo, gestión y operaciones del programa de seguridad",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-M1.1",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Desarrollo, gestión y operaciones del programa de seguridad",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-M1.1",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Desarrollo, gestión y operaciones del programa de seguridad",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-M1.1",
+      "type": "LearningArtifact",
+      "label": "Plan de programa, backlog y modelo de operación",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "M1.2",
+      "type": "LearningUnit",
+      "label": "Gestión financiera, liderazgo de equipo y capacitación",
+      "description": "",
+      "base_hours": 32,
+      "extension_hours": 16,
+      "total_expanded_hours": 48,
+      "pillar": "Gestión",
+      "axis": "M1"
+    },
+    {
+      "id": "COMP-M1.2",
+      "type": "Competency",
+      "label": "Competencia aplicada: Gestión financiera, liderazgo de equipo y capacitación",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-M1.2",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Gestión financiera, liderazgo de equipo y capacitación",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-M1.2",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Gestión financiera, liderazgo de equipo y capacitación",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-M1.2",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Gestión financiera, liderazgo de equipo y capacitación",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-M1.2",
+      "type": "LearningArtifact",
+      "label": "Presupuesto, plan de talento y capacidades",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "M2.1",
+      "type": "LearningUnit",
+      "label": "Gestión de activos y seguridad del ciclo de vida de datos",
+      "description": "",
+      "base_hours": 34,
+      "extension_hours": 18,
+      "total_expanded_hours": 52,
+      "pillar": "Gestión",
+      "axis": "M2"
+    },
+    {
+      "id": "COMP-M2.1",
+      "type": "Competency",
+      "label": "Competencia aplicada: Gestión de activos y seguridad del ciclo de vida de datos",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-M2.1",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Gestión de activos y seguridad del ciclo de vida de datos",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-M2.1",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Gestión de activos y seguridad del ciclo de vida de datos",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-M2.1",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Gestión de activos y seguridad del ciclo de vida de datos",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-M2.1",
+      "type": "LearningArtifact",
+      "label": "Inventario, clasificación y mapa de flujos",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "M2.2",
+      "type": "LearningUnit",
+      "label": "Gestión de identidad y acceso y principios Zero Trust",
+      "description": "",
+      "base_hours": 34,
+      "extension_hours": 18,
+      "total_expanded_hours": 52,
+      "pillar": "Gestión",
+      "axis": "M2"
+    },
+    {
+      "id": "COMP-M2.2",
+      "type": "Competency",
+      "label": "Competencia aplicada: Gestión de identidad y acceso y principios Zero Trust",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-M2.2",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Gestión de identidad y acceso y principios Zero Trust",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-M2.2",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Gestión de identidad y acceso y principios Zero Trust",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-M2.2",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Gestión de identidad y acceso y principios Zero Trust",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-M2.2",
+      "type": "LearningArtifact",
+      "label": "Diseño IAM/PAM/NHI con pruebas de permisos",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "M3.1",
+      "type": "LearningUnit",
+      "label": "Arquitectura de seguridad, ingeniería y diseño",
+      "description": "",
+      "base_hours": 36,
+      "extension_hours": 18,
+      "total_expanded_hours": 54,
+      "pillar": "Gestión",
+      "axis": "M3"
+    },
+    {
+      "id": "COMP-M3.1",
+      "type": "Competency",
+      "label": "Competencia aplicada: Arquitectura de seguridad, ingeniería y diseño",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-M3.1",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Arquitectura de seguridad, ingeniería y diseño",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-M3.1",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Arquitectura de seguridad, ingeniería y diseño",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-M3.1",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Arquitectura de seguridad, ingeniería y diseño",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-M3.1",
+      "type": "LearningArtifact",
+      "label": "Arquitectura objetivo y threat model",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "M3.2",
+      "type": "LearningUnit",
+      "label": "Selección, implementación y evaluación de controles",
+      "description": "",
+      "base_hours": 34,
+      "extension_hours": 16,
+      "total_expanded_hours": 50,
+      "pillar": "Gestión",
+      "axis": "M3"
+    },
+    {
+      "id": "COMP-M3.2",
+      "type": "Competency",
+      "label": "Competencia aplicada: Selección, implementación y evaluación de controles",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-M3.2",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Selección, implementación y evaluación de controles",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-M3.2",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Selección, implementación y evaluación de controles",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-M3.2",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Selección, implementación y evaluación de controles",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-M3.2",
+      "type": "LearningArtifact",
+      "label": "Matriz de controles, criterios y validación",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "M4.1",
+      "type": "LearningUnit",
+      "label": "Operaciones de seguridad, monitorización e inteligencia",
+      "description": "",
+      "base_hours": 34,
+      "extension_hours": 18,
+      "total_expanded_hours": 52,
+      "pillar": "Gestión",
+      "axis": "M4"
+    },
+    {
+      "id": "COMP-M4.1",
+      "type": "Competency",
+      "label": "Competencia aplicada: Operaciones de seguridad, monitorización e inteligencia",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-M4.1",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Operaciones de seguridad, monitorización e inteligencia",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-M4.1",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Operaciones de seguridad, monitorización e inteligencia",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-M4.1",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Operaciones de seguridad, monitorización e inteligencia",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-M4.1",
+      "type": "LearningArtifact",
+      "label": "Detecciones, telemetría y SOC playbook",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "M4.2",
+      "type": "LearningUnit",
+      "label": "Gestión de amenazas, vulnerabilidades y riesgos emergentes",
+      "description": "",
+      "base_hours": 34,
+      "extension_hours": 18,
+      "total_expanded_hours": 52,
+      "pillar": "Gestión",
+      "axis": "M4"
+    },
+    {
+      "id": "COMP-M4.2",
+      "type": "Competency",
+      "label": "Competencia aplicada: Gestión de amenazas, vulnerabilidades y riesgos emergentes",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-M4.2",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Gestión de amenazas, vulnerabilidades y riesgos emergentes",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-M4.2",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Gestión de amenazas, vulnerabilidades y riesgos emergentes",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-M4.2",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Gestión de amenazas, vulnerabilidades y riesgos emergentes",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-M4.2",
+      "type": "LearningArtifact",
+      "label": "Priorización basada en exposición y escenarios",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "M5.1",
+      "type": "LearningUnit",
+      "label": "Planificación y preparación de respuesta, incluido BIA",
+      "description": "",
+      "base_hours": 32,
+      "extension_hours": 16,
+      "total_expanded_hours": 48,
+      "pillar": "Gestión",
+      "axis": "M5"
+    },
+    {
+      "id": "COMP-M5.1",
+      "type": "Competency",
+      "label": "Competencia aplicada: Planificación y preparación de respuesta, incluido BIA",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-M5.1",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Planificación y preparación de respuesta, incluido BIA",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-M5.1",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Planificación y preparación de respuesta, incluido BIA",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-M5.1",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Planificación y preparación de respuesta, incluido BIA",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-M5.1",
+      "type": "LearningArtifact",
+      "label": "BIA, plan de crisis y tabletop",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "M5.2",
+      "type": "LearningUnit",
+      "label": "Ejecución, post-mortem y comunicación",
+      "description": "",
+      "base_hours": 34,
+      "extension_hours": 18,
+      "total_expanded_hours": 52,
+      "pillar": "Gestión",
+      "axis": "M5"
+    },
+    {
+      "id": "COMP-M5.2",
+      "type": "Competency",
+      "label": "Competencia aplicada: Ejecución, post-mortem y comunicación",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-M5.2",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Ejecución, post-mortem y comunicación",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-M5.2",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Ejecución, post-mortem y comunicación",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-M5.2",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Ejecución, post-mortem y comunicación",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-M5.2",
+      "type": "LearningArtifact",
+      "label": "Simulación, bitácora de incidentes y postmortem",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "M6.1",
+      "type": "LearningUnit",
+      "label": "Continuidad, DRP y resiliencia operativa",
+      "description": "",
+      "base_hours": 32,
+      "extension_hours": 18,
+      "total_expanded_hours": 50,
+      "pillar": "Gestión",
+      "axis": "M6"
+    },
+    {
+      "id": "COMP-M6.1",
+      "type": "Competency",
+      "label": "Competencia aplicada: Continuidad, DRP y resiliencia operativa",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-M6.1",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Continuidad, DRP y resiliencia operativa",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-M6.1",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Continuidad, DRP y resiliencia operativa",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-M6.1",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Continuidad, DRP y resiliencia operativa",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-M6.1",
+      "type": "LearningArtifact",
+      "label": "Prueba de restauración y continuidad",
+      "description": "Entregable evaluable del participante"
+    },
+    {
+      "id": "M6.2",
+      "type": "LearningUnit",
+      "label": "Seguridad de redes, nube, tecnologías emergentes y SCRM",
+      "description": "",
+      "base_hours": 36,
+      "extension_hours": 10,
+      "total_expanded_hours": 46,
+      "pillar": "Gestión",
+      "axis": "M6"
+    },
+    {
+      "id": "COMP-M6.2",
+      "type": "Competency",
+      "label": "Competencia aplicada: Seguridad de redes, nube, tecnologías emergentes y SCRM",
+      "description": "Capacidad demostrable de dirigir, gestionar o supervisar el contenido de la unidad"
+    },
+    {
+      "id": "LO-M6.2",
+      "type": "LearningOutcome",
+      "label": "Resultado de aprendizaje: Seguridad de redes, nube, tecnologías emergentes y SCRM",
+      "description": "Explicar, decidir y aplicar el contenido de la unidad en un escenario de negocio"
+    },
+    {
+      "id": "ACT-M6.2",
+      "type": "LearningActivity",
+      "label": "Taller aplicado: Seguridad de redes, nube, tecnologías emergentes y SCRM",
+      "description": "Actividad basada en escenarios, decisiones y evidencia"
+    },
+    {
+      "id": "ASM-M6.2",
+      "type": "Assessment",
+      "label": "Evaluación de desempeño: Seguridad de redes, nube, tecnologías emergentes y SCRM",
+      "description": "Rúbrica y evidencia de desempeño, no solo prueba teórica"
+    },
+    {
+      "id": "ART-M6.2",
+      "type": "LearningArtifact",
+      "label": "Arquitectura híbrida, cadena de suministro y controles de IA",
+      "description": "Entregable evaluable del participante"
+    }
+  ],
+  "edges": [
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "T01",
+      "type": "HAS_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "T02",
+      "type": "HAS_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "T03",
+      "type": "HAS_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "T04",
+      "type": "HAS_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "T05",
+      "type": "HAS_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "T06",
+      "type": "HAS_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "T07",
+      "type": "HAS_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "T08",
+      "type": "HAS_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D01",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D02",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D03",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D04",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D05",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D06",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D07",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D08",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D09",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D10",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D11",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D12",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D13",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D14",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D15",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D16",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D17",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D18",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D19",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D20",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D21",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D22",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D23",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "D24",
+      "type": "HAS_DOMAIN",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "GV",
+      "type": "HAS_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "ID",
+      "type": "HAS_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "PR",
+      "type": "HAS_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "DE",
+      "type": "HAS_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "RS",
+      "type": "HAS_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-STRUCT",
+      "target": "RC",
+      "type": "HAS_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "GV01",
+      "target": "GV",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "GV02",
+      "target": "GV",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "GV03",
+      "target": "GV",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "GV04",
+      "target": "GV",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "GV05",
+      "target": "GV",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "GV06",
+      "target": "GV",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "GV07",
+      "target": "GV",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "GV08",
+      "target": "GV",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "GV09",
+      "target": "GV",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "GV10",
+      "target": "GV",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ID01",
+      "target": "ID",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ID02",
+      "target": "ID",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ID03",
+      "target": "ID",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ID04",
+      "target": "ID",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ID05",
+      "target": "ID",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "PR01",
+      "target": "PR",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "PR02",
+      "target": "PR",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "PR03",
+      "target": "PR",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "PR04",
+      "target": "PR",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "PR05",
+      "target": "PR",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "DE01",
+      "target": "DE",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "DE02",
+      "target": "DE",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "DE03",
+      "target": "DE",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "DE04",
+      "target": "DE",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "RS01",
+      "target": "RS",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "RS02",
+      "target": "RS",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "RS03",
+      "target": "RS",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "RS04",
+      "target": "RS",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "RC01",
+      "target": "RC",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "RC02",
+      "target": "RC",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "RC03",
+      "target": "RC",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "RC04",
+      "target": "RC",
+      "type": "REFINES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-EVOL",
+      "target": "H01",
+      "type": "USES_HORIZON",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-EVOL",
+      "target": "H02",
+      "type": "USES_HORIZON",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-EVOL",
+      "target": "H03",
+      "type": "USES_HORIZON",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ATLAS-EVOL",
+      "target": "H04",
+      "type": "USES_HORIZON",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "GM24",
+      "target": "P-G",
+      "type": "HAS_PILLAR",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "P-G",
+      "target": "G1",
+      "type": "HAS_AXIS",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "P-G",
+      "target": "G2",
+      "type": "HAS_AXIS",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "P-G",
+      "target": "G3",
+      "type": "HAS_AXIS",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "P-G",
+      "target": "G4",
+      "type": "HAS_AXIS",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "P-G",
+      "target": "G5",
+      "type": "HAS_AXIS",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "P-G",
+      "target": "G6",
+      "type": "HAS_AXIS",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "GM24",
+      "target": "P-M",
+      "type": "HAS_PILLAR",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "P-M",
+      "target": "M1",
+      "type": "HAS_AXIS",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "P-M",
+      "target": "M2",
+      "type": "HAS_AXIS",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "P-M",
+      "target": "M3",
+      "type": "HAS_AXIS",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "P-M",
+      "target": "M4",
+      "type": "HAS_AXIS",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "P-M",
+      "target": "M5",
+      "type": "HAS_AXIS",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "P-M",
+      "target": "M6",
+      "type": "HAS_AXIS",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1",
+      "target": "G1.1",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.1",
+      "target": "T02",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.1",
+      "target": "GV",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.1",
+      "target": "D01",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "G1.1",
+      "target": "D24",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "G1.1",
+      "target": "GV01",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.1",
+      "target": "GV02",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.1",
+      "target": "COMP-G1.1",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.1",
+      "target": "LO-G1.1",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.1",
+      "target": "ACT-G1.1",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.1",
+      "target": "ASM-G1.1",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.1",
+      "target": "ART-G1.1",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-G1.1",
+      "target": "COMP-G1.1",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-G1.1",
+      "target": "ART-G1.1",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-G1.1",
+      "target": "ART-G1.1",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1",
+      "target": "G1.2",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.2",
+      "target": "T03",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.2",
+      "target": "GV",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.2",
+      "target": "D01",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "G1.2",
+      "target": "D04",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "G1.2",
+      "target": "GV01",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.2",
+      "target": "GV05",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.2",
+      "target": "COMP-G1.2",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.2",
+      "target": "LO-G1.2",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.2",
+      "target": "ACT-G1.2",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.2",
+      "target": "ASM-G1.2",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.2",
+      "target": "ART-G1.2",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-G1.2",
+      "target": "COMP-G1.2",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-G1.2",
+      "target": "ART-G1.2",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-G1.2",
+      "target": "ART-G1.2",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2",
+      "target": "G2.1",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.1",
+      "target": "T08",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.1",
+      "target": "GV",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.1",
+      "target": "D01",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "G2.1",
+      "target": "D03",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "G2.1",
+      "target": "GV03",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.1",
+      "target": "GV08",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.1",
+      "target": "COMP-G2.1",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.1",
+      "target": "LO-G2.1",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.1",
+      "target": "ACT-G2.1",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.1",
+      "target": "ASM-G2.1",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.1",
+      "target": "ART-G2.1",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-G2.1",
+      "target": "COMP-G2.1",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-G2.1",
+      "target": "ART-G2.1",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-G2.1",
+      "target": "ART-G2.1",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2",
+      "target": "G2.2",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.2",
+      "target": "T02",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.2",
+      "target": "GV",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.2",
+      "target": "D01",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "G2.2",
+      "target": "D03",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "G2.2",
+      "target": "GV03",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.2",
+      "target": "GV02",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.2",
+      "target": "COMP-G2.2",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.2",
+      "target": "LO-G2.2",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.2",
+      "target": "ACT-G2.2",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.2",
+      "target": "ASM-G2.2",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G2.2",
+      "target": "ART-G2.2",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-G2.2",
+      "target": "COMP-G2.2",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-G2.2",
+      "target": "ART-G2.2",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-G2.2",
+      "target": "ART-G2.2",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3",
+      "target": "G3.1",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.1",
+      "target": "T08",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.1",
+      "target": "GV",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.1",
+      "target": "D03",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "G3.1",
+      "target": "D07",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "G3.1",
+      "target": "GV06",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.1",
+      "target": "COMP-G3.1",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.1",
+      "target": "LO-G3.1",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.1",
+      "target": "ACT-G3.1",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.1",
+      "target": "ASM-G3.1",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.1",
+      "target": "ART-G3.1",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-G3.1",
+      "target": "COMP-G3.1",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-G3.1",
+      "target": "ART-G3.1",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-G3.1",
+      "target": "ART-G3.1",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3",
+      "target": "G3.2",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.2",
+      "target": "T08",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.2",
+      "target": "GV",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.2",
+      "target": "D03",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "G3.2",
+      "target": "D01",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "G3.2",
+      "target": "GV08",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.2",
+      "target": "GV07",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.2",
+      "target": "COMP-G3.2",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.2",
+      "target": "LO-G3.2",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.2",
+      "target": "ACT-G3.2",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.2",
+      "target": "ASM-G3.2",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G3.2",
+      "target": "ART-G3.2",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-G3.2",
+      "target": "COMP-G3.2",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-G3.2",
+      "target": "ART-G3.2",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-G3.2",
+      "target": "ART-G3.2",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4",
+      "target": "G4.1",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.1",
+      "target": "T04",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.1",
+      "target": "GV",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.1",
+      "target": "D02",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "G4.1",
+      "target": "D01",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "G4.1",
+      "target": "GV04",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.1",
+      "target": "GV02",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.1",
+      "target": "COMP-G4.1",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.1",
+      "target": "LO-G4.1",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.1",
+      "target": "ACT-G4.1",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.1",
+      "target": "ASM-G4.1",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.1",
+      "target": "ART-G4.1",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-G4.1",
+      "target": "COMP-G4.1",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-G4.1",
+      "target": "ART-G4.1",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-G4.1",
+      "target": "ART-G4.1",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4",
+      "target": "G4.2",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.2",
+      "target": "T04",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.2",
+      "target": "GV",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.2",
+      "target": "D02",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "G4.2",
+      "target": "GV04",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.2",
+      "target": "GV07",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.2",
+      "target": "COMP-G4.2",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.2",
+      "target": "LO-G4.2",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.2",
+      "target": "ACT-G4.2",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.2",
+      "target": "ASM-G4.2",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G4.2",
+      "target": "ART-G4.2",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-G4.2",
+      "target": "COMP-G4.2",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-G4.2",
+      "target": "ART-G4.2",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-G4.2",
+      "target": "ART-G4.2",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5",
+      "target": "G5.1",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.1",
+      "target": "T04",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.1",
+      "target": "ID",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.1",
+      "target": "D02",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "G5.1",
+      "target": "D13",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "G5.1",
+      "target": "ID04",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.1",
+      "target": "ID05",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.1",
+      "target": "COMP-G5.1",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.1",
+      "target": "LO-G5.1",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.1",
+      "target": "ACT-G5.1",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.1",
+      "target": "ASM-G5.1",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.1",
+      "target": "ART-G5.1",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-G5.1",
+      "target": "COMP-G5.1",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-G5.1",
+      "target": "ART-G5.1",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-G5.1",
+      "target": "ART-G5.1",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5",
+      "target": "G5.2",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.2",
+      "target": "T04",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.2",
+      "target": "GV",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.2",
+      "target": "D02",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "G5.2",
+      "target": "D01",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "G5.2",
+      "target": "GV04",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.2",
+      "target": "GV07",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.2",
+      "target": "COMP-G5.2",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.2",
+      "target": "LO-G5.2",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.2",
+      "target": "ACT-G5.2",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.2",
+      "target": "ASM-G5.2",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G5.2",
+      "target": "ART-G5.2",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-G5.2",
+      "target": "COMP-G5.2",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-G5.2",
+      "target": "ART-G5.2",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-G5.2",
+      "target": "ART-G5.2",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6",
+      "target": "G6.1",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.1",
+      "target": "T03",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.1",
+      "target": "GV",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.1",
+      "target": "D04",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "G6.1",
+      "target": "D24",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "G6.1",
+      "target": "GV07",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.1",
+      "target": "COMP-G6.1",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.1",
+      "target": "LO-G6.1",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.1",
+      "target": "ACT-G6.1",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.1",
+      "target": "ASM-G6.1",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.1",
+      "target": "ART-G6.1",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-G6.1",
+      "target": "COMP-G6.1",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-G6.1",
+      "target": "ART-G6.1",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-G6.1",
+      "target": "ART-G6.1",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6",
+      "target": "G6.2",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.2",
+      "target": "T02",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.2",
+      "target": "GV",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.2",
+      "target": "D24",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "G6.2",
+      "target": "D01",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "G6.2",
+      "target": "GV10",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.2",
+      "target": "GV07",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.2",
+      "target": "COMP-G6.2",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.2",
+      "target": "LO-G6.2",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.2",
+      "target": "ACT-G6.2",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.2",
+      "target": "ASM-G6.2",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G6.2",
+      "target": "ART-G6.2",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-G6.2",
+      "target": "COMP-G6.2",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-G6.2",
+      "target": "ART-G6.2",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-G6.2",
+      "target": "ART-G6.2",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1",
+      "target": "M1.1",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.1",
+      "target": "T03",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.1",
+      "target": "GV",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.1",
+      "target": "D04",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "M1.1",
+      "target": "D01",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "M1.1",
+      "target": "GV05",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.1",
+      "target": "COMP-M1.1",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.1",
+      "target": "LO-M1.1",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.1",
+      "target": "ACT-M1.1",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.1",
+      "target": "ASM-M1.1",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.1",
+      "target": "ART-M1.1",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-M1.1",
+      "target": "COMP-M1.1",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-M1.1",
+      "target": "ART-M1.1",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-M1.1",
+      "target": "ART-M1.1",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1",
+      "target": "M1.2",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.2",
+      "target": "T02",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.2",
+      "target": "GV",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.2",
+      "target": "D04",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "M1.2",
+      "target": "D24",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "M1.2",
+      "target": "GV05",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.2",
+      "target": "GV10",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.2",
+      "target": "COMP-M1.2",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.2",
+      "target": "LO-M1.2",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.2",
+      "target": "ACT-M1.2",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.2",
+      "target": "ASM-M1.2",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M1.2",
+      "target": "ART-M1.2",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-M1.2",
+      "target": "COMP-M1.2",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-M1.2",
+      "target": "ART-M1.2",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-M1.2",
+      "target": "ART-M1.2",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2",
+      "target": "M2.1",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.1",
+      "target": "T05",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.1",
+      "target": "ID",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.1",
+      "target": "D06",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "M2.1",
+      "target": "D07",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "M2.1",
+      "target": "ID01",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.1",
+      "target": "ID02",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.1",
+      "target": "COMP-M2.1",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.1",
+      "target": "LO-M2.1",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.1",
+      "target": "ACT-M2.1",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.1",
+      "target": "ASM-M2.1",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.1",
+      "target": "ART-M2.1",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-M2.1",
+      "target": "COMP-M2.1",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-M2.1",
+      "target": "ART-M2.1",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-M2.1",
+      "target": "ART-M2.1",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2",
+      "target": "M2.2",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.2",
+      "target": "T05",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.2",
+      "target": "PR",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.2",
+      "target": "D05",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "M2.2",
+      "target": "PR01",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.2",
+      "target": "COMP-M2.2",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.2",
+      "target": "LO-M2.2",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.2",
+      "target": "ACT-M2.2",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.2",
+      "target": "ASM-M2.2",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M2.2",
+      "target": "ART-M2.2",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-M2.2",
+      "target": "COMP-M2.2",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-M2.2",
+      "target": "ART-M2.2",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-M2.2",
+      "target": "ART-M2.2",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3",
+      "target": "M3.1",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.1",
+      "target": "T05",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.1",
+      "target": "PR",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.1",
+      "target": "D08",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "M3.1",
+      "target": "D10",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "M3.1",
+      "target": "D11",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "M3.1",
+      "target": "PR03",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.1",
+      "target": "PR04",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.1",
+      "target": "COMP-M3.1",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.1",
+      "target": "LO-M3.1",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.1",
+      "target": "ACT-M3.1",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.1",
+      "target": "ASM-M3.1",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.1",
+      "target": "ART-M3.1",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-M3.1",
+      "target": "COMP-M3.1",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-M3.1",
+      "target": "ART-M3.1",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-M3.1",
+      "target": "ART-M3.1",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3",
+      "target": "M3.2",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.2",
+      "target": "T05",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.2",
+      "target": "PR",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.2",
+      "target": "D11",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "M3.2",
+      "target": "D03",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "M3.2",
+      "target": "PR03",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.2",
+      "target": "PR04",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.2",
+      "target": "COMP-M3.2",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.2",
+      "target": "LO-M3.2",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.2",
+      "target": "ACT-M3.2",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.2",
+      "target": "ASM-M3.2",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M3.2",
+      "target": "ART-M3.2",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-M3.2",
+      "target": "COMP-M3.2",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-M3.2",
+      "target": "ART-M3.2",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-M3.2",
+      "target": "ART-M3.2",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4",
+      "target": "M4.1",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.1",
+      "target": "T06",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.1",
+      "target": "DE",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.1",
+      "target": "D14",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "M4.1",
+      "target": "D12",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "M4.1",
+      "target": "D21",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "M4.1",
+      "target": "DE01",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.1",
+      "target": "DE02",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.1",
+      "target": "COMP-M4.1",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.1",
+      "target": "LO-M4.1",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.1",
+      "target": "ACT-M4.1",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.1",
+      "target": "ASM-M4.1",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.1",
+      "target": "ART-M4.1",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-M4.1",
+      "target": "COMP-M4.1",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-M4.1",
+      "target": "ART-M4.1",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-M4.1",
+      "target": "ART-M4.1",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4",
+      "target": "M4.2",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.2",
+      "target": "T06",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.2",
+      "target": "ID",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.2",
+      "target": "D12",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "M4.2",
+      "target": "D13",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "M4.2",
+      "target": "D22",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "M4.2",
+      "target": "ID03",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.2",
+      "target": "ID04",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.2",
+      "target": "COMP-M4.2",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.2",
+      "target": "LO-M4.2",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.2",
+      "target": "ACT-M4.2",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.2",
+      "target": "ASM-M4.2",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M4.2",
+      "target": "ART-M4.2",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-M4.2",
+      "target": "COMP-M4.2",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-M4.2",
+      "target": "ART-M4.2",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-M4.2",
+      "target": "ART-M4.2",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5",
+      "target": "M5.1",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.1",
+      "target": "T04",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.1",
+      "target": "RS",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.1",
+      "target": "D15",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "M5.1",
+      "target": "D16",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "M5.1",
+      "target": "RS01",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.1",
+      "target": "COMP-M5.1",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.1",
+      "target": "LO-M5.1",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.1",
+      "target": "ACT-M5.1",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.1",
+      "target": "ASM-M5.1",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.1",
+      "target": "ART-M5.1",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-M5.1",
+      "target": "COMP-M5.1",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-M5.1",
+      "target": "ART-M5.1",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-M5.1",
+      "target": "ART-M5.1",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5",
+      "target": "M5.2",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.2",
+      "target": "T06",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.2",
+      "target": "RS",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.2",
+      "target": "D15",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "M5.2",
+      "target": "RS02",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.2",
+      "target": "RS03",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.2",
+      "target": "COMP-M5.2",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.2",
+      "target": "LO-M5.2",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.2",
+      "target": "ACT-M5.2",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.2",
+      "target": "ASM-M5.2",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M5.2",
+      "target": "ART-M5.2",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-M5.2",
+      "target": "COMP-M5.2",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-M5.2",
+      "target": "ART-M5.2",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-M5.2",
+      "target": "ART-M5.2",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6",
+      "target": "M6.1",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.1",
+      "target": "T04",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.1",
+      "target": "RC",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.1",
+      "target": "D16",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "M6.1",
+      "target": "D18",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "M6.1",
+      "target": "RC01",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.1",
+      "target": "RC02",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.1",
+      "target": "RC03",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.1",
+      "target": "COMP-M6.1",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.1",
+      "target": "LO-M6.1",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.1",
+      "target": "ACT-M6.1",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.1",
+      "target": "ASM-M6.1",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.1",
+      "target": "ART-M6.1",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-M6.1",
+      "target": "COMP-M6.1",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-M6.1",
+      "target": "ART-M6.1",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-M6.1",
+      "target": "ART-M6.1",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6",
+      "target": "M6.2",
+      "type": "HAS_UNIT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.2",
+      "target": "T05",
+      "type": "MAPS_TO_TERRITORY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.2",
+      "target": "PR",
+      "type": "MAPS_TO_CSF_FUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.2",
+      "target": "D08",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "primary"
+    },
+    {
+      "source": "M6.2",
+      "target": "D10",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "M6.2",
+      "target": "D17",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "M6.2",
+      "target": "D20",
+      "type": "MAPS_TO_DOMAIN",
+      "evidence_level": "editorial_mapping",
+      "role": "secondary"
+    },
+    {
+      "source": "M6.2",
+      "target": "PR03",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.2",
+      "target": "PR04",
+      "type": "DEVELOPS_SUBFUNCTION",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.2",
+      "target": "COMP-M6.2",
+      "type": "DEVELOPS_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.2",
+      "target": "LO-M6.2",
+      "type": "HAS_LEARNING_OUTCOME",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.2",
+      "target": "ACT-M6.2",
+      "type": "HAS_ACTIVITY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.2",
+      "target": "ASM-M6.2",
+      "type": "HAS_ASSESSMENT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "M6.2",
+      "target": "ART-M6.2",
+      "type": "PRODUCES_ARTIFACT",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "LO-M6.2",
+      "target": "COMP-M6.2",
+      "type": "EVIDENCES_COMPETENCY",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ACT-M6.2",
+      "target": "ART-M6.2",
+      "type": "PRODUCES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "ASM-M6.2",
+      "target": "ART-M6.2",
+      "type": "ASSESSES",
+      "evidence_level": "editorial_mapping"
+    },
+    {
+      "source": "G1.1",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "G",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G1.2",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "G",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G2.1",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "G",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G2.2",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "G",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G3.1",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "G",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G3.2",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "G",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G6.1",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "G",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G4.1",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "R",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G4.2",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "R",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G5.1",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "R",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G5.2",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "R",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M4.2",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "R",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M1.1",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "P",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M1.2",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "P",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M2.1",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "P",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M2.2",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "P",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M3.1",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "P",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M3.2",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "P",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M5.1",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "I",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M5.2",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "I",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M6.1",
+      "target": "CISM-2026",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "I",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G1.1",
+      "target": "CRISC-2025",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "G",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G1.2",
+      "target": "CRISC-2025",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "G",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G4.1",
+      "target": "CRISC-2025",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "G",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G4.2",
+      "target": "CRISC-2025",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "G",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G5.1",
+      "target": "CRISC-2025",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "A",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M4.2",
+      "target": "CRISC-2025",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "A",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M5.1",
+      "target": "CRISC-2025",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "A",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G5.2",
+      "target": "CRISC-2025",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "R",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G6.1",
+      "target": "CRISC-2025",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "R",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M3.2",
+      "target": "CRISC-2025",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "R",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M2.1",
+      "target": "CRISC-2025",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "T",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M2.2",
+      "target": "CRISC-2025",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "T",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M3.1",
+      "target": "CRISC-2025",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "T",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M4.1",
+      "target": "CRISC-2025",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "T",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M2.2",
+      "target": "CSA-CCSK-v5",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "C",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M3.1",
+      "target": "CSA-CCSK-v5",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "C",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M6.2",
+      "target": "CSA-CCSK-v5",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "C",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G2.1",
+      "target": "CSA-CCSK-v5",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "C",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G3.1",
+      "target": "CSA-CCSK-v5",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "C",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M4.1",
+      "target": "CSA-CCSK-v5",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "C",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M2.2",
+      "target": "CSA-CCZT",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "Z",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M3.1",
+      "target": "CSA-CCZT",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "Z",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G1.2",
+      "target": "CSA-CCZT",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "Z",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G3.1",
+      "target": "CSA-TAISE",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "A",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G3.2",
+      "target": "CSA-TAISE",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "A",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G4.1",
+      "target": "CSA-TAISE",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "A",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M2.1",
+      "target": "CSA-TAISE",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "A",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M6.2",
+      "target": "CSA-TAISE",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "A",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G3.2",
+      "target": "CSA-AICM-1.1",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "A",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M3.2",
+      "target": "CSA-AICM-1.1",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "A",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "M6.2",
+      "target": "CSA-AICM-1.1",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "A",
+      "verification": "partial_not_accreditation"
+    },
+    {
+      "source": "G5.1",
+      "target": "CSA-AICM-1.1",
+      "type": "CURRICULAR_ALIGNMENT",
+      "evidence_level": "inferred_from_topics",
+      "mapping_group": "A",
+      "verification": "partial_not_accreditation"
+    }
+  ],
+  "sources": [
+    {
+      "id": "CISM-2026",
+      "title": "ISACA CISM 2026",
+      "url": "https://www.isaca.org/about-us/newsroom/press-releases/2026/isaca-updates-cism-exam-content-outline-factoring-in-todays-technologies-security-responsibilities",
+      "status": "verified_official_overview"
+    },
+    {
+      "id": "CRISC-2025",
+      "title": "ISACA CRISC 2025",
+      "url": "https://www.isaca.org/credentialing/crisc/crisc-exam-content-outline",
+      "status": "verified_official_overview"
+    },
+    {
+      "id": "CSA-CCSK-v5",
+      "title": "CSA CCSK v5",
+      "url": "https://cloudsecurityalliance.org/artifacts/ccsk-v5-curriculum",
+      "status": "verified_official_overview"
+    },
+    {
+      "id": "CSA-CCZT",
+      "title": "CSA CCZT",
+      "url": "https://exams.cloudsecurityalliance.org/about",
+      "status": "verified_official_overview"
+    },
+    {
+      "id": "CSA-TAISE",
+      "title": "CSA TAISE",
+      "url": "https://cloudsecurityalliance.org/education/taise/",
+      "status": "verified_official_overview"
+    },
+    {
+      "id": "CSA-AICM-1.1",
+      "title": "CSA AI Controls Matrix 1.1",
+      "url": "https://cloudsecurityalliance.org/artifacts/ai-controls-matrix-v1-1",
+      "status": "verified_official_overview"
+    },
+    {
+      "id": "NIST-CSF-2.0",
+      "title": "NIST CSF 2.0",
+      "url": "https://csrc.nist.gov/projects/cybersecurity-framework/filters",
+      "status": "verified_official_overview"
+    },
+    {
+      "id": "SRC-LOCAL-1",
+      "title": "20261103 - CISM y CRISC frente GM-24 v4 (1).docx.md",
+      "path": "20261103 - CISM y CRISC frente GM-24 v4 (1).docx.md",
+      "status": "user_supplied"
+    },
+    {
+      "id": "SRC-LOCAL-2",
+      "title": "20261103 - CISM y CRISC_ Estudio comparativo_.docx.md",
+      "path": "20261103 - CISM y CRISC_ Estudio comparativo_.docx.md",
+      "status": "user_supplied"
+    },
+    {
+      "id": "SRC-LOCAL-3",
+      "title": "20261103 - Formación CISO_ Gobierno y Gestión (Versión Actualizada) - 20250413-1121.docx.md",
+      "path": "20261103 - Formación CISO_ Gobierno y Gestión (Versión Actualizada) - 20250413-1121.docx.md",
+      "status": "user_supplied"
+    },
+    {
+      "id": "SRC-LOCAL-4",
+      "title": "20261103 - GM-24, CISM, CRISC_ Correlación_.docx.md",
+      "path": "20261103 - GM-24, CISM, CRISC_ Correlación_.docx.md",
+      "status": "user_supplied"
+    },
+    {
+      "id": "SRC-LOCAL-5",
+      "title": "20261103 - Marco Integrado TheNextCISO.md",
+      "path": "20261103 - Marco Integrado TheNextCISO.md",
+      "status": "user_supplied"
+    },
+    {
+      "id": "SRC-LOCAL-PDF",
+      "title": "Programa Maestro_ Gobierno y Gestión de la Ciberseguridad - The Next CISO.docx.pdf",
+      "path": "Programa Maestro_ Gobierno y Gestión de la Ciberseguridad - The Next CISO.docx.pdf",
+      "status": "user_supplied"
+    }
+  ],
+  "evolutionary_template": {
+    "context": [
+      "industry",
+      "jurisdiction",
+      "technology_posture",
+      "criticality",
+      "dependency",
+      "readiness",
+      "adoption_pressure"
+    ],
+    "transition": [
+      "from_state",
+      "to_state",
+      "catalysts",
+      "inhibitors",
+      "homeostasis",
+      "preconditions",
+      "risk_of_transition",
+      "owner",
+      "evidence",
+      "rollback",
+      "status"
+    ]
+  }
+}

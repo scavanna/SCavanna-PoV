@@ -1,0 +1,65 @@
+{
+  "changeset_id": "CHG-000122",
+  "schema_version": "1.0.0",
+  "ontology_version": "1.0.0",
+  "taxonomy_version": "5.3",
+  "essay_id": "ESS-000121",
+  "status": "proposed",
+  "operations": [
+    {
+      "operation": "add_node",
+      "node": {
+        "id": "CTL-000001",
+        "type": "SecurityControl",
+        "name": "MFA resistente a phishing",
+        "description": "Salvaguarda de autenticación resistente a phishing.",
+        "version": "1.0.0",
+        "review_status": "proposed",
+        "provenance": {
+          "essay_id": "ESS-000121"
+        }
+      }
+    },
+    {
+      "operation": "add_node",
+      "node": {
+        "id": "RSK-000001",
+        "type": "RiskScenario",
+        "name": "Compromiso de credenciales privilegiadas",
+        "description": "Uso adversarial de credenciales privilegiadas comprometidas.",
+        "version": "1.0.0",
+        "review_status": "proposed",
+        "provenance": {
+          "essay_id": "ESS-000121"
+        }
+      }
+    },
+    {
+      "operation": "add_edge",
+      "edge": {
+        "id": "EDG-000001",
+        "source": "CTL-000001",
+        "source_type": "Essay",
+        "relation": "MITIGATES",
+        "target": "RSK-000001",
+        "target_type": "RiskScenario",
+        "review_status": "proposed",
+        "version": "1.0.0"
+      }
+    }
+  ],
+  "semantic_validation": {
+    "status": "pending",
+    "violations": [],
+    "warnings": [
+      "La consistencia técnica no demuestra efectividad real."
+    ]
+  },
+  "provenance": {
+    "created_by": "AI CISO Atlas Curator v6.0",
+    "created_at": "2026-11-04T00:00:00-03:00",
+    "source_ids": [
+      "ESS-000121"
+    ]
+  }
+}

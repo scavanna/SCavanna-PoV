@@ -1,0 +1,955 @@
+{
+ "ficha": {
+  "prefijo": "SI",
+  "agente": "SA",
+  "nombre": "SIEM/SOAR y data lake de seguridad (Microsoft Sentinel en el portal de Microsoft Defender)",
+  "dominio_zt": "Visibilidad, automatización y orquestación (transversal); interfaz con XDR, owners de dominio y flotas de agentes (observabilidad, Sentinel MCP)",
+  "tecnologia": "Microsoft Sentinel (incidentes, analytics rules, automation rules, playbooks, Content hub, workbooks, watchlists, TI STIX 2.1, UEBA, SOC optimization, data lake, MCP server preview), Azure Monitor; portal de Defender obligatorio desde el 31-mar-2027",
+  "funciones_csf": "GV.OV · ID.AM · ID.RA · PR.PS · DE.CM/DE.AE · RS.MA/RS.MI · ID.IM",
+  "fuente_oficial": "Microsoft Sentinel operational guide (diario/semanal/mensual) + deployment checklist post-despliegue + SOC optimization + health & audit",
+  "objetivo": "Fuentes con salud y costo gobernado; reglas con cobertura y bajo ruido; automatización sin fallos y con aprobación; incidentes en SLA en el portal unificado",
+  "slo": "Conectores en error = 0 (24 h); reglas fallidas = 0; playbooks fallidos ≤24 h; desvío de ingesta ≤10 %; cobertura MITRE ≥90 %; SOC optimization críticas ≤30 días",
+  "diferencia": "Dominio de la plataforma de datos y automatización: su riesgo principal es la pérdida de visibilidad y el costo. Comparte la cola con XDR; es dueño de fuentes, reglas, retención, costos y SOAR. Base de la observabilidad de todas las flotas y del Sentinel MCP.",
+  "interfaz": "Owner XDR: cola y correlación. Owners de dominio: fuentes y reglas. FinOps: commitment tiers. Flotas: telemetría y Sentinel MCP (preview).",
+  "personas": "SOC analysts (Tier 1-3) · Security engineers · Sentinel admins · FinOps",
+  "permisos": "Sentinel Reader / Responder / Contributor / Playbook Operator; Logic App Operator/Contributor; Log Analytics Reader/Contributor; Unified RBAC"
+ },
+ "hitos": [],
+ "tareas": [
+  [
+   "SI-D01",
+   "Triar e investigar incidentes de Sentinel en el portal unificado",
+   "Diaria",
+   "SOC analysts",
+   "DE.AE, RS.MA",
+   "SOP",
+   "eo:OP-SOP-10 Triar incidentes por prioridad dentro del SLA",
+   "L2",
+   "SA-01",
+   "% H/M en SLA",
+   "Sentinel ops guide (daily)"
+  ],
+  [
+   "SI-D02",
+   "Revisar salud de conectores y agentes AMA",
+   "Diaria",
+   "Sentinel admins",
+   "ID.AM, DE.CM",
+   "POS",
+   "eo:OP-POS-15 Mantener la salud de la ingesta de señales",
+   "L3",
+   "SA-05",
+   "Conectores en error = 0",
+   "Sentinel ops guide (daily)"
+  ],
+  [
+   "SI-D03",
+   "Revisar/habilitar reglas analíticas nuevas; monitorear salud de reglas",
+   "Diaria",
+   "Security engineers",
+   "DE.AE, PR.PS",
+   "SOP",
+   "eo:OP-SOP-24 Convertir hunting en detecciones automatizadas",
+   "L2",
+   "SA-07",
+   "Reglas fallidas = 0",
+   "Sentinel ops guide (daily)"
+  ],
+  [
+   "SI-D04",
+   "Explorar hunting queries y bookmarks",
+   "Diaria",
+   "SOC analysts (Tier 2-3)",
+   "DE.CM",
+   "SOP",
+   "eo:OP-SOP-02 Buscar amenazas por técnicas priorizadas y convertir hallazgos en detecciones",
+   "L1",
+   "SA-07",
+   "Hunts",
+   "Sentinel ops guide (daily)"
+  ],
+  [
+   "SI-D05",
+   "Verificar ejecución de playbooks y automation rules",
+   "Diaria",
+   "Security engineers",
+   "RS.MI, PR.PS",
+   "SOP",
+   "eo:OP-SOP-22 Mantener la automatización operativa",
+   "L2",
+   "SA-03",
+   "Fallidos ≤24 h",
+   "monitor-automation-health"
+  ],
+  [
+   "SI-W01",
+   "Revisar Content hub (soluciones, reglas, workbooks, playbooks)",
+   "Semanal",
+   "Security engineers",
+   "ID.IM, DE.AE",
+   "SIG",
+   "eo:OP-SIG-10 Vigilar cambios de la plataforma y evaluar impacto",
+   "L3",
+   "SA-04",
+   "Contenido evaluado",
+   "Sentinel ops guide (weekly)"
+  ],
+  [
+   "SI-W02",
+   "Auditar actividad de Sentinel (cambios de reglas, bookmarks, automatización)",
+   "Semanal",
+   "Sentinel admins",
+   "GV.OV, PR.PS",
+   "POS",
+   "eo:OP-POS-22 Auditar cambios de la plataforma de detección y automatización",
+   "L3",
+   "SA-06",
+   "Cambios no autorizados = 0",
+   "audit-sentinel-data"
+  ],
+  [
+   "SI-W03",
+   "Revisar cobertura MITRE de reglas vs. técnicas priorizadas",
+   "Semanal",
+   "Security engineers + TI",
+   "ID.RA, DE.AE",
+   "POS",
+   "eo:OP-POS-23 Medir y cerrar la cobertura de detección por técnica",
+   "L3",
+   "SA-04",
+   "Cobertura ≥90 %",
+   "MITRE coverage"
+  ],
+  [
+   "SI-W04",
+   "Revisar ingesta y costo vs. commitment tier",
+   "Semanal",
+   "Sentinel admins + FinOps",
+   "GV.OV, ID.AM",
+   "POS",
+   "eo:OP-POS-24 Gobernar el costo de ingesta y retención",
+   "L3",
+   "SA-08",
+   "Desvío ≤10 %",
+   "billing-monitor-costs"
+  ],
+  [
+   "SI-W05",
+   "Revisar recomendaciones de SOC optimization",
+   "Semanal",
+   "Security engineers",
+   "ID.IM, DE.AE",
+   "POS",
+   "eo:OP-POS-23 Medir y cerrar la cobertura de detección por técnica",
+   "L2",
+   "SA-04",
+   "Recomendaciones tratadas",
+   "soc-optimization-access"
+  ],
+  [
+   "SI-W06",
+   "Revisar ingesta de TI y reglas de matching",
+   "Semanal",
+   "TI",
+   "ID.RA",
+   "SOP",
+   "eo:OP-SOP-20 Revisar inteligencia de amenazas y derivar acciones",
+   "L2",
+   "SA-02",
+   "Indicadores vigentes",
+   "understand-threat-intelligence"
+  ],
+  [
+   "SI-M01",
+   "Revisar accesos a Sentinel y Log Analytics; inactivos",
+   "Mensual",
+   "Sentinel admins + IAM",
+   "PR.AA, GV.RR",
+   "AYI",
+   "eo:OP-AYI-01 Recertificar accesos privilegiados, no humanos y de agentes",
+   "L2",
+   "SA-06",
+   "Inactivos removidos",
+   "Sentinel ops guide (monthly)"
+  ],
+  [
+   "SI-M02",
+   "Revisar retención y almacenamiento a largo plazo",
+   "Mensual",
+   "Sentinel admins",
+   "PR.PS, GV.PO",
+   "POS",
+   "eo:OP-POS-24 Gobernar el costo de ingesta y retención",
+   "L2",
+   "SA-08",
+   "Retención alineada",
+   "Sentinel ops guide (monthly)"
+  ],
+  [
+   "SI-M03",
+   "Actualizar watchlists y revisar commitment tiers",
+   "Mensual",
+   "Security engineers + FinOps",
+   "ID.AM, GV.OV",
+   "POS",
+   "eo:OP-POS-24 Gobernar el costo de ingesta y retención",
+   "L2",
+   "SA-08",
+   "Watchlists al día",
+   "deploy-overview"
+  ],
+  [
+   "SI-M04",
+   "Afinar DCRs y transformaciones de ingesta",
+   "Mensual",
+   "Security engineers",
+   "PR.PS, ID.AM",
+   "POS",
+   "eo:OP-POS-24 Gobernar el costo de ingesta y retención",
+   "L1",
+   "SA-05",
+   "Datos sin valor filtrados",
+   "deploy-overview (DCRs)"
+  ],
+  [
+   "SI-M05",
+   "Informe mensual del SOC (eficiencia) para el CISO",
+   "Mensual",
+   "SOC Lead",
+   "GV.OV, RS.CO",
+   "SIG",
+   "eo:OP-SIG-13 Reportar resultados del SOC a la dirección",
+   "L3",
+   "SA-09",
+   "Informe a tiempo",
+   "top-workbooks"
+  ],
+  [
+   "SI-Q01",
+   "Revisar casos de uso, supresión y apetito de automatización",
+   "Trimestral",
+   "SOC Lead + CISO",
+   "GV.PO, GV.RM",
+   "SIG",
+   "eo:OP-SIG-12 Revisar políticas y excepciones del control",
+   "L1",
+   "—",
+   "Decisiones registradas",
+   "Propuesta"
+  ],
+  [
+   "SI-Q02",
+   "Revisar desempeño y costo de la flota SIEM",
+   "Trimestral",
+   "PO-GAC SIEM",
+   "GV.OV, ID.IM",
+   "IA",
+   "eo:OP-IA-02 Revisar desempeño, costo y riesgo de los agentes",
+   "L1",
+   "SA-10",
+   "KPIs vs. meta",
+   "Propuesta"
+  ],
+  [
+   "SI-Q03",
+   "Recertificar roles de Sentinel/Logic Apps (humanos y agentes, incl. Sentinel MCP)",
+   "Trimestral",
+   "PO-GAC + IAM",
+   "PR.AA",
+   "AYI",
+   "eo:OP-AYI-01 Recertificar accesos privilegiados, no humanos y de agentes",
+   "L2",
+   "SA-10",
+   "% recertificados",
+   "Propuesta"
+  ],
+  [
+   "SI-Q04",
+   "Evaluaciones/regresión de agentes y pruebas de playbooks en escenarios de falla",
+   "Trimestral",
+   "PO-GAC + Security engineers",
+   "ID.IM",
+   "IA",
+   "eo:OP-IA-03 Evaluar y probar adversarialmente a los agentes",
+   "L2",
+   "—",
+   "% evaluados",
+   "Propuesta"
+  ],
+  [
+   "SI-A01",
+   "Onboarding de una fuente de datos (conector, DCR, parser, reglas, costo)",
+   "Por evento",
+   "Security engineers",
+   "ID.AM, PR.PS",
+   "POS",
+   "eo:OP-POS-16 Mantener el inventario de fuentes de señal",
+   "L1",
+   "SA-05",
+   "Fuentes onboarded",
+   "connect-data-sources"
+  ],
+  [
+   "SI-A02",
+   "Crear/modificar regla analítica o automation rule (prueba, versión, aprobación)",
+   "Por evento",
+   "Security engineers",
+   "DE.AE, RS.MI",
+   "SOP",
+   "eo:OP-SOP-24 Convertir hunting en detecciones automatizadas",
+   "L2",
+   "SA-07",
+   "Reglas versionadas",
+   "create-analytics-rule"
+  ],
+  [
+   "SI-A03",
+   "Migración al portal de Defender (antes del 31-mar-2027)",
+   "Por evento",
+   "Sentinel admins",
+   "PR.PS, GV.OV",
+   "SIG",
+   "eo:OP-SIG-10 Vigilar cambios de la plataforma y evaluar impacto",
+   "L1",
+   "—",
+   "Hito cumplido",
+   "move-to-defender"
+  ],
+  [
+   "SI-A04",
+   "Tabletop de pérdida de visibilidad",
+   "Según necesidad",
+   "SOC Lead",
+   "ID.IM, RS",
+   "SOP",
+   "eo:OP-SOP-26 Probar los planes de respuesta",
+   "L1",
+   "—",
+   "Ejercicios/año",
+   "AMP-43"
+  ]
+ ],
+ "agentes": [
+  {
+   "id": "SA-01",
+   "nombre": "Triage Copilot de incidentes de Sentinel",
+   "proposito": "Pre-triar incidentes de reglas analíticas por severidad, entidades y tácticas.",
+   "tareas": "SI-D01",
+   "autonomia": "L2",
+   "gates": "Con aprobación; sin acciones",
+   "kpis": "Precisión ≥90 %",
+   "costo": "Tokens/SCU",
+   "riesgos_asi": "ASI01, ASI06",
+   "identidad": "Agent ID; Sentinel Reader",
+   "owner": "PO-GAC SIEM",
+   "ruta": "R1 (alt. R2)",
+   "tools_propios": [
+    "ST-01",
+    "T-04",
+    "T-01",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "SK-01-KB",
+    "KN-03"
+   ],
+   "skills_propios": [
+    "SK-07",
+    "DS-S1"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "SA-02",
+   "nombre": "Briefer de threat intelligence",
+   "proposito": "Resumir indicadores STIX y matches; derivar hunts; proponer watchlists.",
+   "tareas": "SI-W06",
+   "autonomia": "L2",
+   "gates": "Propuestas con aprobación",
+   "kpis": "Acciones/semana",
+   "costo": "Tokens",
+   "riesgos_asi": "ASI06",
+   "identidad": "Agent ID; Sentinel Reader",
+   "owner": "PO-GAC SIEM + TI",
+   "ruta": "R1 (alt. R2)",
+   "tools_propios": [
+    "ST-06",
+    "T-19",
+    "T-03"
+   ],
+   "knowledge_propios": [
+    "KN-09",
+    "KN-05"
+   ],
+   "skills_propios": [
+    "SK-12"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "SA-03",
+   "nombre": "Supervisor de automatización (playbooks y automation rules)",
+   "proposito": "Detectar fallos, reglas sin coincidencias, playbooks fuera del apetito; proponer correcciones.",
+   "tareas": "SI-D05",
+   "autonomia": "L2",
+   "gates": "Correcciones con aprobación; nunca ejecuta playbooks de respuesta",
+   "kpis": "Fallos ≤24 h",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI08, ASI05",
+   "identidad": "Agent ID; Logic App Operator (lectura); Sentinel Reader",
+   "owner": "PO-GAC SIEM",
+   "ruta": "R2",
+   "tools_propios": [
+    "ST-07",
+    "ST-02",
+    "ST-01"
+   ],
+   "knowledge_propios": [
+    "SK-02-KB",
+    "KN-08"
+   ],
+   "skills_propios": [
+    "XS-03",
+    "DS-S2"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "SA-04",
+   "nombre": "Analista de cobertura y contenido",
+   "proposito": "Comparar cobertura MITRE vs. técnicas priorizadas; revisar Content hub y SOC optimization.",
+   "tareas": "SI-W01, SI-W03, SI-W05",
+   "autonomia": "L2",
+   "gates": "Instalación solo humana",
+   "kpis": "Cobertura ≥90 %",
+   "costo": "Tokens",
+   "riesgos_asi": "ASI06",
+   "identidad": "Agent ID; Sentinel Reader",
+   "owner": "PO-GAC SIEM",
+   "ruta": "R2",
+   "tools_propios": [
+    "ST-04",
+    "ST-03",
+    "ST-01"
+   ],
+   "knowledge_propios": [
+    "SK-03-KB",
+    "XK-06"
+   ],
+   "skills_propios": [
+    "DS-S3",
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "SA-05",
+   "nombre": "Centinela de ingesta y fuentes",
+   "proposito": "Detectar conectores en error, AMA desconectados, latencia; proponer onboarding/DCR; tickets.",
+   "tareas": "SI-D02, SI-M04, SI-A01",
+   "autonomia": "L3 / L2 (tickets)",
+   "gates": "Solo lectura + ticket",
+   "kpis": "Conectores en error = 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI10",
+   "identidad": "Agent ID; Log Analytics Reader",
+   "owner": "PO-GAC SIEM",
+   "ruta": "R2",
+   "tools_propios": [
+    "ST-02",
+    "ST-08",
+    "T-19",
+    "T-15"
+   ],
+   "knowledge_propios": [
+    "SK-04-KB"
+   ],
+   "skills_propios": [
+    "XS-05",
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "SA-06",
+   "nombre": "Auditor de cambios y accesos de Sentinel",
+   "proposito": "Revisar SentinelAudit, roles y usuarios inactivos; proponer remociones.",
+   "tareas": "SI-W02, SI-M01",
+   "autonomia": "L2",
+   "gates": "Con aprobación",
+   "kpis": "Cambios no autorizados = 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI03",
+   "identidad": "Agent ID; Log Analytics Reader; RoleManagement.Read",
+   "owner": "PO-GAC SIEM + IAM",
+   "ruta": "R2",
+   "tools_propios": [
+    "ST-02",
+    "T-14",
+    "XT-12"
+   ],
+   "knowledge_propios": [
+    "KN-08",
+    "SK-02-KB"
+   ],
+   "skills_propios": [
+    "XS-07",
+    "SK-10"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "SA-07",
+   "nombre": "Bibliotecario de detecciones y hunting",
+   "proposito": "Mantener hunting queries, bookmarks y reglas versionadas; proponer reglas; medir ruido.",
+   "tareas": "SI-D03, SI-D04, SI-A02",
+   "autonomia": "L2",
+   "gates": "Reglas con aprobación",
+   "kpis": "Reglas fallidas = 0",
+   "costo": "Medio",
+   "riesgos_asi": "ASI02, ASI05",
+   "identidad": "Agent ID; Sentinel Reader; creación vía ALM",
+   "owner": "PO-GAC SIEM + Hunting",
+   "ruta": "R3 (alt. R2)",
+   "tools_propios": [
+    "ST-01",
+    "T-19",
+    "T-01",
+    "XT-08"
+   ],
+   "knowledge_propios": [
+    "KN-05",
+    "XK-06"
+   ],
+   "skills_propios": [
+    "SK-08",
+    "SK-17"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "SA-08",
+   "nombre": "Analista FinOps de ingesta",
+   "proposito": "Compilar ingesta/costo por tabla y fuente, desvío, retención, watchlists; proponer optimizaciones.",
+   "tareas": "SI-W04, SI-M02, SI-M03",
+   "autonomia": "L2",
+   "gates": "Cambios con aprobación",
+   "kpis": "Desvío ≤10 %",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI09",
+   "identidad": "Agent ID; Log Analytics Reader; Cost Management Reader",
+   "owner": "PO-GAC SIEM + FinOps",
+   "ruta": "R2",
+   "tools_propios": [
+    "ST-05",
+    "T-13",
+    "ST-06"
+   ],
+   "knowledge_propios": [
+    "SK-05-KB",
+    "KN-11"
+   ],
+   "skills_propios": [
+    "DS-S4",
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "SA-09",
+   "nombre": "Reportero de eficiencia del SOC",
+   "proposito": "Compilar MTTA/MTTR, incidentes por regla; informe mensual.",
+   "tareas": "SI-M05",
+   "autonomia": "L3",
+   "gates": "Solo informa",
+   "kpis": "Informe a tiempo",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI09",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC SIEM",
+   "ruta": "R2",
+   "tools_propios": [
+    "ST-01",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-10"
+   ],
+   "skills_propios": [
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "SA-10",
+   "nombre": "Analista de la flota SIEM",
+   "proposito": "Consolidar KPIs, costos y accesos (incl. Sentinel MCP).",
+   "tareas": "SI-Q02, SI-Q03",
+   "autonomia": "L1-L2",
+   "gates": "Decisiones humanas",
+   "kpis": "Informe trimestral",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI03",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC SIEM",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-13",
+    "T-14",
+    "T-24",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-11",
+    "KN-08"
+   ],
+   "skills_propios": [
+    "SK-16"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  }
+ ],
+ "tools_nuevos": {
+  "ST-01": {
+   "tipo": "REST API (Security Insights)",
+   "nombre": "Sentinel · incidents, alertRules, automationRules, bookmarks, entities",
+   "op": "Leer/actualizar incidentes; leer y proponer reglas",
+   "permiso": "Sentinel Reader; Responder para incidentes; Contributor con aprobación",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/rest/api/securityinsights/"
+  },
+  "ST-02": {
+   "tipo": "REST API / KQL",
+   "nombre": "Sentinel · health & audit (SentinelHealth, SentinelAudit)",
+   "op": "Salud de conectores, reglas y automatización; auditoría de cambios",
+   "permiso": "Log Analytics Reader",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/azure/sentinel/health-audit"
+  },
+  "ST-03": {
+   "tipo": "REST API (Security Insights)",
+   "nombre": "Sentinel · recommendations (SOC optimization API)",
+   "op": "Recomendaciones de cobertura y valor de datos",
+   "permiso": "Sentinel Reader",
+   "estado": "preview (API)",
+   "fuente": "learn.microsoft.com/azure/sentinel/soc-optimization/soc-optimization-api"
+  },
+  "ST-04": {
+   "tipo": "REST API / Content hub",
+   "nombre": "Sentinel · contentTemplates / contentPackages, MITRE coverage",
+   "op": "Actualizaciones de soluciones y cobertura MITRE",
+   "permiso": "Sentinel Reader; instalación humana",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/azure/sentinel/sentinel-solutions-deploy"
+  },
+  "ST-05": {
+   "tipo": "KQL (Usage, workbooks)",
+   "nombre": "Workspace Usage Report / Sentinel Cost workbook; tabla Usage",
+   "op": "Ingesta, costo, latencia",
+   "permiso": "Log Analytics Reader",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/azure/sentinel/billing-monitor-costs"
+  },
+  "ST-06": {
+   "tipo": "REST API",
+   "nombre": "Sentinel · watchlists; threat intelligence (STIX 2.1)",
+   "op": "Mantener watchlists; revisar ingesta de TI",
+   "permiso": "Contributor (watchlists) con aprobación; Reader para TI",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/azure/sentinel/understand-threat-intelligence"
+  },
+  "ST-07": {
+   "tipo": "Logic Apps / Defender SOC connector",
+   "nombre": "Playbooks (Logic Apps) y generated playbooks; run history",
+   "op": "Verificar ejecuciones fallidas; proponer correcciones",
+   "permiso": "Logic App Operator; Contributor solo humano",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/azure/sentinel/automation/run-playbooks"
+  },
+  "ST-08": {
+   "tipo": "REST API / DCR",
+   "nombre": "Azure Monitor · Data Collection Rules, AMA agents health",
+   "op": "Verificar agentes y DCRs; proponer transformaciones",
+   "permiso": "Monitoring Reader; cambios con aprobación",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/azure/azure-monitor/agents/azure-monitor-agent-overview"
+  }
+ },
+ "knowledge_nuevos": {
+  "SK-01-KB": {
+   "nombre": "Criterios de triaje de incidentes de Sentinel por regla, severidad, entidad y táctica",
+   "tipo": "Dataverse",
+   "fuente": "Interno"
+  },
+  "SK-02-KB": {
+   "nombre": "Apetito de automatización: qué automation rules/playbooks actúan sin aprobación",
+   "tipo": "SharePoint / Git",
+   "fuente": "Interno (G2.2-PA03 instancia SIEM)"
+  },
+  "SK-03-KB": {
+   "nombre": "Técnicas MITRE priorizadas y mapa de cobertura objetivo",
+   "tipo": "Dataverse",
+   "fuente": "Interno"
+  },
+  "SK-04-KB": {
+   "nombre": "Inventario de fuentes, conectores, DCRs, parsers y umbrales de salud",
+   "tipo": "Dataverse",
+   "fuente": "Interno (M2.1-PA01 instancia SIEM)"
+  },
+  "SK-05-KB": {
+   "nombre": "Commitment tiers, presupuesto de ingesta, retención, tablas con valor",
+   "tipo": "Dataverse",
+   "fuente": "Interno"
+  }
+ },
+ "skills_nuevos": {
+  "DS-S1": {
+   "nombre": "Triaje por regla y táctica",
+   "desc": "Ponderar severidad de regla, entidades, táctica y correlación con XDR; detectar reglas ruidosas."
+  },
+  "DS-S2": {
+   "nombre": "Supervisión de SOAR",
+   "desc": "Leer run history, distinguir fallo técnico de acción indebida; nunca ejecutar respuesta."
+  },
+  "DS-S3": {
+   "nombre": "Ingeniería de cobertura",
+   "desc": "Mapear reglas a técnicas, detectar huecos, proponer templates; medir ruido."
+  },
+  "DS-S4": {
+   "nombre": "FinOps de ingesta",
+   "desc": "Costo por tabla/fuente, valor de seguridad, basic logs, filtros DCR, retención."
+  }
+ },
+ "instanciacion": [
+  [
+   "M4.1-PA01",
+   "Instancia SIEM del modelo operativo (24 tareas)."
+  ],
+  [
+   "M4.1-PA04",
+   "Hunting y detecciones personalizadas: instancia natural."
+  ],
+  [
+   "M4.1-PA05",
+   "Observabilidad de la flota: Sentinel la realiza."
+  ],
+  [
+   "M4.1-K05",
+   "SOAR: automation rules y playbooks como antecedente determinista."
+  ],
+  [
+   "AMP-40",
+   "HITL por riesgo aplicado a playbooks."
+  ],
+  [
+   "M1.2-PA01",
+   "FinOps: ingesta y retención como costo variable."
+  ],
+  [
+   "G2.2-PA03",
+   "Baseline = reglas versionadas; excepciones = supresiones con vencimiento."
+  ],
+  [
+   "G3.2-PA01",
+   "Deriva: reglas deshabilitadas, conectores caídos."
+  ],
+  [
+   "M2.1-PA01",
+   "Inventario de fuentes de datos."
+  ],
+  [
+   "M2.2-PA01",
+   "Roles de Sentinel/Logic Apps para humanos y agentes."
+  ],
+  [
+   "M4.2-K11",
+   "Detección de escalamiento con reglas cross-source."
+  ],
+  [
+   "M4.1-K11",
+   "Señuelos: reglas sobre honeytokens."
+  ],
+  [
+   "M6.1-PA01",
+   "Operación degradada: pérdida de visibilidad."
+  ],
+  [
+   "M6.2-PA03",
+   "Portabilidad: ASIM, KQL, STIX, OTel."
+  ],
+  [
+   "HC-017",
+   "Inteligencia y detección integradas: instancia directa."
+  ]
+ ]
+}

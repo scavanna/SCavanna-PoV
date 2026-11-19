@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Purview Audit (Premium) — Guía Operacional (Configuración, Rutinas y Playbooks)</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.72;
+}
+code, pre, .mono {
+  font-family: Consolas, "Courier New", Courier, monospace;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 0.88em;
+  color: var(--cp-text);
+  word-break: break-word;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Sticky Top Navigation */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--cp-panel-strong);
+  border-bottom: 1px solid var(--cp-border);
+  backdrop-filter: blur(10px);
+  padding: 12px 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.topbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border-strong);
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.btn-primary:hover {
+  background: var(--cp-accent-hover);
+  border-color: var(--cp-accent-hover);
+  color: var(--cp-accent-fg);
+}
+.btn-sm {
+  padding: 5px 11px;
+  font-size: 12.5px;
+}
+.select-input, .search-input {
+  padding: 9px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+}
+.search-input { min-width: 260px; flex: 1; }
+
+/* Two-Column Spacious App Layout */
+.app-shell {
+  max-width: 1520px;
+  margin: 0 auto;
+  padding: 28px 32px 56px 32px;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+.sidebar {
+  position: sticky;
+  top: 76px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 20px 16px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+}
+.nav-section-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cp-text-soft);
+  padding: 12px 12px 6px 12px;
+}
+.nav-section-label:first-child { padding-top: 2px; }
+.nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border-radius: 0.625rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.nav-item:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border);
+}
+.nav-item.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.nav-subitem {
+  padding-left: 24px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.nav-count {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--cp-surface-soft);
+  color: var(--cp-text-muted);
+  border: 1px solid var(--cp-border);
+}
+.nav-item.active .nav-count {
+  background: var(--cp-panel-strong);
+  color: var(--cp-text);
+  border-color: transparent;
+}
+.sidebar-progress {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cp-border);
+}
+.prog-row { margin-bottom: 12px; }
+.prog-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--cp-text-muted);
+  font-weight: 600;
+}
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--cp-accent);
+  width: 0%;
+  transition: width 0.25s ease;
+}
+
+/* Main Reading Area */
+.main-area {
+  max-width: 1080px;
+  width: 100%;
+}
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+
+/* Hero & Section Headers */
+.hero-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 32px 36px;
+  margin-bottom: 28px;
+}
+.hero-card h1 {
+  margin: 10px 0 14px 0;
+  font-size: 28px;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+}
+.hero-lead {
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: var(--cp-text-muted);
+  margin: 0;
+}
+.section-banner {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-left: 5px solid var(--cp-accent);
+  border-radius: 16px;
+  padding: 26px 32px;
+  margin-bottom: 28px;
+}
+.section-banner h2 {
+  margin: 0 0 8px 0;
+  font-size: 23px;
+  line-height: 1.3;
+}
+.section-banner p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15.5px;
+}
+
+/* Mode Selector Cards on Overview */
+.modes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.mode-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+}
+.mode-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cp-accent);
+}
+.mode-card h3 {
+  margin: 6px 0 10px 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+.mode-card p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15px;
+}
+
+/* Badges & Inline Tags */
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 0.625rem;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface-soft);
+  color: var(--cp-text);
+}
+.badge-accent {
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border-color: var(--cp-accent);
+}
+.badge-learn {
+  border-color: var(--cp-success);
+  color: var(--cp-success);
+  background: var(--cp-surface-soft);
+}
+.badge-editorial {
+  border-color: var(--cp-warning);
+  color: var(--cp-warning);
+  background: var(--cp-surface-soft);
+}
+.inline-tag {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 6px;
+  margin-left: 4px;
+  vertical-align: middle;
+  border: 1px solid var(--cp-border);
+}
+.tag-learn { color: var(--cp-success); border-color: var(--cp-success); background: var(--cp-surface-soft); }
+.tag-edit { color: var(--cp-warning); border-color: var(--cp-warning); background: var(--cp-surface-soft); }
+
+/* Sub-navigation Switcher */
+.subnav-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.subnav-pill {
+  padding: 10px 18px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.subnav-pill:hover { border-color: var(--cp-border-strong); background: var(--cp-surface-soft); }
+.subnav-pill.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.filter-toolbar {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Spacious Operational, Setup & Playbook Cards */
+.spacious-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 30px 34px;
+  margin-bottom: 24px;
+}
+.spacious-card.is-done {
+  border-color: var(--cp-success);
+  background: var(--cp-bg-elevated);
+}
+.adhoc-card {
+  border-left: 5px solid var(--cp-accent);
+}
+.card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.card-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 280px;
+}
+.task-checkbox {
+  width: 22px;
+  height: 22px;
+  margin-top: 4px;
+  accent-color: var(--cp-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.card-code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border: 1px solid var(--cp-accent);
+  display: inline-block;
+  margin-bottom: 6px;
+}
+.card-heading {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+/* Info Callout Boxes inside Cards */
+.info-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.info-box {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+.info-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-soft);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.info-content {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.trigger-banner {
+  background: var(--cp-accent-soft);
+  border: 1px solid var(--cp-accent);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+}
+.trigger-banner .info-label {
+  color: var(--cp-accent);
+}
+
+/* Step-by-Step Spacious List */
+.steps-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-muted);
+  margin: 0 0 12px 0;
+}
+.steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.step-row:hover { border-color: var(--cp-border-strong); }
+.step-row.step-checked {
+  border-color: var(--cp-success);
+  opacity: 0.88;
+}
+.step-num {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border-strong);
+  color: var(--cp-text);
+  font-weight: 700;
+  font-size: 13.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-row.step-checked .step-num {
+  background: var(--cp-success);
+  border-color: var(--cp-success);
+  color: var(--cp-accent-fg);
+}
+.step-body {
+  font-size: 15.5px;
+  line-height: 1.72;
+  flex: 1;
+}
+
+/* Validation & Evidence Footer Box */
+.validation-footer {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.validation-footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--cp-border);
+  font-size: 13.5px;
+  color: var(--cp-text-muted);
+}
+
+/* Grids & Tables for Secondary Views */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.subsection-heading {
+  font-size: 20px;
+  margin: 34px 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cp-border);
+}
+pre.code-block {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 14px 0 0 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.table-wrap {
+  overflow-x: auto;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th, td { padding: 16px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--cp-border); line-height: 1.6; }
+th { background: var(--cp-bg-elevated); font-weight: 700; }
+tr:last-child td { border-bottom: none; }
+.muted { color: var(--cp-text-muted); }
+
+.footer {
+  margin-top: 48px;
+  padding: 24px 0;
+  border-top: 1px solid var(--cp-border);
+  color: var(--cp-text-muted);
+  font-size: 13.5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 1080px) {
+  .app-shell { grid-template-columns: 1fr; padding: 18px; gap: 20px; }
+  .sidebar { position: static; max-height: none; }
+  .grid-2, .info-pair { grid-template-columns: 1fr; }
+  .spacious-card, .hero-card { padding: 22px; }
+}
+@media print {
+  .topbar, .sidebar, .filter-toolbar, .subnav-bar { display: none !important; }
+  .app-shell { display: block; padding: 0; }
+  .view-panel { display: block !important; margin-bottom: 32px; }
+  body { background: var(--cp-surface); font-size: 13px; }
+}
+</style></head>
+<body>
+<header class="topbar">
+  <div class="topbar-group">
+    <a class="btn btn-primary" href="../index.html">← Portal Maestro (23 Módulos)</a>
+    <a class="btn" id="prevModBtn" href="#">Anterior</a>
+    <select class="select-input" id="modJumpSelect" aria-label="Cambiar de módulo"></select>
+    <a class="btn" id="nextModBtn" href="#">Siguiente</a>
+  </div>
+  <div class="topbar-group">
+    <a class="btn" id="xlsxLink" href="#" download>Libro .XLSX</a>
+    <a class="btn" id="mdLink" href="#">Guía .MD</a>
+    <button class="btn" type="button" id="exportCsvBtn">Exportar CSV</button>
+    <button class="btn" type="button" id="printBtn">Imprimir / PDF</button>
+    <button class="btn" type="button" id="themeToggleBtn">Tema Claro / Oscuro</button>
+  </div>
+</header>
+
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Navegación de la guía operativa">
+    <div class="nav-section-label">Introducción</div>
+    <button class="nav-item active" type="button" data-view="view-overview">
+      <span>Visión General y Mapa</span>
+    </button>
+
+    <div class="nav-section-label">1 · Configuración Puntual</div>
+    <button class="nav-item" type="button" data-view="view-config">
+      <span>Configuración y Validaciones</span>
+      <span class="nav-count" id="navCntConfig">0</span>
+    </button>
+
+    <div class="nav-section-label">2 · Acciones Periódicas</div>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Diaria">
+      <span>Rutinas Diarias</span>
+      <span class="nav-count" id="navCntDiaria">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Semanal">
+      <span>Rutinas Semanales</span>
+      <span class="nav-count" id="navCntSemanal">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Mensual">
+      <span>Rutinas Mensuales</span>
+      <span class="nav-count" id="navCntMensual">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="CICLOS_LARGOS">
+      <span>Trimestral · Semestral · Anual</span>
+      <span class="nav-count" id="navCntLargos">0</span>
+    </button>
+
+    <div class="nav-section-label">3 · Respuesta a Señales</div>
+    <button class="nav-item" type="button" data-view="view-adhoc">
+      <span>Playbooks Ad-Hoc (Alertas)</span>
+      <span class="nav-count" id="navCntAdhoc">0</span>
+    </button>
+
+    <div class="nav-section-label">Verificación y Gobierno</div>
+    <button class="nav-item" type="button" data-view="view-queries">
+      <span>Consultas KQL / Graph / PS</span>
+      <span class="nav-count" id="navCntQueries">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-kpis">
+      <span>KPIs, Madurez y Formación</span>
+      <span class="nav-count" id="navCntKpis">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-nist">
+      <span>Auditoría NIST 2.0 y Fuentes</span>
+      <span class="nav-count" id="navCntNist">0</span>
+    </button>
+
+    <div class="sidebar-progress" id="sidebarProgress"></div>
+  </aside>
+
+  <main class="main-area">
+    <!-- VISTA 0: OVERVIEW & MAPA DE LOS 3 MODOS -->
+    <section class="view-panel active" id="view-overview">
+      <div class="hero-card">
+        <div class="pill-row" id="heroBadges"></div>
+        <h1 id="heroTitle"></h1>
+        <p class="hero-lead" id="heroSummary"></p>
+      </div>
+
+      <h2 class="subsection-heading" style="margin-top:0;">Cómo operar esta tecnología: Los 3 Niveles de Acción</h2>
+      <div class="modes-grid" id="modesSummaryGrid"></div>
+
+      <div class="spacious-card" id="licensingOverviewCard"></div>
+
+      <h2 class="subsection-heading">Principios Rectores Oficiales (Zero Trust)</h2>
+      <div class="grid-2" id="principlesGrid"></div>
+    </section>
+
+    <!-- VISTA 1: ACCIONES PUNTUALES DE CONFIGURACIÓN Y VALIDACIONES -->
+    <section class="view-panel" id="view-config">
+      <div class="section-banner">
+        <h2>1. Acciones Puntuales de Configuración y Validaciones sobre la Plataforma</h2>
+        <p>Controles que se ejecutan al desplegar la tecnología, activar nuevas capacidades o auditar su línea base. Distingue qué debes configurar una sola vez y cómo validar técnicamente ("Proof of Life") que cada ajuste está activo y protegiendo el entorno.</p>
+      </div>
+
+      <div class="subnav-bar" id="configSubnav">
+        <a class="subnav-pill" href="#cfg-prereqs">1A. Puesta en Marcha Inicial</a>
+        <a class="subnav-pill" href="#cfg-validations">1B. Validaciones de Configuración ("Proof of Life")</a>
+        <a class="subnav-pill" href="#cfg-components">1C. Configuración por Componente</a>
+        <a class="subnav-pill" href="#cfg-rbac">1D. Privilegio Mínimo RBAC y PIM</a>
+      </div>
+
+      <h3 class="subsection-heading" id="cfg-prereqs">1A. Checklist de Puesta en Marcha y Prerrequisitos Puntuales</h3>
+      <div id="prereqsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-validations">1B. Validaciones Técnicas sobre las Configuraciones ("Proof of Life")</h3>
+      <p class="muted" style="margin-top:-8px;margin-bottom:20px;">Comprueba cada uno de estos indicadores en consola o mediante consulta para confirmar que la configuración no quedó solo en papel o en modo auditoría incompleta.</p>
+      <div id="validationsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-components">1C. Configuración Base por Componente e Integraciones</h3>
+      <div id="componentsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-rbac">1D. Configuración Puntual de Roles Administrativos y Estrategia PIM / JIT</h3>
+      <div id="rbacContainer"></div>
+    </section>
+
+    <!-- VISTA 2: ACCIONES PERIÓDICAS PROGRAMADAS -->
+    <section class="view-panel" id="view-periodic">
+      <div class="section-banner">
+        <h2 id="periodicTitle">2. Acciones Periódicas Programadas</h2>
+        <p id="periodicSubtitle">Rutinas recurrentes preventivas, de higiene operativa, tuning y gobierno. Selecciona la frecuencia deseada para leer cómodamente solo las actividades de ese ciclo.</p>
+      </div>
+
+      <div class="subnav-bar" id="periodicCadBar">
+        <button class="subnav-pill active" type="button" data-pcad="Diaria">Diarias</button>
+        <button class="subnav-pill" type="button" data-pcad="Semanal">Semanales</button>
+        <button class="subnav-pill" type="button" data-pcad="Mensual">Mensuales</button>
+        <button class="subnav-pill" type="button" data-pcad="CICLOS_LARGOS">Trimestrales · Semestrales · Anuales</button>
+        <button class="subnav-pill" type="button" data-pcad="ALL_PERIODIC">Ver Todas las Periódicas</button>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="perSearch" placeholder="Buscar acción periódica, consola, tabla KQL, control a validar o rol...">
+        <select class="select-input" id="perRole"><option value="ALL">Rol Responsable: Todos</option></select>
+        <select class="select-input" id="perOrigin">
+          <option value="ALL">Origen: Todos</option>
+          <option value="Verificado MS Learn">Verificado MS Learn</option>
+          <option value="Propuesta Editorial">Propuesta Editorial</option>
+        </select>
+        <button class="btn btn-sm" type="button" id="resetChecksBtn">Reiniciar Progreso</button>
+      </div>
+
+      <p class="muted" id="perCountLabel" style="margin-bottom:18px;"></p>
+      <div id="periodicCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 3: ACCIONES AD-HOC ANTE SEÑALES, ALERTAS E INCIDENTES -->
+    <section class="view-panel" id="view-adhoc">
+      <div class="section-banner">
+        <h2>3. Acciones Ad-Hoc ante Señales, Alertas e Incidentes (Playbooks del Analista)</h2>
+        <p>Procedimientos reactivos bajo demanda. A diferencia de las rutinas periódicas, estos playbooks se activan únicamente cuando una señal de riesgo, alerta de detección, anomalía o emergencia exige la intervención inmediata de un analista.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="adhocSearch" placeholder="Filtrar playbooks por alerta disparadora, síntoma, técnica MITRE o acción de contención...">
+      </div>
+
+      <div id="adhocCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 4: CONSULTAS KQL / GRAPH / POWERSHELL -->
+    <section class="view-panel" id="view-queries">
+      <div class="section-banner">
+        <h2>4. Consultas Técnicas de Validación, Monitoreo y Threat Hunting</h2>
+        <p>Consultas KQL, llamadas Microsoft Graph API y scripts PowerShell listos para auditar configuraciones puntuales, medir salud periódica o investigar alertas ad-hoc.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="kqlSearch" placeholder="Buscar consulta por nombre, tabla (SigninLogs, DeviceEvents, SentinelHealth...), comando o propósito...">
+        <select class="select-input" id="kqlUsageFilter">
+          <option value="ALL">Momento de Uso: Todos</option>
+          <option value="Validación de Configuración y Postura">1. Validación de Configuración y Postura</option>
+          <option value="Control Periódico de Salud, Auditoría y KPIs">2. Control Periódico de Salud y KPIs</option>
+          <option value="Investigación Ad-Hoc y Threat Hunting">3. Investigación Ad-Hoc y Hunting</option>
+        </select>
+      </div>
+
+      <div id="queriesContainer"></div>
+    </section>
+
+    <!-- VISTA 5: KPIs, MADUREZ Y FORMACIÓN -->
+    <section class="view-panel" id="view-kpis">
+      <div class="section-banner">
+        <h2>5. Indicadores Clave (KPIs), Modelo de Madurez y Ruta de Formación</h2>
+        <p>Métricas objetivas para medir eficacia operativa ante el CISO, evolución en 5 niveles de madurez y habilitación técnica recomendada por rol.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Indicadores Clave de Desempeño (KPIs)</h3>
+      <div class="grid-2" id="kpiContainer"></div>
+
+      <h3 class="subsection-heading">Modelo de Madurez Operacional (Niveles 1 a 5)</h3>
+      <div id="maturityContainer"></div>
+
+      <h3 class="subsection-heading">Ruta de Habilitación y Formación por Rol</h3>
+      <div id="trainingContainer"></div>
+    </section>
+
+    <!-- VISTA 6: AUDITORÍA NIST CSF 2.0, TRANSPARENCIA Y REFERENCIAS -->
+    <section class="view-panel" id="view-nist">
+      <div class="section-banner">
+        <h2>6. Mapeo de Auditoría NIST CSF 2.0, Revalidación (Nov 2026) y Referencias</h2>
+        <p>Evidencia auditable reproducible para las seis funciones de NIST CSF 2.0 (CSWP 29), registro transparente de verificaciones en Microsoft Learn frente a propuestas editoriales y fuentes públicas.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Matriz de Evidencia Auditable NIST CSF 2.0</h3>
+      <div class="filter-toolbar">
+        <select class="select-input" id="nistFuncSelect">
+          <option value="ALL">Función NIST CSF 2.0: Todas (6 Funciones)</option>
+          <option value="GOVERN">GOVERN (GV)</option>
+          <option value="IDENTIFY">IDENTIFY (ID)</option>
+          <option value="PROTECT">PROTECT (PR)</option>
+          <option value="DETECT">DETECT (DE)</option>
+          <option value="RESPOND">RESPOND (RS)</option>
+          <option value="RECOVER">RECOVER (RC)</option>
+        </select>
+      </div>
+      <div id="nistCardsContainer"></div>
+
+      <h3 class="subsection-heading">Registro de Revalidación Técnica (Noviembre 2026) y Decisiones Editoriales</h3>
+      <div class="spacious-card" id="auditSummaryBox"></div>
+      <div class="grid-2">
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Hallazgos y Actualizaciones Verificadas en MS Learn</h3>
+          <div id="corrContainer"></div>
+        </div>
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Decisiones y Propuestas Editoriales Explícitas</h3>
+          <div id="decContainer"></div>
+        </div>
+      </div>
+
+      <h3 class="subsection-heading">Directorio de Referencias Públicas Verificadas</h3>
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="refSearch" placeholder="Filtrar referencias por título, autor, MVP o URL...">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Recurso Oficial / Comunitario</th>
+              <th>Tipo</th>
+              <th>Autor / Entidad</th>
+              <th>Comentario de Alcance</th>
+            </tr>
+          </thead>
+          <tbody id="refTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>Guía Maestra de Excelencia Operacional Microsoft — Edición Espaciada v3.0 (Validación: 2026-11-11)</div>
+      <div>Configuración Puntual · Rutinas Periódicas · Playbooks Ad-Hoc · NIST CSF 2.0</div>
+    </footer>
+  </main>
+</div>
+
+<script>
+const MODULE_DATA = {"schemaVersion": "2.0", "id": "19_Purview_Audit_Premium", "orden": 19, "slug": "Purview_Audit_Premium", "nombre": "Microsoft Purview Audit (Standard vs. Premium, Forense Cloud y Retención de 10 Años)", "nombreCorto": "Purview Audit (Premium)", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "bloqueOrigen": "Nuevo desde Microsoft Learn MCP (Nov 2026)", "fechaValidacion": "2026-11-11", "portalesPrincipales": ["https://purview.microsoft.com", "https://security.microsoft.com", "https://graph.microsoft.com/v1.0/security/auditLog/queries"], "audiencia": ["CISO", "SOC Manager", "DFIR / Incident Responder", "Threat Hunter", "Purview Compliance Admin", "Exchange & Collaboration Admin", "Legal / eDiscovery Lead", "SIEM / SOAR Engineer", "GRC / Internal Audit"], "relacionM365E5": {"estado": "Incluido en Microsoft 365 E5 / Microsoft Purview Suite (1 año por defecto; 10-Year Audit Log Retention como Add-on)", "licencias": ["Microsoft 365 E5 / E7 / A5 / G5 o Office 365 E5 / A5 / G5 (incluye Audit Premium)", "Microsoft Purview Suite (antes Microsoft 365 E5 Compliance) o Microsoft 365 F5 Compliance / F5 Security + Compliance", "Microsoft 365 E5 eDiscovery and Audit add-on (para elevar licencias base E3 a Audit Premium)", "Microsoft 365 10-Year Audit Log Retention add-on (licencia per-user adicional sobre E5/Audit Premium para retener registros por 3, 5, 7 o 10 años)", "Microsoft Purview Pay-As-You-Go en Azure (requerido únicamente para ingerir eventos AIAppInteraction de aplicaciones GenAI no-Microsoft, retenidos por 180 días)"], "prerrequisitos": ["Verificar UnifiedAuditLogIngestionEnabled = True ejecutando Get-AdminAuditLogConfig exclusivamente en Exchange Online PowerShell (en Security & Compliance PowerShell devuelve siempre False)", "Verificar que el plan de servicio Microsoft 365 Advanced Auditing esté habilitado en cada usuario E5/Purview Suite para generar Intelligent Insights y aplicar retención de 1 año", "Habilitar explícitamente SearchQueryInitiated en AuditOwner por buzón en Exchange Online PowerShell (SearchQueryInitiatedSharePoint viene activo por defecto, pero SearchQueryInitiatedExchange no)", "Planificar y ejecutar la migración de scripts desde Search-UnifiedAuditLog (retiro definitivo el 15 de octubre de 2027 según MC1505599) hacia Microsoft Graph AuditLogQuery API v1.0 (GA octubre de 2026)", "Habilitar la auditoría en el portal de administración de Microsoft Fabric / Power BI y conectar Office 365 Management Activity API hacia Microsoft Sentinel (OfficeActivity)"], "notaLicenciamiento": "Audit (Standard) viene habilitado por defecto en suscripciones empresariales M365 con 180 días de retención (ampliado desde 90 días el 17-oct-2023) e incluye desde 2024 los eventos MailItemsAccessed, Send, SearchQueryInitiatedExchange y SearchQueryInitiatedSharePoint, además de CopilotInteraction para apps IA de Microsoft y Agent 365. Audit (Premium), incluido en M365 E5 y Microsoft Purview Suite, agrega: (1) retención predeterminada de 1 año para AzureActiveDirectory, Exchange, OneDrive y SharePoint; (2) hasta 50 políticas personalizadas de retención de hasta 1 año (o 3, 5, 7 y 10 años asignando el add-on per-user 10-Year Audit Log Retention); (3) Intelligent Insights exclusivos como SensitivityLabel en MailItemsAccessed y AppAccessContext/ParticipantInfo en 14 operaciones de Teams; y (4) cuota dedicada por tenant con ~2x ancho de banda dinámico en Office 365 Management Activity API. Las entidades no-usuario (service principals, apps, sistema) tienen retención fija no configurable de 1 año en Purview."}, "resumenEjecutivo": "Microsoft Purview Audit constituye el sistema central de registro forense e investigación probatoria de Microsoft 365, capturando miles de operaciones de usuarios, administradores, aplicaciones y agentes autónomos (Microsoft Agent 365) en el Unified Audit Log (UAL). Mientras Audit (Standard) provee 180 días de retención base y acceso a eventos esenciales tras las mejoras SFI/CISA, Audit (Premium) en Microsoft 365 E5 y Microsoft Purview Suite habilita retención predeterminada de 1 año para cargas críticas (Entra ID, Exchange, OneDrive, SharePoint), hasta 50 políticas personalizadas de hasta 10 años (con add-on), telemetría forense enriquecida (SensitivityLabel sobre correos accedidos en MailItemsAccessed y AppAccessContext en Microsoft Teams) y doble ancho de banda dedicado hacia SIEM vía Office 365 Management Activity API. A noviembre de 2026, su excelencia operacional exige dominar el análisis de compromisos BEC/nación-estado (Bind vs. Sync, estrangulamiento >1.000 eventos en 24 h con IsThrottled, SearchQueryInitiated), auditar interacciones GenAI (CopilotInteraction, XPIADetected, JailbreakDetected) y completar la transición obligatoria hacia Microsoft Graph AuditLogQuery API v1.0 antes del retiro de Search-UnifiedAuditLog el 15 de octubre de 2027.", "principiosRectores": [{"principio": "Delimitación Forense Determinista del Alcance de Compromiso (Breach Scoping)", "descripcion": "Utilizar MailItemsAccessed (diferenciando Bind por InternetMessageId frente a Sync de carpeta), SensitivityLabel y SearchQueryInitiated para demostrar con precisión matemática qué activos fueron o no expuestos ante un incidente BEC o regulador.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/audit-log-investigate-accounts"}, {"principio": "Aprovisionamiento Preventivo por Inmutabilidad en Tiempo de Ingesta", "descripcion": "Asignar licencias Audit (Premium), el plan Microsoft 365 Advanced Auditing y las políticas de retención de 1 a 10 años antes de cualquier incidente, dado que la expiración del evento se calcula al ingresar al pipeline y no es retroactiva.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/audit-log-retention-policies"}, {"principio": "Arquitectura Dual: Bóveda Probatoria en Purview + Detección Tiempo Real en Sentinel", "descripcion": "Combinar la retención nativa de 1 a 10 años en Purview Audit (latencia típica de indexación de 60-90 min) con la ingesta continua de alta velocidad hacia Microsoft Sentinel (OfficeActivity) y Sentinel Data Lake para entidades no-usuario mayores a 1 año.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/audit-solutions-overview"}, {"principio": "Estandarización Asíncrona sobre Microsoft Graph AuditLogQuery API (MC1505599)", "descripcion": "Reemplazar proactivamente el cmdlet síncrono Search-UnifiedAuditLog antes de su retiro el 15 de octubre de 2027 por trabajos asíncronos en Microsoft Graph v1.0/security/auditLog/queries (hasta 1 millón de registros y permisos granulares por servicio).", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/graph/api/resources/security-auditlogquery?view=graph-rest-1.0"}, {"principio": "Vigilancia Ininterrumpida Anti-Tampering y Anti-Throttling", "descripcion": "Tratar como incidente severo cualquier alteración de UnifiedAuditLogIngestionEnabled, AuditDisabled, MailboxAuditBypassAssociation, degradación de DefaultAuditSet o disparo de IsThrottled = True (> 1.000 MailItemsAccessed en 24 h).", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/audit-mailboxes"}, {"principio": "Trazabilidad Integral de Interacciones GenAI y Agentes Autónomos", "descripcion": "Auditar de extremo a extremo operaciones CopilotInteraction, ConnectedAIAppInteraction, AIAppInteraction y Microsoft Agent 365 inspeccionando AccessedResources, SensitivityLabelId, JailbreakDetected y XPIADetected.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/purview/audit-copilot"}], "arquitecturaYComponentes": [{"componente": "Unified Audit Log (UAL) Pipeline", "funcionOperativa": "Motor central habilitado por defecto que normaliza e indexa miles de operaciones de usuarios, administradores y agentes en más de 150 tipos de registro (AuditLogRecordType).", "portalRuta": "purview.microsoft.com > Solutions > Audit", "integraciones": ["Microsoft Entra ID", "Exchange Online, SharePoint Online, OneDrive & Teams", "Microsoft Fabric / Power BI, Dynamics 365 & Defender XDR"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Búsqueda Asíncrona en el Portal de Microsoft Purview (New Search)", "funcionOperativa": "Ejecución de trabajos de búsqueda en segundo plano sin mantener el navegador abierto, retenidos por 30 días, con hasta 10 trabajos concurrentes por administrador (máx. 1 sin filtros) y rango máximo de 180 días por consulta.", "portalRuta": "purview.microsoft.com > Solutions > Audit > Search", "integraciones": ["Microsoft Entra Administrative Units", "Exportación CSV & Excel Power Query (AuditData JSON)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Microsoft Graph AuditLogQuery API v1.0 (GA Octubre 2026)", "funcionOperativa": "API REST y SDK oficial que reemplaza a Search-UnifiedAuditLog, permitiendo consultas asíncronas de hasta 1 millón de registros, validación isRecordCountLimitExceeded, keywordFilter sobre auditData no indexado y permisos RBAC por carga.", "portalRuta": "https://graph.microsoft.com/v1.0/security/auditLog/queries", "integraciones": ["Microsoft Graph PowerShell SDK (Microsoft.Graph.Security)", "Azure Logic Apps / SOAR Playbooks", "Pipelines DFIR Python / C#"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Motor de Políticas de Retención de Auditoría (1 Año y Add-on 10 Años)", "funcionOperativa": "Política predeterminada de 1 año (AzureActiveDirectory, Exchange, OneDrive, SharePoint) para E5, más hasta 50 políticas personalizadas (7d, 30d, 6m, 9m, 1y, 3y, 5y, 7y, 10y) con prioridad 1 a 10000.", "portalRuta": "purview.microsoft.com > Solutions > Audit > Audit retention policies", "integraciones": ["Security & Compliance PowerShell (New/Get/Set-UnifiedAuditLogRetentionPolicy)", "Licenciamiento 10-Year Audit Log Retention Add-on"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Exchange Online Mailbox Auditing y Conjunto Predeterminado (DefaultAuditSet)", "funcionOperativa": "Auditoría activa por defecto (AuditDisabled = False) para Owner, Delegate y Admin sobre buzones de usuario, compartidos y Grupos M365, capturando MailItemsAccessed, Send, AttachmentAccess, UpdateInboxRules y SearchQueryInitiated.", "portalRuta": "Exchange Online PowerShell (Get-OrganizationConfig, Get-Mailbox, Set-Mailbox)", "integraciones": ["Microsoft Defender for Office 365", "Purview eDiscovery"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Audit (Premium) Intelligent Insights", "funcionOperativa": "Enriquecimiento exclusivo para usuarios con el plan Microsoft 365 Advanced Auditing: propiedad SensitivityLabel en MailItemsAccessed y AppAccessContext, ParticipantInfo e IsJoinedFromLobby en 14 operaciones de Teams.", "portalRuta": "AuditData JSON en Purview Audit / Graph / Management Activity API", "integraciones": ["Microsoft Purview Information Protection (MIP Sensitivity Labels)", "Microsoft Teams", "Microsoft Defender for Cloud Apps"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Subsistema de Auditoría para Copilot, Apps GenAI y Microsoft Agent 365", "funcionOperativa": "Captura automática de CopilotInteraction, ConnectedAIAppInteraction, AIAppInteraction (PAYG) e interacciones de instancias Agent 365 con AccessedResources, SensitivityLabelId, JailbreakDetected, XPIADetected y DLPEvaluationDeferred.", "portalRuta": "purview.microsoft.com > Solutions > Audit / DSPM > Activity explorer", "integraciones": ["Microsoft 365 Copilot & Copilot Studio", "Microsoft Agent 365 & Security Copilot", "Purview Pay-As-You-Go (para apps IA no-Microsoft)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Office 365 Management Activity API con Ancho de Banda Dedicado E5", "funcionOperativa": "Interfaz de streaming continuo hacia soluciones SIEM con cuota aislada por tenant que escala dinámicamente otorgando ~2x ancho de banda sobre la base de 2.000 req/min a tenants E5/A5/G5.", "portalRuta": "https://manage.office.com/api/v1.0/{tenant_id}/activity/feed", "integraciones": ["Microsoft Sentinel (Tabla OfficeActivity Analytics + Data Lake 12 años)", "Microsoft Defender XDR (Tabla CloudAppEvents)"], "estadoValidacion": "Verificado MS Learn"}], "rbacYRoles": [{"rol": "Audit Reader (Rol subyacente: View-Only Audit Logs)", "nivelSOC": "DFIR / SOC L2 / Threat Hunter / Auditoría Interna", "permisosClave": "Ejecutar trabajos de búsqueda asíncrona en el portal de Microsoft Purview y exportar registros de auditoría a CSV (compatible con alcance por Administrative Units). Sin permiso para alterar configuración.", "asignacionPIM": "Asignación con fecha de expiración en Purview o elegible vía Entra PIM for Groups (máx. 8 h JIT con justificación de caso).", "responsabilidadOperativa": "Investigaciones forenses de cuentas comprometidas, búsquedas históricas de cumplimiento y respuesta a incidentes.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Audit Manager (Roles subyacentes: View-Only Audit Logs + Audit Logs)", "nivelSOC": "Ingeniería Sénior de Plataforma Purview", "permisosClave": "Buscar y exportar registros de auditoría y administrar la configuración global de auditoría del tenant (como habilitar o deshabilitar UnifiedAuditLogIngestionEnabled).", "asignacionPIM": "Estrictamente elegible vía Entra PIM for Groups (máx. 4 h JIT, aprobación dual y MFA FIDO2/Passkey).", "responsabilidadOperativa": "Gobierno de disponibilidad global del pipeline de auditoría y soporte de escalamiento de plataforma.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Organization Configuration", "nivelSOC": "Arquitectura y Gobierno de Retención Purview", "permisosClave": "Crear, modificar y eliminar políticas personalizadas de retención de auditoría (Audit log retention policies, hasta 50 por tenant, de 7 días a 10 años).", "asignacionPIM": "Elegible JIT (máx. 2 h) separado de los investigadores operativos y sujeto a control formal de cambios (CAB).", "responsabilidadOperativa": "Administrar la jerarquía de prioridades (1 a 10000) de políticas de retención de 1 a 10 años.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Exchange Administrator (con rol Audit Logs en EAC)", "nivelSOC": "Ingeniería de Plataforma Exchange Online", "permisosClave": "Ejecutar Get-AdminAuditLogConfig, gestionar AuditDisabled, habilitar SearchQueryInitiated por buzón, restaurar DefaultAuditSet y auditar MailboxAuditBypassAssociation.", "asignacionPIM": "Elegible en Microsoft Entra PIM (máx. 4 h JIT con MFA resistente a phishing).", "responsabilidadOperativa": "Mantener activa la auditoría de buzones por defecto, habilitar búsquedas Exchange en buzones y bloquear cualquier bypass no autorizado.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Permisos Granulares Graph AuditLogsQuery-<Workload>.Read.All", "nivelSOC": "Automatización SOAR y Consultas Acotadas por Servicio", "permisosClave": "Acceso API v1.0 limitado a una sola carga: AuditLogsQuery-Entra.Read.All, AuditLogsQuery-Exchange.Read.All, AuditLogsQuery-SharePoint.Read.All, AuditLogsQuery-OneDrive.Read.All, AuditLogsQuery-Endpoint.Read.All, AuditLogsQuery-CRM.Read.All.", "asignacionPIM": "Asignado a Managed Identities o registros de aplicación con certificados X.509 de corta vida sin secretos de texto plano.", "responsabilidadOperativa": "Ejecutar playbooks automatizados de recolección forense cumpliendo mínimo privilegio estricto por dominio.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Permiso Global Graph AuditLogsQuery.Read.All", "nivelSOC": "Colector Forense Central DFIR Multi-Carga", "permisosClave": "Crear y leer consultas asíncronas en /v1.0/security/auditLog/queries a través de todas las cargas de trabajo de Microsoft 365 (hasta 1 millón de registros por consulta).", "asignacionPIM": "Restringido exclusivamente a la identidad administrada del orquestador DFIR central del SOC con revisión mensual.", "responsabilidadOperativa": "Reconstrucción transversal de incidentes complejos (BEC, nación-estado e IA) reemplazando Search-UnifiedAuditLog.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Conector SIEM (ActivityFeed.Read / ActivityFeed.ReadDlp)", "nivelSOC": "Ingesta Continua SIEM / Data Lake", "permisosClave": "Consumir flujos de actividad general y DLP mediante Office 365 Management Activity API aprovechando la cuota dedicada de alta velocidad E5.", "asignacionPIM": "Administrado de forma nativa mediante el conector Microsoft 365 en Microsoft Sentinel.", "responsabilidadOperativa": "Alimentar detección casi en tiempo real en Sentinel Analytics y retención multianual en Sentinel Data Lake.", "estadoValidacion": "Verificado MS Learn"}], "actividadesOperacionales": [{"codigo": "D-01", "cadencia": "Diaria", "actividad": "Verificación automatizada de integridad del pipeline UAL, AuditDisabled y cero cuentas en Audit Bypass", "objetivo": "Garantizar que la ingesta unificada y la auditoría de buzones por defecto permanezcan encendidas sin exclusiones subrepticias.", "consolaRuta": "Exchange Online PowerShell / security.microsoft.com > Incidents & alerts", "procedimiento": ["Ejecutar en Exchange Online PowerShell (nunca en SCC PowerShell) Get-AdminAuditLogConfig para confirmar UnifiedAuditLogIngestionEnabled = True.", "Verificar en Get-OrganizationConfig que AuditDisabled = False y en Get-MailboxAuditBypassAssociation que existan 0 cuentas con AuditBypassEnabled = True.", "Revisar alertas NRT/Scheduled en Sentinel ante cualquier invocación de Set-AdminAuditLogConfig, Set-MailboxAuditBypassAssociation o borrado de políticas de retención."], "rolResponsable": "SOC L1 / Purview Platform Engineer", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-04", "mitreTactic": "Defense Evasion — Impair Defenses: Disable or Modify Cloud Logs (T1562.008)", "evidenciaAuditable": "Registro diario automatizado de estado saludable del pipeline UAL y 0 cuentas en bypass.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Comandos y advertencia sobre SCC PowerShell verificados en Search the audit log y Manage mailbox auditing.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-search", "pasosDetallados": ["Verificar diariamente mediante automatización en Exchange Online PowerShell que `UnifiedAuditLogIngestionEnabled` sea `True` y que `AuditDisabled` en `Get-OrganizationConfig` sea `False`.", "Auditar en tiempo real en Microsoft Sentinel (`OfficeActivity`) cualquier aparición de operaciones críticas de manipulación: `Set-AdminAuditLogConfig`, `Set-OrganizationConfig` (cambio en `AuditDisabled`), `Set-MailboxAuditBypassAssociation`, `Remove-UnifiedAuditLogRetentionPolicy` o `Set-UnifiedAuditLogRetentionPolicy`.", "Confirmar que el número de cuentas con `AuditBypassEnabled = True` sea exactamente `0` (o coincida estrictamente con cuentas de servicio documentadas y aprobadas por el CISO)."], "disparadorAlerta": "Garantizar que la ingesta unificada y la auditoría de buzones por defecto permanezcan encendidas sin exclusiones subrepticias.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-02", "cadencia": "Diaria", "actividad": "Caza de estrangulamiento MailItemsAccessed (IsThrottled = True) y sincronizaciones masivas anómalas", "objetivo": "Detectar buzones que superen los 1.000 eventos MailItemsAccessed en 24 horas como indicador temprano de raspado masivo BEC o nación-estado.", "consolaRuta": "security.microsoft.com > Hunting > Advanced hunting (CloudAppEvents / OfficeActivity)", "procedimiento": ["Consultar eventos MailItemsAccessed de las últimas 24 h extrayendo IsThrottled y MailAccessType desde OperationProperties.", "Filtrar casos con IsThrottled = True o sincronizaciones Sync desde direcciones IP, países o aplicaciones OAuth inusuales.", "Abrir incidente prioritario ante cualquier estrangulamiento no justificado, asumiendo ceguera de 24 horas en MailItemsAccessed para ese buzón."], "rolResponsable": "SOC L2 / Threat Hunter", "funcionNIST": "DE", "subcategoriaNIST": "DE.AE-03", "mitreTactic": "Collection — Email Collection: Remote Email Collection (T1114.002)", "evidenciaAuditable": "Resultados diarios de caza KQL y tickets de investigación cerrados sobre eventos IsThrottled.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Umbral de >1.000 registros en 24 h y suspensión por 24 h verificados en documentación forense oficial de Microsoft.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-log-investigate-accounts", "pasosDetallados": ["Ejecutar la consulta diaria sobre eventos `MailItemsAccessed` extrayendo `IsThrottled` dentro de `OperationProperties`, `MailAccessType` (`Bind` vs. `Sync`), `ClientInfoString`, `ClientIPAddress` y `AppId`.", "Separar sincronizaciones legítimas de primera configuración de Outlook en equipos corporativos gestionados en Intune frente a accesos desde IPs anómalas, aplicaciones OAuth desconocidas o tokens en riesgo en Entra ID.", "Ante cualquier buzón con `IsThrottled = True` no justificado, abrir incidente P1 y activar el playbook `AH-01` asumiendo pérdida de visibilidad `MailItemsAccessed` por 24 horas en ese buzón."], "disparadorAlerta": "Detectar buzones que superen los 1.000 eventos MailItemsAccessed en 24 horas como indicador temprano de raspado masivo BEC o nación-estado.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-03", "cadencia": "Diaria", "actividad": "Monitoreo de salud, latencia y cuota del conector OfficeActivity hacia Microsoft Sentinel", "objetivo": "Confirmar que el streaming continuo vía Office 365 Management Activity API opere sin caídas ni estrangulamiento HTTP 429.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Data connectors > Microsoft 365 / SentinelHealth", "procedimiento": ["Medir el retraso de ingesta en la tabla OfficeActivity para Exchange, SharePoint y MicrosoftTeams verificando que se mantenga dentro del rango esperado (60-90 min).", "Inspeccionar la tabla SentinelHealth para descartar errores de autenticación o límites de tasa.", "Escalar si alguna carga crítica supera los 120 minutos sin eventos en horario hábil."], "rolResponsable": "SIEM Engineer / SOC Platform", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-01", "mitreTactic": "N/A (Continuous Telemetry Assurance)", "evidenciaAuditable": "Métrica diaria de frescura de datos en SentinelHealth y OfficeActivity.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Latencia típica de 60-90 min y cuota dedicada ~2x en Audit Premium verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-solutions-overview#high-bandwidth-access-to-the-office-365-management-activity-api", "pasosDetallados": ["Consultar en Log Analytics / Advanced Hunting el tiempo transcurrido desde el último registro ingerido en `OfficeActivity` para `Exchange`, `SharePoint` y `MicrosoftTeams` (alertando si supera los 120 minutos).", "Verificar en `SentinelHealth` que no existan fallos de autorización ni agotamiento de cuota en la API (aprovechando la cuota dedicada a nivel de tenant de Audit Premium)."], "disparadorAlerta": "Confirmar que el streaming continuo vía Office 365 Management Activity API opere sin caídas ni estrangulamiento HTTP 429.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-04", "cadencia": "Diaria", "actividad": "Detección de XPIADetected, JailbreakDetected y acceso IA a recursos altamente confidenciales en CopilotInteraction", "objetivo": "Identificar ataques de inyección indirecta (XPIA), jailbreak o recolección masiva de documentos sensibles mediante Copilot y apps IA.", "consolaRuta": "purview.microsoft.com > Solutions > Audit / security.microsoft.com > Advanced hunting", "procedimiento": ["Analizar registros CopilotInteraction, ConnectedAIAppInteraction y AIAppInteraction de las últimas 24 horas.", "Alertar sobre cualquier registro con XPIADetected == true en AccessedResources o JailbreakDetected == true en Messages.", "Revisar accesos de alto volumen a archivos con SensitivityLabelId crítico y eventos con DLPEvaluationDeferred distinto de cero."], "rolResponsable": "SOC L2 / AI Security Analyst", "funcionNIST": "DE", "subcategoriaNIST": "DE.AE-02", "mitreTactic": "MITRE ATLAS AML.T0051 (Indirect / Cross-Prompt Injection)", "evidenciaAuditable": "Bitácora diaria de eventos de seguridad en auditoría de IA investigados.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Atributos AccessedResources, XPIADetected, JailbreakDetected y DLPEvaluationDeferred verificados en Audit logs for Copilot and AI applications.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-copilot", "pasosDetallados": ["Filtrar eventos de las últimas 24 horas donde `AccessedResources` contenga `XPIADetected == true` (inyección indirecta desde documento/correo externo) o `Messages` contenga `JailbreakDetected == true`.", "Cruzar los valores `SensitivityLabelId` dentro de `AccessedResources` contra el catálogo de etiquetas críticas de Purview Information Protection para detectar recolección acelerada de propiedad intelectual asistida por Copilot o agentes de **Agent 365**.", "Revisar casos con `DLPEvaluationDeferred != 0` (`Prompt=1, Response=2, Grounding=4, WebGrounding=8`) junto con `DLPEvaluationDeferredReason` para detectar fallos de evaluación DLP en tiempo real."], "disparadorAlerta": "Identificar ataques de inyección indirecta (XPIA), jailbreak o recolección masiva de documentos sensibles mediante Copilot y apps IA.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-05", "cadencia": "Diaria", "actividad": "Revisión de creación de reglas de ocultamiento/reenvío (UpdateInboxRules) y permisos delegados de buzón", "objetivo": "Detectar persistencia BEC mediante reglas de bandeja de entrada, reenvíos externos o concesión de permisos SendAs/FullAccess.", "consolaRuta": "security.microsoft.com > Hunting > Advanced hunting (OfficeActivity)", "procedimiento": ["Revisar operaciones UpdateInboxRules, New-InboxRule, Set-InboxRule, Add-MailboxPermission, Add-RecipientPermission y UpdateFolderPermissions.", "Priorizar reglas que muevan mensajes a RSS Subscriptions, Notes o Deleted Items o reenvíen hacia dominios externos.", "Cruzar SessionId y ClientIPAddress con eventos MailItemsAccessed del buzón afectado."], "rolResponsable": "SOC L1 / L2", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-03", "mitreTactic": "Defense Evasion — Hide Artifacts: Email Hiding Rules (T1564.008)", "evidenciaAuditable": "Registro diario de triaje de reglas y delegaciones sospechosas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Acciones predeterminadas de buzón y síntomas BEC verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/responding-to-a-compromised-email-account", "pasosDetallados": ["Revisar alertas y eventos de `New-InboxRule`, `Set-InboxRule`, `UpdateInboxRules` (especialmente reglas que mueven correos a carpetas *RSS Subscriptions*, *Notes* o *Junk* o reenvían al exterior), `Add-MailboxPermission` (`FullAccess`), `Add-RecipientPermission` (`SendAs`) y `UpdateFolderPermissions`.", "Correlacionar inmediatamente el `SessionId` y `ClientIPAddress` con registros `MailItemsAccessed` y `SearchQueryInitiatedExchange` del mismo usuario."], "disparadorAlerta": "Detectar persistencia BEC mediante reglas de bandeja de entrada, reenvíos externos o concesión de permisos SendAs/FullAccess.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-06", "cadencia": "Diaria", "actividad": "Control de trabajos asíncronos de búsqueda forense y validación de truncamiento (isRecordCountLimitExceeded)", "objetivo": "Asegurar que las búsquedas DFIR y legales finalicen sin superar el límite de 1 millón de registros ni expirar a los 30 días.", "consolaRuta": "purview.microsoft.com > Solutions > Audit > Search / GET /v1.0/security/auditLog/queries", "procedimiento": ["Revisar el estado de trabajos en curso cuidando no bloquear el tope de 10 trabajos simultáneos por administrador.", "Comprobar en toda consulta de Microsoft Graph AuditLogQuery que isRecordCountLimitExceeded sea false; si es true, dividir el rango de fechas.", "Descargar y custodiar resultados de trabajos completados antes de su purga automática a los 30 días."], "rolResponsable": "DFIR Lead / Audit Reader", "funcionNIST": "RS", "subcategoriaNIST": "RS.AN-03", "mitreTactic": "N/A (Forensic Completeness Assurance)", "evidenciaAuditable": "Metadatos de trabajos Graph con status = succeeded e isRecordCountLimitExceeded = false.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Límites de 10 jobs concurrentes, 30 días de retención de jobs y propiedad isRecordCountLimitExceeded verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/graph/api/resources/security-auditlogquery?view=graph-rest-1.0", "pasosDetallados": ["Verificar que ningún analista mantenga bloqueado su tope de **10 trabajos concurrentes** (o el límite de **1 búsqueda sin filtros**) con trabajos obsoletos.", "Para consultas ejecutadas vía Microsoft Graph `AuditLogQuery`, validar la propiedad autoritativa **`isRecordCountLimitExceeded`**: si devuelve `true` (superando el millón de registros por consulta), particionar inmediatamente el rango horario en sub-ventanas más cortas para evitar truncamiento probatorio.", "Exportar y resguardar en bóveda forense los resultados de trabajos próximos a cumplir **30 días** desde su creación antes de que el portal los purgue automáticamente."], "disparadorAlerta": "Asegurar que las búsquedas DFIR y legales finalicen sin superar el límite de 1 millón de registros ni expirar a los 30 días.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-07", "cadencia": "Diaria", "actividad": "Vigilancia de accesos OAuth a mensajería Teams (AppAccessContext) y adjuntos vía Graph (AttachmentAccess)", "objetivo": "Detectar aplicaciones de terceros maliciosas o comprometidas extrayendo conversaciones de Teams o archivos adjuntos de correo.", "consolaRuta": "security.microsoft.com > Advanced hunting / purview.microsoft.com > Solutions > Audit", "procedimiento": ["Inspeccionar la propiedad exclusiva Audit (Premium) AppAccessContext en eventos ChatRetrieved, MessagesListed, MessageRead y SubscribedToMessages de Teams.", "Analizar picos de la operación predeterminada AttachmentAccess ejecutada vía Microsoft Graph API sobre buzones ejecutivos.", "Contrastar los ClientAppId observados contra el inventario de Enterprise Applications autorizadas en Entra ID."], "rolResponsable": "SOC L2 / Cloud App Security Analyst", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-09", "mitreTactic": "Collection — Data from Information Repositories (T1213) / Steal App Access Token (T1528)", "evidenciaAuditable": "Validación diaria de aplicaciones con acceso activo a APIs de Teams y Exchange.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Propiedad AppAccessContext en 14 eventos de Teams (Audit Premium) y operación AttachmentAccess verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-solutions-overview#audit-premium-activity-properties", "pasosDetallados": ["Analizar operaciones de Teams (`ChatRetrieved`, `MessagesListed`, `MessageRead`, `MessageHostedContentRead`) e identificar valores `ClientAppId` / `AADSessionId` dentro de `AppAccessContext` que no pertenezcan al catálogo corporativo aprobado.", "Revisar picos de la operación predeterminada `AttachmentAccess` (acceso a adjuntos vía Microsoft Graph API) realizada bajo contexto de aplicación (`Admin` / impersonación)."], "disparadorAlerta": "Detectar aplicaciones de terceros maliciosas o comprometidas extrayendo conversaciones de Teams o archivos adjuntos de correo.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-08", "cadencia": "Diaria", "actividad": "Auditoría de interacciones autónomas de agentes registrados en Microsoft Agent 365", "objetivo": "Monitorear acciones agente-a-herramienta, agente-a-agente y agente-a-humano sobre datos sensibles.", "consolaRuta": "purview.microsoft.com > Solutions > Audit / DSPM > Activity explorer > AI activities", "procedimiento": ["Filtrar eventos de auditoría de instancias de Microsoft Agent 365 identificando AgentId, AgentName y AgentVersion.", "Investigar accesos bloqueados por políticas (PolicyDetails, Status = failure) o lecturas masivas atípicas fuera del propósito del agente.", "Notificar desvíos al propietario del agente y ajustar permisos en Entra ID."], "rolResponsable": "AI Security Analyst / SOC L2", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-03", "mitreTactic": "MITRE ATLAS AML.T0048 (Autonomous Agent Misuse)", "evidenciaAuditable": "Reporte diario de actividad auditada de instancias Agent 365.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Habilitación automática de auditoría al crear instancias en Agent 365 y tipos de interacción soportados verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/ai-agent-365", "pasosDetallados": ["Filtrar actividades de auditoría generadas por identidades de agentes (`AgentId`, `AgentName`, `AgentVersion`) buscando accesos denegados por políticas (`PolicyDetails`, `Status = failure`) o lecturas fuera del horario/alcance habitual del flujo de negocio.", "Escalar anomalías al propietario del agente y al equipo de Entra Agent ID para ajuste de permisos de mínimo privilegio."], "disparadorAlerta": "Monitorear acciones agente-a-herramienta, agente-a-agente y agente-a-humano sobre datos sensibles.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-01", "cadencia": "Semanal", "actividad": "Reconciliación del plan de servicio Microsoft 365 Advanced Auditing y licencias 10-Year Add-on", "objetivo": "Asegurar que el 100 % de usuarios E5 tengan activo el service plan que habilita retención de 1 año e Intelligent Insights.", "consolaRuta": "Microsoft Graph PowerShell (Get-MgUserLicenseDetail) / admin.microsoft.com", "procedimiento": ["Auditar semanalmente todos los usuarios con SKU E5/E7/Purview Suite verificando que el plan Microsoft 365 Advanced Auditing esté habilitado.", "Comprobar que la totalidad de usuarios incluidos en políticas personalizadas de 3, 5, 7 o 10 años posean el add-on 10-Year Audit Log Retention.", "Corregir brechas mediante grupos de licenciamiento en Entra ID (recordando hasta 24 h para inicio de insights y no-retroactividad)."], "rolResponsable": "Identity & Licensing Admin + Purview Engineer", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-01", "mitreTactic": "N/A (License Entitlement Assurance)", "evidenciaAuditable": "Reporte semanal de 0 usuarios E5 con Advanced Auditing deshabilitado.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Requisito explícito de activar el checkbox Microsoft 365 Advanced Auditing verificado en Get started with auditing solutions.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-get-started#step-4-set-up-audit-premium-for-users", "pasosDetallados": ["Ejecutar script semanal contra Microsoft Graph listando todos los usuarios activos con SKU M365 E5 / E7 / Purview Suite / E5 Audit add-on cuyo `ServicePlans` tenga el plan de *Advanced Auditing* deshabilitado.", "Auditar igualmente que el 100 % de custodios regulados (ejecutivos, finanzas, tesorería, administradores privilegiados) tengan asignado el **10-Year Audit Log Retention add-on** si les aplica política decenal.", "Remediación automática vía grupos de licenciamiento en Microsoft Entra ID (recordando que la activación tarda hasta 24 h en surtir efecto y no es retroactiva)."], "disparadorAlerta": "Asegurar que el 100 % de usuarios E5 tengan activo el service plan que habilita retención de 1 año e Intelligent Insights.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-02", "cadencia": "Semanal", "actividad": "Habilitación automatizada de SearchQueryInitiatedExchange en buzones nuevos (Single y Multi-Geo)", "objetivo": "Garantizar la captura de términos buscados en Outlook/OWA para todos los nuevos buzones creados o migrados.", "consolaRuta": "Exchange Online PowerShell (Get-Mailbox, Set-Mailbox)", "procedimiento": ["Listar buzones aprovisionados en los últimos 7 días e identificar su bosque regional mediante MailboxLocations si el tenant es Multi-Geo.", "Ejecutar en el bosque correspondiente Set-Mailbox <Identity> -AuditOwner @{Add=\"SearchQueryInitiated\"}.", "Confirmar que AuditOwner conserve íntegras todas las acciones base predeterminadas tras la personalización."], "rolResponsable": "Exchange Online Admin / Purview Engineer", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-04", "mitreTactic": "Collection — Internal Spearphishing / Mailbox Reconnaissance", "evidenciaAuditable": "Log de ejecución semanal mostrando SearchQueryInitiated activo en el 100 % de buzones objetivo.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Desactivación por defecto de SearchQueryInitiatedExchange y requisito de ejecución en el forest local Multi-Geo verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-get-started#step-3-enabledisable-searchqueryinitiatedexchangesearchqueryinitiatedsharepoint-events", "pasosDetallados": ["Identificar buzones creados o migrados en los últimos 7 días y consultar su ubicación (`MailboxLocations` en entornos Multi-Geo) y su lista `AuditOwner`.", "Conectarse al bosque regional correspondiente de Exchange Online y ejecutar `Set-Mailbox <UPN> -AuditOwner @{Add=\"SearchQueryInitiated\"}` sobre los buzones objetivo definidos por la matriz de riesgo corporativa.", "Verificar que al personalizar `AuditOwner` se preserven intactas todas las demás acciones críticas predeterminadas (`MailItemsAccessed`, `Send`, `HardDelete`, `SoftDelete`, `Update`, `UpdateInboxRules`, `UpdateFolderPermissions`, `UpdateCalendarDelegation`, `ApplyRecord`)."], "disparadorAlerta": "Garantizar la captura de términos buscados en Outlook/OWA para todos los nuevos buzones creados o migrados.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-03", "cadencia": "Semanal", "actividad": "Auditoría de jerarquía de prioridades y cobertura de políticas de retención de auditoría (máx. 50)", "objetivo": "Prevenir que políticas personalizadas mal priorizadas reduzcan la retención de 1 año de cargas críticas.", "consolaRuta": "purview.microsoft.com > Solutions > Audit > Audit retention policies / SCC PowerShell", "procedimiento": ["Ejecutar Get-UnifiedAuditLogRetentionPolicy ordenado por Priority (1 = máxima precedencia) para inspeccionar incluso políticas no editables en UI.", "Verificar que ninguna política personalizada reduzca accidentalmente AzureActiveDirectory, Exchange, OneDrive o SharePoint por debajo de 1 año.", "Confirmar la cobertura de 1 año o 10 años para MicrosoftTeams, CopilotInteraction, PowerBIAudit y DLP."], "rolResponsable": "Purview Compliance Admin (Organization Configuration)", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-03", "mitreTactic": "N/A (Retention Policy Governance)", "evidenciaAuditable": "Exportación semanal firmada de Get-UnifiedAuditLogRetentionPolicy bajo el tope de 50 políticas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Precedencia de políticas personalizadas sobre la política por defecto y límite de 50 políticas verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-log-retention-policies", "pasosDetallados": ["Ejecutar `Get-UnifiedAuditLogRetentionPolicy | Sort-Object Priority | FL Priority,Name,RecordTypes,Operations,UserIds,RetentionDuration` (dado que esto incluye políticas creadas por PowerShell cuyos tipos de registro no son editables en UI).", "Verificar que el conteo total se mantenga holgadamente bajo el máximo de **50 políticas por tenant** y que ninguna política de alta prioridad (`Priority` cercano a `1`) establezca duraciones menores a `OneYear` sobre cargas críticas salvo mandato explícito de minimización."], "disparadorAlerta": "Prevenir que políticas personalizadas mal priorizadas reduzcan la retención de 1 año de cargas críticas.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-04", "cadencia": "Semanal", "actividad": "Rastreo y erradicación de uso heredado del cmdlet Search-UnifiedAuditLog (MC1505599)", "objetivo": "Completar la migración hacia Microsoft Graph AuditLogQuery API mucho antes del retiro definitivo del 15 de octubre de 2027.", "consolaRuta": "Registros SecurityComplianceCenterEOPCmdlet / Repositorios de automatización SecOps", "procedimiento": ["Auditar en el propio UAL qué cuentas o scripts ejecutaron Search-UnifiedAuditLog durante los últimos 7 días.", "Migrar cada script identificado hacia POST /v1.0/security/auditLog/queries o cmdlets de Microsoft.Graph.Security.", "Reemplazar roles amplios de Exchange por permisos Graph específicos por servicio."], "rolResponsable": "SecOps Automation Engineer", "funcionNIST": "ID", "subcategoriaNIST": "ID.IM-02", "mitreTactic": "N/A (API Modernization & Operational Continuity)", "evidenciaAuditable": "Inventario actualizado con porcentaje de scripts migrados a Microsoft Graph AuditLogQuery.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Anuncio MC1505599 (octubre de 2026): GA de Graph AuditLogQuery y retiro de Search-UnifiedAuditLog el 15-oct-2027.", "urlSoporte": "https://learn.microsoft.com/en-us/graph/api/security-auditcoreroot-post-auditlogqueries?view=graph-rest-1.0", "pasosDetallados": ["Identificar cuentas de servicio, runbooks de Azure Automation, scripts locales o herramientas de terceros que aún ejecuten `Search-UnifiedAuditLog`.", "Refactorizar cada flujo hacia **Microsoft Graph `AuditLogQuery` API v1.0** (`POST /security/auditLog/queries` o `New-MgSecurityAuditLogQuery`) asignando permisos de mínimo privilegio por servicio (`AuditLogsQuery-Exchange.Read.All`, etc.)."], "disparadorAlerta": "Completar la migración hacia Microsoft Graph AuditLogQuery API mucho antes del retiro definitivo del 15 de octubre de 2027.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-05", "cadencia": "Semanal", "actividad": "Control FinOps de consumo Pay-As-You-Go por registros AIAppInteraction de IA no-Microsoft", "objetivo": "Monitorear costos en Azure generados por auditoría de aplicaciones GenAI externas y bloquear Shadow AI ruidoso.", "consolaRuta": "portal.azure.com > Cost Management + Billing / purview.microsoft.com > Solutions > Audit", "procedimiento": ["Revisar el volumen semanal facturado bajo el medidor de Audit solutions (número de registros de auditoría procesados para IA no-Microsoft).", "Agrupar eventos AIAppInteraction por AppIdentity para identificar sitios GenAI externos no autorizados de alto tráfico.", "Coordinar con Defender for Cloud Apps / Endpoint DLP el bloqueo de aplicaciones Shadow AI riesgosas."], "rolResponsable": "Purview Admin + FinOps Analyst", "funcionNIST": "GV", "subcategoriaNIST": "GV.RM-02", "mitreTactic": "Exfiltration — Shadow AI Usage", "evidenciaAuditable": "Reporte semanal de consumo PAYG de auditoría IA alineado al presupuesto.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Facturación PAYG por registro procesado y retención de 180 días para AIAppInteraction verificadas en Audit logs for Copilot and AI applications.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-copilot#billing-for-auditing-non-microsoft-ai-applications", "pasosDetallados": ["Revisar el medidor de Azure de **Audit solutions** (número de registros de auditoría procesados para `AIAppInteraction` / `ConnectedAIAppInteraction` elegibles en PAYG, retenidos por 180 días).", "Detectar aplicaciones *Shadow AI* ruidosas que disparen miles de eventos desde el navegador; coordinar con Defender for Cloud Apps / Endpoint DLP el bloqueo de apps no autorizadas para reducir riesgo y costo simultáneamente."], "disparadorAlerta": "Monitorear costos en Azure generados por auditoría de aplicaciones GenAI externas y bloquear Shadow AI ruidoso.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-06", "cadencia": "Semanal", "actividad": "Campaña semanal de Threat Hunting sobre términos críticos en SearchQueryInitiatedExchange y SharePoint", "objetivo": "Descubrir reconocimiento interno silencioso en curso sobre contraseñas, claves API, transferencias o fusiones.", "consolaRuta": "security.microsoft.com > Hunting > Advanced hunting (OfficeActivity / CloudAppEvents)", "procedimiento": ["Ejecutar consulta KQL semanal buscando términos de alto riesgo dentro de SearchQueryInitiatedExchange y SearchQueryInitiatedSharePoint.", "Cruzar usuarios con búsquedas anómalas frente a inicios de sesión riesgosos en Entra ID y alertas de Insider Risk Management.", "Documentar descartes o abrir investigación forense según hallazgos."], "rolResponsable": "Threat Hunter / SOC L3", "funcionNIST": "DE", "subcategoriaNIST": "DE.AE-07", "mitreTactic": "Discovery / Collection — Sensitive Keyword Reconnaissance", "evidenciaAuditable": "Informe semanal de caza proactiva sobre consultas de búsqueda.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Eventos SearchQueryInitiated verificados en MS Learn; campaña semanal por diccionario de caza es propuesta editorial.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-get-started", "pasosDetallados": ["Ejecutar consulta KQL semanal sobre `SearchQueryInitiatedExchange` y `SearchQueryInitiatedSharePoint` buscando coincidencias con diccionarios de palabras sensibles de credenciales, tesorería y propiedad intelectual.", "Correlacionar usuarios con alta frecuencia de búsquedas sensibles frente a inicios de sesión riesgosos en Entra ID (`SigninLogs`) y alertas de Insider Risk Management."], "disparadorAlerta": "Descubrir reconocimiento interno silencioso en curso sobre contraseñas, claves API, transferencias o fusiones.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-01", "cadencia": "Mensual", "actividad": "Auditoría de higiene de DefaultAuditSet en toda la flota de buzones y controles compensatorios Multi-Geo", "objetivo": "Asegurar que la personalización de AuditOwner no deje fuera futuras acciones predeterminadas y gestionar brechas cross-geo.", "consolaRuta": "Exchange Online PowerShell", "procedimiento": ["Inspeccionar todos los buzones cuyo DefaultAuditSet difiera de Admin, Delegate, Owner y comparar sus listas AuditOwner/Delegate/Admin contra la línea base oficial vigente.", "Restaurar con Set-Mailbox -DefaultAuditSet Admin,Delegate,Owner cualquier buzón alterado sin justificación (reaplicando SearchQueryInitiated de forma controlada).", "En tenants Multi-Geo, auditar permisos cross-geo sobre buzones compartidos sabiendo que las acciones delegadas entre geografías distintas no se registran en el log del buzón compartido."], "rolResponsable": "Exchange Online Admin + Purview Engineer", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-01", "mitreTactic": "Defense Evasion", "evidenciaAuditable": "Reporte mensual de conformidad de acciones auditadas en el 100 % de buzones.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Efecto de personalizar acciones sobre DefaultAuditSet y limitación Multi-Geo en shared mailboxes verificados en Manage mailbox auditing.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-mailboxes", "pasosDetallados": ["Auditar todos los buzones donde `DefaultAuditSet` no sea `Admin, Delegate, Owner`. Si la personalización fue intencional (para incluir `SearchQueryInitiated` o `MailboxLogin`), validar contra una plantilla maestra que ninguna acción nueva publicada por Microsoft falte en `AuditOwner`, `AuditDelegate` o `AuditAdmin`; si fue accidental, restaurar con `Set-Mailbox -DefaultAuditSet Admin,Delegate,Owner`.", "En arquitecturas **Multi-Geo**, auditar asignaciones de permisos sobre buzones compartidos (`Shared Mailboxes`) entre regiones distintas, documentando el control compensatorio necesario dado que **Exchange no registra en el log del buzón compartido las acciones delegadas cross-geo** `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar que la personalización de AuditOwner no deje fuera futuras acciones predeterminadas y gestionar brechas cross-geo.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-02", "cadencia": "Mensual", "actividad": "Verificación de retención mayor a 1 año en Sentinel Data Lake para entidades no-usuario (Service Principals)", "objetivo": "Compensar la regla fija no configurable de 1 año en Purview Audit para principales de servicio, aplicaciones y eventos de sistema.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Data management > Tables", "procedimiento": ["Confirmar la política de retención multianual (hasta 12 años) en Microsoft Sentinel Data Lake sobre tablas que almacenan actividad de aplicaciones y service principals.", "Ejecutar una consulta de validación sobre registros de entidades no-usuario con antigüedad superior a 366 días.", "Documentar la evidencia de recuperabilidad para auditorías SEC, PCI-DSS y DORA."], "rolResponsable": "SIEM Architect + GRC Lead", "funcionNIST": "GV", "subcategoriaNIST": "GV.OC-03", "mitreTactic": "N/A (Non-Human Identity Long-Term Audit Retention)", "evidenciaAuditable": "Consulta mensual exitosa de registros > 1 año de service principals en Sentinel Data Lake.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Límite fijo de 1 año no extensible a 10 años para entidades no-usuario verificado en Learn about auditing solutions in Microsoft Purview.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-solutions-overview#comparison-of-key-capabilities", "pasosDetallados": ["Verificar que las tablas de actividad de aplicaciones, principales de servicio y administración en **Microsoft Sentinel Data Lake** mantengan configurada su política de retención de largo plazo (de 2 a 12 años según exigencia regulatoria SEC/DORA/PCI).", "Ejecutar una consulta de prueba sobre registros de principales de servicio con antigüedad > 366 días en el Data Lake para certificar recuperabilidad forense."], "disparadorAlerta": "Compensar la regla fija no configurable de 1 año en Purview Audit para principales de servicio, aplicaciones y eventos de sistema.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-03", "cadencia": "Mensual", "actividad": "Recertificación de roles Audit Manager, Audit Reader, Organization Configuration y permisos Graph", "objetivo": "Garantizar mínimo privilegio sobre quién puede leer o administrar logs sensibles de toda la organización.", "consolaRuta": "purview.microsoft.com > Settings > Roles and scopes > Role groups / entra.microsoft.com", "procedimiento": ["Revisar los integrantes de Audit Manager, Audit Reader y Organization Configuration y verificar el acotamiento por Administrative Units para equipos regionales.", "Auditar todas las Enterprise Applications en Entra ID con permisos AuditLogsQuery.Read.All o AuditLogsQuery-*.Read.All.", "Revocar accesos obsoletos y exigir autenticación con certificado o Managed Identity."], "rolResponsable": "Identity Governance Admin + CISO Office", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Account Manipulation (T1098)", "evidenciaAuditable": "Acta mensual de recertificación RBAC de auditoría y aplicaciones Graph.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Roles oficiales, alcance por Administrative Units y permisos por servicio en Graph verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-get-started#step-2-assign-permissions-to-search-the-audit-log", "pasosDetallados": ["Revisar miembros de *Audit Manager*, *Audit Reader* y *Organization Configuration* en Purview y roles *Audit Logs / View-Only Audit Logs* en Exchange Admin Center, verificando que investigadores regionales estén acotados a su **Administrative Unit**.", "Auditar todas las aplicaciones registradas en Entra ID con permisos de aplicación `AuditLogsQuery.Read.All` o `AuditLogsQuery-*.Read.All`, revocando aquellas sin propietario activo o que no usen certificados / Managed Identity."], "disparadorAlerta": "Garantizar mínimo privilegio sobre quién puede leer o administrar logs sensibles de toda la organización.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-04", "cadencia": "Mensual", "actividad": "Verificación Proof of Life de ingesta por carga de trabajo (Fabric/Power BI, Teams, Copilot, MIP, DLP)", "objetivo": "Detectar silencios de telemetría en servicios que requieren configuración específica en su propio portal administrativo.", "consolaRuta": "app.powerbi.com/admin-portal / purview.microsoft.com > Solutions > Audit", "procedimiento": ["Verificar en el portal de administración de Microsoft Fabric / Power BI que la auditoría permanezca habilitada.", "Ejecutar conteo mensual de registros por AuditLogRecordType crítico (PowerBIAudit, MicrosoftTeams, CopilotInteraction, MIPLabel, ComplianceDLPSharePoint, DLPEndpoint).", "Investigar cualquier caída abrupta o ausencia de eventos."], "rolResponsable": "Purview Compliance Admin", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-06", "mitreTactic": "Impair Defenses (T1562)", "evidenciaAuditable": "Matriz mensual de presencia activa de eventos por carga de trabajo.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Requisito de habilitar auditoría en el portal admin de Power BI y catálogo de RecordTypes verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-supported-services", "pasosDetallados": ["Ejecutar una consulta mensual de conteo por `RecordType` / `Workload` (`PowerBIAudit`, `CRM`, `MicrosoftTeams`, `CopilotInteraction`, `MIPLabel`, `ComplianceDLPSharePoint`, `ComplianceDLPExchange`, `DLPEndpoint`).", "Investigar cualquier caída abrupta a cero en cargas habilitadas corporativamente."], "disparadorAlerta": "Detectar silencios de telemetría en servicios que requieren configuración específica en su propio portal administrativo.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-05", "cadencia": "Mensual", "actividad": "Control interno sobre búsquedas ejecutadas en Purview Audit (Auditing the Auditors)", "objetivo": "Auditar el historial de búsquedas realizadas por analistas y administradores para prevenir consultas abusivas sin caso asociado.", "consolaRuta": "purview.microsoft.com > Solutions > Audit > Search", "procedimiento": ["Inspeccionar el historial de 30 días del Search job dashboard revisando Search performed by, criterios aplicados y búsquedas sin filtros.", "Cotejar una muestra representativa de consultas humanas y llamadas a security/auditLog/queries contra tickets válidos en ITSM/SOAR.", "Escalar al DPO y CISO cualquier búsqueda no justificada sobre buzones ejecutivos o datos de RR. HH."], "rolResponsable": "Internal Audit / Data Protection Officer (DPO)", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-01", "mitreTactic": "Valid Accounts (T1078) — Insider Abuse Prevention", "evidenciaAuditable": "Informe mensual de auditoría interna sobre consultas forenses ejecutadas.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Basado en el historial de 30 días de Search jobs documentado en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-search#search-job-dashboard", "pasosDetallados": ["Revisar en el **Search job dashboard** la columna **Search performed by**, los criterios de usuarios buscados y las búsquedas sin filtros ejecutadas en los últimos 30 días, además de las llamadas registradas a `security/auditLog/queries`.", "Validar una muestra aleatoria del 15 % contra números de ticket de incidente SOC, caso de RR. HH. o requerimiento legal válido."], "disparadorAlerta": "Auditar el historial de búsquedas realizadas por analistas y administradores para prevenir consultas abusivas sin caso asociado.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-01", "cadencia": "Trimestral", "actividad": "Prueba práctica de recuperación forense histórica a 1 año y 10 años vía Microsoft Graph AuditLogQuery", "objetivo": "Demostrar empíricamente la recuperabilidad e integridad de registros antiguos cubiertos por políticas de 1 y 10 años.", "consolaRuta": "POST /v1.0/security/auditLog/queries / purview.microsoft.com > Solutions > Audit", "procedimiento": ["Ejecutar consultas históricas sobre rangos de 11 meses atrás (población E5 general) y mayores a 12 meses (custodios con add-on de 10 años), respetando el máximo de 180 días por consulta.", "Descargar los registros, validar isRecordCountLimitExceeded = false y parsear AuditData.", "Confirmar la presencia íntegra de SensitivityLabel en MailItemsAccessed y AccessedResources en CopilotInteraction."], "rolResponsable": "DFIR Lead + Legal / Compliance Officer", "funcionNIST": "RC", "subcategoriaNIST": "RC.RP-05", "mitreTactic": "N/A (Long-Term Forensic Recoverability Test)", "evidenciaAuditable": "Acta trimestral de prueba exitosa de recuperación histórica de 1 y 10 años.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Ventana máxima de 180 días por búsqueda y retención de 1 a 10 años verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-log-retention-policies", "pasosDetallados": ["Seleccionar una ventana histórica de hace 11 meses (para usuarios E5 estándar) y ventanas > 12 meses (para custodios con add-on de 10 años), recordando respetar el máximo de **180 días de rango por cada trabajo de búsqueda** `[Verificado MS Learn]`.", "Ejecutar la extracción mediante Microsoft Graph `AuditLogQuery`, descargar los registros (`GET .../records`), transformar la columna JSON `AuditData` y verificar integridad de campos clave (`SensitivityLabel` en `MailItemsAccessed`, `AccessedResources` en `CopilotInteraction`)."], "disparadorAlerta": "Demostrar empíricamente la recuperabilidad e integridad de registros antiguos cubiertos por políticas de 1 y 10 años.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-02", "cadencia": "Trimestral", "actividad": "Optimización de tiempos de búsqueda asíncrona y evaluación de cuotas dinámicas de API", "objetivo": "Reducir tiempos de respuesta en investigaciones grandes y validar holgura en cuotas de Management Activity API y Graph.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel / Telemetría Microsoft Graph", "procedimiento": ["Analizar la duración de los trabajos de búsqueda del trimestre (evitando consultas amplias sin filtros que pueden demorar hasta 48 h).", "Actualizar las plantillas de consulta DFIR para incluir siempre recordTypeFilters y operationFilters exactos.", "Revisar el rendimiento de ingesta SIEM frente al crecimiento de asientos E5 del tenant."], "rolResponsable": "SIEM / SecOps Architect", "funcionNIST": "ID", "subcategoriaNIST": "ID.IM-01", "mitreTactic": "N/A (Query Performance Optimization)", "evidenciaAuditable": "Reporte trimestral de tiempos medios de extracción forense y salud de APIs.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tiempo de hasta 48 h en consultas amplias en tenants grandes y cuotas dinámicas E5 verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-search#get-started-with-search", "pasosDetallados": ["Analizar los tiempos promedio de finalización (`Search time`) de los trabajos de auditoría del trimestre e instruir a los analistas en acotar siempre `recordTypeFilters`, `operationFilters` y `userPrincipalNameFilters`.", "Verificar la relación entre crecimiento de licencias E5 del tenant y la cuota dinámica asignada en Office 365 Management Activity API."], "disparadorAlerta": "Reducir tiempos de respuesta en investigaciones grandes y validar holgura en cuotas de Management Activity API y Graph.", "tipoAccion": "Periódica Programada"}, {"codigo": "SM-01", "cadencia": "Semestral", "actividad": "Simulacro DFIR de intrusión BEC / Nación-Estado con reconstrucción pericial de alcance de brecha", "objetivo": "Validar en escenario controlado la delimitación exacta de correos y archivos comprometidos mediante Audit (Premium).", "consolaRuta": "purview.microsoft.com > Solutions > Audit / Microsoft Graph AuditLogQuery / security.microsoft.com", "procedimiento": ["Ejecutar en cuentas de laboratorio un ataque simulado que incluya búsquedas en OWA/SharePoint, lectura Bind de correos etiquetados, interacción Copilot sobre archivo confidencial y regla de ocultamiento.", "Reconstruir desde el SOC la cronología completa usando SessionId, InternetMessageId, SensitivityLabel y AccessedResources.", "Emitir un dictamen legal simulado probando qué elementos exactos fueron expuestos y cuáles permanecieron intactos."], "rolResponsable": "CISO + SOC Manager + DFIR Lead + General Counsel", "funcionNIST": "RS", "subcategoriaNIST": "RS.MA-01", "mitreTactic": "Collection & Exfiltration (T1114.002 / T1530)", "evidenciaAuditable": "Informe pericial del ejercicio semestral y plan de mejora continua.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Basado en el procedimiento oficial de investigación con MailItemsAccessed de Microsoft Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-log-investigate-accounts", "pasosDetallados": ["Simular en un buzón y sitio de prueba E5 una intrusión controlada: inicio de sesión desde IP de laboratorio, ejecución de 3 búsquedas en OWA (`SearchQueryInitiatedExchange`) y SharePoint (`SearchQueryInitiatedSharePoint`), apertura individual `Bind` de 5 correos (2 de ellos con etiqueta *Highly Confidential*), un `Prompt` en Copilot accediendo a un documento etiquetado (`CopilotInteraction`) y creación de una regla de reenvío (`UpdateInboxRules`).", "El equipo DFIR debe reconstruir la línea de tiempo exacta por `SessionId`, listar los 5 `InternetMessageId` comprometidos, identificar cuáles tenían `SensitivityLabel` crítico y demostrar matemáticamente que los miles de correos restantes del buzón **no fueron accedidos**."], "disparadorAlerta": "Validar en escenario controlado la delimitación exacta de correos y archivos comprometidos mediante Audit (Premium).", "tipoAccion": "Periódica Programada"}, {"codigo": "A-01", "cadencia": "Anual", "actividad": "Revisión anual de arquitectura regulatoria de retención (180d vs. 1y vs. 10y Add-on vs. Sentinel Data Lake)", "objetivo": "Alinear inversiones de licenciamiento y políticas de retención de logs con obligaciones legales vigentes.", "consolaRuta": "purview.microsoft.com > Solutions > Audit > Audit retention policies / Compliance Manager", "procedimiento": ["Evaluar cambios regulatorios anuales (SEC 17a-4, DORA, HIPAA, PCI-DSS v4.0, CISA M-24-04, Ley 21.719 de Chile).", "Actualizar el padrón de puestos sujetos a 10-Year Audit Log Retention add-on y las tablas retenidas en Sentinel Data Lake.", "Validar el presupuesto anual para licencias add-on y medidores PAYG de auditoría IA externa."], "rolResponsable": "CISO + Chief Compliance Officer + General Counsel + FinOps", "funcionNIST": "GV", "subcategoriaNIST": "GV.PO-02", "mitreTactic": "N/A (Annual Audit Governance Strategy)", "evidenciaAuditable": "Matriz Corporativa Anual de Retención Forense aprobada por Dirección.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Gobierno anual recomendado integrando Purview Audit y Sentinel Data Lake.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-solutions-overview", "pasosDetallados": ["Revisar qué poblaciones requieren asignación del add-on **10-Year Audit Log Retention** en Purview (búsqueda nativa en el portal/Graph) frente a qué cargas se retienen en **Microsoft Sentinel Data Lake** (incluyendo entidades no humanas > 1 año).", "Aprobar el presupuesto anual de licencias add-on de 10 años, medidores PAYG de auditoría IA no-Microsoft y almacenamiento Data Lake."], "disparadorAlerta": "Alinear inversiones de licenciamiento y políticas de retención de logs con obligaciones legales vigentes.", "tipoAccion": "Periódica Programada"}, {"codigo": "AH-01", "cadencia": "Ad-Hoc", "actividad": "Playbook forense de respuesta a compromiso BEC / robo de token (MailItemsAccessed Bind vs. Sync e IsThrottled)", "objetivo": "Contener la cuenta comprometida y determinar con exactitud probatoria el alcance de exposición de correos y archivos.", "consolaRuta": "Microsoft Graph AuditLogQuery v1.0 / Exchange Online PowerShell / entra.microsoft.com", "procedimiento": ["Deshabilitar cuenta o rotar credenciales, ejecutar Revoke-MgUserSignInSession, limpiar MFA/OAuth sospechosos e inspeccionar Get-InboxRule -IncludeHidden.", "Consultar vía Graph AuditLogQuery todos los eventos MailItemsAccessed del periodo comprometido verificando primero si hubo Sync o IsThrottled = True bajo la sesión/IP del atacante (en cuyo caso se asume compromiso total de la carpeta/buzón).", "Si solo existieron accesos Bind sin throttling, extraer cada InternetMessageId y su propiedad SensitivityLabel (Audit Premium) asociados al SessionId malicioso.", "Correlacionar SearchQueryInitiatedExchange, SearchQueryInitiatedSharePoint, Send, SendAs y HardDelete para documentar intención y acciones del atacante."], "rolResponsable": "DFIR Lead + SOC L2/L3 + Legal", "funcionNIST": "RS", "subcategoriaNIST": "RS.AN-03", "mitreTactic": "Account Compromise & Remote Email Collection (T1078 / T1114.002)", "evidenciaAuditable": "Paquete forense JSON/CSV con hash SHA-256 e inventario exacto de InternetMessageId y SensitivityLabel expuestos.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Secuencia oficial verificada en Respond to a compromised email account y Use MailItemsAccessed to investigate compromised accounts.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-log-investigate-accounts", "pasosDetallados": ["**Contención inmediata:** Deshabilitar cuenta o rotar credenciales, revocar todas las sesiones y refresh tokens (`Revoke-MgUserSignInSession -UserId <UPN>`), auditar dispositivos MFA registrados, revocar consentimientos OAuth maliciosos e inspeccionar reenvíos SMTP y reglas ocultas (`Get-InboxRule -Mailbox <UPN> -IncludeHidden`) `[Verificado MS Learn]`.", "**Acotamiento de ventana y sesión:** Identificar en Entra Sign-in Logs las direcciones `ClientIPAddress`, `AppId` y ventanas UTC exactas del actor malicioso.", "**Evaluación de `Sync` y `IsThrottled`:** Consultar vía Graph `AuditLogQuery` todas las operaciones `MailItemsAccessed` del usuario afectado. Verificar primero si existe algún registro con `MailAccessType = Sync` bajo la IP/sesión del atacante o si se disparó `IsThrottled = True` (> 1.000 eventos en 24 h): de ser así, declarar comprometida la totalidad de la carpeta/buzón sincronizado o la ventana de 24 h estrangulada `[Verificado MS Learn]`.", "**Extracción quirúrgica `Bind` y etiquetas MIP:** Si el atacante operó solo mediante `Bind` sin *throttling*, extraer todos los `InternetMessageId` y su propiedad `SensitivityLabel` (Audit Premium) asociados al `SessionId` / `ClientIPAddress` malicioso para determinar con exactitud milimétrica qué correos e información regulada (PII/PHI/Financiera) fueron expuestos `[Verificado MS Learn]`.", "**Reconstrucción de búsquedas y envíos:** Consultar `SearchQueryInitiatedExchange`, `SearchQueryInitiatedSharePoint`, `Send`, `SendAs`, `SendOnBehalf` y `HardDelete` en el mismo rango para conocer qué buscó, qué envió y qué intentó borrar el atacante `[Verificado MS Learn]`."], "disparadorAlerta": "Alerta confirmada de robo de sesión AiTM, credencial comprometida en Entra ID, regla maliciosa de buzón o envío fraudulento BEC `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-02", "cadencia": "Ad-Hoc", "actividad": "Playbook de investigación forense de reconocimiento o exfiltración asistida por Copilot / Agent 365", "objetivo": "Determinar qué documentos, correos y chats leyó un atacante o insider mediante prompts de IA o agentes autónomos.", "consolaRuta": "POST /v1.0/security/auditLog/queries / purview.microsoft.com > Solutions > eDiscovery", "procedimiento": ["Ejecutar consulta Graph AuditLogQuery para el usuario o instancia de Agent 365 filtrando CopilotInteraction, ConnectedAIAppInteraction y AIAppInteraction.", "Extraer de AccessedResources todos los archivos, sitios y correos utilizados como grounding junto con SensitivityLabelId, PolicyDetails y XPIADetected.", "Abrir caso en Purview eDiscovery filtrando el buzón por Type = Copilot activity para preservar y exportar el contenido literal de prompts y respuestas."], "rolResponsable": "DFIR Lead + AI Security Analyst + eDiscovery Manager", "funcionNIST": "RS", "subcategoriaNIST": "RS.AN-03", "mitreTactic": "MITRE ATLAS AML.T0051 / Automated Collection via LLM", "evidenciaAuditable": "Listado pericial de AccessedResources y colección preservada en eDiscovery.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Flujo combinado Purview Audit (AccessedResources) + Purview eDiscovery (Type = Copilot activity) verificado en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-copilot", "pasosDetallados": ["Ejecutar consulta en Graph `AuditLogQuery` filtrando por el `userPrincipalNameFilters` del usuario (o identidad de la instancia de **Agent 365**) y `operationFilters = [\"CopilotInteraction\", \"ConnectedAIAppInteraction\", \"AIAppInteraction\"]`.", "Desempaquetar en cada registro el arreglo **`AccessedResources`** para obtener la lista completa de documentos SharePoint/OneDrive, correos y chats de Teams que Copilot leyó como *grounding* (`SiteUrl`, `Name`, `SensitivityLabelId`, `Action`), así como `AISystemPlugin` utilizados y banderas `XPIADetected` / `JailbreakDetected` `[Verificado MS Learn]`.", "Si se requiere inspeccionar el texto literal del prompt y la respuesta entregada al atacante, escalar a **Purview eDiscovery** ejecutando una colección sobre el buzón del usuario con la condición `Type = Copilot activity` `[Verificado MS Learn]`."], "disparadorAlerta": "Incidente donde un atacante con cuenta comprometida o un *insider* malicioso utilizó Microsoft 365 Copilot o un agente autónomo para resumir y localizar secretos corporativos a velocidad de máquina `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-03", "cadencia": "Ad-Hoc", "actividad": "Playbook crítico ante desactivación maliciosa de auditoría o activación de Mailbox Audit Bypass", "objetivo": "Restablecer de inmediato la recolección forense y contener la cuenta privilegiada responsable de la manipulación.", "consolaRuta": "Exchange Online PowerShell / entra.microsoft.com / security.microsoft.com", "procedimiento": ["Ejecutar inmediatamente Set-AdminAuditLogConfig -UnifiedAuditLogIngestionEnabled $true, Set-OrganizationConfig -AuditDisabled $false y revertir cualquier Set-MailboxAuditBypassAssociation.", "Bloquear y revocar sesiones de la identidad privilegiada que ejecutó el cambio tratándola como incidente Tier-0.", "Reconstruir la actividad durante la ventana ciega utilizando Entra ID Sign-in/Audit Logs, Message Trace y telemetría Defender XDR."], "rolResponsable": "SOC Manager + Exchange/Purview Tier-0 Admin", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Impair Defenses: Disable or Modify Cloud Logs (T1562.008)", "evidenciaAuditable": "Evidencia de reactivación del pipeline y reporte de incidente crítico Tier-0.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Comandos de reactivación y comportamiento de override organizacional verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-mailboxes#turn-on-mailbox-auditing-on-by-default", "pasosDetallados": ["**Restauración inmediata del control:** Ejecutar `Set-AdminAuditLogConfig -UnifiedAuditLogIngestionEnabled $true`, `Set-OrganizationConfig -AuditDisabled $false` y revertir cualquier `Set-MailboxAuditBypassAssociation -AuditBypassEnabled $false` `[Verificado MS Learn]`.", "Aislar y revocar sesiones de la cuenta administrativa que ejecutó el cambio, tratándola como compromiso de privilegios Tier-0 hasta demostrar lo contrario.", "Reconstruir la actividad ocurrida durante la ventana ciega apoyándose en fuentes independientes inmutables: **Entra ID Sign-in/Audit Logs**, **Message Trace**, **Defender for Endpoint / CloudAppEvents** y logs de red."], "disparadorAlerta": "Detección de `Set-AdminAuditLogConfig -UnifiedAuditLogIngestionEnabled $false`, `Set-OrganizationConfig -AuditDisabled $true`, `Set-MailboxAuditBypassAssociation -AuditBypassEnabled $true` o borrado de políticas de retención `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-04", "cadencia": "Ad-Hoc", "actividad": "Extracción probatoria multianual (hasta 10 años) para litigios o inspecciones regulatorias", "objetivo": "Exportar sin pérdida ni truncamiento años completos de actividad auditada cumpliendo cadena de custodia.", "consolaRuta": "Microsoft Graph AuditLogQuery v1.0 / Microsoft Sentinel Data Lake", "procedimiento": ["Segmentar el horizonte multianual requerido en ventanas consecutivas de hasta 180 días y lanzar hasta 10 consultas paralelas en Graph AuditLogQuery.", "Confirmar status = succeeded e isRecordCountLimitExceeded = false en cada segmento (subdividiendo si supera 1 millón de eventos).", "Complementar desde Sentinel Data Lake cualquier registro de service principals o sistema con antigüedad mayor a 1 año."], "rolResponsable": "DFIR Lead + Legal / eDiscovery Lead", "funcionNIST": "RC", "subcategoriaNIST": "RC.CO-03", "mitreTactic": "N/A (Multi-Year Regulatory & Legal Production)", "evidenciaAuditable": "Repositorio sellado criptográficamente con la totalidad de segmentos semestrales exportados.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tope de 180 días por consulta, límite de 1M de registros en Graph y tope de 1 año en SPNs verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/graph/api/resources/security-auditlogquery?view=graph-rest-1.0", "pasosDetallados": ["Dividir el periodo multianual solicitado en bloques consecutivos de **máximo 180 días** cada uno (límite técnico por consulta de búsqueda en Purview Audit) y lanzar hasta **10 trabajos en paralelo** por cuenta autorizada `[Verificado MS Learn]`.", "Verificar en cada lote completado que `status == \"succeeded\"` e **`isRecordCountLimitExceeded == false`**; si algún semestre excede el millón de registros, subdividirlo en bloques mensuales o semanales `[Verificado MS Learn]`.", "Para actividades de principales de servicio o aplicaciones con antigüedad mayor a 1 año (no cubiertas por políticas de 10 años de Purview), extraer los registros complementarios desde **Microsoft Sentinel Data Lake** `[Verificado MS Learn]`."], "disparadorAlerta": "Requerimiento formal de regulador (SEC, FINRA, Superintendencia, Autoridad de Protección de Datos) o litigio judicial que exige trazas de auditoría de entre 1 y 10 años atrás `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-05", "cadencia": "Ad-Hoc", "actividad": "Blindaje urgente de auditoría de 10 años y SearchQueryInitiated para nuevos custodios críticos o M&A", "objetivo": "Activar preventivamente la máxima profundidad y retención forense antes de operaciones corporativas sensibles.", "consolaRuta": "admin.microsoft.com / purview.microsoft.com > Solutions > Audit > Audit retention policies / EXO PowerShell", "procedimiento": ["Asignar licencias E5/Purview Suite (con Microsoft 365 Advanced Auditing activo) más el add-on 10-Year Audit Log Retention a los custodios designados.", "Agregar los usuarios a una política personalizada de retención TenYears con prioridad alta (recordando que aplica desde el momento de creación en adelante).", "Habilitar SearchQueryInitiated y MailboxLogin en AuditOwner para sus buzones en el forest correspondiente."], "rolResponsable": "Purview Compliance Admin + Exchange Admin", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-04", "mitreTactic": "N/A (High-Risk Custodian Forensic Readiness)", "evidenciaAuditable": "Verificación de licencia 10Y, política activa y configuración AuditOwner del grupo de custodios.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "No-retroactividad de políticas de 10 años y configuración de acciones de buzón verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-log-retention-policies", "pasosDetallados": ["Asignar inmediatamente a los usuarios objetivo la licencia E5 / Purview Suite (verificando el check **Microsoft 365 Advanced Auditing**) y el add-on **10-Year Audit Log Retention** `[Verificado MS Learn]`.", "Incluir a los usuarios en una política personalizada de retención de auditoría con `Duration = 10 Years` y alta prioridad numérica (ej. `Priority = 10`), recordando que protege todos los eventos generados **a partir de ese momento** `[Verificado MS Learn]`.", "Habilitar en sus buzones tanto `SearchQueryInitiated` como `MailboxLogin` en `AuditOwner` (`Set-Mailbox -AuditOwner @{Add=\"SearchQueryInitiated\",\"MailboxLogin\"}`) `[Verificado MS Learn]`."], "disparadorAlerta": "Fusión/adquisición (M&A), investigación interna incipiente o designación de nuevos ejecutivos/administradores Tier-0 `[Decisión / Propuesta Editorial]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}], "consultasKQLyVerificacion": [{"nombre": "Búsqueda forense asíncrona BEC (MailItemsAccessed y SearchQueryInitiated) vía Microsoft Graph AuditLogQuery v1.0", "plataforma": "Microsoft Graph PowerShell SDK v1.0 (GA octubre 2026)", "tablaPrincipal": "security/auditLog/queries", "consulta": "Connect-MgGraph -Scopes \"AuditLogsQuery-Exchange.Read.All\", \"AuditLogsQuery-SharePoint.Read.All\"\n$body = @{\n  \"@odata.type\" = \"#microsoft.graph.security.auditLogQuery\"\n  displayName = \"BEC-Forensic-MailItemsAccessed-SearchQuery\"\n  filterStartDateTime = (Get-Date).AddDays(-14).ToUniversalTime().ToString(\"o\")\n  filterEndDateTime = (Get-Date).ToUniversalTime().ToString(\"o\")\n  userPrincipalNameFilters = @(\"ejecutivo.afectado@contoso.com\")\n  operationFilters = @(\"MailItemsAccessed\", \"Send\", \"SendAs\", \"UpdateInboxRules\", \"SearchQueryInitiatedExchange\", \"SearchQueryInitiatedSharePoint\")\n}\n$job = Invoke-MgGraphRequest -Method POST -Uri \"https://graph.microsoft.com/v1.0/security/auditLog/queries\" -Body ($body | ConvertTo-Json -Depth 5)\nWrite-Output \"AuditLogQuery ID: $($job.id) - Status: $($job.status)\"", "proposito": "Sustituir definitivamente Search-UnifiedAuditLog (retiro 15-oct-2027) ejecutando consultas escalables de hasta 1 millón de registros con permisos de mínimo privilegio.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Validación de Configuración y Postura"}, {"nombre": "Detección de estrangulamiento MailItemsAccessed (IsThrottled = True) y sincronización Sync sospechosa", "plataforma": "Microsoft Defender XDR Advanced Hunting (KQL)", "tablaPrincipal": "CloudAppEvents", "consulta": "CloudAppEvents\n| where Timestamp > ago(24h)\n| where ActionType == \"MailItemsAccessed\"\n| extend OpProps = parse_json(tostring(RawEventData.OperationProperties))\n| mv-apply Prop = OpProps on (\n    summarize\n      MailAccessType = take_anyif(tostring(Prop.Value), tostring(Prop.Name) == \"MailAccessType\"),\n      IsThrottled = take_anyif(tostring(Prop.Value), tostring(Prop.Name) == \"IsThrottled\")\n)\n| where IsThrottled =~ \"True\" or MailAccessType =~ \"Sync\"\n| project Timestamp, AccountDisplayName, IPAddress, CountryCode, MailAccessType, IsThrottled, SessionId = tostring(RawEventData.SessionId)", "proposito": "Alertar cuando un buzón supera los 1.000 registros MailItemsAccessed en 24 h (quedando sin logs por 24 h) o sufre descarga completa de carpetas.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Auditoría forense de CopilotInteraction para detectar XPIADetected, JailbreakDetected y etiquetas sensibles", "plataforma": "Microsoft Sentinel / Log Analytics (KQL)", "tablaPrincipal": "OfficeActivity", "consulta": "OfficeActivity\n| where TimeGenerated > ago(7d)\n| where Operation in (\"CopilotInteraction\", \"ConnectedAIAppInteraction\", \"AIAppInteraction\")\n| extend Data = parse_json(AuditData)\n| mv-expand Msg = Data.Messages\n| extend JailbreakDetected = tobool(Msg.JailbreakDetected)\n| mv-expand Res = Data.AccessedResources\n| extend ResourceName = tostring(Res.Name), SensitivityLabelId = tostring(Res.SensitivityLabelId), XPIADetected = tobool(Res.XPIADetected)\n| where JailbreakDetected == true or XPIADetected == true or isnotempty(SensitivityLabelId)\n| project TimeGenerated, UserId, Operation, AppHost = tostring(Data.AppHost), AgentId = tostring(Data.AgentId), ResourceName, SensitivityLabelId, JailbreakDetected, XPIADetected", "proposito": "Rastrear recursos confidenciales leídos por Copilot/Agent 365 y detectar ataques de Cross-Prompt Injection (XPIA) o jailbreak.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Verificación del pipeline UAL, AuditDisabled, Bypass y habilitación de SearchQueryInitiatedExchange", "plataforma": "Exchange Online PowerShell", "tablaPrincipal": "AdminAuditLogConfig / OrganizationConfig / Mailbox", "consulta": "Connect-ExchangeOnline -ShowBanner:$false\nGet-AdminAuditLogConfig | Format-List UnifiedAuditLogIngestionEnabled\nGet-OrganizationConfig | Format-List AuditDisabled\nGet-MailboxAuditBypassAssociation -ResultSize Unlimited | Where-Object { $_.AuditBypassEnabled -eq $true }\nSet-Mailbox -Identity \"cfo@contoso.com\" -AuditOwner @{Add=\"SearchQueryInitiated\"}\nGet-Mailbox -Identity \"cfo@contoso.com\" | Select-Object UserPrincipalName, DefaultAuditSet, AuditOwner", "proposito": "Comprobar en Exchange Online PowerShell el estado real de la auditoría y activar la captura de búsquedas en buzones sin sobrescribir acciones existentes.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Validación de Configuración y Postura"}, {"nombre": "Auditoría de prioridades y creación de políticas de retención de 10 años", "plataforma": "Security & Compliance PowerShell", "tablaPrincipal": "UnifiedAuditLogRetentionPolicy", "consulta": "Connect-IPPSSession\nGet-UnifiedAuditLogRetentionPolicy | Sort-Object Priority | Format-Table Priority, Name, RetentionDuration, RecordTypes, Operations, UserIds\nNew-UnifiedAuditLogRetentionPolicy -Name \"Retencion-10Y-Teams-Ejecutivos\" -Description \"Retencion de 10 anos para Microsoft Teams\" -RecordTypes MicrosoftTeams -RetentionDuration TenYears -Priority 50", "proposito": "Auditar el orden de precedencia (1 a 10000) de las hasta 50 políticas personalizadas y extender retención decenal a cargas fuera del default de 1 año.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Validación de Configuración y Postura"}, {"nombre": "Caza de términos críticos buscados por atacantes en Exchange y SharePoint", "plataforma": "Microsoft Sentinel / Defender Unified SecOps (KQL)", "tablaPrincipal": "OfficeActivity", "consulta": "OfficeActivity\n| where TimeGenerated > ago(14d)\n| where Operation in (\"SearchQueryInitiatedExchange\", \"SearchQueryInitiatedSharePoint\")\n| extend Details = parse_json(AuditData)\n| extend QueryText = coalesce(tostring(Details.QueryText), tostring(Details.SearchQueryText))\n| where QueryText has_any (\"password\", \"contraseña\", \"secret\", \"token\", \"swift\", \"wire\", \"confidencial\", \"keyvault\")\n| project TimeGenerated, UserId, Operation, QueryText, ClientIP", "proposito": "Descubrir qué palabras exactas buscó un actor malicioso dentro del buzón o en sitios de SharePoint/OneDrive.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Regla analítica en tiempo real contra desactivación o evasión de auditoría (Anti-Tampering)", "plataforma": "Microsoft Sentinel Analytics (KQL)", "tablaPrincipal": "OfficeActivity", "consulta": "OfficeActivity\n| where TimeGenerated > ago(1d)\n| where Operation in (\"Set-AdminAuditLogConfig\", \"Set-MailboxAuditBypassAssociation\", \"Remove-UnifiedAuditLogRetentionPolicy\", \"Set-UnifiedAuditLogRetentionPolicy\") or (Operation == \"Set-OrganizationConfig\" and AuditData has \"AuditDisabled\")\n| project TimeGenerated, UserId, Operation, ClientIP, Parameters, AuditData", "proposito": "Disparar incidente crítico inmediato ante cualquier intento administrativo de apagar UAL, deshabilitar mailbox auditing, activar bypass o degradar políticas de retención.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}], "kpisYMetricas": [{"id": "KPI-01", "nombre": "Cobertura Efectiva del Plan Microsoft 365 Advanced Auditing en Población E5", "definicion": "Porcentaje de usuarios con licencia E5 o Microsoft Purview Suite que tienen efectivamente habilitado el service plan Microsoft 365 Advanced Auditing.", "formula": "(Usuarios E5/Purview Suite con Advanced Auditing habilitado / Total usuarios E5/Purview Suite activos) * 100", "metaSugerida": "100 %", "frecuencia": "Semanal", "audiencia": "CISO, Purview Admin, Identity Lead", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Garantiza generación de Intelligent Insights y retención predeterminada de 1 año."}, {"id": "KPI-02", "nombre": "Cobertura de Activación de SearchQueryInitiatedExchange en Buzones", "definicion": "Porcentaje de buzones en alcance que cuentan con SearchQueryInitiated habilitado en AuditOwner conservando el conjunto completo de acciones base.", "formula": "(Buzones con SearchQueryInitiated activo y acciones base íntegras / Total buzones en alcance) * 100", "metaSugerida": "100 %", "frecuencia": "Semanal", "audiencia": "SOC Manager, DFIR Lead", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Compensa que SearchQueryInitiatedExchange venga apagado de fábrica."}, {"id": "KPI-03", "nombre": "Integridad Continua del Pipeline UAL y Cero Bypass No Autorizado", "definicion": "Porcentaje del tiempo en que UnifiedAuditLogIngestionEnabled es True, AuditDisabled es False y no existen cuentas no aprobadas en MailboxAuditBypassAssociation.", "formula": "(Controles diarios de integridad conformes / Total verificaciones diarias del mes) * 100", "metaSugerida": "100 %", "frecuencia": "Diaria / Mensual", "audiencia": "CISO, Internal Audit", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Control primario contra MITRE T1562.008."}, {"id": "KPI-04", "nombre": "Porcentaje de Migración a Microsoft Graph AuditLogQuery API (MC1505599)", "definicion": "Proporción de scripts, playbooks e integraciones migradas desde Search-UnifiedAuditLog hacia Microsoft Graph AuditLogQuery v1.0.", "formula": "(Automatizaciones operando en Graph AuditLogQuery v1.0 / Total automatizaciones que consultan Purview Audit) * 100", "metaSugerida": "100 % antes de Q2 2027 (retiro definitivo 15-oct-2027)", "frecuencia": "Semanal / Mensual", "audiencia": "SecOps Engineering Lead, SOC Manager", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Mitiga el riesgo de interrupción operativa anunciado en MC1505599."}, {"id": "KPI-05", "nombre": "Tiempo Medio de Triaje ante Estrangulamiento MailItemsAccessed (IsThrottled)", "definicion": "Tiempo promedio desde la detección de un evento MailItemsAccessed con IsThrottled = True hasta la validación o contención por el SOC.", "formula": "Promedio(Timestamp inicio triaje SOC - Timestamp evento IsThrottled = True)", "metaSugerida": "<= 30 minutos", "frecuencia": "Diaria", "audiencia": "SOC Manager, DFIR Lead", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Crítico dado que el buzón pierde registros MailItemsAccessed durante 24 horas."}, {"id": "KPI-06", "nombre": "Conformidad de Retención Regulatoria (1 Año / 10 Años / Data Lake SPN)", "definicion": "Cumplimiento de licencias y políticas de 10 años para usuarios regulados junto con retención > 1 año en Sentinel Data Lake para principales de servicio.", "formula": "(Ámbitos regulados humanos y no-humanos conformes / Total ámbitos regulados definidos) * 100", "metaSugerida": "100 %", "frecuencia": "Mensual / Trimestral", "audiencia": "Chief Compliance Officer, Legal, GRC", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Cubre la brecha de 1 año fijo en entidades no-usuario dentro de Purview Audit."}, {"id": "KPI-07", "nombre": "Tasa de Extracciones Forenses Sin Truncamiento (isRecordCountLimitExceeded = false)", "definicion": "Porcentaje de consultas probatorias en Microsoft Graph AuditLogQuery completadas sin exceder el límite de 1 millón de registros por trabajo.", "formula": "(Consultas cerradas con isRecordCountLimitExceeded == false / Total consultas probatorias DFIR y Legal) * 100", "metaSugerida": "100 %", "frecuencia": "Mensual", "audiencia": "DFIR Lead, General Counsel", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Garantiza completitud admisible en juicio o auditoría regulatoria."}, {"id": "KPI-08", "nombre": "Salud y Puntualidad del Streaming OfficeActivity hacia Microsoft Sentinel", "definicion": "Porcentaje de ventanas horarias donde la ingesta continua desde Office 365 Management Activity API se mantiene activa y con latencia <= 90 minutos.", "formula": "(Horas con ingesta saludable <= 90 min / Total horas del mes) * 100", "metaSugerida": ">= 99,5 %", "frecuencia": "Diaria / Semanal", "audiencia": "SIEM Architect, SOC Manager", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Aprovecha el doble ancho de banda dinámico de Audit (Premium)."}], "mapeoNISTCSF20": [{"funcion": "GOVERN (GV)", "subcategoria": "GV.OC-03", "descripcionResultado": "Los requisitos legales y regulatorios de preservación de trazas de auditoría y notificación de brechas se comprenden y gestionan.", "capacidadMicrosoft": "Retención predeterminada de 1 año en E5, hasta 50 políticas personalizadas (hasta 10 años con add-on) y archivo complementario en Sentinel Data Lake.", "evidenciaAuditoria": "Salida auditada de Get-UnifiedAuditLogRetentionPolicy y Matriz Anual de Retención aprobada.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "GOVERN (GV)", "subcategoria": "GV.RR-02", "descripcionResultado": "Los roles y autoridades sobre configuración de retención, administración del pipeline y lectura forense están segregados.", "capacidadMicrosoft": "Separación entre Organization Configuration, Audit Manager, Audit Reader, Administrative Units y permisos Graph por carga.", "evidenciaAuditoria": "Actas mensuales de recertificación de grupos de roles Purview y registros de aplicaciones Entra.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.AM-03", "descripcionResultado": "Se mantiene visibilidad autoritativa de aplicaciones conectadas, flujos de datos y agentes autónomos.", "capacidadMicrosoft": "Propiedades AppAccessContext en Teams, AttachmentAccess en Graph e identificadores AppIdentity y AgentId (Microsoft Agent 365).", "evidenciaAuditoria": "Inventario mensual de aplicaciones OAuth y agentes IA con actividad registrada en UAL.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.RA-05", "descripcionResultado": "La sensibilidad de los activos impactados guía la priorización de riesgos e investigaciones.", "capacidadMicrosoft": "Propiedad exclusiva SensitivityLabel en MailItemsAccessed y SensitivityLabelId dentro de AccessedResources en CopilotInteraction.", "evidenciaAuditoria": "Consultas forenses correlacionando accesos con etiquetas críticas de Purview Information Protection.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.PS-04", "descripcionResultado": "Los registros de auditoría se generan de manera consistente y están protegidos frente a desactivación o borrado.", "capacidadMicrosoft": "Inmutabilidad de registros en el pipeline UAL, UnifiedAuditLogIngestionEnabled = True, AuditDisabled = False y control de MailboxAuditBypassAssociation.", "evidenciaAuditoria": "Verificaciones diarias automatizadas en EXO PowerShell y regla activa anti-tampering en Sentinel.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.AA-05", "descripcionResultado": "El acceso de consulta al repositorio de auditoría aplica mínimo privilegio por región y carga de trabajo.", "capacidadMicrosoft": "Alcance por Administrative Units en el portal Purview y permisos granulares AuditLogsQuery-<Workload>.Read.All en Microsoft Graph v1.0.", "evidenciaAuditoria": "Revisión mensual de permisos de aplicaciones y control Auditing the Auditors sobre Search jobs.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.CM-01", "descripcionResultado": "El entorno cloud y los servicios colaborativos se monitorean continuamente para detectar eventos anómalos.", "capacidadMicrosoft": "Streaming continuo con cuota dedicada de alta velocidad (~2x ancho de banda E5) vía Office 365 Management Activity API hacia Sentinel.", "evidenciaAuditoria": "Registros de disponibilidad en SentinelHealth y frescura verificada en la tabla OfficeActivity.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.AE-03", "descripcionResultado": "Se correlacionan señales multi-servicio para identificar raspado masivo, búsquedas de reconocimiento e inyecciones IA.", "capacidadMicrosoft": "Detección de IsThrottled = True (> 1.000 MailItemsAccessed/24h), SearchQueryInitiatedExchange/SPO y banderas XPIADetected / JailbreakDetected.", "evidenciaAuditoria": "Alertas de detección analítica y reportes semanales de caza de amenazas.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.AN-03", "descripcionResultado": "Se realiza análisis forense riguroso para determinar la cronología y el alcance exacto de los datos comprometidos.", "capacidadMicrosoft": "Análisis de MailItemsAccessed (Bind por InternetMessageId vs. Sync), SessionId y AccessedResources mediante Graph AuditLogQuery.", "evidenciaAuditoria": "Extracciones JSON/CSV certificadas con isRecordCountLimitExceeded = false.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.MI-01", "descripcionResultado": "Se ejecutan acciones inmediatas para contener sesiones comprometidas, reglas ocultas y evasión de logs.", "capacidadMicrosoft": "Revocación de sesiones en Graph, remoción de reglas ocultas (Get-InboxRule -IncludeHidden) y reactivación inmediata ante audit tampering.", "evidenciaAuditoria": "Registros de ejecución de playbooks de respuesta AH-01, AH-02 y AH-03.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RECOVER (RC)", "subcategoria": "RC.RP-05", "descripcionResultado": "Se restaura y valida la integridad completa de la telemetría de seguridad antes del retorno a operación normal.", "capacidadMicrosoft": "Restauración de DefaultAuditSet = Admin, Delegate, Owner (más SearchQueryInitiated) y validación post-ventana de 24 h de IsThrottled.", "evidenciaAuditoria": "Comprobación post-incidente de propiedades de auditoría en buzones afectados.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RECOVER (RC)", "subcategoria": "RC.CO-03", "descripcionResultado": "Se comunica con respaldo probatorio irrefutable el alcance real de un incidente a reguladores y afectados.", "capacidadMicrosoft": "Delimitación pericial hasta 10 años atrás demostrando qué elementos y SensitivityLabels fueron o no accedidos.", "evidenciaAuditoria": "Informes periciales de notificación regulatoria y pruebas trimestrales T-01 de recuperación multianual.", "estadoValidacion": "Propuesta Editorial"}], "validacionYDecisionesEditoriales": {"fechaRevalidacion": "2026-11-11", "resumenAuditoria": "Revalidación integral contra Microsoft Learn, documentación de Microsoft Graph v1.0 y Message Center a corte 11 de noviembre de 2026. Se verificaron el GA de Microsoft Graph AuditLogQuery API en octubre de 2026 y el retiro programado de Search-UnifiedAuditLog el 15 de octubre de 2027 (MC1505599), la ampliación de Audit (Standard) a 180 días y 4 eventos forenses bajo SFI, los diferenciadores exactos de Audit (Premium) y el add-on de 10 años, la regla fija de 1 año para entidades no-usuario, la activación manual obligatoria de SearchQueryInitiatedExchange y la cobertura de CopilotInteraction (XPIADetected/JailbreakDetected) y Microsoft Agent 365.", "correccionesAplicadas": ["Incorporación del hito crítico MC1505599 (octubre de 2026): disponibilidad general (GA) de Microsoft Graph AuditLogQuery API (v1.0/security/auditLog/queries, hasta 1 millón de registros por consulta y permisos por servicio) y retiro definitivo de Search-UnifiedAuditLog el 15 de octubre de 2027.", "Clarificación forense exacta entre Audit (Standard) y Audit (Premium) tras las iniciativas SFI/CISA (2023-2026): Standard retiene 180 días e incluye MailItemsAccessed, Send y SearchQueryInitiatedExchange/SPO, mientras que Premium mantiene la exclusividad de 1 año por defecto, políticas personalizadas hasta 10 años, SensitivityLabel en MailItemsAccessed, AppAccessContext en Teams y ~2x ancho de banda en Management Activity API.", "Documentación de la asimetría oficial en audit-get-started: SearchQueryInitiatedSharePoint viene habilitado por defecto, pero SearchQueryInitiatedExchange requiere activación explícita por buzón en el forest local Multi-Geo (modificando DefaultAuditSet).", "Inclusión de dos reglas críticas no obvias de retención verificadas en MS Learn: (1) las entidades no-usuario (service principals, aplicaciones, sistema) tienen retención fija no configurable de 1 año a la que no aplican políticas de 10 años; y (2) el tiempo de vida se sella al ingresar al pipeline sin efecto retroactivo.", "Documentación de la advertencia técnica oficial sobre Get-AdminAuditLogConfig: debe ejecutarse únicamente en Exchange Online PowerShell porque en Security & Compliance PowerShell UnifiedAuditLogIngestionEnabled devuelve siempre False.", "Actualización completa del esquema de auditoría de IA y agentes (mayo-agosto 2026): CopilotInteraction y Microsoft Agent 365 incluidos en Audit Standard, propiedades AccessedResources, XPIADetected, JailbreakDetected y DLPEvaluationDeferred, y cobro Pay-As-You-Go (180 días) para AIAppInteraction de apps no-Microsoft.", "Operacionalización del mecanismo de estrangulamiento de MailItemsAccessed (> 1.000 eventos en menos de 24 h activa IsThrottled = True y detiene registros por 24 h) como indicador de caza de exfiltración masiva."], "decisionesEditoriales": [{"elemento": "Arquitectura combinada Purview Audit 10-Year Add-on (usuarios) + Microsoft Sentinel Data Lake (Service Principals > 1 año)", "tipo": "Propuesta Editorial", "justificacion": "Cubre de forma técnicamente sólida el límite oficial no configurable de 1 año para entidades no humanas en Purview Audit cuando existen mandatos regulatorios multianuales."}, {"elemento": "Meta interna de migración al 100 % hacia Microsoft Graph AuditLogQuery antes de Q2 2027", "tipo": "Propuesta Editorial", "justificacion": "Asegura continuidad sin sobresaltos con meses de margen antes del apagado inapelable de Search-UnifiedAuditLog el 15 de octubre de 2027."}, {"elemento": "Activación sistemática de SearchQueryInitiatedExchange acompañada de auditoría mensual de línea base sobre DefaultAuditSet", "tipo": "Propuesta Editorial", "justificacion": "Equilibra la necesidad forense crítica de conocer qué buscó el atacante en el buzón con el mantenimiento de futuras acciones predeterminadas publicadas por Microsoft."}, {"elemento": "SLA de triaje <= 30 minutos ante IsThrottled = True, catálogo de 8 KPIs y Modelo de Madurez de 5 niveles", "tipo": "Propuesta Editorial", "justificacion": "Convierte el registro pasivo de auditoría en un control activo de detección temprana de raspado masivo y gobierno ejecutivo."}, {"elemento": "Control mensual Auditing the Auditors (M-05) y mapeo probatorio a las 6 funciones de NIST CSF 2.0", "tipo": "Propuesta Editorial", "justificacion": "Protege la confidencialidad de los metadatos del UAL frente a abuso interno y estandariza la entrega de evidencia ante auditores externos."}]}, "referenciasVerificadas": [{"id": "REF-01", "titulo": "Learn about auditing solutions in Microsoft Purview", "url": "https://learn.microsoft.com/en-us/purview/audit-solutions-overview", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation", "comentario": "Comparativa oficial entre Audit (Standard) (180 días) y Audit (Premium) (1 año, 10 años add-on, Intelligent Insights, 1 año fijo no-usuario y ~2x ancho de banda API).", "verificacion": "Verificado MS Learn (2026-11-11)"}, {"id": "REF-02", "titulo": "Get started with auditing solutions", "url": "https://learn.microsoft.com/en-us/purview/audit-get-started", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation", "comentario": "Roles Audit Manager/Audit Reader, activación del service plan Microsoft 365 Advanced Auditing y configuración de SearchQueryInitiatedExchange/SharePoint.", "verificacion": "Verificado MS Learn (2026-11-11)"}, {"id": "REF-03", "titulo": "Manage audit log retention policies", "url": "https://learn.microsoft.com/en-us/purview/audit-log-retention-policies", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation", "comentario": "Política predeterminada de 1 año, límite de 50 políticas personalizadas, prioridades 1-10000, no-retroactividad y cmdlets PowerShell.", "verificacion": "Verificado MS Learn (2026-11-11)"}, {"id": "REF-04", "titulo": "Manage mailbox auditing", "url": "https://learn.microsoft.com/en-us/purview/audit-mailboxes", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation", "comentario": "Acciones auditadas por Owner/Delegate/Admin, comportamiento de DefaultAuditSet, AuditBypassAssociation y limitación Multi-Geo en buzones compartidos.", "verificacion": "Verificado MS Learn (2026-11-11)"}, {"id": "REF-05", "titulo": "Use MailItemsAccessed to investigate compromised accounts", "url": "https://learn.microsoft.com/en-us/purview/audit-log-investigate-accounts", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation", "comentario": "Metodología forense oficial diferenciando accesos Sync vs. Bind, agregación de 2 min, deduplicación horaria e InternetMessageId.", "verificacion": "Verificado MS Learn (2026-11-11)"}, {"id": "REF-06", "titulo": "Search the audit log", "url": "https://learn.microsoft.com/en-us/purview/audit-search", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation", "comentario": " Trabajos de búsqueda asíncrona retenidos 30 días, tope de 10 trabajos concurrentes, rango máximo de 180 días y advertencia sobre Get-AdminAuditLogConfig.", "verificacion": "Verificado MS Learn (2026-11-11)"}, {"id": "REF-07", "titulo": "Audit logs for Copilot and AI applications", "url": "https://learn.microsoft.com/en-us/purview/audit-copilot", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation", "comentario": "Esquema detallado de CopilotInteraction, ConnectedAIAppInteraction y AIAppInteraction (PAYG), incluyendo AccessedResources, XPIADetected y JailbreakDetected.", "verificacion": "Verificado MS Learn (2026-11-11)"}, {"id": "REF-08", "titulo": "Use Microsoft Purview to manage data security & compliance for Microsoft Agent 365", "url": "https://learn.microsoft.com/en-us/purview/ai-agent-365", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation", "comentario": "Habilitación automática de auditoría para instancias de agentes autónomos en Agent 365 (interacciones humano-agente, agente-herramienta y agente-agente).", "verificacion": "Verificado MS Learn (2026-11-11)"}, {"id": "REF-09", "titulo": "auditLogQuery resource type - Microsoft Graph v1.0", "url": "https://learn.microsoft.com/en-us/graph/api/resources/security-auditlogquery?view=graph-rest-1.0", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Graph Documentation", "comentario": "Propiedades del recurso v1.0 en GA, incluyendo isRecordCountLimitExceeded y comportamiento de keywordFilter sobre auditData no indexado.", "verificacion": "Verificado MS Learn (2026-11-11)"}, {"id": "REF-10", "titulo": "Create auditLogQuery - Microsoft Graph v1.0", "url": "https://learn.microsoft.com/en-us/graph/api/security-auditcoreroot-post-auditlogqueries?view=graph-rest-1.0", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Graph Documentation", "comentario": "Endpoint POST /security/auditLog/queries, catálogo completo de auditLogRecordType y permisos granulares AuditLogsQuery-<Workload>.Read.All.", "verificacion": "Verificado MS Learn (2026-11-11)"}, {"id": "REF-11", "titulo": "Audit log activities", "url": "https://learn.microsoft.com/en-us/purview/audit-log-activities", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation", "comentario": "Diccionario maestro actualizado de operaciones auditadas en todos los servicios de Microsoft 365, Copilot y Agent 365.", "verificacion": "Verificado MS Learn (2026-11-11)"}, {"id": "REF-12", "titulo": "Microsoft services that support auditing", "url": "https://learn.microsoft.com/en-us/purview/audit-supported-services", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation", "comentario": "Mapeo oficial entre servicios de Microsoft 365 y sus respectivos valores de RecordType.", "verificacion": "Verificado MS Learn (2026-11-11)"}, {"id": "REF-13", "titulo": "Respond to a compromised email account in Microsoft 365", "url": "https://learn.microsoft.com/en-us/defender-office-365/responding-to-a-compromised-email-account", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Defender for Office 365 Documentation", "comentario": "Playbook oficial de contención BEC, revocación de sesiones en Graph e inspección de reglas ocultas con Get-InboxRule -IncludeHidden.", "verificacion": "Verificado MS Learn (2026-11-11)"}, {"id": "REF-14", "titulo": "Office 365 Management Activity API reference", "url": "https://learn.microsoft.com/en-us/office/office-365-management-api/office-365-management-activity-api-reference", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Office Developer Documentation", "comentario": "Arquitectura de suscripción SIEM y política de escalado dinámico de ancho de banda por tenant (base 2.000 req/min).", "verificacion": "Verificado MS Learn (2026-11-11)"}, {"id": "REF-15", "titulo": "Learn about Microsoft Purview billing models", "url": "https://learn.microsoft.com/en-us/purview/purview-billing-models", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Purview Documentation", "comentario": "Modelo de cobro Pay-As-You-Go por número de registros de auditoría procesados para interacciones con aplicaciones IA no-Microsoft.", "verificacion": "Verificado MS Learn (2026-11-11)"}, {"id": "REF-16", "titulo": "MC1505599 - Microsoft Purview Audit: AuditLogQuery API generally available and Search-UnifiedAuditLog retiring", "url": "https://mc.merill.net/message/MC1505599", "tipoFuente": "Empleado Microsoft", "autor": "Merill Fernando (Microsoft Message Center Archive)", "comentario": "Anuncio oficial (12-oct-2026) del GA de Microsoft Graph AuditLogQuery API (hasta 1M de registros) y retiro definitivo de Search-UnifiedAuditLog el 15-oct-2027.", "verificacion": "Verificado Archivo Message Center (2026-11-11)"}, {"id": "REF-17", "titulo": "MailItemsAccessed Throttling [Nobelium] Official Hunting Query", "url": "https://github.com/microsoft/Microsoft-365-Defender-Hunting-Queries/blob/master/Exfiltration/MailItemsAccessed%20Throttling%20%5BNobelium%5D.md", "tipoFuente": "Empleado Microsoft", "autor": "Microsoft Threat Intelligence (MSTIC)", "comentario": "Documentación oficial del umbral de >1.000 registros MailItemsAccessed en menos de 24 h y suspensión por 24 h (IsThrottled).", "verificacion": "Verificado Repositorio Oficial Microsoft (2026-11-11)"}, {"id": "REF-18", "titulo": "Contextualizing attacker activity within sessions in Exchange Online", "url": "https://techcommunity.microsoft.com/t5/exchange-team-blog/contextualizing-attacker-activity-within-sessions-in-exchange/ba-p/608801", "tipoFuente": "Blog Oficial Microsoft", "autor": "The Exchange Team", "comentario": "Guía técnica para aislar acciones del atacante respecto a la actividad cotidiana del usuario legítimo mediante SessionId.", "verificacion": "Verificado Blog Oficial Microsoft (2026-11-11)"}, {"id": "REF-19", "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)", "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf", "tipoFuente": "Marco Normativo", "autor": "National Institute of Standards and Technology (NIST)", "comentario": "Marco normativo base para el mapeo de controles y evidencias a través de las seis funciones GV, ID, PR, DE, RS y RC.", "verificacion": "Verificado NIST Publicación Oficial (2026-11-11)"}], "validacionesConfiguracion": [{"control": "**Ingesta Global UAL Activa**", "comoValidar": "`Get-AdminAuditLogConfig \\", "estadoEsperado": "FL UnifiedAuditLogIngestionEnabled` (en EXO PowerShell)", "origen": "Verificado MS Learn"}, {"control": "**Mailbox Auditing por Defecto**", "comoValidar": "`Get-OrganizationConfig \\", "estadoEsperado": "FL AuditDisabled` (en EXO PowerShell)", "origen": "Verificado MS Learn"}, {"control": "**Cero Cuentas en Bypass**", "comoValidar": "`Get-MailboxAuditBypassAssociation \\", "estadoEsperado": "Where {$_.AuditBypassEnabled -eq $true}`", "origen": "Verificado MS Learn"}, {"control": "**Plan `Advanced Auditing` E5**", "comoValidar": "Verificar `ServicePlans` de usuarios E5 en Microsoft Graph (`Get-MgUserLicenseDetail`)", "estadoEsperado": "`100 %` de usuarios E5 con **Microsoft 365 Advanced Auditing** habilitado `[Verificado MS Learn]`", "origen": "Verificado MS Learn"}, {"control": "**Captura de `SensitivityLabel` en Correo**", "comoValidar": "Inspeccionar `AuditData` de un evento `MailItemsAccessed` de usuario E5 sobre correo etiquetado", "estadoEsperado": "Propiedad `SensitivityLabel` presente con el GUID de la etiqueta MIP `[Verificado MS Learn]`", "origen": "Verificado MS Learn"}, {"control": "**Habilitación `SearchQueryInitiated`**", "comoValidar": "`Get-Mailbox <VIP> \\", "estadoEsperado": "Select -Expand AuditOwner`", "origen": "Verificado MS Learn"}, {"control": "**Migración post-`Search-UnifiedAuditLog`**", "comoValidar": "Auditar invocaciones a `Search-UnifiedAuditLog` vs. `POST /v1.0/security/auditLog/queries`", "estadoEsperado": "`100 %` de automatizaciones productivas operando sobre Microsoft Graph `AuditLogQuery` `[Verificado MS Learn]`", "origen": "Verificado MS Learn"}], "modeloMadurez": [{"nivel": "**Nivel 1**", "estadio": "**Inicial / Por Defecto**", "descripcion": "Opera solo con Audit (Standard) a 180 días; sin verificación de `Advanced Auditing` en licencias E5; `SearchQueryInitiatedExchange` apagado; búsquedas manuales ad-hoc dependientes de `Search-UnifiedAuditLog`."}, {"nivel": "**Nivel 2**", "estadio": "**Básico / Habilitado E5**", "descripcion": "Plan *Microsoft 365 Advanced Auditing* habilitado en usuarios E5 (1 año por defecto en Entra, Exchange, OneDrive, SharePoint); roles *Audit Reader* y *Audit Manager* separados, pero sin políticas personalizadas para Teams/Copilot ni alertas anti-tampering."}, {"nivel": "**Nivel 3**", "estadio": "**Definido / Forense Proactivo**", "descripcion": "`SearchQueryInitiatedExchange` desplegado sistemáticamente; políticas personalizadas de retención de 1 año extendidas a `MicrosoftTeams`, `CopilotInteraction` y `PowerBIAudit`; streaming `OfficeActivity` activo en Sentinel con reglas contra `AuditDisabled`, `Bypass` e `IsThrottled = True`."}, {"nivel": "**Nivel 4**", "estadio": "**Gestionado / Regulatorio y Automatizado**", "descripcion": "Retención de **10 años** desplegada en poblaciones reguladas junto con archivo > 1 año de entidades no-usuario en **Sentinel Data Lake**; 100 % de automatización migrada a **Microsoft Graph `AuditLogQuery` v1.0** con permisos granulares por carga; auditoría diaria de `XPIADetected`/`JailbreakDetected` en IA."}, {"nivel": "**Nivel 5**", "estadio": "**Optimizado / Ciber-Resiliente**", "descripcion": "Simulacros semestrales BEC/Nación-Estado demostrando delimitación exacta de brecha por `InternetMessageId` y `SensitivityLabel`; gobernanza continua de instancias autónomas **Microsoft Agent 365**; auditoría independiente mensual (*Auditing the Auditors*) y pruebas trimestrales certificadas de recuperación decenal."}], "rutaFormacion": {"headers": ["Rol Operativo", "Ruta de Aprendizaje Oficial y Recursos Recomendados (Vigentes a Nov-2026)", "Credencial / Validación Práctica"], "rows": [["**DFIR Analyst / SOC L2-L3 / Threat Hunter**", "- Módulo MS Learn: *Investigate threats by using audit features in Microsoft Defender XDR and Microsoft Purview (Standard and Premium)* `[Verificado MS Learn]`.<br>- Guía oficial MS Learn: *Use MailItemsAccessed to investigate compromised accounts* y *Respond to a compromised email account in Microsoft Defender for Office 365* `[Verificado MS Learn]`.<br>- Referencia API: *Microsoft Graph security auditLogQuery resource type (v1.0)* `[Verificado MS Learn]`.", "**Microsoft Certified: Security Operations Analyst Associate (SC-200)** + simulacro práctico semestral `SM-01` de reconstrucción BEC `[Verificado MS Learn]`."], ["**Purview Compliance Admin / Platform Engineer**", "- Documentación MS Learn: *Learn about auditing solutions in Microsoft Purview*, *Manage audit log retention policies* y *Manage mailbox auditing* `[Verificado MS Learn]`.<br>- *Microsoft Purview eDiscovery and Audit Ninja Training* actualizado al portal Purview 2026 `[Verificado MS Learn]`.", "**Microsoft Certified: Information Security Administrator Associate (SC-401)** + **Applied Skills APL-5007** (para ecosistema eDiscovery/retención conexo) `[Verificado MS Learn]`."], ["**AI Security & Governance Specialist**", "- Documentación MS Learn: *Audit logs for Copilot and AI applications* (`CopilotInteraction`, `AccessedResources`, `XPIADetected`) y *Use Microsoft Purview to manage data security & compliance for Microsoft Agent 365* `[Verificado MS Learn]`.", "Laboratorio interno de trazabilidad forense de prompts, *grounding* y agentes autónomos `[Decisión / Propuesta Editorial]`."], ["**Legal / eDiscovery & GRC Auditor**", "- Documentación MS Learn: *Search the audit log* y *Export, configure, and view audit log records* (transformación Power Query de `AuditData`) `[Verificado MS Learn]`.<br>- Marco *Electronic Discovery Reference Model (EDRM 2.0, 2026)* y guía CISA M-24-04 `[Verificado MS Learn]`.", "Ejecución trimestral certificada de extracción multianual (`T-01`) y control *Auditing the Auditors* (`M-05`) `[Decisión / Propuesta Editorial]`."]]}};
+const NAV_INDEX = [{"id": "00_Marco_Maestro_CISO_SOC_y_NIST", "orden": 0, "folder": "00_Marco_Maestro_CISO_SOC_y_NIST", "slug": "Marco_Maestro_CISO_SOC_y_NIST", "nombreCorto": "Marco Maestro CISO, SOC y NIST", "categoria": "Marco Transversal CISO, SOC y NIST", "htmlRel": "../00_Marco_Maestro_CISO_SOC_y_NIST/Marco_Maestro_CISO_SOC_y_NIST_Guia_Excelencia_Operacional.html"}, {"id": "01_Microsoft_Entra_ID", "orden": 1, "folder": "01_Microsoft_Entra_ID", "slug": "Microsoft_Entra_ID", "nombreCorto": "Microsoft Entra ID", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../01_Microsoft_Entra_ID/Microsoft_Entra_ID_Guia_Excelencia_Operacional.html"}, {"id": "02_Microsoft_Entra_ID_Governance", "orden": 2, "folder": "02_Microsoft_Entra_ID_Governance", "slug": "Microsoft_Entra_ID_Governance", "nombreCorto": "Microsoft Entra ID Governance", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../02_Microsoft_Entra_ID_Governance/Microsoft_Entra_ID_Governance_Guia_Excelencia_Operacional.html"}, {"id": "03_Microsoft_Defender_XDR", "orden": 3, "folder": "03_Microsoft_Defender_XDR", "slug": "Microsoft_Defender_XDR", "nombreCorto": "Defender XDR", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../03_Microsoft_Defender_XDR/Microsoft_Defender_XDR_Guia_Excelencia_Operacional.html"}, {"id": "04_Microsoft_Defender_for_Endpoint", "orden": 4, "folder": "04_Microsoft_Defender_for_Endpoint", "slug": "Microsoft_Defender_for_Endpoint", "nombreCorto": "Defender for Endpoint", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../04_Microsoft_Defender_for_Endpoint/Microsoft_Defender_for_Endpoint_Guia_Excelencia_Operacional.html"}, {"id": "05_Microsoft_Defender_for_Office_365", "orden": 5, "folder": "05_Microsoft_Defender_for_Office_365", "slug": "Microsoft_Defender_for_Office_365", "nombreCorto": "Defender for Office 365", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../05_Microsoft_Defender_for_Office_365/Microsoft_Defender_for_Office_365_Guia_Excelencia_Operacional.html"}, {"id": "06_Microsoft_Defender_for_Identity", "orden": 6, "folder": "06_Microsoft_Defender_for_Identity", "slug": "Microsoft_Defender_for_Identity", "nombreCorto": "Defender for Identity", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../06_Microsoft_Defender_for_Identity/Microsoft_Defender_for_Identity_Guia_Excelencia_Operacional.html"}, {"id": "07_Microsoft_Defender_for_Cloud_Apps", "orden": 7, "folder": "07_Microsoft_Defender_for_Cloud_Apps", "slug": "Microsoft_Defender_for_Cloud_Apps", "nombreCorto": "Defender for Cloud Apps", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../07_Microsoft_Defender_for_Cloud_Apps/Microsoft_Defender_for_Cloud_Apps_Guia_Excelencia_Operacional.html"}, {"id": "08_Microsoft_Sentinel", "orden": 8, "folder": "08_Microsoft_Sentinel", "slug": "Microsoft_Sentinel", "nombreCorto": "Microsoft Sentinel", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../08_Microsoft_Sentinel/Microsoft_Sentinel_Guia_Excelencia_Operacional.html"}, {"id": "09_Microsoft_Security_Copilot", "orden": 9, "folder": "09_Microsoft_Security_Copilot", "slug": "Microsoft_Security_Copilot", "nombreCorto": "Microsoft Security Copilot", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../09_Microsoft_Security_Copilot/Microsoft_Security_Copilot_Guia_Excelencia_Operacional.html"}, {"id": "10_Microsoft_Intune_Plan_1", "orden": 10, "folder": "10_Microsoft_Intune_Plan_1", "slug": "Microsoft_Intune_Plan_1", "nombreCorto": "Microsoft Intune Plan 1", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../10_Microsoft_Intune_Plan_1/Microsoft_Intune_Plan_1_Guia_Excelencia_Operacional.html"}, {"id": "11_Microsoft_Intune_Suite", "orden": 11, "folder": "11_Microsoft_Intune_Suite", "slug": "Microsoft_Intune_Suite", "nombreCorto": "Microsoft Intune Suite", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../11_Microsoft_Intune_Suite/Microsoft_Intune_Suite_Guia_Excelencia_Operacional.html"}, {"id": "12_Windows_Enterprise_Security_y_Cifrado", "orden": 12, "folder": "12_Windows_Enterprise_Security_y_Cifrado", "slug": "Windows_Enterprise_Security_y_Cifrado", "nombreCorto": "Windows Enterprise Security y Cifrado", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../12_Windows_Enterprise_Security_y_Cifrado/Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.html"}, {"id": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "orden": 13, "folder": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "slug": "Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "nombreCorto": "Microsoft Purview Suite", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno/Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.html"}, {"id": "14_Purview_Information_Protection", "orden": 14, "folder": "14_Purview_Information_Protection", "slug": "Purview_Information_Protection", "nombreCorto": "Purview Information Protection", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../14_Purview_Information_Protection/Purview_Information_Protection_Guia_Excelencia_Operacional.html"}, {"id": "15_Purview_Data_Loss_Prevention", "orden": 15, "folder": "15_Purview_Data_Loss_Prevention", "slug": "Purview_Data_Loss_Prevention", "nombreCorto": "Purview Data Loss Prevention", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../15_Purview_Data_Loss_Prevention/Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.html"}, {"id": "16_Purview_Data_Lifecycle_y_Records_Management", "orden": 16, "folder": "16_Purview_Data_Lifecycle_y_Records_Management", "slug": "Purview_Data_Lifecycle_y_Records_Management", "nombreCorto": "Purview DLCM y Records Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../16_Purview_Data_Lifecycle_y_Records_Management/Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.html"}, {"id": "17_Purview_Insider_Risk_Management", "orden": 17, "folder": "17_Purview_Insider_Risk_Management", "slug": "Purview_Insider_Risk_Management", "nombreCorto": "Purview Insider Risk Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../17_Purview_Insider_Risk_Management/Purview_Insider_Risk_Management_Guia_Excelencia_Operacional.html"}, {"id": "18_Purview_Communication_Compliance", "orden": 18, "folder": "18_Purview_Communication_Compliance", "slug": "Purview_Communication_Compliance", "nombreCorto": "Purview Communication Compliance", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../18_Purview_Communication_Compliance/Purview_Communication_Compliance_Guia_Excelencia_Operacional.html"}, {"id": "19_Purview_Audit_Premium", "orden": 19, "folder": "19_Purview_Audit_Premium", "slug": "Purview_Audit_Premium", "nombreCorto": "Purview Audit (Premium)", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../19_Purview_Audit_Premium/Purview_Audit_Premium_Guia_Excelencia_Operacional.html"}, {"id": "20_Purview_eDiscovery_Premium", "orden": 20, "folder": "20_Purview_eDiscovery_Premium", "slug": "Purview_eDiscovery_Premium", "nombreCorto": "Purview eDiscovery Premium", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../20_Purview_eDiscovery_Premium/Purview_eDiscovery_Premium_Guia_Excelencia_Operacional.html"}, {"id": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "orden": 21, "folder": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "slug": "Customer_Lockbox_Customer_Key_y_M365_PAM", "nombreCorto": "Customer Lockbox, Customer Key y M365 PAM", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../21_Customer_Lockbox_Customer_Key_y_M365_PAM/Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.html"}, {"id": "22_Microsoft_Agent_365", "orden": 22, "folder": "22_Microsoft_Agent_365", "slug": "Microsoft_Agent_365", "nombreCorto": "Microsoft Agent 365", "categoria": "Gobierno y Seguridad de Agentes IA", "htmlRel": "../22_Microsoft_Agent_365/Microsoft_Agent_365_Guia_Excelencia_Operacional.html"}];
+
+(() => {
+  const memStore = {};
+  const storageKey = "mseop_v3_state_" + MODULE_DATA.id;
+  function loadState() {
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      return raw ? JSON.parse(raw) : { tasks: {}, steps: {} };
+    } catch (_) {
+      return memStore[storageKey] || { tasks: {}, steps: {} };
+    }
+  }
+  function saveState(st) {
+    memStore[storageKey] = st;
+    try { window.localStorage.setItem(storageKey, JSON.stringify(st)); } catch (_) {}
+  }
+
+  let uiState = loadState();
+  if (!uiState.tasks) uiState.tasks = {};
+  if (!uiState.steps) uiState.steps = {};
+  let activeView = "view-overview";
+  let activePeriodicCad = "Diaria";
+
+  function esc(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // Converts inline Markdown (**bold**, `code`, [Verificado MS Learn], [Decisión / Propuesta Editorial]) into clean readable HTML
+  function richText(str) {
+    let s = esc(str);
+    s = s.replace(/`\[Verificado MS Learn\]`|\[Verificado MS Learn\]/g, '<span class="inline-tag tag-learn">Verificado MS Learn</span>');
+    s = s.replace(/`\[Decisión \/ Propuesta Editorial\]`|\[Decisión \/ Propuesta Editorial\]|`\[Propuesta Editorial\]`|\[Propuesta Editorial\]/g, '<span class="inline-tag tag-edit">Propuesta Editorial</span>');
+    s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    return s;
+  }
+
+  function valBadge(status) {
+    const isLearn = String(status).indexOf("Verificado") !== -1;
+    return '<span class="' + (isLearn ? "badge badge-learn" : "badge badge-editorial") + '">' + esc(status) + '</span>';
+  }
+
+  // Partition activities cleanly into Periodic vs Ad-Hoc
+  const allActs = MODULE_DATA.actividadesOperacionales || [];
+  const periodicActs = allActs.filter((a) => a.cadencia !== "Ad-Hoc");
+  const adhocActs = allActs.filter((a) => a.cadencia === "Ad-Hoc");
+  const prereqs = (MODULE_DATA.relacionM365E5 && MODULE_DATA.relacionM365E5.prerrequisitos) || [];
+  const validations = MODULE_DATA.validacionesConfiguracion || [];
+  const components = MODULE_DATA.arquitecturaYComponentes || [];
+  const rbacRoles = MODULE_DATA.rbacYRoles || [];
+
+  const dailyActs = periodicActs.filter((a) => a.cadencia === "Diaria");
+  const weeklyActs = periodicActs.filter((a) => a.cadencia === "Semanal");
+  const monthlyActs = periodicActs.filter((a) => a.cadencia === "Mensual");
+  const longCycleActs = periodicActs.filter((a) => ["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) !== -1);
+
+  // Topbar links & module switcher
+  const baseName = MODULE_DATA.slug + "_Guia_Excelencia_Operacional";
+  document.getElementById("xlsxLink").href = "./" + baseName + ".xlsx";
+  document.getElementById("mdLink").href = "./" + baseName + ".md";
+
+  const jumpSel = document.getElementById("modJumpSelect");
+  NAV_INDEX.forEach((m) => {
+    const opt = document.createElement("option");
+    opt.value = m.htmlRel;
+    opt.textContent = String(m.orden).padStart(2, "0") + " — " + m.nombreCorto;
+    if (m.id === MODULE_DATA.id) opt.selected = true;
+    jumpSel.appendChild(opt);
+  });
+  jumpSel.addEventListener("change", (e) => { if (e.target.value) window.location.href = e.target.value; });
+
+  const curIdx = NAV_INDEX.findIndex((m) => m.id === MODULE_DATA.id);
+  const prevBtn = document.getElementById("prevModBtn");
+  const nextBtn = document.getElementById("nextModBtn");
+  if (curIdx > 0) prevBtn.href = NAV_INDEX[curIdx - 1].htmlRel;
+  else { prevBtn.style.opacity = "0.4"; prevBtn.style.pointerEvents = "none"; }
+  if (curIdx >= 0 && curIdx < NAV_INDEX.length - 1) nextBtn.href = NAV_INDEX[curIdx + 1].htmlRel;
+  else { nextBtn.style.opacity = "0.4"; nextBtn.style.pointerEvents = "none"; }
+
+  document.getElementById("themeToggleBtn").addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+  });
+  document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+  // Sidebar counters
+  const totalConfigChecks = prereqs.length + validations.length;
+  document.getElementById("navCntConfig").textContent = totalConfigChecks;
+  document.getElementById("navCntDiaria").textContent = dailyActs.length;
+  document.getElementById("navCntSemanal").textContent = weeklyActs.length;
+  document.getElementById("navCntMensual").textContent = monthlyActs.length;
+  document.getElementById("navCntLargos").textContent = longCycleActs.length;
+  document.getElementById("navCntAdhoc").textContent = adhocActs.length;
+  document.getElementById("navCntQueries").textContent = (MODULE_DATA.consultasKQLyVerificacion || []).length;
+  document.getElementById("navCntKpis").textContent = (MODULE_DATA.kpisYMetricas || []).length;
+  document.getElementById("navCntNist").textContent = (MODULE_DATA.mapeoNISTCSF20 || []).length;
+
+  function switchView(viewId, periodicCadOverride) {
+    activeView = viewId;
+    if (periodicCadOverride) activePeriodicCad = periodicCadOverride;
+
+    document.querySelectorAll(".view-panel").forEach((p) => p.classList.remove("active"));
+    const target = document.getElementById(viewId);
+    if (target) target.classList.add("active");
+
+    document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+      const bv = btn.getAttribute("data-view");
+      const bc = btn.getAttribute("data-cad");
+      if (bv === viewId && (!bc || bc === activePeriodicCad)) btn.classList.add("active");
+      else btn.classList.remove("active");
+    });
+
+    if (viewId === "view-periodic") {
+      syncPeriodicSubnav();
+      renderPeriodicCards();
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      switchView(btn.getAttribute("data-view"), btn.getAttribute("data-cad") || null);
+    });
+  });
+
+  // Handle incoming URL hash (#config, #periodic-diaria, #adhoc, etc.)
+  function applyInitialHash() {
+    const h = (window.location.hash || "").replace("#", "");
+    if (h === "config") switchView("view-config");
+    else if (h === "periodic-diaria") switchView("view-periodic", "Diaria");
+    else if (h === "periodic-semanal") switchView("view-periodic", "Semanal");
+    else if (h === "periodic-mensual") switchView("view-periodic", "Mensual");
+    else if (h === "periodic-largos") switchView("view-periodic", "CICLOS_LARGOS");
+    else if (h === "adhoc") switchView("view-adhoc");
+    else if (h === "queries") switchView("view-queries");
+    else if (h === "nist") switchView("view-nist");
+  }
+
+  function updateProgressTracker() {
+    let cfgDone = 0;
+    prereqs.forEach((_, i) => { if (uiState.tasks["CFG-" + (i + 1)]) cfgDone++; });
+    validations.forEach((_, i) => { if (uiState.tasks["VAL-" + (i + 1)]) cfgDone++; });
+    const cfgPct = totalConfigChecks ? Math.round((cfgDone / totalConfigChecks) * 100) : 0;
+
+    const perDone = periodicActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const perPct = periodicActs.length ? Math.round((perDone / periodicActs.length) * 100) : 0;
+
+    const ahDone = adhocActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const ahPct = adhocActs.length ? Math.round((ahDone / adhocActs.length) * 100) : 0;
+
+    document.getElementById("sidebarProgress").innerHTML =
+      '<div class="nav-section-label" style="padding-left:0;">Tu Progreso de Revisión</div>' +
+      '<div class="prog-row"><div class="prog-head"><span>1. Configuración y Validación</span><span>' + cfgDone + '/' + totalConfigChecks + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + cfgPct + '%"></div></div></div>' +
+      '<div class="prog-row"><div class="prog-head"><span>2. Rutinas Periódicas</span><span>' + perDone + '/' + periodicActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + perPct + '%"></div></div></div>' +
+      '<div class="prog-row" style="margin-bottom:0;"><div class="prog-head"><span>3. Playbooks Ad-Hoc</span><span>' + ahDone + '/' + adhocActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + ahPct + '%"></div></div></div>';
+  }
+
+  // VISTA 0: OVERVIEW
+  document.getElementById("heroTitle").textContent = MODULE_DATA.nombre;
+  document.getElementById("heroSummary").textContent = MODULE_DATA.resumenEjecutivo;
+  document.getElementById("heroBadges").innerHTML = [
+    '<span class="badge badge-accent">Módulo ' + String(MODULE_DATA.orden).padStart(2, "0") + ' de 22</span>',
+    '<span class="badge">' + esc(MODULE_DATA.categoria) + '</span>',
+    '<span class="badge badge-learn">' + esc(MODULE_DATA.relacionM365E5.estado) + '</span>',
+    '<span class="badge">Validación: ' + esc(MODULE_DATA.fechaValidacion) + '</span>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").innerHTML = [
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 1 · Acciones Puntuales</div>' +
+        '<h3>Configuración Base y Validaciones</h3>' +
+        '<p>Qué debes habilitar al inicio (' + prereqs.length + ' prerrequisitos, ' + components.length + ' componentes y ' + rbacRoles.length + ' roles RBAC/PIM) y <strong>' + validations.length + ' validaciones "Proof of Life"</strong> para comprobar que todo quedó bien configurado.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-config">Ir a Configuración y Validaciones →</button></div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 2 · Operación Programada</div>' +
+        '<h3>Rutinas Periódicas por Frecuencia</h3>' +
+        '<p><strong>' + periodicActs.length + ' procedimientos preventivos</strong> separados con claridad en ciclos Diarios (' + dailyActs.length + '), Semanales (' + weeklyActs.length + '), Mensuales (' + monthlyActs.length + ') y Trimestrales/Anuales (' + longCycleActs.length + ').</p>' +
+      '</div>' +
+      '<div class="pill-row">' +
+        '<button class="btn btn-primary btn-sm" type="button" data-goto="view-periodic" data-gocad="Diaria">Diarias (' + dailyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Semanal">Semanales (' + weeklyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Mensual">Mensuales (' + monthlyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="CICLOS_LARGOS">Trim./Anual (' + longCycleActs.length + ')</button>' +
+      '</div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 3 · Reacción del Analista</div>' +
+        '<h3>Playbooks Ad-Hoc ante Alertas</h3>' +
+        '<p><strong>' + adhocActs.length + ' playbooks tácticos</strong> que no siguen calendario: se disparan cuando una alerta, señal de compromiso o incidente requiere contención e investigación del analista.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-adhoc">Abrir Playbooks Ad-Hoc →</button></div>' +
+    '</div>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-goto]");
+    if (!b) return;
+    switchView(b.getAttribute("data-goto"), b.getAttribute("data-gocad") || null);
+  });
+
+  const rel = MODULE_DATA.relacionM365E5;
+  document.getElementById("licensingOverviewCard").innerHTML =
+    '<h3 style="margin-top:0;font-size:20px;">Encaje de Licenciamiento en Microsoft 365 E5 y Portales Oficiales</h3>' +
+    '<p style="margin-bottom:16px;">' + richText(rel.notaLicenciamiento) + '</p>' +
+    '<div class="info-pair" style="margin-bottom:0;">' +
+      '<div class="info-box"><div class="info-label">Licencias y SKUs Aplicables</div><ul style="margin:6px 0 0 0;padding-left:20px;">' +
+        (rel.licencias || []).map((l) => '<li style="margin-bottom:6px;">' + richText(l) + '</li>').join("") +
+      '</ul></div>' +
+      '<div class="info-box"><div class="info-label">Consolas Oficiales de Administración y SOC</div><div class="pill-row" style="margin-top:10px;">' +
+        (MODULE_DATA.portalesPrincipales || []).map((u) => '<a class="btn" href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + ' ↗</a>').join("") +
+      '</div><div style="margin-top:16px;"><div class="info-label">Roles Involucrados</div><div class="pill-row" style="margin-top:6px;">' +
+        (MODULE_DATA.audiencia || []).map((au) => '<span class="badge">' + esc(au) + '</span>').join("") +
+      '</div></div></div>' +
+    '</div>';
+
+  document.getElementById("principlesGrid").innerHTML = (MODULE_DATA.principiosRectores || []).map((p) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:10px;">' +
+        '<h3 style="margin:0;font-size:17.5px;">' + esc(p.principio) + '</h3>' +
+        valBadge(p.estadoValidacion) +
+      '</div>' +
+      '<p class="muted" style="margin:0 0 12px 0;">' + richText(p.descripcion) + '</p>' +
+      (p.fuenteUrl ? '<a href="' + esc(p.fuenteUrl) + '" target="_blank" rel="noopener noreferrer">Consultar referencia en Microsoft Learn ↗</a>' : '') +
+    '</div>'
+  )).join("");
+
+  // VISTA 1: CONFIGURACIÓN PUNTUAL Y VALIDACIONES
+  function renderConfigView() {
+    document.getElementById("prereqsContainer").innerHTML = prereqs.map((pr, idx) => {
+      const code = "CFG-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '" style="padding:22px 28px;margin-bottom:16px;">' +
+          '<div class="card-title-group">' +
+            '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+            '<div style="flex:1;">' +
+              '<div class="pill-row" style="margin-bottom:6px;">' +
+                '<span class="card-code" style="margin-bottom:0;">' + code + '</span>' +
+                '<span class="badge">Acción Puntual de Puesta en Marcha</span>' +
+              '</div>' +
+              '<div style="font-size:16px;font-weight:600;">' + richText(pr) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("validationsContainer").innerHTML = validations.map((v, idx) => {
+      const code = "VAL-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + code + ' · Validación de Configuración</span>' +
+                '<h4 class="card-heading">' + richText(v.control) + '</h4>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' + valBadge(v.origen || "Verificado MS Learn") + '</div>' +
+          '</div>' +
+          '<div class="info-pair" style="margin-bottom:0;">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Dónde y Cómo Validar la Configuración</div>' +
+              '<div class="info-content">' + richText(v.comoValidar) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label">Estado / Resultado Esperado ("Proof of Life")</div>' +
+              '<div class="info-content">' + richText(v.estadoEsperado) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("componentsContainer").innerHTML = components.map((c, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">COMP-' + String(idx + 1).padStart(2, "0") + ' · Subsistema Técnico</span>' +
+            '<h4 class="card-heading">' + esc(c.componente) + '</h4>' +
+          '</div>' +
+          valBadge(c.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Qué Configurar y Habilitar en este Componente</div>' +
+            '<div class="info-content">' + richText(c.funcionOperativa) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Ruta Exacta en Consola</div>' +
+            '<div class="info-content"><code>' + esc(c.portalRuta) + '</code></div>' +
+            '<div class="info-label" style="margin-top:14px;">Integraciones que Validar</div>' +
+            '<div class="pill-row" style="margin-top:6px;">' + (c.integraciones || []).map((i) => '<span class="badge">' + esc(i) + '</span>').join("") + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+
+    document.getElementById("rbacContainer").innerHTML = rbacRoles.map((r) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">RBAC / PIM · ' + esc(r.nivelSOC) + '</span>' +
+            '<h4 class="card-heading">' + esc(r.rol) + '</h4>' +
+          '</div>' +
+          valBadge(r.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair" style="margin-bottom:14px;">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Configuración Puntual en PIM / Asignación</div>' +
+            '<div class="info-content">' + richText(r.asignacionPIM) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Alcance de Permisos a Validar</div>' +
+            '<div class="info-content">' + richText(r.permisosClave) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="validation-footer">' +
+          '<div><strong>Uso operativo autorizado:</strong> ' + richText(r.responsabilidadOperativa) + '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+
+  // Helper to render step-by-step lists with clickable step checkmarks
+  function renderStepRows(actCode, steps) {
+    return '<ol class="steps-list">' + (steps || []).map((st, idx) => {
+      const stepKey = actCode + "_S" + (idx + 1);
+      const isChecked = !!uiState.steps[stepKey];
+      return (
+        '<li class="step-row ' + (isChecked ? "step-checked" : "") + '" data-step="' + esc(stepKey) + '" title="Haz clic para marcar o desmarcar este paso">' +
+          '<span class="step-num">' + (isChecked ? "✓" : (idx + 1)) + '</span>' +
+          '<div class="step-body">' + richText(st) + '</div>' +
+        '</li>'
+      );
+    }).join("") + '</ol>';
+  }
+
+  // VISTA 2: ACCIONES PERIÓDICAS
+  const roleSet = new Set();
+  periodicActs.forEach((a) => {
+    String(a.rolResponsable || "").split(/[\/+,]/).forEach((r) => {
+      const clean = r.trim();
+      if (clean) roleSet.add(clean);
+    });
+  });
+  const perRoleSel = document.getElementById("perRole");
+  Array.from(roleSet).sort().forEach((r) => {
+    const o = document.createElement("option");
+    o.value = r; o.textContent = "Rol: " + r;
+    perRoleSel.appendChild(o);
+  });
+
+  function syncPeriodicSubnav() {
+    document.querySelectorAll("#periodicCadBar .subnav-pill").forEach((b) => {
+      b.classList.toggle("active", b.getAttribute("data-pcad") === activePeriodicCad);
+    });
+    const titles = {
+      "Diaria": ["2. Acciones Periódicas — Rutinas Diarias", "Controles diarios del turno SOC y administración para asegurar salud de plataforma, triaje a tiempo y cero caídas silenciosas."],
+      "Semanal": ["2. Acciones Periódicas — Rutinas Semanales", "Actividades semanales de tuning de falsos positivos, caza proactiva, revisión de postura e higiene operativa."],
+      "Mensual": ["2. Acciones Periódicas — Rutinas Mensuales", "Gobierno mensual de privilegios RBAC/PIM, optimización financiera/retención, pruebas de automatización y reporte ejecutivo al CISO."],
+      "CICLOS_LARGOS": ["2. Acciones Periódicas — Ciclos Trimestrales, Semestrales y Anuales", "Ejercicios Tabletop/Purple Team, análisis de cobertura MITRE ATT&CK, simulacros de continuidad y auditoría estratégica anual."],
+      "ALL_PERIODIC": ["2. Todas las Acciones Periódicas Programadas", "Listado consolidado de todas las rutinas preventivas y de gobierno del módulo (excluyendo playbooks reactivos Ad-Hoc)."]
+    };
+    const pair = titles[activePeriodicCad] || titles["ALL_PERIODIC"];
+    document.getElementById("periodicTitle").textContent = pair[0];
+    document.getElementById("periodicSubtitle").textContent = pair[1];
+  }
+
+  document.getElementById("periodicCadBar").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-pcad]");
+    if (!b) return;
+    activePeriodicCad = b.getAttribute("data-pcad");
+    syncPeriodicSubnav();
+    switchView("view-periodic", activePeriodicCad);
+  });
+
+  function getFilteredPeriodic() {
+    const q = document.getElementById("perSearch").value.trim().toLowerCase();
+    const rol = document.getElementById("perRole").value;
+    const orig = document.getElementById("perOrigin").value;
+
+    return periodicActs.filter((a) => {
+      if (activePeriodicCad === "CICLOS_LARGOS") {
+        if (["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) === -1) return false;
+      } else if (activePeriodicCad !== "ALL_PERIODIC") {
+        if (a.cadencia !== activePeriodicCad) return false;
+      }
+      if (rol !== "ALL" && String(a.rolResponsable).indexOf(rol) === -1) return false;
+      if (orig !== "ALL" && a.estadoValidacion !== orig) return false;
+      if (q) {
+        const hay = [a.codigo, a.cadencia, a.actividad, a.objetivo, a.consolaRuta, a.rolResponsable, a.evidenciaAuditable, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderPeriodicCards() {
+    const list = getFilteredPeriodic();
+    document.getElementById("perCountLabel").textContent =
+      "Mostrando " + list.length + " acciones periódicas en esta vista (haz clic en cada paso numerado para llevar control de lectura o ejecución).";
+
+    const box = document.getElementById("periodicCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay actividades periódicas que coincidan con los filtros seleccionados.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + ' aria-label="Completar ' + esc(a.codigo) + '">' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Rutina ' + esc(a.cadencia) + '</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge">' + esc(a.rolResponsable) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Objetivo de la Rutina</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Consola y Ruta Exacta</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Acciones Paso a Paso a Ejecutar y Validar (' + steps.length + ' pasos)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación de cierre y evidencia auditable:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<span>MITRE ATT&amp;CK: ' + esc(a.mitreTactic) + ' · ' + esc(a.notaValidacion) + '</span>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Ver guía oficial en MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+
+  ["perSearch", "perRole", "perOrigin"].forEach((id) => {
+    document.getElementById(id).addEventListener("input", renderPeriodicCards);
+    document.getElementById(id).addEventListener("change", renderPeriodicCards);
+  });
+
+  // VISTA 3: PLAYBOOKS AD-HOC (ALERTAS Y SEÑALES)
+  function renderAdhocCards() {
+    const q = document.getElementById("adhocSearch").value.trim().toLowerCase();
+    const list = adhocActs.filter((a) => {
+      if (!q) return true;
+      const hay = [a.codigo, a.actividad, a.disparadorAlerta, a.objetivo, a.consolaRuta, a.rolResponsable, a.mitreTactic, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+      return hay.indexOf(q) !== -1;
+    });
+
+    const box = document.getElementById("adhocCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay playbooks Ad-Hoc que coincidan con la búsqueda.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card adhoc-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Playbook Reactivo del Analista (Ad-Hoc)</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge badge-accent">MITRE: ' + esc(a.mitreTactic) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="trigger-banner">' +
+            '<div class="info-label">Señal, Alerta o Evento Disparador (Cuándo debe actuar el analista)</div>' +
+            '<div class="info-content" style="font-weight:600;">' + richText(a.disparadorAlerta) + '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Meta de Contención y Erradicación</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Analista Ejecutor y Consola de Intervención</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><strong>Rol:</strong> ' + esc(a.rolResponsable) + '<br><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Secuencia Táctica del Analista (' + steps.length + ' pasos de respuesta)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación post-contención y evidencia forense:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<button class="btn btn-sm go-queries-btn" type="button">Abrir Consultas KQL / Scripts de Apoyo →</button>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Documentación oficial de respuesta MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+  document.getElementById("adhocSearch").addEventListener("input", renderAdhocCards);
+
+  // Global delegation for task checkboxes, step rows, copy buttons & query jumps
+  document.addEventListener("change", (e) => {
+    const chk = e.target.closest(".task-checkbox");
+    if (!chk) return;
+    const key = chk.getAttribute("data-task");
+    uiState.tasks[key] = chk.checked;
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  document.addEventListener("click", (e) => {
+    const stepEl = e.target.closest(".step-row");
+    if (stepEl && !e.target.closest("a")) {
+      const sk = stepEl.getAttribute("data-step");
+      uiState.steps[sk] = !uiState.steps[sk];
+      saveState(uiState);
+      renderPeriodicCards();
+      renderAdhocCards();
+      return;
+    }
+    const copyBtn = e.target.closest(".copy-text-btn");
+    if (copyBtn) {
+      const txt = copyBtn.getAttribute("data-copy") || "";
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(() => {
+          const prev = copyBtn.textContent;
+          copyBtn.textContent = "¡Copiado!";
+          setTimeout(() => { copyBtn.textContent = prev; }, 1400);
+        });
+      }
+      return;
+    }
+    if (e.target.closest(".go-queries-btn")) {
+      switchView("view-queries");
+    }
+  });
+
+  document.getElementById("resetChecksBtn").addEventListener("click", () => {
+    uiState = { tasks: {}, steps: {} };
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  // Export CSV (all activities with action type distinction)
+  document.getElementById("exportCsvBtn").addEventListener("click", () => {
+    const hdr = ["TipoAccion", "Codigo", "Cadencia", "Actividad", "Disparador_u_Objetivo", "ConsolaRuta", "RolResponsable", "FuncionNIST", "SubcategoriaNIST", "MITRE", "EstadoValidacion", "Completado", "EvidenciaAuditable"];
+    const lines = [hdr.join(",")];
+    allActs.forEach((a) => {
+      const vals = [
+        a.tipoAccion, a.codigo, a.cadencia, a.actividad,
+        a.cadencia === "Ad-Hoc" ? a.disparadorAlerta : a.objetivo,
+        a.consolaRuta, a.rolResponsable, a.funcionNIST, a.subcategoriaNIST,
+        a.mitreTactic, a.estadoValidacion, uiState.tasks[a.codigo] ? "Si" : "No", a.evidenciaAuditable
+      ].map((v) => '"' + String(v || "").replace(/"/g, '""') + '"');
+      lines.push(vals.join(","));
+    });
+    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url; link.download = MODULE_DATA.slug + "_Guia_Operacional.csv";
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  });
+
+  // VISTA 4: QUERIES
+  function renderQueries() {
+    const q = document.getElementById("kqlSearch").value.trim().toLowerCase();
+    const uf = document.getElementById("kqlUsageFilter").value;
+    const list = (MODULE_DATA.consultasKQLyVerificacion || []).filter((it) => {
+      if (uf !== "ALL" && it.usoOperativo !== uf) return false;
+      if (q && [it.nombre, it.plataforma, it.tablaPrincipal, it.proposito, it.consulta, it.usoOperativo].join(" ").toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+
+    document.getElementById("queriesContainer").innerHTML = list.map((it, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">Q-' + String(idx + 1).padStart(2, "0") + ' · ' + esc(it.usoOperativo) + '</span>' +
+            '<h3 class="card-heading">' + esc(it.nombre) + '</h3>' +
+          '</div>' +
+          '<div class="pill-row">' +
+            '<span class="badge badge-accent">' + esc(it.plataforma) + '</span>' +
+            '<span class="badge mono">' + esc(it.tablaPrincipal) + '</span>' +
+            valBadge(it.estadoValidacion) +
+            '<button class="btn btn-sm copy-kql-btn" type="button" data-qidx="' + idx + '">Copiar consulta</button>' +
+          '</div>' +
+        '</div>' +
+        '<p style="margin:0 0 12px 0;"><strong>Qué valida o detecta:</strong> ' + richText(it.proposito) + '</p>' +
+        '<pre class="code-block">' + esc(it.consulta) + '</pre>' +
+      '</div>'
+    )).join("");
+
+    document.querySelectorAll(".copy-kql-btn").forEach((b) => {
+      b.addEventListener("click", () => {
+        const item = list[Number(b.getAttribute("data-qidx"))];
+        if (item && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(item.consulta).then(() => {
+            b.textContent = "¡Consulta copiada!";
+            setTimeout(() => { b.textContent = "Copiar consulta"; }, 1500);
+          });
+        }
+      });
+    });
+  }
+  document.getElementById("kqlSearch").addEventListener("input", renderQueries);
+  document.getElementById("kqlUsageFilter").addEventListener("change", renderQueries);
+
+  // VISTA 5: KPIs, MATURITY & TRAINING
+  document.getElementById("kpiContainer").innerHTML = (MODULE_DATA.kpisYMetricas || []).map((k) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:12px;">' +
+        '<div><span class="card-code">' + esc(k.id) + '</span><h4 class="card-heading" style="font-size:18px;">' + esc(k.nombre) + '</h4></div>' +
+        valBadge(k.estadoValidacion) +
+      '</div>' +
+      '<p style="margin:0 0 12px 0;">' + richText(k.definicion) + '</p>' +
+      '<pre class="code-block" style="margin:0 0 14px 0;">Fórmula: ' + esc(k.formula) + '</pre>' +
+      '<div class="pill-row">' +
+        '<span class="badge badge-accent">Meta: ' + esc(k.metaSugerida) + '</span>' +
+        '<span class="badge">Medición: ' + esc(k.frecuencia) + '</span>' +
+        '<span class="badge">' + esc(k.audiencia) + '</span>' +
+      '</div>' +
+      '<p class="muted" style="font-size:13px;margin:10px 0 0 0;">' + richText(k.notaValidacion) + '</p>' +
+    '</div>'
+  )).join("");
+
+  const mat = MODULE_DATA.modeloMadurez || [];
+  document.getElementById("maturityContainer").innerHTML = mat.map((m) => (
+    '<div class="spacious-card" style="padding:22px 28px;margin-bottom:14px;">' +
+      '<div class="pill-row" style="margin-bottom:6px;">' +
+        '<span class="card-code" style="margin-bottom:0;">' + richText(m.nivel) + '</span>' +
+        (m.estadio ? '<strong style="font-size:17px;">' + richText(m.estadio) + '</strong>' : '') +
+        '<span class="badge badge-editorial">Propuesta Editorial</span>' +
+      '</div>' +
+      '<div style="font-size:15.5px;">' + richText(m.descripcion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  const tr = MODULE_DATA.rutaFormacion || { headers: [], rows: [] };
+  if (tr.rows && tr.rows.length) {
+    document.getElementById("trainingContainer").innerHTML =
+      '<div class="table-wrap"><table><thead><tr>' +
+      tr.headers.map((h) => '<th>' + richText(h) + '</th>').join("") +
+      '</tr></thead><tbody>' +
+      tr.rows.map((row) => '<tr>' + row.map((cell, ci) => '<td>' + (ci === 0 ? '<strong>' + richText(cell) + '</strong>' : richText(cell)) + '</td>').join("") + '</tr>').join("") +
+      '</tbody></table></div>';
+  }
+
+  // VISTA 6: NIST CSF 2.0, AUDIT & REFS
+  function renderNist() {
+    const fn = document.getElementById("nistFuncSelect").value;
+    const rows = (MODULE_DATA.mapeoNISTCSF20 || []).filter((n) => fn === "ALL" || String(n.funcion).indexOf(fn) !== -1);
+    document.getElementById("nistCardsContainer").innerHTML = rows.map((n) => (
+      '<div class="spacious-card" style="padding:24px 30px;margin-bottom:16px;">' +
+        '<div class="card-top" style="margin-bottom:14px;">' +
+          '<div class="pill-row">' +
+            '<span class="card-code" style="margin-bottom:0;">' + esc(n.subcategoria) + '</span>' +
+            '<strong style="font-size:17px;">' + esc(n.funcion) + '</strong>' +
+          '</div>' +
+          valBadge(n.estadoValidacion) +
+        '</div>' +
+        '<p style="margin:0 0 14px 0;"><strong>Outcome NIST CSWP 29:</strong> ' + richText(n.descripcionResultado) + '</p>' +
+        '<div class="info-pair" style="margin-bottom:0;">' +
+          '<div class="info-box"><div class="info-label">Capacidad Habilitadora en Microsoft</div><div class="info-content">' + richText(n.capacidadMicrosoft) + '</div></div>' +
+          '<div class="info-box"><div class="info-label">Evidencia Auditable Reproducible</div><div class="info-content">' + richText(n.evidenciaAuditoria) + '</div></div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+  document.getElementById("nistFuncSelect").addEventListener("change", renderNist);
+
+  const vd = MODULE_DATA.validacionYDecisionesEditoriales || {};
+  document.getElementById("auditSummaryBox").innerHTML =
+    '<h4 style="margin:0 0 8px 0;font-size:18px;">Resumen de Auditoría Documental (' + esc(vd.fechaRevalidacion) + ')</h4>' +
+    '<p style="margin:0;">' + richText(vd.resumenAuditoria) + '</p>';
+
+  document.getElementById("corrContainer").innerHTML = '<ol style="padding-left:20px;margin:0;">' +
+    (vd.correccionesAplicadas || []).map((c) => '<li style="margin-bottom:12px;">' + richText(c) + '</li>').join("") + '</ol>';
+
+  document.getElementById("decContainer").innerHTML = (vd.decisionesEditoriales || []).map((d) => (
+    '<div class="info-box" style="margin-bottom:12px;">' +
+      '<div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;"><strong>' + esc(d.elemento) + '</strong>' + valBadge(d.tipo) + '</div>' +
+      '<div class="muted" style="font-size:14.5px;">' + richText(d.justificacion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  function renderRefs() {
+    const q = document.getElementById("refSearch").value.trim().toLowerCase();
+    const list = (MODULE_DATA.referenciasVerificadas || []).filter((r) => {
+      if (!q) return true;
+      return [r.id, r.titulo, r.tipoFuente, r.autor, r.comentario, r.url].join(" ").toLowerCase().indexOf(q) !== -1;
+    });
+    document.getElementById("refTableBody").innerHTML = list.map((r) => (
+      '<tr>' +
+        '<td class="mono"><strong>' + esc(r.id) + '</strong></td>' +
+        '<td><a href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer"><strong>' + esc(r.titulo) + ' ↗</strong></a><br><span class="mono muted" style="font-size:12px;">' + esc(r.url) + '</span></td>' +
+        '<td><span class="badge">' + esc(r.tipoFuente) + '</span></td>' +
+        '<td>' + esc(r.autor) + '</td>' +
+        '<td>' + richText(r.comentario) + '</td>' +
+      '</tr>'
+    )).join("");
+  }
+  document.getElementById("refSearch").addEventListener("input", renderRefs);
+
+  // Initial render
+  updateProgressTracker();
+  renderConfigView();
+  syncPeriodicSubnav();
+  renderPeriodicCards();
+  renderAdhocCards();
+  renderQueries();
+  renderNist();
+  renderRefs();
+  applyInitialHash();
+})();
+</script>
+</body>
+</html>

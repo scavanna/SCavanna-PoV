@@ -1,0 +1,1139 @@
+{
+ "ficha": {
+  "prefijo": "MDO",
+  "agente": "AG",
+  "nombre": "Seguridad de correo y colaboración (Microsoft Defender for Office 365 sobre Exchange Online Protection, en Microsoft Defender XDR)",
+  "dominio_zt": "Productividad y colaboración (Exchange, SharePoint, OneDrive, Teams); interfaz con XDR, Identidades y Datos",
+  "tecnologia": "EOP + Defender for Office 365 Plan 2 (Safe Links, Safe Attachments, anti-phishing, ZAP, presets Standard/Strict, Campaign Views, Threat Explorer, AIR, Attack Simulation Training, Submissions, TABL), Defender XDR",
+  "funciones_csf": "GV.PO/PR.PS · DE.AE/DE.CM · RS.AN/RS.MI · ID.IM · PR.AT",
+  "fuente_oficial": "Microsoft Defender for Office 365 Security Operations Guide + tareas de mantenimiento del SOC de Defender XDR",
+  "objetivo": "Ningún mensaje malicioso residente >24 h; FP/FN como calidad de producto; configuración en baseline; incidentes en SLA",
+  "slo": "Residentes >24 h = 0; FP <1 %; triaje M/H ≥95 %; desviaciones críticas = 0; cuentas prioritarias 100 %",
+  "diferencia": "Instancia de referencia del sub-plan (V5/V6). Protege un canal con un sensor; acción más sensible: hard delete y liberación de cuarentena.",
+  "interfaz": "XDR: correlación y automatización. Datos: DLP de correo. Identidades: cuentas prioritarias. Mesa de mensajería: flujo de correo.",
+  "personas": "Security Operations Team · Security Administration · Messaging Team · Threat hunting team · SOC Oversight",
+  "permisos": "Unified RBAC + roles de Exchange Online/MDO; Agent ID para agentes"
+ },
+ "tareas": [
+  [
+   "MDO-D01",
+   "Triar incidentes de la cola (Medium/High de Defender for Office 365)",
+   "Diaria",
+   "Security Operations Team",
+   "DE.AE, RS.MA",
+   "SOP",
+   "eo:OP-SOP-10 Triar incidentes por prioridad dentro del SLA",
+   "L2",
+   "AG-01",
+   "KPI-01",
+   "Learn: mdo-sec-ops-guide"
+  ],
+  [
+   "MDO-D02",
+   "Investigar y ejecutar acciones de respuesta sobre incidentes",
+   "Diaria",
+   "Security Operations Team",
+   "RS.AN, RS.MI",
+   "SOP",
+   "eo:OP-SOP-11 Investigar y remediar incidentes con evidencia",
+   "L2",
+   "AG-02",
+   "KPI-02",
+   "Learn: mdo-sec-ops-guide"
+  ],
+  [
+   "MDO-D03",
+   "Resolver incidentes remediados",
+   "Diaria",
+   "Security Operations Team",
+   "RS.MA",
+   "SOP",
+   "eo:OP-SOP-12 Cerrar incidentes con criterio documentado",
+   "L2",
+   "AG-01",
+   "KPI-01",
+   "Learn"
+  ],
+  [
+   "MDO-D04",
+   "Clasificar incidentes (true/false; tipo de amenaza)",
+   "Diaria",
+   "Security Operations Team",
+   "ID.IM",
+   "SOP",
+   "eo:OP-SOP-13 Clasificar incidentes para aprender patrones",
+   "L2",
+   "AG-01",
+   "KPI-03",
+   "Learn"
+  ],
+  [
+   "MDO-D05",
+   "Enviar FP/FN a Microsoft (Submissions)",
+   "Diaria",
+   "Security Operations Team",
+   "ID.IM",
+   "SOP",
+   "eo:OP-SOP-14 Retroalimentar al fabricante con FP/FN",
+   "L2",
+   "AG-03",
+   "KPI-04",
+   "Learn"
+  ],
+  [
+   "MDO-D06",
+   "Analizar detalles de los envíos",
+   "Diaria",
+   "Security Operations Team",
+   "ID.IM",
+   "SOP",
+   "eo:OP-SOP-15 Analizar causa raíz de errores de detección",
+   "L1",
+   "AG-03",
+   "KPI-04",
+   "Learn"
+  ],
+  [
+   "MDO-D07",
+   "Agregar bloqueos en Tenant Allow/Block List",
+   "Diaria",
+   "Security Operations Team",
+   "PR.PS",
+   "SOP",
+   "eo:OP-SOP-16 Mantener listas de bloqueo con vencimiento",
+   "L2",
+   "AG-03",
+   "KPI-05",
+   "Learn"
+  ],
+  [
+   "MDO-D08",
+   "Liberar falsos positivos de cuarentena",
+   "Diaria",
+   "Security Operations Team",
+   "RS.MI",
+   "SOP",
+   "eo:OP-SOP-17 Liberar cuarentena con segunda aprobación",
+   "L2",
+   "AG-03",
+   "KPI-04",
+   "Learn"
+  ],
+  [
+   "MDO-D09",
+   "Revisar campañas con correo entregado y remover mensajes",
+   "Diaria",
+   "Security Operations Team",
+   "RS.MI, DE.AE",
+   "SOP",
+   "eo:OP-SOP-18 Remediar mensajes residentes",
+   "L2",
+   "AG-04",
+   "KPI-02",
+   "Learn"
+  ],
+  [
+   "MDO-W01",
+   "Revisar informes de tendencias de detección",
+   "Semanal",
+   "Security Operations Team",
+   "DE.CM",
+   "POS",
+   "eo:OP-SOP-19 Revisar tendencias de detección y ajustar políticas",
+   "L3",
+   "AG-05",
+   "KPI-08",
+   "Learn"
+  ],
+  [
+   "MDO-W02",
+   "Revisar amenazas activas en Threat analytics",
+   "Semanal",
+   "Security Operations Team",
+   "ID.RA",
+   "SOP",
+   "eo:OP-SOP-20 Revisar inteligencia de amenazas y derivar acciones",
+   "L2",
+   "AG-06",
+   "KPI-08",
+   "Learn"
+  ],
+  [
+   "MDO-W03",
+   "Revisar usuarios más atacados y cuentas prioritarias",
+   "Semanal",
+   "Security Operations Team",
+   "ID.RA, PR.AA",
+   "POS",
+   "eo:OP-SOP-21 Proteger cuentas prioritarias",
+   "L2",
+   "AG-07",
+   "KPI-09",
+   "Learn"
+  ],
+  [
+   "MDO-W04",
+   "Revisar Campaign Views",
+   "Semanal",
+   "Security Operations Team",
+   "DE.AE",
+   "SOP",
+   "eo:OP-SOP-18 Remediar mensajes residentes",
+   "L2",
+   "AG-04",
+   "KPI-02",
+   "Learn"
+  ],
+  [
+   "MDO-W05",
+   "Generar informe de Secure Score",
+   "Semanal",
+   "Security Administration",
+   "ID.IM",
+   "POS",
+   "eo:OP-POS-11 Reportar la postura y su tendencia",
+   "L3",
+   "AG-08",
+   "KPI-06",
+   "Learn"
+  ],
+  [
+   "MDO-W06",
+   "Revisar anuncios del Message Center",
+   "Semanal",
+   "Security Administration",
+   "GV.OV",
+   "SIG",
+   "eo:OP-SIG-10 Vigilar cambios de la plataforma y evaluar impacto",
+   "L3",
+   "AG-09",
+   "KPI-10",
+   "Learn"
+  ],
+  [
+   "MDO-W07",
+   "Desplegar/probar automatización aprobada",
+   "Semanal",
+   "Security Operations Team",
+   "PR.PS",
+   "SOP",
+   "eo:OP-SOP-22 Mantener la automatización operativa",
+   "L1",
+   "—",
+   "KPI-16",
+   "Learn"
+  ],
+  [
+   "MDO-M01",
+   "Revisar configuración con Configuration Analyzer/ORCA",
+   "Mensual",
+   "Security Administration",
+   "PR.PS",
+   "POS",
+   "eo:OP-POS-12 Detectar y corregir deriva de configuración frente al baseline",
+   "L3",
+   "AG-10",
+   "KPI-06",
+   "Learn"
+  ],
+  [
+   "MDO-M02",
+   "Revisar overrides de detección",
+   "Mensual",
+   "Security Administration",
+   "ID.IM",
+   "POS",
+   "eo:OP-POS-13 Revisar y depurar excepciones que debilitan la detección",
+   "L2",
+   "AG-11",
+   "KPI-07",
+   "Learn"
+  ],
+  [
+   "MDO-M03",
+   "Revisar Spoof intelligence e Impersonation insights",
+   "Mensual",
+   "Security Administration",
+   "DE.AE",
+   "POS",
+   "eo:OP-POS-14 Afinar protección contra suplantación",
+   "L2",
+   "AG-11",
+   "KPI-07",
+   "Learn"
+  ],
+  [
+   "MDO-M04",
+   "Actualizar concientización con lecciones del SOC",
+   "Mensual",
+   "Security Operations Team",
+   "PR.AT",
+   "SIG",
+   "eo:OP-SIG-11 Convertir lecciones del SOC en concientización",
+   "L1",
+   "AG-12",
+   "KPI-09",
+   "Learn"
+  ],
+  [
+   "MDO-Q01",
+   "Revisar políticas, excepciones y apetito de autonomía",
+   "Trimestral",
+   "PO-GAC + CISO",
+   "GV.PO",
+   "SIG",
+   "eo:OP-SIG-12 Revisar políticas y excepciones del control",
+   "L1",
+   "—",
+   "KPI-10",
+   "Propuesta"
+  ],
+  [
+   "MDO-Q02",
+   "Revisar desempeño y costo de la flota",
+   "Trimestral",
+   "PO-GAC",
+   "GV.OV",
+   "IA",
+   "eo:OP-IA-02 Revisar desempeño, costo y riesgo de los agentes",
+   "L1",
+   "AG-13",
+   "KPI-11..15",
+   "Propuesta"
+  ],
+  [
+   "MDO-Q03",
+   "Recertificar accesos de agentes y humanos",
+   "Trimestral",
+   "PO-GAC + IAM",
+   "PR.AA",
+   "AYI",
+   "eo:OP-AYI-01 Recertificar accesos privilegiados, no humanos y de agentes",
+   "L2",
+   "AG-13",
+   "KPI-17",
+   "Propuesta"
+  ],
+  [
+   "MDO-Q04",
+   "Evaluaciones/regresión y red teaming de agentes",
+   "Trimestral",
+   "PO-GAC + AppSec",
+   "ID.IM",
+   "IA",
+   "eo:OP-IA-03 Evaluar y probar adversarialmente a los agentes",
+   "L2",
+   "—",
+   "KPI-13",
+   "Propuesta"
+  ],
+  [
+   "MDO-A01",
+   "Investigar/remover correo a pedido o disparar AIR",
+   "Por evento",
+   "Security Operations Team",
+   "RS.MI",
+   "SOP",
+   "eo:OP-SOP-11 Investigar y remediar incidentes con evidencia",
+   "L2",
+   "AG-02",
+   "KPI-02",
+   "Learn"
+  ],
+  [
+   "MDO-A02",
+   "Hunting proactivo",
+   "Por evento",
+   "Threat hunting team",
+   "DE.CM",
+   "SOP",
+   "eo:OP-SOP-02 Buscar amenazas por técnicas priorizadas y convertir hallazgos en detecciones",
+   "L1",
+   "AG-14",
+   "KPI-08",
+   "Learn"
+  ],
+  [
+   "MDO-A03",
+   "Compartir consultas de hunting",
+   "Por evento",
+   "Threat hunting team",
+   "DE.CM",
+   "SOP",
+   "eo:OP-SOP-23 Curar y compartir consultas de hunting",
+   "L2",
+   "AG-14",
+   "KPI-08",
+   "Learn"
+  ],
+  [
+   "MDO-A04",
+   "Crear detecciones personalizadas",
+   "Por evento",
+   "Threat hunting team",
+   "DE.AE",
+   "SOP",
+   "eo:OP-SOP-24 Convertir hunting en detecciones automatizadas",
+   "L2",
+   "AG-14",
+   "KPI-08",
+   "Learn"
+  ],
+  [
+   "MDO-A05",
+   "Revisar cuentas prioritarias y etiquetas",
+   "Por evento",
+   "Security Administration",
+   "PR.AA",
+   "POS",
+   "eo:OP-SOP-21 Proteger cuentas prioritarias",
+   "L2",
+   "AG-07",
+   "KPI-09",
+   "Learn"
+  ],
+  [
+   "MDO-A06",
+   "Actualizar tickets ITSM",
+   "Diaria",
+   "Security Operations Team",
+   "RS.MA",
+   "SOP",
+   "eo:OP-SOP-25 Mantener trazabilidad de escalamientos",
+   "L3",
+   "AG-15",
+   "KPI-01",
+   "Learn"
+  ],
+  [
+   "MDO-A07",
+   "Tabletop (incl. 'agente comprometido')",
+   "Según necesidad",
+   "SOC Oversight",
+   "ID.IM",
+   "SOP",
+   "eo:OP-SOP-26 Probar los planes de respuesta",
+   "L1",
+   "—",
+   "KPI-16",
+   "Propuesta"
+  ]
+ ],
+ "agentes": [
+  {
+   "id": "AG-01",
+   "nombre": "Triage Copilot de incidentes de correo",
+   "proposito": "Pre-triar y clasificar incidentes de Defender for Office 365 en la cola de Defender XDR, proponiendo prioridad, clasificación y siguiente acción.",
+   "tareas": "MDO-D01, MDO-D03, MDO-D04",
+   "autonomia": "L2",
+   "gates": "Clasificación y cierre con aprobación humana; sin acciones sobre buzones",
+   "kpis": "Precisión ≥90 %; pre-triaje <5 min",
+   "costo": "Tokens/SCU por incidente",
+   "riesgos_asi": "ASI01, ASI06",
+   "identidad": "Agent ID; Security data basics (Read)",
+   "owner": "PO-GAC",
+   "ruta": "R2 (alt. R1)",
+   "tools_propios": [
+    "T-04",
+    "T-01",
+    "T-05"
+   ],
+   "knowledge_propios": [
+    "KN-01",
+    "KN-03"
+   ],
+   "skills_propios": [
+    "SK-07"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "AG-02",
+   "nombre": "Asistente de investigación y remediación",
+   "proposito": "Reunir evidencia, proponer acciones (soft/hard delete, bloqueo) y ejecutarlas tras aprobación.",
+   "tareas": "MDO-D02, MDO-A01",
+   "autonomia": "L2",
+   "gates": "Acciones sobre buzones solo con aprobación; límite de N mensajes por acción",
+   "kpis": "MTTR; acciones revertidas <2 %",
+   "costo": "Tokens/SCU",
+   "riesgos_asi": "ASI02, ASI03",
+   "identidad": "Agent ID; Response (Manage) acotado",
+   "owner": "PO-GAC",
+   "ruta": "R2 (alt. R1)",
+   "tools_propios": [
+    "T-05",
+    "T-04",
+    "T-01",
+    "T-07",
+    "T-21"
+   ],
+   "knowledge_propios": [
+    "KN-05",
+    "KN-03"
+   ],
+   "skills_propios": [
+    "SK-08",
+    "SK-04"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "AG-03",
+   "nombre": "Analista de FP/FN y listas",
+   "proposito": "Preparar envíos a Microsoft, proponer bloqueos con vencimiento, gestionar liberaciones de cuarentena, documentar causa raíz.",
+   "tareas": "MDO-D05, MDO-D06, MDO-D07, MDO-D08",
+   "autonomia": "L2",
+   "gates": "Bloqueos y liberaciones con aprobación; 'allow' con segunda aprobación",
+   "kpis": "FP/FN recurrentes ↓; tiempo de liberación",
+   "costo": "Tokens",
+   "riesgos_asi": "ASI01, ASI09",
+   "identidad": "Agent ID; Submissions; TABL acotado",
+   "owner": "PO-GAC",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-06",
+    "T-07",
+    "T-05"
+   ],
+   "knowledge_propios": [
+    "KN-04",
+    "KN-06"
+   ],
+   "skills_propios": [
+    "SK-09",
+    "SK-04"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "AG-04",
+   "nombre": "Revisor de campañas",
+   "proposito": "Revisar campañas con correo entregado, listar mensajes residentes y proponer remediación; informe semanal.",
+   "tareas": "MDO-D09, MDO-W04",
+   "autonomia": "L2 / L3 (informe)",
+   "gates": "Remediación con aprobación; informe autónomo",
+   "kpis": "Residentes >24 h → 0; informe a tiempo",
+   "costo": "Tokens",
+   "riesgos_asi": "ASI08",
+   "identidad": "Agent ID; lectura + remediación acotada",
+   "owner": "PO-GAC",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-05",
+    "T-04",
+    "T-07"
+   ],
+   "knowledge_propios": [
+    "KN-09",
+    "KN-03"
+   ],
+   "skills_propios": [
+    "SK-08",
+    "SK-11",
+    "SK-04"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "AG-05",
+   "nombre": "Reportero de tendencias de detección",
+   "proposito": "Compilar semanalmente Threat protection status y Mailflow status, detectar anomalías, proponer ajustes.",
+   "tareas": "MDO-W01",
+   "autonomia": "L3",
+   "gates": "Sin cambios de política; solo propuestas",
+   "kpis": "Informe ≤lunes 10:00",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI09",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-22",
+    "T-05",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-10",
+    "KN-11"
+   ],
+   "skills_propios": [
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "AG-06",
+   "nombre": "Briefer de inteligencia de amenazas",
+   "proposito": "Resumir Threat analytics relevante al dominio y derivar hunts y acciones.",
+   "tareas": "MDO-W02",
+   "autonomia": "L2",
+   "gates": "Acciones derivadas con aprobación",
+   "kpis": "Acciones/semana; relevancia",
+   "costo": "Tokens/SCU",
+   "riesgos_asi": "ASI06",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC",
+   "ruta": "R2 (alt. R1)",
+   "tools_propios": [
+    "T-01",
+    "T-04",
+    "T-03"
+   ],
+   "knowledge_propios": [
+    "KN-09",
+    "KN-05"
+   ],
+   "skills_propios": [
+    "SK-12"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "AG-07",
+   "nombre": "Steward de cuentas prioritarias",
+   "proposito": "Detectar usuarios más atacados y cambios organizativos; proponer altas/bajas de cuentas prioritarias.",
+   "tareas": "MDO-W03, MDO-A05",
+   "autonomia": "L2",
+   "gates": "Cambios de etiquetas con aprobación",
+   "kpis": "Cobertura; desfase <7 días",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI03",
+   "identidad": "Agent ID; User.Read.All",
+   "owner": "PO-GAC",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-11",
+    "T-05",
+    "T-02"
+   ],
+   "knowledge_propios": [
+    "KN-07"
+   ],
+   "skills_propios": [
+    "SK-13"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "AG-08",
+   "nombre": "Reportero de postura (Secure Score)",
+   "proposito": "Informar Secure Score, delta y recomendaciones del dominio; alimentar el backlog.",
+   "tareas": "MDO-W05",
+   "autonomia": "L3",
+   "gates": "Solo informa/propone",
+   "kpis": "Informe a tiempo; ítems al backlog",
+   "costo": "Bajo",
+   "riesgos_asi": "—",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-08"
+   ],
+   "knowledge_propios": [
+    "KN-10"
+   ],
+   "skills_propios": [
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "AG-09",
+   "nombre": "Vigía de cambios de plataforma",
+   "proposito": "Leer Message Center/roadmap y evaluar impacto en políticas, runbooks y agentes.",
+   "tareas": "MDO-W06",
+   "autonomia": "L3",
+   "gates": "Solo informa",
+   "kpis": "Cambios evaluados ≤7 días",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI06",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-09",
+    "T-03"
+   ],
+   "knowledge_propios": [
+    "KN-02",
+    "KN-06"
+   ],
+   "skills_propios": [
+    "SK-14"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "AG-10",
+   "nombre": "Centinela de deriva de configuración",
+   "proposito": "Comparar configuración con baseline (Configuration Analyzer/ORCA), explicar desviaciones, proponer corrección.",
+   "tareas": "MDO-M01",
+   "autonomia": "L3 (detección) / L2 (corrección)",
+   "gates": "Correcciones con aprobación; excepciones registradas",
+   "kpis": "Desviaciones abiertas; tiempo a corrección",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI02",
+   "identidad": "Agent ID; lectura de configuración",
+   "owner": "PO-GAC",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-10",
+    "T-08"
+   ],
+   "knowledge_propios": [
+    "KN-06",
+    "KN-04"
+   ],
+   "skills_propios": [
+    "SK-10"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "AG-11",
+   "nombre": "Auditor de overrides y suplantación",
+   "proposito": "Revisar overrides e insights de spoof/impersonación; proponer depuración y ajustes.",
+   "tareas": "MDO-M02, MDO-M03",
+   "autonomia": "L2",
+   "gates": "Cambios con aprobación",
+   "kpis": "Overrides sin justificación → 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI01",
+   "identidad": "Agent ID; lectura + propuestas",
+   "owner": "PO-GAC",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-05",
+    "T-07"
+   ],
+   "knowledge_propios": [
+    "KN-04",
+    "KN-06"
+   ],
+   "skills_propios": [
+    "SK-10",
+    "SK-09"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "AG-12",
+   "nombre": "Redactor de concientización",
+   "proposito": "Transformar lecciones del SOC en contenido de concientización y simulaciones.",
+   "tareas": "MDO-M04",
+   "autonomia": "L1",
+   "gates": "Publicación solo humana",
+   "kpis": "Campañas actualizadas; clic ↓",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI09",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC + Concientización",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-12"
+   ],
+   "knowledge_propios": [
+    "KN-12",
+    "KN-09"
+   ],
+   "skills_propios": [
+    "SK-15"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "AG-13",
+   "nombre": "Analista de la flota (desempeño, costo, accesos)",
+   "proposito": "Consolidar KPIs, costos y accesos de agentes para la revisión trimestral y la recertificación.",
+   "tareas": "MDO-Q02, MDO-Q03",
+   "autonomia": "L1-L2",
+   "gates": "Decisiones humanas; prepara expedientes",
+   "kpis": "Informe trimestral; % recertificación",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI03",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-13",
+    "T-14",
+    "T-24",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-11",
+    "KN-08"
+   ],
+   "skills_propios": [
+    "SK-16"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "AG-14",
+   "nombre": "Bibliotecario de hunting y detecciones",
+   "proposito": "Mantener consultas y Threat trackers; proponer detecciones a partir de hunts.",
+   "tareas": "MDO-A02, MDO-A03, MDO-A04",
+   "autonomia": "L2",
+   "gates": "Detecciones nuevas con aprobación",
+   "kpis": "Consultas vigentes; precisión",
+   "costo": "Medio",
+   "riesgos_asi": "ASI02, ASI05",
+   "identidad": "Agent ID; hunting + custom detections acotado",
+   "owner": "PO-GAC + Hunting",
+   "ruta": "R3 (alt. R2)",
+   "tools_propios": [
+    "T-05",
+    "T-01",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-05",
+    "KN-09"
+   ],
+   "skills_propios": [
+    "SK-08",
+    "SK-17"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "AG-15",
+   "nombre": "Sincronizador de tickets",
+   "proposito": "Mantener tickets ITSM sincronizados con incidentes de XDR.",
+   "tareas": "MDO-A06",
+   "autonomia": "L3",
+   "gates": "Sin cierre sin confirmación del humano asignado",
+   "kpis": "Desincronizados → 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI07",
+   "identidad": "Agent ID; permisos ITSM acotados",
+   "owner": "PO-GAC + SOC Lead",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-15",
+    "T-04"
+   ],
+   "knowledge_propios": [
+    "KN-02"
+   ],
+   "skills_propios": [
+    "SK-18"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  }
+ ],
+ "tools_nuevos": {},
+ "knowledge_nuevos": {},
+ "skills_nuevos": {},
+ "instanciacion": [
+  [
+   "M3.1-PA01",
+   "Instancia de referencia (productividad): Arquitectura de referencia del SOC agéntico con control plane"
+  ],
+  [
+   "M3.1-PA02",
+   "Instancia de referencia (productividad): Arquitectura de protección del dominio Zero Trust (instancias: correo y colaboración · detección y respuesta unificada · endpoints · identidades · datos)"
+  ],
+  [
+   "M4.1-PA01",
+   "Instancia de referencia (productividad): Modelo operativo del producto-control por cadencias (instancias: Defender for Office 365 · Defender XDR · Defender for Endpoint · Defender for Identity/Entra · Purview · Sentinel · Defender for Cloud)"
+  ],
+  [
+   "M4.1-PA02",
+   "Instancia de referencia (productividad): Gestión de incidentes y alertas en Defender XDR"
+  ],
+  [
+   "M4.1-PA03",
+   "Instancia de referencia (productividad): Gestión de la calidad de detección del dominio: FP/FN, tuning, listas, indicadores y supresiones (instancias: MDO · XDR · MDE · MDI/ID Protection · Purview DLP · Sentinel)"
+  ],
+  [
+   "M4.1-PA04",
+   "Instancia de referencia (productividad): Hunting y detecciones personalizadas"
+  ],
+  [
+   "M4.1-PA05",
+   "Instancia de referencia (productividad): Observabilidad de la flota de agentes: telemetría, trazas y tableros"
+  ],
+  [
+   "M4.1-PA06",
+   "Instancia de referencia (productividad): Gestión del desempeño de agentes: revisión periódica y drift"
+  ],
+  [
+   "M4.2-PA01",
+   "Instancia de referencia (productividad): Amenazas del dominio Zero Trust (instancias: correo y colaboración · cross-domain · endpoints · identidades · datos)"
+  ],
+  [
+   "M4.2-PA02",
+   "Instancia de referencia (productividad): Catálogos de amenazas a sistemas agénticos aplicados a la flota"
+  ],
+  [
+   "M5.1-PA01",
+   "Instancia de referencia (productividad): Playbooks de incidentes de correo con roles humano/agente"
+  ],
+  [
+   "M5.2-PA01",
+   "Instancia de referencia (productividad): Ejecución de respuesta en correo: AIR, acciones manuales y acciones de agentes con aprobación"
+  ],
+  [
+   "M5.2-PA02",
+   "Instancia de referencia (productividad): Mejora gobernada de agentes: del post-mortem al ChangeSet con regresión"
+  ]
+ ]
+}

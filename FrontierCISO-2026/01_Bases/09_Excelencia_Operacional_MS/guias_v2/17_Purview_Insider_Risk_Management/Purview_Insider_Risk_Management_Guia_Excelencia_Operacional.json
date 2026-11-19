@@ -1,0 +1,1259 @@
+{
+  "schemaVersion": "2.0",
+  "id": "17_Purview_Insider_Risk_Management",
+  "orden": 17,
+  "slug": "Purview_Insider_Risk_Management",
+  "nombre": "Microsoft Purview Insider Risk Management",
+  "nombreCorto": "Purview Insider Risk Management",
+  "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)",
+  "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://purview.microsoft.com",
+    "https://security.microsoft.com",
+    "https://entra.microsoft.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "SOC Manager",
+    "Analistas e Investigadores de Riesgo Interno (L1 / L2 / L3)",
+    "Oficial de Privacidad (DPO)",
+    "Recursos Humanos (Employee Relations)",
+    "Asesoría Legal (eDiscovery)",
+    "Auditoría Interna",
+    "Administradores de Microsoft Purview y Entra ID"
+  ],
+  "relacionM365E5": {
+    "estado": "Incluido en Microsoft 365 E5",
+    "licencias": [
+      "Microsoft 365 E5 / E7 / A5 / G5 (incluye Microsoft Purview Insider Risk Management de forma nativa)",
+      "Microsoft Purview Suite / Microsoft Purview Insider Risk Management Add-on (sobre Microsoft 365 E3 / A3 / G3)",
+      "Microsoft 365 F5 Compliance / Microsoft 365 F5 Security + Compliance y Office 365 E5",
+      "Suscripción Azure Pay-As-You-Go vinculada para indicadores específicos no-M365/IA externa y consumo de Security Compute Units (SCUs) en Purview Alert Triage Agent",
+      "Forensic Evidence (característica opt-in add-on con 20 GB de capacidad de prueba incluida para clips y compra de capacidad adicional)"
+    ],
+    "prerrequisitos": [
+      "Estatuto de gobernanza aprobado por Legal, Recursos Humanos y Privacidad (incluyendo consulta sindical / Works Council donde aplique)",
+      "Disponibilidad regional de dependencias Azure en nubes comerciales (actualmente no disponible en nubes US Government)",
+      "Segregación explícita de los 6 Role Groups nativos (Admins, Analysts, Investigators, Approvers, Auditors) evitando el uso cotidiano del grupo comodín raíz",
+      "Conector HR Data configurado (importación periódica < 24 h) para plantillas de usuarios salientes/riesgosos y onboarding de endpoints Windows/macOS y navegadores Edge/Chrome",
+      "Para Purview Alert Triage Agent: onboarding a Microsoft Security Copilot, compartición de datos M365, plug-in Purview habilitado y renovación del guardado de configuración cada <= 90 días",
+      "Para Forensic Evidence: equipos Windows 10/11 Enterprise o Windows 365 (64-bit, GPU integrada DirectX 11+) con Microsoft Purview Client instalado y flujo activo de doble autorización Approvers"
+    ],
+    "notaLicenciamiento": "Microsoft Purview Insider Risk Management se licencia por usuario beneficiado dentro de Microsoft 365 E5/E7 o Microsoft Purview Suite. Insider Risk Analytics (escaneo base sin políticas) no requiere costo extra en tenants elegibles. Ciertos indicadores sobre nubes de terceros (Box, Dropbox, Google Drive) o aplicaciones GenAI externas requieren habilitar facturación Pay-As-You-Go y Collection Policies. El Purview Alert Triage Agent consume Security Compute Units (SCUs) de Security Copilot (con dotación base incluida en M365 E5), mientras que Forensic Evidence funciona como capacidad opt-in add-on con 20 GB de almacenamiento de prueba para clips (retenidos máximo 120 días). Los templates recomendados de Power Automate para IRM no exigen licencias adicionales de Power Automate salvo conectores premium."
+  },
+  "resumenEjecutivo": "Microsoft Purview Insider Risk Management (IRM) identifica, investiga y mitiga de forma dinámica riesgos internos maliciosos, inadvertidos o derivados de cuentas comprometidas —como robo de propiedad intelectual, fugas de datos, violaciones de seguridad y uso riesgoso de IA y agentes autónomos— bajo una arquitectura estricta de Privacidad por Diseño. A noviembre de 2026 combina escaneo base sin políticas (Insider Risk Analytics), detección de secuencias multi-etapa y exfiltración acumulada low-and-slow frente a Peer Groups de Entra ID, cobertura nativa para Microsoft 365 Copilot y agentes (Risky AI usage y Risky Agents), triaje asistido por el Purview Alert Triage Agent en Security Copilot, captura visual gobernada por doble autorización (Forensic Evidence), mitigación automática en tiempo real mediante Adaptive Protection sobre Purview DLP, Microsoft Entra Conditional Access y retención DLCM de 120 días, escalamiento directo a Purview eDiscovery y correlación bidireccional con Microsoft Defender XDR y Microsoft Sentinel.",
+  "principiosRectores": [
+    {
+      "principio": "Privacidad por diseño y seudonimización predeterminada con reglas explícitas",
+      "descripcion": "Los nombres de usuario se muestran seudonimizados por defecto para evitar sesgos en el triaje L1, reconociendo tres comportamientos técnicos documentados: la anonimización deshabilita Data risk graph, no aplica en el panel del Triage Agent y transfiere UPN reales al exportar por API SIEM o escalar a Purview eDiscovery (preservando pseudónimos en CSV).",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/insider-risk-management-settings-privacy"
+    },
+    {
+      "principio": "Segregación estricta de funciones (6 Role Groups) y auditoría independiente",
+      "descripcion": "Separar diseño de políticas (Admins), triaje de metadatos (Analysts), inspección de contenido/clips (Investigators), aprobación forense dual (Approvers) y supervisión en el Insider Risk Audit Log independiente de 180 días (Auditors).",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/insider-risk-management-permissions"
+    },
+    {
+      "principio": "Dimensionamiento basado en evidencia anónima previa (Insider Risk Analytics)",
+      "descripcion": "Ejecutar escaneos agregados y anónimos de hasta 10 días sin configurar políticas para descubrir vectores reales de exfiltración y calibrar umbrales con recomendaciones en tiempo real.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/insider-risk-management-settings-analytics"
+    },
+    {
+      "principio": "Detección contextual de secuencias, acumulación y actividad de IA/Agentes",
+      "descripcion": "Priorizar cadenas conductuales completas (Collection -> Exfiltration -> Obfuscation -> Clean-up), anomalías acumuladas de 30 días frente a Peer Groups y monitoreo nativo tanto de usuarios (Risky AI usage) como de agentes autónomos (Risky Agents).",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/insider-risk-management-monitoring-agents"
+    },
+    {
+      "principio": "Mitigación cerrada y proporcional basada en riesgo (Adaptive Protection)",
+      "descripcion": "Aplicar controles restrictivos dinámicos en Purview DLP, Microsoft Entra Conditional Access y retención DLCM de 120 días exclusivamente sobre usuarios en riesgo Elevated o Moderate sin penalizar la productividad general.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/insider-risk-management-adaptive-protection"
+    },
+    {
+      "principio": "Convergencia SecOps y transición legal defendible (Defender XDR + Sentinel + eDiscovery)",
+      "descripcion": "Correlacionar señales internas con incidentes XDR y caza KQL para distinguir insiders maliciosos de compromisos externos de credenciales, escalando casos materiales directamente hacia Purview eDiscovery con cadena de custodia intacta.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-xdr/irm-investigate-alerts-defender"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Insider Risk Analytics y Calibración en Tiempo Real",
+      "funcionOperativa": "Escaneo diario anónimo de hasta 10 días sobre logs M365, Exchange, cuentas eliminadas en Entra ID y conector HR sin requerir políticas, generando además resúmenes de severidad por usuario para DLP, Comm Compliance y Defender XDR.",
+      "portalRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Overview / Reports > Analytics",
+      "integraciones": [
+        "Microsoft 365 Audit Logs & Exchange Online",
+        "Microsoft Entra ID & HR Data Connector",
+        "Purview DLP, Communication Compliance & Defender XDR"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Motor de Políticas, Plantillas Escenificadas y Monitoreo de IA / Agentes",
+      "funcionOperativa": "Ejecución de plantillas Data theft by departing users, Data leaks (general/priority/risky), Security policy violations, Patient data misuse, Risky browser usage, Risky AI usage y la política predeterminada Risky Agents (preview).",
+      "portalRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Policies",
+      "integraciones": [
+        "Microsoft 365 Copilot, Copilot Studio, Microsoft Foundry & P4AI SDK",
+        "Purview DSPM for AI & Collection Policies",
+        "Microsoft Defender for Endpoint & Defender for Cloud Apps"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Motores ML de Secuencias, Exfiltración Acumulada, Peer Groups y Boosters",
+      "funcionOperativa": "Detección de cadenas de 2+ actividades en orden, desviación acumulada a 30 días comparada por jerarquía/puesto en Entra ID, amplificadores de impacto (Boosters) y Priority User Groups de hasta 10.000 usuarios.",
+      "portalRuta": "purview.microsoft.com > Settings > Insider Risk Management > Policy indicators / Priority user groups",
+      "integraciones": [
+        "Microsoft Entra ID (Org Hierarchy & Job Titles)",
+        "Purview Information Protection (Sensitivity Labels & SITs)",
+        "Purview Information Barriers"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Purview Alert Triage Agent (Microsoft Security Copilot)",
+      "funcionOperativa": "Agente autónomo o bajo demanda que categoriza alertas en Needs attention, Less Urgent y Not categorized según instrucciones en lenguaje natural y sintetiza factores críticos con Summarize with Copilot.",
+      "portalRuta": "purview.microsoft.com > Agents > Explore agents / Insider Risk Management > Alerts (vista Triage Agent)",
+      "integraciones": [
+        "Microsoft Security Copilot (SCUs)",
+        "Purview Copilot Workspace",
+        "Insider Risk Management Alert Queue"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Workbench de Investigación, Cases, Content Explorer y Notice Templates",
+      "funcionOperativa": "Gestión integral del caso con Activity Explorer (gráfico temporal de burbujas), Data risk graph, Case notes, inspección de archivos en Content Explorer, recordatorios educativos (Notices) y transferencia a eDiscovery.",
+      "portalRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Alerts / Cases",
+      "integraciones": [
+        "Microsoft Purview eDiscovery (Escalate for investigation)",
+        "Power Automate Flows (HR / Manager context)",
+        "SharePoint, OneDrive, Exchange & Teams"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Adaptive Protection (Mitigación Dinámica Multi-Plano)",
+      "funcionOperativa": "Clasificación continua en niveles Elevated, Moderate y Minor que aplica controles preventivos automáticos en Purview DLP, Microsoft Entra Conditional Access y preservación DLCM de 120 días para datos borrados.",
+      "portalRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Adaptive protection",
+      "integraciones": [
+        "Microsoft Purview Data Loss Prevention",
+        "Microsoft Entra Conditional Access",
+        "Microsoft Purview Data Lifecycle Management (120-day retention)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Forensic Evidence con Doble Autorización",
+      "funcionOperativa": "Captura visual opt-in de clips por eventos específicos o actividad continua en equipos Windows 10/11 Enterprise y Windows 365 con Purview Client, gobernada por aprobación independiente de Approvers y expiración a los 120 días.",
+      "portalRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Forensic evidence",
+      "integraciones": [
+        "Microsoft Purview Client (Windows 10/11 Enterprise & Windows 365)",
+        "Defender SmartScreen Enhanced Phishing Protection",
+        "Insider Risk Management Approvers Workflow"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Insider Risk Audit Log Independiente e Integración Defender XDR / Sentinel",
+      "funcionOperativa": "Auditoría autónoma e indeshabilitable de 180 días para acciones internas de IRM, sincronización bidireccional de alertas/incidentes en security.microsoft.com, caza KQL y conector SIEM hacia Microsoft Sentinel.",
+      "portalRuta": "purview.microsoft.com > Insider risk audit log y security.microsoft.com > Incidents & alerts / Advanced hunting",
+      "integraciones": [
+        "Microsoft Defender XDR (AlertInfo, AlertEvidence, DataSecurityEvents, DataSecurityBehaviors)",
+        "Microsoft Sentinel Data Connector",
+        "Microsoft Graph Security API"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "Insider Risk Management Admins",
+      "nivelSOC": "Ingeniería de Plataforma y Detección (L3)",
+      "permisosClave": "Configura políticas, indicadores globales, conectores, Analytics, Adaptive Protection, Priority user groups y crea solicitudes de Forensic Evidence; sin acceso a alertas, casos ni Content Explorer.",
+      "asignacionPIM": "Elegible en Entra ID PIM (máx. 4 horas JIT con MFA resistente a phishing y ticket de cambio).",
+      "responsabilidadOperativa": "Diseñar y calibrar políticas e integraciones sin visibilidad sobre investigaciones individuales de empleados.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Insider Risk Management Analysts",
+      "nivelSOC": "Analista de Triaje Nivel 1 (SOC / Compliance)",
+      "permisosClave": "Investiga alertas y casos sobre metadatos en Activity Explorer, accede a Analytics insights, Notice templates y pestaña de usuarios en Adaptive Protection; sin acceso a Content Explorer ni clips forenses.",
+      "asignacionPIM": "Asignación operativa activa o turno JIT de 8 horas, acotada por Administrative Units regionales cuando corresponda.",
+      "responsabilidadOperativa": "Triaje diario bajo seudonimización, descarte justificado de falsos positivos y escalamiento a caso.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Insider Risk Management Investigators",
+      "nivelSOC": "Investigador Forense Nivel 2 / Nivel 3",
+      "permisosClave": "Investigación profunda de alertas y casos, acceso exclusivo a Content Explorer y clips de Forensic Evidence, y escalamiento a Purview eDiscovery; sin permisos para editar políticas.",
+      "asignacionPIM": "Estricto JIT en Entra ID PIM (máx. 4 horas) vinculado a un Case ID activo.",
+      "responsabilidadOperativa": "Validar sensibilidad real de documentos/mensajes e intención antes de involucrar a Relaciones Laborales o Asesoría Legal.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Insider Risk Management Approvers",
+      "nivelSOC": "Gobierno Legal / Privacidad (DPO) / Relaciones Laborales",
+      "permisosClave": "Autorizar o rechazar solicitudes de captura visual de Forensic Evidence sobre usuarios específicos; sin acceso a políticas, alertas, casos ni clips.",
+      "asignacionPIM": "Asignado exclusivamente a representantes de Legal, Privacidad o RR. HH. independientes del SOC.",
+      "responsabilidadOperativa": "Ejercer el control obligatorio de doble llave antes de habilitar grabación visual en cualquier dispositivo corporativo.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Insider Risk Management Auditors",
+      "nivelSOC": "Auditoría Interna / Oficialía de Privacidad",
+      "permisosClave": "Visualizar y exportar a CSV el Insider Risk Audit Log independiente (180 días); sin acceso a políticas, alertas, casos ni contenido.",
+      "asignacionPIM": "Asignado a auditores internos independientes fuera de la operación diaria.",
+      "responsabilidadOperativa": "Auditar mensualmente todas las acciones de administradores, analistas e investigadores garantizando ausencia de vigilancia indebida.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Conditional Access Administrator + DLP Compliance Management",
+      "nivelSOC": "Ingeniería Zero Trust (Identidad y Datos)",
+      "permisosClave": "Creación y administración de políticas de Acceso Condicional en Entra ID y políticas Purview DLP que evalúan la condición Insider risk level.",
+      "asignacionPIM": "Elegible en Entra ID PIM (máx. 2 horas JIT con cambio aprobado).",
+      "responsabilidadOperativa": "Operacionalizar los bloqueos y controles dinámicos dictados por Adaptive Protection.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Insider Risk Management (Role Group comodín raíz)",
+      "nivelSOC": "Resguardo Administrativo de Emergencia",
+      "permisosClave": "Agrupa la totalidad de permisos de administración, investigación, Content Explorer, aprobación forense y auditoría.",
+      "asignacionPIM": "Restringido a 1-2 cuentas de respaldo bajo PIM con aprobación dual para evitar el escenario zero administrator; prohibido para operación diaria.",
+      "responsabilidadOperativa": "Continuidad del servicio ante baja de administradores sin vulnerar la segregación cotidiana de funciones.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Verificación de salud de conectores de señales (HR Data, Physical Badging y endpoints)",
+      "objetivo": "Garantizar la continuidad diaria de importación de fechas de renuncia/despido y señales de dispositivos Windows/macOS y navegadores.",
+      "consolaRuta": "purview.microsoft.com > Settings > Data connectors > My connectors y Device onboarding",
+      "procedimiento": [
+        "1. Verificar en My connectors que el conector HR presente estado Connected y Last import < 24 horas.",
+        "2. Comprobar ausencia de errores de esquema CSV (EmailAddress, AzureAdId, ResignationDate, TerminationDate) o JSON en Physical badging.",
+        "3. Revisar cobertura activa de endpoints Windows 10/11, macOS y extensión de Chrome en Device onboarding.",
+        "4. Abrir remediación prioritaria ante cualquier atraso superior a 24 horas."
+      ],
+      "rolResponsable": "Insider Risk Management Admins",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Defense Evasion (T1562 - Impair Defenses)",
+      "evidenciaAuditable": "Registro diario de estado Connected y última importación exitosa en conectores HR/Badging.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Esquema del conector HR y monitoreo de salud verificados en import-hr-data y configure.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/import-hr-data"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Triaje priorizado de alertas High Severity y vista del Purview Alert Triage Agent",
+      "objetivo": "Atender en <= 4 horas las alertas críticas y las categorizadas como Needs attention por Security Copilot.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Alerts (vistas Standard y Triage Agent)",
+      "procedimiento": [
+        "1. Filtrar Status: Needs review y Severity: High, revisando también la categoría Needs attention en la vista Triage Agent.",
+        "2. Considerar que en la vista Triage Agent los nombres no se anonimizan aunque la anonimización global esté activa.",
+        "3. Usar Summarize with Copilot para revisar evento disparador, secuencias y factores de riesgo.",
+        "4. Escalar a caso (Confirm alerts & create case) o descartar (Dismiss) con nota justificativa obligatoria."
+      ],
+      "rolResponsable": "Insider Risk Management Analysts",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "Exfiltration (TA0010)",
+      "evidenciaAuditable": "Cola de alertas High atendida dentro de SLA con justificación documentada.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Funcionalidad del Triage Agent y regla de nombres verificadas en MS Learn; SLA <= 4 horas propuesto.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/copilot-in-purview-triage-irm-agent-get-started"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Análisis contextual de secuencias y exfiltración acumulada en Activity Explorer",
+      "objetivo": "Validar cadenas de acopio, ofuscación y exfiltración sobre metadatos antes de abrir contenido privado.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Alerts > Activity explorer",
+      "procedimiento": [
+        "1. Analizar la proximidad temporal en el gráfico de burbujas (descarga masiva -> compresión/renombrado -> copia USB o subida web).",
+        "2. Evaluar indicadores de Cumulative exfiltration detection frente al Peer Group en Entra ID y Risk score boosters.",
+        "3. Inspeccionar nombres y extensiones de archivos para descartar procesos técnicos benignos sin abrir Content Explorer."
+      ],
+      "rolResponsable": "Insider Risk Management Analysts / Investigators",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "Collection & Exfiltration (TA0009 / TA0010)",
+      "evidenciaAuditable": "Notas de análisis cronológico registradas en la alerta o caso.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Detección de secuencias, exfiltración acumulada y Activity Explorer verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-activities"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo diario de alertas de Risky AI Usage y Risky Agents (Preview)",
+      "objetivo": "Detectar fugas de información sensible en prompts GenAI y comportamientos inseguros de agentes autónomos.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Alerts",
+      "procedimiento": [
+        "1. Filtrar alertas de Risky AI usage (Copilot y GenAI externa) y de la política predeterminada Risky Agents (Copilot Studio, Foundry, P4AI SDK).",
+        "2. Ejecutar la revisión con un analista irrestricto (los analistas acotados por Administrative Units no ven alertas de agentes).",
+        "3. Ante comportamiento riesgoso confirmado de un agente, activar contención inmediata AH-05 en coordinación con DSPM for AI."
+      ],
+      "rolResponsable": "Insider Risk Management Analysts (perfil irrestricto)",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Exfiltration Over Web Service (T1567)",
+      "evidenciaAuditable": "Registro diario de triaje de alertas de usuarios IA y agentes empresariales.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Política Risky Agents, agentes soportados y limitación frente a Administrative Units verificados en monitoring-agents.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-monitoring-agents"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Correlación diaria en cola unificada de incidentes de Microsoft Defender XDR",
+      "objetivo": "Distinguir entre exfiltración de un insider real y robo externo de credenciales correlacionando señales XDR e IRM.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts > Incidents (Service source: Purview Insider Risk Management)",
+      "procedimiento": [
+        "1. Filtrar incidentes unificados que agrupan alertas de Purview IRM con Defender for Endpoint, Entra ID y Purview DLP.",
+        "2. Revisar el nivel de riesgo interno en la página de entidad del usuario para priorizar contención o attack disruption.",
+        "3. Sincronizar estado y clasificación (True positive <-> Confirmed; False/Benign positive <-> Dismissed en <= 30 min)."
+      ],
+      "rolResponsable": "Analista SOC L2 (Security Operator + IRM Analyst/Investigator)",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "Valid Accounts & Exfiltration (T1078 / TA0010)",
+      "evidenciaAuditable": "Incidentes XDR correlacionados y sincronizados bidireccionalmente con Purview.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Mapeo de estados y ventana de sincronización de 30 minutos verificados en irm-investigate-alerts-defender.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/irm-investigate-alerts-defender"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Supervisión operativa de usuarios en nivel Elevated bajo Adaptive Protection",
+      "objetivo": "Confirmar la aplicación automática de restricciones DLP, Acceso Condicional y retención de 120 días sin bloqueos erróneos.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Adaptive protection > Insider risk levels",
+      "procedimiento": [
+        "1. Inspeccionar los usuarios asignados actualmente a los niveles Elevated, Moderate y Minor.",
+        "2. Verificar aplicación efectiva de políticas DLP, Entra Conditional Access y retención DLCM de 120 días para usuarios Elevated.",
+        "3. Liberar nivel de riesgo si la alerta subyacente fue confirmada como falso positivo benigno."
+      ],
+      "rolResponsable": "Insider Risk Management Analysts / Investigators",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Exfiltration Prevention (TA0010)",
+      "evidenciaAuditable": "Bitácora diaria de usuarios en nivel Elevated y controles preventivos activos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Controles dinámicos DLP, Conditional Access y retención de 120 días verificados en adaptive-protection.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-adaptive-protection"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Verificación diaria de seudonimización e inspección del Insider Risk Audit Log independiente",
+      "objetivo": "Prevenir desactivaciones no autorizadas de privacidad o accesos fuera de asignación a casos sensibles.",
+      "consolaRuta": "purview.microsoft.com > Settings > Insider Risk Management > Privacy e Insider risk audit log",
+      "procedimiento": [
+        "1. Filtrar las últimas 24 horas en el Insider risk audit log independiente por categorías Settings, Cases y Users.",
+        "2. Confirmar que Show anonymized versions of usernames permanezca activo según el estatuto aprobado.",
+        "3. Auditar que todo acceso a casos corresponda exclusivamente a investigadores asignados."
+      ],
+      "rolResponsable": "Insider Risk Management Auditors",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Revisión diaria documentada del Insider risk audit log sin desvíos de privacidad.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Independencia del Insider risk audit log y categorías auditadas verificadas en insider-risk-management-audit-log.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-audit-log"
+    },
+    {
+      "codigo": "D-08",
+      "cadencia": "Diaria",
+      "actividad": "Evaluación independiente de solicitudes de doble autorización en Forensic Evidence",
+      "objetivo": "Resolver con control legal y laboral las solicitudes de captura visual sobre usuarios de alto riesgo.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Forensic evidence > Requests",
+      "procedimiento": [
+        "1. Revisar solicitudes pendientes creadas por miembros de Insider Risk Management Admins.",
+        "2. Validar base legal, modo de captura (Specific activities recomendado), ventana horaria y exclusión de sitios/apps privadas.",
+        "3. Aprobar o rechazar formalmente dejando constancia en el registro de auditoría."
+      ],
+      "rolResponsable": "Insider Risk Management Approvers (Legal / DPO / RR. HH.)",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-02",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Solicitudes aprobadas/rechazadas por Approvers en Insider risk audit log.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo obligatorio de doble autorización verificado en insider-risk-management-forensic-evidence.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-forensic-evidence"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Gestión de casos activos, cadena de custodia en Case Notes e inspección en Content Explorer",
+      "objetivo": "Determinar sensibilidad real del contenido e intención del usuario documentando evidencia defendible.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Cases",
+      "procedimiento": [
+        "1. Actualizar hallazgos semanales en Case notes para sostener trazabilidad probatoria.",
+        "2. Inspeccionar en Content explorer (y Forensic evidence si aplica; clips caducan en 120 días) el contenido real implicado.",
+        "3. Resolver mediante descarte justificado, envío de Notice template educativo o escalamiento a Legal/eDiscovery."
+      ],
+      "rolResponsable": "Insider Risk Management Investigators",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MA-02",
+      "mitreTactic": "Exfiltration (TA0010)",
+      "evidenciaAuditable": "Expedientes de casos actualizados con Case notes y registros de resolución.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo de casos, Content Explorer y Notice templates verificados en insider-risk-management-cases.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-cases"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Chequeo semanal de salud de políticas (Policy Health Check) y advertencias pendientes",
+      "objetivo": "Remediar estados Warnings o Recommendations en políticas activas para evitar puntos ciegos.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Policies",
+      "procedimiento": [
+        "1. Inspeccionar la columna Status de todas las políticas activas y notificaciones semanales de Unresolved warnings.",
+        "2. Corregir fallos de conectores, excesos de alcance por plantilla o indicadores apagados.",
+        "3. Confirmar estado Healthy en políticas tradicionales, Risky AI usage y Risky Agents."
+      ],
+      "rolResponsable": "Insider Risk Management Admins",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Tablero semanal de Policies con 100% de políticas en estado Healthy.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Estados de políticas y notificaciones semanales de advertencias verificados en insider-risk-management-policies.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-policies"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Calibración de umbrales (Tuning), variantes de indicadores y Detection Groups",
+      "objetivo": "Reducir falsos positivos aplicando recomendaciones en tiempo real de Analytics y exclusiones justificadas.",
+      "consolaRuta": "purview.microsoft.com > Settings > Insider Risk Management > Policy indicators / Intelligent detections",
+      "procedimiento": [
+        "1. Analizar patrones de falsos positivos descartados durante la semana por el equipo L1.",
+        "2. Ajustar umbrales apoyándose en las recomendaciones en tiempo real de Insider Risk Analytics o Inline alert customization.",
+        "3. Configurar Detection groups, variantes por perfil operativo y exclusiones de dominios corporativos legítimos."
+      ],
+      "rolResponsable": "Insider Risk Management Admins",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Bitácora semanal de ajustes de umbrales y mejora en tasa de verdaderos positivos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Recomendaciones en tiempo real, Inline alert customization y Detection groups verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-best-practices-alert-tuning"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Caza proactiva semanal KQL en Microsoft Defender Portal sobre seguridad de datos",
+      "objetivo": "Identificar exfiltración incipiente correlacionando DataSecurityEvents y DataSecurityBehaviors con endpoint e identidad.",
+      "consolaRuta": "security.microsoft.com > Hunting > Advanced hunting",
+      "procedimiento": [
+        "1. Consultar DataSecurityEvents y DataSecurityBehaviors buscando subidas web, copias USB o impresiones anómalas.",
+        "2. Correlacionar con DeviceProcessEvents (compresión/cifrado previo) e inicios de sesión riesgosos en Entra ID.",
+        "3. Abrir caso o ajustar indicadores ante patrones emergentes no alertados."
+      ],
+      "rolResponsable": "Threat Hunter / IRM Investigator + Security Operator",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "Collection & Exfiltration (TA0009 / TA0010)",
+      "evidenciaAuditable": "Reporte semanal de campañas de caza KQL ejecutadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tablas DataSecurityEvents y DataSecurityBehaviors y roles requeridos verificados en irm-investigate-alerts-defender.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/irm-investigate-alerts-defender"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Actualización de Priority User Groups y alineación con Information Barriers",
+      "objetivo": "Mantener protegidos y segregados los grupos ejecutivos, Tier-0 y proyectos M&A/I+D críticos.",
+      "consolaRuta": "purview.microsoft.com > Settings > Insider Risk Management > Priority user groups",
+      "procedimiento": [
+        "1. Actualizar altas y bajas en Priority user groups (hasta 10.000 usuarios por grupo; carga manual o CSV).",
+        "2. Validar en Choose who can view this group que solo investigadores autorizados y sin conflicto con Information Barriers tengan visibilidad.",
+        "3. Evitar eliminar grupos asignados a políticas activas para no dejarlas inactivas."
+      ],
+      "rolResponsable": "Insider Risk Management Admins (irrestricto)",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Inventario semanal auditado de miembros y revisores autorizados por Priority user group.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Límite de 10.000 miembros, restricción de revisores y efecto de borrado verificados en priority-user-groups.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-settings-priority-user-groups"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Verificación de automatizaciones Power Automate y conector Microsoft Sentinel",
+      "objetivo": "Garantizar la operación sin errores de flujos de contexto con RR. HH. y la ingesta SIEM hacia Sentinel.",
+      "consolaRuta": "purview.microsoft.com > Settings > Insider Risk Management > Power Automate y Microsoft Sentinel > Data connectors",
+      "procedimiento": [
+        "1. Auditar ejecuciones semanales de plantillas Power Automate de IRM (registro automático de contexto en Case notes).",
+        "2. Verificar ingesta continua del conector oficial de Purview Insider Risk Management en Sentinel y Graph Security API.",
+        "3. Comprobar que reglas de automatización en Sentinel manejen adecuadamente incidentes IRM sin payload de alerta anidado."
+      ],
+      "rolResponsable": "Ingeniero SOAR / Insider Risk Management Admins",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.CO-02",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Bitácora semanal de salud de flujos Power Automate y conector Sentinel.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Licenciamiento de plantillas Power Automate y consideración de automatización en Sentinel verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-settings-power-automate"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Exportación y auditoría independiente del Insider Risk Audit Log (previo a purga de 180 días)",
+      "objetivo": "Auditar mensualmente todas las acciones de miembros IRM y conservar copia firmada antes del borrado automático a los 180 días.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Insider risk audit log > Export",
+      "procedimiento": [
+        "1. Exportar a CSV la totalidad de actividades registradas en el mes cerrado desde el Insider risk audit log independiente.",
+        "2. Auditar ausencia de consultas no asignadas sobre VIPs o alteraciones temporales de seudonimización.",
+        "3. Sellar el archivo con SHA-256 y custodiarlo en el repositorio regulado de Auditoría Interna."
+      ],
+      "rolResponsable": "Insider Risk Management Auditors (Auditoría Interna / DPO)",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Paquete mensual CSV del Insider risk audit log sellado y acta de revisión independiente.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Retención fija de 180 días y exportación CSV verificadas en MS Learn; resguardo mensual sellado propuesto.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-audit-log"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Evaluación mensual de Insider Risk Analytics y brechas de cobertura de plantillas",
+      "objetivo": "Contrastar tendencias agregadas del tenant frente a las políticas desplegadas incluyendo IA y agentes.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Reports > Analytics",
+      "procedimiento": [
+        "1. Revisar los hallazgos anónimos de Analytics en SharePoint, Exchange externo, cuentas borradas Entra ID, HR e IA.",
+        "2. Identificar vectores relevantes sin política activa y diseñar su incorporación controlada.",
+        "3. Elevar propuestas al Comité Tripartito de Gobernanza."
+      ],
+      "rolResponsable": "Insider Risk Management Admins + Arquitecto Seguridad de Datos",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Informe mensual de cobertura Analytics vs. políticas activas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Áreas escaneadas y reportes de Analytics verificados en insider-risk-management-settings-analytics.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-settings-analytics"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Revisión mensual de efectividad preventiva de Adaptive Protection (DLP + Entra CA + DLCM)",
+      "objetivo": "Medir bloqueos automáticos efectivos y calibrar transiciones entre niveles Minor, Moderate y Elevated.",
+      "consolaRuta": "Insider Risk Management > Adaptive protection, DLP > Activity explorer y Entra Sign-in logs",
+      "procedimiento": [
+        "1. Cuantificar usuarios por nivel de riesgo y bloqueos preventivos ejecutados en DLP y Entra Conditional Access.",
+        "2. Confirmar funcionamiento de la política automática de etiqueta de retención de 120 días para usuarios Elevated.",
+        "3. Refinar condiciones para minimizar fricción sobre actividad legítima."
+      ],
+      "rolResponsable": "Arquitecto Zero Trust + IRM Admins + Conditional Access Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-02",
+      "mitreTactic": "Exfiltration (TA0010)",
+      "evidenciaAuditable": "Reporte mensual de contención dinámica y reducción de incidentes por Adaptive Protection.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Integración triple DLP, Conditional Access y retención DLCM de 120 días verificada en adaptive-protection.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-adaptive-protection"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Renovación preventiva del contexto del Alert Triage Agent (ventana 90 días) y control de SCUs",
+      "objetivo": "Impedir que el agente deje de ejecutarse al cumplir 90 días desde su último guardado y optimizar consumo SCU.",
+      "consolaRuta": "purview.microsoft.com > Agents > Explore agents > Insider Risk Management Triage Agent",
+      "procedimiento": [
+        "1. Monitorear el consumo mensual de Security Compute Units (SCUs) en Usage monitoring.",
+        "2. Ajustar instrucciones en lenguaje natural (Custom instructions) con base en feedback de analistas L1.",
+        "3. Re-guardar explícitamente la configuración al menos cada 60 días antes de la expiración obligatoria de 90 días."
+      ],
+      "rolResponsable": "Insider Risk Management Admins + Security Copilot Contributor",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Registro mensual de consumo SCU y fecha de renovación preventiva (< 60 días) del agente.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Expiración a los 90 días verificada en MS Learn; renovación preventiva a los 60 días definida como control editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/copilot-in-purview-triage-irm-agent-get-started"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría mensual de los 6 Role Groups, Administrative Units, capacidad forense y comité ejecutivo",
+      "objetivo": "Validar segregación SoD, asignación directa en Administrative Units y cuota de clips forenses.",
+      "consolaRuta": "purview.microsoft.com > Settings > Roles and groups, Reports y Forensic evidence",
+      "procedimiento": [
+        "1. Auditar membresías de los 6 grupos de roles evitando conflictos SoD y asegurando >= 1 admin de respaldo.",
+        "2. Verificar que usuarios en Administrative Units estén agregados directamente (no mediante grupos de seguridad anidados).",
+        "3. Revisar cuota de almacenamiento de Forensic Evidence y presentar reporte CSV anonimizado al Comité Tripartito."
+      ],
+      "rolResponsable": "SOC Manager + DPO + Legal + RR. HH.",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-02",
+      "mitreTactic": "Privilege Escalation (TA0004)",
+      "evidenciaAuditable": "Acta mensual del Comité Tripartito, reporte SoD y métricas CSV anonimizadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Regla de membresía directa en Administrative Units y preservación de anonimización en CSV verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-permissions"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Revisión trimestral de Evaluación de Impacto de Privacidad (DPIA) y cumplimiento laboral",
+      "objetivo": "Garantizar la legitimidad jurídica y proporcionalidad de indicadores, Collection Policies y exclusiones forenses.",
+      "consolaRuta": "purview.microsoft.com > Settings > Insider Risk Management y Collection policies",
+      "procedimiento": [
+        "1. Auditar ajustes de privacidad, exclusiones de apps/sitios personales en Forensic Evidence y alcances de Collection Policies.",
+        "2. Revisar contenido y tono formativo de Notice templates con RR. HH. y Legal.",
+        "3. Actualizar formalmente la DPIA ante nuevas capacidades habilitadas (ej. monitoreo de agentes IA)."
+      ],
+      "rolResponsable": "DPO + Asesoría Legal Laboral + IRM Admins",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "DPIA trimestral actualizada y firmada por DPO, Legal y RR. HH.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Controles técnicos verificados en MS Learn; revisión trimestral de DPIA establecida como gobierno recomendado.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-plan"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Prueba end-to-end de Adaptive Protection y sincronización bidireccional con Defender XDR",
+      "objetivo": "Comprobar empíricamente con cuentas sintéticas el bloqueo dinámico en DLP/CA y la correlación XDR.",
+      "consolaRuta": "purview.microsoft.com, entra.microsoft.com y security.microsoft.com",
+      "procedimiento": [
+        "1. Ejecutar actividad simulada con cuenta de prueba hasta activar nivel Elevated en Adaptive Protection.",
+        "2. Validar bloqueo de copia USB/web en DLP, restricción en Entra Conditional Access y retención automática de 120 días.",
+        "3. Confirmar creación de incidente en Defender XDR y sincronización de resolución en <= 30 minutos."
+      ],
+      "rolResponsable": "Arquitecto SecOps + Ingeniería Purview y Entra ID",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Exfiltration (TA0010)",
+      "evidenciaAuditable": "Protocolo trimestral de pruebas end-to-end con evidencias técnicas.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Pruebas operativas periódicas sobre integraciones nativas verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-adaptive-protection"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Análisis semestral de lecciones aprendidas de casos cerrados y efectividad conductual",
+      "objetivo": "Reducir causas raíz organizacionales y medir caída de reincidencia tras notificaciones educativas.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Reports",
+      "procedimiento": [
+        "1. Evaluar tendencias semestrales por plantilla, área de negocio y tasa de no-reincidencia post-Notice.",
+        "2. Corregir fricciones operativas que incentiven uso de canales no autorizados o Shadow AI.",
+        "3. Recalibrar Peer Groups, Boosters e indicadores activos."
+      ],
+      "rolResponsable": "CISO + Líder IRM + RR. HH. + Concientización",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.IM-01",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Informe semestral de mejora continua y reducción de reincidencia.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Alineado a la práctica de aprendizaje post-incidente de SEI/CERT y NIST CSF 2.0.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-reports"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Recertificación anual del Estatuto Tripartito y simulacro ejecutivo de robo de IP",
+      "objetivo": "Validar la coordinación integral SecOps + Legal + RR. HH. + Privacidad desde la alerta hasta eDiscovery.",
+      "consolaRuta": "purview.microsoft.com (IRM, Forensic Evidence, eDiscovery) y security.microsoft.com",
+      "procedimiento": [
+        "1. Recertificar el Estatuto de Gobernanza de Riesgo Interno y la matriz RACI de los 6 grupos de roles.",
+        "2. Ejecutar simulacro completo: baja HR -> exfiltración -> Adaptive Protection -> doble autorización Forensic Evidence -> escalamiento a eDiscovery.",
+        "3. Actualizar playbooks inter-áreas con base en los tiempos medidos."
+      ],
+      "rolResponsable": "CISO, General Counsel, CHRO, DPO y SOC Manager",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-01",
+      "mitreTactic": "Exfiltration (TA0010)",
+      "evidenciaAuditable": "Estatuto anual firmado e informe ejecutivo de resultados del simulacro.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Ejercicio anual de gobierno y preparación forense inter-departamental.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-plan"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Investigación urgente de robo de propiedad intelectual por usuario saliente o prioritario",
+      "objetivo": "Contener la fuga de activos críticos y documentar evidencia sólida sin alertar prematuramente al sujeto.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Cases y Adaptive protection",
+      "procedimiento": [
+        "1. Confirmar alerta en Caso y verificar paso inmediato a nivel Elevated en Adaptive Protection (bloqueo DLP/CA y retención de 120 días).",
+        "2. Inventariar en Activity explorer y Content explorer todos los secretos comerciales o archivos críticos comprometidos.",
+        "3. Registrar hallazgos cronológicos en Case notes absteniéndose de enviar Notice al usuario investigado.",
+        "4. Convocar mesa reservada con Legal y RR. HH. para contención laboral y escalamiento AH-03."
+      ],
+      "rolResponsable": "Insider Risk Management Investigators + Legal + RR. HH.",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MA-02",
+      "mitreTactic": "Exfiltration (TA0010)",
+      "evidenciaAuditable": "Expediente de caso completo con inventario de activos afectados y acta reservada.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo de investigación reservada y preservación de 120 días verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-cases"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Activación controlada de captura visual Forensic Evidence con doble autorización",
+      "objetivo": "Recolectar evidencia visual de exfiltración en Windows Enterprise cumpliendo estrictos controles de privacidad.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Forensic evidence",
+      "procedimiento": [
+        "1. Confirmar equipo Windows 10/11 Enterprise o Windows 365 (64-bit, GPU integrada DirectX 11+) con Microsoft Purview Client instalado.",
+        "2. Emitir solicitud desde IRM Admins en modo Specific activities con exclusiones de apps/sitios personales.",
+        "3. Obtener aprobación explícita independiente de un miembro de Insider Risk Management Approvers.",
+        "4. Revisar clips como Investigator y exportar evidencia relevante (máximo 10 clips por lote) antes de su borrado automático a los 120 días."
+      ],
+      "rolResponsable": "IRM Admins + IRM Approvers + IRM Investigators",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MA-02",
+      "mitreTactic": "Collection & Exfiltration (TA0009 / TA0010)",
+      "evidenciaAuditable": "Trazabilidad de solicitud y aprobación dual en Audit Log y clips exportados bajo custodia legal.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Requisitos exclusivos Windows Enterprise, doble autorización, límite de 10 clips por export y purga a 120 días verificados en forensic-evidence.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-forensic-evidence"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Escalamiento formal de caso confirmado hacia Microsoft Purview eDiscovery (Premium)",
+      "objetivo": "Transferir custodios y evidencias hacia un entorno legal con Legal Hold inmutable para litigio o investigación regulatoria.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Cases > Escalate for investigation",
+      "procedimiento": [
+        "1. Consolidar resumen cronológico de pruebas en Case notes.",
+        "2. Ejecutar Escalate for investigation sin enviar notificaciones al custodio.",
+        "3. Verificar la creación del caso en Purview eDiscovery (donde se expone el UPN real para integridad jurídica).",
+        "4. Aplicar inmediatamente eDiscovery Hold sobre buzón, OneDrive, Teams y Copilot del custodio."
+      ],
+      "rolResponsable": "Insider Risk Management Investigators -> eDiscovery Manager (Legal)",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.CO-02",
+      "mitreTactic": "N/A",
+      "evidenciaAuditable": "Caso vinculado en Purview eDiscovery con Legal Hold activo.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Transferencia nativa y comportamiento de identidad hacia eDiscovery verificados en cases y settings-privacy.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-cases"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Respuesta conjunta SOC ante incidente unificado Defender XDR + Insider Risk Management",
+      "objetivo": "Contener compromisos de credenciales o sabotaje interno evaluando simultáneamente el impacto real sobre datos sensibles.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts y entra.microsoft.com",
+      "procedimiento": [
+        "1. Distinguir mediante telemetría de identidad/endpoint entre Account Takeover externo y acción deliberada del empleado.",
+        "2. Aislar dispositivo en Defender for Endpoint y revocar sesiones/bloquear cuenta en Entra ID.",
+        "3. Cuantificar en Activity explorer / DataSecurityEvents los archivos exactos exfiltrados para evaluación regulatoria de brecha.",
+        "4. Sincronizar resolución True positive / Confirmed en ambos portales."
+      ],
+      "rolResponsable": "SOC L2/L3 + Insider Risk Management Investigator",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Valid Accounts & Exfiltration (T1078 / TA0010)",
+      "evidenciaAuditable": "Incidente XDR contenido y dictamen forense de datos comprometidos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Correlación de incidentes y tablas KQL verificadas en irm-investigate-alerts-defender.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/irm-investigate-alerts-defender"
+    },
+    {
+      "codigo": "AH-05",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Contención de exposición sensible en IA generativa o agentes autónomos (Risky AI / Risky Agents)",
+      "objetivo": "Suspender agentes riesgosos o bloquear exfiltración hacia modelos GenAI externos remediando credenciales o datos expuestos.",
+      "consolaRuta": "Insider Risk Management > Alerts, DSPM for AI y M365 / Power Platform Admin Center",
+      "procedimiento": [
+        "1. Si involucra un agente (Risky Agents): deshabilitar/cuarentenar el agente en Copilot Studio, Foundry o M365 Admin Center y revocar conectores.",
+        "2. Si involucra un usuario (Risky AI usage): aplicar Notice educativo ante error o elevar a nivel Elevated en Adaptive Protection ante dolo.",
+        "3. Rotar secretos expuestos en prompts y evaluar Priority Cleanup si respuestas sensibles se propagaron internamente."
+      ],
+      "rolResponsable": "IRM Investigator + Administrador de Seguridad IA",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Exfiltration Over Web Service (T1567)",
+      "evidenciaAuditable": "Registro de suspensión del agente o bloqueo DLP en navegador y cierre documentado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Cobertura de Risky Agents e intercambio de riesgo con DSPM for AI y M365 Admin Center verificados en monitoring-agents.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-monitoring-agents"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Caza de exfiltración de archivos sensibles en Defender XDR Advanced Hunting",
+      "plataforma": "Microsoft Defender Portal (Advanced Hunting)",
+      "tablaPrincipal": "DataSecurityEvents",
+      "consulta": "DataSecurityEvents\n| where Timestamp > ago(7d)\n| where ActionType has_any (\"FileCopiedToRemovableMedia\", \"BrowserUpload\", \"FileDownloaded\", \"FilePrinted\")\n| summarize TotalEventos = count(), ArchivosUnicos = dcount(ObjectName), Destinos = make_set(TargetDomain, 10) by AccountUpn, DeviceName, ActionType\n| where TotalEventos >= 20\n| order by TotalEventos desc",
+      "proposito": "Identificar volúmenes anómalos de descarga, copia a USB, impresión o subida por navegador registrados por políticas de seguridad de datos de Purview.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Correlación multi-dominio de alertas IRM con alertas XDR por usuario",
+      "plataforma": "Microsoft Defender Portal (Advanced Hunting)",
+      "tablaPrincipal": "AlertInfo / AlertEvidence",
+      "consulta": "let IrmAlerts = AlertInfo | where Timestamp > ago(14d) | where ServiceSource == \"Microsoft Purview Insider Risk Management\" | join kind=inner (AlertEvidence | where EntityType == \"User\") on AlertId | project IrmTime = Timestamp, IrmTitle = Title, IrmSeverity = Severity, AccountUpn;\nAlertInfo | where Timestamp > ago(14d) | where ServiceSource != \"Microsoft Purview Insider Risk Management\" | join kind=inner (AlertEvidence | where EntityType == \"User\") on AlertId | join kind=inner IrmAlerts on AccountUpn | project AccountUpn, IrmTime, IrmTitle, IrmSeverity, OtherSource = ServiceSource, OtherTitle = Title",
+      "proposito": "Detectar usuarios que disparan simultáneamente alertas de riesgo interno y alertas de endpoint/identidad (posible robo de credenciales o sabotaje).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Análisis de comportamientos riesgosos enriquecidos en Advanced Hunting",
+      "plataforma": "Microsoft Defender Portal (Advanced Hunting)",
+      "tablaPrincipal": "DataSecurityBehaviors",
+      "consulta": "DataSecurityBehaviors\n| where Timestamp > ago(14d)\n| summarize Comportamientos = count(), Categorias = make_set(BehaviorType, 10), UltimoEvento = max(Timestamp) by AccountUpn\n| order by Comportamientos desc",
+      "proposito": "Inspeccionar insights conductuales agregados de violaciones a políticas definidas o predeterminadas de Purview.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Correlación en Microsoft Sentinel de alertas IRM con riesgo de inicio de sesión Entra ID",
+      "plataforma": "Microsoft Sentinel",
+      "tablaPrincipal": "SecurityAlert / SigninLogs",
+      "consulta": "SecurityAlert\n| where TimeGenerated > ago(7d)\n| where ProductName has \"Insider Risk Management\" or ProviderName has \"Insider Risk\"\n| extend EntitiesJson = parse_json(Entities) | mv-expand EntitiesJson | where EntitiesJson.Type == \"account\"\n| extend UPN = strcat(tostring(EntitiesJson.Name), \"@\", tostring(EntitiesJson.UPNSuffix))\n| join kind=leftouter (SigninLogs | where TimeGenerated > ago(7d) | where RiskLevelDuringSignIn in (\"high\", \"medium\") | summarize RiesgosSignIn = count(), IPs = make_set(IPAddress, 5) by UserPrincipalName) on $left.UPN == $right.UserPrincipalName\n| project TimeGenerated, AlertName, AlertSeverity, UPN, RiesgosSignIn, IPs",
+      "proposito": "Cruzar en el SIEM alertas del conector oficial de Insider Risk Management con inicios de sesión riesgosos de Entra ID Protection.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Verificación de bloqueos de Acceso Condicional disparados por Adaptive Protection",
+      "plataforma": "Microsoft Sentinel / Entra Log Analytics",
+      "tablaPrincipal": "SigninLogs",
+      "consulta": "SigninLogs\n| where TimeGenerated > ago(14d)\n| mv-expand CAPolicy = parse_json(ConditionalAccessPolicies)\n| where tostring(CAPolicy.displayName) has_any (\"InsiderRisk\", \"AdaptiveProtection\")\n| where tostring(CAPolicy.result) in (\"failure\", \"reportOnlyFailure\", \"reportOnlyInterrupted\")\n| project TimeGenerated, UserPrincipalName, AppDisplayName, IPAddress, PolicyName = tostring(CAPolicy.displayName), Result = tostring(CAPolicy.result)",
+      "proposito": "Auditar aplicaciones reales y simulaciones de políticas de Acceso Condicional vinculadas al nivel de riesgo interno.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Extracción de alertas IRM mediante Microsoft Graph Security API",
+      "plataforma": "Microsoft Graph PowerShell SDK",
+      "tablaPrincipal": "security/alerts_v2",
+      "consulta": "Connect-MgGraph -Scopes \"SecurityAlert.Read.All\"\nGet-MgSecurityAlertV2 -Filter \"serviceSource eq 'microsoftInsiderRiskManagement'\" -Top 50 | Select-Object Id, Title, Severity, Status, Classification, CreatedDateTime, IncidentId | Format-Table -AutoSize",
+      "proposito": "Integrar y auditar alertas de IRM usando Microsoft Graph Security API (sustituto recomendado por Microsoft frente a Office 365 Management Activity API).",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría de segregación de funciones en los 6 Role Groups de Insider Risk Management",
+      "plataforma": "Security & Compliance PowerShell (Connect-IPPSSession)",
+      "tablaPrincipal": "Get-RoleGroupMember",
+      "consulta": "Connect-IPPSSession\n@(\"Insider Risk Management\",\"Insider Risk Management Admins\",\"Insider Risk Management Analysts\",\"Insider Risk Management Investigators\",\"Insider Risk Management Approvers\",\"Insider Risk Management Auditors\") | ForEach-Object { $g = $_; Get-RoleGroupMember -Identity $g -ErrorAction SilentlyContinue | Select-Object @{N=\"RoleGroup\";E={$g}}, Name, RecipientTypeDetails }",
+      "proposito": "Comprobar que ninguna cuenta acumule simultáneamente membresías incompatibles (Admins, Investigators, Approvers y Auditors).",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Tiempo Medio de Triaje de Alertas Críticas (MTTA - High Severity)",
+      "definicion": "Tiempo promedio transcurrido desde la generación de una alerta de severidad High hasta la primera decisión documentada del analista.",
+      "formula": "Promedio(Timestamp primera acción analista - Timestamp creación alerta High)",
+      "metaSugerida": "<= 4 horas hábiles (100% < 24 h)",
+      "frecuencia": "Diaria / Semanal",
+      "audiencia": "SOC Manager / Líder IRM",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "SLA operativo consultivo para contener exfiltración activa en ventanas críticas como bajas laborales."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Tasa de Verdaderos Positivos por Política (Signal-to-Noise Ratio)",
+      "definicion": "Proporción de alertas revisadas que se confirman como verdaderos positivos o escalan a caso tras calibrar umbrales con Analytics.",
+      "formula": "(Alertas confirmadas o escaladas a caso / Total de alertas revisadas) * 100",
+      "metaSugerida": ">= 65%",
+      "frecuencia": "Semanal / Mensual",
+      "audiencia": "Insider Risk Management Admins / Ingeniería Detección",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Meta de calidad analítica para evitar fatiga en el equipo L1."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Disponibilidad y Frescura de Conectores Críticos (HR y Endpoints)",
+      "definicion": "Porcentaje de días del mes con importación exitosa del conector HR en menos de 24 horas y cobertura activa de endpoints >= 95%.",
+      "formula": "(Días con importación HR < 24 h y onboarding saludable / Días del mes) * 100",
+      "metaSugerida": ">= 99%",
+      "frecuencia": "Diaria / Mensual",
+      "audiencia": "Insider Risk Management Admins / Plataforma",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Sin frescura diaria en HR la plantilla Data theft by departing users pierde eficacia."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Efectividad de Contención Automática (Adaptive Protection)",
+      "definicion": "Porcentaje de intentos de exfiltración o acceso riesgoso bloqueados automáticamente por DLP y Entra CA sobre usuarios en nivel Elevated.",
+      "formula": "(Intentos bloqueados automáticamente en usuarios Elevated / Total de intentos detectados en usuarios Elevated) * 100",
+      "metaSugerida": ">= 95%",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO / Arquitecto Zero Trust",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mide el valor preventivo en tiempo real de Adaptive Protection."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Tasa de Corrección Conductual Post-Notificación (Notices)",
+      "definicion": "Porcentaje de usuarios notificados con un Notice template educativo tras un error inadvertido que no reinciden en los siguientes 90 días.",
+      "formula": "(Usuarios sin nuevas alertas en 90 días post-Notice / Total de usuarios notificados) * 100",
+      "metaSugerida": ">= 85%",
+      "frecuencia": "Trimestral / Semestral",
+      "audiencia": "Recursos Humanos / Concientización / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Cuantifica reducción cultural del riesgo interno no malicioso."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Cumplimiento de Privacidad, Segregación SoD y Doble Autorización Forense",
+      "definicion": "Porcentaje de acciones auditadas en el Insider Risk Audit Log y capturas forenses que cumplen 100% segregación de roles y doble llave.",
+      "formula": "(Eventos y capturas conformes a política de privacidad / Total auditado por IRM Auditors) * 100",
+      "metaSugerida": "100%",
+      "frecuencia": "Diaria / Mensual",
+      "audiencia": "DPO / Auditoría Interna / Legal",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Control innegociable de legitimidad ética, laboral y regulatoria."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Tiempo Medio de Escalamiento Defensible a Purview eDiscovery",
+      "definicion": "Tiempo promedio desde que un investigador confirma una violación material hasta su transferencia con Legal Hold activo en eDiscovery.",
+      "formula": "Promedio(Timestamp Escalate for investigation + Hold - Timestamp confirmación violación grave)",
+      "metaSugerida": "<= 8 horas",
+      "frecuencia": "Mensual",
+      "audiencia": "General Counsel / Investigadores L3",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Minimiza ventana de destrucción de pruebas previo a litigio."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Continuidad del Alert Triage Agent y Cobertura de Políticas IA / Agentes",
+      "definicion": "Disponibilidad mensual ininterrumpida del Triage Agent (sin vencimiento de 90 días) y salud de políticas Risky AI usage y Risky Agents.",
+      "formula": "(Días con Triage Agent operativo y políticas IA en estado Healthy / Días del mes) * 100",
+      "metaSugerida": "100%",
+      "frecuencia": "Mensual",
+      "audiencia": "SOC Manager / Líder Seguridad IA",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Previene caídas silenciosas por caducidad de autenticación a los 90 días."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RM-01",
+      "descripcionResultado": "Los objetivos y estrategia de gestión de riesgos internos son establecidos y supervisados por la dirección.",
+      "capacidadMicrosoft": "Estatuto Tripartito de Gobernanza respaldado por Insider Risk Analytics y reportes ejecutivos de Purview IRM.",
+      "evidenciaAuditoria": "Acta constitutiva firmada por CISO, Legal, RR. HH. y DPO, más DPIA trimestral vigente (T-01).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles, responsabilidades y autoridades están definidos y aplicados con estricta separación de funciones.",
+      "capacidadMicrosoft": "Seis Role Groups segregados (Admins, Analysts, Investigators, Approvers, Auditors) y alcance regional con Administrative Units.",
+      "evidenciaAuditoria": "Exportación mensual de membresías sin conflictos SoD y registros de doble autorización en Forensic Evidence.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.OV-03",
+      "descripcionResultado": "El desempeño del programa de gestión de riesgos y sus salvaguardas de privacidad son evaluados independientemente.",
+      "capacidadMicrosoft": "Insider Risk Audit Log independiente e indeshabilitable (180 días) y seudonimización predeterminada.",
+      "evidenciaAuditoria": "Paquetes mensuales CSV del Insider risk audit log sellados con SHA-256 y firmados por IRM Auditors (M-01).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-01",
+      "descripcionResultado": "Las exposiciones y comportamientos de riesgo en usuarios, activos prioritarios y agentes IA son identificados.",
+      "capacidadMicrosoft": "Insider Risk Analytics (escaneo de 10 días sin políticas), Priority user groups, Priority content y política Risky Agents (preview).",
+      "evidenciaAuditoria": "Reportes mensuales de Analytics Insights e inventario de grupos y sitios prioritarios protegidos.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Los derechos de acceso se ajustan dinámicamente aplicando mínimo privilegio según el riesgo contextual.",
+      "capacidadMicrosoft": "Adaptive Protection integrado con Microsoft Entra Conditional Access evaluando la condición Insider risk.",
+      "evidenciaAuditoria": "Políticas activas de Acceso Condicional vinculadas a niveles de riesgo y trazas en SigninLogs.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.DS-02",
+      "descripcionResultado": "Se protege la confidencialidad e integridad de datos en tránsito frente a vectores de fuga.",
+      "capacidadMicrosoft": "Adaptive Protection integrado con Purview DLP bloqueando USB, subida web o correo externo para usuarios Elevated.",
+      "evidenciaAuditoria": "Reglas DLP condicionadas por Insider risk level y métricas mensuales de contención preventiva (KPI-04).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AT-01",
+      "descripcionResultado": "Los usuarios reciben recordatorios contextuales y formación para prevenir riesgos inadvertidos.",
+      "capacidadMicrosoft": "Notice templates automatizados o enviados desde casos con enlaces a políticas de seguridad y uso seguro de IA.",
+      "evidenciaAuditoria": "Catálogo aprobado de Notice templates y medición semestral de reducción de reincidencia (KPI-05).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-03",
+      "descripcionResultado": "La actividad del personal y agentes se monitorea continuamente para detectar eventos potencialmente adversos.",
+      "capacidadMicrosoft": "Plantillas Data theft by departing users (conector HR), Data leaks, Security policy violations (MDE), Risky AI usage y Risky Agents.",
+      "evidenciaAuditoria": "Tablero Policies al 100% en estado Healthy y bitácora diaria de frescura del conector HR (D-01, S-02).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.AE-02",
+      "descripcionResultado": "Los eventos potencialmente adversos se analizan con correlación multi-fuente e IA para determinar severidad.",
+      "capacidadMicrosoft": "Sequence detection, Cumulative exfiltration con Peer Groups, Purview Alert Triage Agent y correlación en Defender XDR.",
+      "evidenciaAuditoria": "Cola de alertas triadas con notas justificativas, resúmenes Copilot y consultas KQL en DataSecurityEvents.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MA-02",
+      "descripcionResultado": "Los incidentes confirmados se investigan y contienen preservando evidencia íntegra.",
+      "capacidadMicrosoft": "Gestión de Cases con Case notes, Activity Explorer, Content Explorer y clips de Forensic Evidence bajo doble autorización.",
+      "evidenciaAuditoria": "Expedientes cerrados de casos con cadena de custodia documentada y aprobaciones duales verificables.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.CO-02",
+      "descripcionResultado": "Las partes interesadas internas y legales se coordinan de manera segura y trazable.",
+      "capacidadMicrosoft": "Flujos Power Automate con RR. HH., conector Microsoft Sentinel y escalamiento nativo Escalate for investigation hacia Purview eDiscovery.",
+      "evidenciaAuditoria": "Trazabilidad de transferencia caso IRM -> caso Purview eDiscovery con Legal Hold activo (AH-03).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-03",
+      "descripcionResultado": "Se garantiza la integridad y disponibilidad forense de los datos eliminados durante incidentes internos.",
+      "capacidadMicrosoft": "Preservación automática de 120 días en Purview DLCM creada por Adaptive Protection para usuarios Elevated y mejora continua semestral.",
+      "evidenciaAuditoria": "Política automática de etiqueta de retención de 120 días verificada en Purview e informes semestrales SM-01.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Revalidación exhaustiva al 11 de noviembre de 2026 contra Microsoft Learn MCP y documentación oficial de Purview y Defender XDR. Se eliminaron los bloques genéricos cruzados de Sentinel/MDO/Intune provenientes de MSEOP-MD, se corrigió el error crítico sobre la naturaleza independiente del Insider Risk Audit Log y se incorporaron las capacidades vigentes 2026: monitoreo de agentes autónomos (Risky Agents preview), Purview Alert Triage Agent en Security Copilot, matices exactos de seudonimización, requisitos exclusivos Windows Enterprise de Forensic Evidence y mitigación triple de Adaptive Protection.",
+    "correccionesAplicadas": [
+      "Saneamiento documental de MSEOP-MD\\Purview IRM: se descartaron en 0404 - Purview IRM - Bloques - SecOps, Version Consolidada (1) y Purview IR\\Construye una tabla (1) todos los bloques genéricos del SOC centrados en Microsoft Sentinel, Defender for Office 365 e Intune, reemplazándolos por 28 actividades operacionales exclusivas de Purview Insider Risk Management.",
+      "Corrección arquitectónica crítica sobre el Insider Risk Audit Log: un documento fuente indicaba buscar eventos de IRM dentro del Microsoft 365 Unified Audit Log; se corrigió conforme a Microsoft Learn precisando que el Insider Risk Audit Log es un sistema independiente e indeshabilitable no asociado al M365 Audit Log, accesible por IRM Auditors y con retención fija de 180 días.",
+      "Precisión de plataforma soportada en Forensic Evidence: se verificó que mientras macOS soporta onboarding de indicadores de actividad IRM, la captura visual de Forensic Evidence está soportada exclusivamente en Windows 10/11 Enterprise y Windows 365 (64-bit, GPU integrada DirectX 11+) con Microsoft Purview Client, doble autorización Approvers y retención de clips de 120 días.",
+      "Incorporación de monitoreo de agentes IA (Risky Agents preview) y Alert Triage Agent: cobertura predeterminada para agentes en Copilot Studio, Microsoft Foundry y P4AI SDK (sin visibilidad para admins acotados por AU), más el agente de triaje en Security Copilot (consumo SCUs y expiración del contexto a los 90 días del último guardado).",
+      "Exactitud en reglas de privacidad y seudonimización: documentación explícita de que activar nombres anonimizados deshabilita Data risk graph, no anonimiza nombres en la vista del Triage Agent y expone UPN reales al exportar por API SIEM o escalar a Purview eDiscovery (preservando pseudónimos en exportaciones CSV).",
+      "Validación de la tríada preventiva de Adaptive Protection: integración simultánea de niveles Elevated / Moderate / Minor con Purview DLP, Microsoft Entra Conditional Access y la creación automática de una política de etiqueta de retención DLCM de 120 días para datos borrados por usuarios Elevated.",
+      "Alineación de integraciones Defender XDR, Graph Security API y Sentinel SOAR: incorporación de las 4 tablas KQL en Advanced Hunting (AlertInfo, AlertEvidence, DataSecurityBehaviors, DataSecurityEvents), migración recomendada hacia Microsoft Graph Security API y advertencia operativa en automatizaciones Sentinel sobre incidentes IRM sincronizados."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "SLAs operativos de triaje (<= 4 h para alertas High) y escalamiento legal (<= 8 h) junto con metas de los 8 KPIs",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft Learn documenta ventanas técnicas de sincronización (30 min con XDR, hasta 36 h en Adaptive Protection), pero los tiempos humanos de respuesta deben fijarse por gobernanza interna."
+      },
+      {
+        "elemento": "Renovación preventiva cada 60 días de la configuración del Purview Alert Triage Agent",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "El agente corre bajo el contexto del último usuario que guardó su configuración y se detiene a los 90 días; renovarlo a los 60 días en la cadencia mensual M-04 otorga un margen preventivo de 30 días."
+      },
+      {
+        "elemento": "Exportación mensual firmada con SHA-256 del Insider Risk Audit Log independiente",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Dado que el registro independiente elimina permanentemente sus entradas tras 180 días, el archivo mensual por IRM Auditors garantiza trazabilidad plurianual ante inspecciones laborales o de protección de datos."
+      },
+      {
+        "elemento": "Prohibición de uso operativo diario del Role Group comodín raíz Insider Risk Management",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Evita que una misma identidad diseñe políticas, lea documentos privados y apruebe sus propias capturas forenses, manteniéndolo solo en 1-2 cuentas PIM de resguardo frente al escenario zero administrator."
+      },
+      {
+        "elemento": "Modelo de madurez de 5 niveles y mapeo probatorio de 12 subcategorías NIST CSF 2.0 (CSWP 29)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Proporciona al CISO, DPO y auditores una hoja de ruta estructurada y evidencia verificable en las seis funciones del marco."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Learn about Insider Risk Management",
+      "url": "https://learn.microsoft.com/en-us/purview/insider-risk-management",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Visión general oficial, principios de privacidad por diseño y flujo end-to-end de detección, investigación y acción.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Assign permissions in Insider Risk Management",
+      "url": "https://learn.microsoft.com/en-us/purview/insider-risk-management-permissions",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Matriz oficial de permisos de los 6 grupos de roles nativos y restricciones al aplicar Administrative Units.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Manage username privacy in Insider Risk Management",
+      "url": "https://learn.microsoft.com/en-us/purview/insider-risk-management-settings-privacy",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Especificación de seudonimización y excepciones técnicas en Data risk graph, Triage Agent, API SIEM y eDiscovery.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Enable analytics in Insider Risk Management",
+      "url": "https://learn.microsoft.com/en-us/purview/insider-risk-management-settings-analytics",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Escaneo base gratuito de hasta 10 días sin políticas, calibración en tiempo real e insights a nivel usuario.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Learn about Insider Risk Management policy templates",
+      "url": "https://learn.microsoft.com/en-us/purview/insider-risk-management-policy-templates",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Requisitos, disparadores e indicadores de todas las plantillas oficiales incluyendo Risky AI usage y usuarios salientes.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Monitoring agents in Insider Risk Management",
+      "url": "https://learn.microsoft.com/en-us/purview/insider-risk-management-monitoring-agents",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Política predeterminada Risky Agents (preview) para agentes Copilot Studio, Microsoft Foundry y P4AI SDK e integración con DSPM for AI.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Get started with the Microsoft Purview Triage Agent in Insider Risk Management",
+      "url": "https://learn.microsoft.com/en-us/purview/copilot-in-purview-triage-irm-agent-get-started",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Despliegue del agente de triaje sobre Security Copilot, consumo de SCUs, permisos y expiración a los 90 días.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Help dynamically mitigate risks with Adaptive Protection",
+      "url": "https://learn.microsoft.com/en-us/purview/insider-risk-management-adaptive-protection",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Mitigación dinámica en Purview DLP, Microsoft Entra Conditional Access y retención automática DLCM de 120 días.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Learn about Insider Risk Management forensic evidence",
+      "url": "https://learn.microsoft.com/en-us/purview/insider-risk-management-forensic-evidence",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Captura visual opt-in en Windows 10/11 Enterprise y Windows 365, doble autorización Approvers y borrado de clips a los 120 días.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Prioritize user groups for Insider Risk Management policies",
+      "url": "https://learn.microsoft.com/en-us/purview/insider-risk-management-settings-priority-user-groups",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Configuración de Priority user groups (hasta 10.000 miembros) y restricción explícita de quién puede revisar sus alertas y casos.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Review activities with the Insider Risk Management audit log",
+      "url": "https://learn.microsoft.com/en-us/purview/insider-risk-management-audit-log",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Arquitectura independiente respecto al M365 Audit Log, retención fija de 180 días y campos de exportación CSV.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Investigate insider risk threats in the Microsoft Defender portal",
+      "url": "https://learn.microsoft.com/en-us/defender-xdr/irm-investigate-alerts-defender",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Defender XDR Documentation Team",
+      "comentario": "Correlación de incidentes XDR, mapeo bidireccional de estados, tablas KQL en Advanced Hunting, Graph Security API y conector Sentinel.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Take action on Insider Risk Management cases",
+      "url": "https://learn.microsoft.com/en-us/purview/insider-risk-management-cases",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation Team",
+      "comentario": "Gestión de casos, Case notes, Content Explorer y transferencia Escalate for investigation hacia Purview eDiscovery.",
+      "verificacion": "Verificado vía Microsoft Learn MCP al 2026-11-11"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Introducing a unified alert experience for Microsoft Purview Insider Risk Management",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-security-blog/introducing-a-unified-alert-experience-for-microsoft-purview-insider-risk-manage/4530714",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Michelle Slotwinski (Microsoft)",
+      "comentario": "Anuncio oficial 2026 de la experiencia unificada de gestión y triaje de alertas en Purview Insider Risk Management.",
+      "verificacion": "Verificado al 2026-11-11"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "Announcing Alert Triage Agents in Microsoft Purview powered by Security Copilot",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-security-blog/announcing-alert-triage-agents-in-microsoft-purview-powered-by-security-copilot/4396041",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Nathalia Borges (Microsoft)",
+      "comentario": "Diseño funcional y beneficios operativos de los agentes autónomos de triaje para Insider Risk Management y DLP.",
+      "verificacion": "Verificado al 2026-11-11"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "Defender XDR data security context with Insider Risk Management",
+      "url": "https://learn.microsoft.com/en-us/shows/microsoft-sentinel-defender-xdr-virtual-ninja-training/defender-xdrs-data-security-context-with-insider-risk-management",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Maayan Magenheim y Sravan Kumar Mera (Microsoft)",
+      "comentario": "Sesión oficial del Virtual Ninja Training demostrando enriquecimiento de incidentes XDR, página de usuario y caza avanzada con señales IRM.",
+      "verificacion": "Verificado al 2026-11-11"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "EzCloudInfo - Microsoft Purview Insider Risk Management, Adaptive Protection & Risky Copilot Usage",
+      "url": "https://ezcloudinfo.com/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Sathish Veerapandian (Microsoft Security MVP)",
+      "comentario": "Guías técnicas prácticas actualizadas a 2026 sobre primera señal en IRM, Adaptive Protection para el SOC e investigación de uso riesgoso de Copilot.",
+      "verificacion": "Verificado al 2026-11-11"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "Nikki Chapple Blog - Purview Data Security, Insider Risk & AI Governance",
+      "url": "https://nikkichapple.com/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Nikki Chapple (Microsoft MVP)",
+      "comentario": "Buenas prácticas comunitarias sobre gobierno de datos, privacidad e integración de Insider Risk Management con Microsoft 365 Copilot.",
+      "verificacion": "Verificado al 2026-11-11"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (CSWP 29) & SEI/CERT Common Sense Guide to Mitigating Insider Threats (7th Ed.)",
+      "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Marco normativo central utilizado para estructurar resultados auditables en las seis funciones GV, ID, PR, DE, RS y RC.",
+      "verificacion": "Verificado al 2026-11-11"
+    }
+  ]
+}

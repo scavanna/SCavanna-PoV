@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft Sentinel — Guía Operacional (Configuración, Rutinas y Playbooks)</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.72;
+}
+code, pre, .mono {
+  font-family: Consolas, "Courier New", Courier, monospace;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 0.88em;
+  color: var(--cp-text);
+  word-break: break-word;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Sticky Top Navigation */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--cp-panel-strong);
+  border-bottom: 1px solid var(--cp-border);
+  backdrop-filter: blur(10px);
+  padding: 12px 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.topbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border-strong);
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.btn-primary:hover {
+  background: var(--cp-accent-hover);
+  border-color: var(--cp-accent-hover);
+  color: var(--cp-accent-fg);
+}
+.btn-sm {
+  padding: 5px 11px;
+  font-size: 12.5px;
+}
+.select-input, .search-input {
+  padding: 9px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+}
+.search-input { min-width: 260px; flex: 1; }
+
+/* Two-Column Spacious App Layout */
+.app-shell {
+  max-width: 1520px;
+  margin: 0 auto;
+  padding: 28px 32px 56px 32px;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+.sidebar {
+  position: sticky;
+  top: 76px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 20px 16px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+}
+.nav-section-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cp-text-soft);
+  padding: 12px 12px 6px 12px;
+}
+.nav-section-label:first-child { padding-top: 2px; }
+.nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border-radius: 0.625rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.nav-item:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border);
+}
+.nav-item.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.nav-subitem {
+  padding-left: 24px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.nav-count {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--cp-surface-soft);
+  color: var(--cp-text-muted);
+  border: 1px solid var(--cp-border);
+}
+.nav-item.active .nav-count {
+  background: var(--cp-panel-strong);
+  color: var(--cp-text);
+  border-color: transparent;
+}
+.sidebar-progress {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cp-border);
+}
+.prog-row { margin-bottom: 12px; }
+.prog-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--cp-text-muted);
+  font-weight: 600;
+}
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--cp-accent);
+  width: 0%;
+  transition: width 0.25s ease;
+}
+
+/* Main Reading Area */
+.main-area {
+  max-width: 1080px;
+  width: 100%;
+}
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+
+/* Hero & Section Headers */
+.hero-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 32px 36px;
+  margin-bottom: 28px;
+}
+.hero-card h1 {
+  margin: 10px 0 14px 0;
+  font-size: 28px;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+}
+.hero-lead {
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: var(--cp-text-muted);
+  margin: 0;
+}
+.section-banner {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-left: 5px solid var(--cp-accent);
+  border-radius: 16px;
+  padding: 26px 32px;
+  margin-bottom: 28px;
+}
+.section-banner h2 {
+  margin: 0 0 8px 0;
+  font-size: 23px;
+  line-height: 1.3;
+}
+.section-banner p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15.5px;
+}
+
+/* Mode Selector Cards on Overview */
+.modes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.mode-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+}
+.mode-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cp-accent);
+}
+.mode-card h3 {
+  margin: 6px 0 10px 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+.mode-card p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15px;
+}
+
+/* Badges & Inline Tags */
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 0.625rem;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface-soft);
+  color: var(--cp-text);
+}
+.badge-accent {
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border-color: var(--cp-accent);
+}
+.badge-learn {
+  border-color: var(--cp-success);
+  color: var(--cp-success);
+  background: var(--cp-surface-soft);
+}
+.badge-editorial {
+  border-color: var(--cp-warning);
+  color: var(--cp-warning);
+  background: var(--cp-surface-soft);
+}
+.inline-tag {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 6px;
+  margin-left: 4px;
+  vertical-align: middle;
+  border: 1px solid var(--cp-border);
+}
+.tag-learn { color: var(--cp-success); border-color: var(--cp-success); background: var(--cp-surface-soft); }
+.tag-edit { color: var(--cp-warning); border-color: var(--cp-warning); background: var(--cp-surface-soft); }
+
+/* Sub-navigation Switcher */
+.subnav-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.subnav-pill {
+  padding: 10px 18px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.subnav-pill:hover { border-color: var(--cp-border-strong); background: var(--cp-surface-soft); }
+.subnav-pill.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.filter-toolbar {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Spacious Operational, Setup & Playbook Cards */
+.spacious-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 30px 34px;
+  margin-bottom: 24px;
+}
+.spacious-card.is-done {
+  border-color: var(--cp-success);
+  background: var(--cp-bg-elevated);
+}
+.adhoc-card {
+  border-left: 5px solid var(--cp-accent);
+}
+.card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.card-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 280px;
+}
+.task-checkbox {
+  width: 22px;
+  height: 22px;
+  margin-top: 4px;
+  accent-color: var(--cp-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.card-code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border: 1px solid var(--cp-accent);
+  display: inline-block;
+  margin-bottom: 6px;
+}
+.card-heading {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+/* Info Callout Boxes inside Cards */
+.info-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.info-box {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+.info-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-soft);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.info-content {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.trigger-banner {
+  background: var(--cp-accent-soft);
+  border: 1px solid var(--cp-accent);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+}
+.trigger-banner .info-label {
+  color: var(--cp-accent);
+}
+
+/* Step-by-Step Spacious List */
+.steps-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-muted);
+  margin: 0 0 12px 0;
+}
+.steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.step-row:hover { border-color: var(--cp-border-strong); }
+.step-row.step-checked {
+  border-color: var(--cp-success);
+  opacity: 0.88;
+}
+.step-num {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border-strong);
+  color: var(--cp-text);
+  font-weight: 700;
+  font-size: 13.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-row.step-checked .step-num {
+  background: var(--cp-success);
+  border-color: var(--cp-success);
+  color: var(--cp-accent-fg);
+}
+.step-body {
+  font-size: 15.5px;
+  line-height: 1.72;
+  flex: 1;
+}
+
+/* Validation & Evidence Footer Box */
+.validation-footer {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.validation-footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--cp-border);
+  font-size: 13.5px;
+  color: var(--cp-text-muted);
+}
+
+/* Grids & Tables for Secondary Views */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.subsection-heading {
+  font-size: 20px;
+  margin: 34px 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cp-border);
+}
+pre.code-block {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 14px 0 0 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.table-wrap {
+  overflow-x: auto;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th, td { padding: 16px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--cp-border); line-height: 1.6; }
+th { background: var(--cp-bg-elevated); font-weight: 700; }
+tr:last-child td { border-bottom: none; }
+.muted { color: var(--cp-text-muted); }
+
+.footer {
+  margin-top: 48px;
+  padding: 24px 0;
+  border-top: 1px solid var(--cp-border);
+  color: var(--cp-text-muted);
+  font-size: 13.5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 1080px) {
+  .app-shell { grid-template-columns: 1fr; padding: 18px; gap: 20px; }
+  .sidebar { position: static; max-height: none; }
+  .grid-2, .info-pair { grid-template-columns: 1fr; }
+  .spacious-card, .hero-card { padding: 22px; }
+}
+@media print {
+  .topbar, .sidebar, .filter-toolbar, .subnav-bar { display: none !important; }
+  .app-shell { display: block; padding: 0; }
+  .view-panel { display: block !important; margin-bottom: 32px; }
+  body { background: var(--cp-surface); font-size: 13px; }
+}
+</style></head>
+<body>
+<header class="topbar">
+  <div class="topbar-group">
+    <a class="btn btn-primary" href="../index.html">← Portal Maestro (23 Módulos)</a>
+    <a class="btn" id="prevModBtn" href="#">Anterior</a>
+    <select class="select-input" id="modJumpSelect" aria-label="Cambiar de módulo"></select>
+    <a class="btn" id="nextModBtn" href="#">Siguiente</a>
+  </div>
+  <div class="topbar-group">
+    <a class="btn" id="xlsxLink" href="#" download>Libro .XLSX</a>
+    <a class="btn" id="mdLink" href="#">Guía .MD</a>
+    <button class="btn" type="button" id="exportCsvBtn">Exportar CSV</button>
+    <button class="btn" type="button" id="printBtn">Imprimir / PDF</button>
+    <button class="btn" type="button" id="themeToggleBtn">Tema Claro / Oscuro</button>
+  </div>
+</header>
+
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Navegación de la guía operativa">
+    <div class="nav-section-label">Introducción</div>
+    <button class="nav-item active" type="button" data-view="view-overview">
+      <span>Visión General y Mapa</span>
+    </button>
+
+    <div class="nav-section-label">1 · Configuración Puntual</div>
+    <button class="nav-item" type="button" data-view="view-config">
+      <span>Configuración y Validaciones</span>
+      <span class="nav-count" id="navCntConfig">0</span>
+    </button>
+
+    <div class="nav-section-label">2 · Acciones Periódicas</div>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Diaria">
+      <span>Rutinas Diarias</span>
+      <span class="nav-count" id="navCntDiaria">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Semanal">
+      <span>Rutinas Semanales</span>
+      <span class="nav-count" id="navCntSemanal">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Mensual">
+      <span>Rutinas Mensuales</span>
+      <span class="nav-count" id="navCntMensual">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="CICLOS_LARGOS">
+      <span>Trimestral · Semestral · Anual</span>
+      <span class="nav-count" id="navCntLargos">0</span>
+    </button>
+
+    <div class="nav-section-label">3 · Respuesta a Señales</div>
+    <button class="nav-item" type="button" data-view="view-adhoc">
+      <span>Playbooks Ad-Hoc (Alertas)</span>
+      <span class="nav-count" id="navCntAdhoc">0</span>
+    </button>
+
+    <div class="nav-section-label">Verificación y Gobierno</div>
+    <button class="nav-item" type="button" data-view="view-queries">
+      <span>Consultas KQL / Graph / PS</span>
+      <span class="nav-count" id="navCntQueries">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-kpis">
+      <span>KPIs, Madurez y Formación</span>
+      <span class="nav-count" id="navCntKpis">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-nist">
+      <span>Auditoría NIST 2.0 y Fuentes</span>
+      <span class="nav-count" id="navCntNist">0</span>
+    </button>
+
+    <div class="sidebar-progress" id="sidebarProgress"></div>
+  </aside>
+
+  <main class="main-area">
+    <!-- VISTA 0: OVERVIEW & MAPA DE LOS 3 MODOS -->
+    <section class="view-panel active" id="view-overview">
+      <div class="hero-card">
+        <div class="pill-row" id="heroBadges"></div>
+        <h1 id="heroTitle"></h1>
+        <p class="hero-lead" id="heroSummary"></p>
+      </div>
+
+      <h2 class="subsection-heading" style="margin-top:0;">Cómo operar esta tecnología: Los 3 Niveles de Acción</h2>
+      <div class="modes-grid" id="modesSummaryGrid"></div>
+
+      <div class="spacious-card" id="licensingOverviewCard"></div>
+
+      <h2 class="subsection-heading">Principios Rectores Oficiales (Zero Trust)</h2>
+      <div class="grid-2" id="principlesGrid"></div>
+    </section>
+
+    <!-- VISTA 1: ACCIONES PUNTUALES DE CONFIGURACIÓN Y VALIDACIONES -->
+    <section class="view-panel" id="view-config">
+      <div class="section-banner">
+        <h2>1. Acciones Puntuales de Configuración y Validaciones sobre la Plataforma</h2>
+        <p>Controles que se ejecutan al desplegar la tecnología, activar nuevas capacidades o auditar su línea base. Distingue qué debes configurar una sola vez y cómo validar técnicamente ("Proof of Life") que cada ajuste está activo y protegiendo el entorno.</p>
+      </div>
+
+      <div class="subnav-bar" id="configSubnav">
+        <a class="subnav-pill" href="#cfg-prereqs">1A. Puesta en Marcha Inicial</a>
+        <a class="subnav-pill" href="#cfg-validations">1B. Validaciones de Configuración ("Proof of Life")</a>
+        <a class="subnav-pill" href="#cfg-components">1C. Configuración por Componente</a>
+        <a class="subnav-pill" href="#cfg-rbac">1D. Privilegio Mínimo RBAC y PIM</a>
+      </div>
+
+      <h3 class="subsection-heading" id="cfg-prereqs">1A. Checklist de Puesta en Marcha y Prerrequisitos Puntuales</h3>
+      <div id="prereqsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-validations">1B. Validaciones Técnicas sobre las Configuraciones ("Proof of Life")</h3>
+      <p class="muted" style="margin-top:-8px;margin-bottom:20px;">Comprueba cada uno de estos indicadores en consola o mediante consulta para confirmar que la configuración no quedó solo en papel o en modo auditoría incompleta.</p>
+      <div id="validationsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-components">1C. Configuración Base por Componente e Integraciones</h3>
+      <div id="componentsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-rbac">1D. Configuración Puntual de Roles Administrativos y Estrategia PIM / JIT</h3>
+      <div id="rbacContainer"></div>
+    </section>
+
+    <!-- VISTA 2: ACCIONES PERIÓDICAS PROGRAMADAS -->
+    <section class="view-panel" id="view-periodic">
+      <div class="section-banner">
+        <h2 id="periodicTitle">2. Acciones Periódicas Programadas</h2>
+        <p id="periodicSubtitle">Rutinas recurrentes preventivas, de higiene operativa, tuning y gobierno. Selecciona la frecuencia deseada para leer cómodamente solo las actividades de ese ciclo.</p>
+      </div>
+
+      <div class="subnav-bar" id="periodicCadBar">
+        <button class="subnav-pill active" type="button" data-pcad="Diaria">Diarias</button>
+        <button class="subnav-pill" type="button" data-pcad="Semanal">Semanales</button>
+        <button class="subnav-pill" type="button" data-pcad="Mensual">Mensuales</button>
+        <button class="subnav-pill" type="button" data-pcad="CICLOS_LARGOS">Trimestrales · Semestrales · Anuales</button>
+        <button class="subnav-pill" type="button" data-pcad="ALL_PERIODIC">Ver Todas las Periódicas</button>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="perSearch" placeholder="Buscar acción periódica, consola, tabla KQL, control a validar o rol...">
+        <select class="select-input" id="perRole"><option value="ALL">Rol Responsable: Todos</option></select>
+        <select class="select-input" id="perOrigin">
+          <option value="ALL">Origen: Todos</option>
+          <option value="Verificado MS Learn">Verificado MS Learn</option>
+          <option value="Propuesta Editorial">Propuesta Editorial</option>
+        </select>
+        <button class="btn btn-sm" type="button" id="resetChecksBtn">Reiniciar Progreso</button>
+      </div>
+
+      <p class="muted" id="perCountLabel" style="margin-bottom:18px;"></p>
+      <div id="periodicCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 3: ACCIONES AD-HOC ANTE SEÑALES, ALERTAS E INCIDENTES -->
+    <section class="view-panel" id="view-adhoc">
+      <div class="section-banner">
+        <h2>3. Acciones Ad-Hoc ante Señales, Alertas e Incidentes (Playbooks del Analista)</h2>
+        <p>Procedimientos reactivos bajo demanda. A diferencia de las rutinas periódicas, estos playbooks se activan únicamente cuando una señal de riesgo, alerta de detección, anomalía o emergencia exige la intervención inmediata de un analista.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="adhocSearch" placeholder="Filtrar playbooks por alerta disparadora, síntoma, técnica MITRE o acción de contención...">
+      </div>
+
+      <div id="adhocCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 4: CONSULTAS KQL / GRAPH / POWERSHELL -->
+    <section class="view-panel" id="view-queries">
+      <div class="section-banner">
+        <h2>4. Consultas Técnicas de Validación, Monitoreo y Threat Hunting</h2>
+        <p>Consultas KQL, llamadas Microsoft Graph API y scripts PowerShell listos para auditar configuraciones puntuales, medir salud periódica o investigar alertas ad-hoc.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="kqlSearch" placeholder="Buscar consulta por nombre, tabla (SigninLogs, DeviceEvents, SentinelHealth...), comando o propósito...">
+        <select class="select-input" id="kqlUsageFilter">
+          <option value="ALL">Momento de Uso: Todos</option>
+          <option value="Validación de Configuración y Postura">1. Validación de Configuración y Postura</option>
+          <option value="Control Periódico de Salud, Auditoría y KPIs">2. Control Periódico de Salud y KPIs</option>
+          <option value="Investigación Ad-Hoc y Threat Hunting">3. Investigación Ad-Hoc y Hunting</option>
+        </select>
+      </div>
+
+      <div id="queriesContainer"></div>
+    </section>
+
+    <!-- VISTA 5: KPIs, MADUREZ Y FORMACIÓN -->
+    <section class="view-panel" id="view-kpis">
+      <div class="section-banner">
+        <h2>5. Indicadores Clave (KPIs), Modelo de Madurez y Ruta de Formación</h2>
+        <p>Métricas objetivas para medir eficacia operativa ante el CISO, evolución en 5 niveles de madurez y habilitación técnica recomendada por rol.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Indicadores Clave de Desempeño (KPIs)</h3>
+      <div class="grid-2" id="kpiContainer"></div>
+
+      <h3 class="subsection-heading">Modelo de Madurez Operacional (Niveles 1 a 5)</h3>
+      <div id="maturityContainer"></div>
+
+      <h3 class="subsection-heading">Ruta de Habilitación y Formación por Rol</h3>
+      <div id="trainingContainer"></div>
+    </section>
+
+    <!-- VISTA 6: AUDITORÍA NIST CSF 2.0, TRANSPARENCIA Y REFERENCIAS -->
+    <section class="view-panel" id="view-nist">
+      <div class="section-banner">
+        <h2>6. Mapeo de Auditoría NIST CSF 2.0, Revalidación (Nov 2026) y Referencias</h2>
+        <p>Evidencia auditable reproducible para las seis funciones de NIST CSF 2.0 (CSWP 29), registro transparente de verificaciones en Microsoft Learn frente a propuestas editoriales y fuentes públicas.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Matriz de Evidencia Auditable NIST CSF 2.0</h3>
+      <div class="filter-toolbar">
+        <select class="select-input" id="nistFuncSelect">
+          <option value="ALL">Función NIST CSF 2.0: Todas (6 Funciones)</option>
+          <option value="GOVERN">GOVERN (GV)</option>
+          <option value="IDENTIFY">IDENTIFY (ID)</option>
+          <option value="PROTECT">PROTECT (PR)</option>
+          <option value="DETECT">DETECT (DE)</option>
+          <option value="RESPOND">RESPOND (RS)</option>
+          <option value="RECOVER">RECOVER (RC)</option>
+        </select>
+      </div>
+      <div id="nistCardsContainer"></div>
+
+      <h3 class="subsection-heading">Registro de Revalidación Técnica (Noviembre 2026) y Decisiones Editoriales</h3>
+      <div class="spacious-card" id="auditSummaryBox"></div>
+      <div class="grid-2">
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Hallazgos y Actualizaciones Verificadas en MS Learn</h3>
+          <div id="corrContainer"></div>
+        </div>
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Decisiones y Propuestas Editoriales Explícitas</h3>
+          <div id="decContainer"></div>
+        </div>
+      </div>
+
+      <h3 class="subsection-heading">Directorio de Referencias Públicas Verificadas</h3>
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="refSearch" placeholder="Filtrar referencias por título, autor, MVP o URL...">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Recurso Oficial / Comunitario</th>
+              <th>Tipo</th>
+              <th>Autor / Entidad</th>
+              <th>Comentario de Alcance</th>
+            </tr>
+          </thead>
+          <tbody id="refTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>Guía Maestra de Excelencia Operacional Microsoft — Edición Espaciada v3.0 (Validación: 2026-11-11)</div>
+      <div>Configuración Puntual · Rutinas Periódicas · Playbooks Ad-Hoc · NIST CSF 2.0</div>
+    </footer>
+  </main>
+</div>
+
+<script>
+const MODULE_DATA = {"schemaVersion": "2.0", "id": "08_Microsoft_Sentinel", "orden": 8, "slug": "Microsoft_Sentinel", "nombre": "Microsoft Sentinel (SIEM / SOAR Cloud-Native Asociado a M365 E5)", "nombreCorto": "Microsoft Sentinel", "categoria": "SecOps, XDR y SIEM", "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn", "fechaValidacion": "2026-11-11", "portalesPrincipales": ["https://security.microsoft.com", "https://portal.azure.com"], "audiencia": ["CISO", "SOC Manager", "SOC L1", "SOC L2", "SOC L3 / Detection Engineer", "Threat Hunter", "Platform Engineer", "SOAR Engineer", "FinOps", "GRC"], "relacionM365E5": {"estado": "Asociado a M365 E5 (Consumo en Azure + Beneficio Data Grant E5)", "licencias": ["Suscripción Azure (Pay-As-You-Go o Simplified Commitment Tiers desde 100 GB/día en Analytics + medidores Data Lake)", "Microsoft 365 E5 / E7 / A5 / F5 / G5 (otorga Data Grant de hasta 5 MB/usuario/día)", "Microsoft Defender Suite / Microsoft 365 E5/E7/A5/F5/G5 Security (otorga Data Grant de hasta 5 MB/usuario/día)", "Microsoft Defender for Servers Plan 2 (beneficio complementario de 500 MB/nodo/día para logs de seguridad de servidores)"], "prerrequisitos": ["Suscripción activa de Azure con Log Analytics Workspace habilitado en Microsoft Sentinel e incorporado al portal de Microsoft Defender (https://security.microsoft.com)", "Transición operativa planificada o completada hacia security.microsoft.com antes del retiro definitivo de la experiencia Sentinel en Azure Portal el 31 de marzo de 2027", "Habilitación de Auditing and health monitoring (tablas SentinelHealth y SentinelAudit) y LAQueryLogs para trazabilidad operativa y de auditoría", "Despliegue de Azure Monitor Agent (AMA) con Data Collection Rules (DCR), Logs Ingestion API o conectores CCF (reemplazando la retirada HTTP Data Collector API post 14-sep-2026)", "Configuración de System-Assigned Managed Identity en playbooks de Azure Logic Apps y asignación de Microsoft Sentinel Automation Contributor al service account de Sentinel sobre el Resource Group de playbooks"], "notaLicenciamiento": "Microsoft Sentinel NO se incluye como licencia per-user dentro de Microsoft 365 E5; se factura por consumo/compromiso en Azure. Está estrechamente asociado a M365 E5/E7 mediante: (1) el Microsoft 365 E5/E7 Data Grant automático de hasta 5 MB/usuario/día para ingesta elegible (Entra ID Sign-in y Audit logs, Defender for Cloud Apps Shadow IT discovery, Purview Information Protection y tablas de Advanced Hunting de Defender XDR); (2) fuentes siempre gratuitas (AzureActivity, SentinelHealth, OfficeActivity de Exchange/SharePoint/Teams y SecurityAlert/SecurityIncident de todo el stack Defender/Entra); (3) consulta interactiva gratuita durante 30 días de tablas crudas de Defender XDR en Advanced Hunting del portal unificado sin ingerirlas en Analytics; (4) conexión en preview de fuentes XDR hacia Sentinel UEBA en tenants E5 sin re-ingesta first-party; y (5) dotación base incluida de SCUs de Security Copilot en M365 E5."}, "resumenEjecutivo": "Microsoft Sentinel es la plataforma cloud-native de SIEM, SOAR, Data Lake, Security Graph y capacidades agénticas (MCP) de Microsoft, operando de forma unificada con Microsoft Defender XDR en https://security.microsoft.com (único portal soportado tras el retiro de la experiencia en Azure Portal después del 31 de marzo de 2027). Aunque se factura en Azure por volumen y nivel de datos (Analytics tier para datos primarios con 90 días de retención interactiva gratuita y Data Lake tier integrado desde septiembre de 2026 con compresión 6:1 y retención de hasta 12 años), aprovecha directamente las inversiones en Microsoft 365 E5/E7 mediante el Data Grant de hasta 5 MB/usuario/día, fuentes M365 gratuitas y consulta unificada de telemetría XDR. Su excelencia operacional exige gobernar cadencias estructuradas de triaje e investigación en cola unificada, caza proactiva por hipótesis (Hunts), normalización ASIM, automatización mediante Automation Rules y Playbooks en Logic Apps autenticados con Managed Identity, cierre continuo de recomendaciones de SOC Optimization y generación automatizada de evidencia objetiva para las seis funciones de NIST CSF 2.0.", "principiosRectores": [{"principio": "Operación centrada en incidentes unificados (Incidents-First en Defender Portal)", "descripcion": "Consolidar alertas multi-dominio SIEM y XDR en un único expediente enriquecido con Attack Story, Blast Radius y Case Management en security.microsoft.com, completando la salida del portal de Azure antes del 31 de marzo de 2027.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal"}, {"principio": "SOC aumentado por automatización segura (Automation Rules + Managed Identity)", "descripcion": "Orquestar triaje, tareas estandarizadas y contención mediante Automation Rules y Playbooks en Azure Logic Apps autenticados exclusivamente con Managed Identity y generador asistido por IA.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/azure/sentinel/automate-incident-handling-with-automation-rules"}, {"principio": "Arquitectura de datos por niveles y disciplina FinOps (Analytics vs. Data Lake + Grant E5)", "descripcion": "Ubicar telemetría primaria de detección inmediata en el Analytics tier y datos secundarios verbosos o retención histórica (hasta 12 años) en el Sentinel Data Lake integrado, maximizando el Data Grant de 5 MB/usuario/día de M365 E5.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/azure/sentinel/log-plans"}, {"principio": "Defensa informada por amenazas y normalización agnóstica (MITRE ATT&CK v18 + ASIM)", "descripcion": "Alinear reglas Scheduled, NRT, Custom Detections y campañas Hunts a la matriz MITRE ATT&CK v18 empleando esquemas normalizados ASIM para desacoplar la detección del fabricante de origen.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/azure/sentinel/normalization"}, {"principio": "Mínimo privilegio dual y trazabilidad total (Azure RBAC + Unified RBAC + Audit)", "descripcion": "Segregar funciones en Resource Groups con Azure RBAC y en el Data Lake con Entra ID / Defender Unified RBAC, auditando toda modificación y consulta en SentinelAudit, AzureActivity y LAQueryLogs.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/azure/sentinel/roles"}, {"principio": "Optimización continua basada en métricas y valor de datos (SOC Optimization)", "descripcion": "Medir sistemáticamente MTTA y MTTR/MTTC y ejecutar las recomendaciones de SOC Optimization para eliminar tablas sin cobertura analítica y cerrar brechas de riesgo de negocio.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/azure/sentinel/soc-optimization/soc-optimization-reference"}], "arquitecturaYComponentes": [{"componente": "Unified SecOps Experience en Microsoft Defender Portal", "funcionOperativa": "Superficie operativa primaria que unifica cola de incidentes, Case Management, Attack Story, Blast Radius, Advanced Hunting y Security Copilot (único portal tras el 31 de marzo de 2027).", "portalRuta": "security.microsoft.com > Investigation & response / Microsoft Sentinel", "integraciones": ["Microsoft Defender XDR", "Microsoft Security Copilot", "Microsoft Security Exposure Management"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Microsoft Sentinel Data Lake y Gestión de Niveles de Tablas", "funcionOperativa": "Almacenamiento integrado (desde sep-2026) con espejo automático desde Analytics, compresión 6:1, retención de hasta 12 años, consultas KQL interactivas, KQL jobs, notebooks Spark y federación con Microsoft Fabric OneLake.", "portalRuta": "security.microsoft.com > Microsoft Sentinel > Configuration / Data management > Tables", "integraciones": ["Azure Monitor Log Analytics (Analytics Tier)", "Microsoft Fabric OneLake", "Visual Studio Code / Spark Notebooks"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Content Hub, Data Connectors (CCF), AMA y Logs Ingestion API", "funcionOperativa": "Catálogo de más de 350 soluciones empaquetadas (conectores, reglas, workbooks, hunting y playbooks) y recolección con DCRs y transformaciones pre-ingesta filter/split.", "portalRuta": "security.microsoft.com > Microsoft Sentinel > Content management > Content hub / Configuration > Data connectors", "integraciones": ["Azure Monitor Agent (Windows, Linux, CEF/Syslog)", "Logs Ingestion API & Data Collection Rules", "Codeless Connector Framework (CCF)"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Motor Analítico, Custom Detection Rules y Normalización ASIM", "funcionOperativa": "Ejecución de reglas Scheduled, NRT, correlación ML/XDR y Custom Detection Rules (gestionables como código en Bicep vía Repositories) sobre esquemas normalizados ASIM.", "portalRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Analytics / Hunting > Custom detection rules", "integraciones": ["MITRE ATT&CK Matrix (v18)", "Sentinel Repositories (GitHub / Azure DevOps)", "Parsers ASIM query-time e ingest-time"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "User and Entity Behavior Analytics (UEBA) y Threat Intelligence", "funcionOperativa": "Perfilado conductual de identidades, hosts, IPs y firewalls/nubes (BehaviorAnalytics, Anomalies, BehaviorInfo) e ingesta/matching de IOCs STIX/TAXII y MDTI.", "portalRuta": "security.microsoft.com > System > Settings > Microsoft Sentinel > UEBA / Threat intelligence > Intel management", "integraciones": ["Microsoft Entra ID & Active Directory", "Fuentes Microsoft Defender XDR en E5 (extend-ueba)", "Servidores TAXII/STIX, MISP e ISACs"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Orquestación SOAR: Automation Rules, Simple Flows y Playbooks (Logic Apps)", "funcionOperativa": "Enrutamiento declarativo en creación/actualización de incidentes o alertas (incl. Enhanced Alert Trigger), inyección de checklists y ejecución de playbooks con Managed Identity y generador IA.", "portalRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Automation", "integraciones": ["Azure Logic Apps (Consumption y Standard)", "Microsoft Entra ID, Defender for Endpoint y Firewalls", "ServiceNow, Jira y Microsoft Teams"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "SOC Optimization y Salud/Auditoría (SentinelHealth / SentinelAudit)", "funcionOperativa": "Recomendaciones continuas de cobertura de amenazas y optimización de costos por tabla/columna, junto con telemetría interna de salud y auditoría de cambios.", "portalRuta": "security.microsoft.com > Microsoft Sentinel > Optimization", "integraciones": ["SOC Optimization REST API", "Tablas SentinelHealth, SentinelAudit y LAQueryLogs", "Microsoft Cost Management"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Sentinel Graph y Model Context Protocol (MCP) Server", "funcionOperativa": "Modelado relacional de rutas de ataque y exposición de herramientas gobernadas (data exploration, triage, entity analyzer, graph) para agentes de IA y Security Copilot.", "portalRuta": "security.microsoft.com > Microsoft Sentinel (Graphs & Security Copilot)", "integraciones": ["Microsoft Security Copilot", "Graph Query Language (GQL)", "Agentes autónomos y personalizados"], "estadoValidacion": "Verificado MS Learn"}], "rbacYRoles": [{"rol": "Microsoft Sentinel Reader (+ Security Reader en Entra ID / URBAC)", "nivelSOC": "Tier 1 (Monitor) / Auditoría GRC", "permisosClave": "Visualización de incidentes, workbooks, recomendaciones y ejecución de consultas KQL interactivas en el workspace y en el Data Lake sin permisos de escritura.", "asignacionPIM": "Permanente sobre grupos de monitoreo o auditoría con MFA resistente a phishing", "responsabilidadOperativa": "Seguimiento de paneles operativos, verificación independiente de controles y recolección de evidencias GRC.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Microsoft Sentinel Responder + Microsoft Sentinel Playbook Operator", "nivelSOC": "Tier 1 / Tier 2 (SOC Analyst & Incident Responder)", "permisosClave": "Permisos de Reader más gestión completa de incidentes (asignación, estado, severidad, tareas, bookmarks) y ejecución manual de playbooks autorizados en el Resource Group.", "asignacionPIM": "Permanente para analistas de turno activo o elegible vía PIM (8 horas); invitados B2B requieren además Directory Reader en Entra ID", "responsabilidadOperativa": "Triaje, investigación en cola unificada, documentación forense y disparo manual supervisado de playbooks de enriquecimiento o contención.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Microsoft Sentinel Contributor (+ Security Operator en Entra ID para jobs del Lago)", "nivelSOC": "Tier 3 / Detection & Content Engineer", "permisosClave": "Crear y editar reglas analíticas, automation rules, watchlists, desplegar soluciones del Content Hub y programar KQL/Notebook jobs en el Data Lake (sumar Workbook Contributor para editar workbooks).", "asignacionPIM": "Elegible (JIT) en Azure PIM / Entra PIM (máximo 4 horas) con ticket de cambio y respaldo CI/CD", "responsabilidadOperativa": "Ingeniería de detección KQL/ASIM, actualización del Content Hub, tuning de falsos positivos y gobierno de repositorios.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Logic App Contributor", "nivelSOC": "Ingeniería SOAR", "permisosClave": "Creación, edición, versionado e inspección de historial de ejecuciones de recursos Azure Logic Apps usados como playbooks.", "asignacionPIM": "Elegible (JIT) en Azure PIM (máximo 4 horas) sobre el Resource Group dedicado de playbooks", "responsabilidadOperativa": "Desarrollo seguro de playbooks, configuración de conexiones con Managed Identity y depuración de fallos.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Microsoft Sentinel Automation Contributor (Exclusivo Service Account)", "nivelSOC": "Identidad de Servicio de Plataforma (No Humanos)", "permisosClave": "Permite a la cuenta de servicio oficial Azure Security Insights adjuntar e invocar playbooks desde Automation Rules; nunca debe asignarse a cuentas de usuario.", "asignacionPIM": "Permanente exclusivamente sobre el Service Principal de Microsoft Sentinel en el Resource Group de playbooks (configurado por un Owner)", "responsabilidadOperativa": "Ejecución desatendida y segura de flujos SOAR disparados por reglas de automatización en arquitecturas single-tenant y multitenant.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "System-Assigned Managed Identity del Playbook (con Sentinel Responder/Reader)", "nivelSOC": "Identidad No Humana por Playbook", "permisosClave": "Asignación de Microsoft Sentinel Responder (si comenta/actualiza el incidente o watchlists) o Reader en el workspace, más el permiso Graph/MDE mínimo requerido en el sistema destino.", "asignacionPIM": "Administrada automáticamente por Azure sin secretos ni rotación manual de credenciales", "responsabilidadOperativa": "Autenticación sin contraseñas de cada playbook hacia Microsoft Sentinel y servicios de remediación.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Log Analytics Contributor / Custom Defender URBAC data (manage)", "nivelSOC": "Sentinel Platform Engineer", "permisosClave": "Escritura sobre el workspace para conectar fuentes, definir DCRs, configurar niveles y retención de tablas (Analytics vs. Data Lake) y tablas del sistema.", "asignacionPIM": "Elegible (JIT) en PIM (máximo 4 horas) con aprobación de Arquitectura / FinOps", "responsabilidadOperativa": "Onboarding de conectores, gobierno de retención y optimización financiera de ingesta.", "estadoValidacion": "Verificado MS Learn"}], "actividadesOperacionales": [{"codigo": "D-01", "cadencia": "Diaria", "actividad": "Triaje, asignación e investigación profunda de incidentes en cola unificada", "objetivo": "Detectar, priorizar, analizar y contener incidentes generados por reglas de Sentinel y Defender XDR manteniendo controlados el MTTA y MTTC.", "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts > Incidents", "procedimiento": ["Revisar incidentes New e In progress priorizando por severidad (Critical/High > Medium > Low) y criticidad de activos involucrados.", "Asignar propietario, pasar estado a Active/In progress, ejecutar las Incident tasks e investigar Attack story, Blast radius, Watchlists y contexto UEBA.", "Cerrar especificando clasificación exacta (True Positive, Benign Positive o False Positive) y comentario forense estructurado."], "rolResponsable": "SOC L1 / SOC L2", "funcionNIST": "RS", "subcategoriaNIST": "RS.MA-02", "mitreTactic": "Initial Access / Lateral Movement (TA0001 / TA0008)", "evidenciaAuditable": "Registros en tabla SecurityIncident con tiempos de atención, tareas completadas y clasificación auditada.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Primera tarea diaria obligatoria en Microsoft Sentinel operational guide (Triage and investigate incidents).", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide", "pasosDetallados": ["Filtrar incidentes `New` e `In progress` ordenando por severidad (`Critical / High > Medium > Low`), validando que cuentas privilegiadas o activos críticos (*crown jewels*) reciban elevación inmediata de prioridad aunque la severidad heurística sea Media/Baja `[Verificado MS Learn]`.", "Asignar propietario (`Assign to me` o cola L2), cambiar estado a `Active` / `In progress` y completar secuencialmente las **Incident tasks** inyectadas por Automation Rules `[Verificado MS Learn]`.", "Analizar el **Attack story**, el grafo interactivo de investigación y el análisis de **Blast radius**, expandiendo nodos (Usuario, Host, IP, Recurso Azure) y consultando **Watchlists** (activos VIP, rangos IP internos, empleados en preaviso) y contexto **UEBA** (`Assets > Identities / Devices > Sentinel events`) `[Verificado MS Learn]`.", "Aprovechar **Security Copilot** embebido en el incidente para resumen inicial, decodificación de scripts y generación asistida de consultas KQL cuando el tenant disponga de SCUs (incluidas en M365 E5) `[Verificado MS Learn]`.", "Al cerrar, registrar clasificación obligatoria (`True Positive`, `Benign Positive` o `False Positive`) con motivo y comentario estructurado para retroalimentar el tuning y las métricas del SOC `[Verificado MS Learn]`."], "disparadorAlerta": "Detectar, priorizar, analizar y contener incidentes generados por reglas de Sentinel y Defender XDR manteniendo controlados el MTTA y MTTC.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-02", "cadencia": "Diaria", "actividad": "Ejecución de consultas proactivas de Threat Hunting, campañas Hunts y gestión de Bookmarks", "objetivo": "Descubrir actividad adversaria sigilosa en el Analytics tier y en el Data Lake que no disparó detecciones programadas.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Threat management > Hunting / Advanced hunting", "procedimiento": ["Ejecutar consultas integradas y campañas Hunts filtradas por tácticas MITRE ATT&CK prioritarias revisando variaciones en Results Delta.", "Registrar hallazgos sospechosos como Bookmarks mapeando obligatoriamente entidades (Account, Host, IP, URL) y notas técnicas.", "Promover hallazgos confirmados a incidentes nuevos o existentes y escalar patrones repetibles para creación de Custom Detection Rules."], "rolResponsable": "Threat Hunter / SOC L2", "funcionNIST": "DE", "subcategoriaNIST": "DE.AE-07", "mitreTactic": "Persistence / Defense Evasion / Credential Access (TA0003 / TA0005 / TA0006)", "evidenciaAuditable": "Entradas en HuntingBookmark, campañas registradas en Hunts e incidentes creados desde caza.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tarea diaria oficial Explore hunting queries and bookmarks en ops-guide.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide", "pasosDetallados": ["Ejecutar paquetes de consultas de caza integradas o campañas estructuradas (**Hunts**) filtradas por tácticas MITRE ATT&CK prioritarias (`Initial Access`, `Credential Access`, `Persistence`, `Defense Evasion`, `Lateral Movement`, `Exfiltration`) `[Verificado MS Learn]`.", "Ordenar por **Results Delta** para investigar incrementos anómalos respecto a la ejecución anterior y consultar datos tanto del nivel Analytics como del **Data Lake** directamente desde `Advanced hunting` `[Verificado MS Learn]`.", "Para todo evento sospechoso relevante, seleccionar la fila y crear un **Bookmark** mapeando obligatoriamente las entidades (`Account`, `Host`, `IP`, `URL`) y documentando notas analíticas (o vincular registros de `BehaviorInfo` a incidentes) `[Verificado MS Learn]`.", "Promover hallazgos confirmados mediante `Incident actions > Create new incident` o `Add to existing incident`, y proponer nueva regla de detección si el patrón es repetible `[Verificado MS Learn]`."], "disparadorAlerta": "Descubrir actividad adversaria sigilosa en el Analytics tier y en el Data Lake que no disparó detecciones programadas.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-03", "cadencia": "Diaria", "actividad": "Monitoreo de salud, optimización y habilitación de reglas analíticas y Custom Detections", "objetivo": "Asegurar que ninguna detección crítica haya sido deshabilitada automáticamente (AUTO DISABLED) ni presente errores de ejecución.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Analytics / Hunting > Custom detection rules", "procedimiento": ["Consultar SentinelHealth filtrando SentinelResourceType == 'Analytics Rule' y Status != 'Success', y verificar ausencia de reglas AUTO DISABLED.", "Optimizar consultas KQL con timeouts o errores de esquema y confirmar ejecución saludable de reglas NRT y Custom Detection Rules.", "Revisar y habilitar nuevas plantillas relevantes provenientes de soluciones instaladas."], "rolResponsable": "SOC L3 / Platform Engineer", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-09", "mitreTactic": "Defense Evasion (TA0005)", "evidenciaAuditable": "Resultados diarios de SentinelHealth sin fallos activos y registro de reglas habilitadas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tarea diaria oficial Analytics rules en ops-guide.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide", "pasosDetallados": ["Verificar en la lista de reglas que ninguna regla crítica figure con prefijo **AUTO DISABLED** y consultar la tabla `SentinelHealth` filtrando `SentinelResourceType == 'Analytics Rule'` y `Status != 'Success'` `[Verificado MS Learn]`.", "Corregir fallos por tiempos de espera agotados (*query timeout*), tablas faltantes o cambios en funciones ASIM, y verificar que las reglas **NRT** y **Custom detection rules** (ruta recomendada para nuevas detecciones unificadas) se ejecuten puntualmente `[Verificado MS Learn]`.", "Evaluar plantillas nuevas provenientes de soluciones recién instaladas o actualizadas y habilitarlas tras validar mapeo de entidades `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar que ninguna detección crítica haya sido deshabilitada automáticamente (AUTO DISABLED) ni presente errores de ejecución.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-04", "cadencia": "Diaria", "actividad": "Verificación de salud de Data Connectors y control diario de volumen de ingesta", "objetivo": "Garantizar flujo continuo de logs desde todas las fuentes críticas y prevenir caídas silenciosas o excesos de presupuesto.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Data connectors", "procedimiento": ["Comprobar estado Connected y recepción reciente en conectores críticos (Defender XDR, Entra ID, M365, Azure Activity, CEF/Syslog, multicloud).", "Ejecutar chequeo sobre SentinelHealth (Data fetch status change) y el workbook Data collection health monitoring buscando EPS = 0 o caídas >30%.", "Revisar ingesta diaria frente al Commitment Tier evitando el uso de Daily Cap como mecanismo primario de corte."], "rolResponsable": "Platform Engineer", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-01", "mitreTactic": "Defense Evasion / Impair Defenses (TA0005 / T1562)", "evidenciaAuditable": "Registros de SentinelHealth y consulta diaria de volumen por conector en Usage.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tarea diaria oficial Data connectors en ops-guide.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide", "pasosDetallados": ["Confirmar estado `Connected` en conectores críticos (Microsoft Defender XDR, Microsoft Entra ID, Microsoft 365, Azure Activity, firewalls CEF/Syslog, AWS/GCP, SAP) `[Verificado MS Learn]`.", "Consultar `SentinelHealth` (`OperationName == 'Data fetch status change'`) y el workbook **Data collection health monitoring** revisando `EPS = 0`, retrasos en `Last log received` o caídas >30 % respecto a la línea base `[Verificado MS Learn]`.", "Verificar el consumo diario en GB frente al **Commitment Tier** contratado y asegurarse de no aproximarse a un *Daily Cap* (usando DCRs con transformaciones `filter`/`split` en lugar de *Daily Cap* para no cegar al SOC) `[Verificado MS Learn]`."], "disparadorAlerta": "Garantizar flujo continuo de logs desde todas las fuentes críticas y prevenir caídas silenciosas o excesos de presupuesto.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-05", "cadencia": "Diaria", "actividad": "Comprobación de conectividad activa de servidores y colectores con Azure Monitor Agent (AMA)", "objetivo": "Detectar y remediar desconexiones de agentes en servidores Windows/Linux y reenviadores Syslog/CEF.", "consolaRuta": "security.microsoft.com > Investigation & response > Hunting > Advanced hunting (Heartbeat)", "procedimiento": ["Ejecutar consulta KQL sobre Heartbeat filtrando Category == 'Azure Monitor Agent' con último latido mayor a 1 hora.", "Priorizar de forma inmediata cualquier Log Forwarder de CEF/Syslog desconectado.", "Coordinar reinicio de servicio (MonAgentCore / azuremonitoragent) o corrección de reglas DCR y red con Cloud/Infra Ops."], "rolResponsable": "Platform Engineer", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-04", "mitreTactic": "Impair Defenses (TA0005 / T1562)", "evidenciaAuditable": "Reporte diario de latidos AMA y tickets de remediación de hosts silenciosos.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tarea diaria oficial Azure Monitor Agent en ops-guide.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide", "pasosDetallados": ["Ejecutar consulta KQL sobre la tabla `Heartbeat` filtrando `Category == 'Azure Monitor Agent'` para detectar equipos cuyo `max(TimeGenerated)` supere 1 hora sin mantenimiento programado `[Verificado MS Learn]`.", "Priorizar crítica e inmediatamente los **Log Forwarders** Linux de CEF/Syslog (cuya caída deja sin visibilidad múltiples firewalls/proxies simultáneamente).", "Diagnosticar estado del servicio (`MonAgentCore.exe` en Windows / `azuremonitoragent` en Linux), asociación DCR y conectividad TLS saliente hacia endpoints de Azure Monitor `[Verificado MS Learn]`."], "disparadorAlerta": "Detectar y remediar desconexiones de agentes en servidores Windows/Linux y reenviadores Syslog/CEF.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-06", "cadencia": "Diaria", "actividad": "Verificación de ejecuciones de Playbooks SOAR y diagnóstico de fallos en Logic Apps", "objetivo": "Confirmar que todas las automatizaciones de enriquecimiento, notificación y contención operen sin errores de permisos ni API.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Automation / portal.azure.com > Logic Apps", "procedimiento": ["Consultar SentinelHealth para recursos Playbook y Automation rule con Status Failure o PartiallySucceeded en las últimas 24 horas.", "Inspeccionar Runs history de cualquier Logic App fallida corrigiendo permisos de Managed Identity, throttling 429 o condiciones sobre AccountName (prefijo UPN).", "Re-ejecutar manualmente los playbooks críticos sobre incidentes afectados del turno."], "rolResponsable": "SOAR Engineer / Platform Engineer", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Initial Access / Lateral Movement (TA0001 / TA0008)", "evidenciaAuditable": "Consulta diaria de SentinelHealth para playbooks e historial Succeeded en Logic Apps.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tarea diaria oficial Playbook failures en ops-guide.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide", "pasosDetallados": ["Consultar la tabla `SentinelHealth` filtrando `SentinelResourceType in ('Automation rule', 'Playbook')` y `Status in ('Failure', 'PartiallySucceeded')` en las últimas 24 horas `[Verificado MS Learn]`.", "Abrir `Runs history` de cualquier Logic App fallida e inspeccionar entradas/salidas del paso con error: `401/403` (permisos faltantes en la Managed Identity), `429` (throttling de API), o errores de comparación sobre `AccountName` (verificar que use `Contains`/`Starts with` sobre el prefijo UPN y `UPNSuffix` tras el cambio de julio de 2026) `[Verificado MS Learn]`.", "Re-ejecutar manualmente los playbooks críticos fallidos sobre los incidentes abiertos del turno tras corregir la causa `[Verificado MS Learn]`."], "disparadorAlerta": "Confirmar que todas las automatizaciones de enriquecimiento, notificación y contención operen sin errores de permisos ni API.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-07", "cadencia": "Diaria", "actividad": "Monitoreo de sincronización de feeds de Threat Intelligence y alertas de coincidencia de IOCs", "objetivo": "Asegurar enriquecimiento actualizado con indicadores globales y sectoriales y priorizar cualquier match positivo.", "consolaRuta": "security.microsoft.com > Threat intelligence > Intel management", "procedimiento": ["Confirmar recepción reciente de feeds TAXII/STIX, MISP y Microsoft Threat Intelligence en ThreatIntelIndicators.", "Priorizar alertas generadas por coincidencia de indicadores de alta confianza sobre red, DNS, identidad o endpoints.", "Incorporar nuevos IOCs validados durante investigaciones del turno hacia Watchlists o bloqueos preventivos."], "rolResponsable": "SOC L2 / Threat Hunter", "funcionNIST": "ID", "subcategoriaNIST": "ID.RA-02", "mitreTactic": "Command and Control (TA0011)", "evidenciaAuditable": "Métricas diarias de ingesta TI y registro de alertas por IOC investigadas.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Capacidad nativa verificada en MS Learn; consolidada como control diario en el Modelo Operativo SecOps.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/threat-intelligence-integration", "pasosDetallados": ["Confirmar sincronización reciente de conectores de inteligencia de amenazas (plataformas TAXII/STIX, ISAC sectoriales, MISP y feeds nativos de Microsoft) y vigencia de entradas en `ThreatIntelIndicators` / `ThreatIntelligenceIndicator` `[Verificado MS Learn]`.", "Revisar alertas generadas por reglas de *TI map* / coincidencia de indicadores contra tráfico de red, DNS, correo e inicios de sesión.", "Retroalimentar IOCs confirmados durante investigaciones del día hacia Watchlists o indicadores personalizados de bloqueo en MDE/firewalls `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Asegurar enriquecimiento actualizado con indicadores globales y sectoriales y priorizar cualquier match positivo.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-08", "cadencia": "Diaria", "actividad": "Control de cumplimiento de SLA de casos activos y entrega estructurada de turno (Shift Handover)", "objetivo": "Impedir brechas de seguimiento entre turnos 24x7 sobre incidentes abiertos, contenciones pendientes y salud del SIEM.", "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts", "procedimiento": ["Auditar al cierre de turno que ningún incidente High o Critical carezca de propietario ni tenga tareas vencidas en Case Management.", "Documentar estado de incidentes en curso, playbooks en observación y reglas de supresión próximas a expirar.", "Entregar acta formal al turno entrante."], "rolResponsable": "SOC L1 / SOC L2", "funcionNIST": "RS", "subcategoriaNIST": "RS.CO-02", "mitreTactic": "Defense Evasion / Exfiltration (TA0005 / TA0010)", "evidenciaAuditable": "Bitácora diaria de cambio de turno firmada por los líderes de guardia.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Disciplina operativa esencial de continuidad SOC sobre Case Management de Defender.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/siem-defender-case-management", "pasosDetallados": ["Auditar incidentes abiertos próximos a vencer SLA, tareas pendientes en **Case management** y reglas temporales de supresión próximas a expirar `[Verificado MS Learn]`.", "Emitir resumen formal de fin de turno detallando: incidentes críticos/altos abiertos, contenciones ejecutadas, conectores/playbooks en observación y campañas de hunting activas `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Impedir brechas de seguimiento entre turnos 24x7 sobre incidentes abiertos, contenciones pendientes y salud del SIEM.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-01", "cadencia": "Semanal", "actividad": "Revisión y actualización de soluciones empaquetadas y contenido en el Content Hub", "objetivo": "Mantener actualizados conectores, reglas analíticas, parsers ASIM, workbooks, hunting queries y playbooks frente a amenazas emergentes.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Content management > Content hub", "procedimiento": ["Filtrar Content hub por Status = Update available y revisar ReleaseNotes.md de cada paquete antes de actualizar.", "Confirmar que toda regla personalizada sea un clon independiente de la plantilla OOTB antes de aplicar actualizaciones.", "Evaluar nuevas soluciones del catálogo (ej. Zero Trust TIC 3.0, soluciones de dominio ASIM, SAP) para el backlog semanal."], "rolResponsable": "Platform Engineer / SOC L3", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-09", "mitreTactic": "Initial Access / Execution (TA0001 / TA0002)", "evidenciaAuditable": "Registro semanal de actualizaciones aplicadas en Content Hub y tickets de cambio asociados.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Primera tarea semanal oficial en ops-guide (Content review of solutions or standalone content).", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide", "pasosDetallados": ["Filtrar el **Content hub** por `Status = Update available`", "revisar el archivo `ReleaseNotes.md` de cada solución antes de actualizar", "aplicar actualizaciones preservando las reglas personalizadas como clones independientes de las plantillas OOTB (evitando sobrescritura accidental)", "y evaluar nuevas soluciones relevantes (ej. *Zero Trust TIC 3.0*, *SAP BTP*, soluciones esenciales basadas en **ASIM**) para incorporarlas al backlog de ingeniería `[Verificado MS Learn]`."], "disparadorAlerta": "Mantener actualizados conectores, reglas analíticas, parsers ASIM, workbooks, hunting queries y playbooks frente a amenazas emergentes.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-02", "cadencia": "Semanal", "actividad": "Auditoría de actividades administrativas y consultas ejecutadas en Microsoft Sentinel", "objetivo": "Detectar cambios o borrados no autorizados en reglas, bookmarks, conectores o automatizaciones y auditar consultas sobre datos sensibles.", "consolaRuta": "security.microsoft.com > Investigation & response > Hunting > Advanced hunting (SentinelAudit / AzureActivity / LAQueryLogs)", "procedimiento": ["Consultar SentinelAudit y AzureActivity para listar creaciones, modificaciones y eliminaciones de recursos en los últimos 7 días.", "Revisar LAQueryLogs para auditar el uso interactivo de consultas sobre tablas sensibles.", "Conciliar cada cambio contra solicitudes aprobadas en Git/ITSM y revertir e investigar cualquier cambio no autorizado."], "rolResponsable": "Platform Engineer / SOC Manager / GRC", "funcionNIST": "GV", "subcategoriaNIST": "GV.PO-02", "mitreTactic": "Impair Defenses (TA0005 / T1562)", "evidenciaAuditable": "Reporte semanal exportado de SentinelAudit y LAQueryLogs conciliado con Change Management.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Segunda tarea semanal oficial en ops-guide (Microsoft Sentinel auditing).", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/audit-sentinel-data", "pasosDetallados": ["Ejecutar consultas de auditoría sobre `SentinelAudit` y `AzureActivity` (`Microsoft.SecurityInsights/*`) listando todas las operaciones `Create`, `Update` y `Delete` de los últimos 7 días", "revisar `LAQueryLogs` para auditar consultas ejecutadas sobre tablas sensibles", "y conciliar cada cambio contra solicitudes aprobadas en el pipeline CI/CD (*Sentinel Repositories*) o ITSM, revirtiendo e investigando cualquier alteración fuera de proceso `[Verificado MS Learn]`."], "disparadorAlerta": "Detectar cambios o borrados no autorizados en reglas, bookmarks, conectores o automatizaciones y auditar consultas sobre datos sensibles.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-03", "cadencia": "Semanal", "actividad": "Evaluación y ejecución de recomendaciones de SOC Optimization (Cobertura y Valor de Datos)", "objetivo": "Cerrar brechas de detección basadas en riesgo y optimizar costos de tablas o columnas sin uso analítico.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Optimization", "procedimiento": ["Revisar recomendaciones activas de cobertura frente a amenazas MITRE ATT&CK y habilitar las reglas sugeridas.", "Analizar recomendaciones de Data value optimization para tablas facturables sin reglas activas en 30 días (activar detecciones o mover la tabla al Data Lake tier) y columnas sin uso en preview.", "Registrar justificación formal antes de descartar cualquier recomendación."], "rolResponsable": "SOC L3 / Platform Engineer", "funcionNIST": "ID", "subcategoriaNIST": "ID.RA-05", "mitreTactic": "Credential Access / Lateral Movement (TA0006 / TA0008)", "evidenciaAuditable": "Exportación semanal de SOC Optimization (UI o API) con historial de recomendaciones mitigadas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Funcionalidad soportada para producción en el portal Defender y vía API; cadencia semanal recomendada.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/soc-optimization/soc-optimization-reference", "pasosDetallados": ["Revisar recomendaciones de **cobertura basada en amenazas y riesgos** vinculadas a tácticas MITRE ATT&CK y activar las detecciones faltantes `[Verificado MS Learn]`.", "Evaluar recomendaciones de **Data value optimization**: para tablas facturables sin uso por reglas analíticas en los últimos 30 días (excepto tablas usadas por UEBA o TI matching), activar plantillas de detección relevantes o migrar la tabla al **Data Lake tier** (vía `Table management`), y revisar recomendaciones en preview de **columnas no utilizadas** (ej. `ConditionalAccessPolicies` en `SignInLogs` / `AADNonInteractiveUserSignInLogs`) verificando antes requisitos de cumplimiento `[Verificado MS Learn]`."], "disparadorAlerta": "Cerrar brechas de detección basadas en riesgo y optimizar costos de tablas o columnas sin uso analítico.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-04", "cadencia": "Semanal", "actividad": "Tuning semanal de reglas con mayor tasa de falsos positivos, mapeo de entidades y migración a ASIM", "objetivo": "Reducir fatiga de alertas, garantizar mapeo completo de entidades para SOAR y consolidar reglas multi-fabricante.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Analytics / Custom detection rules", "procedimiento": ["Identificar las 5 reglas con mayor volumen de cierres FalsePositive o BenignPositive de la semana.", "Ajustar filtros KQL tempranos, exclusiones basadas en Watchlists, agrupación de alertas y mapeo de entidades (Account, Host, IP, CloudApplication).", "Priorizar el uso de parsers ASIM para cubrir nuevas fuentes sin duplicar reglas."], "rolResponsable": "SOC L3 / SOC L2", "funcionNIST": "DE", "subcategoriaNIST": "DE.AE-03", "mitreTactic": "Initial Access / Persistence (TA0001 / TA0003)", "evidenciaAuditable": "Commits de tuning en Sentinel Repositories y reducción verificada de falsos positivos.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Integra prácticas oficiales de tuning, entity mapping y ASIM en un ciclo semanal disciplinado.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/normalization", "pasosDetallados": ["Extraer el Top 5 de reglas con mayor conteo de incidentes cerrados como `False Positive` o `Benign Positive` en la semana", "refinar lógica KQL (aplicar filtros de tiempo y evento al inicio del pipeline, exclusiones mediante **Watchlists** auditadas, ajustar umbrales de agrupación), verificar mapeo completo de entidades (`Account`, `Host`, `IP`, `File`, `CloudApplication`) y migrar reglas específicas de fabricante hacia parsers **ASIM** cuando existan múltiples fuentes equivalentes `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Reducir fatiga de alertas, garantizar mapeo completo de entidades para SOAR y consolidar reglas multi-fabricante.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-05", "cadencia": "Semanal", "actividad": "Actualización de Watchlists contextuales, fuentes UEBA y reglas de supresión con expiración", "objetivo": "Asegurar que el enriquecimiento contextual y las líneas base de comportamiento operen con datos vigentes de activos e identidades.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Watchlists / System > Settings > Microsoft Sentinel > UEBA", "procedimiento": ["Actualizar Watchlists críticas (usuarios VIP, activos crown-jewel, rangos VPN/escáneres, cuentas de emergencia).", "Auditar reglas de automatización de supresión confirmando que todas posean fecha de expiración activa.", "Verificar estado Connected de la sincronización de directorio y fuentes conectadas en la pestaña UEBA."], "rolResponsable": "SOC L2 / Platform Engineer", "funcionNIST": "ID", "subcategoriaNIST": "ID.AM-03", "mitreTactic": "Valid Accounts / Lateral Movement (TA0001 / TA0008)", "evidenciaAuditable": "Marca de actualización de Watchlists y auditoría de Automation Rules activas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Componentes nativos de Watchlists, Automation Rules expiration y UEBA verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/watchlists", "pasosDetallados": ["Actualizar **Watchlists** dinámicas o manuales (activos críticos, servidores de escaneo de vulnerabilidades, subredes VPN, cuentas *break-glass*, usuarios de alto impacto)", "auditar reglas de automatización de supresión confirmando que todas posean **Expiration date** definida", "y verificar estado `Connected` de las fuentes en **UEBA** (incluyendo fuentes XDR conectadas en E5 y nuevas anomalías de firewalls/AWS/GCP incorporadas en 2026) `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar que el enriquecimiento contextual y las líneas base de comportamiento operen con datos vigentes de activos e identidades.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-06", "cadencia": "Semanal", "actividad": "Reunión semanal de control operacional del SOC sobre KPIs (MTTA, MTTC/MTTR y SLA)", "objetivo": "Evaluar objetivamente el rendimiento semanal del equipo, desvíos de SLA y priorización de mejoras técnicas.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Threat management > Workbooks > Security operations efficiency", "procedimiento": ["Revisar en el workbook Security operations efficiency el MTTA, MTTC/MTTR por severidad, incidentes abiertos vs. cerrados y distribución por analista.", "Analizar causas de cualquier incidente que haya excedido el SLA interno.", "Priorizar el backlog semanal entre Detection Engineering, Platform Engineering y SOAR."], "rolResponsable": "SOC Manager / SOC Leads", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-03", "mitreTactic": "Exfiltration / Impact (TA0010 / TA0040)", "evidenciaAuditable": "Exportación semanal del workbook de métricas y acta de seguimiento operativo.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Basado en Manage your SOC better with incident metrics y el Modelo Operativo SecOps.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/manage-soc-with-incident-metrics", "pasosDetallados": ["Analizar en el workbook oficial **Security operations efficiency** el MTTA, MTTC/MTTR por severidad, distribución de cierres (TP/BP/FP), carga por analista e incidentes mayores de la semana", "asignar acciones correctivas con responsable y fecha para todo desvío de SLA `[Verificado MS Learn]`."], "disparadorAlerta": "Evaluar objetivamente el rendimiento semanal del equipo, desvíos de SLA y priorización de mejoras técnicas.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-01", "cadencia": "Mensual", "actividad": "Revisión mensual de permisos de usuarios, cuentas inactivas y roles RBAC / Unified RBAC", "objetivo": "Aplicar mínimo privilegio revocando accesos ociosos o excesivos en el workspace, Resource Groups de playbooks y Data Lake.", "consolaRuta": "portal.azure.com > Sentinel Resource Group > Access control (IAM) / security.microsoft.com > Permissions > Microsoft Defender XDR > Roles", "procedimiento": ["Listar todas las asignaciones Azure RBAC (Reader, Responder, Contributor, Playbook Operator, Owner) y Entra ID / Defender URBAC sobre el Data Lake.", "Identificar usuarios sin actividad en 30 días o rotados fuera del SOC cruzando con LAQueryLogs y SigninLogs.", "Revocar permisos innecesarios, convertir roles permanentes de escritura a elegibles en PIM y registrar evidencia para auditoría."], "rolResponsable": "Platform Engineer / IAM Admin / SOC Manager", "funcionNIST": "PR", "subcategoriaNIST": "PR.AA-05", "mitreTactic": "Valid Accounts / Account Manipulation (TA0001 / TA0003)", "evidenciaAuditable": "Exportación mensual de roles revisada, revocaciones ejecutadas y acta firmada de recertificación.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Primera tarea mensual oficial en ops-guide (Review user access).", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide", "pasosDetallados": ["Exportar todas las asignaciones de roles en el Resource Group de Sentinel y de Playbooks (`Sentinel Reader`, `Responder`, `Contributor`, `Playbook Operator`, `Logic App Contributor`, `Owner`) recordando que los roles son acumulativos `[Verificado MS Learn]`.", "Cruzar con `LAQueryLogs` y registros de inicio de sesión para detectar analistas inactivos (>30 días), bajas/rotaciones del SOC o cuentas con permisos permanentes de escritura que deben pasar a elegibles en **PIM** `[Verificado MS Learn]`.", "Auditar los permisos de las **Managed Identities** de los playbooks y el alcance del rol `Microsoft Sentinel Automation Contributor`, revocando todo exceso y archivando evidencia firmada `[Verificado MS Learn]`."], "disparadorAlerta": "Aplicar mínimo privilegio revocando accesos ociosos o excesivos en el workspace, Resource Groups de playbooks y Data Lake.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-02", "cadencia": "Mensual", "actividad": "Revisión mensual de retención del workspace y clasificación de tablas entre Analytics y Data Lake", "objetivo": "Asegurar cumplimiento regulatorio de retención histórica optimizando el almacenamiento entre el nivel interactivo y el lago.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration / Data management > Tables", "procedimiento": ["Validar que la retención interactiva en Analytics tier (90 días incluidos) y la retención total en Sentinel Data Lake (hasta 12 años) cumplan la política corporativa y regulatoria.", "Reubicar tablas de datos secundarios de alto volumen hacia Lake-only tier o configurar transformaciones DCR filter/split.", "Verificar KQL jobs o Summary rules que promuevan agregados desde el Data Lake hacia Analytics."], "rolResponsable": "Platform Engineer / GRC", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-04", "mitreTactic": "Defense Evasion / Indicator Removal (TA0005 / T1070)", "evidenciaAuditable": "Inventario exportado de tablas con plan de almacenamiento y días de retención validados por GRC.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Segunda tarea mensual oficial en ops-guide actualizada a Table management y Sentinel Data Lake integrado (sep-2026).", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/log-plans", "pasosDetallados": ["Auditar la configuración de retención en **Analytics tier** (90 días incluidos sin cargo adicional) y **Total retention** en el **Data Lake tier** (hasta 12 años) frente a la matriz regulatoria aplicable (PCI-DSS, ISO 27001, SOX, normativas bancarias o de protección de datos locales) `[Verificado MS Learn]`.", "Identificar tablas verbosas de datos secundarios que se estén ingiriendo innecesariamente en Analytics y cambiarlas a **Lake-only tier** o implementar reglas **DCR con `filter` y `split`** para enviar solo eventos de alto valor a Analytics y el resto al lago `[Verificado MS Learn]`.", "Diseñar **KQL jobs** o *Summary rules* sobre el Data Lake cuando se requiera agregar indicadores históricos hacia tablas ligeras en Analytics `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar cumplimiento regulatorio de retención histórica optimizando el almacenamiento entre el nivel interactivo y el lago.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-03", "cadencia": "Mensual", "actividad": "Conciliación FinOps de Commitment Tiers, Data Grant M365 E5 (5 MB/usuario/día) y medidores del Data Lake", "objetivo": "Verificar la captura íntegra de beneficios incluidos por licencias M365 E5/Defender for Servers P2 y ajustar el tier comprometido.", "consolaRuta": "portal.azure.com > Cost Management + Billing > Cost analysis / System > Settings > Microsoft Sentinel > Pricing", "procedimiento": ["Auditar en Cost analysis los medidores Free Benefit - M365 Defender confirmando el descuento automático de hasta 5 MB/usuario/día sobre fuentes elegibles.", "Comparar el volumen diario real de 30 días contra el Simplified Commitment Tier activo para ajustar capacidad hacia arriba o abajo (cada 31 días).", "Revisar costos de consultas sobre Data Lake, cómputo Spark/Graph, Logic Apps y consumo de SCUs frente a la dotación E5."], "rolResponsable": "Platform Engineer / FinOps / SOC Manager", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-01", "mitreTactic": "Impact (TA0040)", "evidenciaAuditable": "Reporte mensual FinOps con GB bonificados por M365 E5, GB facturados y optimización aplicada.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Basado en la documentación oficial de facturación de Sentinel y oferta de beneficio M365 E5.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/billing", "pasosDetallados": ["Agrupar costos en **Cost analysis** por `Meter` verificando la aplicación efectiva de los medidores sin cargo (`Free Benefit - M365 Defender Analysis` / `Data Ingestion` de hasta 5 MB/usuario/día y beneficio Defender for Servers P2 de 500 MB/nodo/día) `[Verificado MS Learn]`.", "Analizar el volumen diario real de los últimos 30 días en la tabla `Usage` para recalibrar hacia arriba o hacia abajo (permitido cada 31 días) el **Simplified Commitment Tier** (100 GB/día, 200 GB/día, 500 GB/día, 1 TB+) cuando el ahorro supere la tarifa PAYG `[Verificado MS Learn]`.", "Auditar el consumo mensual de consultas KQL sobre Data Lake, horas de vCore Spark/Graph, ejecuciones de Azure Logic Apps y consumo de **SCUs** (Security Copilot / MCP Entity Analyzer frente a la dotación incluida en M365 E5) `[Verificado MS Learn]`."], "disparadorAlerta": "Verificar la captura íntegra de beneficios incluidos por licencias M365 E5/Defender for Servers P2 y ajustar el tier comprometido.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-04", "cadencia": "Mensual", "actividad": "Auditoría de contenido como código en Sentinel Repositories (Bicep/ARM) y eficiencia de consultas KQL", "objetivo": "Garantizar respaldo versionado del 100 % de detecciones y automatizaciones y eliminar consultas ineficientes.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Content management > Repositories", "procedimiento": ["Confirmar sincronización exitosa de reglas analíticas, Custom Detection Rules (Bicep), Automation Rules (JSON/ARM), workbooks y playbooks en GitHub / Azure DevOps.", "Detectar reglas creadas manualmente en portal fuera del repositorio e incorporarlas al pipeline CI/CD.", "Optimizar reglas con tiempos elevados de ejecución reportados en SentinelHealth."], "rolResponsable": "SOC L3 / Platform Engineer", "funcionNIST": "RC", "subcategoriaNIST": "RC.RP-01", "mitreTactic": "Impair Defenses (TA0005)", "evidenciaAuditable": "Historial de despliegues CI/CD en Repositories sin desviación respecto al entorno productivo.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Soporte de Repositories e incorporación de Custom Detection Rules as Code (jul-2026) verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/whats-new", "pasosDetallados": ["Sincronizar y auditar que el 100 % de las reglas analíticas personalizadas, **Custom detection rules** (soportadas como código en Bicep en preview desde julio de 2026), Automation Rules (exportables en JSON/ARM) y playbooks estén respaldados en GitHub o Azure DevOps", "revisar tiempos de ejecución y carga de consultas programadas optimizando joins y operadores costosos `[Verificado MS Learn]`."], "disparadorAlerta": "Garantizar respaldo versionado del 100 % de detecciones y automatizaciones y eliminar consultas ineficientes.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-05", "cadencia": "Mensual", "actividad": "Prueba controlada mensual de Playbooks SOAR críticos y validación de Managed Identities", "objetivo": "Asegurar que las acciones automatizadas de contención funcionen de extremo a extremo ante un incidente real.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Automation", "procedimiento": ["Ejecutar incidente sintético de prueba sobre cuentas/equipos de laboratorio para validar cada playbook crítico (bloqueo Entra ID, aislamiento MDE, bloqueo IP, ticket ITSM).", "Comprobar orden secuencial de Automation Rules y ausencia de secretos expirables verificando uso exclusivo de Managed Identity.", "Documentar latencia de respuesta y tasa mensual de éxito."], "rolResponsable": "SOAR Engineer / SOC L2", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Lateral Movement / Exfiltration (TA0008 / TA0010)", "evidenciaAuditable": "Acta mensual de prueba sintética SOAR e historial Succeeded en Logic Apps.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Arquitectura de autenticación con Managed Identity verificada en MS Learn; prueba mensual sintética es propuesta editorial.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/automation/authenticate-playbooks-to-sentinel", "pasosDetallados": ["Disparar un incidente sintético de prueba para cada familia crítica de playbooks", "verificar orden secuencial de ejecución de las Automation Rules (considerando la ventana de 2 minutos para avance entre acciones cuando un playbook tarda más), confirmar éxito de autenticación por **Managed Identity** y comprobar el registro de evidencia en el sistema destino `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar que las acciones automatizadas de contención funcionen de extremo a extremo ante un incidente real.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-06", "cadencia": "Mensual", "actividad": "Presentación ejecutiva mensual de desempeño SOC, postura de detección y ROI al CISO", "objetivo": "Proveer visibilidad estratégica sobre tiempos de respuesta, cobertura de amenazas, automatización y eficiencia financiera.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Threat management > Workbooks", "procedimiento": ["Consolidar tendencias de 30 y 90 días de MTTA, MTTC/MTTR (promedio y P95), FPR y tasa de incidentes automatizados.", "Incluir progreso en cobertura MITRE ATT&CK, cierre de brechas de SOC Optimization y ahorro mensual por M365 E5 Data Grant + Data Lake.", "Revisar riesgos residuales y decisiones de inversión con el CISO."], "rolResponsable": "SOC Manager / CISO", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-03", "mitreTactic": "Initial Access / Impact (TA0001 / TA0040)", "evidenciaAuditable": "Informe mensual ejecutivo archivado y minuta del comité de dirección.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Basado en métricas oficiales de Sentinel y gobernanza ejecutiva del SOC.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/manage-soc-with-incident-metrics", "pasosDetallados": ["Consolidar tendencias de 30 y 90 días de MTTA, MTTC/MTTR (promedio y P95), FPR y tasa de incidentes automatizados.", "Incluir progreso en cobertura MITRE ATT&CK, cierre de brechas de SOC Optimization y ahorro mensual por M365 E5 Data Grant + Data Lake.", "Revisar riesgos residuales y decisiones de inversión con el CISO."], "disparadorAlerta": "Proveer visibilidad estratégica sobre tiempos de respuesta, cobertura de amenazas, automatización y eficiencia financiera.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-01", "cadencia": "Trimestral", "actividad": "Simulacro técnico Purple Team / Tabletop de ataque multi-dominio sobre SIEM + XDR", "objetivo": "Validar empíricamente la detección, correlación, playbooks de contención y coordinación inter-equipos.", "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts / MITRE ATT&CK", "procedimiento": ["Ejecutar escenario realista trimestral (ransomware humano, robo de token privilegiado, abuso de Service Principal o exfiltración multicloud).", "Evaluar visibilidad de logs, correlación del incidente, disparo de playbooks y criterios de erradicación clean-as-you-go vs. big-bang.", "Convertir cada brecha detectada en nuevas reglas analíticas/custom detections y mejoras de runbooks."], "rolResponsable": "SOC Manager / Threat Hunter / SOC L3 / GRC", "funcionNIST": "ID", "subcategoriaNIST": "ID.IM-02", "mitreTactic": "Credential Access / Lateral Movement / Impact (TA0006 / TA0008 / TA0040)", "evidenciaAuditable": "Informe trimestral de ejercicio Purple Team / Tabletop y registro de cierre de hallazgos.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Recomendado en Incident Response Overview y guías Zero Trust SIEM-XDR de Microsoft.", "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/incident-response-overview", "pasosDetallados": ["Ejecutar trimestralmente una simulación técnica o ejercicio de mesa (ransomware humano, compromiso de identidad híbrida/federada, abuso de workload identity o ataque sobre SAP/multicloud)", "verificar qué etapas generaron alertas, cómo agrupó el incidente el motor de correlación de Defender XDR, si los playbooks aislaron activos en tiempo y actualizar detecciones y runbooks con las brechas identificadas `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Validar empíricamente la detección, correlación, playbooks de contención y coordinación inter-equipos.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-02", "cadencia": "Trimestral", "actividad": "Auditoría de transición integral al portal de Microsoft Defender (Hito 31-mar-2027) y retiro de APIs heredadas", "objetivo": "Eliminar toda dependencia operativa del portal de Azure antes del fin de soporte y asegurar vigencia técnica de integraciones.", "consolaRuta": "security.microsoft.com > System > Settings > Microsoft Sentinel", "procedimiento": ["Confirmar incorporación de todos los workspaces al portal de Defender y actualizar enlaces en playbooks, notificaciones e instructivos.", "Verificar que no existan flujos dependientes de la retirada HTTP Data Collector API (post 14-sep-2026) ni de APIs Graph heredadas (/security/alerts).", "Validar modelo de permisos Unified RBAC y integraciones de Data Lake / Fabric."], "rolResponsable": "Platform Engineer / SOC Manager", "funcionNIST": "GV", "subcategoriaNIST": "GV.PO-02", "mitreTactic": "Defense Evasion (TA0005)", "evidenciaAuditable": "Checklist trimestral firmado de modernización y preparación para el corte del 31 de marzo de 2027.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Fecha oficial de fin de soporte en Azure Portal: después del 31 de marzo de 2027.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal", "pasosDetallados": ["Confirmar incorporación de todos los workspaces al portal de Defender y actualizar enlaces en playbooks, notificaciones e instructivos.", "Verificar que no existan flujos dependientes de la retirada HTTP Data Collector API (post 14-sep-2026) ni de APIs Graph heredadas (/security/alerts).", "Validar modelo de permisos Unified RBAC y integraciones de Data Lake / Fabric."], "disparadorAlerta": "Eliminar toda dependencia operativa del portal de Azure antes del fin de soporte y asegurar vigencia técnica de integraciones.", "tipoAccion": "Periódica Programada"}, {"codigo": "SM-01", "cadencia": "Semestral", "actividad": "Análisis semestral de cobertura real vs. simulada en la matriz MITRE ATT&CK v18", "objetivo": "Priorizar el desarrollo semestral de nuevas detecciones y conectores cerrando brechas en tácticas adversarias críticas.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Threat management > MITRE ATT&CK", "procedimiento": ["Comparar cobertura activa actual (Scheduled, NRT y Custom Detections) frente a la cobertura simulada disponible en Content Hub y plantillas.", "Cruzar brechas con el perfil de amenaza de la industria y hallazgos de SOC Optimization.", "Aprobar plan semestral de ingeniería de detección con metas medibles."], "rolResponsable": "Threat Hunter / SOC L3", "funcionNIST": "ID", "subcategoriaNIST": "ID.RA-05", "mitreTactic": "Initial Access / Persistence / Exfiltration (TA0001 / TA0003 / TA0010)", "evidenciaAuditable": "Exportación semestral de cobertura MITRE ATT&CK y roadmap aprobado de nuevas reglas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Alineación nativa de Sentinel a MITRE ATT&CK v18 verificada en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/mitre-coverage", "pasosDetallados": ["Inspeccionar la matriz nativa **MITRE ATT&CK (alineada a v18)** comparando la cobertura activa actual (reglas Scheduled, NRT y Custom Detections) frente a la **cobertura simulada** disponible en plantillas, soluciones del Content Hub y consultas de hunting", "priorizar las técnicas críticas del perfil de amenaza sectorial sin cobertura y convertirlas en backlog comprometido del semestre `[Verificado MS Learn]`."], "disparadorAlerta": "Priorizar el desarrollo semestral de nuevas detecciones y conectores cerrando brechas en tácticas adversarias críticas.", "tipoAccion": "Periódica Programada"}, {"codigo": "A-01", "cadencia": "Anual", "actividad": "Autoevaluación anual de madurez NIST CSF 2.0, simulacro BCDR del SIEM y revisión arquitectónica Zero Trust", "objetivo": "Evaluar integralmente el programa SecOps, certificar la resiliencia ante desastres del SIEM y definir la arquitectura anual.", "consolaRuta": "security.microsoft.com / Repositorio IaC GitHub o Azure DevOps", "procedimiento": ["Ejecutar la autoevaluación anual estructurada en las 6 funciones de NIST CSF 2.0 registrando brechas en el Risk Register corporativo.", "Probar el plan BCDR de Microsoft Sentinel validando restauración como código de reglas, playbooks y conectores y residencia geográfica de datos.", "Revisar estrategia multicloud, federación con Microsoft Fabric OneLake y gobierno de capacidades agénticas (Security Copilot / MCP)."], "rolResponsable": "CISO / GRC / Cloud Security Architect / SOC Manager", "funcionNIST": "GV", "subcategoriaNIST": "GV.OV-01", "mitreTactic": "Initial Access / Impact (TA0001 / TA0040)", "evidenciaAuditable": "Informe anual de madurez NIST CSF 2.0, acta de simulacro BCDR y arquitectura SecOps aprobada.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Basado en Integrate NIST CSF 2.0 governance y BCDR recommendations for Microsoft Sentinel.", "urlSoporte": "https://learn.microsoft.com/en-us/security/zero-trust/sfi/integrate-nist-2-governance", "pasosDetallados": ["Ejecutar la autoevaluación anual recomendada por Microsoft (`integrate-nist-2-governance`) registrando brechas en el *Risk Register* corporativo y recopilando el paquete de evidencia anual reproducible por KQL `[Verificado MS Learn]`.", "Validar el plan oficial de **Business Continuity and Disaster Recovery (BCDR)** de Sentinel: respaldo íntegro como código (Bicep/ARM) de reglas, workbooks, watchlists y playbooks, residencia de datos y simulacro de contingencia regional `[Verificado MS Learn]`.", "Revisar arquitectura de workspaces, espejo/federación con **Microsoft Fabric OneLake** y gobernanza de agentes IA / servidor MCP para el siguiente ejercicio fiscal `[Verificado MS Learn]`."], "disparadorAlerta": "Evaluar integralmente el programa SecOps, certificar la resiliencia ante desastres del SIEM y definir la arquitectura anual.", "tipoAccion": "Periódica Programada"}, {"codigo": "AH-01", "cadencia": "Ad-Hoc", "actividad": "Playbook mayor de contención y erradicación ante campaña de Ransomware Humano multi-dominio", "objetivo": "Frenar el movimiento lateral y el cifrado masivo coordinando Automatic Attack Disruption, playbooks SOAR y caza histórica.", "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts / Action center", "procedimiento": ["Validar activos ya contenidos por Automatic Attack Disruption y disparar playbooks para aislar hosts en MDE, deshabilitar identidades en Entra ID y bloquear IPs C2.", "Definir con el Incident Commander estrategia clean-as-you-go o erradicación simultánea big-bang según alcance de persistencia del actor.", "Cazar retrospectivamente en el Sentinel Data Lake para determinar paciente cero y validar limpieza total antes de restaurar servicios."], "rolResponsable": "SOC L2 / SOC L3 / Incident Commander", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Lateral Movement / Impact (TA0008 / TA0040 - T1486)", "evidenciaAuditable": "Expediente completo en Case Management, logs de ejecución SOAR y autorización formal de retorno a operación.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Alineado a Incident Response Overview y capacidades unificadas SIEM + XDR de Microsoft.", "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/incident-response-overview", "pasosDetallados": ["**Verificación de contención automática (<5 min):** Confirmar en el incidente y en `Action center` qué hosts y cuentas ya fueron contenidos automáticamente por *Attack Disruption* o por Automation Rules de severidad Crítica.", "**Contención ampliada por playbooks:** Ejecutar playbooks con Managed Identity para aislar de red en MDE todos los endpoints alcanzados en el *Blast radius*, deshabilitar cuentas comprometidas/revocar sesiones en Entra ID y bloquear IPs/dominios C2 en firewalls perimetrales y NSGs `[Verificado MS Learn]`.", "**Decisión táctica de erradicación:** Determinar junto al Incident Commander y SOC L3 si aplica contención *\"clean as you go\"* (intrusión acotada) o erradicación coordinada *\"big bang\"* (cuando el adversario posee persistencia amplia en identidad híbrida/administradores) para no alertar prematuramente al actor antes de cerrar todos sus vectores `[Verificado MS Learn]`.", "**Caza histórica en Data Lake:** Ejecutar búsqueda sobre el **Sentinel Data Lake** (meses previos) para ubicar el paciente cero, fecha real de intrusión inicial y alcance completo antes de autorizar restauración."], "disparadorAlerta": "Incidente crítico multi-etapa (acceso inicial + robo de credenciales + movimiento lateral + evasión defensiva / precifrado `T1486`) o activación de *Automatic Attack Disruption*.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-02", "cadencia": "Ad-Hoc", "actividad": "Playbook de respuesta ante compromiso crítico de identidad híbrida, administrador o Service Principal", "objetivo": "Revocar acceso activo, erradicar mecanismos de persistencia en Entra ID / Azure y auditar acciones ejecutadas.", "consolaRuta": "security.microsoft.com > Incidents & alerts / Assets > Identities / entra.microsoft.com", "procedimiento": ["Ejecutar playbook de contención de identidad: bloqueo de cuenta/SPN, revocación de refresh tokens y limpieza de métodos MFA fraudulentos.", "Correlacionar SigninLogs, AADServicePrincipalSignInLogs, AuditLogs, CloudAppEvents y AzureActivity para detectar backdoors OAuth o cambios RBAC.", "Restablecer acceso únicamente con credenciales limpias y MFA resistente a phishing tras auditar el grafo de entidades."], "rolResponsable": "SOC L2 / IAM Admin / SOC L3", "funcionNIST": "RS", "subcategoriaNIST": "RS.AN-03", "mitreTactic": "Credential Access / Persistence / Privilege Escalation (TA0006 / TA0003 / TA0004)", "evidenciaAuditable": "Trazas de contención en AuditLogs, ejecuciones de Logic Apps y línea de tiempo forense completa.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Integra respuesta unificada identidad + SIEM documentada en Microsoft Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/siem-xdr-overview", "pasosDetallados": ["Ejecutar playbook de contención de identidad: deshabilitar usuario o Service Principal, revocar todos los *refresh tokens*, invalidar métodos MFA añadidos fraudulentamente y bloquear IPs origen.", "Pivotar en `Advanced hunting` correlacionando `SigninLogs` / `EntraIdSignInEvents`, `AADServicePrincipalSignInLogs`, `AuditLogs`, `CloudAppEvents` y `AzureActivity` para auditar persistencia (nuevas apps OAuth, secretos añadidos, asignaciones RBAC en suscripciones Azure o reglas de buzón).", "Verificar impacto cruzado mediante el grafo de entidades y *Entity Analyzer* antes de restablecer acceso sobre estación limpia con MFA resistente a phishing."], "disparadorAlerta": "Incidente de robo de sesión AiTM sobre administrador, abuso de Service Principal / credenciales federadas, *Golden SAML* o anomalía crítica UEBA.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-03", "cadencia": "Ad-Hoc", "actividad": "Campaña de caza de emergencia (Emergency Hunt) y retro-búsqueda en Data Lake ante Zero-Day / CVE crítico", "objetivo": "Determinar rápidamente si un actor explotó una vulnerabilidad recién divulgada utilizando meses de historia en el lago.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Threat management > Hunts / Advanced hunting", "procedimiento": ["Cargar nuevos IOCs en ThreatIntelIndicators y abrir una campaña estructurada en Hunts.", "Ejecutar consultas KQL normalizadas con ASIM tanto en Analytics tier (90d) como en Sentinel Data Lake (hasta 12 meses+).", "Promover cualquier Bookmark positivo a incidente crítico y desplegar Custom Detection Rule (NRT/programada) para vigilancia continua."], "rolResponsable": "Threat Hunter / SOC L3", "funcionNIST": "DE", "subcategoriaNIST": "DE.AE-07", "mitreTactic": "Initial Access / Execution / Command and Control (TA0001 / TA0002 / TA0011)", "evidenciaAuditable": "Campaña cerrada en Hunts, resultados de búsqueda sobre el Data Lake y nueva regla desplegada.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Uso combinado de Hunts, ASIM y consultas interactivas sobre el Data Lake en Advanced Hunting.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/hunts", "pasosDetallados": ["Ingerir inmediatamente los IOCs (hashes, IPs, dominios, patrones de URL/User-Agent) en `ThreatIntelIndicators` o una Watchlist de emergencia.", "Abrir una campaña en **Hunts** ejecutando consultas KQL tanto sobre el **Analytics tier** (últimos 90 días) como sobre el **Data Lake tier** (hasta 12 meses+) usando esquemas normalizados **ASIM** (`imNetworkSession`, `imDns`, `imWebSession`, `imProcessCreate`) para barrer todas las tecnologías conectadas en una sola consulta `[Verificado MS Learn]`.", "Si se confirma actividad benigna, desplegar una **Custom detection rule (NRT o programada)** preventiva; si se hallan coincidencias positivas, promover Bookmarks a incidente crítico e iniciar contención AH-01/AH-02."], "disparadorAlerta": "Publicación urgente de explotación activa (MSRC, CISA KEV, Microsoft Threat Intelligence) con nuevos IOCs o TTPs.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-04", "cadencia": "Ad-Hoc", "actividad": "Contingencia ante interrupción de ingesta crítica o anomalía aguda de volumen/facturación", "objetivo": "Restaurar visibilidad de seguridad en minutos o contener tormentas de logs ruidosos mediante DCR sin cegar el SIEM.", "consolaRuta": "security.microsoft.com > Microsoft Sentinel > Configuration > Data connectors / portal.azure.com > Data Collection Rules", "procedimiento": ["Ante caída de ingesta: validar Service Health, diagnosticar causa exacta en SentinelHealth, restablecer credenciales/reenviadores AMA y registrar la ventana afectada.", "Ante tormenta de logs/costos: identificar tabla y fuente emisora en Usage / CommonSecurityLog y aplicar filtro o split inmediato en la DCR hacia Data Lake.", "Evitar depender de un Daily Cap abrupto que detenga toda la ingesta de seguridad del workspace."], "rolResponsable": "Platform Engineer / Cloud Ops", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-04", "mitreTactic": "Impair Defenses (TA0005)", "evidenciaAuditable": "Diagnóstico en SentinelHealth/Usage, modificación controlada de DCR y registro para auditoría.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Basado en monitor-data-connector-health y recomendaciones oficiales sobre Daily Cap y DCR transformations.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/monitor-data-connector-health", "pasosDetallados": ["**Ante caída de ingesta:** Verificar primero `Azure Service Health` / `M365 Service Health`; inspeccionar `SentinelHealth` para aislar si el fallo es de credenciales expiradas, cambio de red en firewall, saturación de un reenviador AMA Syslog/CEF o migración incompleta de conectores legacy; restablecer el conector y documentar la ventana exacta de brecha de visibilidad para auditoría.", "**Ante pico de volumen/costo:** Ejecutar consulta sobre tabla `Usage` y tablas top (`CommonSecurityLog`, `SecurityEvent`, `Syslog`, `AzureDiagnostics`) identificando el host, EventID o extensión CEF (`AdditionalExtensions`) causante del bucle de logs; aplicar transformación `filter` inmediata en la **DCR** o redirigir temporalmente el flujo secundario al **Data Lake tier** sin apagar la visibilidad de seguridad ni activar un *Daily Cap* ciego `[Verificado MS Learn]`."], "disparadorAlerta": "Alerta interna sobre `SentinelHealth` / caída abrupta de EPS en conectores críticos o alerta presupuestaria en Azure Cost Management por pico inesperado de GB/día.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-05", "cadencia": "Ad-Hoc", "actividad": "Análisis Post-Incidente (Post-Mortem) y cierre trazable de mejoras de detección y SOAR", "objetivo": "Convertir cada incidente grave en reducción permanente de riesgo mediante nuevas detecciones, playbooks y telemetría.", "consolaRuta": "security.microsoft.com > Incidents & alerts / Microsoft Sentinel > Optimization", "procedimiento": ["Reconstruir cronología exacta y métricas MTTA/MTTC/MTTR desde SecurityIncident y Case Management.", "Documentar causa raíz y brechas en visibilidad de logs, cobertura MITRE ATT&CK y tiempos de respuesta manual.", "Desplegar en Sentinel Repositories las nuevas reglas, Watchlists y ajustes de playbooks derivados, verificando su cierre."], "rolResponsable": "SOC Manager / SOC L3 / GRC", "funcionNIST": "RC", "subcategoriaNIST": "RC.RP-06", "mitreTactic": "Exfiltration / Impact (TA0010 / TA0040)", "evidenciaAuditable": "Informe formal Post-Mortem vinculado al incidente y commits de mejoras implementadas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Fase post-incidente documentada en Incident Response Overview y ciclo de mejora NIST CSF 2.0.", "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/incident-response-overview", "pasosDetallados": ["Extraer la cronología íntegra del caso desde `SecurityIncident`, `SecurityAlert` y comentarios del expediente, calculando MTTA, MTTC y MTTR reales frente al objetivo interno.", "Identificar brechas en tres ejes: visibilidad de logs (fuente faltante o mal ubicada de tier), lógica de detección (técnica MITRE no cubierta) y automatización (paso manual repetitivo automatizable con playbook).", "Crear y rastrear hasta su cierre las acciones correctivas en Git/ITSM: nueva regla analítica/custom detection, actualización de Watchlist, ajuste de playbook y actualización del runbook operativo."], "disparadorAlerta": "Cierre de cualquier incidente de severidad Crítica o Alta, o incidente con impacto regulatorio/operacional.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}], "consultasKQLyVerificacion": [{"nombre": "Diagnóstico unificado de fallos en reglas, conectores y playbooks (SentinelHealth)", "plataforma": "Microsoft Sentinel / Defender Portal Advanced Hunting", "tablaPrincipal": "SentinelHealth", "consulta": "SentinelHealth | where TimeGenerated > ago(24h) and Status in ('Failure', 'PartiallySucceeded') | summarize Fallos24h = count(), UltimoFalloUTC = max(TimeGenerated), Motivos = make_set(Reason, 5) by SentinelResourceType, SentinelResourceName, OperationName | order by Fallos24h desc, UltimoFalloUTC desc", "proposito": "Detectar de forma inmediata reglas AUTO DISABLED, caídas de conectores de datos y ejecuciones fallidas de playbooks o automation rules.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Control Periódico de Salud, Auditoría y KPIs"}, {"nombre": "Detección de agentes AMA y colectores CEF/Syslog sin latido reciente", "plataforma": "Microsoft Sentinel / Log Analytics", "tablaPrincipal": "Heartbeat", "consulta": "Heartbeat | where TimeGenerated > ago(24h) and Category == 'Azure Monitor Agent' | summarize UltimoLatidoUTC = max(TimeGenerated), OS = any(OSType) by Computer, _ResourceId | where UltimoLatidoUTC < ago(1h) | extend MinutosDesconectado = datetime_diff('minute', now(), UltimoLatidoUTC) | order by MinutosDesconectado desc", "proposito": "Identificar servidores y Log Forwarders desconectados del workspace para restaurar visibilidad.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Control Periódico de Salud, Auditoría y KPIs"}, {"nombre": "Cálculo ejecutivo de MTTA, MTTC/MTTR (Promedio, P50, P95) y tasa de falsos positivos", "plataforma": "Microsoft Sentinel / Defender Portal Advanced Hunting", "tablaPrincipal": "SecurityIncident", "consulta": "SecurityIncident | where TimeGenerated > ago(30d) | summarize arg_max(TimeGenerated, *) by IncidentNumber | extend MinutosTriaje = iff(isnotnull(FirstModifiedTime), datetime_diff('minute', FirstModifiedTime, CreatedTime), real(null)), HorasCierre = iff(Status == 'Closed' and isnotnull(ClosedTime), datetime_diff('minute', ClosedTime, CreatedTime) / 60.0, real(null)) | summarize Total = count(), Cerrados = countif(Status == 'Closed'), MTTA_Min = round(avg(MinutosTriaje), 1), MTTC_Horas = round(avg(HorasCierre), 2), P95_Horas = round(percentile(HorasCierre, 95), 2), FP = countif(Classification == 'FalsePositive') by Severity | extend FPR_Pct = round(todouble(FP) * 100.0 / iff(Cerrados == 0, 1, Cerrados), 1)", "proposito": "Generar evidencia reproducible de KPIs operativos del SOC para comités ejecutivos y auditorías NIST CSF 2.0.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Control Periódico de Salud, Auditoría y KPIs"}, {"nombre": "Auditoría FinOps de volumen ingerido por tabla facturable vs. gratuita (30 días)", "plataforma": "Microsoft Sentinel / Log Analytics", "tablaPrincipal": "Usage", "consulta": "Usage | where TimeGenerated > ago(30d) | summarize TotalGB_30d = round(sum(Quantity) / 1024.0, 2), PromedioDiario_GB = round(sum(Quantity) / 1024.0 / 30.0, 2) by DataType, IsBillable | order by TotalGB_30d desc", "proposito": "Dimensionar Commitment Tiers, auditar fuentes gratuitas y detectar tablas candidatas a migrar al Sentinel Data Lake.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Control Periódico de Salud, Auditoría y KPIs"}, {"nombre": "Auditoría de gobernanza de cambios sobre reglas analíticas y reglas de automatización", "plataforma": "Microsoft Sentinel / Defender Portal Advanced Hunting", "tablaPrincipal": "SentinelAudit", "consulta": "SentinelAudit | where TimeGenerated > ago(7d) and SentinelResourceType in ('Analytics Rule', 'Automation rule') | project TimeGenerated, OperationName, SentinelResourceType, SentinelResourceName, Status, Description, ExtendedProperties | order by TimeGenerated desc", "proposito": "Demostrar trazabilidad completa de quién creó, editó o eliminó lógica de detección o respuesta en el SIEM.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Detección multi-fuente normalizada con ASIM de fuerza bruta seguida de éxito", "plataforma": "Microsoft Sentinel", "tablaPrincipal": "_Im_Authentication (ASIM Authentication Schema)", "consulta": "_Im_Authentication(starttime=ago(2h), endtime=now()) | summarize IntentosFallidos = countif(EventResult == 'Failure'), IniciosExitosos = countif(EventResult == 'Success'), Fuentes = make_set(EventProduct, 5), PrimerFallo = min(TimeGenerated), UltimoExito = maxif(TimeGenerated, EventResult == 'Success') by TargetUsername, SrcIpAddr | where IntentosFallidos >= 15 and IniciosExitosos >= 1 and UltimoExito > PrimerFallo | order by IntentosFallidos desc", "proposito": "Detectar compromisos por fuerza bruta o password spray de forma agnóstica a través de Entra ID, Windows, Linux, Okta o VPNs.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}], "kpisYMetricas": [{"id": "KPI-01", "nombre": "Tiempo medio de triaje / reconocimiento de incidentes (MTTA)", "definicion": "Tiempo promedio desde la creación del incidente en la cola unificada hasta su primera actualización/asignación por un analista o flujo.", "formula": "avg(FirstModifiedTime - CreatedTime) sobre arg_max(TimeGenerated, *) by IncidentNumber", "metaSugerida": "< 15 minutos (Crítico / High) y < 45 minutos (Medium)", "frecuencia": "Semanal", "audiencia": "SOC Manager", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "MTTA es una de las métricas primarias nativas documentadas por Microsoft; los valores objetivo en minutos son propuesta editorial."}, {"id": "KPI-02", "nombre": "Tiempo medio de cierre / resolución de incidentes (MTTC / MTTR)", "definicion": "Tiempo integral transcurrido desde la generación del incidente hasta su cierre validado tras contención y remediación (acompañado del percentil P95).", "formula": "avg(ClosedTime - CreatedTime) y percentile(ClosedTime - CreatedTime, 95)", "metaSugerida": "< 4 horas (High) / < 24 horas (Medium)", "frecuencia": "Semanal / Mensual", "audiencia": "SOC Manager / CISO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "MTTC/MTTR está integrado en el workbook Security operations efficiency de Sentinel; las metas de 4 h y 24 h son propuesta editorial."}, {"id": "KPI-03", "nombre": "Tasa de falsos positivos del catálogo de detección (FPR)", "definicion": "Porcentaje de incidentes cerrados con clasificación FalsePositive sobre el universo total de incidentes cerrados en el período.", "formula": "(countif(Classification == 'FalsePositive') / countif(Status == 'Closed')) * 100", "metaSugerida": "< 15% global (< 20% máximo por regla individual antes de tuning obligatorio)", "frecuencia": "Semanal / Mensual", "audiencia": "SOC L3 / Detection Engineer", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "La clasificación FalsePositive es nativa en SecurityIncident; el umbral del 15% es referencia consultiva editorial."}, {"id": "KPI-04", "nombre": "Tasa de éxito de ejecución de Playbooks SOAR (Playbook Success Rate)", "definicion": "Porcentaje de ejecuciones de playbooks invocadas por Automation Rules o analistas que finalizan exitosamente sin errores.", "formula": "(countif(Status == 'Success') / count()) * 100 en SentinelHealth where SentinelResourceType == 'Playbook'", "metaSugerida": ">= 98%", "frecuencia": "Diaria / Semanal", "audiencia": "SOAR Engineer / Platform Engineer", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Medido directamente sobre la tabla oficial SentinelHealth; el objetivo >= 98% es propuesta editorial."}, {"id": "KPI-05", "nombre": "Porcentaje de incidentes con enriquecimiento o triaje automatizado", "definicion": "Proporción de incidentes que reciben tareas estandarizadas, enriquecimiento TI/UEBA, asignación o contención automática vía Automation Rules.", "formula": "(Incidentes_Procesados_Por_AutomationRule / Total_Incidentes_Creados) * 100", "metaSugerida": ">= 70%", "frecuencia": "Mensual", "audiencia": "SOC Manager", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Alineado al principio oficial Automation-assisted SOC; meta del 70% propuesta editorialmente."}, {"id": "KPI-06", "nombre": "Disponibilidad de conectores críticos e integridad de reglas activas", "definicion": "Porcentaje de conectores críticos recibiendo telemetría sin interrupción y ausencia total de reglas deshabilitadas automáticamente.", "formula": "(Conectores_Activos_En_SLA / Total_Conectores_Criticos) * 100 y Conteo(Reglas AUTO DISABLED)", "metaSugerida": ">= 99,5% disponibilidad de conectores y 0 reglas AUTO DISABLED", "frecuencia": "Diaria / Semanal", "audiencia": "Platform Engineer / SOC Manager", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Basado en el monitoreo oficial de salud de conectores e integridad de reglas de Microsoft Sentinel."}, {"id": "KPI-07", "nombre": "Cobertura activa sobre técnicas prioritarias de MITRE ATT&CK v18", "definicion": "Porcentaje de técnicas adversarias definidas como prioritarias para el negocio que cuentan con al menos una regla activa validada.", "formula": "(Tecnicas_Prioritarias_Con_Regla_Activa / Total_Tecnicas_Prioritarias_Objetivo) * 100", "metaSugerida": ">= 80% de las técnicas prioritarias del perfil de amenaza organizacional", "frecuencia": "Semestral / Mensual", "audiencia": "Threat Hunter / CISO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "La matriz nativa de cobertura MITRE ATT&CK v18 es oficial; el umbral del 80% sobre técnicas prioritarias es propuesta editorial."}, {"id": "KPI-08", "nombre": "Índice de optimización de valor de datos en Analytics Tier (Data Value Efficiency)", "definicion": "Porcentaje de tablas facturables alojadas en el Analytics tier que son utilizadas activamente por reglas de detección, UEBA o TI matching.", "formula": "((Tablas_Facturables_Analytics - Tablas_Sin_Deteccion_SOC_Optimization) / Tablas_Facturables_Analytics) * 100", "metaSugerida": ">= 95% (reubicando tablas secundarias sin reglas hacia el Sentinel Data Lake)", "frecuencia": "Mensual", "audiencia": "FinOps / Platform Engineer / CISO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Basado directamente en las recomendaciones Data value optimization de SOC Optimization en MS Learn."}], "mapeoNISTCSF20": [{"funcion": "GOVERN (GV)", "subcategoria": "GV.OV-03", "descripcionResultado": "El desempeño de la gestión de riesgos de ciberseguridad organizacional se evalúa y revisa para aplicar los ajustes necesarios.", "capacidadMicrosoft": "Workbook oficial Security operations efficiency, métricas históricas en SecurityIncident y recomendaciones basadas en riesgo de negocio de SOC Optimization (UI y API).", "evidenciaAuditoria": "Exportación mensual de métricas MTTA/MTTC/FPR e historial de mitigación de brechas en SOC Optimization.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "GOVERN (GV)", "subcategoria": "GV.PO-02", "descripcionResultado": "La política y reglas para gestionar riesgos de ciberseguridad se revisan, actualizan, comunican y auditan de forma trazable.", "capacidadMicrosoft": "Auditoría nativa de modificaciones en SentinelAudit y AzureActivity, auditoría de consultas en LAQueryLogs y control de cambios como código en Sentinel Repositories.", "evidenciaAuditoria": "Reportes semanales de SentinelAudit y LAQueryLogs conciliados contra tickets aprobados y commits CI/CD.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.AM-04", "descripcionResultado": "Se mantienen inventarios y visibilidad de los servicios y plataformas externas/cloud utilizados por la organización.", "capacidadMicrosoft": "Más de 350 conectores en Content Hub (M365, Azure, AWS, GCP, SAP, firewalls CEF/Syslog) y diseño multi-workspace / Data Lake con residencia de datos documentada.", "evidenciaAuditoria": "Consultas sobre Usage y CommonSecurityLog inventariando fuentes activas y configuración regional de workspaces.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.RA-02", "descripcionResultado": "Se recibe inteligencia sobre amenazas cibernéticas desde foros y fuentes especializadas para enriquecer el análisis de riesgo.", "capacidadMicrosoft": "Ingesta STIX/TAXII, feeds nativos de Microsoft Threat Intelligence en ThreatIntelIndicators, matriz MITRE ATT&CK v18 y análisis de brechas en SOC Optimization.", "evidenciaAuditoria": "Inventario exportado de indicadores TI activos por fuente/confianza y mapa semestral de cobertura MITRE ATT&CK.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.AA-05", "descripcionResultado": "Los permisos, derechos y autorizaciones de acceso se definen, gestionan, hacen cumplir y revisan bajo privilegio mínimo.", "capacidadMicrosoft": "Segregación con Azure RBAC en Resource Group, Microsoft Entra ID / Defender Unified RBAC para el Data Lake, scoping por fila y Managed Identities en playbooks.", "evidenciaAuditoria": "Exportación mensual de asignaciones IAM/URBAC recertificadas (M-01) y verificación de playbooks autenticados sin secretos.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.PS-04", "descripcionResultado": "Los registros de log se generan y ponen a disposición para monitoreo continuo y preservación conforme a requisitos normativos.", "capacidadMicrosoft": "Recolección mediante AMA + DCRs, Logs Ingestion API y arquitectura por niveles entre Analytics tier (90d a 2 años) y Sentinel Data Lake (hasta 12 años).", "evidenciaAuditoria": "Configuración exportada de Table management demostrando retención por tabla alineada a exigencias legales y regulatorias.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.CM-01", "descripcionResultado": "Las redes, servicios e infraestructuras se monitorean continuamente para detectar eventos potencialmente adversos.", "capacidadMicrosoft": "Reglas Scheduled, NRT, Custom Detection Rules, normalización ASIM, analítica conductual UEBA y supervisión continua en SentinelHealth.", "evidenciaAuditoria": "Catálogo de reglas activas sin estado AUTO DISABLED, alertas en SecurityAlert y chequeos diarios de SentinelHealth.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.AE-03", "descripcionResultado": "Se correlaciona información procedente de múltiples fuentes y se realiza caza proactiva para comprender cadenas de ataque.", "capacidadMicrosoft": "Correlación automática multi-dominio SIEM + Defender XDR, mapeo de entidades, Sentinel Graph / Blast Radius, campañas Hunts y Bookmarks.", "evidenciaAuditoria": "Expedientes de incidentes correlacionados multi-fuente y campañas documentadas en Hunts / HuntingBookmark.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.MA-02", "descripcionResultado": "Los reportes de incidentes son triados, validados, priorizados y gestionados con propiedad y comunicación estructurada.", "capacidadMicrosoft": "Cola unificada de incidentes y Case Management en el portal Defender con listas de tareas obligatorias, notificaciones automáticas e integración ITSM.", "evidenciaAuditoria": "Muestras auditables de incidentes cerrados con cronología completa, propietario, tareas completadas y tickets ITSM.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.MI-01", "descripcionResultado": "Se ejecutan acciones oportunas para contener los incidentes y mitigar su impacto.", "capacidadMicrosoft": "Automation Rules + Playbooks en Logic Apps para bloqueo de usuarios Entra ID, aislamiento de endpoints MDE y bloqueo de IPs, junto con Automatic Attack Disruption.", "evidenciaAuditoria": "Historial Runs history de Logic Apps con estado Succeeded y registros de bloqueo/aislamiento en los sistemas destino.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RECOVER (RC)", "subcategoria": "RC.RP-01", "descripcionResultado": "Se ejecutan planes de recuperación asegurando la resiliencia del servicio de monitoreo y la incorporación de lecciones aprendidas.", "capacidadMicrosoft": "Guía oficial BCDR de Microsoft Sentinel, respaldo completo como código en Sentinel Repositories y análisis histórico de tendencias MTTR post-incidente.", "evidenciaAuditoria": "Repositorio Git/Bicep sincronizado, acta anual de simulacro BCDR e informes post-mortem con mejoras desplegadas.", "estadoValidacion": "Propuesta Editorial"}], "validacionYDecisionesEditoriales": {"fechaRevalidacion": "2026-11-11", "resumenAuditoria": "Se consolidaron e integraron los tres bloques que se encontraban separados en MSEOP-MD (el Modelo de Operación SecOps real con sus 12 bloques y SOPs de consola, el mapeo de auditoría NIST CSF 2.0 y el documento estratégico de Licenciamiento/FinOps), sometiéndolos a revalidación integral contra Microsoft Learn MCP y páginas oficiales de precios de Azure a noviembre de 2026. Se verificaron y actualizaron las fechas mandatorias de retiro del portal de Azure y de APIs heredadas, la integración nativa del Sentinel Data Lake desde septiembre de 2026, las condiciones exactas del Data Grant de M365 E5/E7 y las novedades SOAR/CI-CD de 2026.", "correccionesAplicadas": ["Corrección estructural de fuentes locales: se unificó el mapeo de auditoría NIST CSF 2.0 (alojado originalmente en Sentinel - VC- SecOps) con el Modelo de Operación SecOps completo (Modelo operacion, 12 bloques SecOps y Sentinel OG) y el modelo financiero (Sentinel VC Lic).", "Confirmación y actualización de la fecha oficial de retiro de Microsoft Sentinel en Azure Portal: después del 31 de marzo de 2027 (extendida desde julio de 2026), incorporando la tabla oficial de equivalencia de navegación hacia https://security.microsoft.com.", "Actualización arquitectónica de niveles de almacenamiento: incorporación del onboarding integrado de Microsoft Sentinel SIEM + Data Lake vigente desde el 23 de septiembre de 2026 (Table management, compresión 6:1, retención hasta 12 años, KQL interactivo en Advanced Hunting y espejo sin copia a Microsoft Fabric OneLake).", "Documentación precisa de relacionM365E5: facturación por consumo/Commitment Tiers en Azure combinada con el Microsoft 365 E5/E7/A5/F5/G5 Data Grant de hasta 5 MB/usuario/día, fuentes siempre gratuitas, 30 días de consulta gratuita de tablas XDR en el portal unificado, conexión UEBA en preview (extend-ueba) y SCUs incluidas en E5.", "Actualización de retiros y mejoras técnicas 2026: fin de soporte de HTTP Data Collector API el 14 de septiembre de 2026 (migración a Logs Ingestion API + DCR filter/split y CCF), retiro de Livestream en favor de Hunts y NRT/Custom Detections, obsolescencia de playbooks directos en reglas analíticas (mar-2026), AI Playbook Generator en GA (may-2026), normalización de AccountName a prefijo UPN (jul-2026) y Custom Detection Rules as Code en Repositories (Preview, jul-2026).", "Alineación estricta de KPIs con la auditoría técnica oficial: preservación de MTTA y MTTC/MTTR como métricas nativas de Microsoft y etiquetado explícito de metas porcentuales y numéricas como propuestas editoriales."], "decisionesEditoriales": [{"elemento": "Metas cuantitativas de SLA y KPIs (MTTA < 15 min, MTTC < 4 h, FPR < 15%, Playbook Success >= 98%, cobertura MITRE >= 80%)", "tipo": "Propuesta Editorial", "justificacion": "Microsoft provee las métricas y workbooks nativos (Security operations efficiency y SentinelHealth), pero establece que los umbrales numéricos deben fijarse según dotación, horario de cobertura y apetito de riesgo de cada organización."}, {"elemento": "Extensión del modelo operativo hacia cadencias Trimestral, Semestral y Anual (T-01, T-02, SM-01, A-01)", "tipo": "Propuesta Editorial", "justificacion": "El artículo ops-guide oficial de Sentinel cubre hasta actividades mensuales; las cadencias trimestral, semestral y anual consolidan guías complementarias de Microsoft sobre MITRE ATT&CK, BCDR y gobernanza NIST CSF 2.0."}, {"elemento": "Ventanas máximas de activación JIT en PIM (4 h / 8 h) y segregación dedicada de Resource Groups para Playbooks", "tipo": "Propuesta Editorial", "justificacion": "Microsoft recomienda mínimo privilegio y asignación en Resource Group; los límites horarios de elevación PIM y la separación orgánica entre ingeniería SOAR y analistas L1/L2 son controles de gobierno propuestos."}, {"elemento": "Modelo de Madurez Operacional SIEM / SOAR en 5 niveles (de Reactivo a SOC Agéntico y Federado)", "tipo": "Propuesta Editorial", "justificacion": "Construcción consultiva diseñada para orientar hojas de ruta ejecutivas de modernización hacia Unified SecOps, Data Lake y Security Copilot."}, {"elemento": "Selección de consultas KQL y artefactos específicos como evidencia probatoria para cada subcategoría NIST CSF 2.0", "tipo": "Propuesta Editorial", "justificacion": "Conforme a NIST CSWP 29, el marco define outcomes agnósticos de tecnología; la definición de evidencias reproducibles en Sentinel constituye diseño de aseguramiento GRC."}]}, "referenciasVerificadas": [{"id": "REF-01", "titulo": "Microsoft Sentinel operational guide", "url": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Guía oficial de actividades operativas diarias, semanales y mensuales recomendadas para equipos SOC y administradores.", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-02", "titulo": "Microsoft Sentinel in the Microsoft Defender portal", "url": "https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Comparativa funcional, mapeo completo de menús y confirmación oficial del retiro de Sentinel en Azure Portal después del 31 de marzo de 2027.", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-03", "titulo": "Plan costs and understand Microsoft Sentinel pricing and billing", "url": "https://learn.microsoft.com/en-us/azure/sentinel/billing", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Referencia oficial de precios y medidores para Analytics tier (PAYG y Simplified Commitment Tiers), Data Lake tier, Sentinel Graph, MCP y fuentes gratuitas.", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-04", "titulo": "Microsoft 365 E5 benefit offer with Microsoft Sentinel", "url": "https://azure.microsoft.com/en-us/pricing/offers/sentinel-microsoft-365-offer/", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Azure", "comentario": "Términos oficiales del Data Grant de hasta 5 MB/usuario/día para clientes Microsoft 365 E7, E5, A5, F5, G5 y suites Security, con listado de tablas elegibles.", "verificacion": "Verificado vía Web Search / Fetch oficial Azure (Nov 2026)"}, {"id": "REF-05", "titulo": "Log retention tiers in Microsoft Sentinel & What is Microsoft Sentinel data lake?", "url": "https://learn.microsoft.com/en-us/azure/sentinel/log-plans", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Estrategia oficial de clasificación de datos primarios (Analytics tier) y secundarios (Data Lake tier con hasta 12 años de retención).", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-06", "titulo": "Roles and permissions in the Microsoft Sentinel platform", "url": "https://learn.microsoft.com/en-us/azure/sentinel/roles", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Definición oficial de roles Azure RBAC para SIEM y roles Microsoft Entra ID / Defender Unified RBAC para el Data Lake.", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-07", "titulo": "Automate threat response in Microsoft Sentinel with automation rules", "url": "https://learn.microsoft.com/en-us/azure/sentinel/automate-incident-handling-with-automation-rules", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Arquitectura oficial de orquestación SOAR, triggers, orden secuencial, Simple Flows y delegación multitenant.", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-08", "titulo": "Authenticate playbooks to Microsoft Sentinel", "url": "https://learn.microsoft.com/en-us/azure/sentinel/automation/authenticate-playbooks-to-sentinel", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Guía oficial para autenticar playbooks de Logic Apps mediante System-Assigned Managed Identity con mínimo privilegio.", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-09", "titulo": "SOC optimization recommendations reference", "url": "https://learn.microsoft.com/en-us/azure/sentinel/soc-optimization/soc-optimization-reference", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Referencia de recomendaciones de cobertura frente a amenazas y optimización de valor de datos por tabla y columna.", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-10", "titulo": "Normalization and the Advanced Security Information Model (ASIM)", "url": "https://learn.microsoft.com/en-us/azure/sentinel/normalization", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Documentación oficial de esquemas, parsers query-time y normalización ingest-time alineada con OSSEM.", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-11", "titulo": "What's new in Microsoft Sentinel", "url": "https://learn.microsoft.com/en-us/azure/sentinel/whats-new", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Registro oficial de lanzamientos 2026: onboarding integrado del Data Lake (sep-2026), espejo Fabric OneLake, Custom Detections as Code y AI Playbook Generator GA.", "verificacion": "Verificado vía MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-12", "titulo": "UPDATE: New timeline for transitioning Sentinel experience to Defender portal", "url": "https://techcommunity.microsoft.com/blog/microsoftsentinelblog/update-new-timeline-for-transitioning-sentinel-experience-to-defender-portal/4490464", "tipoFuente": "Blog Oficial Microsoft", "autor": "Microsoft Sentinel Product Team", "comentario": "Comunicado oficial en Microsoft Sentinel Blog estableciendo el 31 de marzo de 2027 como fecha de retiro del portal de Azure.", "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"}, {"id": "REF-13", "titulo": "Become a Microsoft Sentinel Ninja: The complete level 400 training", "url": "https://techcommunity.microsoft.com/blog/microsoftsentinelblog/become-a-microsoft-sentinel-ninja-the-complete-level-400-training/1246310", "tipoFuente": "Empleado Microsoft", "autor": "Ofer Shezaf (Principal Product Manager, Microsoft)", "comentario": "Entrenamiento maestro oficial nivel 400 organizado por perfiles de arquitecto, ingeniero y analista SOC.", "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"}, {"id": "REF-14", "titulo": "Sentinel All-in-One & Sentinel as Code", "url": "https://github.com/javiersoriano/sentinel-all-in-one", "tipoFuente": "Empleado Microsoft", "autor": "Javier Soriano (Principal Product Manager, Microsoft)", "comentario": "Repositorio de referencia para automatización de despliegue e infraestructura como código en Microsoft Sentinel.", "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"}, {"id": "REF-15", "titulo": "Create Tasks Repository in Microsoft Sentinel & Must Learn KQL", "url": "https://techcommunity.microsoft.com/blog/microsoftsentinelblog/create-tasks-repository-in-microsoft-sentinel/4038563", "tipoFuente": "Empleado Microsoft", "autor": "Benji Kovacevic (Microsoft) / complementado por Rod Trent (MustLearnKQL)", "comentario": "Guía práctica de estandarización de listas de tareas e implementación de automatización SOAR en incidentes de Sentinel.", "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"}, {"id": "REF-16", "titulo": "KQL Query & Hunting-Queries-Detection-Rules", "url": "https://kqlquery.com", "tipoFuente": "MVP Seguridad", "autor": "Bert-Jan Pals (Microsoft Security MVP)", "comentario": "Portal y repositorio comunitario líder en ingeniería de detección y threat hunting con KQL para Sentinel y Defender XDR.", "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"}, {"id": "REF-17", "titulo": "Blog d3fend.me - Laboratorio reproducible Defender XDR + Microsoft Sentinel en español", "url": "https://blog.d3fend.me/", "tipoFuente": "MVP Seguridad", "autor": "Jorge Castañeda (Microsoft Security MVP, Perú)", "comentario": "Referencia técnica en español sobre despliegue práctico de laboratorios, correlación XDR+SIEM y priorización de vulnerabilidades.", "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"}, {"id": "REF-18", "titulo": "Morten Knudsen Technical Blog (AMA, DCR, Logs Ingestion API & Sentinel Data Lake) y Workbooks de Clive Watson", "url": "https://mortenknudsen.net/", "tipoFuente": "MVP Seguridad", "autor": "Morten Knudsen (Microsoft MVP)", "comentario": "Guías profundas de ingeniería de recolección con AMA/DCR, transformaciones y administración de tablas en el Data Lake de Sentinel.", "verificacion": "Verificado en repositorio Ninja Training Seguridad Microsoft 2026"}, {"id": "REF-19", "titulo": "NIST Cybersecurity Framework (CSF) 2.0 (CSWP 29) & Integrate NIST CSF 2.0 Governance", "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf", "tipoFuente": "Marco Normativo", "autor": "National Institute of Standards and Technology (NIST)", "comentario": "Estándar oficial NIST CSF 2.0 complementado por la guía oficial de Microsoft learn.microsoft.com/en-us/security/zero-trust/sfi/integrate-nist-2-governance.", "verificacion": "Verificado en fuentes oficiales NIST y Microsoft Learn (Nov 2026)"}], "validacionesConfiguracion": [{"control": "**Unificación en Portal Defender**", "comoValidar": "`security.microsoft.com > System > Settings > Microsoft Sentinel`", "estadoEsperado": "Workspace primario conectado y cola `Incidents` mostrando incidentes sincronizados SIEM + XDR.", "origen": "Verificado MS Learn"}, {"control": "**Aplicación del Data Grant M365 E5**", "comoValidar": "`portal.azure.com > Cost Management > Cost analysis` (agrupar por `Meter`)", "estadoEsperado": "Presencia activa de medidores `Free Benefit - M365 Defender` descontando hasta 5 MB/usuario/día.", "origen": "Verificado MS Learn"}, {"control": "**Salud de Detección y SOAR**", "comoValidar": "Tabla `SentinelHealth` habilitada en `Settings > Auditing and health monitoring`", "estadoEsperado": "Registros continuos sin fallos persistentes en `Analytics Rule`, `Data connector` y `Playbook`.", "origen": "Verificado MS Learn"}, {"control": "**Gobierno de Niveles de Tablas**", "comoValidar": "`security.microsoft.com > Microsoft Sentinel > Data management > Tables`", "estadoEsperado": "Datos primarios en `Analytics` (90d+) con espejo activo y tablas verbosas secundarias en `Data Lake` (hasta 12 años).", "origen": "Verificado MS Learn"}], "modeloMadurez": [{"nivel": "**Nivel 1**", "estadio": "**Reactivo / En Portal Heredado**", "descripcion": "Operación aún fragmentada en Azure Portal; ingesta PAYG sin separación de tiers ni aprovechamiento consciente del grant E5; playbooks ausentes o con credenciales de usuario; sin auditoría `SentinelHealth`."}, {"nivel": "**Nivel 2**", "estadio": "**Unificado Estandarizado**", "descripcion": "Workspace incorporado en `security.microsoft.com`; conectores M365/Entra/Defender y AMA operativos; rutinas diarias `ops-guide` activas; roles Azure RBAC a nivel Resource Group."}, {"nivel": "**Nivel 3**", "estadio": "**Gobernado y Medido**", "descripcion": "Separación disciplinada **Analytics tier** vs. **Sentinel Data Lake tier**; Commitment Tier optimizado con M365 E5 Data Grant auditado; Automation Rules + Playbooks con **Managed Identity**; tuning semanal (<15 % FP) y métricas MTTA/MTTC reportadas."}, {"nivel": "**Nivel 4**", "estadio": "**Proactivo, As-Code y Optimizado**", "descripcion": "Detecciones y Automation Rules gestionadas en **Sentinel Repositories (CI/CD Bicep)**; normalización **ASIM** multi-fuente; caza guiada por hipótesis (*Hunts*) sobre Data Lake; cierre sistemático de **SOC Optimization** y ejercicios Purple Team trimestrales."}, {"nivel": "**Nivel 5**", "estadio": "**SOC Agéntico y Federado**", "descripcion": "Operación aumentada con **Microsoft Security Copilot**, agentes de triaje/caza y herramientas del **Sentinel MCP Server**; análisis relacional en **Sentinel Graph / Fabric OneLake** sin movimiento innecesario de datos; evidencia continua NIST CSF 2.0 audit-ready los 365 días."}], "rutaFormacion": {"headers": ["Rol en el SOC", "Ruta Curricular Técnica Recomendada", "Recursos Oficiales, Comunidad y Certificaciones", "Horizonte Sugerido"], "rows": [["**SOC L1 (Analista de Triaje)**", "Fundamentos de Unified SecOps en `security.microsoft.com`, ciclo de vida de incidentes, grafo de ataque, Watchlists, KQL esencial y uso asistido de Security Copilot.", "*Microsoft Sentinel Skill-Up Training* en Learn, *Must Learn KQL* (Rod Trent), *Microsoft Sentinel Training Lab* (17 ejercicios) y examen **SC-200** (*Microsoft Security Operations Analyst Associate*, guía actualizada oct-2026).", "Semanas 1 a 4 `[Decisión / Propuesta Editorial]`."], ["**SOC L2 & Threat Hunter**", "KQL intermedio/avanzado (series temporales, joins, grafos GQL), UEBA behaviors/anomalies, campañas **Hunts**, caza sobre **Sentinel Data Lake** y playbooks de respuesta a incidentes.", "*Become a Microsoft Sentinel Ninja* (Ofer Shezaf), *The Definitive Guide to KQL* (Morowczynski, Trent, Zorich — Microsoft Press), repositorios KQL de Bert-Jan Pals y laboratorios en español de Jorge Castañeda (`d3fend.me`). Certificación: **SC-200**.", "Semanas 5 a 14 `[Decisión / Propuesta Editorial]`."], ["**SOC L3 / Detection & Platform Engineer**", "Recolección AMA/DCR, transformaciones `filter`/`split`, **Logs Ingestion API**, conectores **CCF**, normalización **ASIM**, **Sentinel Repositories (CI/CD Bicep)**, niveles `Analytics` vs. `Data Lake` y federación con Microsoft Fabric.", "Documentación oficial de ASIM, Data Lake y CCF en Learn, acelerador *Sentinel All-in-One* (Javier Soriano), guías de DCR/Data Lake de Morten Knudsen y Clive Watson. Certificaciones: **SC-200** + **AZ-500**.", "Semanas 6 a 19 `[Decisión / Propuesta Editorial]`."], ["**SOAR & AI Automation Engineer**", "Diseño de **Automation Rules**, `Enhanced Alert Trigger`, **Azure Logic Apps (Consumption/Standard)** con **Managed Identity**, generador de playbooks con IA, **Security Copilot** y **Sentinel MCP Server**.", "*Automation Ninja*, publicaciones de Benji Kovacevic en Microsoft Sentinel Blog, *Security Copilot Ninja* (Sean Wasonga) y libro *Exam Ref SC-200 2nd Edition* (abr-2026).", "Semanas 12 a 25 `[Decisión / Propuesta Editorial]`."], ["**SOC Manager, FinOps & GRC**", "Gobierno de **Simplified Commitment Tiers**, optimización del **M365 E5 Data Grant**, **SOC Optimization**, transición al portal Defender (`2027-03-31`), BCDR y auditoría continua **NIST CSF 2.0**.", "*Manage your SOC with incident metrics*, *Plan costs and understand Sentinel pricing*, *Integrate NIST CSF 2.0 governance* y talleres SecOps del *Microsoft Security Adoption Framework (SAF)* (Mark Simos) + **SC-100**.", "Continuo / Trimestral `[Decisión / Propuesta Editorial]`."]]}};
+const NAV_INDEX = [{"id": "00_Marco_Maestro_CISO_SOC_y_NIST", "orden": 0, "folder": "00_Marco_Maestro_CISO_SOC_y_NIST", "slug": "Marco_Maestro_CISO_SOC_y_NIST", "nombreCorto": "Marco Maestro CISO, SOC y NIST", "categoria": "Marco Transversal CISO, SOC y NIST", "htmlRel": "../00_Marco_Maestro_CISO_SOC_y_NIST/Marco_Maestro_CISO_SOC_y_NIST_Guia_Excelencia_Operacional.html"}, {"id": "01_Microsoft_Entra_ID", "orden": 1, "folder": "01_Microsoft_Entra_ID", "slug": "Microsoft_Entra_ID", "nombreCorto": "Microsoft Entra ID", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../01_Microsoft_Entra_ID/Microsoft_Entra_ID_Guia_Excelencia_Operacional.html"}, {"id": "02_Microsoft_Entra_ID_Governance", "orden": 2, "folder": "02_Microsoft_Entra_ID_Governance", "slug": "Microsoft_Entra_ID_Governance", "nombreCorto": "Microsoft Entra ID Governance", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../02_Microsoft_Entra_ID_Governance/Microsoft_Entra_ID_Governance_Guia_Excelencia_Operacional.html"}, {"id": "03_Microsoft_Defender_XDR", "orden": 3, "folder": "03_Microsoft_Defender_XDR", "slug": "Microsoft_Defender_XDR", "nombreCorto": "Defender XDR", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../03_Microsoft_Defender_XDR/Microsoft_Defender_XDR_Guia_Excelencia_Operacional.html"}, {"id": "04_Microsoft_Defender_for_Endpoint", "orden": 4, "folder": "04_Microsoft_Defender_for_Endpoint", "slug": "Microsoft_Defender_for_Endpoint", "nombreCorto": "Defender for Endpoint", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../04_Microsoft_Defender_for_Endpoint/Microsoft_Defender_for_Endpoint_Guia_Excelencia_Operacional.html"}, {"id": "05_Microsoft_Defender_for_Office_365", "orden": 5, "folder": "05_Microsoft_Defender_for_Office_365", "slug": "Microsoft_Defender_for_Office_365", "nombreCorto": "Defender for Office 365", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../05_Microsoft_Defender_for_Office_365/Microsoft_Defender_for_Office_365_Guia_Excelencia_Operacional.html"}, {"id": "06_Microsoft_Defender_for_Identity", "orden": 6, "folder": "06_Microsoft_Defender_for_Identity", "slug": "Microsoft_Defender_for_Identity", "nombreCorto": "Defender for Identity", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../06_Microsoft_Defender_for_Identity/Microsoft_Defender_for_Identity_Guia_Excelencia_Operacional.html"}, {"id": "07_Microsoft_Defender_for_Cloud_Apps", "orden": 7, "folder": "07_Microsoft_Defender_for_Cloud_Apps", "slug": "Microsoft_Defender_for_Cloud_Apps", "nombreCorto": "Defender for Cloud Apps", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../07_Microsoft_Defender_for_Cloud_Apps/Microsoft_Defender_for_Cloud_Apps_Guia_Excelencia_Operacional.html"}, {"id": "08_Microsoft_Sentinel", "orden": 8, "folder": "08_Microsoft_Sentinel", "slug": "Microsoft_Sentinel", "nombreCorto": "Microsoft Sentinel", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../08_Microsoft_Sentinel/Microsoft_Sentinel_Guia_Excelencia_Operacional.html"}, {"id": "09_Microsoft_Security_Copilot", "orden": 9, "folder": "09_Microsoft_Security_Copilot", "slug": "Microsoft_Security_Copilot", "nombreCorto": "Microsoft Security Copilot", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../09_Microsoft_Security_Copilot/Microsoft_Security_Copilot_Guia_Excelencia_Operacional.html"}, {"id": "10_Microsoft_Intune_Plan_1", "orden": 10, "folder": "10_Microsoft_Intune_Plan_1", "slug": "Microsoft_Intune_Plan_1", "nombreCorto": "Microsoft Intune Plan 1", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../10_Microsoft_Intune_Plan_1/Microsoft_Intune_Plan_1_Guia_Excelencia_Operacional.html"}, {"id": "11_Microsoft_Intune_Suite", "orden": 11, "folder": "11_Microsoft_Intune_Suite", "slug": "Microsoft_Intune_Suite", "nombreCorto": "Microsoft Intune Suite", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../11_Microsoft_Intune_Suite/Microsoft_Intune_Suite_Guia_Excelencia_Operacional.html"}, {"id": "12_Windows_Enterprise_Security_y_Cifrado", "orden": 12, "folder": "12_Windows_Enterprise_Security_y_Cifrado", "slug": "Windows_Enterprise_Security_y_Cifrado", "nombreCorto": "Windows Enterprise Security y Cifrado", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../12_Windows_Enterprise_Security_y_Cifrado/Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.html"}, {"id": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "orden": 13, "folder": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "slug": "Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "nombreCorto": "Microsoft Purview Suite", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno/Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.html"}, {"id": "14_Purview_Information_Protection", "orden": 14, "folder": "14_Purview_Information_Protection", "slug": "Purview_Information_Protection", "nombreCorto": "Purview Information Protection", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../14_Purview_Information_Protection/Purview_Information_Protection_Guia_Excelencia_Operacional.html"}, {"id": "15_Purview_Data_Loss_Prevention", "orden": 15, "folder": "15_Purview_Data_Loss_Prevention", "slug": "Purview_Data_Loss_Prevention", "nombreCorto": "Purview Data Loss Prevention", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../15_Purview_Data_Loss_Prevention/Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.html"}, {"id": "16_Purview_Data_Lifecycle_y_Records_Management", "orden": 16, "folder": "16_Purview_Data_Lifecycle_y_Records_Management", "slug": "Purview_Data_Lifecycle_y_Records_Management", "nombreCorto": "Purview DLCM y Records Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../16_Purview_Data_Lifecycle_y_Records_Management/Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.html"}, {"id": "17_Purview_Insider_Risk_Management", "orden": 17, "folder": "17_Purview_Insider_Risk_Management", "slug": "Purview_Insider_Risk_Management", "nombreCorto": "Purview Insider Risk Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../17_Purview_Insider_Risk_Management/Purview_Insider_Risk_Management_Guia_Excelencia_Operacional.html"}, {"id": "18_Purview_Communication_Compliance", "orden": 18, "folder": "18_Purview_Communication_Compliance", "slug": "Purview_Communication_Compliance", "nombreCorto": "Purview Communication Compliance", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../18_Purview_Communication_Compliance/Purview_Communication_Compliance_Guia_Excelencia_Operacional.html"}, {"id": "19_Purview_Audit_Premium", "orden": 19, "folder": "19_Purview_Audit_Premium", "slug": "Purview_Audit_Premium", "nombreCorto": "Purview Audit (Premium)", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../19_Purview_Audit_Premium/Purview_Audit_Premium_Guia_Excelencia_Operacional.html"}, {"id": "20_Purview_eDiscovery_Premium", "orden": 20, "folder": "20_Purview_eDiscovery_Premium", "slug": "Purview_eDiscovery_Premium", "nombreCorto": "Purview eDiscovery Premium", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../20_Purview_eDiscovery_Premium/Purview_eDiscovery_Premium_Guia_Excelencia_Operacional.html"}, {"id": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "orden": 21, "folder": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "slug": "Customer_Lockbox_Customer_Key_y_M365_PAM", "nombreCorto": "Customer Lockbox, Customer Key y M365 PAM", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../21_Customer_Lockbox_Customer_Key_y_M365_PAM/Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.html"}, {"id": "22_Microsoft_Agent_365", "orden": 22, "folder": "22_Microsoft_Agent_365", "slug": "Microsoft_Agent_365", "nombreCorto": "Microsoft Agent 365", "categoria": "Gobierno y Seguridad de Agentes IA", "htmlRel": "../22_Microsoft_Agent_365/Microsoft_Agent_365_Guia_Excelencia_Operacional.html"}];
+
+(() => {
+  const memStore = {};
+  const storageKey = "mseop_v3_state_" + MODULE_DATA.id;
+  function loadState() {
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      return raw ? JSON.parse(raw) : { tasks: {}, steps: {} };
+    } catch (_) {
+      return memStore[storageKey] || { tasks: {}, steps: {} };
+    }
+  }
+  function saveState(st) {
+    memStore[storageKey] = st;
+    try { window.localStorage.setItem(storageKey, JSON.stringify(st)); } catch (_) {}
+  }
+
+  let uiState = loadState();
+  if (!uiState.tasks) uiState.tasks = {};
+  if (!uiState.steps) uiState.steps = {};
+  let activeView = "view-overview";
+  let activePeriodicCad = "Diaria";
+
+  function esc(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // Converts inline Markdown (**bold**, `code`, [Verificado MS Learn], [Decisión / Propuesta Editorial]) into clean readable HTML
+  function richText(str) {
+    let s = esc(str);
+    s = s.replace(/`\[Verificado MS Learn\]`|\[Verificado MS Learn\]/g, '<span class="inline-tag tag-learn">Verificado MS Learn</span>');
+    s = s.replace(/`\[Decisión \/ Propuesta Editorial\]`|\[Decisión \/ Propuesta Editorial\]|`\[Propuesta Editorial\]`|\[Propuesta Editorial\]/g, '<span class="inline-tag tag-edit">Propuesta Editorial</span>');
+    s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    return s;
+  }
+
+  function valBadge(status) {
+    const isLearn = String(status).indexOf("Verificado") !== -1;
+    return '<span class="' + (isLearn ? "badge badge-learn" : "badge badge-editorial") + '">' + esc(status) + '</span>';
+  }
+
+  // Partition activities cleanly into Periodic vs Ad-Hoc
+  const allActs = MODULE_DATA.actividadesOperacionales || [];
+  const periodicActs = allActs.filter((a) => a.cadencia !== "Ad-Hoc");
+  const adhocActs = allActs.filter((a) => a.cadencia === "Ad-Hoc");
+  const prereqs = (MODULE_DATA.relacionM365E5 && MODULE_DATA.relacionM365E5.prerrequisitos) || [];
+  const validations = MODULE_DATA.validacionesConfiguracion || [];
+  const components = MODULE_DATA.arquitecturaYComponentes || [];
+  const rbacRoles = MODULE_DATA.rbacYRoles || [];
+
+  const dailyActs = periodicActs.filter((a) => a.cadencia === "Diaria");
+  const weeklyActs = periodicActs.filter((a) => a.cadencia === "Semanal");
+  const monthlyActs = periodicActs.filter((a) => a.cadencia === "Mensual");
+  const longCycleActs = periodicActs.filter((a) => ["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) !== -1);
+
+  // Topbar links & module switcher
+  const baseName = MODULE_DATA.slug + "_Guia_Excelencia_Operacional";
+  document.getElementById("xlsxLink").href = "./" + baseName + ".xlsx";
+  document.getElementById("mdLink").href = "./" + baseName + ".md";
+
+  const jumpSel = document.getElementById("modJumpSelect");
+  NAV_INDEX.forEach((m) => {
+    const opt = document.createElement("option");
+    opt.value = m.htmlRel;
+    opt.textContent = String(m.orden).padStart(2, "0") + " — " + m.nombreCorto;
+    if (m.id === MODULE_DATA.id) opt.selected = true;
+    jumpSel.appendChild(opt);
+  });
+  jumpSel.addEventListener("change", (e) => { if (e.target.value) window.location.href = e.target.value; });
+
+  const curIdx = NAV_INDEX.findIndex((m) => m.id === MODULE_DATA.id);
+  const prevBtn = document.getElementById("prevModBtn");
+  const nextBtn = document.getElementById("nextModBtn");
+  if (curIdx > 0) prevBtn.href = NAV_INDEX[curIdx - 1].htmlRel;
+  else { prevBtn.style.opacity = "0.4"; prevBtn.style.pointerEvents = "none"; }
+  if (curIdx >= 0 && curIdx < NAV_INDEX.length - 1) nextBtn.href = NAV_INDEX[curIdx + 1].htmlRel;
+  else { nextBtn.style.opacity = "0.4"; nextBtn.style.pointerEvents = "none"; }
+
+  document.getElementById("themeToggleBtn").addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+  });
+  document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+  // Sidebar counters
+  const totalConfigChecks = prereqs.length + validations.length;
+  document.getElementById("navCntConfig").textContent = totalConfigChecks;
+  document.getElementById("navCntDiaria").textContent = dailyActs.length;
+  document.getElementById("navCntSemanal").textContent = weeklyActs.length;
+  document.getElementById("navCntMensual").textContent = monthlyActs.length;
+  document.getElementById("navCntLargos").textContent = longCycleActs.length;
+  document.getElementById("navCntAdhoc").textContent = adhocActs.length;
+  document.getElementById("navCntQueries").textContent = (MODULE_DATA.consultasKQLyVerificacion || []).length;
+  document.getElementById("navCntKpis").textContent = (MODULE_DATA.kpisYMetricas || []).length;
+  document.getElementById("navCntNist").textContent = (MODULE_DATA.mapeoNISTCSF20 || []).length;
+
+  function switchView(viewId, periodicCadOverride) {
+    activeView = viewId;
+    if (periodicCadOverride) activePeriodicCad = periodicCadOverride;
+
+    document.querySelectorAll(".view-panel").forEach((p) => p.classList.remove("active"));
+    const target = document.getElementById(viewId);
+    if (target) target.classList.add("active");
+
+    document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+      const bv = btn.getAttribute("data-view");
+      const bc = btn.getAttribute("data-cad");
+      if (bv === viewId && (!bc || bc === activePeriodicCad)) btn.classList.add("active");
+      else btn.classList.remove("active");
+    });
+
+    if (viewId === "view-periodic") {
+      syncPeriodicSubnav();
+      renderPeriodicCards();
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      switchView(btn.getAttribute("data-view"), btn.getAttribute("data-cad") || null);
+    });
+  });
+
+  // Handle incoming URL hash (#config, #periodic-diaria, #adhoc, etc.)
+  function applyInitialHash() {
+    const h = (window.location.hash || "").replace("#", "");
+    if (h === "config") switchView("view-config");
+    else if (h === "periodic-diaria") switchView("view-periodic", "Diaria");
+    else if (h === "periodic-semanal") switchView("view-periodic", "Semanal");
+    else if (h === "periodic-mensual") switchView("view-periodic", "Mensual");
+    else if (h === "periodic-largos") switchView("view-periodic", "CICLOS_LARGOS");
+    else if (h === "adhoc") switchView("view-adhoc");
+    else if (h === "queries") switchView("view-queries");
+    else if (h === "nist") switchView("view-nist");
+  }
+
+  function updateProgressTracker() {
+    let cfgDone = 0;
+    prereqs.forEach((_, i) => { if (uiState.tasks["CFG-" + (i + 1)]) cfgDone++; });
+    validations.forEach((_, i) => { if (uiState.tasks["VAL-" + (i + 1)]) cfgDone++; });
+    const cfgPct = totalConfigChecks ? Math.round((cfgDone / totalConfigChecks) * 100) : 0;
+
+    const perDone = periodicActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const perPct = periodicActs.length ? Math.round((perDone / periodicActs.length) * 100) : 0;
+
+    const ahDone = adhocActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const ahPct = adhocActs.length ? Math.round((ahDone / adhocActs.length) * 100) : 0;
+
+    document.getElementById("sidebarProgress").innerHTML =
+      '<div class="nav-section-label" style="padding-left:0;">Tu Progreso de Revisión</div>' +
+      '<div class="prog-row"><div class="prog-head"><span>1. Configuración y Validación</span><span>' + cfgDone + '/' + totalConfigChecks + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + cfgPct + '%"></div></div></div>' +
+      '<div class="prog-row"><div class="prog-head"><span>2. Rutinas Periódicas</span><span>' + perDone + '/' + periodicActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + perPct + '%"></div></div></div>' +
+      '<div class="prog-row" style="margin-bottom:0;"><div class="prog-head"><span>3. Playbooks Ad-Hoc</span><span>' + ahDone + '/' + adhocActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + ahPct + '%"></div></div></div>';
+  }
+
+  // VISTA 0: OVERVIEW
+  document.getElementById("heroTitle").textContent = MODULE_DATA.nombre;
+  document.getElementById("heroSummary").textContent = MODULE_DATA.resumenEjecutivo;
+  document.getElementById("heroBadges").innerHTML = [
+    '<span class="badge badge-accent">Módulo ' + String(MODULE_DATA.orden).padStart(2, "0") + ' de 22</span>',
+    '<span class="badge">' + esc(MODULE_DATA.categoria) + '</span>',
+    '<span class="badge badge-learn">' + esc(MODULE_DATA.relacionM365E5.estado) + '</span>',
+    '<span class="badge">Validación: ' + esc(MODULE_DATA.fechaValidacion) + '</span>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").innerHTML = [
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 1 · Acciones Puntuales</div>' +
+        '<h3>Configuración Base y Validaciones</h3>' +
+        '<p>Qué debes habilitar al inicio (' + prereqs.length + ' prerrequisitos, ' + components.length + ' componentes y ' + rbacRoles.length + ' roles RBAC/PIM) y <strong>' + validations.length + ' validaciones "Proof of Life"</strong> para comprobar que todo quedó bien configurado.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-config">Ir a Configuración y Validaciones →</button></div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 2 · Operación Programada</div>' +
+        '<h3>Rutinas Periódicas por Frecuencia</h3>' +
+        '<p><strong>' + periodicActs.length + ' procedimientos preventivos</strong> separados con claridad en ciclos Diarios (' + dailyActs.length + '), Semanales (' + weeklyActs.length + '), Mensuales (' + monthlyActs.length + ') y Trimestrales/Anuales (' + longCycleActs.length + ').</p>' +
+      '</div>' +
+      '<div class="pill-row">' +
+        '<button class="btn btn-primary btn-sm" type="button" data-goto="view-periodic" data-gocad="Diaria">Diarias (' + dailyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Semanal">Semanales (' + weeklyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Mensual">Mensuales (' + monthlyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="CICLOS_LARGOS">Trim./Anual (' + longCycleActs.length + ')</button>' +
+      '</div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 3 · Reacción del Analista</div>' +
+        '<h3>Playbooks Ad-Hoc ante Alertas</h3>' +
+        '<p><strong>' + adhocActs.length + ' playbooks tácticos</strong> que no siguen calendario: se disparan cuando una alerta, señal de compromiso o incidente requiere contención e investigación del analista.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-adhoc">Abrir Playbooks Ad-Hoc →</button></div>' +
+    '</div>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-goto]");
+    if (!b) return;
+    switchView(b.getAttribute("data-goto"), b.getAttribute("data-gocad") || null);
+  });
+
+  const rel = MODULE_DATA.relacionM365E5;
+  document.getElementById("licensingOverviewCard").innerHTML =
+    '<h3 style="margin-top:0;font-size:20px;">Encaje de Licenciamiento en Microsoft 365 E5 y Portales Oficiales</h3>' +
+    '<p style="margin-bottom:16px;">' + richText(rel.notaLicenciamiento) + '</p>' +
+    '<div class="info-pair" style="margin-bottom:0;">' +
+      '<div class="info-box"><div class="info-label">Licencias y SKUs Aplicables</div><ul style="margin:6px 0 0 0;padding-left:20px;">' +
+        (rel.licencias || []).map((l) => '<li style="margin-bottom:6px;">' + richText(l) + '</li>').join("") +
+      '</ul></div>' +
+      '<div class="info-box"><div class="info-label">Consolas Oficiales de Administración y SOC</div><div class="pill-row" style="margin-top:10px;">' +
+        (MODULE_DATA.portalesPrincipales || []).map((u) => '<a class="btn" href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + ' ↗</a>').join("") +
+      '</div><div style="margin-top:16px;"><div class="info-label">Roles Involucrados</div><div class="pill-row" style="margin-top:6px;">' +
+        (MODULE_DATA.audiencia || []).map((au) => '<span class="badge">' + esc(au) + '</span>').join("") +
+      '</div></div></div>' +
+    '</div>';
+
+  document.getElementById("principlesGrid").innerHTML = (MODULE_DATA.principiosRectores || []).map((p) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:10px;">' +
+        '<h3 style="margin:0;font-size:17.5px;">' + esc(p.principio) + '</h3>' +
+        valBadge(p.estadoValidacion) +
+      '</div>' +
+      '<p class="muted" style="margin:0 0 12px 0;">' + richText(p.descripcion) + '</p>' +
+      (p.fuenteUrl ? '<a href="' + esc(p.fuenteUrl) + '" target="_blank" rel="noopener noreferrer">Consultar referencia en Microsoft Learn ↗</a>' : '') +
+    '</div>'
+  )).join("");
+
+  // VISTA 1: CONFIGURACIÓN PUNTUAL Y VALIDACIONES
+  function renderConfigView() {
+    document.getElementById("prereqsContainer").innerHTML = prereqs.map((pr, idx) => {
+      const code = "CFG-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '" style="padding:22px 28px;margin-bottom:16px;">' +
+          '<div class="card-title-group">' +
+            '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+            '<div style="flex:1;">' +
+              '<div class="pill-row" style="margin-bottom:6px;">' +
+                '<span class="card-code" style="margin-bottom:0;">' + code + '</span>' +
+                '<span class="badge">Acción Puntual de Puesta en Marcha</span>' +
+              '</div>' +
+              '<div style="font-size:16px;font-weight:600;">' + richText(pr) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("validationsContainer").innerHTML = validations.map((v, idx) => {
+      const code = "VAL-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + code + ' · Validación de Configuración</span>' +
+                '<h4 class="card-heading">' + richText(v.control) + '</h4>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' + valBadge(v.origen || "Verificado MS Learn") + '</div>' +
+          '</div>' +
+          '<div class="info-pair" style="margin-bottom:0;">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Dónde y Cómo Validar la Configuración</div>' +
+              '<div class="info-content">' + richText(v.comoValidar) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label">Estado / Resultado Esperado ("Proof of Life")</div>' +
+              '<div class="info-content">' + richText(v.estadoEsperado) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("componentsContainer").innerHTML = components.map((c, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">COMP-' + String(idx + 1).padStart(2, "0") + ' · Subsistema Técnico</span>' +
+            '<h4 class="card-heading">' + esc(c.componente) + '</h4>' +
+          '</div>' +
+          valBadge(c.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Qué Configurar y Habilitar en este Componente</div>' +
+            '<div class="info-content">' + richText(c.funcionOperativa) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Ruta Exacta en Consola</div>' +
+            '<div class="info-content"><code>' + esc(c.portalRuta) + '</code></div>' +
+            '<div class="info-label" style="margin-top:14px;">Integraciones que Validar</div>' +
+            '<div class="pill-row" style="margin-top:6px;">' + (c.integraciones || []).map((i) => '<span class="badge">' + esc(i) + '</span>').join("") + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+
+    document.getElementById("rbacContainer").innerHTML = rbacRoles.map((r) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">RBAC / PIM · ' + esc(r.nivelSOC) + '</span>' +
+            '<h4 class="card-heading">' + esc(r.rol) + '</h4>' +
+          '</div>' +
+          valBadge(r.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair" style="margin-bottom:14px;">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Configuración Puntual en PIM / Asignación</div>' +
+            '<div class="info-content">' + richText(r.asignacionPIM) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Alcance de Permisos a Validar</div>' +
+            '<div class="info-content">' + richText(r.permisosClave) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="validation-footer">' +
+          '<div><strong>Uso operativo autorizado:</strong> ' + richText(r.responsabilidadOperativa) + '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+
+  // Helper to render step-by-step lists with clickable step checkmarks
+  function renderStepRows(actCode, steps) {
+    return '<ol class="steps-list">' + (steps || []).map((st, idx) => {
+      const stepKey = actCode + "_S" + (idx + 1);
+      const isChecked = !!uiState.steps[stepKey];
+      return (
+        '<li class="step-row ' + (isChecked ? "step-checked" : "") + '" data-step="' + esc(stepKey) + '" title="Haz clic para marcar o desmarcar este paso">' +
+          '<span class="step-num">' + (isChecked ? "✓" : (idx + 1)) + '</span>' +
+          '<div class="step-body">' + richText(st) + '</div>' +
+        '</li>'
+      );
+    }).join("") + '</ol>';
+  }
+
+  // VISTA 2: ACCIONES PERIÓDICAS
+  const roleSet = new Set();
+  periodicActs.forEach((a) => {
+    String(a.rolResponsable || "").split(/[\/+,]/).forEach((r) => {
+      const clean = r.trim();
+      if (clean) roleSet.add(clean);
+    });
+  });
+  const perRoleSel = document.getElementById("perRole");
+  Array.from(roleSet).sort().forEach((r) => {
+    const o = document.createElement("option");
+    o.value = r; o.textContent = "Rol: " + r;
+    perRoleSel.appendChild(o);
+  });
+
+  function syncPeriodicSubnav() {
+    document.querySelectorAll("#periodicCadBar .subnav-pill").forEach((b) => {
+      b.classList.toggle("active", b.getAttribute("data-pcad") === activePeriodicCad);
+    });
+    const titles = {
+      "Diaria": ["2. Acciones Periódicas — Rutinas Diarias", "Controles diarios del turno SOC y administración para asegurar salud de plataforma, triaje a tiempo y cero caídas silenciosas."],
+      "Semanal": ["2. Acciones Periódicas — Rutinas Semanales", "Actividades semanales de tuning de falsos positivos, caza proactiva, revisión de postura e higiene operativa."],
+      "Mensual": ["2. Acciones Periódicas — Rutinas Mensuales", "Gobierno mensual de privilegios RBAC/PIM, optimización financiera/retención, pruebas de automatización y reporte ejecutivo al CISO."],
+      "CICLOS_LARGOS": ["2. Acciones Periódicas — Ciclos Trimestrales, Semestrales y Anuales", "Ejercicios Tabletop/Purple Team, análisis de cobertura MITRE ATT&CK, simulacros de continuidad y auditoría estratégica anual."],
+      "ALL_PERIODIC": ["2. Todas las Acciones Periódicas Programadas", "Listado consolidado de todas las rutinas preventivas y de gobierno del módulo (excluyendo playbooks reactivos Ad-Hoc)."]
+    };
+    const pair = titles[activePeriodicCad] || titles["ALL_PERIODIC"];
+    document.getElementById("periodicTitle").textContent = pair[0];
+    document.getElementById("periodicSubtitle").textContent = pair[1];
+  }
+
+  document.getElementById("periodicCadBar").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-pcad]");
+    if (!b) return;
+    activePeriodicCad = b.getAttribute("data-pcad");
+    syncPeriodicSubnav();
+    switchView("view-periodic", activePeriodicCad);
+  });
+
+  function getFilteredPeriodic() {
+    const q = document.getElementById("perSearch").value.trim().toLowerCase();
+    const rol = document.getElementById("perRole").value;
+    const orig = document.getElementById("perOrigin").value;
+
+    return periodicActs.filter((a) => {
+      if (activePeriodicCad === "CICLOS_LARGOS") {
+        if (["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) === -1) return false;
+      } else if (activePeriodicCad !== "ALL_PERIODIC") {
+        if (a.cadencia !== activePeriodicCad) return false;
+      }
+      if (rol !== "ALL" && String(a.rolResponsable).indexOf(rol) === -1) return false;
+      if (orig !== "ALL" && a.estadoValidacion !== orig) return false;
+      if (q) {
+        const hay = [a.codigo, a.cadencia, a.actividad, a.objetivo, a.consolaRuta, a.rolResponsable, a.evidenciaAuditable, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderPeriodicCards() {
+    const list = getFilteredPeriodic();
+    document.getElementById("perCountLabel").textContent =
+      "Mostrando " + list.length + " acciones periódicas en esta vista (haz clic en cada paso numerado para llevar control de lectura o ejecución).";
+
+    const box = document.getElementById("periodicCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay actividades periódicas que coincidan con los filtros seleccionados.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + ' aria-label="Completar ' + esc(a.codigo) + '">' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Rutina ' + esc(a.cadencia) + '</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge">' + esc(a.rolResponsable) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Objetivo de la Rutina</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Consola y Ruta Exacta</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Acciones Paso a Paso a Ejecutar y Validar (' + steps.length + ' pasos)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación de cierre y evidencia auditable:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<span>MITRE ATT&amp;CK: ' + esc(a.mitreTactic) + ' · ' + esc(a.notaValidacion) + '</span>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Ver guía oficial en MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+
+  ["perSearch", "perRole", "perOrigin"].forEach((id) => {
+    document.getElementById(id).addEventListener("input", renderPeriodicCards);
+    document.getElementById(id).addEventListener("change", renderPeriodicCards);
+  });
+
+  // VISTA 3: PLAYBOOKS AD-HOC (ALERTAS Y SEÑALES)
+  function renderAdhocCards() {
+    const q = document.getElementById("adhocSearch").value.trim().toLowerCase();
+    const list = adhocActs.filter((a) => {
+      if (!q) return true;
+      const hay = [a.codigo, a.actividad, a.disparadorAlerta, a.objetivo, a.consolaRuta, a.rolResponsable, a.mitreTactic, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+      return hay.indexOf(q) !== -1;
+    });
+
+    const box = document.getElementById("adhocCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay playbooks Ad-Hoc que coincidan con la búsqueda.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card adhoc-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Playbook Reactivo del Analista (Ad-Hoc)</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge badge-accent">MITRE: ' + esc(a.mitreTactic) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="trigger-banner">' +
+            '<div class="info-label">Señal, Alerta o Evento Disparador (Cuándo debe actuar el analista)</div>' +
+            '<div class="info-content" style="font-weight:600;">' + richText(a.disparadorAlerta) + '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Meta de Contención y Erradicación</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Analista Ejecutor y Consola de Intervención</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><strong>Rol:</strong> ' + esc(a.rolResponsable) + '<br><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Secuencia Táctica del Analista (' + steps.length + ' pasos de respuesta)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación post-contención y evidencia forense:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<button class="btn btn-sm go-queries-btn" type="button">Abrir Consultas KQL / Scripts de Apoyo →</button>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Documentación oficial de respuesta MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+  document.getElementById("adhocSearch").addEventListener("input", renderAdhocCards);
+
+  // Global delegation for task checkboxes, step rows, copy buttons & query jumps
+  document.addEventListener("change", (e) => {
+    const chk = e.target.closest(".task-checkbox");
+    if (!chk) return;
+    const key = chk.getAttribute("data-task");
+    uiState.tasks[key] = chk.checked;
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  document.addEventListener("click", (e) => {
+    const stepEl = e.target.closest(".step-row");
+    if (stepEl && !e.target.closest("a")) {
+      const sk = stepEl.getAttribute("data-step");
+      uiState.steps[sk] = !uiState.steps[sk];
+      saveState(uiState);
+      renderPeriodicCards();
+      renderAdhocCards();
+      return;
+    }
+    const copyBtn = e.target.closest(".copy-text-btn");
+    if (copyBtn) {
+      const txt = copyBtn.getAttribute("data-copy") || "";
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(() => {
+          const prev = copyBtn.textContent;
+          copyBtn.textContent = "¡Copiado!";
+          setTimeout(() => { copyBtn.textContent = prev; }, 1400);
+        });
+      }
+      return;
+    }
+    if (e.target.closest(".go-queries-btn")) {
+      switchView("view-queries");
+    }
+  });
+
+  document.getElementById("resetChecksBtn").addEventListener("click", () => {
+    uiState = { tasks: {}, steps: {} };
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  // Export CSV (all activities with action type distinction)
+  document.getElementById("exportCsvBtn").addEventListener("click", () => {
+    const hdr = ["TipoAccion", "Codigo", "Cadencia", "Actividad", "Disparador_u_Objetivo", "ConsolaRuta", "RolResponsable", "FuncionNIST", "SubcategoriaNIST", "MITRE", "EstadoValidacion", "Completado", "EvidenciaAuditable"];
+    const lines = [hdr.join(",")];
+    allActs.forEach((a) => {
+      const vals = [
+        a.tipoAccion, a.codigo, a.cadencia, a.actividad,
+        a.cadencia === "Ad-Hoc" ? a.disparadorAlerta : a.objetivo,
+        a.consolaRuta, a.rolResponsable, a.funcionNIST, a.subcategoriaNIST,
+        a.mitreTactic, a.estadoValidacion, uiState.tasks[a.codigo] ? "Si" : "No", a.evidenciaAuditable
+      ].map((v) => '"' + String(v || "").replace(/"/g, '""') + '"');
+      lines.push(vals.join(","));
+    });
+    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url; link.download = MODULE_DATA.slug + "_Guia_Operacional.csv";
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  });
+
+  // VISTA 4: QUERIES
+  function renderQueries() {
+    const q = document.getElementById("kqlSearch").value.trim().toLowerCase();
+    const uf = document.getElementById("kqlUsageFilter").value;
+    const list = (MODULE_DATA.consultasKQLyVerificacion || []).filter((it) => {
+      if (uf !== "ALL" && it.usoOperativo !== uf) return false;
+      if (q && [it.nombre, it.plataforma, it.tablaPrincipal, it.proposito, it.consulta, it.usoOperativo].join(" ").toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+
+    document.getElementById("queriesContainer").innerHTML = list.map((it, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">Q-' + String(idx + 1).padStart(2, "0") + ' · ' + esc(it.usoOperativo) + '</span>' +
+            '<h3 class="card-heading">' + esc(it.nombre) + '</h3>' +
+          '</div>' +
+          '<div class="pill-row">' +
+            '<span class="badge badge-accent">' + esc(it.plataforma) + '</span>' +
+            '<span class="badge mono">' + esc(it.tablaPrincipal) + '</span>' +
+            valBadge(it.estadoValidacion) +
+            '<button class="btn btn-sm copy-kql-btn" type="button" data-qidx="' + idx + '">Copiar consulta</button>' +
+          '</div>' +
+        '</div>' +
+        '<p style="margin:0 0 12px 0;"><strong>Qué valida o detecta:</strong> ' + richText(it.proposito) + '</p>' +
+        '<pre class="code-block">' + esc(it.consulta) + '</pre>' +
+      '</div>'
+    )).join("");
+
+    document.querySelectorAll(".copy-kql-btn").forEach((b) => {
+      b.addEventListener("click", () => {
+        const item = list[Number(b.getAttribute("data-qidx"))];
+        if (item && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(item.consulta).then(() => {
+            b.textContent = "¡Consulta copiada!";
+            setTimeout(() => { b.textContent = "Copiar consulta"; }, 1500);
+          });
+        }
+      });
+    });
+  }
+  document.getElementById("kqlSearch").addEventListener("input", renderQueries);
+  document.getElementById("kqlUsageFilter").addEventListener("change", renderQueries);
+
+  // VISTA 5: KPIs, MATURITY & TRAINING
+  document.getElementById("kpiContainer").innerHTML = (MODULE_DATA.kpisYMetricas || []).map((k) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:12px;">' +
+        '<div><span class="card-code">' + esc(k.id) + '</span><h4 class="card-heading" style="font-size:18px;">' + esc(k.nombre) + '</h4></div>' +
+        valBadge(k.estadoValidacion) +
+      '</div>' +
+      '<p style="margin:0 0 12px 0;">' + richText(k.definicion) + '</p>' +
+      '<pre class="code-block" style="margin:0 0 14px 0;">Fórmula: ' + esc(k.formula) + '</pre>' +
+      '<div class="pill-row">' +
+        '<span class="badge badge-accent">Meta: ' + esc(k.metaSugerida) + '</span>' +
+        '<span class="badge">Medición: ' + esc(k.frecuencia) + '</span>' +
+        '<span class="badge">' + esc(k.audiencia) + '</span>' +
+      '</div>' +
+      '<p class="muted" style="font-size:13px;margin:10px 0 0 0;">' + richText(k.notaValidacion) + '</p>' +
+    '</div>'
+  )).join("");
+
+  const mat = MODULE_DATA.modeloMadurez || [];
+  document.getElementById("maturityContainer").innerHTML = mat.map((m) => (
+    '<div class="spacious-card" style="padding:22px 28px;margin-bottom:14px;">' +
+      '<div class="pill-row" style="margin-bottom:6px;">' +
+        '<span class="card-code" style="margin-bottom:0;">' + richText(m.nivel) + '</span>' +
+        (m.estadio ? '<strong style="font-size:17px;">' + richText(m.estadio) + '</strong>' : '') +
+        '<span class="badge badge-editorial">Propuesta Editorial</span>' +
+      '</div>' +
+      '<div style="font-size:15.5px;">' + richText(m.descripcion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  const tr = MODULE_DATA.rutaFormacion || { headers: [], rows: [] };
+  if (tr.rows && tr.rows.length) {
+    document.getElementById("trainingContainer").innerHTML =
+      '<div class="table-wrap"><table><thead><tr>' +
+      tr.headers.map((h) => '<th>' + richText(h) + '</th>').join("") +
+      '</tr></thead><tbody>' +
+      tr.rows.map((row) => '<tr>' + row.map((cell, ci) => '<td>' + (ci === 0 ? '<strong>' + richText(cell) + '</strong>' : richText(cell)) + '</td>').join("") + '</tr>').join("") +
+      '</tbody></table></div>';
+  }
+
+  // VISTA 6: NIST CSF 2.0, AUDIT & REFS
+  function renderNist() {
+    const fn = document.getElementById("nistFuncSelect").value;
+    const rows = (MODULE_DATA.mapeoNISTCSF20 || []).filter((n) => fn === "ALL" || String(n.funcion).indexOf(fn) !== -1);
+    document.getElementById("nistCardsContainer").innerHTML = rows.map((n) => (
+      '<div class="spacious-card" style="padding:24px 30px;margin-bottom:16px;">' +
+        '<div class="card-top" style="margin-bottom:14px;">' +
+          '<div class="pill-row">' +
+            '<span class="card-code" style="margin-bottom:0;">' + esc(n.subcategoria) + '</span>' +
+            '<strong style="font-size:17px;">' + esc(n.funcion) + '</strong>' +
+          '</div>' +
+          valBadge(n.estadoValidacion) +
+        '</div>' +
+        '<p style="margin:0 0 14px 0;"><strong>Outcome NIST CSWP 29:</strong> ' + richText(n.descripcionResultado) + '</p>' +
+        '<div class="info-pair" style="margin-bottom:0;">' +
+          '<div class="info-box"><div class="info-label">Capacidad Habilitadora en Microsoft</div><div class="info-content">' + richText(n.capacidadMicrosoft) + '</div></div>' +
+          '<div class="info-box"><div class="info-label">Evidencia Auditable Reproducible</div><div class="info-content">' + richText(n.evidenciaAuditoria) + '</div></div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+  document.getElementById("nistFuncSelect").addEventListener("change", renderNist);
+
+  const vd = MODULE_DATA.validacionYDecisionesEditoriales || {};
+  document.getElementById("auditSummaryBox").innerHTML =
+    '<h4 style="margin:0 0 8px 0;font-size:18px;">Resumen de Auditoría Documental (' + esc(vd.fechaRevalidacion) + ')</h4>' +
+    '<p style="margin:0;">' + richText(vd.resumenAuditoria) + '</p>';
+
+  document.getElementById("corrContainer").innerHTML = '<ol style="padding-left:20px;margin:0;">' +
+    (vd.correccionesAplicadas || []).map((c) => '<li style="margin-bottom:12px;">' + richText(c) + '</li>').join("") + '</ol>';
+
+  document.getElementById("decContainer").innerHTML = (vd.decisionesEditoriales || []).map((d) => (
+    '<div class="info-box" style="margin-bottom:12px;">' +
+      '<div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;"><strong>' + esc(d.elemento) + '</strong>' + valBadge(d.tipo) + '</div>' +
+      '<div class="muted" style="font-size:14.5px;">' + richText(d.justificacion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  function renderRefs() {
+    const q = document.getElementById("refSearch").value.trim().toLowerCase();
+    const list = (MODULE_DATA.referenciasVerificadas || []).filter((r) => {
+      if (!q) return true;
+      return [r.id, r.titulo, r.tipoFuente, r.autor, r.comentario, r.url].join(" ").toLowerCase().indexOf(q) !== -1;
+    });
+    document.getElementById("refTableBody").innerHTML = list.map((r) => (
+      '<tr>' +
+        '<td class="mono"><strong>' + esc(r.id) + '</strong></td>' +
+        '<td><a href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer"><strong>' + esc(r.titulo) + ' ↗</strong></a><br><span class="mono muted" style="font-size:12px;">' + esc(r.url) + '</span></td>' +
+        '<td><span class="badge">' + esc(r.tipoFuente) + '</span></td>' +
+        '<td>' + esc(r.autor) + '</td>' +
+        '<td>' + richText(r.comentario) + '</td>' +
+      '</tr>'
+    )).join("");
+  }
+  document.getElementById("refSearch").addEventListener("input", renderRefs);
+
+  // Initial render
+  updateProgressTracker();
+  renderConfigView();
+  syncPeriodicSubnav();
+  renderPeriodicCards();
+  renderAdhocCards();
+  renderQueries();
+  renderNist();
+  renderRefs();
+  applyInitialHash();
+})();
+</script>
+</body>
+</html>

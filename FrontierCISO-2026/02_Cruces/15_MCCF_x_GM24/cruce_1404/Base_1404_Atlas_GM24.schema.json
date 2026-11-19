@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Candidatos de integración CISO 1404 ↔ GM-24",
+  "type": "object",
+  "required": ["version_contrato", "fecha_corte", "estado_global", "fuentes_versionadas", "contrato_semantico", "resumen", "conceptos", "mapeos_propuestos", "unidades_gm24"],
+  "properties": {
+    "version_contrato": {"const": "1.0.0-proposal"},
+    "fecha_corte": {"type": "string", "format": "date"},
+    "estado_global": {"const": "propuesta_para_revision_no_aplicada_al_grafo"},
+    "objetivo": {"type": "string"},
+    "fuentes_versionadas": {"type": "object"},
+    "contrato_semantico": {"type": "object"},
+    "resumen": {"type": "object"},
+    "conceptos": {"type": "array", "minItems": 1404, "maxItems": 1404, "items": {"$ref": "#/$defs/concepto"}},
+    "mapeos_propuestos": {"type": "array", "minItems": 1404, "items": {"$ref": "#/$defs/mapeo"}},
+    "unidades_gm24": {"type": "array", "minItems": 24, "maxItems": 24, "items": {"$ref": "#/$defs/unidad"}}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "concepto": {
+      "type": "object",
+      "required": ["id", "nombre", "categoria", "explicacion", "definicion", "limites", "estado_definicion", "procedencia", "propuesta_nodo", "unidades_gm24_propuestas", "aplicacion_ciso", "ejercicios", "evaluacion"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[A-Z]{2,5}-[0-9]{4}$"},
+        "nombre": {"type": "string", "minLength": 2},
+        "categoria": {"type": "string", "minLength": 3},
+        "categoria_descriptiva": {"type": "string"},
+        "alias": {"type": "array", "items": {"type": "string"}},
+        "autores_documentados": {"type": "array"},
+        "referencias_bibliograficas_documentadas": {"type": "array"},
+        "estado_definicion": {"enum": ["source_supported", "conservative_derived"]},
+        "confianza_catalogo": {"type": "string"},
+        "atlas_territorios_editoriales": {"type": "array", "items": {"type": "string"}},
+        "relevancia_soc_agente": {"type": "object"},
+        "relevancia_trust_framework": {"type": "object"},
+        "prioridad_ciso_editorial": {"type": "string"},
+        "definicion": {"type": "string", "minLength": 25},
+        "explicacion": {"type": "string", "minLength": 280},
+        "limites": {"type": "string", "minLength": 20},
+        "aplicacion_ciso": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "aplicacion_arquitectura": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "ejercicios": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "evaluacion": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "controles_compensatorios": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "propuesta_nodo": {
+          "type": "object",
+          "required": ["tipo_ontologico", "identificador_fuente", "version_ontologia", "estado_revision", "requiere_id_nodo_reservado"],
+          "properties": {
+            "tipo_ontologico": {"const": "Concept"},
+            "identificador_fuente": {"type": "string"},
+            "version_ontologia": {"const": "1.0.0"},
+            "estado_revision": {"const": "proposed_not_loaded"},
+            "requiere_id_nodo_reservado": {"const": true},
+            "no_equivale_automaticamente_a": {"type": "array"}
+          }
+        },
+        "procedencia": {
+          "type": "object",
+          "required": ["catalogo", "catalogo_sha256", "documentos_origen_contados", "ocurrencias_contadas", "muestras_sin_texto_fuente"],
+          "properties": {
+            "catalogo": {"type": "string"},
+            "catalogo_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+            "documentos_origen_contados": {"type": "integer", "minimum": 1},
+            "ocurrencias_contadas": {"type": "integer", "minimum": 1},
+            "muestras_sin_texto_fuente": {"type": "array", "maxItems": 3, "items": {"type": "object"}},
+            "advertencia": {"type": "string"}
+          }
+        },
+        "unidades_gm24_propuestas": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id_unidad"}}
+      }
+    },
+    "id_unidad": {"type": "string", "pattern": "^[GM][1-6]\\.[12]$"},
+    "mapeo": {
+      "type": "object",
+      "required": ["mapping_id", "concept_id", "unit_id", "concept_type", "unit_type", "relation_candidate", "direction", "status", "confidence_editorial", "method", "rationale", "indicators", "provenance"],
+      "properties": {
+        "mapping_id": {"type": "string", "pattern": "^GM24-[GM][1-6]\\.[12]-[A-Z]{2,5}-[0-9]{4}$"},
+        "concept_id": {"type": "string", "pattern": "^[A-Z]{2,5}-[0-9]{4}$"},
+        "unit_id": {"$ref": "#/$defs/id_unidad"},
+        "concept_type": {"const": "Concept"},
+        "unit_type": {"const": "LearningUnit"},
+        "relation_candidate": {"const": "COVERS_CONCEPT"},
+        "direction": {"const": "LearningUnit -> Concept"},
+        "status": {"const": "proposed_pending_ontology_extension_and_human_review"},
+        "review_priority": {"enum": ["normal", "high", "critical"]},
+        "confidence_editorial": {"enum": ["alta_editorial", "media", "baja"]},
+        "method": {"enum": ["source_crosswalk", "editorial_curation_72", "label_match", "topic_match", "weak_similarity", "pedagogical_fallback"]},
+        "rationale": {"type": "string", "minLength": 90},
+        "indicators": {"type": "object"},
+        "provenance": {"type": "object"}
+      }
+    },
+    "unidad": {
+      "type": "object",
+      "required": ["id", "tipo_ontologico_propuesto", "titulo", "conceptos_propuestos", "cantidad", "estado"],
+      "properties": {
+        "id": {"$ref": "#/$defs/id_unidad"},
+        "tipo_ontologico_propuesto": {"const": "LearningUnit"},
+        "titulo": {"type": "string", "minLength": 5},
+        "caso_editorial": {"type": "object"},
+        "conceptos_propuestos": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-Z]{2,5}-[0-9]{4}$"}},
+        "cantidad": {"type": "integer", "minimum": 1},
+        "estado": {"type": "string"}
+      }
+    }
+  }
+}

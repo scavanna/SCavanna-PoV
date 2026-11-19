@@ -1,0 +1,12 @@
+# 18 Purview Communication Compliance
+
+Ruta: `FrontierCISO-2026\01_Bases\09_Excelencia_Operacional_MS\guias_v2\18_Purview_Communication_Compliance`
+
+[Carpeta superior](../indice-catalogo.md)
+
+## Archivos de esta carpeta
+
+- [Purview_Communication_Compliance_Guia_Excelencia_Operacional.html](Purview_Communication_Compliance_Guia_Excelencia_Operacional.html)
+- [Purview_Communication_Compliance_Guia_Excelencia_Operacional.json](Purview_Communication_Compliance_Guia_Excelencia_Operacional.json)
+- [Purview_Communication_Compliance_Guia_Excelencia_Operacional.md](Purview_Communication_Compliance_Guia_Excelencia_Operacional.md)
+- [Purview_Communication_Compliance_Guia_Excelencia_Operacional.xlsx](Purview_Communication_Compliance_Guia_Excelencia_Operacional.xlsx)

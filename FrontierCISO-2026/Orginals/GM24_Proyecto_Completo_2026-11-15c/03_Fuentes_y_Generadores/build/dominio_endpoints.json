@@ -1,0 +1,1112 @@
+{
+ "ficha": {
+  "prefijo": "EP",
+  "agente": "EA",
+  "nombre": "Protección, detección y respuesta en endpoints (Microsoft Defender for Endpoint + Defender Vulnerability Management + Intune)",
+  "dominio_zt": "Endpoints / dispositivos (pilar Zero Trust); interfaz con Identidades (cumplimiento como señal de CA) y con XDR",
+  "tecnologia": "Defender for Endpoint (EDR, next-gen protection, ASR, web/network protection, device control, attack disruption), Defender Vulnerability Management, Intune (baselines, cumplimiento), Defender XDR",
+  "funciones_csf": "ID.AM · ID.RA · PR.PS · PR.AA · DE.CM/DE.AE · RS.AN/RS.MI · RC.RP",
+  "fuente_oficial": "Microsoft Defender for Endpoint Security Operations Guide (diario/semanal/mensual/ad hoc) + Defender Vulnerability Management + ASR + device groups; Intune security baselines",
+  "objetivo": "Que todo dispositivo del alcance esté onboarded, saludable, con ASR y baseline aplicados, con vulnerabilidades críticas remediadas en SLA y respuesta a incidentes de endpoint dentro del SLA",
+  "slo": "Onboarded ≥98 %; EDR/AV saludable ≥98 %; CVEs críticos en activos críticos ≤7 días; ASR en bloqueo ≥90 %; incidentes High triados ≤30 min",
+  "diferencia": "Endpoints tiene más acciones irreversibles (aislar, restringir, offboard) y más dependencia de IT (Intune). Desde el 1-sep-2026 AIR ya no es una experiencia separada en MDE: la detección/respuesta automática queda embebida en el stack antivirus; el foco pasa a revisar el Action center y los niveles de automatización por grupo.",
+  "interfaz": "Owner XDR: cola y automatización transversal. Owner Identidades: cumplimiento de dispositivo como condición de acceso. IT/Intune: ejecuta remediaciones; el owner Endpoints las prioriza y verifica.",
+  "personas": "Security Operations Team · Security Administration Team · Engineering & SecOps · IT (Intune)",
+  "permisos": "Security data basics · Alerts (Manage) · Response (Manage) · Live response · Vulnerability management · Security settings (Manage) · Authorization (device groups)"
+ },
+ "tareas": [
+  [
+   "EP-D01",
+   "Revisar acciones automáticas y manuales en el Action center",
+   "Diaria",
+   "Security Operations Team",
+   "RS.MI, GV.OV",
+   "SOP",
+   "eo:OP-SOP-27 Supervisar la remediación automatizada",
+   "L2",
+   "EA-03",
+   "Pendientes >4 h = 0",
+   "MDE SecOps guide"
+  ],
+  [
+   "EP-D02",
+   "Triar incidentes de la cola con alertas de MDE y resolver remediados",
+   "Diaria",
+   "Security Operations Team",
+   "DE.AE, RS.MA",
+   "SOP",
+   "eo:OP-SOP-10 Triar incidentes por prioridad dentro del SLA",
+   "L2",
+   "EA-01",
+   "% H/M en SLA",
+   "MDE SecOps guide"
+  ],
+  [
+   "EP-D03",
+   "Gestionar FP/FN: indicadores, exclusiones, envíos; causa (ASR, AV, EDR)",
+   "Diaria",
+   "Security Operations Team",
+   "ID.IM, PR.PS",
+   "SOP",
+   "eo:OP-SOP-15 Analizar causa raíz de errores de detección",
+   "L2",
+   "EA-04",
+   "FP recurrentes ↓",
+   "MDE SecOps guide"
+  ],
+  [
+   "EP-D04",
+   "Revisar Threat analytics de alto impacto y derivar acciones",
+   "Diaria",
+   "Security Operations Team",
+   "ID.RA, DE.AE",
+   "SOP",
+   "eo:OP-SOP-20 Revisar inteligencia de amenazas y derivar acciones",
+   "L2",
+   "EA-06",
+   "Acciones derivadas",
+   "MDE SecOps guide"
+  ],
+  [
+   "EP-D05",
+   "Revisar salud de dispositivos (AV signature/platform/engine, EDR sensor)",
+   "Diaria",
+   "Security Administration Team",
+   "PR.PS, DE.CM",
+   "POS",
+   "eo:OP-POS-15 Mantener la salud de la ingesta de señales",
+   "L3",
+   "EA-05",
+   "% saludables ≥98 %",
+   "MDE SecOps guide"
+  ],
+  [
+   "EP-D06",
+   "Investigar incidentes de endpoint y ejecutar/aprobar acciones (aislar, restringir, scan, paquete)",
+   "Diaria",
+   "Tier 2-3 + CSIRT",
+   "RS.AN, RS.MI",
+   "SOP",
+   "eo:OP-SOP-11 Investigar y remediar incidentes con evidencia",
+   "L2",
+   "EA-02",
+   "MTTR; aislamientos revertidos <2 %",
+   "MDE API machineaction"
+  ],
+  [
+   "EP-W01",
+   "Revisar Message Center (MDE/Intune) y evaluar impacto",
+   "Semanal",
+   "General",
+   "GV.OV, ID.IM",
+   "SIG",
+   "eo:OP-SIG-10 Vigilar cambios de la plataforma y evaluar impacto",
+   "L3",
+   "EA-10",
+   "Cambios evaluados ≤7 días",
+   "MDE SecOps guide"
+  ],
+  [
+   "EP-W02",
+   "Revisar threat protection report y tendencias",
+   "Semanal",
+   "Security Operations Team",
+   "DE.CM, ID.RA",
+   "POS",
+   "eo:OP-SOP-19 Revisar tendencias de detección y ajustar políticas",
+   "L3",
+   "EA-09",
+   "Informe semanal",
+   "MDE SecOps guide"
+  ],
+  [
+   "EP-W03",
+   "Revisar Defender Vulnerability Management: nuevas vulnerabilidades, recomendaciones, exposure score; solicitudes a Intune",
+   "Semanal",
+   "Security Administration Team + IT",
+   "ID.RA, ID.IM",
+   "POS",
+   "eo:OP-POS-17 Priorizar y seguir la remediación de vulnerabilidades por riesgo",
+   "L2",
+   "EA-07",
+   "CVEs críticos ≤7 días",
+   "MDE SecOps guide (TVM)"
+  ],
+  [
+   "EP-W04",
+   "Revisar ASR rules report y proponer paso de audit a block",
+   "Semanal",
+   "Security Administration Team",
+   "PR.PS",
+   "POS",
+   "eo:OP-POS-12 Detectar y corregir deriva de configuración frente al baseline",
+   "L2",
+   "EA-08",
+   "% reglas en block",
+   "attack-surface-reduction-rules-report"
+  ],
+  [
+   "EP-W05",
+   "Revisar web protection / network protection y custom indicators",
+   "Semanal",
+   "Security Administration Team",
+   "DE.CM, PR.PS",
+   "POS",
+   "eo:OP-SOP-19 Revisar tendencias de detección y ajustar políticas",
+   "L3",
+   "EA-09",
+   "Bloqueos; indicadores vigentes",
+   "MDE SecOps guide"
+  ],
+  [
+   "EP-W06",
+   "Hunting proactivo sobre Device* y detecciones personalizadas",
+   "Semanal",
+   "Tier 2-3",
+   "DE.CM, ID.RA",
+   "SOP",
+   "eo:OP-SOP-02 Buscar amenazas por técnicas priorizadas y convertir hallazgos en detecciones",
+   "L1",
+   "EA-11",
+   "Hunts; hallazgos→detecciones",
+   "advanced-hunting-overview"
+  ],
+  [
+   "EP-M01",
+   "Revisar device groups, niveles de automatización y RBAC por grupo",
+   "Mensual",
+   "Security Administration + SOC Oversight",
+   "PR.PS, PR.AA",
+   "POS",
+   "eo:OP-POS-12 Detectar y corregir deriva de configuración frente al baseline",
+   "L2",
+   "EA-08",
+   "Grupos fuera de baseline = 0",
+   "configure-automated-investigations-remediation"
+  ],
+  [
+   "EP-M02",
+   "Revisar baselines de Intune y su deriva",
+   "Mensual",
+   "Security Administration + IT",
+   "PR.PS, PR.AA",
+   "POS",
+   "eo:OP-POS-12 Detectar y corregir deriva de configuración frente al baseline",
+   "L2",
+   "EA-08",
+   "No conformes ↓",
+   "Intune security baselines"
+  ],
+  [
+   "EP-M03",
+   "Revisar device discovery: no gestionados y de red; plan de onboarding",
+   "Mensual",
+   "Engineering & SecOps",
+   "ID.AM",
+   "POS",
+   "eo:OP-POS-16 Mantener el inventario de fuentes de señal",
+   "L2",
+   "EA-05",
+   "No gestionados ↓",
+   "device-discovery"
+  ],
+  [
+   "EP-M04",
+   "Informe mensual de seguridad de endpoints",
+   "Mensual",
+   "SOC Oversight",
+   "GV.OV, RS.CO",
+   "SIG",
+   "eo:OP-SIG-13 Reportar resultados del SOC a la dirección",
+   "L3",
+   "EA-09",
+   "Informe a tiempo",
+   "threat-protection-reports"
+  ],
+  [
+   "EP-M05",
+   "Revisar indicadores y exclusiones con vencimiento; retirar obsoletos",
+   "Mensual",
+   "Security Administration",
+   "ID.IM, PR.PS",
+   "POS",
+   "eo:OP-POS-13 Revisar y depurar excepciones que debilitan la detección",
+   "L2",
+   "EA-04",
+   "Sin vencimiento = 0",
+   "MDE indicators"
+  ],
+  [
+   "EP-Q01",
+   "Revisar política de endpoints, excepciones y apetito de autonomía",
+   "Trimestral",
+   "PO-GAC Endpoints + CISO",
+   "GV.PO, GV.RM",
+   "SIG",
+   "eo:OP-SIG-12 Revisar políticas y excepciones del control",
+   "L1",
+   "—",
+   "Decisiones registradas",
+   "Propuesta"
+  ],
+  [
+   "EP-Q02",
+   "Revisar desempeño y costo de la flota Endpoints",
+   "Trimestral",
+   "PO-GAC Endpoints",
+   "GV.OV, ID.IM",
+   "IA",
+   "eo:OP-IA-02 Revisar desempeño, costo y riesgo de los agentes",
+   "L1",
+   "EA-13",
+   "KPIs vs. meta",
+   "Propuesta"
+  ],
+  [
+   "EP-Q03",
+   "Recertificar accesos (Unified RBAC por device group; Agent ID)",
+   "Trimestral",
+   "PO-GAC + IAM",
+   "PR.AA",
+   "AYI",
+   "eo:OP-AYI-01 Recertificar accesos privilegiados, no humanos y de agentes",
+   "L2",
+   "EA-13",
+   "% recertificados",
+   "Propuesta"
+  ],
+  [
+   "EP-Q04",
+   "Evaluaciones/regresión y red teaming de agentes; prueba de reversión de aislamiento",
+   "Trimestral",
+   "PO-GAC + AppSec",
+   "ID.IM, PR.PS",
+   "IA",
+   "eo:OP-IA-03 Evaluar y probar adversarialmente a los agentes",
+   "L2",
+   "—",
+   "% evaluados",
+   "Propuesta"
+  ],
+  [
+   "EP-A01",
+   "Respuesta a incidente mayor: aislamiento masivo acotado, restricción, offboarding",
+   "Por evento",
+   "CSIRT",
+   "RS.MI",
+   "SOP",
+   "eo:OP-SOP-11 Investigar y remediar incidentes con evidencia",
+   "L2",
+   "EA-02",
+   "Tiempo a contención",
+   "MDE machineaction"
+  ],
+  [
+   "EP-A02",
+   "Live response / recolección de paquetes",
+   "Por evento",
+   "Tier 3 / CSIRT",
+   "RS.AN",
+   "SOP",
+   "eo:OP-SOP-28 Recolectar evidencia forense con autoridad y registro",
+   "L1",
+   "—",
+   "Paquetes con registro",
+   "custom-permissions-details"
+  ],
+  [
+   "EP-A03",
+   "Onboarding/offboarding de dispositivos; grupos y tags",
+   "Por evento",
+   "Engineering & SecOps",
+   "ID.AM, PR.PS",
+   "POS",
+   "eo:OP-POS-16 Mantener el inventario de fuentes de señal",
+   "L2",
+   "EA-05",
+   "No onboarded",
+   "MDE onboarding"
+  ],
+  [
+   "EP-A04",
+   "Bloquear aplicación vulnerable (TVM) o mitigación alternativa",
+   "Por evento",
+   "Security Administration + IT",
+   "PR.PS, ID.RA",
+   "POS",
+   "eo:OP-POS-17 Priorizar y seguir la remediación de vulnerabilidades por riesgo",
+   "L2",
+   "EA-07",
+   "Apps bloqueadas",
+   "defender-vulnerability-management"
+  ],
+  [
+   "EP-A05",
+   "Tabletop ransomware/dispositivo comprometido (incl. 'agente comprometido')",
+   "Según necesidad",
+   "SOC Oversight + CSIRT",
+   "ID.IM, RS",
+   "SOP",
+   "eo:OP-SOP-26 Probar los planes de respuesta",
+   "L1",
+   "—",
+   "Ejercicios/año",
+   "AMP-43"
+  ]
+ ],
+ "agentes": [
+  {
+   "id": "EA-01",
+   "nombre": "Triage Copilot de incidentes de endpoint",
+   "proposito": "Pre-triar incidentes con alertas MDE, correlar con grupo y criticidad; proponer prioridad y clasificación.",
+   "tareas": "EP-D02",
+   "autonomia": "L2",
+   "gates": "Con aprobación; sin acciones sobre dispositivos",
+   "kpis": "Precisión ≥90 %",
+   "costo": "Tokens/SCU",
+   "riesgos_asi": "ASI01, ASI06",
+   "identidad": "Agent ID; Security data basics",
+   "owner": "PO-GAC Endpoints",
+   "ruta": "R1 (alt. R2)",
+   "tools_propios": [
+    "T-04",
+    "T-01",
+    "ET-04"
+   ],
+   "knowledge_propios": [
+    "KN-03",
+    "DK-E1"
+   ],
+   "skills_propios": [
+    "SK-07",
+    "DS-E1"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "EA-02",
+   "nombre": "Asistente de investigación y respuesta en dispositivos",
+   "proposito": "Reunir evidencia, proponer acciones (aislar, restringir, scan) con límite y ejecutarlas tras aprobación.",
+   "tareas": "EP-D06, EP-A01",
+   "autonomia": "L2",
+   "gates": "Toda acción con aprobación; máx. N dispositivos; nunca offboard ni live response",
+   "kpis": "MTTR; aislamientos revertidos <2 %",
+   "costo": "Tokens/SCU",
+   "riesgos_asi": "ASI02, ASI03, ASI08",
+   "identidad": "Agent ID; Response (Manage) acotado por device group",
+   "owner": "PO-GAC Endpoints + CSIRT",
+   "ruta": "R1 (alt. R2)",
+   "tools_propios": [
+    "ET-07",
+    "ET-04",
+    "T-04",
+    "T-01"
+   ],
+   "knowledge_propios": [
+    "KN-05",
+    "DK-E2"
+   ],
+   "skills_propios": [
+    "SK-08",
+    "SK-04",
+    "DS-E2"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "EA-03",
+   "nombre": "Supervisor del Action center (endpoints)",
+   "proposito": "Resumir acciones automáticas y pendientes; detectar masivas o anómalas; preparar aprobación.",
+   "tareas": "EP-D01",
+   "autonomia": "L2",
+   "gates": "Aprobar solo humano",
+   "kpis": "Pendientes >4 h = 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI08, ASI09",
+   "identidad": "Agent ID; Response (Read)",
+   "owner": "PO-GAC Endpoints",
+   "ruta": "R2",
+   "tools_propios": [
+    "XT-03",
+    "T-04"
+   ],
+   "knowledge_propios": [
+    "DK-E3",
+    "KN-02"
+   ],
+   "skills_propios": [
+    "XS-03",
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "EA-04",
+   "nombre": "Analista de FP/FN, indicadores y exclusiones",
+   "proposito": "Analizar causa (ASR, AV, EDR), proponer indicadores/exclusiones con vencimiento.",
+   "tareas": "EP-D03, EP-M05",
+   "autonomia": "L2",
+   "gates": "Con aprobación; vencimiento obligatorio",
+   "kpis": "FP recurrentes ↓",
+   "costo": "Tokens",
+   "riesgos_asi": "ASI01, ASI09",
+   "identidad": "Agent ID; Security settings (Manage) acotado",
+   "owner": "PO-GAC Endpoints",
+   "ruta": "R2",
+   "tools_propios": [
+    "ET-03",
+    "ET-04",
+    "T-06"
+   ],
+   "knowledge_propios": [
+    "KN-04",
+    "DK-E4"
+   ],
+   "skills_propios": [
+    "SK-09",
+    "XS-04"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "EA-05",
+   "nombre": "Centinela de salud y cobertura de dispositivos",
+   "proposito": "Detectar no saludables, no onboarded y no gestionados; abrir tickets.",
+   "tareas": "EP-D05, EP-M03, EP-A03",
+   "autonomia": "L3 (detección) / L2 (tickets)",
+   "gates": "Solo lectura + ticket",
+   "kpis": "% saludables ≥98 %",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI10",
+   "identidad": "Agent ID; Machine.Read.All",
+   "owner": "PO-GAC Endpoints + Engineering",
+   "ruta": "R2",
+   "tools_propios": [
+    "XT-05",
+    "ET-06",
+    "ET-08",
+    "T-15"
+   ],
+   "knowledge_propios": [
+    "DK-E5"
+   ],
+   "skills_propios": [
+    "XS-05",
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "EA-06",
+   "nombre": "Briefer de Threat analytics de endpoints",
+   "proposito": "Resumir amenazas de alto impacto; derivar hunts y mitigaciones.",
+   "tareas": "EP-D04",
+   "autonomia": "L2",
+   "gates": "Con aprobación",
+   "kpis": "Acciones/semana",
+   "costo": "Tokens/SCU",
+   "riesgos_asi": "ASI06",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC Endpoints + TI",
+   "ruta": "R1 (alt. R2)",
+   "tools_propios": [
+    "T-01",
+    "T-04",
+    "T-03",
+    "XT-07"
+   ],
+   "knowledge_propios": [
+    "KN-09",
+    "KN-05"
+   ],
+   "skills_propios": [
+    "SK-12"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "EA-07",
+   "nombre": "Analista de vulnerabilidades y remediación",
+   "proposito": "Priorizar recomendaciones TVM por riesgo, proponer solicitudes a Intune y bloqueo de apps vulnerables.",
+   "tareas": "EP-W03, EP-A04",
+   "autonomia": "L2",
+   "gates": "Con aprobación",
+   "kpis": "CVEs críticos ≤7 días",
+   "costo": "Tokens",
+   "riesgos_asi": "ASI02",
+   "identidad": "Agent ID; Vulnerability management (Read)",
+   "owner": "PO-GAC Endpoints + IT",
+   "ruta": "R2",
+   "tools_propios": [
+    "ET-01",
+    "ET-02",
+    "ET-04"
+   ],
+   "knowledge_propios": [
+    "DK-E6",
+    "KN-11"
+   ],
+   "skills_propios": [
+    "DS-E3",
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "EA-08",
+   "nombre": "Auditor de ASR, baselines y grupos",
+   "proposito": "Comparar ASR, baselines de Intune, device groups y automatización contra el baseline.",
+   "tareas": "EP-W04, EP-M01, EP-M02",
+   "autonomia": "L2",
+   "gates": "Con aprobación",
+   "kpis": "Grupos fuera de baseline = 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI03",
+   "identidad": "Agent ID; lectura de configuración",
+   "owner": "PO-GAC Endpoints + IAM",
+   "ruta": "R2",
+   "tools_propios": [
+    "ET-04",
+    "ET-05",
+    "XT-11",
+    "XT-12"
+   ],
+   "knowledge_propios": [
+    "DK-E7",
+    "KN-08"
+   ],
+   "skills_propios": [
+    "SK-10",
+    "XS-07"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "EA-09",
+   "nombre": "Reportero de protección y resumen mensual",
+   "proposito": "Compilar informes de protección, salud y resumen mensual.",
+   "tareas": "EP-W02, EP-W05, EP-M04",
+   "autonomia": "L3",
+   "gates": "Solo informa",
+   "kpis": "Informes a tiempo",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI09",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC Endpoints",
+   "ruta": "R2",
+   "tools_propios": [
+    "ET-08",
+    "ET-04",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-10"
+   ],
+   "skills_propios": [
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "EA-10",
+   "nombre": "Vigía de cambios de plataforma (MDE/Intune)",
+   "proposito": "Leer Message Center; evaluar impacto en baselines, ASR, runbooks y agentes.",
+   "tareas": "EP-W01",
+   "autonomia": "L3",
+   "gates": "Solo informa",
+   "kpis": "Cambios evaluados ≤7 días",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI06",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC Endpoints",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-09",
+    "T-03"
+   ],
+   "knowledge_propios": [
+    "KN-02",
+    "DK-E7"
+   ],
+   "skills_propios": [
+    "SK-14"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "EA-11",
+   "nombre": "Bibliotecario de hunting de endpoints",
+   "proposito": "Mantener consultas sobre Device* y detecciones; medir precisión.",
+   "tareas": "EP-W06",
+   "autonomia": "L2",
+   "gates": "Detecciones con aprobación",
+   "kpis": "Consultas vigentes",
+   "costo": "Medio",
+   "riesgos_asi": "ASI02, ASI05",
+   "identidad": "Agent ID; hunting + custom detections",
+   "owner": "PO-GAC Endpoints + Hunting",
+   "ruta": "R3 (alt. R2)",
+   "tools_propios": [
+    "ET-04",
+    "T-05",
+    "XT-08",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-05",
+    "XK-06"
+   ],
+   "skills_propios": [
+    "SK-08",
+    "SK-17"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "EA-12",
+   "nombre": "Redactor de lecciones de endpoints",
+   "proposito": "Convertir incidentes en lecciones, guías para usuarios y guiones de ejercicio.",
+   "tareas": "EP-A05",
+   "autonomia": "L1",
+   "gates": "Publicación humana",
+   "kpis": "Lecciones/mes",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI09",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC Endpoints + SOC Oversight",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-04",
+    "T-18"
+   ],
+   "knowledge_propios": [
+    "XK-09",
+    "KN-12"
+   ],
+   "skills_propios": [
+    "SK-15"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "EA-13",
+   "nombre": "Analista de la flota Endpoints",
+   "proposito": "Consolidar KPIs, costos y accesos para revisión trimestral.",
+   "tareas": "EP-Q02, EP-Q03",
+   "autonomia": "L1-L2",
+   "gates": "Decisiones humanas",
+   "kpis": "Informe trimestral",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI03",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC Endpoints",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-13",
+    "T-14",
+    "T-24",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-11",
+    "KN-08"
+   ],
+   "skills_propios": [
+    "SK-16"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  }
+ ],
+ "tools_nuevos": {
+  "ET-01": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "Defender Vulnerability Management · recommendations / vulnerabilities / software inventory / exposure score",
+   "op": "Recomendaciones priorizadas, CVEs, inventario de software, exposure score",
+   "permiso": "Vulnerability.Read.All, Software.Read.All, Score.Read.All",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/defender-endpoint/api/get-all-recommendations"
+  },
+  "ET-02": {
+   "tipo": "REST API / Intune",
+   "nombre": "Remediation request (TVM → Intune) y remediation activities",
+   "op": "Crear y seguir solicitudes de remediación hacia IT",
+   "permiso": "RemediationTasks.Read.All; permisos de Intune para crear",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/defender-vulnerability-management/tvm-remediation"
+  },
+  "ET-03": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "MDE · indicators (file, IP, URL, certificate)",
+   "op": "Indicadores de bloqueo/permiso con vencimiento",
+   "permiso": "Ti.ReadWrite",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/defender-endpoint/api/ti-indicator"
+  },
+  "ET-04": {
+   "tipo": "Advanced Hunting (KQL)",
+   "nombre": "Tablas DeviceEvents (ASR), DeviceTvmSoftwareVulnerabilities, DeviceNetworkEvents, DeviceLogonEvents",
+   "op": "Hunting y análisis de ASR, vulnerabilidades y comportamiento de dispositivos",
+   "permiso": "ThreatHunting.Read.All",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/defender-xdr/advanced-hunting-schema-tables"
+  },
+  "ET-05": {
+   "tipo": "Intune Graph API",
+   "nombre": "Intune · device compliance, configuration profiles, security baselines, ASR policies",
+   "op": "Leer cumplimiento y perfiles; proponer cambios",
+   "permiso": "DeviceManagementConfiguration.Read.All; escritura con aprobación",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/graph/api/resources/intune-graph-overview"
+  },
+  "ET-06": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "MDE · device discovery (unmanaged, network devices)",
+   "op": "Detectar dispositivos no gestionados y de red",
+   "permiso": "Machine.Read.All",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/defender-endpoint/device-discovery"
+  },
+  "ET-07": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "MDE · machine actions (isolate, restrict app execution, run AV scan, offboard)",
+   "op": "Acciones de respuesta sobre dispositivos",
+   "permiso": "Machine.Isolate, Machine.RestrictExecution, Machine.Scan, Machine.Offboard",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/defender-endpoint/api/machineaction"
+  },
+  "ET-08": {
+   "tipo": "Conector / Hunting",
+   "nombre": "Informes MDE: device health, ASR rules report, web protection, threat protection",
+   "op": "Compilar informes de salud y protección",
+   "permiso": "Security data basics",
+   "estado": "verificar (exportación vía API)",
+   "fuente": "learn.microsoft.com/defender-endpoint/device-health-reports"
+  }
+ },
+ "knowledge_nuevos": {
+  "DK-E1": {
+   "nombre": "Criterios de triaje de endpoint por grupo y criticidad",
+   "tipo": "Dataverse",
+   "fuente": "Interno"
+  },
+  "DK-E2": {
+   "nombre": "Playbooks de respuesta en dispositivos con límites por grupo",
+   "tipo": "SharePoint",
+   "fuente": "Interno (M5.1-PA01 instancia Endpoints)"
+  },
+  "DK-E3": {
+   "nombre": "Baseline de automatización por device group y acciones con aprobación",
+   "tipo": "SharePoint",
+   "fuente": "Interno"
+  },
+  "DK-E4": {
+   "nombre": "Registro de indicadores y exclusiones (ASR, AV) con vencimiento",
+   "tipo": "Dataverse",
+   "fuente": "Interno"
+  },
+  "DK-E5": {
+   "nombre": "Inventario de dispositivos, grupos, tags, umbrales de salud y plan de onboarding",
+   "tipo": "Dataverse",
+   "fuente": "Interno (M2.1-PA01 instancia Endpoints)"
+  },
+  "DK-E6": {
+   "nombre": "Criterios de priorización de remediación y SLAs con IT",
+   "tipo": "SharePoint",
+   "fuente": "Interno"
+  },
+  "DK-E7": {
+   "nombre": "Baseline de ASR, Intune security baselines y device groups/RBAC",
+   "tipo": "SharePoint / Git",
+   "fuente": "Interno (G2.2-PA03 instancia Endpoints)"
+  }
+ },
+ "skills_nuevos": {
+  "DS-E1": {
+   "nombre": "Triaje por grupo y criticidad de dispositivo",
+   "desc": "Ponderar severidad por grupo y criticidad del activo; reconocer attack disruption."
+  },
+  "DS-E2": {
+   "nombre": "Respuesta proporcional en dispositivos",
+   "desc": "Scan → restringir → aislar; nunca offboard; límite por grupo; verificar reversión."
+  },
+  "DS-E3": {
+   "nombre": "Priorización de vulnerabilidades por riesgo",
+   "desc": "Explotación activa, exposición, activos críticos; remediación o mitigación alternativa."
+  }
+ },
+ "instanciacion": [
+  [
+   "G2.2-PA03",
+   "Baseline = ASR en block + Intune security baselines + niveles de automatización por grupo; excepciones = indicadores/exclusiones con vencimiento."
+  ],
+  [
+   "G3.2-PA01",
+   "Deriva: ASR audit vs. block, baselines de Intune, device groups y RBAC."
+  ],
+  [
+   "M2.1-PA01",
+   "Inventario de dispositivos gestionados/no gestionados; discovery."
+  ],
+  [
+   "M2.2-PA01",
+   "Permisos por device group (Unified RBAC) para humanos y agentes."
+  ],
+  [
+   "M3.1-PA02",
+   "Instancia Endpoints: arquitectura de protección en capas (ASR → NGP → EDR → attack disruption → TVM)."
+  ],
+  [
+   "M4.1-PA01",
+   "Instancia Endpoints del modelo operativo (26 tareas)."
+  ],
+  [
+   "M4.1-PA03",
+   "Instancia Endpoints: FP/FN, indicadores, exclusiones ASR/AV."
+  ],
+  [
+   "M4.2-PA01",
+   "Instancia Endpoints: ransomware humano-operado, LOLBins, abuso de USB/web."
+  ],
+  [
+   "M4.2-K11",
+   "Escalamiento de privilegios en dispositivos detectado por EDR."
+  ],
+  [
+   "M5.2-PA01",
+   "Respuesta con acciones de dispositivo y agentes con aprobación."
+  ],
+  [
+   "AMP-38",
+   "Probar controles autónomos: attack disruption y remediación embebida."
+  ],
+  [
+   "HC-030",
+   "OT/IoT: dispositivos descubiertos no gestionables como frontera del control."
+  ],
+  [
+   "M3.1-K12",
+   "Dependencias físicas y mantenimiento: parches, hardware."
+  ]
+ ]
+}

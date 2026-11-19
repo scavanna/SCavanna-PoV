@@ -1,0 +1,321 @@
+<!-- generado-gm24 sha256:bbe4a6285f6de69b26e0ddd9913772d8d2fb04da9c34cfb2bdf5d68aff45ec24 -->
+# Índice de las 308 tesis derivadas del método mayéutico
+
+No son 308 conceptos originales adicionales de GM-24. Su tesis, tensión, desarrollo, error y producto proceden del corpus mayéutico de noviembre de 2026; cada pregunta original se conserva por ID. La asignación principal se toma solo de `especializa` cuando esta apunta a un concepto base o AMP con unidad. Un HC puede relacionar varias unidades sin pertenencia exclusiva.
+
+## Ampliaciones derivadas de preguntas al CISO (156)
+
+- [APC-001 — Mandato escrito de seguridad sobre resultados de negocio](01_tesis_derivadas/APC-001.md) ← `PC-001`; unidad G1.1.
+- [APC-004 — Supervisión del directorio con decisiones trazables sobre riesgo cibernético](01_tesis_derivadas/APC-004.md) ← `PC-004`; unidad G6.1.
+- [APC-006 — Requisitos de seguridad vinculantes en inversión, compras y portafolio](01_tesis_derivadas/APC-006.md) ← `PC-006`; unidad G1.2.
+- [APC-009 — Aceptación formal del riesgo residual antes de reducir recursos](01_tesis_derivadas/APC-009.md) ← `PC-009`; unidad G4.2.
+- [APC-015 — Indicadores adelantados de pérdida material para el directorio](01_tesis_derivadas/APC-015.md) ← `PC-015`; unidad G4.1.
+- [APC-017 — Análisis de daño a terceros y proporcionalidad de salvaguardas](01_tesis_derivadas/APC-017.md) ← `PC-017`; unidad G6.2.
+- [APC-018 — Nivel de precisión que exige cada decisión de riesgo](01_tesis_derivadas/APC-018.md) ← `PC-018`; unidad G5.1.
+- [APC-023 — Decisión de aislar, reemplazar o aceptar sistemas heredados](01_tesis_derivadas/APC-023.md) ← `PC-023`; transversal/sin unidad primaria.
+- [APC-025 — Arquitectura objetivo de plataforma ante herramientas fragmentadas](01_tesis_derivadas/APC-025.md) ← `PC-025`; transversal/sin unidad primaria.
+- [APC-033 — Detección y revocación ante robo de tokens y sesiones](01_tesis_derivadas/APC-033.md) ← `PC-033`; unidad M4.1.
+- [APC-034 — Protección del plano de control de la identidad](01_tesis_derivadas/APC-034.md) ← `PC-034`; unidad M2.2.
+- [APC-035 — Verificación de identidad resistente a suplantación con IA](01_tesis_derivadas/APC-035.md) ← `PC-035`; unidad M2.2.
+- [APC-036 — Indicadores de madurez de identidad con responsables asignados](01_tesis_derivadas/APC-036.md) ← `PC-036`; unidad M2.2.
+- [APC-039 — Prevención de pérdida de datos coherente entre canales e IA](01_tesis_derivadas/APC-039.md) ← `PC-039`; transversal/sin unidad primaria.
+- [APC-042 — Custodia y rotación de claves, secretos y certificados](01_tesis_derivadas/APC-042.md) ← `PC-042`; unidad M2.1.
+- [APC-043 — Inventario criptográfico y hoja de ruta poscuántica](01_tesis_derivadas/APC-043.md) ← `PC-043`; unidad M2.1.
+- [APC-045 — Indicadores de eficacia de la protección de datos](01_tesis_derivadas/APC-045.md) ← `PC-045`; transversal/sin unidad primaria.
+- [APC-049 — Configuraciones seguras de referencia y corrección de desvíos](01_tesis_derivadas/APC-049.md) ← `PC-049`; unidad G2.2.
+- [APC-050 — Protección de endpoints y servidores en modo bloqueo](01_tesis_derivadas/APC-050.md) ← `PC-050`; transversal/sin unidad primaria.
+- [APC-051 — Protección de correo y navegación contra phishing y fraude](01_tesis_derivadas/APC-051.md) ← `PC-051`; transversal/sin unidad primaria.
+- [APC-052 — Capacidad de remediación ante vulnerabilidades descubiertas con IA](01_tesis_derivadas/APC-052.md) ← `PC-052`; unidad M4.2.
+- [APC-061 — Gobierno del consentimiento OAuth y de aplicaciones SaaS](01_tesis_derivadas/APC-061.md) ← `PC-061`; unidad M2.2.
+- [APC-062 — Protección de APIs y lógica de negocio expuesta](01_tesis_derivadas/APC-062.md) ← `PC-062`; transversal/sin unidad primaria.
+- [APC-063 — Respuesta ante incidentes e interrupciones de proveedores críticos](01_tesis_derivadas/APC-063.md) ← `PC-063`; transversal/sin unidad primaria.
+- [APC-065 — Medición de tiempos de detección, contención y recuperación](01_tesis_derivadas/APC-065.md) ← `PC-065`; unidad M4.1.
+- [APC-066 — Límite entre contención automatizada y aprobación humana](01_tesis_derivadas/APC-066.md) ← `PC-066`; unidad M4.1.
+- [APC-068 — Ingeniería de detección guiada por inteligencia de amenazas](01_tesis_derivadas/APC-068.md) ← `PC-068`; transversal/sin unidad primaria.
+- [APC-069 — Corrección de brechas de habilidades reveladas por incidentes](01_tesis_derivadas/APC-069.md) ← `PC-069`; unidad M1.2.
+- [APC-070 — Retención y calidad de registros para investigación y cumplimiento](01_tesis_derivadas/APC-070.md) ← `PC-070`; unidad M4.1.
+- [APC-072 — Coordinación con autoridades y pares sectoriales durante incidentes](01_tesis_derivadas/APC-072.md) ← `PC-072`; unidad M5.2.
+- [APC-076 — Recuperación del proveedor de identidad comprometido o caído](01_tesis_derivadas/APC-076.md) ← `PC-076`; unidad M6.1.
+- [APC-079 — Resiliencia de equipos y servidores ante fallas masivas no maliciosas](01_tesis_derivadas/APC-079.md) ← `PC-079`; unidad M6.1.
+- [APC-087 — Inventario de versiones de marcos y plan de transición](01_tesis_derivadas/APC-087.md) ← `PC-087`; unidad G2.1.
+- [APC-088 — Gobierno de la validación del modelo de riesgo cibernético](01_tesis_derivadas/APC-088.md) ← `PC-088`; unidad G5.1.
+- [APC-092 — Preparación de roles críticos ante voz y video sintéticos](01_tesis_derivadas/APC-092.md) ← `PC-092`; unidad M1.2.
+- [APC-094 — Sostenibilidad del rol y criterio del CISO bajo incertidumbre](01_tesis_derivadas/APC-094.md) ← `PC-094`; unidad G1.1.
+- [APC-095 — Seguridad integrada en la cultura de ingeniería y producto](01_tesis_derivadas/APC-095.md) ← `PC-095`; unidad M6.2.
+- [APC-097 — Reducción de dependencias en personas y proveedores únicos](01_tesis_derivadas/APC-097.md) ← `PC-097`; transversal/sin unidad primaria.
+- [APC-099 — Ciclo de retroalimentación del equipo sobre el liderazgo del CISO](01_tesis_derivadas/APC-099.md) ← `PC-099`; unidad M1.2.
+- [APC-100 — Apetito de riesgo de IA anclado en resultados de negocio](01_tesis_derivadas/APC-100.md) ← `PC-100`; unidad M1.2.
+- [APC-102 — Priorización con criterios de riesgo del portafolio de IA](01_tesis_derivadas/APC-102.md) ← `PC-102`; unidad G1.2.
+- [APC-103 — Estrategia de seguridad ante las tres caras de la IA](01_tesis_derivadas/APC-103.md) ← `PC-103`; unidad M6.2.
+- [APC-104 — Medición conjunta de valor y riesgo de la IA](01_tesis_derivadas/APC-104.md) ← `PC-104`; transversal/sin unidad primaria.
+- [APC-105 — Usos de IA prohibidos y sujetos a aprobación reforzada](01_tesis_derivadas/APC-105.md) ← `PC-105`; unidad G6.2.
+- [APC-107 — Postura sobre IA de consumo e IA incorporada por proveedores](01_tesis_derivadas/APC-107.md) ← `PC-107`; unidad M6.2.
+- [APC-111 — Rol formal del CISO en el gobierno de la IA](01_tesis_derivadas/APC-111.md) ← `PC-111`; unidad G1.2.
+- [APC-112 — Política de uso aceptable de IA para colaboradores](01_tesis_derivadas/APC-112.md) ← `PC-112`; unidad M6.2.
+- [APC-113 — Ciclo de vida único para agentes y aplicaciones de IA](01_tesis_derivadas/APC-113.md) ← `PC-113`; unidad G1.2.
+- [APC-116 — Centro de excelencia de IA segura con patrones preaprobados](01_tesis_derivadas/APC-116.md) ← `PC-116`; unidad M1.2.
+- [APC-117 — Programa de formación en IA diferenciado por audiencia](01_tesis_derivadas/APC-117.md) ← `PC-117`; unidad M1.2.
+- [APC-118 — Inventario único de activos de IA con dueño y criticidad](01_tesis_derivadas/APC-118.md) ← `PC-118`; unidad M2.1.
+- [APC-121 — Descubrimiento de agentes de bajo código creados por usuarios](01_tesis_derivadas/APC-121.md) ← `PC-121`; unidad M6.2.
+- [APC-122 — Lista de materiales de IA para sistemas críticos](01_tesis_derivadas/APC-122.md) ← `PC-122`; unidad M6.2.
+- [APC-125 — Visibilidad de IA en dispositivos y entornos de desarrollo](01_tesis_derivadas/APC-125.md) ← `PC-125`; unidad M6.2.
+- [APC-126 — Indicadores de cobertura de agentes con metas trimestrales](01_tesis_derivadas/APC-126.md) ← `PC-126`; unidad G1.2.
+- [APC-130 — Permisos temporales, revisables y revocables para agentes](01_tesis_derivadas/APC-130.md) ← `PC-130`; unidad M2.2.
+- [APC-131 — Acceso condicional y protección por riesgo para agentes](01_tesis_derivadas/APC-131.md) ← `PC-131`; unidad M2.2.
+- [APC-132 — Eliminación y resguardo de secretos estáticos en agentes](01_tesis_derivadas/APC-132.md) ← `PC-132`; unidad M2.2.
+- [APC-134 — Segregación de funciones entre construir, autorizar y desplegar agentes](01_tesis_derivadas/APC-134.md) ← `PC-134`; unidad M2.2.
+- [APC-135 — Autenticación de personas y agentes externos ante agentes propios](01_tesis_derivadas/APC-135.md) ← `PC-135`; unidad M2.2.
+- [APC-140 — Retención, auditoría y búsqueda legal de interacciones con IA](01_tesis_derivadas/APC-140.md) ← `PC-140`; unidad M5.2.
+- [APC-141 — Detección de uso interno riesgoso de la IA](01_tesis_derivadas/APC-141.md) ← `PC-141`; unidad M4.2.
+- [APC-142 — Protección de memoria, contexto e índices vectoriales de agentes](01_tesis_derivadas/APC-142.md) ← `PC-142`; unidad M2.1.
+- [APC-144 — Compromisos contractuales de proveedores de IA sobre nuestros datos](01_tesis_derivadas/APC-144.md) ← `PC-144`; unidad G3.1.
+- [APC-147 — Capacidad mínima del modelo y validación previa de salidas](01_tesis_derivadas/APC-147.md) ← `PC-147`; unidad M3.1.
+- [APC-151 — Protección de modelos contra robo, extracción y abuso de consumo](01_tesis_derivadas/APC-151.md) ← `PC-151`; unidad M6.2.
+- [APC-152 — Defensa frente a ataques potenciados por IA](01_tesis_derivadas/APC-152.md) ← `PC-152`; unidad M4.2.
+- [APC-153 — Análisis de modos de falla en sistemas agénticos propios](01_tesis_derivadas/APC-153.md) ← `PC-153`; unidad M3.1.
+- [APC-155 — Radio de impacto por agente y pérdida máxima creíble](01_tesis_derivadas/APC-155.md) ← `PC-155`; transversal/sin unidad primaria.
+- [APC-159 — Límites operativos como cortacircuitos para agentes](01_tesis_derivadas/APC-159.md) ← `PC-159`; unidad M5.1.
+- [APC-160 — Reversión de acciones autónomas e irreversibilidad por diseño](01_tesis_derivadas/APC-160.md) ← `PC-160`; unidad G5.2.
+- [APC-161 — Presupuesto de tiempo de contención de agentes comprometidos](01_tesis_derivadas/APC-161.md) ← `PC-161`; unidad M5.1.
+- [APC-162 — Delimitación de la supervisión humana exigida por ley](01_tesis_derivadas/APC-162.md) ← `PC-162`; unidad G6.2.
+- [APC-163 — Evaluación de IA previa a producción con umbrales de aceptación](01_tesis_derivadas/APC-163.md) ← `PC-163`; transversal/sin unidad primaria.
+- [APC-164 — Monitoreo de deriva y reportes de usuarios sobre la IA](01_tesis_derivadas/APC-164.md) ← `PC-164`; transversal/sin unidad primaria.
+- [APC-165 — Criterios de reevaluación ante cambios en sistemas de IA](01_tesis_derivadas/APC-165.md) ← `PC-165`; transversal/sin unidad primaria.
+- [APC-166 — Verificación recurrente de filtros y barreras de protección de IA](01_tesis_derivadas/APC-166.md) ← `PC-166`; unidad M3.2.
+- [APC-167 — Evidencia continua y revisión independiente de controles de IA](01_tesis_derivadas/APC-167.md) ← `PC-167`; unidad G3.2.
+- [APC-168 — Alcance y certificación del sistema de gestión de IA](01_tesis_derivadas/APC-168.md) ← `PC-168`; unidad G2.1.
+- [APC-169 — Registro de controles de IA con eficacia no demostrada](01_tesis_derivadas/APC-169.md) ← `PC-169`; transversal/sin unidad primaria.
+- [APC-170 — Indicadores de confianza en la IA para el directorio](01_tesis_derivadas/APC-170.md) ← `PC-170`; transversal/sin unidad primaria.
+- [APC-173 — Ingeniería de detección específica para IA y agentes](01_tesis_derivadas/APC-173.md) ← `PC-173`; transversal/sin unidad primaria.
+- [APC-174 — Playbooks de respuesta a incidentes de IA y agentes](01_tesis_derivadas/APC-174.md) ← `PC-174`; unidad M5.1.
+- [APC-176 — Observabilidad de prompts y respuestas con minimización de datos](01_tesis_derivadas/APC-176.md) ← `PC-176`; transversal/sin unidad primaria.
+- [APC-177 — Vista unificada de señales de IA en el SOC](01_tesis_derivadas/APC-177.md) ← `PC-177`; unidad M4.1.
+- [APC-178 — Umbral de declaración y notificación de incidentes de IA](01_tesis_derivadas/APC-178.md) ← `PC-178`; unidad M5.1.
+- [APC-179 — Aprendizaje de incidentes de IA propios y ajenos](01_tesis_derivadas/APC-179.md) ← `PC-179`; transversal/sin unidad primaria.
+- [APC-180 — Cobertura y tiempos de respuesta para agentes en producción](01_tesis_derivadas/APC-180.md) ← `PC-180`; transversal/sin unidad primaria.
+- [APC-181 — Mapa regulatorio de IA por jurisdicción y rol](01_tesis_derivadas/APC-181.md) ← `PC-181`; unidad G3.1.
+- [APC-182 — Evaluación de impacto en derechos previa al despliegue de IA](01_tesis_derivadas/APC-182.md) ← `PC-182`; transversal/sin unidad primaria.
+- [APC-183 — Debida diligencia de proveedores de modelos y agentes de IA](01_tesis_derivadas/APC-183.md) ← `PC-183`; transversal/sin unidad primaria.
+- [APC-185 — Matriz de responsabilidad compartida para servicios de IA](01_tesis_derivadas/APC-185.md) ← `PC-185`; unidad M6.2.
+- [APC-186 — Transparencia sobre interacciones y contenido generado por IA](01_tesis_derivadas/APC-186.md) ← `PC-186`; unidad M1.2.
+- [APC-187 — Gestión de propiedad intelectual en entrenamiento y contenido generado](01_tesis_derivadas/APC-187.md) ← `PC-187`; unidad G3.1.
+- [APC-188 — Demostración de confiabilidad de la IA ante terceros](01_tesis_derivadas/APC-188.md) ← `PC-188`; unidad G3.2.
+- [APC-189 — Matriz común de controles de IA para varios marcos](01_tesis_derivadas/APC-189.md) ← `PC-189`; unidad G2.1.
+- [APC-191 — Criterios de paso a producción de agentes de seguridad](01_tesis_derivadas/APC-191.md) ← `PC-191`; unidad M4.1.
+- [APC-192 — Gobierno de los agentes de seguridad como identidades privilegiadas](01_tesis_derivadas/APC-192.md) ← `PC-192`; transversal/sin unidad primaria.
+- [APC-193 — Medición del aporte de IA al SOC con línea base](01_tesis_derivadas/APC-193.md) ← `PC-193`; unidad M4.1.
+- [APC-195 — Gestión de exposición asistida por IA con aprobación humana](01_tesis_derivadas/APC-195.md) ← `PC-195`; unidad M4.1.
+- [APC-196 — Costo, capacidad y valor de la IA de seguridad](01_tesis_derivadas/APC-196.md) ← `PC-196`; unidad M1.2.
+- [APC-198 — Control de capacidades ofensivas en simulaciones con IA](01_tesis_derivadas/APC-198.md) ← `PC-198`; transversal/sin unidad primaria.
+- [APC-203 — Verificación de integridad de los activos de restauración](01_tesis_derivadas/APC-203.md) ← `PC-203`; transversal/sin unidad primaria.
+- [APC-206 — Comité del directorio responsable del riesgo de IA](01_tesis_derivadas/APC-206.md) ← `PC-206`; unidad G1.2.
+- [APC-207 — Política de inventario de IA con cobertura de alto riesgo](01_tesis_derivadas/APC-207.md) ← `PC-207`; unidad G1.2.
+- [APC-210 — Umbrales de desempeño y aseguramiento para aprobar despliegues de IA](01_tesis_derivadas/APC-210.md) ← `PC-210`; transversal/sin unidad primaria.
+- [APC-211 — Respuesta ante el compromiso de proveedores con acceso privilegiado](01_tesis_derivadas/APC-211.md) ← `PC-211`; unidad M6.2.
+- [APC-212 — Compensación de mitigaciones adversariales sin garantía formal](01_tesis_derivadas/APC-212.md) ← `PC-212`; transversal/sin unidad primaria.
+- [APC-213 — Tiempos de detección y contención ante ataques agénticos](01_tesis_derivadas/APC-213.md) ← `PC-213`; unidad M4.2.
+- [APC-215 — Migración poscuántica priorizada desde el inventario criptográfico](01_tesis_derivadas/APC-215.md) ← `PC-215`; unidad M2.1.
+- [APC-216 — Controles de base como prerrequisito de los controles de IA](01_tesis_derivadas/APC-216.md) ← `PC-216`; transversal/sin unidad primaria.
+- [APC-219 — Disparadores de reevaluación del sistema de gobierno de seguridad](01_tesis_derivadas/APC-219.md) ← `PC-219`; unidad G1.2.
+- [APC-222 — Proporción de gasto reactivo y plan de ciberresiliencia financiado](01_tesis_derivadas/APC-222.md) ← `PC-222`; unidad M1.2.
+- [APC-223 — Transición planificada de COBIT 2019 a COBIT 7](01_tesis_derivadas/APC-223.md) ← `PC-223`; unidad G2.1.
+- [APC-225 — Diagnóstico y capacitación en operaciones de seguridad de LLM](01_tesis_derivadas/APC-225.md) ← `PC-225`; unidad M1.2.
+- [APC-229 — Gobierno de la IA integrado frente a gobierno paralelo](01_tesis_derivadas/APC-229.md) ← `PC-229`; unidad G1.2.
+- [APC-230 — Inventario agéntico con fronteras de confianza y dueños](01_tesis_derivadas/APC-230.md) ← `PC-230`; unidad M3.1.
+- [APC-232 — Mapa de contenido no confiable, herramientas y privilegios de agentes](01_tesis_derivadas/APC-232.md) ← `PC-232`; unidad M4.2.
+- [APC-233 — Responsabilidad retenida por fallas de IA en el riesgo empresarial](01_tesis_derivadas/APC-233.md) ← `PC-233`; unidad G5.1.
+- [APC-234 — Rol ante el reglamento europeo de IA y cláusulas contractuales](01_tesis_derivadas/APC-234.md) ← `PC-234`; unidad G3.1.
+- [APC-235 — Alcance y biblioteca de controles para auditar la IA](01_tesis_derivadas/APC-235.md) ← `PC-235`; unidad G3.2.
+- [APC-238 — Seguridad de IA en perfiles de puesto y certificaciones](01_tesis_derivadas/APC-238.md) ← `PC-238`; unidad M1.2.
+- [APC-240 — Aceptación del riesgo por quien decide recortes de seguridad](01_tesis_derivadas/APC-240.md) ← `PC-240`; unidad G4.2.
+- [APC-242 — Seguimiento de fallas operativas atribuibles a falta de habilidades](01_tesis_derivadas/APC-242.md) ← `PC-242`; unidad M1.2.
+- [APC-243 — Taxonomía de incidentes con IA como herramienta u objetivo](01_tesis_derivadas/APC-243.md) ← `PC-243`; unidad M5.1.
+- [APC-244 — Diagnóstico del agotamiento y la prioridad percibida de la seguridad](01_tesis_derivadas/APC-244.md) ← `PC-244`; transversal/sin unidad primaria.
+- [APC-246 — Participación de seguridad en las reglas de uso de IA](01_tesis_derivadas/APC-246.md) ← `PC-246`; unidad G1.2.
+- [APC-249 — Influencia ejecutiva del CISO evaluada por su equipo](01_tesis_derivadas/APC-249.md) ← `PC-249`; unidad M1.2.
+- [APC-251 — Verificación de salvaguardas esenciales en todos los activos](01_tesis_derivadas/APC-251.md) ← `PC-251`; unidad M3.2.
+- [APC-253 — Visibilidad de cuartas partes y evaluación de proveedores pequeños](01_tesis_derivadas/APC-253.md) ← `PC-253`; transversal/sin unidad primaria.
+- [APC-254 — Medición de cobertura de configuración segura por técnicas mitigadas](01_tesis_derivadas/APC-254.md) ← `PC-254`; unidad M3.2.
+- [APC-255 — Análisis de riesgo con deber de cuidado hacia terceros](01_tesis_derivadas/APC-255.md) ← `PC-255`; unidad G6.2.
+- [APC-256 — Suficiencia de fundamentos antes de comprar seguridad para IA](01_tesis_derivadas/APC-256.md) ← `PC-256`; transversal/sin unidad primaria.
+- [APC-257 — Reinterpretación del catálogo de controles para riesgos de IA](01_tesis_derivadas/APC-257.md) ← `PC-257`; unidad M6.2.
+- [APC-258 — Control de cambios, procedencia y retiro en sistemas de IA](01_tesis_derivadas/APC-258.md) ← `PC-258`; unidad M6.2.
+- [APC-262 — Control previo de acciones, bucles y escaladas entre agentes](01_tesis_derivadas/APC-262.md) ← `PC-262`; unidad M3.1.
+- [APC-265 — Verificación recurrente de la configuración de pasarelas y servidores MCP](01_tesis_derivadas/APC-265.md) ← `PC-265`; unidad M6.2.
+- [APC-272 — Refinamiento del análisis de riesgo según su valor decisorio](01_tesis_derivadas/APC-272.md) ← `PC-272`; unidad G5.1.
+- [APC-273 — Taxonomía de riesgo unificada entre seguridad, tecnología e IA](01_tesis_derivadas/APC-273.md) ← `PC-273`; unidad G4.1.
+- [APC-274 — Transparencia, pertinencia y simplicidad del modelo de cuantificación](01_tesis_derivadas/APC-274.md) ← `PC-274`; unidad G5.1.
+- [APC-277 — Saneamiento del riesgo remanente de pilotos de IA inmaduros](01_tesis_derivadas/APC-277.md) ← `PC-277`; unidad M1.2.
+- [APC-279 — Registro y vigilancia de marcos y estándares de IA](01_tesis_derivadas/APC-279.md) ← `PC-279`; unidad G2.1.
+- [APC-280 — Actualización de la matriz de controles en evaluaciones de nube](01_tesis_derivadas/APC-280.md) ← `PC-280`; transversal/sin unidad primaria.
+- [APC-281 — Controles mínimos y revisión anual de cada API expuesta](01_tesis_derivadas/APC-281.md) ← `PC-281`; transversal/sin unidad primaria.
+- [APC-282 — Lista de materiales del servicio exigida a proveedores críticos](01_tesis_derivadas/APC-282.md) ← `PC-282`; unidad M6.2.
+- [APC-283 — Seguimiento de permisos excesivos e identidades sin dueño](01_tesis_derivadas/APC-283.md) ← `PC-283`; unidad M2.2.
+- [APC-285 — Cadencia de actualización del marco de controles de IA](01_tesis_derivadas/APC-285.md) ← `PC-285`; unidad G1.2.
+- [APC-286 — Protección específica de modelos entrenados, ajustados o alojados](01_tesis_derivadas/APC-286.md) ← `PC-286`; unidad G5.1.
+- [APC-287 — Evaluación independiente anual de los controles del cliente de IA](01_tesis_derivadas/APC-287.md) ← `PC-287`; unidad G3.2.
+- [APC-288 — Uso aceptable, formación y autorización de agentes de productividad](01_tesis_derivadas/APC-288.md) ← `PC-288`; unidad M1.2.
+- [APC-290 — Exigencia de aseguramiento independiente de IA a proveedores](01_tesis_derivadas/APC-290.md) ← `PC-290`; transversal/sin unidad primaria.
+- [APC-292 — Análisis de cadenas de ataque entre capas de la IA](01_tesis_derivadas/APC-292.md) ← `PC-292`; unidad M4.2.
+- [APC-294 — Rendición de cuentas sobre la evaluación del riesgo de IA](01_tesis_derivadas/APC-294.md) ← `PC-294`; unidad G3.1.
+- [APC-295 — Gobierno acelerador de la IA con vías rápidas de aprobación](01_tesis_derivadas/APC-295.md) ← `PC-295`; unidad M1.2.
+- [APC-296 — Creación, retiro y revocación de identidades de IA](01_tesis_derivadas/APC-296.md) ← `PC-296`; transversal/sin unidad primaria.
+- [APC-297 — Escenarios y controles para la IA atacante y atacada](01_tesis_derivadas/APC-297.md) ← `PC-297`; unidad M4.2.
+
+## Ampliaciones derivadas del marco (111)
+
+- [APA-001 — Comparación interanual de la exposición al riesgo cibernético](01_tesis_derivadas/APA-001.md) ← `PA-001`; unidad G4.1.
+- [APA-006 — Preparación del directorio para decidir en una crisis cibernética](01_tesis_derivadas/APA-006.md) ← `PA-006`; unidad M5.1.
+- [APA-007 — Canal directo del CISO al directorio para riesgos incómodos](01_tesis_derivadas/APA-007.md) ← `PA-007`; unidad G6.1.
+- [APA-008 — Comparación de postura frente a pares y exigencias regulatorias](01_tesis_derivadas/APA-008.md) ← `PA-008`; unidad G2.1.
+- [APA-014 — Mapa de aseguramiento de controles sobre IA y agentes](01_tesis_derivadas/APA-014.md) ← `PA-014`; unidad G3.2.
+- [APA-015 — Determinación de materialidad y divulgación de incidentes cibernéticos](01_tesis_derivadas/APA-015.md) ← `PA-015`; unidad M5.2.
+- [APA-017 — Reporte de variaciones de riesgo entre sesiones del comité](01_tesis_derivadas/APA-017.md) ← `PA-017`; unidad G5.1.
+- [APA-019 — Compromisos verificables del CEO con el programa de seguridad](01_tesis_derivadas/APA-019.md) ← `PA-019`; unidad G1.1.
+- [APA-021 — Ritmo de adopción de agentes de IA frente a competidores](01_tesis_derivadas/APA-021.md) ← `PA-021`; unidad M1.2.
+- [APA-022 — Escalamiento al CEO del mayor riesgo sin tratar](01_tesis_derivadas/APA-022.md) ← `PA-022`; unidad G5.1.
+- [APA-024 — Verificación de instrucciones de pago ante deepfakes de ejecutivos](01_tesis_derivadas/APA-024.md) ← `PA-024`; unidad M1.2.
+- [APA-025 — Medición de la fricción de seguridad sobre el negocio](01_tesis_derivadas/APA-025.md) ← `PA-025`; unidad G1.2.
+- [APA-026 — Obligaciones personales de seguridad de los ejecutivos](01_tesis_derivadas/APA-026.md) ← `PA-026`; unidad G1.1.
+- [APA-031 — Protección de pagos ante fraude y suplantación de proveedores](01_tesis_derivadas/APA-031.md) ← `PA-031`; transversal/sin unidad primaria.
+- [APA-033 — Costo total de la IA con sus controles de seguridad](01_tesis_derivadas/APA-033.md) ← `PA-033`; unidad G1.2.
+- [APA-035 — Inversión en IA de seguridad medida por capacidad ganada](01_tesis_derivadas/APA-035.md) ← `PA-035`; unidad M4.1.
+- [APA-036 — Impacto financiero de la falla prolongada de un proveedor crítico](01_tesis_derivadas/APA-036.md) ← `PA-036`; unidad M6.1.
+- [APA-037 — Autorización de herramientas de IA para datos de clientes](01_tesis_derivadas/APA-037.md) ← `PA-037`; transversal/sin unidad primaria.
+- [APA-039 — Biblioteca de evidencia para cuestionarios de seguridad de clientes](01_tesis_derivadas/APA-039.md) ← `PA-039`; unidad G3.2.
+- [APA-040 — Ruta de aprobación para agentes transaccionales con clientes](01_tesis_derivadas/APA-040.md) ← `PA-040`; unidad G1.2.
+- [APA-041 — Evaluación proporcional de proveedores SaaS antes de contratar](01_tesis_derivadas/APA-041.md) ← `PA-041`; unidad M6.2.
+- [APA-042 — Garantías de no entrenamiento de modelos con datos propios](01_tesis_derivadas/APA-042.md) ← `PA-042`; unidad G3.1.
+- [APA-045 — Comunicación verificable de la protección de datos a clientes](01_tesis_derivadas/APA-045.md) ← `PA-045`; unidad G6.1.
+- [APA-047 — Impacto de Zero Trust en la productividad de ingeniería](01_tesis_derivadas/APA-047.md) ← `PA-047`; transversal/sin unidad primaria.
+- [APA-049 — Derechos de decisión sobre la autonomía de cada agente](01_tesis_derivadas/APA-049.md) ← `PA-049`; unidad G4.2.
+- [APA-052 — Tratamiento de sistemas heredados sin actualización posible](01_tesis_derivadas/APA-052.md) ← `PA-052`; transversal/sin unidad primaria.
+- [APA-053 — Pruebas de agentes antes de producción y tras cada cambio](01_tesis_derivadas/APA-053.md) ← `PA-053`; unidad M3.2.
+- [APA-057 — Proporcionalidad del monitoreo de seguridad sobre empleados](01_tesis_derivadas/APA-057.md) ← `PA-057`; transversal/sin unidad primaria.
+- [APA-058 — Rol regulatorio y obligaciones legales de cada sistema de IA](01_tesis_derivadas/APA-058.md) ← `PA-058`; unidad G3.1.
+- [APA-059 — Responsabilidad por contenido infractor generado con IA](01_tesis_derivadas/APA-059.md) ← `PA-059`; unidad G3.1.
+- [APA-062 — Retención y acceso a registros de interacciones con IA](01_tesis_derivadas/APA-062.md) ← `PA-062`; unidad M2.1.
+- [APA-063 — Verificación del cumplimiento efectivo de cada política](01_tesis_derivadas/APA-063.md) ← `PA-063`; transversal/sin unidad primaria.
+- [APA-064 — Cadena de responsabilidad por la seguridad ante el directorio](01_tesis_derivadas/APA-064.md) ← `PA-064`; unidad G6.2.
+- [APA-067 — Plazos de detección, clasificación y notificación de incidentes graves](01_tesis_derivadas/APA-067.md) ← `PA-067`; unidad M5.1.
+- [APA-068 — Inventario de sistemas de IA con impacto en clientes](01_tesis_derivadas/APA-068.md) ← `PA-068`; unidad M6.2.
+- [APA-070 — Protección y trazabilidad del acceso a datos de clientes](01_tesis_derivadas/APA-070.md) ← `PA-070`; unidad M2.1.
+- [APA-071 — Mandato del cliente en operaciones ejecutadas por agentes](01_tesis_derivadas/APA-071.md) ← `PA-071`; transversal/sin unidad primaria.
+- [APA-075 — Registro auditable de agentes en producción y sus permisos](01_tesis_derivadas/APA-075.md) ← `PA-075`; unidad M2.2.
+- [APA-076 — Gestión y aprobación de cambios en sistemas críticos](01_tesis_derivadas/APA-076.md) ← `PA-076`; transversal/sin unidad primaria.
+- [APA-077 — Validación auditable de filtros y salvaguardas de IA](01_tesis_derivadas/APA-077.md) ← `PA-077`; unidad M3.2.
+- [APA-079 — Retención de registros y reconstrucción retrospectiva de incidentes](01_tesis_derivadas/APA-079.md) ← `PA-079`; unidad M4.1.
+- [APA-080 — Análisis de causa raíz de hallazgos recurrentes](01_tesis_derivadas/APA-080.md) ← `PA-080`; unidad M5.2.
+- [APA-082 — Portafolio de atestaciones independientes para clientes](01_tesis_derivadas/APA-082.md) ← `PA-082`; unidad G6.2.
+- [APA-083 — Compromisos verificables sobre datos de clientes procesados por IA](01_tesis_derivadas/APA-083.md) ← `PA-083`; transversal/sin unidad primaria.
+- [APA-084 — Cobertura de MFA, copias inmutables y EDR declarada a aseguradoras](01_tesis_derivadas/APA-084.md) ← `PA-084`; unidad M2.2.
+- [APA-085 — Divulgación a inversores sobre gobierno cibernético e incidentes materiales](01_tesis_derivadas/APA-085.md) ← `PA-085`; unidad G4.1.
+- [APA-086 — Garantías recíprocas en integraciones de socios por API](01_tesis_derivadas/APA-086.md) ← `PA-086`; unidad G3.1.
+- [APA-087 — Compromiso de notificación de incidentes a clientes afectados](01_tesis_derivadas/APA-087.md) ← `PA-087`; unidad M5.2.
+- [APA-088 — Expediente de riesgos abiertos e incidentes para debida diligencia](01_tesis_derivadas/APA-088.md) ← `PA-088`; unidad G5.2.
+- [APA-089 — Interoperabilidad segura entre agentes de IA de distintas organizaciones](01_tesis_derivadas/APA-089.md) ← `PA-089`; unidad M2.2.
+- [APA-090 — Asegurabilidad de los riesgos de IA y agentes](01_tesis_derivadas/APA-090.md) ← `PA-090`; unidad G5.1.
+- [APA-091 — Herramientas de IA autorizadas según clasificación de datos](01_tesis_derivadas/APA-091.md) ← `PA-091`; unidad M6.2.
+- [APA-095 — Prioridades explícitas y renuncias del programa de seguridad](01_tesis_derivadas/APA-095.md) ← `PA-095`; unidad G1.2.
+- [APA-096 — Reducción de carga de alertas con triaje asistido por IA](01_tesis_derivadas/APA-096.md) ← `PA-096`; unidad M4.1.
+- [APA-097 — Uso gobernado de asistentes de código basados en IA](01_tesis_derivadas/APA-097.md) ← `PA-097`; unidad M6.2.
+- [APA-098 — Verificación por canal independiente ante suplantaciones con IA](01_tesis_derivadas/APA-098.md) ← `PA-098`; unidad M1.2.
+- [APA-099 — Suplencia y delegación de autoridad en ausencia del CISO](01_tesis_derivadas/APA-099.md) ← `PA-099`; unidad G4.1.
+- [APA-104 — Verificación de copias limpias antes de la restauración](01_tesis_derivadas/APA-104.md) ← `PA-104`; transversal/sin unidad primaria.
+- [APA-107 — Estructura de supervisión de la IA en el directorio](01_tesis_derivadas/APA-107.md) ← `PA-107`; unidad G1.2.
+- [APA-108 — Criterio de inclusión y completitud del inventario de IA](01_tesis_derivadas/APA-108.md) ← `PA-108`; unidad G1.2.
+- [APA-111 — Expediente de aprobación para producción de sistemas de IA](01_tesis_derivadas/APA-111.md) ← `PA-111`; transversal/sin unidad primaria.
+- [APA-112 — Contención del compromiso de un proveedor de servicios gestionados](01_tesis_derivadas/APA-112.md) ← `PA-112`; unidad M6.2.
+- [APA-113 — Aseguramiento razonable frente a la manipulación de la IA](01_tesis_derivadas/APA-113.md) ← `PA-113`; transversal/sin unidad primaria.
+- [APA-114 — Preparación medible ante ataques automatizados con IA](01_tesis_derivadas/APA-114.md) ← `PA-114`; unidad M4.2.
+- [APA-116 — Protección de datos de larga vida frente al descifrado cuántico](01_tesis_derivadas/APA-116.md) ← `PA-116`; unidad M2.1.
+- [APA-117 — Auditoría de dependencias entre controles de IA y de base](01_tesis_derivadas/APA-117.md) ← `PA-117`; transversal/sin unidad primaria.
+- [APA-120 — Adaptación del gobierno de seguridad y separación de la gestión](01_tesis_derivadas/APA-120.md) ← `PA-120`; unidad G1.2.
+- [APA-123 — Equilibrio presupuestario entre prevención, resiliencia y respuesta](01_tesis_derivadas/APA-123.md) ← `PA-123`; unidad M1.2.
+- [APA-124 — Trazabilidad de versiones de marcos en el catálogo de controles](01_tesis_derivadas/APA-124.md) ← `PA-124`; unidad G2.1.
+- [APA-126 — Evaluación de preparación del equipo para asegurar la IA](01_tesis_derivadas/APA-126.md) ← `PA-126`; unidad M1.2.
+- [APA-130 — Cobertura del marco de control vigente sobre la IA](01_tesis_derivadas/APA-130.md) ← `PA-130`; unidad G1.2.
+- [APA-131 — Condiciones de control para escalar agentes de IA](01_tesis_derivadas/APA-131.md) ← `PA-131`; unidad M3.1.
+- [APA-133 — Análisis de consecuencias de un agente manipulado](01_tesis_derivadas/APA-133.md) ← `PA-133`; unidad M4.2.
+- [APA-134 — Responsabilidad y contingencia ante fallas de IA de proveedores](01_tesis_derivadas/APA-134.md) ← `PA-134`; unidad G5.1.
+- [APA-135 — Determinación del alcance extraterritorial de regulaciones de IA](01_tesis_derivadas/APA-135.md) ← `PA-135`; unidad G3.1.
+- [APA-136 — Clasificación de controles de IA según evidencia auditable](01_tesis_derivadas/APA-136.md) ← `PA-136`; unidad G3.2.
+- [APA-139 — Perfil de competencias en seguridad de IA por rol](01_tesis_derivadas/APA-139.md) ← `PA-139`; unidad M1.2.
+- [APA-141 — Evaluación del riesgo incremental por reducir la dotación de seguridad](01_tesis_derivadas/APA-141.md) ← `PA-141`; unidad G4.2.
+- [APA-143 — Atribución de incidentes y configuraciones erróneas a brechas de habilidades](01_tesis_derivadas/APA-143.md) ← `PA-143`; unidad M1.2.
+- [APA-144 — Trazabilidad de incidentes de IA hasta los cambios adoptados](01_tesis_derivadas/APA-144.md) ← `PA-144`; unidad M5.1.
+- [APA-145 — Prevención y detección del desgaste en el equipo de seguridad](01_tesis_derivadas/APA-145.md) ← `PA-145`; transversal/sin unidad primaria.
+- [APA-147 — Rol de seguridad en el ciclo de políticas de IA](01_tesis_derivadas/APA-147.md) ← `PA-147`; unidad G1.2.
+- [APA-150 — Representación del equipo de seguridad ante el directorio](01_tesis_derivadas/APA-150.md) ← `PA-150`; unidad M1.2.
+- [APA-152 — Verificación de cumplimiento de la higiene cibernética esencial](01_tesis_derivadas/APA-152.md) ← `PA-152`; unidad M3.2.
+- [APA-154 — Mapeo del riesgo heredado de los subproveedores](01_tesis_derivadas/APA-154.md) ← `PA-154`; transversal/sin unidad primaria.
+- [APA-155 — Priorización de controles según los ataques que frenan](01_tesis_derivadas/APA-155.md) ← `PA-155`; unidad M3.2.
+- [APA-156 — Prueba de razonabilidad del riesgo aceptado para los afectados](01_tesis_derivadas/APA-156.md) ← `PA-156`; unidad G6.2.
+- [APA-157 — Prioridad entre controles básicos y herramientas contra IA ofensiva](01_tesis_derivadas/APA-157.md) ← `PA-157`; transversal/sin unidad primaria.
+- [APA-158 — Cobertura y adaptación de controles ante riesgos de IA](01_tesis_derivadas/APA-158.md) ← `PA-158`; unidad M6.2.
+- [APA-159 — Aprobación y registro de cambios en instrucciones de IA](01_tesis_derivadas/APA-159.md) ← `PA-159`; unidad M6.2.
+- [APA-163 — Encadenamiento seguro de agentes propios y de terceros](01_tesis_derivadas/APA-163.md) ← `PA-163`; unidad M3.1.
+- [APA-166 — Línea base de endurecimiento para servidores MCP](01_tesis_derivadas/APA-166.md) ← `PA-166`; unidad M6.2.
+- [APA-173 — Precisión suficiente de la cuantificación de riesgo para invertir](01_tesis_derivadas/APA-173.md) ← `PA-173`; unidad G5.1.
+- [APA-174 — Comparabilidad de calificaciones de riesgo entre áreas](01_tesis_derivadas/APA-174.md) ← `PA-174`; unidad G4.1.
+- [APA-175 — Validación del modelo de estimación de pérdidas cibernéticas](01_tesis_derivadas/APA-175.md) ← `PA-175`; unidad G5.1.
+- [APA-178 — Criterios de seguridad para llevar pilotos de IA a producción](01_tesis_derivadas/APA-178.md) ← `PA-178`; unidad M1.2.
+- [APA-180 — Adopción de estándares de IA y vigilancia normativa](01_tesis_derivadas/APA-180.md) ← `PA-180`; unidad G2.1.
+- [APA-181 — Vigencia del catálogo de controles para evaluar proveedores de nube](01_tesis_derivadas/APA-181.md) ← `PA-181`; transversal/sin unidad primaria.
+- [APA-182 — Inventario gobernado de APIs con responsables y controles](01_tesis_derivadas/APA-182.md) ← `PA-182`; transversal/sin unidad primaria.
+- [APA-183 — Transparencia de componentes y dependencias de servicios contratados](01_tesis_derivadas/APA-183.md) ← `PA-183`; unidad M6.2.
+- [APA-184 — Diagnóstico de la postura de identidad en la nube](01_tesis_derivadas/APA-184.md) ← `PA-184`; unidad M2.2.
+- [APA-186 — Cobertura de gobierno sobre agentes en adopción acelerada](01_tesis_derivadas/APA-186.md) ← `PA-186`; unidad G1.2.
+- [APA-187 — Controles de confidencialidad e integridad de modelos de IA](01_tesis_derivadas/APA-187.md) ← `PA-187`; unidad G5.1.
+- [APA-188 — Ciclo de evaluación independiente del uso de IA](01_tesis_derivadas/APA-188.md) ← `PA-188`; unidad G3.2.
+- [APA-189 — Evaluación de riesgo previa a aprobar herramientas con agentes](01_tesis_derivadas/APA-189.md) ← `PA-189`; unidad M1.2.
+- [APA-191 — Aseguramiento independiente de IA para clientes corporativos](01_tesis_derivadas/APA-191.md) ← `PA-191`; transversal/sin unidad primaria.
+- [APA-193 — Modelado de amenazas entre capas en sistemas agénticos](01_tesis_derivadas/APA-193.md) ← `PA-193`; unidad M4.2.
+- [APA-195 — Titularidad de evaluaciones de riesgo de IA propia y adquirida](01_tesis_derivadas/APA-195.md) ← `PA-195`; unidad G3.1.
+- [APA-196 — Diseño del gobierno de IA para acelerar la adopción](01_tesis_derivadas/APA-196.md) ← `PA-196`; unidad M1.2.
+- [APA-197 — Revocación oportuna de credenciales de agentes y cuentas de servicio](01_tesis_derivadas/APA-197.md) ← `PA-197`; transversal/sin unidad primaria.
+- [APA-198 — Mapa de amenazas de la IA como arma y blanco](01_tesis_derivadas/APA-198.md) ← `PA-198`; unidad M4.2.
+
+## Ampliaciones derivadas de preguntas nuevas (41)
+
+- [APN-01 — Medición agregada del uso de asistentes de IA por área](01_tesis_derivadas/APN-01.md) ← `PN-01`; unidad M1.2.
+- [APN-02 — Autoría responsable y revisión del contenido generado con IA](01_tesis_derivadas/APN-02.md) ← `PN-02`; unidad G3.1.
+- [APN-04 — Gobierno de funciones de IA activadas por defecto](01_tesis_derivadas/APN-04.md) ← `PN-04`; unidad M6.2.
+- [APN-05 — Señalización de usos restringidos en herramientas de IA autorizadas](01_tesis_derivadas/APN-05.md) ← `PN-05`; unidad M1.2.
+- [APN-07 — Indicadores de decisión sobre el despliegue de asistentes por área](01_tesis_derivadas/APN-07.md) ← `PN-07`; transversal/sin unidad primaria.
+- [APN-08 — Uso compartido y promoción de agentes personales](01_tesis_derivadas/APN-08.md) ← `PN-08`; unidad M6.2.
+- [APN-09 — Medición del uso de IA frente al catálogo aprobado](01_tesis_derivadas/APN-09.md) ← `PN-09`; unidad M6.2.
+- [APN-11 — Responsabilidad individual por contenido erróneo del asistente](01_tesis_derivadas/APN-11.md) ← `PN-11`; unidad G3.1.
+- [APN-12 — Criterios para usar IA en selección y evaluación de desempeño](01_tesis_derivadas/APN-12.md) ← `PN-12`; unidad G6.2.
+- [APN-14 — Trazabilidad de la revisión humana antes de decidir con IA](01_tesis_derivadas/APN-14.md) ← `PN-14`; unidad G3.2.
+- [APN-15 — Conciliación entre licencias de IA, uso efectivo y riesgo evitado](01_tesis_derivadas/APN-15.md) ← `PN-15`; unidad G1.2.
+- [APN-16 — Condiciones para compartir agentes basados en archivos personales](01_tesis_derivadas/APN-16.md) ← `PN-16`; unidad M6.2.
+- [APN-17 — Acceso a servicios de IA solo con identidad corporativa](01_tesis_derivadas/APN-17.md) ← `PN-17`; unidad M6.2.
+- [APN-18 — Paridad de acceso condicional en clientes y API del asistente](01_tesis_derivadas/APN-18.md) ← `PN-18`; unidad M2.2.
+- [APN-19 — Gobierno de extensiones y complementos de IA del navegador](01_tesis_derivadas/APN-19.md) ← `PN-19`; unidad M6.2.
+- [APN-20 — Detección y contención de cuentas robadas con asistente de IA](01_tesis_derivadas/APN-20.md) ← `PN-20`; unidad M4.1.
+- [APN-22 — Detección y revocación de secretos expuestos en prompts y código](01_tesis_derivadas/APN-22.md) ← `PN-22`; transversal/sin unidad primaria.
+- [APN-23 — Controles del asistente corporativo en dispositivos no gestionados](01_tesis_derivadas/APN-23.md) ← `PN-23`; transversal/sin unidad primaria.
+- [APN-24 — Gobierno de la captura e indexación de pantalla con IA](01_tesis_derivadas/APN-24.md) ← `PN-24`; unidad M6.2.
+- [APN-25 — Justificación y revisión del bloqueo de extensiones de IA](01_tesis_derivadas/APN-25.md) ← `PN-25`; unidad M6.2.
+- [APN-26 — Escenario de cuenta ejecutiva comprometida con asistente de IA](01_tesis_derivadas/APN-26.md) ← `PN-26`; transversal/sin unidad primaria.
+- [APN-27 — Procedimiento ante sobreexposición de datos revelada por el asistente](01_tesis_derivadas/APN-27.md) ← `PN-27`; transversal/sin unidad primaria.
+- [APN-28 — Formación para reconocer la manipulación indirecta del asistente](01_tesis_derivadas/APN-28.md) ← `PN-28`; unidad M4.2.
+- [APN-29 — Modelo de amenazas del asistente como vector de entrada](01_tesis_derivadas/APN-29.md) ← `PN-29`; unidad M4.2.
+- [APN-30 — Modelo operativo para alertas y tareas de los asistentes](01_tesis_derivadas/APN-30.md) ← `PN-30`; transversal/sin unidad primaria.
+- [APN-31 — Habilitación del asistente corporativo en teléfonos personales](01_tesis_derivadas/APN-31.md) ← `PN-31`; transversal/sin unidad primaria.
+- [APN-32 — Línea base de funciones de IA nativas en equipos corporativos](01_tesis_derivadas/APN-32.md) ← `PN-32`; unidad M6.2.
+- [APN-34 — Aplicación técnica de reglas de datos por herramienta de IA](01_tesis_derivadas/APN-34.md) ← `PN-34`; unidad G2.2.
+- [APN-36 — Gobierno de transcripciones y resúmenes de reuniones con IA](01_tesis_derivadas/APN-36.md) ← `PN-36`; unidad M2.1.
+- [APN-37 — Atención de derechos del titular en registros de asistentes](01_tesis_derivadas/APN-37.md) ← `PN-37`; unidad G3.1.
+- [APN-38 — Transparencia y control personal de la memoria del asistente](01_tesis_derivadas/APN-38.md) ← `PN-38`; transversal/sin unidad primaria.
+- [APN-39 — Base legal y avisos para datos de terceros en asistentes](01_tesis_derivadas/APN-39.md) ← `PN-39`; unidad G3.1.
+- [APN-40 — Ciclo de vida de archivos cargados en herramientas de IA](01_tesis_derivadas/APN-40.md) ← `PN-40`; transversal/sin unidad primaria.
+- [APN-41 — Alcance del asistente sobre correos, evaluaciones y expedientes de personal](01_tesis_derivadas/APN-41.md) ← `PN-41`; transversal/sin unidad primaria.
+- [APN-42 — Criterios para reevaluar el impacto ante funciones nuevas de IA](01_tesis_derivadas/APN-42.md) ← `PN-42`; transversal/sin unidad primaria.
+- [APN-43 — Compromisos verificables al cliente sobre uso de IA pública](01_tesis_derivadas/APN-43.md) ← `PN-43`; unidad M6.2.
+- [APN-44 — Entrega al empleado de sus interacciones con el asistente](01_tesis_derivadas/APN-44.md) ← `PN-44`; unidad G3.1.
+- [APN-45 — Límites al acceso corporativo a las conversaciones con el asistente](01_tesis_derivadas/APN-45.md) ← `PN-45`; transversal/sin unidad primaria.
+- [APN-46 — Registro de tratamientos con IA y su base legal](01_tesis_derivadas/APN-46.md) ← `PN-46`; unidad G3.1.
+- [APN-47 — Condiciones para grabar reuniones con clientes y resumirlas con IA](01_tesis_derivadas/APN-47.md) ← `PN-47`; transversal/sin unidad primaria.
+- [APN-48 — Informe al directorio de fugas por IA y cambios aplicados](01_tesis_derivadas/APN-48.md) ← `PN-48`; unidad M2.1.

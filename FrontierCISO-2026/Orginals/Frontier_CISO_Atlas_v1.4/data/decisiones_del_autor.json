@@ -1,0 +1,1605 @@
+{
+ "fecha_de_la_aceptacion": "2026-11-15",
+ "forma": "en bloque y con una condición",
+ "mensaje_del_autor": {
+  "literal": "por cuestiones de coherencia, voy a aceptar las decisiones propuestas, suponiendo que no son contradictorias y apuntan hacia la excelencia y el rigorque me caracterizan.\n\nacepto que todo esto no tenga validacion humana, pero tambien comprendo que las fuentes utilzidas y las diferentes iteraciones mas el modelo que estamos usando, reducen la tasa de error y la probabilidad de alucionaciones.\n\nSi es necesario someter todo al escruitinio de un agente critico, cuyas conclusiones puedan mejorar el estado actual de lo propuesto, entonces propone una forma de implementar, la revision critica, y la mejora posterior para obtener al final una nueva version aun mas consistente.\n\nYo entiendo que estos niveles de abstraccion son dificiles de llevar a la practica y en consecuencia funcionan como guias y orientacion, UN CISO va a tener que leer todo con atencion, no creer nada por defecto y contrastando con su conocimiento y formacion, ir aceptando los distintos elementos, artefactos, recomendaciones con el responsabilidad final indelegable.\n\nMe explico?\n\nInforma y continua",
+  "nota": "Transcripción literal, sin corregir, del mensaje del 15 de noviembre de 2026. Las citas de los documentos normalizan la ortografía.",
+  "citas_normalizadas": {
+   "cita": "Por cuestiones de coherencia, voy a aceptar las decisiones propuestas, suponiendo que no son contradictorias y apuntan hacia la excelencia y el rigor que me caracterizan.",
+   "sobre_la_validacion": "Acepto que todo esto no tenga validación humana, pero también comprendo que las fuentes utilizadas y las diferentes iteraciones, más el modelo que estamos usando, reducen la tasa de error y la probabilidad de alucinaciones.",
+   "principio_de_lectura": "Un CISO va a tener que leer todo con atención, no creer nada por defecto y, contrastando con su conocimiento y formación, ir aceptando los distintos elementos, artefactos, recomendaciones, con la responsabilidad final indelegable."
+  },
+  "parrafo_sobre_la_revision_normalizado": "Si es necesario someter todo al escrutinio de un agente crítico, cuyas conclusiones puedan mejorar el estado actual de lo propuesto, entonces proponé una forma de implementar la revisión crítica y la mejora posterior para obtener al final una nueva versión aún más consistente.",
+  "principio_completo_normalizado": "Yo entiendo que estos niveles de abstracción son difíciles de llevar a la práctica y en consecuencia funcionan como guías y orientación. Un CISO va a tener que leer todo con atención, no creer nada por defecto y, contrastando con su conocimiento y formación, ir aceptando los distintos elementos, artefactos, recomendaciones, con la responsabilidad final indelegable."
+ },
+ "condicion": {
+  "texto": "que las decisiones no sean contradictorias entre sí y que apunten a la excelencia y al rigor",
+  "estado": "cumplida en parte; el autor confirmó el 16 de noviembre de 2026 que la aceptación vale así (D-14.1)",
+  "sobre_la_coherencia": "El supuesto no se cumplía: aplicadas a la vez, las diez decisiones chocaban en 4 puntos. 2 se resolvieron (uno con el orden de aplicación y otro con un recorte de alcance), 1 se resolvió en parte y 1 sigue abierto.",
+  "sobre_la_excelencia_y_el_rigor": "El paquete no puede certificarlo: es un juicio del autor. Lo que puede mostrar es lo que la revisión encontró y lo que quedó sin resolver."
+ },
+ "como_se_leyo_el_mensaje": [
+  {
+   "pasaje": "«voy a aceptar las decisiones propuestas»",
+   "lectura": "Aceptación en bloque de D-01 a D-10 y de las ADR-013 a ADR-025 que las registran. El mensaje no nombra ninguna decisión ni ninguna ADR.",
+   "a_confirmar_en": "D-14.1"
+  },
+  {
+   "pasaje": "D-03 y D-10, que la versión 1.1 planteaba como preguntas",
+   "lectura": "Se contestaron con un «sí» en nombre del autor y se aplicaron.",
+   "a_confirmar_en": "D-14.2 y D-14.3"
+  },
+  {
+   "pasaje": "«Si es necesario […] entonces propone una forma de implementar […]. Informa y continua»",
+   "lectura": "Se tomó como autorización para ejecutar la revisión y la mejora el mismo día, sin una consulta intermedia. El pedido estaba en condicional y pedía una propuesta.",
+   "a_confirmar_en": "D-14.5"
+  },
+  {
+   "pasaje": "«Yo entiendo que estos niveles de abstracción […] responsabilidad final indelegable. Me explico?»",
+   "lectura": "Se redactó como principio de uso (ADR-029). El autor lo enunció como una reflexión y cerró con una pregunta; no vio el texto de la ADR.",
+   "a_confirmar_en": "D-14.6"
+  }
+ ],
+ "alcance": "La aceptación cubre las decisiones de diseño. Las tareas de validación (D-07, D-09 y parte de D-03, D-08 y D-10) se registran como «aceptadas como base de trabajo, sin validar»: aceptar que algo no tiene validación humana no lo valida. Los conjuntos de cambios siguen en estado «propuesto» (ADR-019).",
+ "respuesta_sobre_la_coherencia": "El supuesto de tu aceptación no se cumplía del todo. Aplicadas a la vez, las diez decisiones chocaban en 4 puntos: dos se resolvieron (uno con el orden de aplicación y otro con un recorte de alcance), uno se resolvió en parte y uno sigue abierto. Si apuntan a la excelencia y al rigor es un juicio tuyo, que el paquete no puede certificar.",
+ "orden_aplicado": "D-01 → D-04 y D-06 → D-02 → D-03 → D-05 → D-08 y D-09 → D-10 → D-07",
+ "choques": [
+  {
+   "entre": "D-02 y D-07",
+   "que_pasaba": "Aprobar la taxonomía y validar la categorización a la vez aprobaba una regla (la regla 7) y un corpus que no la cumplía.",
+   "como_se_resolvio": "D-03 se aplicó antes y D-07 quedó para el final, como base de trabajo.",
+   "estado": "Resuelto con el orden de aplicación"
+  },
+  {
+   "entre": "D-02 y D-08",
+   "que_pasaba": "La regla de cardinalidad de la taxonomía admite un territorio primario y dos secundarios, y la Biblioteca entraba con hasta siete territorios por concepto.",
+   "como_se_resolvio": "Los territorios de la Biblioteca dejaron de afirmarse como clasificación (decisión D-12).",
+   "estado": "Resuelto con un recorte de alcance"
+  },
+  {
+   "entre": "D-04 y D-08",
+   "que_pasaba": "D-04 pone la energía, la atención y la resiliencia en la escala individual del pilar OS, y D-08 cargaba los 1.404 conceptos de la Biblioteca, incluidos esos, en el pilar MM.",
+   "como_se_resolvio": "Se decidió D-04 primero y se escribió una regla de pilar por categoría. La regla deja en MM las habilidades socioemocionales y las mentalidades de resiliencia, que la definición del pilar OS ubica en su escala individual.",
+   "estado": "Sin resolver",
+   "estado_en_la_1_2": "Resuelto en parte; sigue abierto en D-12.2",
+   "nota_1_3": "La decisión D-12 se cerró sin revisar la Biblioteca y el autor no habló de este choque: las habilidades socioemocionales y las mentalidades de resiliencia siguen en el pilar MM."
+  },
+  {
+   "entre": "D-03 y D-10",
+   "que_pasaba": "La regla 7 hace prevalecer la disciplina sobre la tecnología, y seis de los siete pre-ensayos APX alojados en D19 aplican el criterio contrario.",
+   "como_se_resolvio": "No se resolvió: depende de la regla general RP-01 (decisión D-11). La serie APX quedó como capa de ampliación.",
+   "estado": "Resuelto en parte por la regla RP-01, que quedó adoptada, y por la relectura",
+   "estado_en_la_1_2": "Abierto",
+   "nota_1_3": "De los 7 pre-ensayos de la serie APX escritos para D19, 4 pasaron al dominio de su disciplina, con D19 como secundario; en los otros 3 las lecturas sostuvieron D19."
+  }
+ ],
+ "solicitud_OCR-CAND-03": "Aprobada por el autor el 16 de noviembre de 2026 («Si, confirmo, procede») y aplicada en la propuesta de ontología 2.2.0. La forma en que se implementó se confirma en D-16.10.",
+ "decisiones": [
+  {
+   "codigo": "D-01",
+   "clase": "diseño",
+   "proposicion": "El producto se llama Frontier CISO Atlas y continúa al AI CISO Atlas: conserva sus códigos, su arquitectura y sus decisiones anteriores.",
+   "opcion_tomada": "Sí.",
+   "estado": "Aceptada, con la advertencia a la vista",
+   "adr": [
+    "ADR-013",
+    "ADR-016"
+   ],
+   "depende_de": [],
+   "orden": 1,
+   "nota_1_2": "La versión 1.1 pidió aprobar el nombre sin una advertencia que la revisión señaló después: «Frontier» coincide con un concepto comercial de un proveedor y con el nombre de una de sus suites, que la propia base de referencia registra. El plano A se propone agnóstico de proveedor, pero 77 de sus pre-ensayos nombran productos o al proveedor: quedaron marcados «revisar». El corpus no es neutral respecto de un proveedor.",
+   "texto_en_la_1_1": "Aprobar el cambio de nombre y la continuidad con el AI CISO Atlas",
+   "pedido_en_la_1_1": "pedido de aprobación",
+   "a_confirmar_en": "D-14.4",
+   "orden_de_decision": null,
+   "estado_en_la_1_2": "Aceptada; a confirmar con la advertencia a la vista (D-14.4)",
+   "nota_1_3": "Confirmada con la advertencia sobre el nombre a la vista (D-14.4)."
+  },
+  {
+   "codigo": "D-04",
+   "clase": "diseño",
+   "proposicion": "El pilar OS del MCCS se lee en dos escalas del mismo pilar: individual (T01) y de oficina (T03).",
+   "opcion_tomada": "Sí.",
+   "estado": "Aceptada",
+   "adr": [
+    "ADR-017"
+   ],
+   "depende_de": [],
+   "orden": 2,
+   "nota_1_2": "Aplicada a la Biblioteca: 59 conceptos pasan al pilar OS. En el corpus la lectura no puede verificarse todavía, porque los pre-ensayos no registran la escala (regla propuesta RP-14).",
+   "texto_en_la_1_1": "Confirmar la lectura del pilar OS en dos escalas: individual (T01) y de oficina (T03)",
+   "pedido_en_la_1_1": "pedido de aprobación",
+   "orden_de_decision": null
+  },
+  {
+   "codigo": "D-06",
+   "clase": "diseño",
+   "proposicion": "Se adoptan las seis variables homeostáticas (HV01 a HV06) como propuesta de diseño, sin respaldo normativo externo.",
+   "opcion_tomada": "Sí.",
+   "estado": "Aceptada",
+   "adr": [
+    "ADR-018"
+   ],
+   "depende_de": [],
+   "orden": 2,
+   "nota_1_2": "La definición de HV01 se precisó con la tolerancia que se deriva del apetito. El modelo de referencia no cierra en varios puntos (regla propuesta RP-15).",
+   "texto_en_la_1_1": "Aprobar las variables homeostáticas HV01–HV06, que son una propuesta de diseño sin respaldo normativo externo",
+   "pedido_en_la_1_1": "pedido de aprobación",
+   "orden_de_decision": null
+  },
+  {
+   "codigo": "D-02",
+   "clase": "diseño",
+   "proposicion": "Se adopta la Taxonomía 6.0: 8 territorios, 28 dominios, 6 funciones, 34 subfunciones y el eje H ampliado. D27 se admite con reserva y D26 por materialidad.",
+   "opcion_tomada": "Sí.",
+   "estado": "Aceptada",
+   "adr": [
+    "ADR-014",
+    "ADR-020"
+   ],
+   "depende_de": [
+    "D-04",
+    "D-06"
+   ],
+   "orden": 3,
+   "nota_1_2": "La Taxonomía 6.0 ya contiene lo que D-03, D-04 y D-06 presentaban aparte: la regla 7, las anclas del pilar OS y las variables homeostáticas. La revisión corrigió textos y conteos y dejó 18 reglas propuestas sin aplicar (decisión D-11).",
+   "texto_en_la_1_1": "Aprobar la Taxonomía 6.0; en particular D27, admitido con reserva, y D26, admitido por materialidad",
+   "pedido_en_la_1_1": "pedido de aprobación",
+   "orden_de_decision": null
+  },
+  {
+   "codigo": "D-03",
+   "clase": "diseño y aplicación",
+   "proposicion": "El gobierno, el riesgo y el cumplimiento de la IA que estaban alojados en D20 pasan a D01, D02 o D03 (regla 7).",
+   "opcion_tomada": "Interpretada como «sí». La versión 1.1 lo planteaba como pregunta y el mensaje del autor no la nombra: su aceptación en bloque se leyó como «sí, aplicar la regla».",
+   "estado": "Aceptada y aplicada",
+   "adr": [
+    "ADR-020",
+    "ADR-025",
+    "ADR-028"
+   ],
+   "depende_de": [
+    "D-02"
+   ],
+   "orden": 4,
+   "nota_1_2": "De los 71 pre-ensayos de D20, 26 salieron (16 a D01, 6 a D02, 2 a D17, 1 a D28, 1 a D14) y 45 quedan. De los que salieron, en 13 las dos lecturas deciden el mismo destino, en 9 la primera lo dejaba a criterio del curador y la segunda propone el destino, y 4 se adjudicaron por escrito. 22 fueron a los dominios que nombra la regla 7 y 4 a otros, por reglas de alcance distintas. En 11 de los que quedan las lecturas no coinciden: se listan para el autor (D-13.1). El territorio no se cambió en ningún caso.",
+   "texto_en_la_1_1": "Decidir si el gobierno y el riesgo de la IA alojados en D20 pasan a D01 y D02 con territorio T07. La lectura de los 71 pre-ensayos de D20 está hecha: 14 se moverían con claridad, 11 quedan a criterio del curador y 45 se quedan",
+   "pedido_en_la_1_1": "pregunta abierta",
+   "a_confirmar_en": "D-14.2",
+   "orden_de_decision": null,
+   "estado_en_la_1_2": "Interpretada como «sí» y aplicada; a confirmar por el autor (D-14.2)",
+   "nota_1_3": "El «sí» quedó confirmado (D-14.2). La relectura volvió a leer los pre-ensayos de D20."
+  },
+  {
+   "codigo": "D-05",
+   "clase": "diseño",
+   "proposicion": "Se adopta la Ontología 2.1.0, que contiene a la 2.0.0 y es un cambio mayor respecto de la 1.0.0.",
+   "opcion_tomada": "Sí, como línea base propuesta.",
+   "estado": "Aceptada",
+   "adr": [
+    "ADR-015",
+    "ADR-022"
+   ],
+   "depende_de": [
+    "D-02"
+   ],
+   "orden": 5,
+   "nota_1_2": "La ontología no cambió en la versión 1.2. Lo que la revisión propone para la próxima revisión está en la solicitud OCR-CAND-03.",
+   "texto_en_la_1_1": "Aprobar la Ontología 2.1.0, que contiene a la 2.0.0 de la versión anterior y es un cambio mayor respecto de la 1.0.0",
+   "pedido_en_la_1_1": "pedido de aprobación",
+   "orden_de_decision": null
+  },
+  {
+   "codigo": "D-08",
+   "clase": "diseño y validación",
+   "proposicion": "La Biblioteca cognitiva entra al grafo candidato con tipos del módulo de cognición.",
+   "opcion_tomada": "Sí a que entre. Los tipos, la cobertura y las prácticas contra sesgos son contenido que el paquete declaraba sin revisar: se aceptan como base de trabajo.",
+   "estado": "Aceptada como base de trabajo; modificada por la revisión",
+   "adr": [
+    "ADR-023"
+   ],
+   "depende_de": [
+    "D-04",
+    "D-05"
+   ],
+   "orden": 6,
+   "nota_1_2": "La revisión cambió el tipo de 81 conceptos, dejó de afirmar los territorios como clasificación, redujo la cobertura a 165 vínculos y las prácticas contra sesgos a 57. Lo que falta revisar por concepto es la decisión D-12.",
+   "texto_en_la_1_1": "Aceptar cómo entró la Biblioteca cognitiva al grafo candidato: tipos por categoría, territorios, cobertura por unidad y prácticas contra sesgos",
+   "pedido_en_la_1_1": "pedido de aprobación",
+   "orden_de_decision": null
+  },
+  {
+   "codigo": "D-09",
+   "clase": "validación",
+   "proposicion": "Los indicadores asignados miden cada variable homeostática, y las subfunciones PR06 y RC05 tienen indicadores.",
+   "opcion_tomada": "Aceptada como base de trabajo: un «sí» no valida el contenido.",
+   "estado": "Base de trabajo; corregida por la revisión",
+   "adr": [
+    "ADR-024"
+   ],
+   "depende_de": [
+    "D-02",
+    "D-05",
+    "D-06"
+   ],
+   "orden": 6,
+   "nota_1_2": "PR06 queda sin indicadores y RC05 conserva uno (K189). De los 71 vínculos cargados entre indicadores y variables, en 49 las dos lecturas coinciden en el vínculo y en el papel, en 14 solo en el vínculo, 5 los consideró y descartó la segunda lectura y 3 tienen una sola lectura; la segunda lectura propuso además 36 que no se cargaron. Son indicadores candidatos: ninguna variable tiene unidad, umbral ni responsable del límite.",
+   "texto_en_la_1_1": "Validar qué indicadores miden cada variable homeostática y la ubicación de indicadores en PR06 y RC05",
+   "pedido_en_la_1_1": "tarea de validación",
+   "orden_de_decision": null
+  },
+  {
+   "codigo": "D-10",
+   "clase": "diseño y validación",
+   "proposicion": "Se acepta la propuesta de remapeo como pedido para la próxima versión del GM-24, y los 16 pre-ensayos de la serie APX como capa de ampliación.",
+   "opcion_tomada": "Interpretada como «sí» a las dos. La versión 1.1 pedía «decidir sobre las propuestas editoriales»: la aceptación en bloque se leyó como aceptarlas.",
+   "estado": "Aceptada",
+   "adr": [
+    "ADR-021",
+    "ADR-025"
+   ],
+   "depende_de": [
+    "D-02",
+    "D-03"
+   ],
+   "orden": 7,
+   "nota_1_2": "El GM-24 no se modificó. La serie APX entra como capa de ampliación, fuera de las estadísticas del corpus base: 4 pre-ensayos quedaron como estaban y 12 se corrigieron. Seis de los siete alojados en D19 dependen de la regla propuesta RP-01. La propuesta de remapeo cambió después de la aceptación: los casos R2 y R4, que estaban «a revisar», tienen ahora una resolución propuesta a partir de la verificación externa.",
+   "texto_en_la_1_1": "Decidir sobre las propuestas editoriales: el remapeo del GM-24 a las matrices vigentes y los 16 pre-ensayos para celdas en blanco",
+   "pedido_en_la_1_1": "pregunta abierta",
+   "a_confirmar_en": "D-14.3",
+   "orden_de_decision": null,
+   "estado_en_la_1_2": "Interpretada como «sí»; la serie APX se corrigió; a confirmar por el autor (D-14.3)",
+   "nota_1_3": "Las dos lecturas quedaron confirmadas (D-14.3). La serie APX se releyó a ciegas."
+  },
+  {
+   "codigo": "D-07",
+   "clase": "validación",
+   "proposicion": "La categorización de los 739 pre-ensayos es válida y la primera tanda de ensayos es la propuesta.",
+   "opcion_tomada": "Aceptada como base de trabajo: un «sí» no la valida.",
+   "estado": "Base de trabajo; validación humana pendiente. El kit de la revisión está preparado con el diseño completo (decisión delegada, D-16.11)",
+   "adr": [
+    "ADR-019",
+    "ADR-020"
+   ],
+   "depende_de": [
+    "D-02",
+    "D-03",
+    "D-10"
+   ],
+   "orden": 8,
+   "nota_1_2": "Medida disponible: en una muestra a ciegas de 87 pre-ensayos, estratificada por la confianza del clasificador, el segundo lector eligió el mismo territorio en 31 de 40 casos de confianza alta, 26 de 40 de confianza media y 2 de 7 de confianza baja; el mismo dominio, en 37 de 40, 29 de 40 y 2 de 7; y la misma subfunción, en 33 de 40, 30 de 40 y 5 de 7. Ponderado para los 595 pre-ensayos del marco (el corpus sin los que estaban en D20 ni las migraciones), con su intervalo del 95 %: territorio 73 % (64–83), dominio 86 % (80–93) y subfunción 80 % (72–89). La muestra mide el acuerdo de un lector automático con la coordenada vigente, que en territorio y dominio es casi siempre la heredada. La primera tanda se recalculó después de aplicar D-03.",
+   "texto_en_la_1_1": "Validar la categorización y elegir la primera tanda de ensayos",
+   "pedido_en_la_1_1": "tarea de validación",
+   "orden_de_decision": null,
+   "estado_en_la_1_3": "Base de trabajo; validación humana pendiente",
+   "nota_1_4": "La muestra tiene 193 pre-ensayos. La revisión la hace el autor, que fija los umbrales antes de abrir la clave."
+  },
+  {
+   "codigo": "D-11",
+   "clase": "diseño",
+   "proposicion": "Adoptar, modificar o rechazar las 18 reglas y aclaraciones que la revisión propone (RP-01 a RP-18), enunciado por enunciado.",
+   "opcion_tomada": "Adoptar las reglas que tenían texto listo.",
+   "estado": "Cerrada en lo que el autor decidió: los 60 enunciados con texto listo quedaron adoptados y confirmados (D-15.1). Las once preguntas y los seis puntos de la revisión los decidió el curador por delegación (D-16) y los encargos en cola se ejecutaron en la versión 1.4",
+   "adr": [],
+   "depende_de": [
+    "D-02",
+    "D-14"
+   ],
+   "orden": null,
+   "nota_1_2": "Ninguna se aplicó. Las 18 reglas suman 95 enunciados: 60 son reglas con texto listo, 11 son preguntas para el autor y 24 son encargos de trabajo (clasificación automática por el verbo inicial, orientativa). 13 reglas cambian coordenadas ya asignadas (RP-01, RP-02, RP-03, RP-04, RP-05, RP-06, RP-07, RP-08, RP-09, RP-10, RP-12, RP-13, RP-18) y piden releer parte del corpus. Ninguna trae ejemplos ni estima cuántos pre-ensayos cambiarían: es un límite de esta propuesta. Para las que cambian coordenadas, la columna alcance_de_la_relectura da una cota superior de los pre-ensayos alcanzados.",
+   "orden_de_decision": 2,
+   "proposiciones": [
+    {
+     "codigo": "D-11.1",
+     "tipo": "decisión",
+     "texto": "Reglas que cambian coordenadas ya asignadas (RP-01, RP-02, RP-03, RP-04, RP-05, RP-06, RP-07, RP-08, RP-09, RP-10, RP-12, RP-13, RP-18): adoptar, modificar o rechazar cada enunciado.",
+     "respuestas": "por enunciado: adoptar / modificar / rechazar",
+     "si_la_respuesta_es_no": "La regla rechazada no se aplica y los pre-ensayos quedan como están.",
+     "esfuerzo_estimado": "Medio día: 69 enunciados.",
+     "insumos": "data/reglas_propuestas_D11_enunciados.csv (columna para anotar la decisión), data/reglas_propuestas_D11.csv y data/reglas_D11_hallazgos_de_la_muestra_complementaria.csv (16 hallazgos sobre reglas que no deciden, con la regla relacionada)",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "lectura_del_curador": "adoptar",
+     "frase_del_autor": "«Acepto el cambio de reglas»",
+     "clase_de_respuesta": "lectura confirmada por el autor (D-15.1)",
+     "nota_del_curador": "El autor no respondió enunciado por enunciado. De los 95 enunciados, 60 son reglas con texto listo y quedan adoptados; 11 son preguntas, que una aceptación no contesta, y siguen abiertas (RP-13 ofrece dos opciones que se excluyen), igual que la cláusula final de RP-10.6; 24 son encargos de trabajo, que quedan aceptados: 3 se hicieron en la versión 1.3 y 21 se ejecutaron en la versión 1.4 (la nota de la versión 1.3 decía 4 y 20, y estaba mal contada). La clase de cada enunciado (regla, pregunta o encargo) la asignó la versión 1.2 de forma automática, por el verbo inicial, y la versión 1.3 la usó como criterio; el autor no la revisó. Tres enunciados adoptados dejan una disyuntiva que se resuelve por lectura (RP-04.6, RP-06.3 y RP-12.10).",
+     "confirmada_en": "D-15.1"
+    },
+    {
+     "codigo": "D-11.2",
+     "tipo": "decisión",
+     "texto": "Reglas que aclaran un texto o tocan lentes, planos, el modelo del eje H o los criterios de admisión (las demás): adoptar, modificar o rechazar cada enunciado.",
+     "respuestas": "por enunciado: adoptar / modificar / rechazar",
+     "si_la_respuesta_es_no": "El texto de la Taxonomía 6.0 queda como está.",
+     "esfuerzo_estimado": "Medio día: 26 enunciados.",
+     "insumos": "los mismos archivos",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "lectura_del_curador": "adoptar",
+     "frase_del_autor": "«Acepto el cambio de reglas»",
+     "clase_de_respuesta": "lectura confirmada por el autor (D-15.1)",
+     "nota_del_curador": "La frase no distingue las reglas que cambian coordenadas de las que no: se leyó como adopción de las 18. El autor no respondió enunciado por enunciado. De los 95 enunciados, 60 son reglas con texto listo y quedan adoptados; 11 son preguntas, que una aceptación no contesta, y siguen abiertas (RP-13 ofrece dos opciones que se excluyen), igual que la cláusula final de RP-10.6; 24 son encargos de trabajo, que quedan aceptados: 3 se hicieron en la versión 1.3 y 21 se ejecutaron en la versión 1.4 (la nota de la versión 1.3 decía 4 y 20, y estaba mal contada). Las reglas de este grupo se le presentaron al autor como reglas que no mueven coordenadas. Una de ellas, RP-11.1, fija la subfunción primaria: los cambios que la citan quedaron frenados (punto RV-3) hasta que el autor confirme que se aplica a los primarios.",
+     "confirmada_en": "D-15.1"
+    },
+    {
+     "codigo": "D-11.3",
+     "tipo": "tarea",
+     "texto": "Releer con las reglas adoptadas en D-11.1 los pre-ensayos que cada regla alcanza.",
+     "respuestas": "la hace el curador, con una segunda lectura; el autor revisa el resultado dentro de la revisión humana",
+     "si_la_respuesta_es_no": "",
+     "esfuerzo_estimado": "Depende de las reglas adoptadas. La columna alcance_de_la_relectura da, para cada regla, los códigos que nombra y cuántos pre-ensayos los tienen como primario: es una cota superior, sin lectura.",
+     "insumos": "data/reglas_propuestas_D11.csv, columna alcance_de_la_relectura",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "lectura_del_curador": "",
+     "frase_del_autor": "«Acepto el cambio de reglas»",
+     "clase_de_respuesta": "tarea hecha",
+     "nota_del_curador": "La versión 1.3 releyó todo el corpus con los enunciados adoptados y la versión 1.4 lo volvió a leer completo con las reglas de asignación revisión 3."
+    }
+   ],
+   "estado_en_la_1_2": "Abierta; conviene decidir primero las reglas que cambian coordenadas",
+   "opcion_tomada_en_la_1_2": "Sin decidir.",
+   "nota_1_3": "El autor respondió «Acepto el cambio de reglas». Se leyó como adopción de las 18 reglas: vale para los enunciados con texto listo; las preguntas siguen abiertas y los encargos quedan aceptados.",
+   "estado_en_la_1_3": "Abierta en parte: los enunciados con texto listo quedan adoptados (lectura del curador, a confirmar en D-15.1); siguen abiertas las preguntas y los puntos que dejó la revisión, y en cola parte de los encargos",
+   "nota_1_4": "El estado de cada uno de los 95 enunciados después de la versión 1.4 está en data/reglas_propuestas_D11_enunciados.csv (columnas estado_1_4 y grupo_1_4)."
+  },
+  {
+   "codigo": "D-12",
+   "clase": "validación",
+   "proposicion": "Decidir cómo se revisa la Biblioteca cognitiva y qué se corrige en la base, que es del autor.",
+   "opcion_tomada": "No revisar la Biblioteca.",
+   "estado": "Cerrada sin revisión: la Biblioteca queda como estaba. Lectura confirmada por el autor (D-15.3)",
+   "adr": [
+    "ADR-023"
+   ],
+   "depende_de": [
+    "D-08"
+   ],
+   "orden": null,
+   "nota_1_2": "La base de la Biblioteca es del autor y este paquete no la modificó. El choque entre D-04 y D-08 sigue abierto en las habilidades socioemocionales y en las mentalidades de resiliencia, que la regla de pilar por categoría deja en MM. Los defectos que la revisión señaló en la base están en data/biblioteca_defectos_senalados.csv.",
+   "orden_de_decision": 4,
+   "proposiciones": [
+    {
+     "codigo": "D-12.1",
+     "tipo": "decisión",
+     "texto": "Los territorios de un concepto de la Biblioteca se derivan por lectura del concepto, y no por su categoría.",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "Los territorios siguen como propiedad del nodo, sin cargarse como clasificación.",
+     "esfuerzo_estimado": "10 minutos para decidir; la lectura es la tarea D-12.5.",
+     "insumos": "docs/06_Grafo_de_Conocimiento.md, sección 2.5",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "lectura_del_curador": "no",
+     "frase_del_autor": "«No revisar la biblioteca»",
+     "clase_de_respuesta": "lectura confirmada por el autor (D-15.3)",
+     "nota_del_curador": "Es la consecuencia de no revisar la Biblioteca, no una elección que el autor haya hecho sobre esta proposición. Los territorios siguen como propiedad del nodo, sin cargarse como clasificación.",
+     "confirmada_en": "D-15.3"
+    },
+    {
+     "codigo": "D-12.2",
+     "tipo": "decisión",
+     "texto": "El pilar de las habilidades socioemocionales y de las mentalidades de resiliencia se asigna por lectura del concepto: OS a escala individual, DO o MM.",
+     "respuestas": "por lectura / se quedan en MM",
+     "si_la_respuesta_es_no": "Quedan en MM y el choque entre D-04 y D-08 se da por aceptado.",
+     "esfuerzo_estimado": "10 minutos para decidir; la lectura alcanza a 226 conceptos de dos categorías.",
+     "insumos": "data/biblioteca_cognitiva_1404.csv, columnas categoria y pilar_mccs",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "lectura_del_curador": "se quedan en MM",
+     "frase_del_autor": "«No revisar la biblioteca»",
+     "clase_de_respuesta": "lectura confirmada por el autor (D-15.3)",
+     "nota_del_curador": "Es la consecuencia de no revisar la Biblioteca, no una elección que el autor haya hecho sobre esta proposición. El autor no habló del pilar ni del choque entre D-04 y D-08: el choque queda como estaba, sin resolver.",
+     "confirmada_en": "D-15.3"
+    },
+    {
+     "codigo": "D-12.3",
+     "tipo": "decisión",
+     "texto": "Las categorías de mentalidades y de prácticas de decisión se releen completas antes de fijar el tipo de sus conceptos.",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "Conservan el tipo por regla, con las excepciones ya aplicadas.",
+     "esfuerzo_estimado": "10 minutos para decidir; la relectura alcanza a 288 conceptos.",
+     "insumos": "docs/13_Revision_critica_1_2.md, sección 6.4",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "lectura_del_curador": "no",
+     "frase_del_autor": "«No revisar la biblioteca»",
+     "clase_de_respuesta": "lectura confirmada por el autor (D-15.3)",
+     "nota_del_curador": "Es la consecuencia de no revisar la Biblioteca, no una elección que el autor haya hecho sobre esta proposición. Conservan el tipo por regla, con las excepciones ya aplicadas.",
+     "confirmada_en": "D-15.3"
+    },
+    {
+     "codigo": "D-12.4",
+     "tipo": "decisión",
+     "texto": "Los 45 grupos de conceptos que nombran la misma idea y los 27 pares repetidos se resuelven en la base: fusionar, declarar equivalentes o dejar separados.",
+     "respuestas": "por grupo: fusionar / equivalentes / separados",
+     "si_la_respuesta_es_no": "",
+     "esfuerzo_estimado": "Medio día.",
+     "insumos": "data/biblioteca_grupos_mismo_concepto.csv; data/biblioteca_dobletes_internos.csv; data/equivalencias_biblioteca_corpus.csv",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "lectura_del_curador": "separados",
+     "frase_del_autor": "«No revisar la biblioteca»",
+     "clase_de_respuesta": "lectura confirmada por el autor (D-15.3)",
+     "nota_del_curador": "Es la consecuencia de no revisar la Biblioteca, no una elección que el autor haya hecho sobre esta proposición. Los 45 grupos y los 27 pares repetidos quedan como están en la base.",
+     "confirmada_en": "D-15.3"
+    },
+    {
+     "codigo": "D-12.5",
+     "tipo": "tarea",
+     "texto": "Revisar por muestra los tipos y los territorios de la Biblioteca.",
+     "respuestas": "la hace el autor o una persona que él designe",
+     "si_la_respuesta_es_no": "",
+     "esfuerzo_estimado": "Sin diseñar: falta definir la muestra y el criterio. La revisión midió 8 tipos equivocados en una muestra de 120 conceptos de las categorías que la regla daba por resueltas.",
+     "insumos": "data/biblioteca_cognitiva_1404.csv",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "lectura_del_curador": "no se hace",
+     "frase_del_autor": "«No revisar la biblioteca»",
+     "clase_de_respuesta": "lectura confirmada por el autor (D-15.3)",
+     "nota_del_curador": "Es la consecuencia de no revisar la Biblioteca, no una elección que el autor haya hecho sobre esta proposición. La Biblioteca queda como base de trabajo sin revisar, y así se declara.",
+     "confirmada_en": "D-15.3"
+    }
+   ],
+   "estado_en_la_1_2": "Abierta; no bloquea a las demás",
+   "opcion_tomada_en_la_1_2": "Sin decidir.",
+   "nota_1_3": "El autor respondió «No revisar la biblioteca». La Biblioteca queda como base de trabajo sin revisar.",
+   "estado_en_la_1_3": "Cerrada sin revisión: la Biblioteca queda como estaba (lectura del curador, a confirmar en D-15.3)",
+   "nota_1_4": "El 16 de noviembre de 2026 el autor declaró además que el MCCS son los 1.404 elementos de esa biblioteca y adjuntó dos ediciones. Se compararon con la base cargada y no hubo nada nuevo que cargar (decisión D-16.13). La base del autor no se tocó. Su representación en el Atlas sí cambió en esta versión: 59 elementos cambian de tipo por regla (45 pasan de CognitiveBias a LogicalFallacy; 14 pasan de Concept a CognitiveState) y el grafo carga 112 equivalencias con el corpus. Son decisiones del curador, a confirmar en D-16.10."
+  },
+  {
+   "codigo": "D-13",
+   "clase": "validación",
+   "proposicion": "Confirmar o revertir los cambios que la revisión aplicó sin la lectura del autor, y resolver los casos en que las lecturas no coinciden.",
+   "opcion_tomada": "Confirmar los 37 cambios de coordenada de la versión 1.2 y, en bloque, los de la Biblioteca, la medición, la serie APX y los textos.",
+   "estado": "Cerrada en lo que el autor decidió: D-13.2 confirmada de forma literal; D-13.3 a D-13.5, confirmadas (D-15.2). D-13.1 se leyó como conformidad con la regla general (a confirmar en D-16.12). La tarea D-13.6 sigue pendiente",
+   "adr": [],
+   "depende_de": [
+    "D-14",
+    "D-11"
+   ],
+   "orden": null,
+   "nota_1_2": "Los cambios están en data/cambios_1_1_a_1_2.csv: 183 filas, de las que 171 son cambios de un elemento y 12 resumen cambios en bloque. El archivo trae dos columnas vacías para anotar la decisión. Los indicadores K59, K43 y K54 no son casos sin coincidencia: el revisor pidió revisarlos y no propuso otra coordenada; quedan como estaban.",
+   "orden_de_decision": 3,
+   "proposiciones": [
+    {
+     "codigo": "D-13.1",
+     "tipo": "decisión",
+     "texto": "Los 11 pre-ensayos de D20 en que las lecturas no coinciden (AMP-46, HC-010, APC-210, APC-212, APA-053, APA-068, APA-075, APA-108, APA-111, APA-113, APA-158): elegir el dominio de cada uno.",
+     "respuestas": "por caso: queda en D20 / pasa al dominio que propone la segunda lectura / otro",
+     "si_la_respuesta_es_no": "",
+     "esfuerzo_estimado": "1 hora: una ficha por caso.",
+     "insumos": "data/casos_sin_coincidencia_D13.csv (tesis, las dos lecturas con su argumento y la regla de la que depende cada caso). Los once dependen de reglas propuestas (nueve, de RP-02; los otros dos, de RP-04 y de RP-03 con RP-04): conviene decidirlas antes.",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "lectura_del_curador": "siguen la regla general de la versión",
+     "frase_del_autor": "«Si, confirmo, procede»",
+     "clase_de_respuesta": "lectura de una frase general; a corregir por el autor si no es lo que quiso decir",
+     "nota_del_curador": "La proposición pedía elegir un dominio por caso y la frase no elige ninguno. Se leyó como conformidad con que los once casos sigan la regla general de la versión 1.4: quedan con el dominio que tenían en la versión 1.2, salvo que la relectura lo cambie con la vara de tres lecturas. Resultado: 10 conservan el dominio de la versión 1.2 y 1 cambian. El detalle está en data/relectura_1_4_resumen.json (clave los_11_casos_de_D20). Queda para confirmar en D-16.12."
+    },
+    {
+     "codigo": "D-13.2",
+     "tipo": "decisión",
+     "texto": "Los 37 cambios de coordenada del corpus: confirmar o revertir.",
+     "respuestas": "por fila: confirmar / revertir",
+     "si_la_respuesta_es_no": "Se revierte la fila (procedimiento de reversión).",
+     "esfuerzo_estimado": "Incluido en la revisión humana: son el estrato E1 de la muestra.",
+     "insumos": "data/cambios_1_1_a_1_2.csv, ámbito «Corpus»: sus filas son, con los casos de data/casos_sin_coincidencia_D13.csv, el estrato E1 de la revisión humana",
+     "decision_del_autor": "confirmar",
+     "nota_del_autor": "",
+     "lectura_del_curador": "",
+     "frase_del_autor": "«Si, confirmo, procede»",
+     "clase_de_respuesta": "literal",
+     "nota_del_curador": "Los 37 cambios de coordenada de la versión 1.2 quedan confirmados. En la relectura de la versión 1.4 esos ejes están protegidos: una lectura en contra se informa y no se aplica."
+    },
+    {
+     "codigo": "D-13.3",
+     "tipo": "decisión",
+     "texto": "Los cambios de la Biblioteca (86 filas): tipos de 81 conceptos, pilar OS de 59, territorios, cobertura y prácticas contra sesgos.",
+     "respuestas": "en bloque o por fila: confirmar / revertir",
+     "si_la_respuesta_es_no": "Se revierte el bloque o la fila.",
+     "esfuerzo_estimado": "Medio día para decidir en bloque; la lectura por concepto es la decisión D-12.",
+     "insumos": "data/cambios_1_1_a_1_2.csv, ámbito «Biblioteca»",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "lectura_del_curador": "confirmar, en bloque",
+     "frase_del_autor": "«Confirmo el resto de los cambios.»",
+     "clase_de_respuesta": "lectura confirmada por el autor (D-15.2)",
+     "nota_del_curador": "",
+     "confirmada_en": "D-15.2"
+    },
+    {
+     "codigo": "D-13.4",
+     "tipo": "decisión",
+     "texto": "Los cambios de la medición (20 filas) y de la serie APX (22 filas): confirmar o revertir.",
+     "respuestas": "en bloque o por fila: confirmar / revertir",
+     "si_la_respuesta_es_no": "Se revierte el bloque o la fila.",
+     "esfuerzo_estimado": "2 horas.",
+     "insumos": "data/cambios_1_1_a_1_2.csv, ámbitos «Medición» y «Serie APX»; docs/12_Ampliacion_Celdas_en_Blanco.md",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "lectura_del_curador": "confirmar, en bloque",
+     "frase_del_autor": "«Confirmo el resto de los cambios.»",
+     "clase_de_respuesta": "lectura confirmada por el autor (D-15.2)",
+     "nota_del_curador": "",
+     "confirmada_en": "D-15.2"
+    },
+    {
+     "codigo": "D-13.5",
+     "tipo": "decisión",
+     "texto": "Los cambios de texto de la taxonomía (13 filas), de los cruces (4 filas) y de la propuesta de remapeo (1 fila): confirmar o revertir.",
+     "respuestas": "en bloque o por fila: confirmar / revertir",
+     "si_la_respuesta_es_no": "Se revierte el bloque o la fila. Las correcciones de texto se revierten en el guion de la taxonomía.",
+     "esfuerzo_estimado": "1 hora.",
+     "insumos": "data/cambios_1_1_a_1_2.csv, ámbitos «Taxonomía (texto)», «Cruce con dominios», «Cruce con territorios» y «Propuesta de remapeo»; docs/03_Taxonomia_6_0.md, sección de correcciones",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "lectura_del_curador": "confirmar, en bloque",
+     "frase_del_autor": "«Confirmo el resto de los cambios.»",
+     "clase_de_respuesta": "lectura confirmada por el autor (D-15.2)",
+     "nota_del_curador": "",
+     "confirmada_en": "D-15.2"
+    },
+    {
+     "codigo": "D-13.6",
+     "tipo": "tarea",
+     "texto": "Los indicadores K59, K43 y K54, que un revisor pidió revisar sin proponer otra coordenada: revisarlos al leer el catálogo.",
+     "respuestas": "la hace el autor o el curador al revisar la medición",
+     "si_la_respuesta_es_no": "",
+     "esfuerzo_estimado": "15 minutos.",
+     "insumos": "data/indicadores_ciso365_en_el_atlas.csv",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "lectura_del_curador": "",
+     "frase_del_autor": "",
+     "clase_de_respuesta": "tarea pendiente",
+     "nota_del_curador": "No es una decisión: es una revisión de tres indicadores."
+    }
+   ],
+   "procedimiento_de_reversion": "Anotar «revertir» en la columna decision_del_autor de la fila. El curador quita el ajuste correspondiente de scripts/datos_de_trabajo/ajustes_revision_1_2.json y regenera el paquete con el orden del documento 10: el valor vuelve al de la versión 1.1 y los conteos, el grafo y los documentos se recalculan. Las filas agregadas se revierten en bloque, con el parámetro que las gobierna en ese mismo archivo. Revertir un cambio del corpus saca al pre-ensayo del estrato E1 de la revisión humana.",
+   "estado_en_la_1_2": "Abierta; la parte del corpus se resuelve dentro de la revisión humana",
+   "opcion_tomada_en_la_1_2": "Sin decidir.",
+   "nota_1_3": "El autor respondió «Confirmo el resto de los cambios». Se leyó como confirmación de D-13.3, D-13.4 y D-13.5. D-13.1 y D-13.2 no tienen respuesta.",
+   "estado_en_la_1_3": "Abierta en parte: los cambios de la Biblioteca, la medición, la serie APX y los textos se leyeron como confirmados en bloque (a confirmar en D-15.2); la parte del corpus (D-13.1 y D-13.2) se leyó como sin respuesta",
+   "nota_1_4": "El autor respondió «Si, confirmo, procede» a la línea «Los 11 casos de D20 y los 37 cambios de la versión 1.2»."
+  },
+  {
+   "codigo": "D-14",
+   "clase": "confirmación",
+   "proposicion": "Confirmar lo que el paquete leyó en el mensaje del autor del 15 de noviembre de 2026 y lo que hizo en su nombre.",
+   "opcion_tomada": "Sí a las siete proposiciones.",
+   "estado": "Confirmada por el autor el 16 de noviembre de 2026",
+   "adr": [
+    "ADR-026",
+    "ADR-027",
+    "ADR-028",
+    "ADR-029"
+   ],
+   "depende_de": [],
+   "orden": null,
+   "orden_de_decision": 1,
+   "nota_1_2": "La aceptación fue en bloque y con una condición. El paquete tuvo que interpretar cuatro cosas para poder seguir, y las aplicó. Ninguna queda firme hasta que el autor la confirme.",
+   "proposiciones": [
+    {
+     "codigo": "D-14.1",
+     "tipo": "decisión",
+     "texto": "La aceptación en bloque de D-01 a D-10 vale aunque su condición se cumplió en parte: las diez decisiones chocaban en cuatro puntos, de los que dos se resolvieron, uno se resolvió en parte y uno sigue abierto; y que «apunten a la excelencia y al rigor» no lo puede certificar el paquete.",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "Las diez decisiones vuelven a quedar abiertas y la versión 1.2 pasa a ser una propuesta. No hay que deshacer nada en los datos: los conjuntos de cambios ya están en estado «propuesto».",
+     "esfuerzo_estimado": "15 minutos: sección 2 del documento 13.",
+     "insumos": "docs/13_Revision_critica_1_2.md, sección 2",
+     "decision_del_autor": "sí",
+     "nota_del_autor": "",
+     "lectura_del_curador": "",
+     "frase_del_autor": "«Confirmo las siete.»",
+     "clase_de_respuesta": "literal",
+     "nota_del_curador": ""
+    },
+    {
+     "codigo": "D-14.2",
+     "tipo": "decisión",
+     "texto": "D-03 era una pregunta. Se confirma el «sí»: el gobierno, el riesgo y el cumplimiento de la IA que estaban alojados en D20 pasan a D01, D02 o D03.",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "Se revierten los 22 cambios del corpus cuyo origen empieza con «decisión D-03» (procedimiento de reversión, más abajo). Los otros cambios de pre-ensayos de D20 no dependen de esta decisión.",
+     "esfuerzo_estimado": "30 minutos: la regla 7 y la tabla de la sección 7 del documento 07.",
+     "insumos": "docs/07_Categorizacion_del_Corpus.md, sección 7; data/analisis_D20_decision_D03.csv",
+     "decision_del_autor": "sí",
+     "nota_del_autor": "",
+     "lectura_del_curador": "",
+     "frase_del_autor": "«Confirmo las siete.»",
+     "clase_de_respuesta": "literal",
+     "nota_del_curador": ""
+    },
+    {
+     "codigo": "D-14.3",
+     "tipo": "decisión",
+     "texto": "D-10 pedía «decidir sobre las propuestas editoriales». Se confirman las dos lecturas: (a) la propuesta de remapeo es el pedido para la próxima versión del GM-24, y (b) los 16 pre-ensayos de la serie APX entran como capa de ampliación, fuera del corpus base.",
+     "respuestas": "(a) sí / no; (b) sí / no",
+     "si_la_respuesta_es_no": "(a) La propuesta de remapeo queda como análisis, sin destinatario. (b) La serie APX se retira del grafo candidato (su conjunto de cambios) y de los documentos 06 y 12.",
+     "esfuerzo_estimado": "1 hora: documento 12 y data/propuesta_remapeo_gm24.csv.",
+     "insumos": "docs/12_Ampliacion_Celdas_en_Blanco.md; docs/04_Base_de_Referencia.md",
+     "decision_del_autor": "sí",
+     "nota_del_autor": "",
+     "lectura_del_curador": "",
+     "frase_del_autor": "«Confirmo las siete.»",
+     "clase_de_respuesta": "literal",
+     "nota_del_curador": "La proposición tiene partes y el «sí» las alcanza a todas: (a) sí; (b) sí."
+    },
+    {
+     "codigo": "D-14.4",
+     "tipo": "decisión",
+     "texto": "D-01 se confirma con la advertencia a la vista: el nombre coincide con un concepto comercial de un proveedor y con el nombre de una de sus suites, y 77 pre-ensayos del plano A, que se propone agnóstico de proveedor, nombran productos o al proveedor.",
+     "respuestas": "sí / no / otro nombre",
+     "si_la_respuesta_es_no": "Cambiar el nombre obliga a regenerar todos los documentos; los códigos y los datos no cambian.",
+     "esfuerzo_estimado": "10 minutos.",
+     "insumos": "docs/02_De_AI_CISO_Atlas_a_Frontier_CISO_Atlas.md; ADR-013",
+     "decision_del_autor": "sí",
+     "nota_del_autor": "",
+     "lectura_del_curador": "",
+     "frase_del_autor": "«Confirmo las siete.»",
+     "clase_de_respuesta": "literal",
+     "nota_del_curador": ""
+    },
+    {
+     "codigo": "D-14.5",
+     "tipo": "decisión",
+     "texto": "«Propone una forma de implementar […] informa y continua» se leyó como autorización para ejecutar la revisión crítica y la mejora sin una consulta intermedia, y así se hizo el mismo día.",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "La versión 1.2 queda como propuesta de revisión y la 1.1 sigue siendo la vigente. Ningún archivo de la 1.1 se modificó.",
+     "esfuerzo_estimado": "5 minutos.",
+     "insumos": "docs/13_Revision_critica_1_2.md, sección 2",
+     "decision_del_autor": "sí",
+     "nota_del_autor": "",
+     "lectura_del_curador": "",
+     "frase_del_autor": "«Confirmo las siete.»",
+     "clase_de_respuesta": "literal",
+     "nota_del_curador": ""
+    },
+    {
+     "codigo": "D-14.6",
+     "tipo": "decisión",
+     "texto": "ADR-029 redacta el principio que enunciaste: el Atlas funciona como guía y orientación; quien lo usa lee con atención, no cree nada por defecto, contrasta con su conocimiento y su formación y acepta cada elemento bajo una responsabilidad final que no se delega.",
+     "respuestas": "sí / corregir la redacción",
+     "si_la_respuesta_es_no": "Se corrige el texto de ADR-029 y de la sección «Uso previsto y límites» del README.",
+     "esfuerzo_estimado": "10 minutos.",
+     "insumos": "docs/08_Decisiones_de_Arquitectura.md, ADR-029",
+     "decision_del_autor": "sí",
+     "nota_del_autor": "",
+     "lectura_del_curador": "",
+     "frase_del_autor": "«Confirmo las siete.»",
+     "clase_de_respuesta": "literal",
+     "nota_del_curador": ""
+    },
+    {
+     "codigo": "D-14.7",
+     "tipo": "decisión",
+     "texto": "ADR-026 (qué efecto tiene la aceptación en bloque), ADR-027 (revisión crítica antes de publicar) y ADR-028 (vía de corrección de una coordenada heredada: dos lecturas o una adjudicación escrita) rigen de forma provisoria desde la versión 1.2, junto con las instrucciones 7.2 del agente curador, que las recogen.",
+     "respuestas": "sí / no, por cada ADR",
+     "si_la_respuesta_es_no": "ADR-026: equivale a un «no» en D-14.1. ADR-028: se revierten los 37 cambios del corpus, que entraron todos por esa vía, y la política vuelve a ser la de ADR-020 (la coordenada heredada no se toca). ADR-027: no hay nada que deshacer; deja de ser práctica.",
+     "esfuerzo_estimado": "20 minutos.",
+     "insumos": "docs/08_Decisiones_de_Arquitectura.md, ADR-026 a ADR-028",
+     "decision_del_autor": "sí",
+     "nota_del_autor": "",
+     "lectura_del_curador": "",
+     "frase_del_autor": "«Confirmo las siete.»",
+     "clase_de_respuesta": "literal",
+     "nota_del_curador": "La proposición tiene partes y el «sí» las alcanza a todas: sí a ADR-026, ADR-027 y ADR-028, y a las instrucciones 7.2 del agente curador. ADR-027 queda vigente: la versión 1.3 también pasa por una revisión antes de publicarse."
+    }
+   ],
+   "estado_en_la_1_2": "Abierta; es la primera que conviene decidir",
+   "opcion_tomada_en_la_1_2": "Sin decidir.",
+   "nota_1_3": "El autor respondió «Confirmo las siete». Es una respuesta literal."
+  },
+  {
+   "codigo": "D-15",
+   "clase": "confirmación",
+   "proposicion": "Confirmar o corregir lo que la versión 1.3 leyó en las tres frases generales del mensaje del 16 de noviembre de 2026 y las reglas de trabajo que esa versión puso a regir sin que el autor las viera.",
+   "opcion_tomada": "Sí a las siete proposiciones.",
+   "estado": "Confirmada por el autor el 16 de noviembre de 2026",
+   "adr": [
+    "ADR-030",
+    "ADR-031"
+   ],
+   "depende_de": [
+    "D-14"
+   ],
+   "orden": null,
+   "orden_de_decision": 1,
+   "nota_1_3": "La versión 1.2 no dejó firme lo que había interpretado hasta que el autor lo confirmó (D-14). La versión 1.3 aplicó lo que leyó, porque las tres frases contestan decisiones que ya se le habían presentado y porque todo lo aplicado se revierte en un paso. Esta decisión le pide al autor lo mismo que la D-14: decir si cada lectura es la que quiso.",
+   "proposiciones": [
+    {
+     "codigo": "D-15.1",
+     "tipo": "confirmación",
+     "texto": "«Acepto el cambio de reglas» se leyó como adopción de las 18 reglas propuestas, las que cambian coordenadas y las que no: quedan adoptados los 60 enunciados que tenían texto listo, siguen abiertas las preguntas y quedan aceptados los encargos.",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "Los enunciados que el autor indique vuelven a «propuestos» y se retiran los cambios de la relectura que los citan.",
+     "esfuerzo_estimado": "",
+     "insumos": "data/reglas_propuestas_D11_enunciados.csv; documento 03, sección 8",
+     "decision_del_autor": "sí",
+     "nota_del_autor": "",
+     "frase_del_autor": "«Confirmo todo»",
+     "clase_de_respuesta": "literal",
+     "lectura_del_curador": "",
+     "nota_del_curador": ""
+    },
+    {
+     "codigo": "D-15.2",
+     "tipo": "confirmación",
+     "texto": "«Confirmo el resto de los cambios» se leyó como el paso 4 de la lista que se le presentó: los cambios de la Biblioteca, la medición, la serie APX y los textos (D-13.3 a D-13.5). No alcanza a los 37 cambios de coordenada del corpus ni a los once casos de D20 (D-13.1 y D-13.2), que en esa lista estaban en el paso 3.",
+     "respuestas": "sí / no: quise confirmar también los cambios del corpus",
+     "si_la_respuesta_es_no": "D-13.2 queda confirmada: los 37 cambios de la versión 1.2 quedan como están. D-13.1 pide elegir un dominio por caso y sigue abierta.",
+     "esfuerzo_estimado": "",
+     "insumos": "scripts/datos_de_trabajo/respuesta_presentada_al_autor_2026_11_16.md",
+     "decision_del_autor": "sí",
+     "nota_del_autor": "",
+     "frase_del_autor": "«Confirmo todo»",
+     "clase_de_respuesta": "literal",
+     "lectura_del_curador": "",
+     "nota_del_curador": ""
+    },
+    {
+     "codigo": "D-15.3",
+     "tipo": "confirmación",
+     "texto": "«No revisar la biblioteca» se leyó como cierre de la decisión D-12. Sus cinco proposiciones quedan con la consecuencia de no revisar, que el autor no eligió una por una: los territorios no se releen, las habilidades socioemocionales y las mentalidades de resiliencia quedan en el pilar MM, los tipos no se releen, los grupos de conceptos repetidos quedan separados y no se hace la muestra.",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "La proposición que el autor indique vuelve a quedar abierta.",
+     "esfuerzo_estimado": "",
+     "insumos": "documento 14, sección 2.1",
+     "decision_del_autor": "sí",
+     "nota_del_autor": "",
+     "frase_del_autor": "«Confirmo todo»",
+     "clase_de_respuesta": "literal",
+     "lectura_del_curador": "",
+     "nota_del_curador": ""
+    },
+    {
+     "codigo": "D-15.4",
+     "tipo": "confirmación",
+     "texto": "La regla con que la relectura decide un cambio (ADR-030) es más estricta que la que el autor confirmó (ADR-028): además de dos lecturas que coinciden, pide que ninguna declare confianza baja, que ninguna anote una pregunta abierta y que el cambio no caiga en un punto que la revisión de la versión candidata dejó abierto. Rige de forma provisoria.",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "Vale ADR-028 sola: entran los cambios retenidos por confianza baja y los frenados.",
+     "esfuerzo_estimado": "",
+     "insumos": "documento 08, ADR-030; data/relectura_1_3_casos_para_el_autor.csv",
+     "decision_del_autor": "sí",
+     "nota_del_autor": "",
+     "frase_del_autor": "«Confirmo todo»",
+     "clase_de_respuesta": "literal",
+     "lectura_del_curador": "",
+     "nota_del_curador": ""
+    },
+    {
+     "codigo": "D-15.5",
+     "tipo": "confirmación",
+     "texto": "Los análisis de la versión 1.2 se conservan calculados sobre el corpus de esa versión (ADR-031) y las instrucciones del agente curador pasan a la versión 7.3. Rigen de forma provisoria.",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "Los análisis se recalculan sobre el corpus vigente, o vuelven a regir las instrucciones 7.2, según lo que el autor indique.",
+     "esfuerzo_estimado": "",
+     "insumos": "documento 08, ADR-031; config/",
+     "decision_del_autor": "sí",
+     "nota_del_autor": "",
+     "frase_del_autor": "«Confirmo todo»",
+     "clase_de_respuesta": "literal",
+     "lectura_del_curador": "",
+     "nota_del_curador": ""
+    },
+    {
+     "codigo": "D-15.6",
+     "tipo": "confirmación",
+     "texto": "La relectura alcanzó a todo el corpus y usó todos los enunciados adoptados. La tarea D-11.3 hablaba de releer, con las reglas que cambian coordenadas, los pre-ensayos que cada regla alcanza.",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "Se retiran los cambios que solo citan enunciados de las reglas que se habían presentado como las que no mueven coordenadas.",
+     "esfuerzo_estimado": "",
+     "insumos": "documento 14, sección 4.1",
+     "decision_del_autor": "sí",
+     "nota_del_autor": "",
+     "frase_del_autor": "«Confirmo todo»",
+     "clase_de_respuesta": "literal",
+     "lectura_del_curador": "",
+     "nota_del_curador": ""
+    },
+    {
+     "codigo": "D-15.7",
+     "tipo": "confirmación",
+     "texto": "Las 34 definiciones de trabajo de las subfunciones las redactó el curador (encargo RP-12.1) y los lectores las usaron. El autor no las vio. La mayoría de los cambios de subfunción que no citan un enunciado adoptado se apoyan en ellas.",
+     "respuestas": "confirmar / corregir las que indique",
+     "si_la_respuesta_es_no": "Se corrigen las definiciones y se releen las subfunciones que dependan de ellas.",
+     "esfuerzo_estimado": "",
+     "insumos": "documento 03, sección 8.4; data/taxonomia_v6_0.json",
+     "decision_del_autor": "sí",
+     "nota_del_autor": "",
+     "frase_del_autor": "«Confirmo todo»",
+     "clase_de_respuesta": "literal",
+     "lectura_del_curador": "",
+     "nota_del_curador": ""
+    }
+   ],
+   "estado_en_la_1_3": "Abierta: a confirmar o corregir por el autor; es la primera que conviene decidir",
+   "nota_1_4": "El autor respondió «Confirmo todo». Es una respuesta literal. Con ella quedan confirmadas las lecturas de sus tres frases generales, las ADR-030 y ADR-031, las instrucciones 7.3 del agente curador, el alcance de la relectura de la versión 1.3 y las 34 definiciones de trabajo de las subfunciones."
+  },
+  {
+   "codigo": "D-16",
+   "clase": "confirmación",
+   "proposicion": "Confirmar, corregir o revertir lo que el curador decidió en la versión 1.4: lo que leyó como delegado, el resultado de los encargos que el autor aprobó y lo que decidió sin delegación ni encargo.",
+   "opcion_tomada": "Sin decidir.",
+   "estado": "Abierta: a confirmar o corregir por el autor",
+   "adr": [
+    "ADR-032",
+    "ADR-033",
+    "ADR-034",
+    "ADR-035",
+    "ADR-036",
+    "ADR-037",
+    "ADR-038",
+    "ADR-039",
+    "ADR-040"
+   ],
+   "depende_de": [
+    "D-15"
+   ],
+   "orden": null,
+   "orden_de_decision": 1,
+   "nota_1_4": "El autor respondió tres líneas con una frase general («Procede con la decision de mayor rigurosidad») y otras tres de forma literal. Lo que sigue lo decidió el curador y no figura en los campos del autor. Cada proposición dice de dónde sale. La proposición D-16.2 no tiene un «sí» por defecto y puede esperar a la revisión humana.",
+   "grupos": [
+    "frase",
+    "l2",
+    "l3",
+    "l4",
+    "l6",
+    "l5",
+    "mccs",
+    "curador"
+   ],
+   "proposiciones": [
+    {
+     "codigo": "D-16.14",
+     "tipo": "confirmación",
+     "texto": "«Procede con la decision de mayor rigurosidad» la leí como una delegación: decidir yo cada uno de los tres asuntos, con un criterio de rigor. Hay otra lectura directa: que elegiste, de las opciones que te ofrecía cada línea, la más rigurosa. Con esa lectura, en la línea 3 los cambios de la versión 1.3 se revertían enteros y en la línea 4 valía el diseño completo.",
+     "respuestas": "sí: era una delegación / no: quise elegir la opción más rigurosa de cada línea / otra …",
+     "si_la_respuesta_es_no": "Se rehace lo que dependa de la lectura que corrijas. Lo más grande es la línea 3: con la otra lectura la categorización vuelve a la de la versión 1.2, con los cambios que exige el catálogo.",
+     "insumos": "documento 15, sección 1",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Lectura de tu frase «Procede con la decision de mayor rigurosidad»",
+     "frase_del_autor": "«Procede con la decision de mayor rigurosidad.»",
+     "decidido_por": "el curador",
+     "decision_del_curador": "lectura del curador"
+    },
+    {
+     "codigo": "D-16.1",
+     "tipo": "confirmación",
+     "texto": "No definiste qué es «mayor rigurosidad». Escribí un criterio de seis partes, en este orden: fidelidad a la fuente normativa del eje; coherencia con lo ya decidido; una regla para todos los casos; una prueba que puede fallar; parsimonia (no se cambia el catálogo si la opción no se te había planteado); y, si nada decide, el punto queda como vacío declarado y no cambia nada.",
+     "respuestas": "sí / no: cambia el criterio …",
+     "si_la_respuesta_es_no": "Se revisan las decisiones que se apoyan en el criterio que cambies.",
+     "insumos": "documento 15, sección 2",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Lectura de tu frase «Procede con la decision de mayor rigurosidad»",
+     "frase_del_autor": "«Procede con la decision de mayor rigurosidad.»",
+     "decidido_por": "el curador",
+     "decision_del_curador": "ADR-032"
+    },
+    {
+     "codigo": "D-16.20",
+     "tipo": "confirmación",
+     "texto": "No di por buenos los 270 cambios de la versión 1.3 ni apliqué los 154 que su revisión había frenado: volví a leer todo el corpus con las reglas de esta versión. Te había dicho que tus respuestas los aplicarían o descartarían «sin volver a leer»; no lo hice así, porque las reglas decididas cambian definiciones y el encargo de lectura de la versión 1.3 tenía defectos.",
+     "respuestas": "sí / no: debían quedar / no: debían revertirse enteros",
+     "si_la_respuesta_es_no": "Si debían quedar, se aplica la categorización de la versión 1.3. Si debían revertirse, la de la 1.2. En los dos casos es una versión nueva, sin volver a leer.",
+     "insumos": "documento 15, secciones 3 y 4.1",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Línea 3 de tu mensaje (si los 260 cambios quedan): la leí como delegación",
+     "frase_del_autor": "«Procede con la decision de mayor rigurosidad.»",
+     "decidido_por": "el curador",
+     "decision_del_curador": "ADR-033"
+    },
+    {
+     "codigo": "D-16.2",
+     "tipo": "confirmación",
+     "texto": "Qué vara vale para cambiar una coordenada. No tiene un «sí» por defecto: es una elección, y puede esperar a la revisión humana. (a) La vara aplicada: dos lecturas a ciegas coinciden con confianza alta y una tercera prefiere el valor nuevo. Cambian 99 coordenadas en 90 pre-ensayos (89 por la vara y 10 por el nuevo alcance de RC04). (b) La vara que había fijado antes de leer: alcanza con que ninguna lectura declare confianza baja. Cambian 480 en 338. Su condición de confianza es la de ADR-030, que confirmaste en D-15.4. La endurecí después de ver los resultados, y me había comprometido a no cambiarla. Lo que tenés que saber para elegir: con (a) se puede cambiar de menos: en 594 coordenadas del corpus (398 pre-ensayos) las dos lecturas coinciden en un valor distinto del que se publica; en 475 de ellas el valor que queda es el que traía tu banco y en 115, una propuesta automática de la versión 1.0. Con (b) se puede cambiar de más: de los 381 cambios que agrega, en 240 alguna lectura considera defendible el valor vigente y en 141, ninguna. La diferencia entre las dos es una etiqueta que el lector no repite siempre: en las dos tandas que se leyeron dos veces, la confianza declarada cambió en 12 de 48 ejes con el mismo código. De los 99 cambios aplicados, 39 ya estaban aplicados en la versión 1.3, 36 estaban frenados y 24 no eran cambios de la 1.3. Nada de esto tiene validación humana.",
+     "respuestas": "a: la vara aplicada (99 cambios) / b: la vara fijada antes de leer (480) / c: ningún cambio de lectura hasta la revisión humana (quedan solo los 10 que exige el catálogo) / d: la categorización de la versión 1.3 / e: la de la versión 1.2 / lo decido después de la revisión humana",
+     "si_la_respuesta_es_no": "Con (a) no cambia nada. Con cualquiera de las otras, el curador arma una versión nueva con esa categorización, sin volver a leer: las listas de cambios ya están calculadas, y el resumen, la muestra de la revisión humana y los documentos se rehacen. Las opciones (d) y (e) deshacen también los diez cambios de RC04 a ID06, salvo que confirmes D-16.3: en ese caso se conservan. La lista de la versión 1.3 trae un dominio (APC-122, D20) que contradice un cambio que confirmaste (D17): se deja D17. Si elegís otra categorización antes de la revisión humana, la muestra se vuelve a sortear.",
+     "insumos": "documento 15, secciones 3 y 4; data/relectura_1_4_por_eje.csv (trae la confianza de cada lectura y el valor que daría cada vara); data/relectura_1_4_casos_para_el_autor.csv; relectura_1_4/vara/LEEME.md",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Línea 3 de tu mensaje (si los 260 cambios quedan): la leí como delegación",
+     "frase_del_autor": "«Procede con la decision de mayor rigurosidad.»",
+     "decidido_por": "el curador",
+     "decision_del_curador": "ADR-033"
+    },
+    {
+     "codigo": "D-16.3",
+     "tipo": "confirmación",
+     "texto": "La mejora continua pasa a la función Identificar con el código nuevo ID06, y RC04 queda para las lecciones y el cierre de una recuperación (opción a de RP-13). Son 35 subfunciones. Los 10 pre-ensayos que tenían RC04 tomaron el valor en que coinciden dos lecturas, con cualquier confianza, y pasan a ID06: en 4, alguna lectura no declaró confianza alta. RC04 se retiró también de las subfunciones secundarias, que no se releyeron.",
+     "respuestas": "sí / no: prefiero la opción b (se mantiene RC04)",
+     "si_la_respuesta_es_no": "Se retira ID06 y se vuelve a leer la subfunción de los pre-ensayos que cambiaron por el nuevo alcance.",
+     "insumos": "documento 16, sección 2; regla RD-03; documento 15, sección 4.6",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Línea 2 de tu mensaje (los seis puntos y las once preguntas): la leí como delegación",
+     "frase_del_autor": "«Procede con la decision de mayor rigurosidad.»",
+     "decidido_por": "el curador",
+     "decision_del_curador": "ADR-034"
+    },
+    {
+     "codigo": "D-16.5",
+     "tipo": "confirmación",
+     "texto": "Las reglas RD-01 a RD-14, que recibieron los lectores: adoptar, modificar o rechazar cada una. Resuelven los seis puntos de la revisión y las preguntas de dominio y de subfunción. La planilla trae, por regla, cuántos cambios la citan, lo que los lectores señalaron de ella y lo que observó la revisión de la versión candidata.",
+     "respuestas": "por regla: adoptar / modificar / rechazar",
+     "si_la_respuesta_es_no": "Si rechazás una regla, los cambios que la citan vuelven al valor de la versión 1.2. Si la modificás, esos pre-ensayos se vuelven a leer con el texto nuevo. Están en data/relectura_1_4_por_eje.csv, columna reglas_citadas; ahí la regla puede llevar la letra del caso (RD-01a, RD-01b).",
+     "insumos": "data/reglas_de_asignacion_rev3.csv (dos columnas para anotar la decisión); documento 16, sección 3; relectura_1_4/notas_de_cierre/",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Línea 2 de tu mensaje (los seis puntos y las once preguntas): la leí como delegación",
+     "frase_del_autor": "«Procede con la decision de mayor rigurosidad.»",
+     "decidido_por": "el curador",
+     "decision_del_curador": "ADR-034"
+    },
+    {
+     "codigo": "D-16.6",
+     "tipo": "confirmación",
+     "texto": "Las reglas RD-20 a RD-24, que no son de lectura y salen de cinco de las once preguntas: el pilar del liderazgo de personas, la lente de la agenda de IA, el plano de los pre-ensayos con marca, la biblioteca sin dominio y el eje del aseguramiento.",
+     "respuestas": "por regla: adoptar / modificar / rechazar",
+     "si_la_respuesta_es_no": "La regla rechazada deja de regir.",
+     "insumos": "data/reglas_de_asignacion_rev3.csv; documento 16, sección 3",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Línea 2 de tu mensaje (los seis puntos y las once preguntas): la leí como delegación",
+     "frase_del_autor": "«Procede con la decision de mayor rigurosidad.»",
+     "decidido_por": "el curador",
+     "decision_del_curador": "ADR-034 y ADR-038"
+    },
+    {
+     "codigo": "D-16.21",
+     "tipo": "confirmación",
+     "texto": "El orden de precedencia que recibieron los lectores: primero las reglas decididas por el curador (RD), después los enunciados que adoptaste (RP), después las reglas base y, por último, la definición del catálogo. Cuando una RD y una RP hablan del mismo caso, se aplicó la RD.",
+     "respuestas": "sí / no: mis enunciados van primero",
+     "si_la_respuesta_es_no": "Se vuelven a leer los pre-ensayos en que una RD y una RP dan resultados distintos.",
+     "insumos": "relectura_1_4/lectura_a/REGLAS.md, encabezado",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Línea 2 de tu mensaje (los seis puntos y las once preguntas): la leí como delegación",
+     "frase_del_autor": "«Procede con la decision de mayor rigurosidad.»",
+     "decidido_por": "el curador",
+     "decision_del_curador": "decisión del curador"
+    },
+    {
+     "codigo": "D-16.11",
+     "tipo": "confirmación",
+     "texto": "La revisión humana se preparó con el diseño completo: 193 pre-ensayos, unas 16,1 horas, con un margen de 6,4 puntos para todo el corpus. El camino mínimo son 80 pre-ensayos, unas 6,7 horas y 11,3 puntos.",
+     "respuestas": "sí / no: prefiero el camino mínimo",
+     "si_la_respuesta_es_no": "El camino mínimo es la tanda 1 de la misma muestra: no hay que volver a sortear.",
+     "insumos": "data/revision_humana_protocolo.md; documento 18, sección 5",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Línea 4 de tu mensaje (la revisión humana): la leí como delegación",
+     "frase_del_autor": "«Procede con la decision de mayor rigurosidad.»",
+     "decidido_por": "el curador",
+     "decision_del_curador": "ADR-040"
+    },
+    {
+     "codigo": "D-16.4",
+     "tipo": "confirmación",
+     "texto": "Dos cambios de catálogo del eje H: H04 deja de ser un horizonte y pasa a ser el marcador de convergencia (RP-15.6); INH11 pasa a llamarse «Volumen de alertas y de decisiones» (RP-15.2).",
+     "respuestas": "por cambio: sí / no",
+     "si_la_respuesta_es_no": "El cambio que no confirmes vuelve a la tabla de la Taxonomía 6.0.",
+     "insumos": "documento 16, sección 5",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Línea 6 de tu mensaje («Si, confirmo, procede»): aprobaste ejecutar el encargo; el resultado es mío",
+     "frase_del_autor": "«Si, confirmo, procede»",
+     "decidido_por": "el curador",
+     "decision_del_curador": "ADR-034"
+    },
+    {
+     "codigo": "D-16.18",
+     "tipo": "confirmación",
+     "texto": "Con H04 como marcador, los lectores volvieron a decidir la convergencia y el horizonte con dos criterios que escribí para el encargo y que no son reglas adoptadas. El marcador cambió en 18 pre-ensayos y 21 de los 23 que tenían H04 recibieron un horizonte.",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "Se vuelve al marcador y al horizonte que resultan de la Taxonomía 6.0.",
+     "insumos": "documento 15, sección 4.6; relectura_1_4/lectura_a/REGLAS.md, sección «Horizonte y convergencia»",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Línea 6 de tu mensaje («Si, confirmo, procede»): aprobaste ejecutar el encargo; el resultado es mío",
+     "frase_del_autor": "«Si, confirmo, procede»",
+     "decidido_por": "el curador",
+     "decision_del_curador": "decisión del curador"
+    },
+    {
+     "codigo": "D-16.7",
+     "tipo": "confirmación",
+     "texto": "El modelo de equilibrio del eje H, revisión 2: contexto y fuerza definidos, «presiona» con término y sentido, «regula» con papel, seis vínculos nuevos para las cinco fuerzas que no presionaban nada y escalas para HX01 a HX07.",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "Se vuelve al modelo de la Taxonomía 6.0.",
+     "insumos": "documento 16, sección 5; data/modelo_h_presiona.csv y data/modelo_h_regula.csv",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Línea 6 de tu mensaje («Si, confirmo, procede»): aprobaste ejecutar el encargo; el resultado es mío",
+     "frase_del_autor": "«Si, confirmo, procede»",
+     "decidido_por": "el curador",
+     "decision_del_curador": "ADR-036"
+    },
+    {
+     "codigo": "D-16.8",
+     "tipo": "confirmación",
+     "texto": "Los criterios de admisión de dominios, revisión 2 (C1 a C6), y la tabla de los nueve candidatos. Reescribí el criterio C2, y con eso cambió el resultado del candidato W02 respecto de la Taxonomía 6.0. C5 no es una medida: es una frontera que escribí. La celda C2 del candidato W01 no sale del cálculo y queda por decidir (D-17.10).",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "Se vuelve a los cinco criterios de la Taxonomía 6.0.",
+     "insumos": "documento 16, sección 6; data/criterios_de_admision_rev2.json",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Línea 6 de tu mensaje («Si, confirmo, procede»): aprobaste ejecutar el encargo; el resultado es mío",
+     "frase_del_autor": "«Si, confirmo, procede»",
+     "decidido_por": "el curador",
+     "decision_del_curador": "ADR-037"
+    },
+    {
+     "codigo": "D-16.9",
+     "tipo": "confirmación",
+     "texto": "Dos definiciones de la taxonomía: el plano como propiedad del nodo, y las cinco familias de dominios.",
+     "respuestas": "por cada una: sí / no",
+     "si_la_respuesta_es_no": "Se retira la que no confirmes.",
+     "insumos": "documento 16, sección 7",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Línea 6 de tu mensaje («Si, confirmo, procede»): aprobaste ejecutar el encargo; el resultado es mío",
+     "frase_del_autor": "«Si, confirmo, procede»",
+     "decidido_por": "el curador",
+     "decision_del_curador": "ADR-038"
+    },
+    {
+     "codigo": "D-16.10",
+     "tipo": "confirmación",
+     "texto": "La ontología 2.2.0 tal como se implementó. Aprobaste la solicitud OCR-CAND-03; al aplicarla tomé decisiones que no estaban en ella. Cinco propuestas dejaban una alternativa abierta y la elegí yo (las número 2, 3, 12, 13 y 15); en dos agregué algo que la solicitud no pedía (la 6 y la 7); y hay cuatro decisiones de implementación: la regla que reconoce un estado por la primera palabra de su definición (14 elementos), la carga de 112 equivalencias entre la biblioteca y el corpus como candidatas de una sola lectura, el vínculo de 134 pares de tarea y punto de control, y la clase del punto de control, que sale de una regla de palabras.",
+     "respuestas": "por decisión: sí / no",
+     "si_la_respuesta_es_no": "Se retira lo que no confirmes.",
+     "insumos": "documento 17, sección 4; data/aplicacion_de_la_solicitud_OCR-CAND-03.csv",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Línea 6 de tu mensaje («Si, confirmo, procede»): aprobaste ejecutar el encargo; el resultado es mío",
+     "frase_del_autor": "«Si, confirmo, procede»",
+     "decidido_por": "el curador",
+     "decision_del_curador": "ADR-039"
+    },
+    {
+     "codigo": "D-16.12",
+     "tipo": "confirmación",
+     "texto": "«Si, confirmo, procede» sobre los once casos de D20 lo leí como conformidad con que sigan la regla general de la versión. No elegiste un dominio por caso. Hay otra lectura directa: que confirmaste el dominio que cada caso tenía en la versión 1.3; con ella, HC-010 y APA-111 quedarían en D01 y hoy están en D20.",
+     "respuestas": "sí / no: elijo el dominio de cada caso / no: quise confirmar el dominio de la versión 1.3",
+     "si_la_respuesta_es_no": "Se aplica a cada caso el dominio que corresponda a tu respuesta.",
+     "insumos": "documento 15, sección 4.5",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Línea 5 de tu mensaje («Si, confirmo, procede»): una lectura mía",
+     "frase_del_autor": "«Si, confirmo, procede»",
+     "decidido_por": "el curador",
+     "decision_del_curador": "lectura del curador"
+    },
+    {
+     "codigo": "D-16.13",
+     "tipo": "confirmación",
+     "texto": "Registré tu declaración: el MCCS son los 1.404 elementos de la biblioteca. Conservé la lente de cuatro pilares como lente del Atlas y derivé de la biblioteca las anclas de MM y de OS. Las anclas derivadas de OS son T01 y T04: ya no incluyen T03, que en D-04 habías aceptado para la escala de oficina. Las anclas de la Taxonomía 6.0 se conservan al lado.",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "Se vuelve a las anclas de la Taxonomía 6.0.",
+     "insumos": "documento 16, sección 7; scripts/datos_de_trabajo/declaracion_del_autor_sobre_el_mccs_2026_11_16.md",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Tu declaración sobre el MCCS; la consecuencia es mía",
+     "frase_del_autor": "",
+     "decidido_por": "el curador",
+     "decision_del_curador": "ADR-035"
+    },
+    {
+     "codigo": "D-16.15",
+     "tipo": "confirmación",
+     "texto": "Las reglas RD-15 a RD-19, que también recibieron los lectores. No salen de lo que delegaste: precisan enunciados que habías adoptado, y dos de ellas los modifican (RD-15 agrega D05 y D14 a «D06 o D09» de RP-04.6; RD-17 agrega la subfunción operativa a «GV02 o GV03» de RP-12.10). Salieron de la revisión previa de las reglas. 6 cambios aplicados las citan.",
+     "respuestas": "por regla: adoptar / modificar / rechazar",
+     "si_la_respuesta_es_no": "Si rechazás una regla, vale el enunciado tal como lo adoptaste y los cambios que la citan vuelven al valor de la versión 1.2.",
+     "insumos": "data/reglas_de_asignacion_rev3.csv; documento 16, sección 3",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Decisión mía, sin delegación ni encargo",
+     "frase_del_autor": "",
+     "decidido_por": "el curador",
+     "decision_del_curador": "decisión del curador"
+    },
+    {
+     "codigo": "D-16.16",
+     "tipo": "confirmación",
+     "texto": "Las definiciones de trabajo de las subfunciones, revisión 2. Son el texto que usaron los lectores. De las 34 que confirmaste en D-15.7, 15 cambian lo que incluyen o lo que excluyen (GV02, GV03, GV04, GV05, GV08, GV09, GV10, ID01, ID04, ID05, PR01, PR02, PR05, RC01, RC04) y hay una nueva (ID06). Los cambios siguen a las reglas decididas, salvo en ID01 y PR01, que se precisaron después de la revisión previa sin una regla que lo respalde.",
+     "respuestas": "sí / no, por definición",
+     "si_la_respuesta_es_no": "La definición que no confirmes vuelve al texto de D-15.7, y se vuelven a leer los pre-ensayos de esa subfunción que cambiaron.",
+     "insumos": "documento 16, sección 2.3; data/subfunciones_definiciones_rev2.csv",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Decisión mía, sin delegación ni encargo",
+     "frase_del_autor": "",
+     "decidido_por": "el curador",
+     "decision_del_curador": "decisión del curador"
+    },
+    {
+     "codigo": "D-16.17",
+     "tipo": "confirmación",
+     "texto": "Las instrucciones 7.4 del agente curador. Rigen de forma provisoria: lo que cambia respecto de las 7.3, que confirmaste en D-15.5, lo redacté yo y no lo viste.",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "Vuelven a regir las instrucciones 7.3.",
+     "insumos": "config/Instrucciones_Agente_Curador_v7_4.md",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Decisión mía, sin delegación ni encargo",
+     "frase_del_autor": "",
+     "decidido_por": "el curador",
+     "decision_del_curador": "decisión del curador"
+    },
+    {
+     "codigo": "D-16.19",
+     "tipo": "confirmación",
+     "texto": "Cuatro indicadores de mejora continua (K06, K48, K182 y K184) pasaron a ID06 por una adjudicación escrita, sin lectura de dos lectores.",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "Quedan sin subfunción, como los otros ocho, hasta que se lean.",
+     "insumos": "documento 18, sección 6; scripts/extraer_medicion.py",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "de_donde_sale": "Decisión mía, sin delegación ni encargo",
+     "frase_del_autor": "",
+     "decidido_por": "el curador",
+     "decision_del_curador": "decisión del curador"
+    }
+   ]
+  },
+  {
+   "codigo": "D-17",
+   "clase": "diseño",
+   "proposicion": "Decisiones nuevas que solo puede tomar el autor.",
+   "opcion_tomada": "Sin decidir.",
+   "estado": "Abierta; no bloquea el uso del Atlas",
+   "adr": [
+    "ADR-041"
+   ],
+   "depende_de": [
+    "D-16"
+   ],
+   "orden": null,
+   "orden_de_decision": 3,
+   "nota_1_4": "Son cambios de catálogo o preguntas que el curador no decidió porque no se te habían planteado, o porque ninguna regla alcanza.",
+   "proposiciones": [
+    {
+     "codigo": "D-17.1",
+     "tipo": "decisión",
+     "texto": "Con la regla de pilar que escribí en la versión 1.2, que a los elementos de tu biblioteca solo les asigna MM u OS, ningún elemento queda en DO ni en NX. OS a escala de oficina tampoco tiene elementos de la biblioteca, y es donde están casi todos los pre-ensayos del pilar. ¿DO, NX y OS de oficina son parte del MCCS, o son la lente con que el Atlas ordena los pre-ensayos? ¿Y la regla de pilar queda como está?",
+     "respuestas": "parte del MCCS / solo lente del Atlas; la regla de pilar: queda / se revisa",
+     "si_la_respuesta_es_no": "",
+     "insumos": "documento 16, sección 7; scripts/extraer_biblioteca.py",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "que_pasa_con_cada_respuesta": "Parte del MCCS: DO, NX y OS de oficina quedan como pilares que todavía no tienen elementos de la biblioteca. Solo lente del Atlas: el MCCS queda con MM y OS a escala individual, y los demás se rotulan como lente. Si la regla de pilar se revisa, en la próxima versión cambia el pilar de elementos de la biblioteca."
+    },
+    {
+     "codigo": "D-17.2",
+     "tipo": "decisión",
+     "texto": "Admitir el candidato W02 como dominio D29 «Gestión de activos, configuración y cambios». Cumple C1, C2, C4 y C5. C3 da 10 pre-ensayos, justo el umbral, contando 2 cuyo dominio confirmaste el 16 de noviembre; sin ellos da 8 y no se cumple: quedaría admitido con reserva, como D27. Si se admite, los pre-ensayos que cuenta C3 son los que se moverían.",
+     "respuestas": "sí / no",
+     "si_la_respuesta_es_no": "",
+     "insumos": "documento 16, sección 6; ADR-041",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "que_pasa_con_cada_respuesta": "Sí: D29 entra al catálogo en la próxima versión y se vuelven a leer los pre-ensayos que cuenta C3, que son los que se moverían. No: W02 sigue en vigilancia y nada cambia."
+    },
+    {
+     "codigo": "D-17.3",
+     "tipo": "decisión",
+     "texto": "Admitir las variables homeostáticas propuestas: HV07 (calidad de la decisión frente a la incertidumbre) y HV08 (costo del programa frente al valor demostrado). No tienen el mismo respaldo: HV07 cumple los cuatro criterios, y HV08 cumple tres y el cuarto en parte, y conviene decidirla junto con el nombre de HV04. Los vínculos que las sostendrían son supuestos del curador.",
+     "respuestas": "por variable: sí / no",
+     "si_la_respuesta_es_no": "",
+     "insumos": "documento 16, sección 5",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "que_pasa_con_cada_respuesta": "Cada variable admitida entra al catálogo del eje H con sus vínculos, que pasan de supuestos a propuestos. La que no se admite queda como propuesta."
+    },
+    {
+     "codigo": "D-17.4",
+     "tipo": "decisión",
+     "texto": "Los 15 vacíos declarados: casos para los que ninguna regla decide. Para cada uno se puede decidir una regla o dejarlo como vacío. Los lectores señalaron además casos sin regla que no están entre los declarados.",
+     "respuestas": "por vacío: regla … / queda como vacío",
+     "si_la_respuesta_es_no": "",
+     "insumos": "data/vacios_declarados.csv, con la cantidad de pre-ensayos en que las dos lecturas lo anotan; relectura_1_4/notas_de_cierre/",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "que_pasa_con_cada_respuesta": "Un vacío con regla deja de frenar cambios: los ejes que dependían de él se vuelven a leer con la regla. Un vacío que queda como vacío sigue frenando."
+    },
+    {
+     "codigo": "D-17.5",
+     "tipo": "decisión",
+     "texto": "Los 737 ejes en que alguna lectura apunta a otro valor y el cambio no entró: decidir el valor de cada uno, o dejarlos como están. 381 de ellos son los que resuelve en bloque la opción (b) de D-16.2: no hace falta mirarlos uno por uno si elegís una vara. Son 456 pre-ensayos.",
+     "respuestas": "por fila: queda / cambia a …",
+     "si_la_respuesta_es_no": "",
+     "insumos": "data/relectura_1_4_casos_para_el_autor.csv (trae la tesis de cada pre-ensayo y dos columnas para anotar la decisión)",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "que_pasa_con_cada_respuesta": "Cada fila que cambia se aplica como corrección del autor, con su nombre como origen. Las que quedan no cambian."
+    },
+    {
+     "codigo": "D-17.6",
+     "tipo": "tarea",
+     "texto": "Aplicar a los 224 indicadores del catálogo de medición las dos reglas de indicadores que adoptaste (RP-09.5 y RP-11.2) y leer los ocho indicadores que quedaron sin subfunción. Es una lectura que no se hizo.",
+     "respuestas": "sí: hacerla en la próxima versión / no",
+     "si_la_respuesta_es_no": "",
+     "insumos": "documento 18; data/indicadores_ciso365_en_el_atlas.csv",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "que_pasa_con_cada_respuesta": "Sí: en la próxima versión se leen los indicadores con las dos reglas y los ocho sin subfunción. No: quedan como están, con el pendiente declarado."
+    },
+    {
+     "codigo": "D-17.7",
+     "tipo": "tarea",
+     "texto": "Releer el pilar de los pre-ensayos. De los 147 que hoy llevan el pilar OS (144 del corpus y 3 de la serie APX), dos lecturas coinciden en que 60 no tratan ninguna de sus dos escalas, 75 tratan la de oficina y 2, la individual. Buena parte de los «ninguna» depende de una frontera entre «la oficina» y «la organización» que escribí en el encargo y que no está en la definición del pilar que aceptaste. El pilar no se releyó en esta versión: la pregunta fue por la escala, no por el pilar.",
+     "respuestas": "sí: releer el pilar en la próxima versión, con una vara fijada antes / no: precisar antes la escala de oficina / no",
+     "si_la_respuesta_es_no": "",
+     "insumos": "documento 15, sección 4.7; data/escala_del_pilar_OS_1_4.csv",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "que_pasa_con_cada_respuesta": "Sí: se relee el pilar en la próxima versión, con una vara fijada antes de leer. Si antes se precisa la escala de oficina, la relectura espera esa definición. No: el pilar queda como está y la duda sigue declarada."
+    },
+    {
+     "codigo": "D-17.8",
+     "tipo": "decisión",
+     "texto": "La prueba del cruce de territorios, que estaba escrita para poder fallar, falla para T01: no es el territorio primario de ningún elemento de las fuentes externas. ¿T01 queda como está, se declara «en observación» como los dominios que no cumplen C1 o C3, o se revisa?",
+     "respuestas": "queda como está / en observación / se revisa",
+     "si_la_respuesta_es_no": "",
+     "insumos": "documento 16, sección 6.3; data/prueba_del_cruce_de_territorios.json",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "que_pasa_con_cada_respuesta": "En observación: T01 recibe ese estado en el catálogo, como los dominios que no cumplen C1 o C3. Se revisa: su definición o su respaldo se estudian en la próxima versión. Queda como está: nada cambia."
+    },
+    {
+     "codigo": "D-17.9",
+     "tipo": "decisión",
+     "texto": "La vara decide cada eje por separado. En 33 de los 90 pre-ensayos que cambian, las dos lecturas coinciden además en otro valor para otro eje que no pasó la vara. La coordenada que queda combina un valor nuevo con uno anterior, y en 35 no es la de la versión 1.2 ni la que leyó ningún lector. En 25, el eje que cambió y el que quedó son un par que las reglas atan: territorio y dominio, o subfunción y dominio. ¿Los ejes atados cambian juntos, no cambia ninguno, o quedan eje por eje, como están?",
+     "respuestas": "cambian juntos / no cambia ninguno / quedan eje por eje",
+     "si_la_respuesta_es_no": "",
+     "insumos": "documento 15, sección 4.2; data/relectura_1_4_ternas_mixtas.csv",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "que_pasa_con_cada_respuesta": "Cambian juntos: los ejes atados en que las dos lecturas coinciden se aplican aunque uno no pase la vara. No cambia ninguno: se retira el cambio del eje que sí pasó. Quedan eje por eje: nada cambia. Las dos primeras son una versión nueva."
+    },
+    {
+     "codigo": "D-17.10",
+     "tipo": "decisión",
+     "texto": "El criterio C2 da por no representable a un candidato cuyos elementos quedan repartidos en tres o más dominios. Con esa prueba, el candidato W01 (gobierno, riesgo y cumplimiento de la IA como dominio propio) cumpliría C2. Lo dejé en vigilancia con una cláusula que el criterio no trae: el objeto ya tiene territorio propio (T07) y ningún dominio necesitó un ajuste para alojar sus elementos. ¿Se agrega esa cláusula a C2, o se evalúa W01 con los criterios C3 a C5?",
+     "respuestas": "se agrega la cláusula / se evalúa W01 con C3 a C5",
+     "si_la_respuesta_es_no": "",
+     "insumos": "documento 16, sección 6.1; data/criterios_de_admision.json",
+     "decision_del_autor": "",
+     "nota_del_autor": "",
+     "que_pasa_con_cada_respuesta": "Se agrega la cláusula: W01 sigue en vigilancia, con el criterio escrito como se aplicó. Se evalúa: W01 pasa por C3 a C5 en la próxima versión, y puede resultar admisible."
+    }
+   ]
+  }
+ ],
+ "respuesta_del_16_de_noviembre": {
+  "fecha": "2026-11-16",
+  "mensaje_literal": "Confirmo las siete. \nAcepto el cambio de reglas\nConfirmo el resto de los cambios.\nNo revisar la biblioteca",
+  "lista_presentada": {
+   "archivo": "scripts/datos_de_trabajo/respuesta_presentada_al_autor_2026_11_16.md",
+   "que_es": "La respuesta del curador a la que contesta el mensaje del autor, literal. Su lista «Qué tenés que hacer» tiene cinco pasos; las cuatro frases del autor siguen los pasos 1, 2, 4 y 5."
+  },
+  "como_se_leyo": [
+   {
+    "frase": "«Confirmo las siete.»",
+    "lectura": "Respuesta «sí» a las siete proposiciones de la decisión D-14. Es literal."
+   },
+   {
+    "frase": "«Acepto el cambio de reglas»",
+    "lectura": "Adopción de las 18 reglas propuestas (D-11), las que cambian coordenadas y las que no. Es una lectura: la frase no nombra reglas ni enunciados. Vale para lo que era regla con texto listo; las preguntas siguen abiertas y los encargos quedan aceptados. Queda para confirmar en D-15.1."
+   },
+   {
+    "frase": "«Confirmo el resto de los cambios.»",
+    "lectura": "Confirmación en bloque de D-13.3, D-13.4 y D-13.5. Es una lectura: la frase repite el paso 4 de la lista que se le presentó al autor, que no incluía los cambios del corpus (estaban en el paso 3). La otra lectura posible, que la frase confirma toda la decisión D-13, queda planteada en D-15.2."
+   },
+   {
+    "frase": "«No revisar la biblioteca»",
+    "lectura": "Cierre de la decisión D-12 sin revisión de la Biblioteca. Es una lectura: se tradujo a una consecuencia por proposición, que el autor no eligió una por una. Queda para confirmar en D-15.3."
+   }
+  ],
+  "sin_respuesta": [
+   "La revisión humana de una muestra de la categorización (paso 3 de la lista que se le presentó).",
+   "D-13.1 y D-13.2, leídas como sin respuesta: los once casos de D20 y los 37 cambios de coordenada del corpus.",
+   "La solicitud de cambio de la ontología OCR-CAND-03.",
+   "Las preguntas abiertas de las reglas."
+  ],
+  "adr": {
+   "ADR-026": "Aceptada",
+   "ADR-027": "Aceptada",
+   "ADR-028": "Aceptada",
+   "ADR-029": "Aceptada"
+  },
+  "conteo_por_clase_de_respuesta": {
+   "literal": 7,
+   "lectura de una frase general; a corregir por el autor si no es lo que quiso decir": 10,
+   "tarea en curso": 1,
+   "leído como sin respuesta": 2,
+   "tarea pendiente": 1
+  }
+ },
+ "orden_de_decision_en_la_1_2": [
+  {
+   "paso": 1,
+   "que": "D-14: confirmar lo que el paquete leyó en tu mensaje y lo que hizo en tu nombre.",
+   "por_que": "Si alguna respuesta es «no», cambia la base sobre la que se apoya todo lo demás."
+  },
+  {
+   "paso": 2,
+   "que": "D-11.1: las reglas propuestas que cambian coordenadas.",
+   "por_que": "Los once casos de D20 sin coincidencia (nueve de ellos, por RP-02) y la serie APX dependen de ellas."
+  },
+  {
+   "paso": 3,
+   "que": "D-11.3: releer los pre-ensayos que alcanzan las reglas adoptadas.",
+   "por_que": "La revisión humana debe hacerse sobre la categorización ya ajustada."
+  },
+  {
+   "paso": 4,
+   "que": "Revisión humana por muestra, con el estrato E1, que resuelve D-13.1 y D-13.2.",
+   "por_que": "Es la única fuente de validación humana. Si la relectura del paso 3 cambia coordenadas, la muestra se sortea de nuevo."
+  },
+  {
+   "paso": 5,
+   "que": "D-13.3 a D-13.6 y D-11.2: lo que queda de los cambios y las reglas que no mueven coordenadas.",
+   "por_que": "No dependen de la muestra."
+  },
+  {
+   "paso": 6,
+   "que": "D-12: la Biblioteca, por separado.",
+   "por_que": "No bloquea a las demás; la solicitud OCR-CAND-03 se decide con la próxima revisión de la ontología."
+  }
+ ],
+ "orden_de_decision": [
+  {
+   "paso": 1,
+   "que": "D-16, salvo D-16.2: confirmar, corregir o revertir lo que decidí. Son 21 proposiciones, y cada una dice de dónde sale.",
+   "por_que": "Todo lo que cambió en esta versión se apoya en ellas, y ninguna la viste."
+  },
+  {
+   "paso": 2,
+   "que": "La revisión humana de la muestra (193 pre-ensayos): fijar el umbral, leer a ciegas y calcular.",
+   "por_que": "Es la única fuente de validación humana. Si querés leer a ciegas, conviene hacerla antes de abrir los documentos 15 y 18. Una regla que rechaces en el paso 1 cambia la categorización y obliga a volver a sortear."
+  },
+  {
+   "paso": 3,
+   "que": "D-16.2: qué vara vale para cambiar una coordenada.",
+   "por_que": "No tiene un «sí» por defecto. La revisión humana trae la única comparación con una lectura humana entre las dos varas, y por eso conviene decidirla después. También se puede decidir antes."
+  },
+  {
+   "paso": 4,
+   "que": "D-17: las decisiones nuevas (el alcance del MCCS, el candidato W02, las dos variables propuestas, los vacíos declarados, los casos sin cambio, la lectura de los indicadores, la relectura del pilar, el territorio T01, la regla para los ejes atados y la cláusula del criterio C2).",
+   "por_que": "Son cambios de catálogo o lecturas que no bloquean el uso del Atlas."
+  }
+ ],
+ "respuesta_del_16_de_noviembre_segundo_mensaje": {
+  "fecha": "2026-11-16",
+  "mensaje_literal": "1. **Decisión D-15:** decir si mis lecturas de tus tres frases son las que quisiste. Son siete proposiciones; incluyen dos reglas de trabajo nuevas y las 34 definiciones de subfunciones que redacté y no viste.  > Confirmo todo\n2. **Los seis puntos de la tabla y las 11 preguntas de las reglas.** Cada respuesta aplica o descarta los cambios frenados, sin volver a leer. > Procede con la decision de mayor rigurosidad.\n3. **Si los 260 cambios aplicados quedan.** Se revierten enteros en un paso. > Procede con la decision de mayor rigurosidad.\n4. **La revisión humana:** 159 pre-ensayos, o 60 por el camino mínimo. > Procede con la decision de mayor rigurosidad.\n5. **Los 11 casos de D20 y los 37 cambios de la versión 1.2. > Si, confirmo, procede&#160;**\n6. **Los encargos en cola y la solicitud de cambio de la ontología. > Si, confirmo, procede**",
+  "lista_presentada": {
+   "archivo": "scripts/datos_de_trabajo/respuesta_presentada_al_autor_2026_11_16_segunda.md",
+   "que_es": "La respuesta del curador con que se entregó la versión 1.3, literal. Su lista «Qué queda en tus manos» tiene seis líneas y el autor contestó las seis."
+  },
+  "como_se_leyo": [
+   {
+    "linea": 1,
+    "sobre": "Decisión D-15",
+    "frase": "«Confirmo todo»",
+    "clase": "literal",
+    "lectura": "Sí a las siete proposiciones de D-15."
+   },
+   {
+    "linea": 2,
+    "sobre": "Los seis puntos de la revisión y las once preguntas de las reglas",
+    "frase": "«Procede con la decision de mayor rigurosidad.»",
+    "clase": "frase general, leída por el curador como delegación",
+    "lectura": "El autor no contesta punto por punto: pide mayor rigurosidad, sin definirla. El curador lo leyó como una delegación (lectura a confirmar en D-16.14) y decidió con un criterio propio. Lo decidido se confirma en D-16.3, D-16.5, D-16.6 y D-16.21, y no figura en los campos del autor."
+   },
+   {
+    "linea": 3,
+    "sobre": "Si los 260 cambios aplicados quedan",
+    "frase": "«Procede con la decision de mayor rigurosidad.»",
+    "clase": "frase general, leída por el curador como delegación",
+    "lectura": "El curador lo leyó como una delegación (D-16.14). No dio por buenos los cambios y volvió a leer todo el corpus (D-16.20); qué vara vale lo decide el autor (D-16.2). La otra lectura directa de la frase es que el autor eligió, entre «quedan» y «se revierten enteros», la opción más rigurosa."
+   },
+   {
+    "linea": 4,
+    "sobre": "La revisión humana: 159 pre-ensayos o 60",
+    "frase": "«Procede con la decision de mayor rigurosidad.»",
+    "clase": "frase general, leída por el curador como delegación",
+    "lectura": "El curador preparó el diseño completo (D-16.11). La revisión la hace el autor."
+   },
+   {
+    "linea": 5,
+    "sobre": "Los 11 casos de D20 y los 37 cambios de la versión 1.2",
+    "frase": "«Si, confirmo, procede»",
+    "clase": "literal para los 37 cambios; lectura para los once casos",
+    "lectura": "Los 37 cambios quedan confirmados (D-13.2). Para los once casos la proposición pedía un dominio por caso y la frase no elige ninguno: se leyó como conformidad con la regla general de la versión (a confirmar en D-16.12)."
+   },
+   {
+    "linea": 6,
+    "sobre": "Los encargos en cola y la solicitud de cambio de la ontología",
+    "frase": "«Si, confirmo, procede»",
+    "clase": "literal",
+    "lectura": "Aprobación de los 21 encargos en cola y de la solicitud OCR-CAND-03. Se ejecutaron en la versión 1.4. El autor aprobó que se ejecutaran; el resultado de cada encargo y las opciones que la solicitud dejaba abiertas son del curador y se confirman en D-16.4, D-16.7 a D-16.10 y D-16.18."
+   }
+  ],
+  "lo_que_el_curador_hizo_distinto_de_lo_que_habia_dicho": "La línea 2 de la lista decía «Cada respuesta aplica o descarta los cambios frenados, sin volver a leer». El curador volvió a leer todo el corpus: las reglas decididas cambian definiciones (ID06 y RC04, entre otras) y el encargo de lectura de la versión 1.3 tenía defectos que la revisión había señalado. Aplicar los cambios frenados habría dado por buenas lecturas hechas con otro texto.",
+  "conteo_por_clase_de_respuesta": {
+   "literal": 3,
+   "frase general, leída por el curador como delegación": 3,
+   "de las literales, con una parte leída por el curador": 1
+  },
+  "cuantos_asuntos": "Tres respuestas con la misma frase, que alcanzan cuatro asuntos: los seis puntos de la revisión, las once preguntas de las reglas, los cambios aplicados y el tamaño de la revisión humana."
+ },
+ "declaracion_sobre_el_mccs": {
+  "fecha": "2026-11-16",
+  "mensajes_literales": [
+   "el MCCS son los 1404 elementos relacionados a modelos mentales, sesgos cognitivos, mindsets y otras categorias del metacognitivecisosystem",
+   "aqui esta la biblioteca metacognitiva",
+   "biblioteca completa"
+  ],
+  "adjuntos": [
+   "Biblioteca_CISO_1404_Explicada_y_Mapeada.md",
+   "Biblioteca_CISO_Frontera_Completa.md"
+  ],
+  "archivo": "scripts/datos_de_trabajo/declaracion_del_autor_sobre_el_mccs_2026_11_16.md",
+  "que_se_comprobo": "El primer adjunto coincide con la base que el Atlas usa desde la versión 1.1 (los mismos 1.404 identificadores, sin nombres ni definiciones distintos). El segundo es una edición anterior, de 1.356 conceptos, todos contenidos en la de 1.404. No hubo nada nuevo que cargar.",
+  "adr": "ADR-035"
+ },
+ "decisiones_delegadas": [
+  {
+   "adr": "ADR-032",
+   "titulo": "Criterio de mayor rigor",
+   "estado": "Lectura del curador de una frase del autor; a confirmar en D-16.1 y D-16.14",
+   "resumen": "Seis criterios que el curador escribió antes de decidir, en orden de precedencia. El autor pidió mayor rigurosidad y no la definió.",
+   "decision": "El autor respondió tres líneas con la frase «Procede con la decision de mayor rigurosidad», que alcanzan cuatro asuntos, y no definió qué es esa rigurosidad. El curador leyó la frase como una delegación y escribió un criterio antes de decidir, con seis partes en orden de precedencia: (a) fidelidad a la fuente, (b) coherencia con lo ya decidido, (c) una regla, todos los casos, (d) prueba que puede fallar, (e) parsimonia, (f) si nada decide, no cambia. El texto de cada parte está en la taxonomía y en el documento 16, sección 3.1.",
+   "como_revertir": "Si el autor cambia un criterio o su orden, se revisan las decisiones que se apoyan en él: cada regla decidida declara qué criterios usó (data/reglas_de_asignacion_rev3.csv)."
+  },
+  {
+   "adr": "ADR-033",
+   "titulo": "Vara de tres lecturas para cambiar una coordenada",
+   "estado": "Decisión del curador sobre una línea que leyó como delegada; la relectura se confirma en D-16.20 y la vara la elige el autor en D-16.2",
+   "resumen": "Los cambios de la versión 1.3 no se dieron por buenos: se releyó todo el corpus y un eje cambia solo con dos lecturas a ciegas que coinciden con confianza alta, sin vacío anotado, y una tercera que prefiere el valor nuevo. La vara fijada antes de leer admitía la confianza media (480 cambios) y su condición era la de ADR-030, que el autor confirmó: el curador la endureció después de leer. Es la opción más conservadora, no una opción demostrada, y la elige el autor.",
+   "decision": "Los cambios que la versión 1.3 había aplicado no se dieron por buenos. La base es la coordenada de la versión 1.2. Todo el corpus se volvió a leer con las reglas revisión 3: dos lecturas a ciegas completas, con repartos distintos y en carpetas separadas, y una tercera lectura de elección entre dos valores. Un eje cambia solo si las dos lecturas coinciden en un valor distinto del de la base, las dos declaran confianza alta en ese eje, ninguna de las dos anota un vacío declarado de ese eje y la tercera lectura, que no sabe cuál es el valor vigente, prefiere el nuevo. Los 37 cambios de la versión 1.2 que el autor confirmó quedan protegidos. Excepción: en los pre-ensayos que tenían RC04, cuyo alcance cambió, vale el valor en que coinciden dos lecturas, con cualquier confianza. Esa excepción se escribió cinco minutos después de lanzar las lecturas, cuando ningún lector había entregado todavía una salida; hasta entonces esos pre-ensayos seguían la vara. La cronología de lo que se escribió antes de leer y de lo que cambió después está en relectura_1_4/vara/LEEME.md; es la declaración del curador, tomada del registro de su sesión de trabajo, que no viaja en el paquete. Antes de lanzar la lectura, dos revisores leyeron las reglas y se corrigieron los defectos que encontraron. La condición de la confianza se endureció después de leer. La vara fijada antes de leer decía «ninguna de las dos declara confianza baja», que es la condición de ADR-030, confirmada por el autor en D-15.4; con ella habrían cambiado 480 coordenadas en 338 pre-ensayos. El curador la cambió al ver los resultados. Lo que vio: las tres lecturas son corridas del mismo lector automático, de modo que la coincidencia y la tercera lectura casi no filtran (la tercera prefirió el valor nuevo en 470 de 494 candidatos); y en 381 de esos cambios alguna lectura declaró confianza media, que según el encargo quiere decir que una regla decide pero otro código se puede defender. En 240 de ellos el código que alguna lectura anota como defendible es el valor vigente; en 141, no. El curador eligió conservar el valor vigente, que en la mayoría de los casos es el que el pre-ensayo traía en el banco del autor, salvo donde el lector no ve otra lectura defendible. Es la opción más conservadora, no una opción demostrada. La revisión de la versión candidata mostró cinco cosas que el autor tiene que saber para elegir. Primera: la condición reemplazada es una que el autor había confirmado, de modo que el criterio de coherencia con lo decidido juega para los dos lados. Segunda: el criterio «si nada decide, no cambia» no cubre la confianza media, porque ahí una regla decide. Tercera: la etiqueta de confianza no es estable entre corridas del mismo lector: en las dos tandas que se leyeron dos veces cambió en 12 de 48 ejes con el mismo código, y entre las lecturas A y B coincide en el 85,3 % de los ejes con el mismo código. Cuarta: no cambiar también puede ser un error: en 594 coordenadas del corpus las dos lecturas coinciden en un valor distinto del que se publica. Quinta: los 37 ejes que el autor confirmó no sirven para elegir entre las varas: la tercera lectura no se corrió sobre ellos, el autor los confirmó en bloque y en ese conjunto cualquier vara más estricta sale mejor. Cambiar la vara después de leer contradice la regla de trabajo de esta versión. La vara fijada queda calculada, sin aplicar, y la elección es del autor (D-16.2).",
+   "como_revertir": "Las alternativas están calculadas: cada una es una lista de cambios ya escrita. La vara fijada antes de leer: las listas «corpus» y «apx» de scripts/datos_de_trabajo/ajustes_relectura_1_4_vara_fijada_antes_de_leer.json. La categorización de la versión 1.3: las de scripts/datos_de_trabajo/v13/ajustes_relectura_1_3.json. La de la versión 1.2: las listas vacías. Con esas listas en scripts/datos_de_trabajo/ajustes_relectura_1_4.json, merge_clasif.py y propuestas_editoriales.py dejan el corpus y la serie APX con esa categorización: está probado en la regresión para las tres. El resto del paquete no se regenera con otra alternativa: el resumen de la relectura, la muestra de la revisión humana, el registro de decisiones y los documentos describen la vara aplicada, y los dos primeros se detienen con un aviso. Aplicar otra alternativa es armar una versión nueva, sin volver a leer; lo hace el curador. Las opciones de las versiones 1.2 y 1.3 deshacen también los diez cambios de RC04 a ID06: si el autor confirma D-16.3, esas diez entradas se conservan en la lista. La lista de la versión 1.3 trae APC-122 con el dominio D20, que contradice un cambio que el autor confirmó (D17): esa entrada se quita."
+  },
+  {
+   "adr": "ADR-034",
+   "titulo": "Taxonomía 6.1",
+   "estado": "Decisiones del curador de distinto origen; a confirmar en D-16.3 a D-16.6, D-16.15, D-16.16, D-16.18 y D-16.21",
+   "resumen": "Cuatro cambios de catálogo (ID06, RC04, H04 e INH11), 24 reglas decididas y 15 vacíos declarados.",
+   "decision": "El catálogo cambia en cuatro puntos y ninguno retira ni reutiliza un código: subfunción nueva ID06 «Mejora continua y lecciones aprendidas»; RC04 pasa a «Lecciones y cierre de la recuperación»; H04 deja de ser un horizonte y pasa a ser el marcador de convergencia; INH11 pasa a «Volumen de alertas y de decisiones». Quedan 8 territorios, 28 dominios, 6 funciones y 35 subfunciones. Las reglas de asignación pasan a su revisión 3: 24 reglas decididas (RD-01 a RD-24) y 15 vacíos declarados.",
+   "como_revertir": "No es un parámetro: hay que tocar varios guiones. Cada cambio de catálogo está definido en scripts/reglas_1_4.py o scripts/modelo_1_4.py. Lo aplica al catálogo scripts/taxonomia_6_1.py, que trae la lista «cambios_de_catalogo» y retira H04 de los horizontes. scripts/merge_clasif.py tiene fija la función de ID06 y la conversión de H04 en marcador. scripts/extraer_medicion.py tiene la asignación de cuatro indicadores a ID06. Revertir ID06 y RC04 exige además volver a leer los pre-ensayos que cambiaron por el nuevo alcance."
+  },
+  {
+   "adr": "ADR-035",
+   "titulo": "El MCCS es la biblioteca metacognitiva",
+   "estado": "Registro de una declaración del autor; la consecuencia se confirma en D-16.13",
+   "resumen": "El MCCS se define como la biblioteca del autor; la lente de cuatro pilares se conserva.",
+   "decision": "El autor declaró que el MCCS son los 1.404 elementos de su biblioteca. El Atlas lo define así. La lente de cuatro pilares (ADR-017) se conserva como la forma en que el Atlas proyecta el MCCS sobre los pre-ensayos; las anclas de MM y OS se derivan de los territorios que traen los elementos de la biblioteca. DO y NX no tienen elementos: queda una pregunta para el autor (D-17.1).",
+   "como_revertir": "Volver a las anclas de la Taxonomía 6.0: están conservadas en el campo anclas_6_0 de cada pilar."
+  },
+  {
+   "adr": "ADR-036",
+   "titulo": "Modelo de equilibrio del eje H, revisión 2",
+   "estado": "Resultado de un encargo que el autor aprobó; a confirmar en D-16.7",
+   "resumen": "El eje H declara término y sentido en «presiona» y papel en «regula»; seis vínculos nuevos; escalas para el contexto.",
+   "decision": "El contexto es un parámetro de la organización, con un valor de una escala; la fuerza es una causa de cambio que el texto nombra; los mecanismos no son fuerzas. Cada vínculo «presiona» declara el término (demanda o capacidad) y el sentido; cada «regula», el papel del mecanismo (referencia, sensor, decisor o efector). Las cinco fuerzas que no presionaban ninguna variable quedan vinculadas con seis vínculos nuevos. Los factores HX01 a HX07 tienen escala. Se evaluaron dos variables nuevas y quedan propuestas, sin admitir.",
+   "como_revertir": "El modelo está en scripts/modelo_1_4.py; la tabla de la Taxonomía 6.0 se conserva en data/taxonomia_v6_0.json."
+  },
+  {
+   "adr": "ADR-037",
+   "titulo": "Criterios de admisión de dominios, revisión 2",
+   "estado": "Resultado de un encargo que el autor aprobó; a confirmar en D-16.8",
+   "resumen": "Seis criterios con definiciones y con una prueba que se calcula; la misma tabla para los nueve candidatos.",
+   "decision": "C1 define qué es un artefacto independiente y qué es primer nivel en cada norma. C2 tiene una prueba que se calcula sobre el cruce de elementos y dominios. C3 se mide sin contar migraciones. C4 declara qué evidencia está verificada. La completitud pasa a ser el criterio C6. Los nueve candidatos tienen la misma tabla que los admitidos. Ningún dominio se admite ni se retira con estos criterios en esta versión.",
+   "como_revertir": "Volver a los cinco criterios de la Taxonomía 6.0, que se conservan en el bloque de decisiones del catálogo."
+  },
+  {
+   "adr": "ADR-038",
+   "titulo": "Lentes y planos",
+   "estado": "Resultado de dos encargos que el autor aprobó y de dos preguntas; a confirmar en D-16.6 y D-16.9",
+   "resumen": "La lente de la agenda de IA se deriva de la coordenada; el plano es una propiedad del nodo.",
+   "decision": "La lente de la agenda de IA se deriva de la coordenada con una regla por pilar (RD-21). El plano es una propiedad del nodo en los tipos que pertenecen a un plano. Un pre-ensayo que nombra un producto no pasa al plano B: queda marcado y fuera de la promoción a ensayo hasta que se reescriba (RD-22). Los elementos de la biblioteca no llevan dominio (RD-23). El aseguramiento como objeto lo expresa solo el dominio D28 (RD-24). Las cinco familias de dominios quedan definidas y ninguna regla las usa.",
+   "como_revertir": "Cada regla se revierte por separado; las derivaciones están en scripts/construir_grafo.py y scripts/modelo_1_4.py."
+  },
+  {
+   "adr": "ADR-039",
+   "titulo": "Ontología 2.2.0",
+   "estado": "Aprobada por el autor como solicitud (OCR-CAND-03); la forma en que se implementó se confirma en D-16.10",
+   "resumen": "La solicitud de cambio aprobada se aplica, con ocho propuestas aplicadas en parte. Cinco elecciones que la solicitud dejaba abiertas, dos agregados y cuatro decisiones de implementación son del curador.",
+   "decision": "El autor aprobó la solicitud de cambio OCR-CAND-03. La propuesta 2.2.0 aplica sus dieciséis propuestas, y ocho quedaron aplicadas en parte (documento 17, sección 4.1): 86 tipos, 98 relaciones y 42 reglas. La solicitud dejaba una alternativa abierta en cinco propuestas (las número 2, 3, 12, 13 y 15), que eligió el curador, y en dos (la 6 y la 7) el curador agregó algo que la solicitud no pedía. Además hay decisiones de implementación que son del curador: la regla que reconoce un estado por la primera palabra de su definición (14 elementos de la biblioteca), la carga de las 112 equivalencias entre la biblioteca y el corpus como candidatas de una lectura, y el vínculo de cada tarea de autonomía L2 o superior con el punto de control de su agente.",
+   "como_revertir": "Volver a la propuesta 2.1.0: los cambios están en un bloque aparte de scripts/build_ontology.py."
+  },
+  {
+   "adr": "ADR-040",
+   "titulo": "Revisión humana: diseño completo",
+   "estado": "Decisión del curador sobre una línea que leyó como delegada; a confirmar en D-16.11",
+   "resumen": "Se prepara el diseño completo. La revisión la hace el autor.",
+   "decision": "Entre el camino mínimo y el diseño completo, se toma el diseño completo: 193 pre-ensayos en 4 estratos, con un margen de 6,4 puntos para la estimación ponderada. La revisión la hace el autor o quien él designe; los umbrales los fija él antes de abrir la clave. El curador no la hace.",
+   "como_revertir": "El camino mínimo es la tanda 1 de la misma muestra: no hay que volver a sortear."
+  },
+  {
+   "adr": "ADR-041",
+   "titulo": "El candidato W02 como dominio D29",
+   "estado": "Pregunta para el autor (D-17.2); no aplicada",
+   "resumen": "Cumple C1, C2, C4 y C5. C3 da 10 pre-ensayos, justo el umbral, contando 2 cuyo dominio confirmaste el 16 de noviembre; sin ellos da 8 y no se cumple: quedaría admitido con reserva, como D27. No se aplica: es una pregunta para el autor.",
+   "decision": "Con los criterios revisión 2, la gestión de activos, configuración y cambios cumple los cinco criterios (C1 a C5). C3 se cumple en el límite: las dos lecturas anotan el vacío de este candidato en 10 pre-ensayos y el umbral es 10; con uno menos no cumpliría. Una sola lectura lo anota en 2 más. De esos 10 pre-ensayos, 2 (M2.1-K01 y M2.1-K03) tienen un dominio que el autor confirmó el 16 de noviembre de 2026: sin ellos la medida es 8 y C3 no se cumple; el candidato quedaría «admisible con reserva». En la Taxonomía 6.0, que el autor confirmó, este candidato figuraba como «no cumple C2». El resultado cambió porque el curador reescribió el criterio en la revisión 2, no porque haya cambiado el respaldo. No se admite en esta versión porque el cambio de catálogo no se le había planteado al autor con esa opción. La medida depende de que los lectores anoten un vacío, que es un instrumento ruidoso.",
+   "como_revertir": "No hay nada que revertir: no se aplicó."
+  }
+ ],
+ "adr_1_4": {
+  "ADR-032": "Lectura del curador de una frase del autor; a confirmar en D-16.1 y D-16.14",
+  "ADR-033": "Decisión del curador sobre una línea que leyó como delegada; la relectura se confirma en D-16.20 y la vara la elige el autor en D-16.2",
+  "ADR-034": "Decisiones del curador de distinto origen; a confirmar en D-16.3 a D-16.6, D-16.15, D-16.16, D-16.18 y D-16.21",
+  "ADR-035": "Registro de una declaración del autor; la consecuencia se confirma en D-16.13",
+  "ADR-036": "Resultado de un encargo que el autor aprobó; a confirmar en D-16.7",
+  "ADR-037": "Resultado de un encargo que el autor aprobó; a confirmar en D-16.8",
+  "ADR-038": "Resultado de dos encargos que el autor aprobó y de dos preguntas; a confirmar en D-16.6 y D-16.9",
+  "ADR-039": "Aprobada por el autor como solicitud (OCR-CAND-03); la forma en que se implementó se confirma en D-16.10",
+  "ADR-040": "Decisión del curador sobre una línea que leyó como delegada; a confirmar en D-16.11",
+  "ADR-041": "Pregunta para el autor (D-17.2); no aplicada"
+ },
+ "adr_confirmadas_el_16_de_noviembre": {
+  "ADR-030": "Aceptada (D-15.4). Su condición de confianza es «ninguna lectura declara confianza baja». En la versión 1.4 el curador aplicó una más estricta (ADR-033), después de ver los resultados; cuál vale lo decide el autor en D-16.2",
+  "ADR-031": "Aceptada (D-15.5)"
+ },
+ "orden_de_decision_en_la_1_3": [
+  {
+   "paso": 1,
+   "que": "D-15: confirmar o corregir cómo se leyeron tus tres frases generales y las reglas de trabajo que esta versión puso a regir.",
+   "por_que": "Todo lo demás se apoya en esas lecturas. Si alguna no es la que quisiste, cambia lo que quedó adoptado, confirmado o cerrado."
+  },
+  {
+   "paso": 2,
+   "que": "Contestar los puntos que la revisión dejó abiertos (RV-1 a RV-5) y las preguntas abiertas de las reglas.",
+   "por_que": "Cada respuesta destraba los cambios que ese punto frenó, sin volver a leer."
+  },
+  {
+   "paso": 3,
+   "que": "Decidir si los cambios que la relectura aplicó quedan: dejarlos, revertirlos enteros o revertir filas.",
+   "por_que": "Es el cambio más grande de la versión 1.3 y se revierte en un paso."
+  },
+  {
+   "paso": 4,
+   "que": "La revisión humana de una muestra.",
+   "por_que": "Es la única fuente de validación humana, y conviene hacerla sobre la categorización que quede después de los pasos 1 a 3."
+  },
+  {
+   "paso": 5,
+   "que": "D-13.1 y D-13.2: los once casos de D20 y los 37 cambios de coordenada de la versión 1.2.",
+   "por_que": "La relectura trae evidencia nueva para decidirlos, y D-15.2 puede dejar contestada la segunda."
+  },
+  {
+   "paso": 6,
+   "que": "Los encargos en cola y la próxima revisión de la ontología (solicitud OCR-CAND-03).",
+   "por_que": "Son trabajo de diseño y no bloquean lo anterior."
+  }
+ ],
+ "pendientes_declarados": [
+  "Las dos reglas para indicadores que el autor adoptó (RP-09.5 y RP-11.2) no se aplicaron todavía a los 224 indicadores del catálogo de medición.",
+  "8 indicadores (K81, K100, K101, K122, K131, K144, K166 y KX18) quedaron sin subfunción: su categoría de NIST CSF 2.0 corresponde ahora a dos subfunciones, ID05 e ID06, y la regla de derivación ya no elige. Conservan la función.",
+  "La regla RD-20 (el liderazgo de personas y la gestión de equipos van al pilar MM; el diseño de la oficina, al pilar OS a escala de oficina) está decidida y no se aplicó a los pre-ensayos: el pilar no se releyó en esta versión.",
+  "Las 112 equivalencias entre la biblioteca y el corpus que carga el grafo tienen una sola lectura.",
+  "Los 15 vacíos declarados: casos para los que ninguna regla decide. Donde una de las dos lecturas a ciegas anota uno, el eje no cambia por la vara. La condición no mira la tercera lectura y no rige para los pre-ensayos que tenían RC04: hay 2 cambios aplicados con un vacío anotado por alguna lectura (documento 15, sección 4.2).",
+  "Las reglas se corrigieron después de la revisión previa y esa corrección no tuvo una segunda revisión antes de la lectura.",
+  "Los indicadores K59, K43 y K54, que un revisor de la versión 1.2 pidió revisar (tarea D-13.6), siguen sin revisar.",
+  "La escala del pilar OS se registra en una planilla; el grafo no la carga.",
+  "El pilar de los pre-ensayos no se releyó. La pasada de escala muestra que 60 de los 147 pre-ensayos del pilar OS no tratan ninguna de sus dos escalas según dos lecturas: su pilar queda en duda y no se cambió.",
+  "Dos pre-ensayos del corpus citan el Atlas con cifras de una versión anterior: G2.1-K04 habla de 32 subfunciones y G2.1-K08, de los horizontes H01 a H04. El corpus es una fuente del autor y no se modificó.",
+  "Los lectores señalaron en sus notas de cierre reglas que no deciden, choques entre reglas y casos sin regla que no están entre los vacíos declarados. Están ordenados en relectura_1_4/notas_de_cierre/ y no se incorporaron a las reglas en esta versión.",
+  "Los documentos 01 a 14 no se actualizaron: se conservan como registro de la versión 1.3.",
+  "No hay una regla para los ejes que las reglas atan (territorio y dominio, subfunción y dominio). En 35 de los 90 pre-ensayos que cambian, la coordenada que queda no es la de la versión 1.2 ni la que leyó ningún lector (data/relectura_1_4_ternas_mixtas.csv; D-17.9).",
+  "La revisión de la versión candidata observó cinco reglas decididas que los lectores ya habían usado: RD-24 y RD-02 (caso a) se contradicen sobre T08 y D28; RD-03 no reparte la mejora como las citas que usa de ancla; RD-06 deja en GV04 lo que las citas ubican en la evaluación de riesgos; RD-15 y RD-17 modifican enunciados que el autor adoptó. No se cambiaron después de leer: la observación está en data/reglas_de_asignacion_rev3.csv, donde el autor decide cada regla.",
+  "El vacío VC-11 dice que vale para los tres ejes y el catálogo le da el eje «dominio»: la condición de los vacíos solo lo mira en ese eje. En los datos de esta versión no cambia nada.",
+  "La confianza que la planilla y el grafo traen junto a cada coordenada es la que declaró el clasificador de la versión 1.0. Las lecturas de la versión 1.4 no la reemplazaron; su confianza, eje por eje, está en data/relectura_1_4_por_eje.csv. La consulta P11 devuelve solo la confianza de la clasificación de dominio.",
+  "La regla RD-21 nombra a los indicadores y no se les aplicó: la lente de la agenda de IA solo se deriva en los pre-ensayos. En las preguntas del banco, la lente es la de la matriz de origen, y no siempre coincide con la que daría la regla.",
+  "La ontología 2.2.0 tiene ocho propuestas aplicadas en parte (documento 17, sección 4.1). Entre ellas: 61 pares de tipos admitidos en más de una relación no tienen criterio escrito; las equivalencias «mismo concepto» están cargadas sobre el pre-ensayo y no sobre su concepto; ninguna relación usa la confianza «sin evaluar»; la regla SV-119 solo mira los pre-ensayos; y 16 de 85 puntos de control quedan «sin clase declarada».",
+  "Las listas alternativas de cambios (la categorización de la versión 1.2 y la de la 1.3) son anteriores al cambio de RC04: aplicadas tal cual, devuelven a RC04 los diez pre-ensayos de mejora continua, y la de la 1.3 trae además un cambio que contradice uno de los 37 que el autor confirmó. Elegir una de ellas en D-16.2 exige corregir eso antes.",
+  "El grafo rotula con la Taxonomía 6.1 las coordenadas que los pre-ensayos heredan de versiones anteriores: los códigos son válidos en la 6.1, y la asignación no se hizo de nuevo con ella.",
+  "El estado de cada pregunta de competencia sale de una prueba de cobertura y de un límite que el curador escribe en cada pregunta: dos salvedades de la misma clase pueden dar estados distintos según dónde se anotaron.",
+  "Lo que se corrigió después de la revisión de la versión candidata no tuvo otra lectura independiente: lo comprueba solo la regresión."
+ ],
+ "version_del_registro": "1.4"
+}

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>Puente Product Owner · acceso al navegador original · AF-20261118</title><script>
+(() => {
+  const param = new URLSearchParams(window.location.search).get("scoutTheme");
+  const theme =
+    param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  document.documentElement.setAttribute("data-theme", theme);
+})();
+</script><style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+* { box-sizing: border-box }
+body { margin: 0; background: var(--cp-bg); color: var(--cp-text);
+  font: 16px/1.53 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif }
+main { max-width: 76rem; margin: auto; padding: 1.5rem clamp(1rem, 3vw, 2.5rem) 4rem }
+header { border-bottom: 1px solid var(--cp-border-strong); margin-bottom: 1.25rem; padding-bottom: 1rem }
+h1 { line-height: 1.1; font-size: clamp(1.7rem, 4vw, 2.7rem); margin: .8rem 0 }
+h2 { font-size: 1.25rem; margin: 1.5rem 0 .65rem }
+h3, p { margin: .4rem 0 }
+a { color: var(--cp-link); overflow-wrap: anywhere }
+a:hover { color: var(--cp-accent-hover) }
+:focus-visible { outline: 2px solid var(--cp-accent); outline-offset: 3px }
+nav, .filters { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem }
+nav a { font-weight: 600 }
+.button { display: inline-block; border-radius: .625rem; background: var(--cp-accent);
+  color: var(--cp-accent-fg); padding: .5rem .85rem; text-decoration: none }
+.button:hover { background: var(--cp-accent-hover); color: var(--cp-accent-fg) }
+.card, .files, .filters { border: 1px solid var(--cp-border); background: var(--cp-surface);
+  border-radius: 1rem; padding: .85rem 1rem }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); gap: .75rem }
+.card h3 { font-size: 1.06rem }
+.badge { display: inline-block; background: var(--cp-accent-soft); color: var(--cp-accent);
+  font-size: .82rem; font-weight: 600; padding: .15rem .5rem; border-radius: .625rem }
+.muted, small { color: var(--cp-text-muted) }
+.meta { font-family: Consolas, "Courier New", Courier, monospace; font-size: .84rem; overflow-wrap: anywhere }
+input, select { font: inherit; background: var(--cp-bg-elevated); color: var(--cp-text);
+  border: 1px solid var(--cp-border-strong); border-radius: .625rem; padding: .35rem .55rem }
+input { width: min(100%, 27rem) }
+ul { padding-left: 1.25rem }
+.files li { padding: .45rem .1rem; overflow-wrap: anywhere }
+.files li + li { border-top: 1px solid var(--cp-border) }
+.files li::marker { color: var(--cp-accent) }
+summary { cursor: pointer; color: var(--cp-text-muted) }
+pre { overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 28rem; padding: .75rem;
+  font: .85rem/1.45 Consolas, "Courier New", Courier, monospace; background: var(--cp-surface-soft);
+  border-radius: .625rem; border: 1px solid var(--cp-border) }
+[hidden] { display: none !important }
+</style></head>
+<body><main><header><nav aria-label="Navegación"></nav><h1>Puente Product Owner · acceso al navegador original</h1><p class="muted">CISO 365 × Excelencia Operacional × Ninja Training</p></header>
+<p>Esta ubicación ya no duplica el archivo del navegador. Los dos nombres originales contenían los mismos bytes.</p><a href="index.html" class=button>Abrir el navegador original</a></main></body></html>

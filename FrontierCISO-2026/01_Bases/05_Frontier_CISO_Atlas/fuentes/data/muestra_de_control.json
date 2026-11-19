@@ -1,0 +1,243 @@
+{
+ "lote_de_control": "12",
+ "muestra": 48,
+ "esperados": 48,
+ "metodo": "Compara la muestra de control (48 pre-ensayos reclasificados por un agente independiente) con la propuesta principal.\nMide acuerdo entre dos clasificadores que usan el mismo brief; no es una revisión humana.",
+ "que_no_mide": "En 45 de los 48 casos el clasificador de control recibió el territorio y el dominio vigentes con la instrucción de conservarlos, de modo que el acuerdo en esos dos ejes no mide la reproducibilidad de la asignación. La muestra a ciegas de la versión 1.2 (data/muestra_a_ciegas_1_2.json) tampoco mide eso: mide el acuerdo de un lector automático, que clasificó desde cero, con la coordenada vigente, que en territorio y dominio es casi siempre la heredada.",
+ "resultados": [
+  {
+   "eje": "Territorio primario (había valor vigente)",
+   "casos": 45,
+   "acuerdos": 45,
+   "acuerdo_pct": 100.0,
+   "kappa": 1.0,
+   "nota": "El brief pide conservar el valor vigente salvo error evidente.",
+   "desacuerdos": []
+  },
+  {
+   "eje": "Territorio primario (sin valor vigente)",
+   "casos": 3,
+   "acuerdos": 3,
+   "acuerdo_pct": 100.0,
+   "kappa": 1.0,
+   "nota": "",
+   "desacuerdos": []
+  },
+  {
+   "eje": "Dominio primario (había valor vigente)",
+   "casos": 45,
+   "acuerdos": 45,
+   "acuerdo_pct": 100.0,
+   "kappa": 1.0,
+   "nota": "Incluye la decisión de migrar o no a un dominio nuevo.",
+   "desacuerdos": []
+  },
+  {
+   "eje": "Dominio primario (sin valor vigente)",
+   "casos": 3,
+   "acuerdos": 3,
+   "acuerdo_pct": 100.0,
+   "kappa": 1.0,
+   "nota": "",
+   "desacuerdos": []
+  },
+  {
+   "eje": "¿Migra a un dominio nuevo (D25–D28)?",
+   "casos": 45,
+   "acuerdos": 45,
+   "acuerdo_pct": 100.0,
+   "kappa": 1.0,
+   "nota": "",
+   "desacuerdos": []
+  },
+  {
+   "eje": "Función (sin subfunción vigente)",
+   "casos": 24,
+   "acuerdos": 24,
+   "acuerdo_pct": 100.0,
+   "kappa": 1.0,
+   "nota": "",
+   "desacuerdos": []
+  },
+  {
+   "eje": "Subfunción (sin subfunción vigente)",
+   "casos": 24,
+   "acuerdos": 23,
+   "acuerdo_pct": 95.8,
+   "kappa": 0.95,
+   "nota": "",
+   "desacuerdos": [
+    {
+     "id": "M4.2-K05",
+     "principal": "ID04",
+     "control": "ID03"
+    }
+   ]
+  },
+  {
+   "eje": "Subfunción (había valor vigente)",
+   "casos": 24,
+   "acuerdos": 24,
+   "acuerdo_pct": 100.0,
+   "kappa": 1.0,
+   "nota": "",
+   "desacuerdos": []
+  },
+  {
+   "eje": "Horizonte",
+   "casos": 48,
+   "acuerdos": 45,
+   "acuerdo_pct": 93.8,
+   "kappa": 0.9,
+   "nota": "",
+   "desacuerdos": [
+    {
+     "id": "HC-006",
+     "principal": "H01",
+     "control": "indeterminado"
+    },
+    {
+     "id": "APC-095",
+     "principal": "H01",
+     "control": "H04"
+    },
+    {
+     "id": "APC-177",
+     "principal": "H04",
+     "control": "H02"
+    }
+   ]
+  },
+  {
+   "eje": "Pilar MCCS",
+   "casos": 48,
+   "acuerdos": 42,
+   "acuerdo_pct": 87.5,
+   "kappa": 0.74,
+   "nota": "",
+   "desacuerdos": [
+    {
+     "id": "G5.1-K04",
+     "principal": "MM",
+     "control": "DO"
+    },
+    {
+     "id": "M4.2-K05",
+     "principal": "MM",
+     "control": "DO"
+    },
+    {
+     "id": "AMP-08",
+     "principal": "DO",
+     "control": "MM"
+    },
+    {
+     "id": "G4.2-PA01",
+     "principal": "OS",
+     "control": "DO"
+    },
+    {
+     "id": "APC-185",
+     "principal": "DO",
+     "control": "OS"
+    },
+    {
+     "id": "APA-175",
+     "principal": "DO",
+     "control": "OS"
+    }
+   ]
+  },
+  {
+   "eje": "Confianza declarada",
+   "casos": 48,
+   "acuerdos": 36,
+   "acuerdo_pct": 75.0,
+   "kappa": 0.5,
+   "nota": "",
+   "desacuerdos": [
+    {
+     "id": "G3.2-K10",
+     "principal": "media",
+     "control": "alta"
+    },
+    {
+     "id": "M5.1-K06",
+     "principal": "media",
+     "control": "alta"
+    },
+    {
+     "id": "AMP-08",
+     "principal": "alta",
+     "control": "media"
+    },
+    {
+     "id": "AMP-22",
+     "principal": "alta",
+     "control": "media"
+    },
+    {
+     "id": "AMP-45",
+     "principal": "alta",
+     "control": "media"
+    },
+    {
+     "id": "G4.2-PA01",
+     "principal": "alta",
+     "control": "media"
+    },
+    {
+     "id": "APC-095",
+     "principal": "alta",
+     "control": "media"
+    },
+    {
+     "id": "APC-185",
+     "principal": "media",
+     "control": "alta"
+    },
+    {
+     "id": "APC-256",
+     "principal": "media",
+     "control": "alta"
+    },
+    {
+     "id": "APC-283",
+     "principal": "alta",
+     "control": "media"
+    },
+    {
+     "id": "APA-112",
+     "principal": "alta",
+     "control": "media"
+    },
+    {
+     "id": "APA-126",
+     "principal": "alta",
+     "control": "media"
+    }
+   ]
+  }
+ ],
+ "reubicaciones_fuera_de_dominios_nuevos": {
+  "coincidentes": [
+   {
+    "id": "AMP-22",
+    "vigente": "D20",
+    "propuesto": "D02"
+   },
+   {
+    "id": "APA-049",
+    "vigente": "D20",
+    "propuesto": "D01"
+   }
+  ],
+  "solo_control": [],
+  "solo_principal": []
+ },
+ "fuerzas_similitud_media_pct": {
+  "catalizadores": 97.9,
+  "inhibidores": 81.2,
+  "mecanismos_homeostaticos": 87.2
+ }
+}

@@ -1,0 +1,153 @@
+{
+  "ontology_version": "1.0.0",
+  "count": 21,
+  "rules": [
+    {
+      "id": "SV-001",
+      "level": "structural",
+      "name": "Identificador válido",
+      "description": "Todo nodo persistente debe tener un ID único.",
+      "severity": "error"
+    },
+    {
+      "id": "SV-002",
+      "level": "structural",
+      "name": "Tipo reconocido",
+      "description": "El tipo debe existir en la versión ontológica declarada.",
+      "severity": "error"
+    },
+    {
+      "id": "SV-003",
+      "level": "structural",
+      "name": "Propiedades obligatorias",
+      "description": "ID, tipo, nombre, descripción, versión y estado de revisión son obligatorios.",
+      "severity": "error"
+    },
+    {
+      "id": "SV-004",
+      "level": "structural",
+      "name": "Integridad referencial",
+      "description": "Toda relación apunta a nodos existentes o definidos en el ChangeSet.",
+      "severity": "error"
+    },
+    {
+      "id": "SV-005",
+      "level": "structural",
+      "name": "Operación autorizada",
+      "description": "Solo se admiten operaciones declarativas permitidas.",
+      "severity": "error"
+    },
+    {
+      "id": "SV-006",
+      "level": "structural",
+      "name": "Versionado",
+      "description": "El ChangeSet declara versión de esquema, ontología y taxonomía.",
+      "severity": "error"
+    },
+    {
+      "id": "SV-101",
+      "level": "semantic",
+      "name": "Compatibilidad de dominio",
+      "description": "El tipo origen está permitido para la relación.",
+      "severity": "error"
+    },
+    {
+      "id": "SV-102",
+      "level": "semantic",
+      "name": "Compatibilidad de rango",
+      "description": "El tipo destino está permitido para la relación.",
+      "severity": "error"
+    },
+    {
+      "id": "SV-103",
+      "level": "semantic",
+      "name": "Dirección",
+      "description": "Se respeta origen y destino de relaciones dirigidas.",
+      "severity": "error"
+    },
+    {
+      "id": "SV-104",
+      "level": "semantic",
+      "name": "Posibilidad versus observación",
+      "description": "Una relación potencial no se presenta como hecho observado.",
+      "severity": "error"
+    },
+    {
+      "id": "SV-105",
+      "level": "semantic",
+      "name": "Evidencia material",
+      "description": "Las relaciones materiales registran evidencia o hipótesis explícita.",
+      "severity": "error"
+    },
+    {
+      "id": "SV-106",
+      "level": "semantic",
+      "name": "Contexto obligatorio",
+      "description": "Las relaciones contextuales registran contexto.",
+      "severity": "error"
+    },
+    {
+      "id": "SV-107",
+      "level": "semantic",
+      "name": "No equivalencia automática",
+      "description": "Una correspondencia externa no implica identidad conceptual.",
+      "severity": "error"
+    },
+    {
+      "id": "SV-108",
+      "level": "semantic",
+      "name": "Separación de conceptos",
+      "description": "No fusionar Threat/RiskScenario, Event/Incident, Control/ControlObjective, Role/Authority, LearningUnit/Competency ni Horizon/Maturity.",
+      "severity": "error"
+    },
+    {
+      "id": "SV-201",
+      "level": "governance",
+      "name": "Procedencia",
+      "description": "Toda afirmación relevante se vincula con ensayo, fuente, evidencia o inferencia.",
+      "severity": "warning"
+    },
+    {
+      "id": "SV-202",
+      "level": "governance",
+      "name": "Calidad de evidencia",
+      "description": "Registrar fuente primaria, secundaria, inferencia experta o hipótesis.",
+      "severity": "warning"
+    },
+    {
+      "id": "SV-203",
+      "level": "governance",
+      "name": "Contradicciones",
+      "description": "Registrar contradicciones y solicitar revisión; no eliminarlas automáticamente.",
+      "severity": "warning"
+    },
+    {
+      "id": "SV-204",
+      "level": "governance",
+      "name": "Duplicados",
+      "description": "No fusionar por similitud de nombre; comparar tipo, definición, contexto, relaciones y fuente.",
+      "severity": "warning"
+    },
+    {
+      "id": "SV-205",
+      "level": "governance",
+      "name": "Extensiones ontológicas",
+      "description": "Proponer extensión cuando no haya encaje; no modificar Core automáticamente.",
+      "severity": "warning"
+    },
+    {
+      "id": "SV-206",
+      "level": "governance",
+      "name": "Aprobación",
+      "description": "Todo ChangeSet debe aprobarse antes de aplicarse.",
+      "severity": "warning"
+    },
+    {
+      "id": "SV-207",
+      "level": "governance",
+      "name": "Trazabilidad histórica",
+      "description": "Conservar versión anterior/nueva, justificación, autor/aprobador y fecha.",
+      "severity": "warning"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+# 15 Purview Data Loss Prevention
+
+Ruta: `FrontierCISO-2026\01_Bases\09_Excelencia_Operacional_MS\guias_v2\15_Purview_Data_Loss_Prevention`
+
+[Carpeta superior](../indice-catalogo.md)
+
+## Archivos de esta carpeta
+
+- [Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.html](Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.html)
+- [Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.json](Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.json)
+- [Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.md](Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.md)
+- [Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.xlsx](Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.xlsx)

@@ -1,0 +1,42 @@
+# proposed
+
+Ruta: `FrontierCISO-2026\01_Bases\05_Frontier_CISO_Atlas\fuentes\changesets\proposed`
+
+[Carpeta superior](../README.md)
+
+## Archivos de esta carpeta
+
+- [CHG-CAND-01.json](CHG-CAND-01.json)
+- [CHG-CAND-01.operaciones.jsonl](CHG-CAND-01.operaciones.jsonl)
+- [CHG-CAND-02.json](CHG-CAND-02.json)
+- [CHG-CAND-02.operaciones.jsonl](CHG-CAND-02.operaciones.jsonl)
+- [CHG-CAND-03.json](CHG-CAND-03.json)
+- [CHG-CAND-03.operaciones.jsonl](CHG-CAND-03.operaciones.jsonl)
+- [CHG-CAND-04.json](CHG-CAND-04.json)
+- [CHG-CAND-04.operaciones.jsonl](CHG-CAND-04.operaciones.jsonl)
+- [CHG-CAND-05.json](CHG-CAND-05.json)
+- [CHG-CAND-05.operaciones.jsonl](CHG-CAND-05.operaciones.jsonl)
+- [CHG-CAND-06.json](CHG-CAND-06.json)
+- [CHG-CAND-06.operaciones.jsonl](CHG-CAND-06.operaciones.jsonl)
+- [CHG-CAND-07.json](CHG-CAND-07.json)
+- [CHG-CAND-07.operaciones.jsonl](CHG-CAND-07.operaciones.jsonl)
+- [CHG-CAND-08.json](CHG-CAND-08.json)
+- [CHG-CAND-08.operaciones.jsonl](CHG-CAND-08.operaciones.jsonl)
+- [CHG-CAND-09.json](CHG-CAND-09.json)
+- [CHG-CAND-09.operaciones.jsonl](CHG-CAND-09.operaciones.jsonl)
+- [CHG-CAND-10.json](CHG-CAND-10.json)
+- [CHG-CAND-10.operaciones.jsonl](CHG-CAND-10.operaciones.jsonl)
+- [CHG-CAND-11.json](CHG-CAND-11.json)
+- [CHG-CAND-11.operaciones.jsonl](CHG-CAND-11.operaciones.jsonl)
+- [CHG-CAND-12.json](CHG-CAND-12.json)
+- [CHG-CAND-12.operaciones.jsonl](CHG-CAND-12.operaciones.jsonl)
+- [CHG-CAND-13.json](CHG-CAND-13.json)
+- [CHG-CAND-13.operaciones.jsonl](CHG-CAND-13.operaciones.jsonl)
+- [CHG-CAND-14.json](CHG-CAND-14.json)
+- [CHG-CAND-14.operaciones.jsonl](CHG-CAND-14.operaciones.jsonl)
+- [CHG-CAND-15.json](CHG-CAND-15.json)
+- [CHG-CAND-15.operaciones.jsonl](CHG-CAND-15.operaciones.jsonl)
+- [CHG-CAND-16.json](CHG-CAND-16.json)
+- [CHG-CAND-16.operaciones.jsonl](CHG-CAND-16.operaciones.jsonl)
+- [CHG-CAND-17.json](CHG-CAND-17.json)
+- [CHG-CAND-17.operaciones.jsonl](CHG-CAND-17.operaciones.jsonl)

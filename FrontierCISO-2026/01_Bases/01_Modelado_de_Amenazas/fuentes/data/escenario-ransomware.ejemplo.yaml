@@ -1,0 +1,79 @@
+id: RS-EXAMPLE-001
+name: Interrupción prolongada del ERP por cifrado y extorsión
+status: proposed
+scope:
+  business_processes: [facturación, logística, producción]
+  horizon: 12 meses
+  assumptions:
+    - confirmar criticidad y dependencias reales del ERP
+    - calibrar frecuencia e impacto con incidentes y simulacros
+assets:
+  - type: application
+    name: ERP crítico
+  - type: identity
+    name: cuentas administrativas
+event:
+  threat_source: actor de ransomware o acceso facilitado por tercero
+  threat_event: cifrado y posible exfiltración de datos en servidores ERP
+  preconditions:
+    - credenciales o sesión comprometida
+    - privilegios suficientes
+    - rutas laterales no restringidas
+  attack_behavior_references:
+    - T1078
+    - T1003
+    - T1021
+    - T1486
+  reference_note: validar técnicas e IDs contra la versión vigente de ATT&CK
+consequences:
+  business:
+    - indisponibilidad superior al RTO tolerado
+    - pérdida de ingresos a medir
+    - retraso de clientes y proveedores
+  privacy:
+    - posible divulgación de datos
+    - posible obligación de evaluación/notificación según jurisdicción
+  financial:
+    currency: por_definir
+    impact_range: por_calibrar
+risk:
+  inherent:
+    method: FAIR o criterio cualitativo aprobado
+    likelihood: por_calibrar
+    impact: por_calibrar
+  treatment:
+    strategy: [reduce_likelihood, reduce_consequence]
+    decisions: []
+controls:
+  - id: CTL-001
+    name: MFA resistente al phishing para acceso privilegiado y remoto
+    status: proposed
+    mode: preventive
+    evidence_required: [configuración, cobertura, excepciones, prueba]
+  - id: CTL-002
+    name: Segmentación y restricción de movimiento lateral
+    status: proposed
+    mode: preventive
+    evidence_required: [diagrama, reglas, prueba de conectividad]
+  - id: CTL-003
+    name: Backup inmutable aislado y restore probado
+    status: proposed
+    mode: corrective
+    evidence_required: [política, inventario, último restore, RTO real]
+  - id: CTL-004
+    name: Detección y contención EDR/XDR
+    status: proposed
+    mode: detective
+    evidence_required: [cobertura, reglas, ejercicio, MTTC]
+privacy:
+  linddun: [data_disclosure, linking, identifying]
+  treatments: [clasificación, minimización, cifrado, playbook de respuesta]
+  data_mapping_required: true
+ownership:
+  risk_owner: por_asignar
+  control_owners: por_asignar
+  privacy_owner: por_asignar
+next_review: 2027-02-17
+notes:
+  - este ejemplo es una plantilla contextual, no una evaluación real
+  - no afirmar eficacia de controles hasta disponer de evidencia

@@ -1,0 +1,879 @@
+{
+ "agentes": [
+  {
+   "id": "XA-01",
+   "nombre": "Triage Copilot de incidentes unificados",
+   "proposito": "Pre-triar incidentes de todas las fuentes aplicando severidad, correlación y criterios por carga de trabajo; proponer prioridad, asignación, clasificación y cierre.",
+   "tareas": "XDR-D01, XDR-D04, XDR-A03",
+   "autonomia": "L2",
+   "gates": "Clasificación, asignación y cierre con aprobación; sin acciones de respuesta",
+   "kpis": "Precisión ≥90 %; pre-triaje <5 min",
+   "costo": "Tokens/SCU por incidente",
+   "riesgos_asi": "ASI01, ASI06",
+   "identidad": "Agent ID; Security data basics (Read)",
+   "owner": "PO-GAC XDR",
+   "ruta": "R1 (alt. R2)",
+   "equivalente_productividad": "AG-01",
+   "tools_propios": [
+    "T-04",
+    "T-01",
+    "T-05",
+    "T-21"
+   ],
+   "knowledge_propios": [
+    "XK-01",
+    "KN-03"
+   ],
+   "skills_propios": [
+    "XS-01",
+    "SK-07"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "XA-02",
+   "nombre": "Asistente de investigación y respuesta cross-domain",
+   "proposito": "Reunir evidencias (dispositivo, identidad, correo, app), proponer acciones (aislar, revocar sesión, deshabilitar usuario, soft delete) y ejecutarlas tras aprobación con límite de alcance.",
+   "tareas": "XDR-D02, XDR-A01",
+   "autonomia": "L2",
+   "gates": "Toda acción con aprobación; límite por dispositivos/usuarios; nunca live response avanzado",
+   "kpis": "MTTR; acciones revertidas <2 %",
+   "costo": "Tokens/SCU",
+   "riesgos_asi": "ASI02, ASI03, ASI08",
+   "identidad": "Agent ID; Alerts (Manage), Response (Manage) acotados",
+   "owner": "PO-GAC XDR + CSIRT",
+   "ruta": "R1 (alt. R2)",
+   "equivalente_productividad": "AG-02",
+   "tools_propios": [
+    "T-05",
+    "T-04",
+    "T-01",
+    "XT-01",
+    "XT-02",
+    "T-21"
+   ],
+   "knowledge_propios": [
+    "KN-05",
+    "XK-02"
+   ],
+   "skills_propios": [
+    "SK-08",
+    "SK-04",
+    "XS-02"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "XA-03",
+   "nombre": "Supervisor del Action center (AIR)",
+   "proposito": "Revisar acciones pendientes y ejecutadas por AIR, resumir impacto, proponer aprobar/rechazar y detectar acciones anómalas.",
+   "tareas": "XDR-D03",
+   "autonomia": "L2",
+   "gates": "Aprobar/rechazar solo humano",
+   "kpis": "Pendientes >4 h = 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI08, ASI09",
+   "identidad": "Agent ID; Response (Read)",
+   "owner": "PO-GAC XDR",
+   "ruta": "R2",
+   "equivalente_productividad": "—",
+   "tools_propios": [
+    "XT-03",
+    "T-04"
+   ],
+   "knowledge_propios": [
+    "XK-03",
+    "KN-02"
+   ],
+   "skills_propios": [
+    "XS-03",
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "XA-04",
+   "nombre": "Analista de tuning y FP/FN multi-sensor",
+   "proposito": "Analizar alertas recurrentes, proponer reglas de tuning/supresión con vencimiento y detectar reglas sin coincidencias.",
+   "tareas": "XDR-D05, XDR-M03",
+   "autonomia": "L2",
+   "gates": "Reglas con aprobación; supresión con vencimiento",
+   "kpis": "FP recurrentes ↓; reglas obsoletas = 0",
+   "costo": "Tokens",
+   "riesgos_asi": "ASI01, ASI09",
+   "identidad": "Agent ID; Alerts (Manage) acotado",
+   "owner": "PO-GAC XDR",
+   "ruta": "R2",
+   "equivalente_productividad": "AG-03/AG-11",
+   "tools_propios": [
+    "T-05",
+    "XT-04",
+    "T-04"
+   ],
+   "knowledge_propios": [
+    "KN-04",
+    "XK-04"
+   ],
+   "skills_propios": [
+    "SK-09",
+    "XS-04"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "XA-05",
+   "nombre": "Centinela de salud de sensores",
+   "proposito": "Detectar dispositivos con EDR/AV no saludable, sensores MDI con issues, conectores caídos y dispositivos no onboarded; abrir tickets.",
+   "tareas": "XDR-D06, XDR-A04",
+   "autonomia": "L3 (detección) / L2 (tickets)",
+   "gates": "Solo lectura + ticket",
+   "kpis": "% EDR saludable ≥98 %",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI10",
+   "identidad": "Agent ID; Security data basics",
+   "owner": "PO-GAC XDR + Engineering",
+   "ruta": "R2",
+   "equivalente_productividad": "—",
+   "tools_propios": [
+    "XT-05",
+    "XT-06",
+    "T-15"
+   ],
+   "knowledge_propios": [
+    "XK-05"
+   ],
+   "skills_propios": [
+    "XS-05",
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "XA-06",
+   "nombre": "Briefer de Threat analytics cross-domain",
+   "proposito": "Resumir amenazas de alto impacto y derivar hunts y mitigaciones por sensor.",
+   "tareas": "XDR-D07",
+   "autonomia": "L2",
+   "gates": "Acciones derivadas con aprobación",
+   "kpis": "Acciones/semana",
+   "costo": "Tokens/SCU",
+   "riesgos_asi": "ASI06",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC XDR + TI",
+   "ruta": "R1 (alt. R2)",
+   "equivalente_productividad": "AG-06",
+   "tools_propios": [
+    "T-01",
+    "T-04",
+    "T-03",
+    "XT-07"
+   ],
+   "knowledge_propios": [
+    "KN-09",
+    "KN-05"
+   ],
+   "skills_propios": [
+    "SK-12"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "XA-07",
+   "nombre": "Bibliotecario de hunting y detecciones cross-domain",
+   "proposito": "Mantener consultas multi-tabla, guided hunting, proponer detecciones y automation rules; medir precisión.",
+   "tareas": "XDR-W01, XDR-W02",
+   "autonomia": "L2",
+   "gates": "Detecciones y reglas con aprobación",
+   "kpis": "Consultas vigentes; precisión",
+   "costo": "Medio",
+   "riesgos_asi": "ASI02, ASI05",
+   "identidad": "Agent ID; Custom detections (Manage) acotado",
+   "owner": "PO-GAC XDR + Hunting",
+   "ruta": "R3 (alt. R2)",
+   "equivalente_productividad": "AG-14",
+   "tools_propios": [
+    "T-05",
+    "T-01",
+    "T-19",
+    "XT-08"
+   ],
+   "knowledge_propios": [
+    "KN-05",
+    "XK-06"
+   ],
+   "skills_propios": [
+    "SK-08",
+    "SK-17",
+    "XS-06"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "XA-08",
+   "nombre": "Reportero de postura y exposición",
+   "proposito": "Compilar Secure Score por producto, iniciativas de Exposure Management y activos críticos; alimentar backlog por owner.",
+   "tareas": "XDR-W03",
+   "autonomia": "L3",
+   "gates": "Solo informa/propone",
+   "kpis": "Informe a tiempo",
+   "costo": "Bajo",
+   "riesgos_asi": "—",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC XDR",
+   "ruta": "R2",
+   "equivalente_productividad": "AG-08",
+   "tools_propios": [
+    "T-08",
+    "XT-09"
+   ],
+   "knowledge_propios": [
+    "KN-10",
+    "XK-07"
+   ],
+   "skills_propios": [
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "XA-09",
+   "nombre": "Reportero de amenazas y resumen mensual",
+   "proposito": "Compilar informes de protección e informe mensual para el CISO.",
+   "tareas": "XDR-W04, XDR-M04",
+   "autonomia": "L3",
+   "gates": "Solo informa",
+   "kpis": "Informes a tiempo",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI09",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC XDR",
+   "ruta": "R2",
+   "equivalente_productividad": "AG-05",
+   "tools_propios": [
+    "XT-10",
+    "T-22",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-10"
+   ],
+   "skills_propios": [
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "XA-10",
+   "nombre": "Vigía de cambios de plataforma XDR",
+   "proposito": "Leer Message Center y novedades; evaluar impacto en runbooks, RBAC, automatización y agentes.",
+   "tareas": "XDR-W05",
+   "autonomia": "L3",
+   "gates": "Solo informa",
+   "kpis": "Cambios evaluados ≤7 días",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI06",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC XDR",
+   "ruta": "R2",
+   "equivalente_productividad": "AG-09",
+   "tools_propios": [
+    "T-09",
+    "T-03"
+   ],
+   "knowledge_propios": [
+    "KN-02"
+   ],
+   "skills_propios": [
+    "SK-14"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "XA-11",
+   "nombre": "Auditor de automatización y RBAC",
+   "proposito": "Comparar niveles de AIR, políticas de alertas y asignaciones de Unified RBAC contra el baseline; proponer correcciones.",
+   "tareas": "XDR-M01, XDR-M02",
+   "autonomia": "L2",
+   "gates": "Cambios con aprobación",
+   "kpis": "Desviaciones = 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI03",
+   "identidad": "Agent ID; lectura de configuración y RBAC",
+   "owner": "PO-GAC XDR + IAM",
+   "ruta": "R2",
+   "equivalente_productividad": "AG-10",
+   "tools_propios": [
+    "XT-11",
+    "XT-12",
+    "T-14"
+   ],
+   "knowledge_propios": [
+    "XK-08",
+    "KN-08"
+   ],
+   "skills_propios": [
+    "SK-10",
+    "XS-07"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "XA-12",
+   "nombre": "Redactor de lecciones y ejercicios",
+   "proposito": "Transformar incidentes cerrados en lecciones, material de entrenamiento y guiones de tabletop.",
+   "tareas": "XDR-M05, XDR-A05",
+   "autonomia": "L1",
+   "gates": "Publicación solo humana",
+   "kpis": "Lecciones/mes",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI09",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC XDR + SOC Oversight",
+   "ruta": "R2",
+   "equivalente_productividad": "AG-12",
+   "tools_propios": [
+    "T-04",
+    "T-18"
+   ],
+   "knowledge_propios": [
+    "XK-09",
+    "KN-12"
+   ],
+   "skills_propios": [
+    "SK-15"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "XA-13",
+   "nombre": "Analista de la flota XDR",
+   "proposito": "Consolidar KPIs, costos y accesos de los agentes XDR para revisión trimestral y recertificación.",
+   "tareas": "XDR-Q02, XDR-Q03",
+   "autonomia": "L1-L2",
+   "gates": "Decisiones humanas",
+   "kpis": "Informe trimestral",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI03",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC XDR",
+   "ruta": "R2",
+   "equivalente_productividad": "AG-13",
+   "tools_propios": [
+    "T-13",
+    "T-14",
+    "T-24",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-11",
+    "KN-08"
+   ],
+   "skills_propios": [
+    "SK-16"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "XA-14",
+   "nombre": "Correlador de incidentes y casos",
+   "proposito": "Proponer fusión/división de incidentes, vincular con casos, detectar duplicados y sugerir etiquetas.",
+   "tareas": "XDR-A03, XDR-D01",
+   "autonomia": "L2",
+   "gates": "Fusión/división con aprobación",
+   "kpis": "Duplicados ↓",
+   "costo": "Tokens",
+   "riesgos_asi": "ASI01",
+   "identidad": "Agent ID; Security data basics",
+   "owner": "PO-GAC XDR",
+   "ruta": "R2",
+   "equivalente_productividad": "—",
+   "tools_propios": [
+    "T-04",
+    "T-05"
+   ],
+   "knowledge_propios": [
+    "XK-01"
+   ],
+   "skills_propios": [
+    "XS-01"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "XA-15",
+   "nombre": "Sincronizador ITSM y notificaciones",
+   "proposito": "Mantener tickets y notificaciones sincronizados con la cola unificada.",
+   "tareas": "XDR-D08",
+   "autonomia": "L3",
+   "gates": "Sin cierre sin confirmación del asignado",
+   "kpis": "Desincronizados → 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI07",
+   "identidad": "Agent ID; permisos ITSM acotados",
+   "owner": "PO-GAC XDR + SOC Lead",
+   "ruta": "R2",
+   "equivalente_productividad": "AG-15",
+   "tools_propios": [
+    "T-15",
+    "T-04"
+   ],
+   "knowledge_propios": [
+    "KN-02"
+   ],
+   "skills_propios": [
+    "SK-18"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  }
+ ],
+ "tools_nuevos": {
+  "XT-01": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "Defender for Endpoint API · machine actions (isolate, scan, collect investigation package, restrict app execution)",
+   "op": "Acciones de respuesta sobre dispositivos",
+   "permiso": "Machine.Isolate, Machine.Scan, Machine.CollectForensics; Response (Manage)",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/defender-endpoint/api/machineaction"
+  },
+  "XT-02": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "Microsoft Graph · identity (revokeSignInSessions, riskyUsers confirmCompromised) y users (accountEnabled)",
+   "op": "Revocar sesiones, marcar comprometido, deshabilitar usuario",
+   "permiso": "User.RevokeSessions.All, IdentityRiskyUser.ReadWrite.All, User.EnableDisableAccount.All",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/graph/api/user-revokesigninsessions"
+  },
+  "XT-03": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "Defender XDR · Action center / pending actions",
+   "op": "Leer acciones pendientes y ejecutadas; preparar aprobación",
+   "permiso": "Security data basics; Response (Read)",
+   "estado": "verificar (cobertura API del Action center unificado)",
+   "fuente": "learn.microsoft.com/defender-xdr/m365d-autoir-actions"
+  },
+  "XT-04": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "Defender XDR · alert tuning rules / MDE indicators",
+   "op": "Proponer y crear reglas de tuning y supresión con vencimiento",
+   "permiso": "Alerts (Manage)",
+   "estado": "GA (indicadores); tuning vía API a verificar",
+   "fuente": "learn.microsoft.com/defender-xdr/investigate-alerts#tune-an-alert"
+  },
+  "XT-05": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "Defender for Endpoint API · machines (healthStatus, onboardingStatus)",
+   "op": "Detectar dispositivos no saludables / no onboarded",
+   "permiso": "Machine.Read.All",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/defender-endpoint/api/get-machines"
+  },
+  "XT-06": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "Defender for Identity · health issues (Graph security/identities/healthIssues)",
+   "op": "Problemas de salud de sensores MDI",
+   "permiso": "SecurityIdentitiesHealth.Read.All",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/graph/api/resources/security-healthissue"
+  },
+  "XT-07": {
+   "tipo": "Advanced Hunting (KQL)",
+   "nombre": "Threat analytics vía ExposureGraph / tablas de TA",
+   "op": "Exposición a amenazas activas",
+   "permiso": "ThreatHunting.Read.All",
+   "estado": "verificar (tablas por licencia)",
+   "fuente": "learn.microsoft.com/defender-xdr/advanced-hunting-schema-tables"
+  },
+  "XT-08": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "Defender XDR · custom detection rules API / automation rules",
+   "op": "Crear/actualizar detecciones personalizadas y reglas de automatización",
+   "permiso": "Custom detections (Manage); Automation rules (Manage)",
+   "estado": "GA (detectionRules); automation rules a verificar",
+   "fuente": "learn.microsoft.com/graph/api/resources/security-detectionrule"
+  },
+  "XT-09": {
+   "tipo": "REST API / Hunting",
+   "nombre": "Exposure Management (ExposureGraphNodes/Edges; iniciativas)",
+   "op": "Postura y activos críticos",
+   "permiso": "SecurityEvents.Read.All; ThreatHunting.Read.All",
+   "estado": "GA (hunting); API de iniciativas a verificar",
+   "fuente": "learn.microsoft.com/security-exposure-management"
+  },
+  "XT-10": {
+   "tipo": "Conector / Hunting",
+   "nombre": "Informes MDE (threat protection, ASR, web protection) y monthly security summary",
+   "op": "Compilar informes",
+   "permiso": "Security data basics",
+   "estado": "verificar (exportación vía API)",
+   "fuente": "learn.microsoft.com/defender-endpoint/threat-protection-reports"
+  },
+  "XT-11": {
+   "tipo": "REST API (OpenAPI)",
+   "nombre": "Defender for Endpoint API · machine groups / automation level",
+   "op": "Leer niveles de automatización AIR por grupo",
+   "permiso": "Machine.Read.All",
+   "estado": "verificar",
+   "fuente": "learn.microsoft.com/defender-xdr/m365d-configure-auto-investigation-response"
+  },
+  "XT-12": {
+   "tipo": "Microsoft Graph",
+   "nombre": "Unified RBAC · roleManagement/defender (roleDefinitions, roleAssignments)",
+   "op": "Leer roles y asignaciones de Unified RBAC (humanos y agentes)",
+   "permiso": "RoleManagement.Read.Defender",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/graph/api/resources/unifiedrbacapplication"
+  }
+ },
+ "knowledge_nuevos": {
+  "XK-01": {
+   "nombre": "Criterios de triaje unificado por carga de trabajo (MDE/MDI/MDO/MDA) y severidad",
+   "tipo": "SharePoint / Dataverse",
+   "fuente": "Interno"
+  },
+  "XK-02": {
+   "nombre": "Playbooks de respuesta del CSIRT con ejecutores humano/AIR/agente",
+   "tipo": "SharePoint",
+   "fuente": "Interno (M5.1-PA01 instancia XDR)"
+  },
+  "XK-03": {
+   "nombre": "Baseline de automatización: niveles AIR por grupo, acciones que requieren aprobación",
+   "tipo": "SharePoint",
+   "fuente": "Interno (G2.2-PA03 instancia XDR)"
+  },
+  "XK-04": {
+   "nombre": "Registro de reglas de tuning/supresión con vencimiento y justificación",
+   "tipo": "Dataverse",
+   "fuente": "Interno"
+  },
+  "XK-05": {
+   "nombre": "Inventario de fuentes de señal (dispositivos, sensores MDI, conectores) y umbrales de salud",
+   "tipo": "Dataverse",
+   "fuente": "Interno (M2.1-PA01 instancia XDR)"
+  },
+  "XK-06": {
+   "nombre": "Casos de uso del SOC (step 5) y biblioteca de hunting cross-domain",
+   "tipo": "Git/SharePoint",
+   "fuente": "Interno"
+  },
+  "XK-07": {
+   "nombre": "Portafolio de productos-control y owners por dominio",
+   "tipo": "Dataverse",
+   "fuente": "Interno (M1.1-PA02)"
+  },
+  "XK-08": {
+   "nombre": "Baseline de Unified RBAC: roles por persona SOC y por agente",
+   "tipo": "SharePoint",
+   "fuente": "Interno (M2.2-PA01 instancia XDR)"
+  },
+  "XK-09": {
+   "nombre": "Lecciones aprendidas de incidentes y guiones de ejercicios",
+   "tipo": "SharePoint",
+   "fuente": "Interno"
+  }
+ },
+ "skills_nuevos": {
+  "XS-01": {
+   "nombre": "Triaje unificado por fuente y correlación",
+   "desc": "Priorizar High/Medium, todas las fuentes; reconocer correlación multi-señal y no cerrar por una sola alerta."
+  },
+  "XS-02": {
+   "nombre": "Respuesta proporcional cross-domain",
+   "desc": "Elegir la acción menos invasiva que contiene; límite por alcance; registrar."
+  },
+  "XS-03": {
+   "nombre": "Supervisión de remediación automatizada",
+   "desc": "Resumir qué hizo AIR y por qué, señalar acciones anómalas o masivas, preparar la decisión humana."
+  },
+  "XS-04": {
+   "nombre": "Tuning con vencimiento",
+   "desc": "Toda supresión lleva justificación, alcance mínimo y fecha; detectar reglas sin coincidencias."
+  },
+  "XS-05": {
+   "nombre": "Salud de ingesta",
+   "desc": "Interpretar health reports de EDR/AV, sensores MDI y conectores; abrir tickets con dueño."
+  },
+  "XS-06": {
+   "nombre": "Detection engineering cross-domain",
+   "desc": "Consultas multi-tabla; convertir hunts en detecciones con prueba y versión; evitar ruido."
+  },
+  "XS-07": {
+   "nombre": "Auditoría de automatización y RBAC",
+   "desc": "Comparar niveles AIR y asignaciones RBAC contra baseline; distinguir error de excepción."
+  }
+ },
+ "comunes": {
+  "tools": [
+   "T-16",
+   "T-17",
+   "T-18",
+   "T-20",
+   "T-23"
+  ],
+  "knowledge": [
+   "KN-02",
+   "KN-08"
+  ],
+  "skills": [
+   "SK-01",
+   "SK-02",
+   "SK-03",
+   "SK-05",
+   "SK-06"
+  ]
+ }
+}

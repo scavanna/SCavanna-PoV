@@ -1,0 +1,150 @@
+# -*- coding: utf-8 -*-
+"""Fuente de verdad del Sub-plan PO-GAC sobre el GM-24. Base: 331 pre-ensayos (240 K + 51 AMP + 40 HC) con tesis reales (lotes 01–08 y HC-040)."""
+import json, os
+HERE = os.path.dirname(__file__)
+VERSION = "V6.0"; FECHA = "2026-11-14"; HORAS_UNIDAD = 50
+B = json.load(open(os.path.join(HERE, "gm24_base.json"), encoding="utf-8"))
+UNITS = B["units"]; CONCEPTS = B["concepts"]; AMPS_BASE = B["amps"]
+UNIT = {u["id"]: u for u in UNITS}
+CAT = json.load(open(os.path.join(HERE, "catalogo331.json"), encoding="utf-8"))
+CATX = {c["id"]: c for c in CAT}
+HC_REL = json.load(open(os.path.join(HERE, "hc_rel.json"), encoding="utf-8"))
+from pa_v6 import PA, RETIRADOS, LENTE
+
+DOMINIOS = [("D1","Gobierno del producto-control"),("D2","Operación del control (Defender for Office 365 / XDR)"),("D3","Modelo operativo y excelencia operacional"),("D4","Ingeniería y arquitectura de agentes"),("D5","Gobierno, riesgo y cumplimiento de IA/agentes"),("D6","Gestión de la fuerza de trabajo híbrida"),("D7","Proveedores, plataformas y competencias"),("D8","Liderazgo, decisión y comunicación")]
+COMPETENCIAS = [
+ ("C1.1","D1","Definir y mantener la ficha del producto-control (objetivo, alcance, métricas, backlog)","N1 describe · N2 redacta con apoyo · N3 define y defiende · N4 diseña portafolio",["G1.1-PA01","M3.2-PA01","M1.1-PA02"]),
+ ("C1.2","D1","Usar CSF 2.0 × Zero Trust como grilla de ownership","N1 reconoce · N2 completa celdas · N3 asigna owners y arbitra · N4 gobierna portafolio",["G2.1-PA01","HC-015","AMP-07"]),
+ ("C1.3","D1","Priorizar el backlog del control por riesgo y valor","N1 lista · N2 prioriza con criterio · N3 negocia · N4 optimiza portafolio",["M1.1-PA02","HC-036","AMP-04"]),
+ ("C1.4","D1","Definir KPIs del control que no engañen","N1 recopila · N2 define · N3 valida con datos · N4 diseña sistema de medición",["HC-027","M3.2-PA01"]),
+ ("C1.5","D1","Gestionar baseline, excepciones y overrides con vencimiento","N1 registra · N2 evalúa · N3 aprueba y audita · N4 diseña política",["G2.2-PA03","AMP-09","AMP-10","HC-028"]),
+ ("C2.1","D2","Explicar la arquitectura de protección de correo y colaboración","N1 nombra capas · N2 diagnostica entrega · N3 diseña excepciones · N4 arquitectura",["M3.1-PA02"]),
+ ("C2.2","D2","Triar, investigar y responder incidentes de correo en Defender XDR","N1 asistido · N2 autónomo · N3 lidera · N4 diseña playbooks",["M4.1-PA02","M5.2-PA01","M4.2-PA01","M4.1-PA04"]),
+ ("C2.3","D2","Gestionar FP/FN, envíos y listas","N1 ejecuta · N2 analiza causa · N3 ajusta política · N4 diseña calidad",["M4.1-PA03"]),
+ ("C2.4","D2","Verificar configuración frente a baseline y detectar deriva","N1 ejecuta analizador · N2 interpreta · N3 corrige/excepciona · N4 control continuo",["G3.2-PA01","M3.2-PA01","G2.2-PA03"]),
+ ("C2.5","D2","Operar simulaciones y concientización","N1 ejecuta · N2 diseña campaña · N3 mide · N4 integra con SOC",["M4.2-PA01"]),
+ ("C2.6","D2","Gestionar permisos de humanos y agentes en el control","N1 lee roles · N2 asigna mínimo · N3 audita · N4 diseña RBAC",["M2.2-PA01","AMP-34","AMP-36"]),
+ ("C3.1","D3","Ejecutar y mantener el modelo operativo por cadencias","N1 ejecuta runbook · N2 mantiene evidencia · N3 mejora · N4 diseña modelo",["M4.1-PA01","M1.1-PA03"]),
+ ("C3.2","D3","Ejecutar playbooks híbridos","N1 sigue · N2 adapta · N3 redacta · N4 gobierna",["M5.1-PA01","M4.1-PA02"]),
+ ("C3.3","D3","Medir excelencia operacional","N1 reporta · N2 analiza · N3 decide · N4 diseña",["G6.2-K06","M1.1-PA03"]),
+ ("C3.4","D3","Curar consultas de hunting y detecciones como código","N1 ejecuta · N2 documenta · N3 versiona · N4 gobierna repositorio",["M4.1-PA04"]),
+ ("C3.5","D3","Decidir niveles de autonomía por tarea","N1 aplica escala · N2 justifica · N3 aprueba L2 · N4 define apetito",["AMP-17","AMP-18","AMP-40","HC-010","HC-019"]),
+ ("C4.1","D4","Elegir el patrón de agente y la ruta de construcción","N1 reconoce · N2 compara · N3 decide · N4 arquitectura",["AMP-35","M6.2-PA01","M6.2-PA03"]),
+ ("C4.2","D4","Diseñar la ficha del agente y sus traspasos","N1 completa · N2 diseña · N3 revisa · N4 estándar",["G2.2-PA02","AMP-28","M3.1-PA01"]),
+ ("C4.3","D4","Construir agentes en Copilot Studio/Foundry con ALM","N1 configura · N2 construye · N3 pipeline · N4 plataforma",["M6.2-PA01","M6.2-PA02"]),
+ ("C4.4","D4","Gestionar postura de recursos de IA en nube","N1 lee · N2 corrige · N3 gobierna · N4 integra",["AMP-51","M6.2-PA01"]),
+ ("C4.5","D4","Evaluar calidad y resistencia adversarial","N1 ejecuta · N2 diseña dataset · N3 criterios · N4 programa",["M3.2-PA03","AMP-37","AMP-38","M4.1-K08"]),
+ ("C4.6","D4","Modelar amenazas a agentes y aplicar guardrails","N1 reconoce · N2 modela · N3 mitiga · N4 diseña defensa",["M4.2-PA02","HC-032","AMP-41","AMP-42","AMP-36","HC-028"]),
+ ("C5.1","D5","Aplicar marcos de gobierno de IA y el catálogo AGC","N1 conoce · N2 mapea · N3 evalúa · N4 diseña",["G2.1-PA02","G2.2-PA01","M3.2-PA02","AMP-06","AMP-08","HC-005","M4.2-PA02","G6.2-PA01"]),
+ ("C5.2","D5","Gobernar identidades no humanas","N1 inventaría · N2 asigna dueño · N3 recertifica · N4 política",["AMP-33","AMP-34","HC-009","M2.2-PA01"]),
+ ("C5.3","D5","Mantener el registro de agentes","N1 registra · N2 reconcilia · N3 detecta shadow · N4 diseña",["M2.1-PA01","M6.2-K06"]),
+ ("C5.4","D5","Gobernar datos de agentes y soberanía","N1 clasifica · N2 restringe · N3 audita · N4 política",["AMP-31","AMP-32","HC-011","AMP-11","G3.1-PA01"]),
+ ("C5.5","D5","Operar el ATO y las tres líneas","N1 prepara · N2 defiende · N3 autoriza (2ª línea) · N4 diseña",["AMP-22","G4.1-PA01","G4.2-K10","HC-028","M3.2-PA02"]),
+ ("C5.6","D5","Gestionar evidencia y trazabilidad","N1 registra · N2 verifica · N3 audita · N4 esquema",["AMP-46","AMP-13","AMP-45","G3.2-K06","AMP-19","HC-005"]),
+ ("C6.1","D6","Diseñar la estructura híbrida y el RACI","N1 describe · N2 asigna · N3 diseña · N4 gobierna",["M1.1-PA01","AMP-27","AMP-28","G1.1-PA01"]),
+ ("C6.2","D6","Supervisar y revisar el desempeño de agentes","N1 muestrea · N2 revisa · N3 decide · N4 diseña",["M4.1-PA06","AMP-26","AMP-39","G4.2-PA01","G6.2-PA01"]),
+ ("C6.3","D6","Operar la observabilidad de la flota","N1 lee tablero · N2 construye · N3 alerta · N4 arquitectura",["M4.1-PA05","HC-018","G5.1-K05","M6.2-PA03"]),
+ ("C6.4","D6","Gestionar FinOps de agentes","N1 lee costos · N2 modela · N3 optimiza · N4 presupuesta",["M1.2-PA01","G1.2-PA01","M1.2-K01"]),
+ ("C6.5","D6","Gestionar incidentes de agentes y operación degradada","N1 ejecuta · N2 contiene · N3 lidera · N4 diseña",["AMP-43","AMP-44","AMP-45","AMP-47","AMP-48","M6.1-PA01","HC-023","HC-020","M6.1-K10"]),
+ ("C6.6","D6","Mejorar agentes con cambios gobernados","N1 propone · N2 ChangeSet · N3 aprueba · N4 pipeline",["M5.2-PA02","M6.2-PA02","HC-035","M5.2-K05"]),
+ ("C7.1","D7","Desarrollar competencias propias y del equipo","N1 autoevalúa · N2 plan · N3 mentorea · N4 programa",["M1.2-PA03","AMP-29","AMP-30","HC-037"]),
+ ("C7.2","D7","Gestionar proveedores y plataformas de IA","N1 lee contratos · N2 requisitos · N3 negocia · N4 estrategia",["M1.2-PA02","AMP-12","M6.2-K07","M6.2-K08","AMP-49","AMP-50","M6.2-PA01","G1.1-PA01"]),
+ ("C7.3","D7","Gestionar la relación con el MDR y la mesa de mensajería","N1 coordina · N2 define interfaces · N3 gobierna · N4 diseña",["M1.1-PA01"]),
+ ("C8.1","D8","Gestionar el riesgo de la flota","N1 registra · N2 evalúa · N3 trata · N4 apetito",["G4.1-PA02","G4.2-PA01","AMP-15","AMP-17","AMP-20","G4.2-K09","G5.1-K05"]),
+ ("C8.2","D8","Construir casos de negocio y hojas de ruta","N1 recopila · N2 modela · N3 defiende · N4 estrategia",["G1.2-PA01","AMP-04","AMP-30","M1.2-PA01"]),
+ ("C8.3","D8","Comunicar a la dirección con hechos","N1 prepara datos · N2 redacta · N3 presenta · N4 narrativa",["G6.1-PA01","AMP-23","AMP-24","HC-027","HC-020","G6.1-K05"]),
+ ("C8.4","D8","Ejercer accountability y ética sobre agentes","N1 conoce · N2 aplica · N3 decide · N4 cultura",["AMP-03","AMP-02","AMP-25","AMP-26","AMP-12"]),
+]
+TAREAS = [
+ ("MDO-D01","Triar incidentes de la cola (Medium/High de Defender for Office 365)","Diaria","Security Operations Team","DE.AE, RS.MA","SOP","eo:OP-SOP-10 Triar incidentes por prioridad dentro del SLA","L2","AG-01","KPI-01","Learn: mdo-sec-ops-guide"),
+ ("MDO-D02","Investigar y ejecutar acciones de respuesta sobre incidentes","Diaria","Security Operations Team","RS.AN, RS.MI","SOP","eo:OP-SOP-11 Investigar y remediar incidentes con evidencia","L2","AG-02","KPI-02","Learn: mdo-sec-ops-guide"),
+ ("MDO-D03","Resolver incidentes remediados","Diaria","Security Operations Team","RS.MA","SOP","eo:OP-SOP-12 Cerrar incidentes con criterio documentado","L2","AG-01","KPI-01","Learn"),
+ ("MDO-D04","Clasificar incidentes (true/false; tipo de amenaza)","Diaria","Security Operations Team","ID.IM","SOP","eo:OP-SOP-13 Clasificar incidentes para aprender patrones","L2","AG-01","KPI-03","Learn"),
+ ("MDO-D05","Enviar FP/FN a Microsoft (Submissions)","Diaria","Security Operations Team","ID.IM","SOP","eo:OP-SOP-14 Retroalimentar al fabricante con FP/FN","L2","AG-03","KPI-04","Learn"),
+ ("MDO-D06","Analizar detalles de los envíos","Diaria","Security Operations Team","ID.IM","SOP","eo:OP-SOP-15 Analizar causa raíz de errores de detección","L1","AG-03","KPI-04","Learn"),
+ ("MDO-D07","Agregar bloqueos en Tenant Allow/Block List","Diaria","Security Operations Team","PR.PS","SOP","eo:OP-SOP-16 Mantener listas de bloqueo con vencimiento","L2","AG-03","KPI-05","Learn"),
+ ("MDO-D08","Liberar falsos positivos de cuarentena","Diaria","Security Operations Team","RS.MI","SOP","eo:OP-SOP-17 Liberar cuarentena con segunda aprobación","L2","AG-03","KPI-04","Learn"),
+ ("MDO-D09","Revisar campañas con correo entregado y remover mensajes","Diaria","Security Operations Team","RS.MI, DE.AE","SOP","eo:OP-SOP-18 Remediar mensajes residentes","L2","AG-04","KPI-02","Learn"),
+ ("MDO-W01","Revisar informes de tendencias de detección","Semanal","Security Operations Team","DE.CM","POS","eo:OP-SOP-19 Revisar tendencias de detección y ajustar políticas","L3","AG-05","KPI-08","Learn"),
+ ("MDO-W02","Revisar amenazas activas en Threat analytics","Semanal","Security Operations Team","ID.RA","SOP","eo:OP-SOP-20 Revisar inteligencia de amenazas y derivar acciones","L2","AG-06","KPI-08","Learn"),
+ ("MDO-W03","Revisar usuarios más atacados y cuentas prioritarias","Semanal","Security Operations Team","ID.RA, PR.AA","POS","eo:OP-SOP-21 Proteger cuentas prioritarias","L2","AG-07","KPI-09","Learn"),
+ ("MDO-W04","Revisar Campaign Views","Semanal","Security Operations Team","DE.AE","SOP","eo:OP-SOP-18 Remediar mensajes residentes","L2","AG-04","KPI-02","Learn"),
+ ("MDO-W05","Generar informe de Secure Score","Semanal","Security Administration","ID.IM","POS","eo:OP-POS-11 Reportar la postura y su tendencia","L3","AG-08","KPI-06","Learn"),
+ ("MDO-W06","Revisar anuncios del Message Center","Semanal","Security Administration","GV.OV","SIG","eo:OP-SIG-10 Vigilar cambios de la plataforma y evaluar impacto","L3","AG-09","KPI-10","Learn"),
+ ("MDO-W07","Desplegar/probar automatización aprobada","Semanal","Security Operations Team","PR.PS","SOP","eo:OP-SOP-22 Mantener la automatización operativa","L1","—","KPI-16","Learn"),
+ ("MDO-M01","Revisar configuración con Configuration Analyzer/ORCA","Mensual","Security Administration","PR.PS","POS","eo:OP-POS-12 Detectar y corregir deriva de configuración frente al baseline","L3","AG-10","KPI-06","Learn"),
+ ("MDO-M02","Revisar overrides de detección","Mensual","Security Administration","ID.IM","POS","eo:OP-POS-13 Revisar y depurar excepciones que debilitan la detección","L2","AG-11","KPI-07","Learn"),
+ ("MDO-M03","Revisar Spoof intelligence e Impersonation insights","Mensual","Security Administration","DE.AE","POS","eo:OP-POS-14 Afinar protección contra suplantación","L2","AG-11","KPI-07","Learn"),
+ ("MDO-M04","Actualizar concientización con lecciones del SOC","Mensual","Security Operations Team","PR.AT","SIG","eo:OP-SIG-11 Convertir lecciones del SOC en concientización","L1","AG-12","KPI-09","Learn"),
+ ("MDO-Q01","Revisar políticas, excepciones y apetito de autonomía","Trimestral","PO-GAC + CISO","GV.PO","SIG","eo:OP-SIG-12 Revisar políticas y excepciones del control","L1","—","KPI-10","Propuesta"),
+ ("MDO-Q02","Revisar desempeño y costo de la flota","Trimestral","PO-GAC","GV.OV","IA","eo:OP-IA-02 Revisar desempeño, costo y riesgo de los agentes","L1","AG-13","KPI-11..15","Propuesta"),
+ ("MDO-Q03","Recertificar accesos de agentes y humanos","Trimestral","PO-GAC + IAM","PR.AA","AYI","eo:OP-AYI-01 Recertificar accesos privilegiados, no humanos y de agentes","L2","AG-13","KPI-17","Propuesta"),
+ ("MDO-Q04","Evaluaciones/regresión y red teaming de agentes","Trimestral","PO-GAC + AppSec","ID.IM","IA","eo:OP-IA-03 Evaluar y probar adversarialmente a los agentes","L2","—","KPI-13","Propuesta"),
+ ("MDO-A01","Investigar/remover correo a pedido o disparar AIR","Por evento","Security Operations Team","RS.MI","SOP","eo:OP-SOP-11 Investigar y remediar incidentes con evidencia","L2","AG-02","KPI-02","Learn"),
+ ("MDO-A02","Hunting proactivo","Por evento","Threat hunting team","DE.CM","SOP","eo:OP-SOP-02 Buscar amenazas por técnicas priorizadas y convertir hallazgos en detecciones","L1","AG-14","KPI-08","Learn"),
+ ("MDO-A03","Compartir consultas de hunting","Por evento","Threat hunting team","DE.CM","SOP","eo:OP-SOP-23 Curar y compartir consultas de hunting","L2","AG-14","KPI-08","Learn"),
+ ("MDO-A04","Crear detecciones personalizadas","Por evento","Threat hunting team","DE.AE","SOP","eo:OP-SOP-24 Convertir hunting en detecciones automatizadas","L2","AG-14","KPI-08","Learn"),
+ ("MDO-A05","Revisar cuentas prioritarias y etiquetas","Por evento","Security Administration","PR.AA","POS","eo:OP-SOP-21 Proteger cuentas prioritarias","L2","AG-07","KPI-09","Learn"),
+ ("MDO-A06","Actualizar tickets ITSM","Diaria","Security Operations Team","RS.MA","SOP","eo:OP-SOP-25 Mantener trazabilidad de escalamientos","L3","AG-15","KPI-01","Learn"),
+ ("MDO-A07","Tabletop (incl. 'agente comprometido')","Según necesidad","SOC Oversight","ID.IM","SOP","eo:OP-SOP-26 Probar los planes de respuesta","L1","—","KPI-16","Propuesta"),
+]
+AGENTES = [
+ ("AG-01","Triage Copilot de incidentes de correo","Pre-triar y clasificar incidentes de Defender for Office 365 en la cola de Defender XDR, proponiendo prioridad, clasificación y siguiente acción.","MDO-D01, MDO-D03, MDO-D04","Incidente, alertas, Threat analytics, histórico","Graph security/incidents, Advanced Hunting, Sentinel MCP","L2","Clasificación y cierre con aprobación humana; sin acciones sobre buzones","Precisión ≥90 %; pre-triaje <5 min","Tokens/SCU por incidente","ASI01, ASI06","Agent ID; Security data basics (Read)","PO-GAC","R2 (alt. R1)"),
+ ("AG-02","Asistente de investigación y remediación","Reunir evidencia, proponer acciones (soft/hard delete, bloqueo) y ejecutarlas tras aprobación.","MDO-D02, MDO-A01","Incidente; mensajes, URLs, adjuntos, usuarios","Advanced Hunting, Graph incidents, Exchange PowerShell vía runbook","L2","Acciones sobre buzones solo con aprobación; límite de N mensajes por acción","MTTR; acciones revertidas <2 %","Tokens/SCU","ASI02, ASI03","Agent ID; Response (Manage) acotado","PO-GAC","R2 (alt. R1)"),
+ ("AG-03","Analista de FP/FN y listas","Preparar envíos a Microsoft, proponer bloqueos con vencimiento, gestionar liberaciones de cuarentena, documentar causa raíz.","MDO-D05, MDO-D06, MDO-D07, MDO-D08","Mensajes reportados, cuarentena, veredictos","threatSubmission API, Exchange PowerShell (TABL, cuarentena)","L2","Bloqueos y liberaciones con aprobación; 'allow' con segunda aprobación","FP/FN recurrentes ↓; tiempo de liberación","Tokens","ASI01, ASI09","Agent ID; Submissions; TABL acotado","PO-GAC","R2"),
+ ("AG-04","Revisor de campañas","Revisar campañas con correo entregado, listar mensajes residentes y proponer remediación; informe semanal.","MDO-D09, MDO-W04","EmailEvents/EmailPostDeliveryEvents; Campaign Views (UI)","Advanced Hunting, Graph incidents, runbook","L2 / L3 (informe)","Remediación con aprobación; informe autónomo","Residentes >24 h → 0; informe a tiempo","Tokens","ASI08","Agent ID; lectura + remediación acotada","PO-GAC","R2"),
+ ("AG-05","Reportero de tendencias de detección","Compilar semanalmente Threat protection status y Mailflow status, detectar anomalías, proponer ajustes.","MDO-W01","Informes de protección; KPIs","Graph reports, Advanced Hunting, Sentinel","L3","Sin cambios de política; solo propuestas","Informe ≤lunes 10:00","Bajo","ASI09","Agent ID de lectura","PO-GAC","R2"),
+ ("AG-06","Briefer de inteligencia de amenazas","Resumir Threat analytics relevante al dominio y derivar hunts y acciones.","MDO-W02","Threat analytics, campañas","Sentinel MCP, Graph incidents, Learn MCP","L2","Acciones derivadas con aprobación","Acciones/semana; relevancia","Tokens/SCU","ASI06","Agent ID de lectura","PO-GAC","R2 (alt. R1)"),
+ ("AG-07","Steward de cuentas prioritarias","Detectar usuarios más atacados y cambios organizativos; proponer altas/bajas de cuentas prioritarias.","MDO-W03, MDO-A05","Top targeted users, directorio","Graph users, Advanced Hunting, MCP Server for Enterprise","L2","Cambios de etiquetas con aprobación","Cobertura; desfase <7 días","Bajo","ASI03","Agent ID; User.Read.All","PO-GAC","R2"),
+ ("AG-08","Reportero de postura (Secure Score)","Informar Secure Score, delta y recomendaciones del dominio; alimentar el backlog.","MDO-W05","Secure Score","Graph secureScores","L3","Solo informa/propone","Informe a tiempo; ítems al backlog","Bajo","—","Agent ID de lectura","PO-GAC","R2"),
+ ("AG-09","Vigía de cambios de plataforma","Leer Message Center/roadmap y evaluar impacto en políticas, runbooks y agentes.","MDO-W06","Message Center, documentación","serviceAnnouncement, Learn MCP","L3","Solo informa","Cambios evaluados ≤7 días","Bajo","ASI06","Agent ID de lectura","PO-GAC","R2"),
+ ("AG-10","Centinela de deriva de configuración","Comparar configuración con baseline (Configuration Analyzer/ORCA), explicar desviaciones, proponer corrección.","MDO-M01","ORCA/Configuration Analyzer, políticas","ORCA vía runbook, secureScores","L3 (detección) / L2 (corrección)","Correcciones con aprobación; excepciones registradas","Desviaciones abiertas; tiempo a corrección","Bajo","ASI02","Agent ID; lectura de configuración","PO-GAC","R2"),
+ ("AG-11","Auditor de overrides y suplantación","Revisar overrides e insights de spoof/impersonación; proponer depuración y ajustes.","MDO-M02, MDO-M03","Overrides, Spoof/Impersonation insights","Advanced Hunting, Exchange PowerShell","L2","Cambios con aprobación","Overrides sin justificación → 0","Bajo","ASI01","Agent ID; lectura + propuestas","PO-GAC","R2"),
+ ("AG-12","Redactor de concientización","Transformar lecciones del SOC en contenido de concientización y simulaciones.","MDO-M04","Lecciones, campañas, simulaciones","attackSimulation API, SharePoint","L1","Publicación solo humana","Campañas actualizadas; clic ↓","Bajo","ASI09","Agent ID de lectura","PO-GAC + Concientización","R2"),
+ ("AG-13","Analista de la flota (desempeño, costo, accesos)","Consolidar KPIs, costos y accesos de agentes para la revisión trimestral y la recertificación.","MDO-Q02, MDO-Q03","Analítica de agentes, consumo, accesos","Cost Management, accessReviews, Agent 365, Sentinel","L1-L2","Decisiones humanas; prepara expedientes","Informe trimestral; % recertificación","Bajo","ASI03","Agent ID de lectura","PO-GAC","R2"),
+ ("AG-14","Bibliotecario de hunting y detecciones","Mantener consultas y Threat trackers; proponer detecciones a partir de hunts.","MDO-A02, MDO-A03, MDO-A04","Resultados de hunting, consultas","Advanced Hunting, Sentinel MCP, Azure Monitor Logs","L2","Detecciones nuevas con aprobación","Consultas vigentes; precisión","Medio","ASI02, ASI05","Agent ID; hunting + custom detections acotado","PO-GAC + Hunting","R3 (alt. R2)"),
+ ("AG-15","Sincronizador de tickets","Mantener tickets ITSM sincronizados con incidentes de XDR.","MDO-A06","Incidentes XDR, tickets","ServiceNow/Jira, Graph incidents","L3","Sin cierre sin confirmación del humano asignado","Desincronizados → 0","Bajo","ASI07","Agent ID; permisos ITSM acotados","PO-GAC + SOC Lead","R2"),
+]
+CONTROLES = [
+ ("AGC-01","Dirección","Registro e inventario de agentes","Todo agente registrado con dueño, propósito, estado","GOVERN-1","A.6","ASI10","Agent 365 registry; PPAC","Inventario de sistemas de IA","Inventario","PO-GAC"),
+ ("AGC-02","Dirección","Dueño y sponsor","Cada agente tiene owner y sponsor con autoridad real","GOVERN-2","A.3","ASI10","Entra Agent ID sponsor","Accountability","Declaración","PO-GAC"),
+ ("AGC-03","Política","Ficha aprobada","Charter con propósito, límites, autonomía, KPIs","GOVERN-1","A.6","ASI01","Plantilla ficha; descripción Copilot Studio","Documentación de sistemas","Ficha","PO-GAC"),
+ ("AGC-04","Política","Clasificación de riesgo y autonomía","Nivel L0–L4 por tipo de acción aprobado por dueño del riesgo","MAP-2","A.5","ASI03","Escala L0–L4; Approvals","Apetito de riesgo","Clasificación","Dueño del riesgo"),
+ ("AGC-05","Identidad","Identidad propia","Agente con Entra Agent ID, no identidad del constructor","GOVERN-1","A.9","ASI03","Entra Agent ID","Workload identity","Identidad","IAM"),
+ ("AGC-06","Identidad","Mínimo privilegio y herramientas","Permisos por tool; allowlist de conectores","MANAGE-1","A.9","ASI02","Políticas de datos PPAC; API permissions","Least privilege","Allowlist","PO-GAC"),
+ ("AGC-07","Datos","Datos y fuentes aprobadas","Knowledge sources aprobadas, etiquetadas, con procedencia","MAP-4","A.7","ASI06","Purview DLP; DSPM for AI","Gobierno de datos","Inventario de fuentes","Datos"),
+ ("AGC-08","Datos","Guardrails","Contenido nunca es instrucción; filtros; content safety","MEASURE-2","A.6","ASI01","Prompt Shields; Content Safety; SK-01","Defensa en profundidad","Pruebas","PO-GAC"),
+ ("AGC-09","Operación","HITL por acción","Aprobación previa / auditoría posterior / nunca por tarea","GOVERN-2","A.9","ASI09","Approvals; matriz tarea→gate","Meaningful human control","Matriz","PO-GAC"),
+ ("AGC-10","Operación","Límites y kill switch","Límites de lote; detención probada trimestralmente","MANAGE-1","A.6","ASI08","PPAC/Agent 365 desactivación","Circuit breaker","Prueba","PO-GAC"),
+ ("AGC-11","Evidencia","Trazabilidad","Esquema de evidencia común por decisión","MEASURE-3","A.6","ASI07","Sentinel; SharePoint/Dataverse","Logging","Paquete de evidencia","PO-GAC"),
+ ("AGC-12","Evidencia","Evaluación previa","Dataset dorado + red teaming antes de producción","MEASURE-2","A.6","ASI01","Foundry evaluations; PyRIT","Testing","Informe","PO-GAC"),
+ ("AGC-13","Dirección","ATO","Autorización formal con expediente y vigencia","MANAGE-1","A.5","ASI10","Agent 365; comité","RMF Authorize","Expediente","Dueño del riesgo"),
+ ("AGC-14","Operación","Monitoreo y deriva","KRIs y revisión trimestral de desempeño","MEASURE-3","A.6","ASI08","Sentinel; Agent 365 analytics","Monitoreo","KRIs","PO-GAC"),
+ ("AGC-15","Operación","Presupuesto y consumo","Costo por tarea; alertas de consumo","MAP-3","A.6","—","Cost Management","FinOps","Modelo de costos","PO-GAC"),
+ ("AGC-16","Operación","Cambios y versionado","ChangeSets con regresión; ALM","MANAGE-4","A.6","ASI04","Power Platform ALM; Git","Gestión de cambios","Pipeline","PO-GAC"),
+ ("AGC-17","Operación","Incidentes de agentes","Playbook 'agente comprometido'; tabletop","MANAGE-4","A.6","ASI08","Playbooks; Sentinel","IR","Playbook","CSIRT"),
+ ("AGC-18","Identidad","Recertificación","Accesos de agentes recertificados trimestralmente","GOVERN-1","A.9","ASI03","Entra access reviews","Recertificación","Evidencia","IAM"),
+ ("AGC-19","Dirección","Retiro","Desactivación, revocación y archivo de evidencia","MANAGE-2","A.6","ASI10","Agent 365; Entra","Ciclo de vida","Registro","PO-GAC"),
+ ("AGC-20","Datos","Cadena de suministro de IA","AI BOM; conectores/MCP aprobados","GOVERN-6","A.10","ASI04","Inventario MCP; PPAC","C-SCRM","AI BOM","PO-GAC"),
+ ("AGC-21","Política","Transparencia","Disclosure a usuarios; derecho a revisión humana","GOVERN-4","A.8","ASI09","Texto de disclosure","IA responsable","Disclosure","PO-GAC"),
+ ("AGC-22","Evidencia","Aseguramiento independiente","Auditoría interna anual con acceso directo a evidencia","GOVERN-2","A.6","—","Plan de auditoría","Tres líneas","Informe","Auditoría"),
+ ("AGC-23","Dirección","Competencia del owner","Itinerario acreditado antes de operar L2+","GOVERN-3","A.4","—","Sub-plan PO-GAC","Competency-based","Autoevaluación","CISO"),
+ ("AGC-24","Dirección","Métricas de gobierno","Cobertura de registro, sin dueño, recertificación a tiempo","MEASURE-1","A.6","ASI10","Agent 365; Compliance Manager","Governance metrics","Tablero","PO-GAC"),
+]
+KPIS = [
+ ("KPI-01","SLA de triaje M/H","% incidentes M/H triados en SLA","≥95 %","Semanal","Control"),("KPI-02","MTTR correo","Creación→resolución","≤8 h High","Mensual","Control"),("KPI-03","Consistencia de clasificación","Acuerdo entre analistas","≥85 %","Mensual","Control"),
+ ("KPI-04","FP de cuarentena","Liberaciones / total","<1 %","Semanal","Control"),("KPI-05","Entradas TABL con vencimiento","% con fecha","100 %","Mensual","Control"),("KPI-06","Desviaciones críticas de configuración","Abiertas","0","Mensual","Control"),
+ ("KPI-07","Overrides sin justificación","Cantidad","0","Mensual","Control"),("KPI-08","Acciones derivadas de inteligencia","Por semana","≥2","Semanal","Control"),("KPI-09","Cobertura de cuentas prioritarias","% etiquetadas","100 %","Mensual","Control"),
+ ("KPI-10","Cambios de plataforma evaluados","≤7 días","100 %","Mensual","Gobierno"),("KPI-11","Precisión del agente de triaje","Propuestas aceptadas","≥90 %","Mensual","Agente"),("KPI-12","Acciones de agentes revertidas","% revertidas","<2 %","Mensual","Agente"),
+ ("KPI-13","Agentes evaluados","% con evaluación vigente","100 %","Trimestral","Gobierno"),("KPI-14","Costo por tarea","SCU/tokens por tarea","Según presupuesto","Mensual","FinOps"),("KPI-15","Desvío de consumo","vs. presupuesto","≤10 %","Trimestral","FinOps"),
+ ("KPI-16","Automatizaciones operativas","Fallidas","0","Semanal","Control"),("KPI-17","Recertificación a tiempo","% agentes y humanos","100 %","Trimestral","Gobierno"),("KPI-18","Horas liberadas medidas","Tareas del runbook por agentes","Según caso de negocio","Trimestral","Valor"),
+ ("KPI-19","Tasa de escalamiento a humano","Casos fuera de alcance","10–30 %","Mensual","Agente"),("KPI-20","Cobertura de observabilidad","Agentes con telemetría en Sentinel","100 %","Mensual","Gobierno"),
+]
+RACI = [
+ ("Registrar agente","R","A","C","I","I"),("Aprobar ficha","R","A","C","I","I"),("Clasificar autonomía","C","R","A","I","I"),("Asignar identidad y permisos","R","A","I","C","I"),("Aprobar fuentes de datos","C","A","I","R","I"),
+ ("Evaluar previo a producción","R","A","C","I","I"),("Autorizar (ATO)","C","R","A","I","I"),("Aprobar acciones L2","R","A","I","I","I"),("Monitorear KRIs","R","A","I","I","C"),("Revisar desempeño trimestral","R","A","C","I","I"),
+ ("Recertificar accesos","R","A","I","C","I"),("Gestionar cambios (ChangeSet)","R","A","C","I","I"),("Gestionar incidentes de agentes","R","A","C","I","I"),("Retirar agente","R","A","I","C","I"),("Auditar flota","I","C","I","I","A/R"),("Reportar a dirección","R","A","C","I","I"),
+]
+RACI_ROLES = ["Analista/Constructor","PO-GAC","Dueño del riesgo / COE-IA","IAM / Datos","Auditoría"]
+ETAPAS = [("E0","Fundamentos","Semanas 1–4","G1.1-PA01, G2.1-PA01, M3.1-PA02, M4.1-PA01"),("E1","Operar el control","Semanas 5–10","M4.1-PA02, M4.1-PA03, M4.1-PA04, G2.2-PA03, M3.2-PA01"),("E2","Gobernar agentes","Semanas 11–16","G2.2-PA01, G2.2-PA02, AMP-17, AMP-18, M3.2-PA02, M2.2-PA01"),("E3","Construir y evaluar","Semanas 17–24","M6.2-PA01, M3.2-PA03, AMP-37, M4.2-PA02, M6.2-PA02"),("E4","Gestionar la flota","Semanas 25–32","M1.1-PA01, M4.1-PA05, M4.1-PA06, G4.2-PA01, M1.2-PA01"),("E5","Capstone","Semanas 33–40","G6.1-PA01, M6.1-PA01, AMP-43, M5.2-PA02")]
+DECISIONES = [("D07","Horas por unidad","50 h/unidad (1.200 h) vs. 800 h del Documento Maestro","Pendiente"),("D10","Licencias y preview","Validar por tenant: E5/E7, P2, Agent 365, Sentinel MCP","Pendiente"),("D12","Códigos OWASP","Verificados contra ASI 2026 v2.01","Cerrado"),("D15","Base 331","Catálogo 06_Ensayos","Cerrado"),("D16","AMP [P]","Desarrolladas en V7","Cerrado"),("D19","Relaciones editoriales","Sin validación ontológica aún","Pendiente")]

@@ -1,0 +1,962 @@
+{
+ "ficha": {
+  "prefijo": "CL",
+  "agente": "CA",
+  "nombre": "Postura y protección de cargas de trabajo en la nube (Microsoft Defender for Cloud: CSPM, CWPP, Defender for AI Services)",
+  "dominio_zt": "Infraestructura y aplicaciones en la nube (multicloud Azure/AWS/GCP y on-prem vía Arc); interfaz con XDR, Identidades, Datos y flotas (postura de recursos de IA)",
+  "tecnologia": "Defender for Cloud: CSPM (MCSB, secure score clásico y risk-based, governance rules, attack paths, regulatory compliance, exemptions), CWPP (Servers/Containers/Storage/SQL/APIs/AI Services), workflow automation, continuous export, DWU; portal de Defender",
+  "funciones_csf": "GV.OV · ID.AM · ID.RA · PR.PS · PR.AA · DE.CM/DE.AE · RS.MI · ID.IM",
+  "fuente_oficial": "Defender for Cloud: secure score y MCSB; recommendations y governance rules; attack path analysis; regulatory compliance; workflow automation; release notes",
+  "objetivo": "Postura multicloud gobernada (recomendaciones con dueño y fecha, attack paths rotos, cumplimiento sostenido), cargas críticas y recursos de IA protegidos, alertas en SLA",
+  "slo": "Críticas/altas con dueño y fecha = 100 %; vencidas ≤5 %; attack paths críticos >30 días = 0; cumplimiento ≥90 %; planes en suscripciones críticas = 100 %; alertas High ≤30 min",
+  "diferencia": "Más dueños externos al SOC: el owner no remedia, asigna y hace seguimiento (governance rules). Costo por recurso (DWU) y dos modelos de secure score. Da postura a los recursos de IA que usan todas las flotas (AMP-51).",
+  "interfaz": "XDR: alertas en la cola unificada. Identidades: permisos excesivos en attack paths. Datos: datos sensibles en almacenamiento. Plataforma/DevOps: remedian. Cumplimiento: estándares.",
+  "personas": "Security Admin / Security Reader · dueños de suscripción · Plataforma/DevOps · Cumplimiento · FinOps",
+  "permisos": "Azure RBAC: Security Reader, Security Admin (humano), Owner/Contributor (plataforma); Logic App Contributor; Unified RBAC con cloud scopes"
+ },
+ "hitos": [],
+ "tareas": [
+  [
+   "CL-D01",
+   "Triar alertas de carga de trabajo en la cola unificada; correlar con XDR",
+   "Diaria",
+   "SOC analysts",
+   "DE.AE, RS.MA",
+   "SOP",
+   "eo:OP-SOP-10 Triar incidentes por prioridad dentro del SLA",
+   "L2",
+   "CA-01",
+   "% High ≤30 min",
+   "alerts-reference"
+  ],
+  [
+   "CL-D02",
+   "Revisar attack paths nuevos/críticos; asignar dueño",
+   "Diaria",
+   "Security Admin + Plataforma",
+   "ID.RA, PR.PS",
+   "POS",
+   "eo:OP-POS-25 Priorizar la reducción de exposición por rutas de ataque",
+   "L2",
+   "CA-02",
+   "Attack paths críticos >30 días = 0",
+   "how-to-manage-attack-path"
+  ],
+  [
+   "CL-D03",
+   "Revisar recomendaciones nuevas de alto riesgo; asignar dueño/fecha (governance rules)",
+   "Diaria",
+   "Security Admin",
+   "ID.IM, GV.OV",
+   "POS",
+   "eo:OP-POS-26 Gobernar la remediación de recomendaciones con dueño y fecha",
+   "L2",
+   "CA-03",
+   "Críticas sin dueño = 0",
+   "governance-rules"
+  ],
+  [
+   "CL-W01",
+   "Revisar secure score por suscripción/conector y tendencia",
+   "Semanal",
+   "Security Admin",
+   "ID.IM, GV.OV",
+   "POS",
+   "eo:OP-POS-11 Reportar la postura y su tendencia",
+   "L3",
+   "CA-04",
+   "Score ↑",
+   "secure-score-security-controls"
+  ],
+  [
+   "CL-W02",
+   "Revisar recomendaciones vencidas y notificar a dueños",
+   "Semanal",
+   "Security Admin",
+   "GV.OV, ID.IM",
+   "POS",
+   "eo:OP-POS-26 Gobernar la remediación de recomendaciones con dueño y fecha",
+   "L3",
+   "CA-03",
+   "Vencidas ≤5 %",
+   "review-security-recommendations"
+  ],
+  [
+   "CL-W03",
+   "Revisar cumplimiento regulatorio y exenciones",
+   "Semanal",
+   "Cumplimiento + Security Admin",
+   "GV.OV, GV.OC",
+   "POS",
+   "eo:OP-POS-27 Sostener el cumplimiento regulatorio de la nube con evidencia",
+   "L3",
+   "CA-05",
+   "Cumplimiento ≥90 %",
+   "regulatory-compliance"
+  ],
+  [
+   "CL-W04",
+   "Revisar cobertura de planes Defender y recursos sin protección (incl. AI services)",
+   "Semanal",
+   "Security Admin + FinOps",
+   "PR.PS, ID.AM",
+   "POS",
+   "eo:OP-POS-16 Mantener el inventario de fuentes de señal",
+   "L3",
+   "CA-06",
+   "Críticas sin plan = 0",
+   "manage-plans"
+  ],
+  [
+   "CL-W05",
+   "Revisar postura y alertas de recursos de IA (Defender for AI Services; AI-SPM)",
+   "Semanal",
+   "Security Admin + PO-GAC de dominios",
+   "PR.PS, DE.CM",
+   "IA",
+   "eo:OP-IA-05 Vigilar la postura y las amenazas de los recursos de IA",
+   "L3",
+   "CA-07",
+   "Recomendaciones de IA críticas abiertas",
+   "ai-threat-protection"
+  ],
+  [
+   "CL-W06",
+   "Verificar workflow automations y continuous export a Sentinel",
+   "Semanal",
+   "Security engineers",
+   "RS.MI, PR.PS",
+   "SOP",
+   "eo:OP-SOP-22 Mantener la automatización operativa",
+   "L2",
+   "CA-08",
+   "Fallidas = 0",
+   "workflow-automations"
+  ],
+  [
+   "CL-W07",
+   "Revisar release notes / Message Center; evaluar impacto",
+   "Semanal",
+   "Security Admin",
+   "GV.OV, ID.IM",
+   "SIG",
+   "eo:OP-SIG-10 Vigilar cambios de la plataforma y evaluar impacto",
+   "L3",
+   "CA-09",
+   "Cambios evaluados ≤7 días",
+   "release-notes"
+  ],
+  [
+   "CL-M01",
+   "Revisar governance rules y exenciones con vencimiento",
+   "Mensual",
+   "Security Admin + SOC Oversight",
+   "GV.PO, GV.RR",
+   "POS",
+   "eo:OP-POS-13 Revisar y depurar excepciones que debilitan la detección",
+   "L2",
+   "CA-03",
+   "Exenciones sin vencimiento = 0",
+   "governance-rules"
+  ],
+  [
+   "CL-M02",
+   "Revisar costo (DWU, planes) y optimizar",
+   "Mensual",
+   "FinOps + Security Admin",
+   "GV.OV",
+   "POS",
+   "eo:OP-POS-24 Gobernar el costo de ingesta y retención",
+   "L3",
+   "CA-06",
+   "Desvío ≤10 %",
+   "estimate-track-costs"
+  ],
+  [
+   "CL-M03",
+   "Revisar inventario cloud y conectores multicloud; recursos no evaluados",
+   "Mensual",
+   "Security Admin + Plataforma",
+   "ID.AM",
+   "POS",
+   "eo:OP-POS-16 Mantener el inventario de fuentes de señal",
+   "L2",
+   "CA-06",
+   "No evaluados ↓",
+   "asset-inventory"
+  ],
+  [
+   "CL-M04",
+   "Revisar hardening preventivo (deny/enforce, JIT) y su efecto",
+   "Mensual",
+   "Security Admin + Plataforma",
+   "PR.PS, PR.AA",
+   "POS",
+   "eo:OP-POS-12 Detectar y corregir deriva de configuración frente al baseline",
+   "L2",
+   "CA-02",
+   "No conformes creados = 0",
+   "prevent-misconfigurations"
+  ],
+  [
+   "CL-M05",
+   "Informe mensual de postura cloud",
+   "Mensual",
+   "Security Admin",
+   "GV.OV, RS.CO",
+   "SIG",
+   "eo:OP-SIG-13 Reportar resultados del SOC a la dirección",
+   "L3",
+   "CA-04",
+   "Informe a tiempo",
+   "Propuesta"
+  ],
+  [
+   "CL-Q01",
+   "Revisar estándares asignados, recomendaciones personalizadas y apetito (deny)",
+   "Trimestral",
+   "PO-GAC Nube + Cumplimiento + CISO",
+   "GV.PO, GV.RM",
+   "SIG",
+   "eo:OP-SIG-12 Revisar políticas y excepciones del control",
+   "L1",
+   "—",
+   "Decisiones registradas",
+   "create-custom-recommendations"
+  ],
+  [
+   "CL-Q02",
+   "Revisar desempeño y costo de la flota Nube",
+   "Trimestral",
+   "PO-GAC Nube",
+   "GV.OV, ID.IM",
+   "IA",
+   "eo:OP-IA-02 Revisar desempeño, costo y riesgo de los agentes",
+   "L1",
+   "CA-10",
+   "KPIs vs. meta",
+   "Propuesta"
+  ],
+  [
+   "CL-Q03",
+   "Recertificar roles (Security Admin/Reader, Owner/Contributor, cloud scopes)",
+   "Trimestral",
+   "PO-GAC + IAM",
+   "PR.AA",
+   "AYI",
+   "eo:OP-AYI-01 Recertificar accesos privilegiados, no humanos y de agentes",
+   "L2",
+   "CA-10",
+   "% recertificados",
+   "cloud-scopes"
+  ],
+  [
+   "CL-Q04",
+   "Evaluaciones/regresión de agentes; prueba de workflow automation en falla",
+   "Trimestral",
+   "PO-GAC + Security engineers",
+   "ID.IM",
+   "IA",
+   "eo:OP-IA-03 Evaluar y probar adversarialmente a los agentes",
+   "L2",
+   "—",
+   "% evaluados",
+   "Propuesta"
+  ],
+  [
+   "CL-A01",
+   "Respuesta a alerta crítica de carga de trabajo; coordinar con XDR/Endpoints",
+   "Por evento",
+   "SOC + Plataforma",
+   "RS.MI",
+   "SOP",
+   "eo:OP-SOP-11 Investigar y remediar incidentes con evidencia",
+   "L2",
+   "CA-01",
+   "Tiempo a contención",
+   "defender-for-servers"
+  ],
+  [
+   "CL-A02",
+   "Onboarding de suscripción / cuenta AWS / proyecto GCP / Arc; asignar estándar y planes",
+   "Por evento",
+   "Security Admin + Plataforma",
+   "ID.AM, PR.PS",
+   "POS",
+   "eo:OP-POS-16 Mantener el inventario de fuentes de señal",
+   "L2",
+   "CA-06",
+   "Onboarded con planes",
+   "connect-azure-environments"
+  ],
+  [
+   "CL-A03",
+   "Crear recomendación o estándar personalizado",
+   "Por evento",
+   "Security Admin",
+   "GV.PO, PR.PS",
+   "POS",
+   "eo:OP-POS-27 Sostener el cumplimiento regulatorio de la nube con evidencia",
+   "L1",
+   "CA-05",
+   "Custom vigentes",
+   "create-custom-recommendations"
+  ],
+  [
+   "CL-A04",
+   "Tabletop de ruta de ataque explotada (incl. agente de IA como objetivo)",
+   "Según necesidad",
+   "PO-GAC Nube + CSIRT",
+   "ID.IM, RS",
+   "SOP",
+   "eo:OP-SOP-26 Probar los planes de respuesta",
+   "L1",
+   "—",
+   "Ejercicios/año",
+   "AMP-43"
+  ]
+ ],
+ "agentes": [
+  {
+   "id": "CA-01",
+   "nombre": "Triage Copilot de alertas de carga de trabajo",
+   "proposito": "Pre-triar alertas por severidad, recurso, plan y criticidad; correlar con XDR.",
+   "tareas": "CL-D01, CL-A01",
+   "autonomia": "L2",
+   "gates": "Con aprobación; sin acciones",
+   "kpis": "Precisión ≥90 %",
+   "costo": "Tokens/SCU",
+   "riesgos_asi": "ASI01, ASI06",
+   "identidad": "Agent ID; Security Reader",
+   "owner": "PO-GAC Nube",
+   "ruta": "R1 (alt. R2)",
+   "tools_propios": [
+    "CT-05",
+    "T-04",
+    "T-01",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "CK-01",
+    "KN-03"
+   ],
+   "skills_propios": [
+    "SK-07",
+    "DS-C1"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "CA-02",
+   "nombre": "Analista de rutas de ataque y hardening",
+   "proposito": "Resumir attack paths, identificar la recomendación que los rompe, proponer dueño y fecha; revisar deny/JIT.",
+   "tareas": "CL-D02, CL-M04",
+   "autonomia": "L2",
+   "gates": "Asignaciones con aprobación; nunca remedia",
+   "kpis": "Attack paths críticos >30 días = 0",
+   "costo": "Tokens",
+   "riesgos_asi": "ASI02",
+   "identidad": "Agent ID; Security Reader",
+   "owner": "PO-GAC Nube + Plataforma",
+   "ruta": "R2",
+   "tools_propios": [
+    "CT-03",
+    "CT-01",
+    "CT-02"
+   ],
+   "knowledge_propios": [
+    "CK-02",
+    "CK-01"
+   ],
+   "skills_propios": [
+    "DS-C2",
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "CA-03",
+   "nombre": "Steward de governance rules y recomendaciones",
+   "proposito": "Detectar críticas sin dueño/fecha, vencidas y exenciones sin vencimiento; proponer asignaciones; notificar.",
+   "tareas": "CL-D03, CL-W02, CL-M01",
+   "autonomia": "L2",
+   "gates": "Asignación con aprobación",
+   "kpis": "Críticas sin dueño = 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI03, ASI09",
+   "identidad": "Agent ID; Security Reader; governance con aprobación",
+   "owner": "PO-GAC Nube",
+   "ruta": "R2",
+   "tools_propios": [
+    "CT-02",
+    "CT-01",
+    "CT-08",
+    "T-16"
+   ],
+   "knowledge_propios": [
+    "CK-03",
+    "KN-08"
+   ],
+   "skills_propios": [
+    "DS-C3",
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "CA-04",
+   "nombre": "Reportero de postura cloud",
+   "proposito": "Compilar secure score, tendencia, top recomendaciones, attack paths; informe mensual.",
+   "tareas": "CL-W01, CL-M05",
+   "autonomia": "L3",
+   "gates": "Solo informa",
+   "kpis": "Informe a tiempo",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI09",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC Nube",
+   "ruta": "R2",
+   "tools_propios": [
+    "CT-01",
+    "CT-03",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-10",
+    "CK-01"
+   ],
+   "skills_propios": [
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "CA-05",
+   "nombre": "Analista de cumplimiento regulatorio",
+   "proposito": "Compilar estado por estándar/control, exenciones; proponer custom recommendations; evidencia para auditoría.",
+   "tareas": "CL-W03, CL-A03",
+   "autonomia": "L2",
+   "gates": "Exenciones y estándares solo humano",
+   "kpis": "Cumplimiento ≥90 %",
+   "costo": "Tokens",
+   "riesgos_asi": "ASI09",
+   "identidad": "Agent ID; Security Reader",
+   "owner": "PO-GAC Nube + Cumplimiento",
+   "ruta": "R2",
+   "tools_propios": [
+    "CT-04",
+    "CT-08",
+    "CT-01"
+   ],
+   "knowledge_propios": [
+    "CK-04"
+   ],
+   "skills_propios": [
+    "DS-C4",
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "CA-06",
+   "nombre": "Centinela de cobertura e inventario multicloud",
+   "proposito": "Detectar suscripciones sin planes, recursos no evaluados, conectores caídos; estimar DWU; tickets.",
+   "tareas": "CL-W04, CL-M02, CL-M03, CL-A02",
+   "autonomia": "L3 / L2 (tickets)",
+   "gates": "Solo lectura + ticket",
+   "kpis": "Críticas sin plan = 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI10",
+   "identidad": "Agent ID; Security Reader; Cost Management Reader",
+   "owner": "PO-GAC Nube + FinOps",
+   "ruta": "R2",
+   "tools_propios": [
+    "CT-07",
+    "CT-01",
+    "T-13",
+    "T-15"
+   ],
+   "knowledge_propios": [
+    "CK-05",
+    "KN-11"
+   ],
+   "skills_propios": [
+    "XS-05",
+    "DS-C5"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "CA-07",
+   "nombre": "Centinela de postura de recursos de IA",
+   "proposito": "Resumir recomendaciones y alertas de AI Services / AI-SPM sobre recursos de Foundry que usan las flotas.",
+   "tareas": "CL-W05",
+   "autonomia": "L3 / L2 (propuestas)",
+   "gates": "Solo informa y propone",
+   "kpis": "Recomendaciones de IA críticas = 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI04, ASI10",
+   "identidad": "Agent ID; Security Reader",
+   "owner": "PO-GAC Nube + PO-GAC de cada dominio",
+   "ruta": "R2",
+   "tools_propios": [
+    "CT-09",
+    "CT-01",
+    "T-24"
+   ],
+   "knowledge_propios": [
+    "CK-06",
+    "KN-08"
+   ],
+   "skills_propios": [
+    "DS-C6",
+    "SK-11"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "CA-08",
+   "nombre": "Supervisor de workflow automation y export",
+   "proposito": "Verificar automatizaciones y continuous export; detectar fallos y acciones fuera del apetito.",
+   "tareas": "CL-W06",
+   "autonomia": "L2",
+   "gates": "Correcciones con aprobación; nunca remedia",
+   "kpis": "Fallidas = 0",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI08",
+   "identidad": "Agent ID; Logic App Operator (lectura)",
+   "owner": "PO-GAC Nube",
+   "ruta": "R2",
+   "tools_propios": [
+    "CT-06",
+    "ST-07",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "CK-03"
+   ],
+   "skills_propios": [
+    "XS-03",
+    "DS-S2"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "CA-09",
+   "nombre": "Vigía de cambios de plataforma (Defender for Cloud)",
+   "proposito": "Leer release notes; evaluar impacto (modelos de score, multicloud).",
+   "tareas": "CL-W07",
+   "autonomia": "L3",
+   "gates": "Solo informa",
+   "kpis": "Cambios evaluados ≤7 días",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI06",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC Nube",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-09",
+    "T-03"
+   ],
+   "knowledge_propios": [
+    "KN-02"
+   ],
+   "skills_propios": [
+    "SK-14"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  },
+  {
+   "id": "CA-10",
+   "nombre": "Analista de la flota Nube",
+   "proposito": "Consolidar KPIs, costos y accesos para revisión trimestral.",
+   "tareas": "CL-Q02, CL-Q03",
+   "autonomia": "L1-L2",
+   "gates": "Decisiones humanas",
+   "kpis": "Informe trimestral",
+   "costo": "Bajo",
+   "riesgos_asi": "ASI03",
+   "identidad": "Agent ID de lectura",
+   "owner": "PO-GAC Nube",
+   "ruta": "R2",
+   "tools_propios": [
+    "T-13",
+    "T-14",
+    "T-24",
+    "T-19"
+   ],
+   "knowledge_propios": [
+    "KN-11",
+    "KN-08"
+   ],
+   "skills_propios": [
+    "SK-16"
+   ],
+   "tools_comunes": [
+    "T-16",
+    "T-17",
+    "T-18",
+    "T-20",
+    "T-23"
+   ],
+   "knowledge_comunes": [
+    "KN-02",
+    "KN-08"
+   ],
+   "skills_comunes": [
+    "SK-01",
+    "SK-02",
+    "SK-03",
+    "SK-05",
+    "SK-06"
+   ]
+  }
+ ],
+ "tools_nuevos": {
+  "CT-01": {
+   "tipo": "REST API (Microsoft.Security)",
+   "nombre": "Defender for Cloud · assessments, secureScores, secureScoreControls",
+   "op": "Recomendaciones y secure score",
+   "permiso": "Security Reader",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/rest/api/defenderforcloud/"
+  },
+  "CT-02": {
+   "tipo": "REST API (Microsoft.Security)",
+   "nombre": "Defender for Cloud · governanceRules / governanceAssignments",
+   "op": "Asignar dueño y fecha a recomendaciones; seguir vencidas",
+   "permiso": "Security Admin con aprobación; Reader para seguimiento",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/azure/defender-for-cloud/governance-rules"
+  },
+  "CT-03": {
+   "tipo": "REST API / Resource Graph",
+   "nombre": "Defender for Cloud · attack paths y cloud security graph",
+   "op": "Rutas de ataque y recomendaciones que las rompen",
+   "permiso": "Security Reader",
+   "estado": "GA (Defender CSPM)",
+   "fuente": "learn.microsoft.com/azure/defender-for-cloud/how-to-manage-attack-path"
+  },
+  "CT-04": {
+   "tipo": "REST API (Microsoft.Security)",
+   "nombre": "Defender for Cloud · regulatoryCompliance",
+   "op": "Estado de cumplimiento por estándar y control",
+   "permiso": "Security Reader",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/azure/defender-for-cloud/concept-regulatory-compliance-standards"
+  },
+  "CT-05": {
+   "tipo": "REST API (Microsoft.Security)",
+   "nombre": "Defender for Cloud · alerts y continuous export",
+   "op": "Alertas de carga de trabajo; correlación con XDR",
+   "permiso": "Security Reader; Admin para dismiss con aprobación",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/azure/defender-for-cloud/alerts-reference"
+  },
+  "CT-06": {
+   "tipo": "Logic Apps",
+   "nombre": "Defender for Cloud · workflow automation",
+   "op": "Verificar automatizaciones y proponer nuevas",
+   "permiso": "Security Admin + Logic App Contributor (humano)",
+   "estado": "GA",
+   "fuente": "learn.microsoft.com/azure/defender-for-cloud/workflow-automations"
+  },
+  "CT-07": {
+   "tipo": "REST API (Microsoft.Security)",
+   "nombre": "Defender for Cloud · pricings y DWU cost tracking",
+   "op": "Planes habilitados y costo",
+   "permiso": "Security Reader",
+   "estado": "GA (DWU en portal Defender)",
+   "fuente": "learn.microsoft.com/azure/defender-for-cloud/defender-portal/estimate-track-costs"
+  },
+  "CT-08": {
+   "tipo": "REST API (Microsoft.Security)",
+   "nombre": "Defender for Cloud · exemptions / posture policies (preview)",
+   "op": "Exenciones y políticas de postura",
+   "permiso": "Security Reader; exenciones solo humano",
+   "estado": "GA (exenciones); preview (posture policies)",
+   "fuente": "learn.microsoft.com/azure/defender-for-cloud/exempt-resource"
+  },
+  "CT-09": {
+   "tipo": "REST API / Defender XDR",
+   "nombre": "Defender for AI Services + AI-SPM",
+   "op": "Postura y amenazas de recursos de IA",
+   "permiso": "Security Reader",
+   "estado": "GA (plan Defender for AI Services)",
+   "fuente": "learn.microsoft.com/azure/defender-for-cloud/ai-threat-protection"
+  }
+ },
+ "knowledge_nuevos": {
+  "CK-01": {
+   "nombre": "Criticidad de suscripciones/recursos, criterios de triaje y dueños de suscripción",
+   "tipo": "Dataverse",
+   "fuente": "Interno"
+  },
+  "CK-02": {
+   "nombre": "Attack paths vigentes, recomendaciones que los rompen y decisiones de deny/JIT",
+   "tipo": "Dataverse",
+   "fuente": "Interno"
+  },
+  "CK-03": {
+   "nombre": "Governance rules (alcance, dueños, SLAs, gracia) y exenciones con vencimiento",
+   "tipo": "SharePoint / Dataverse",
+   "fuente": "Interno (G2.2-PA03 instancia Nube)"
+  },
+  "CK-04": {
+   "nombre": "Estándares regulatorios asignados, controles objetivo y evidencia",
+   "tipo": "SharePoint",
+   "fuente": "Interno"
+  },
+  "CK-05": {
+   "nombre": "Inventario multicloud, planes habilitados y presupuesto DWU",
+   "tipo": "Dataverse",
+   "fuente": "Interno (M2.1-PA01 instancia Nube)"
+  },
+  "CK-06": {
+   "nombre": "Inventario de recursos de IA por flota y postura objetivo",
+   "tipo": "Dataverse",
+   "fuente": "Interno (AMP-51)"
+  }
+ },
+ "skills_nuevos": {
+  "DS-C1": {
+   "nombre": "Triaje de alertas cloud por criticidad de recurso",
+   "desc": "Ponderar plan, recurso, criticidad, exposición y correlación XDR."
+  },
+  "DS-C2": {
+   "nombre": "Lectura de rutas de ataque",
+   "desc": "Identificar entrada, movimiento y objetivo; proponer la recomendación que rompe la ruta."
+  },
+  "DS-C3": {
+   "nombre": "Gobierno de remediación delegada",
+   "desc": "Asignar dueño/fecha con governance rules, seguir vencidas, escalar; nunca remediar."
+  },
+  "DS-C4": {
+   "nombre": "Cumplimiento con evidencia",
+   "desc": "Leer estado por estándar/control, preparar evidencia, detectar exenciones débiles."
+  },
+  "DS-C5": {
+   "nombre": "Cobertura y costo multicloud",
+   "desc": "Planes por suscripción, recursos no evaluados, DWU; cobertura proporcional a criticidad."
+  },
+  "DS-C6": {
+   "nombre": "Postura de recursos de IA",
+   "desc": "Leer recomendaciones/alertas de AI Services y AI-SPM; vincular con la flota que usa el recurso."
+  }
+ },
+ "instanciacion": [
+  [
+   "M4.1-PA01",
+   "Instancia Nube del modelo operativo (23 tareas)."
+  ],
+  [
+   "AMP-51",
+   "Postura de IA en nube: instancia directa."
+  ],
+  [
+   "M6.2-K02",
+   "Seguridad nube / multicloud: instancia directa."
+  ],
+  [
+   "M6.2-K07",
+   "Responsabilidad compartida."
+  ],
+  [
+   "G2.2-PA03",
+   "Baseline = MCSB + estándares + governance rules; excepciones = exenciones con vencimiento."
+  ],
+  [
+   "G3.2-PA01",
+   "Deriva: vencidas, exenciones acumuladas, recursos sin plan."
+  ],
+  [
+   "HC-005",
+   "Cumplimiento continuo: regulatory compliance dashboard como evidencia."
+  ],
+  [
+   "G4.2-PA01",
+   "KRIs: attack paths críticos, vencidas, sin plan."
+  ],
+  [
+   "M1.1-PA02",
+   "Portafolio: el owner Nube delega remediación a dueños de suscripción."
+  ],
+  [
+   "M2.1-PA01",
+   "Inventario multicloud."
+  ],
+  [
+   "M2.2-PA01",
+   "Azure RBAC + cloud scopes."
+  ],
+  [
+   "M4.2-K11",
+   "Permisos excesivos en rutas de ataque."
+  ],
+  [
+   "M3.1-K12",
+   "Dependencias físicas: responsabilidad del proveedor."
+  ],
+  [
+   "M1.2-PA01",
+   "FinOps: DWU y planes."
+  ],
+  [
+   "HC-038",
+   "Zero Trust como aseguramiento en nube: JIT, deny, mínimo privilegio."
+  ]
+ ]
+}

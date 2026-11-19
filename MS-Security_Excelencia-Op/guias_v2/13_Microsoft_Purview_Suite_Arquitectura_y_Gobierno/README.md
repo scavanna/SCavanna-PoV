@@ -1,0 +1,12 @@
+# 13 Microsoft Purview Suite Arquitectura y Gobierno
+
+Ruta: `MS-Security_Excelencia-Op\guias_v2\13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno`
+
+[Carpeta superior](../indice-catalogo.md)
+
+## Archivos de esta carpeta
+
+- [Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.html](Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.html)
+- [Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.json](Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.json)
+- [Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.md](Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.md)
+- [Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.xlsx](Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.xlsx)

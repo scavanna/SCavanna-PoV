@@ -1,0 +1,1988 @@
+{
+ "nota": "Casos resueltos con consultas sobre el grafo candidato. Muestran qué devuelve el Atlas para una coordenada y qué no devuelve. No son recomendaciones.",
+ "casos": [
+  {
+   "caso": "N1",
+   "problema": "Delegar en un agente la contención del correo malicioso",
+   "coordenada": {
+    "territorio": "T06",
+    "dominio": "D15",
+    "subfuncion": "RS02",
+    "nombres": [
+     "T06 SECURITY OPERATIONS",
+     "D15 Incident Response & Crisis Management",
+     "RS02 Contención, erradicación y preservación de evidencia"
+    ]
+   },
+   "por_que_esa_coordenada": "El objeto de la decisión es la respuesta al incidente; el agente es el medio. Por eso la coordenada es de operaciones y respuesta, y la autonomía aparece como mecanismo (HOM12), no como territorio.",
+   "pre_ensayos": [
+    {
+     "id": "AMP-45",
+     "titulo": "Forense de agentes",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "M5.2",
+     "edicion": "revisar"
+    },
+    {
+     "id": "APC-066",
+     "titulo": "Límite entre contención automatizada y aprobación humana",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "M4.1-K05",
+     "titulo": "SOAR",
+     "confianza": "media",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": true,
+     "capa": "corpus base",
+     "unidad_gm24": "M4.1",
+     "edicion": "publica"
+    },
+    {
+     "id": "M5.2-K01",
+     "titulo": "Contención",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "M5.2",
+     "edicion": "publica"
+    },
+    {
+     "id": "M5.2-K02",
+     "titulo": "Erradicación",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "M5.2",
+     "edicion": "publica"
+    },
+    {
+     "id": "M5.2-K06",
+     "titulo": "Forense Digital",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "M5.2",
+     "edicion": "publica"
+    },
+    {
+     "id": "M5.2-PA01",
+     "titulo": "Ejecución de respuesta en correo: AIR, acciones manuales y acciones de agentes con aprobación",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "M5.2",
+     "edicion": "revisar"
+    }
+   ],
+   "horizontes": [
+    {
+     "codigo": "H01",
+     "pre_ensayos": 4
+    },
+    {
+     "codigo": "H02",
+     "pre_ensayos": 3
+    }
+   ],
+   "fuerzas_y_mecanismos": [
+    {
+     "eje": "HR",
+     "codigo": "HOM05",
+     "nombre": "HOM05 Respuesta a incidentes",
+     "pre_ensayos": 5
+    },
+    {
+     "eje": "HR",
+     "codigo": "HOM07",
+     "nombre": "HOM07 Rollback y recuperación",
+     "pre_ensayos": 3
+    },
+    {
+     "eje": "HR",
+     "codigo": "HOM12",
+     "nombre": "HOM12 Gobierno de la autonomía (niveles, aprobación humana e interruptor probado)",
+     "pre_ensayos": 3
+    },
+    {
+     "eje": "HR",
+     "codigo": "HOM04",
+     "nombre": "HOM04 Monitoreo continuo",
+     "pre_ensayos": 1
+    },
+    {
+     "eje": "HI",
+     "codigo": "INH02",
+     "nombre": "INH02 Presupuesto",
+     "pre_ensayos": 1
+    }
+   ],
+   "variables_en_juego": [
+    {
+     "variable": "HV01",
+     "nombre": "HV01 Exposición residual frente al apetito de riesgo",
+     "por": "la presionan",
+     "codigos": "INH02"
+    },
+    {
+     "variable": "HV01",
+     "nombre": "HV01 Exposición residual frente al apetito de riesgo",
+     "por": "la regulan",
+     "codigos": "HOM04"
+    },
+    {
+     "variable": "HV02",
+     "nombre": "HV02 Autoridad delegada frente a capacidad de supervisión",
+     "por": "la regulan",
+     "codigos": "HOM12 HOM04"
+    },
+    {
+     "variable": "HV03",
+     "nombre": "HV03 Ritmo de cambio frente a capacidad de absorción",
+     "por": "la presionan",
+     "codigos": "INH02"
+    },
+    {
+     "variable": "HV03",
+     "nombre": "HV03 Ritmo de cambio frente a capacidad de absorción",
+     "por": "la regulan",
+     "codigos": "HOM07"
+    },
+    {
+     "variable": "HV04",
+     "nombre": "HV04 Confianza de las partes interesadas sostenida por evidencia",
+     "por": "la regulan",
+     "codigos": "HOM05"
+    },
+    {
+     "variable": "HV06",
+     "nombre": "HV06 Continuidad de los servicios críticos",
+     "por": "la regulan",
+     "codigos": "HOM05 HOM07"
+    }
+   ],
+   "indicadores_principales_de_esas_variables": [
+    {
+     "variable": "HV01",
+     "indicador": "K24",
+     "nombre": "Pérdidas por incidentes frente a la tolerancia anual",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K25",
+     "nombre": "Riesgos residuales fuera del apetito",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K26",
+     "nombre": "Pérdida esperada de los escenarios prioritarios frente al apetito",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K87",
+     "nombre": "Umbrales de apetito superados con decisión en plazo",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K93",
+     "nombre": "Aceptaciones de riesgo vencidas sin renovar",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "K167",
+     "nombre": "Agentes con detención de emergencia probada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "K50",
+     "nombre": "Agentes con dueño humano y autoridad delegada acotada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "K88",
+     "nombre": "Tipos de acción de agentes con nivel de autonomía aprobado",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "K98",
+     "nombre": "Decisiones automatizadas de alto impacto con supervisión humana verificada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "KX13",
+     "nombre": "Decisiones reservadas ejecutadas sin aprobación",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "KX15",
+     "nombre": "Funciones externalizadas con capacidad interna de supervisión",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV03",
+     "indicador": "K116",
+     "nombre": "Iniciativas con revisión de arquitectura antes de producción",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV03",
+     "indicador": "K20",
+     "nombre": "Tiempo de habilitación segura de iniciativas",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV03",
+     "indicador": "K90",
+     "nombre": "Evaluaciones de riesgo actualizadas ante cambios materiales",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K57",
+     "nombre": "Obligaciones aplicables mapeadas a controles con evidencia vigente",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K58",
+     "nombre": "Calidad del reporte de ciberriesgo al Directorio",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K60",
+     "nombre": "Controles clave con efectividad probada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K96",
+     "nombre": "Utilidad del reporte de ciberriesgo para sus destinatarios",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "KSG05",
+     "nombre": "Nivel de evidencia de las prácticas de gobierno y gestión",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV06",
+     "indicador": "K28",
+     "nombre": "Respaldos inmutables de sistemas críticos con restauración probada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV06",
+     "indicador": "K29",
+     "nombre": "Operación degradada probada en procesos críticos",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV06",
+     "indicador": "K30",
+     "nombre": "Pruebas de recuperación que cumplen RTO y RPO",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV06",
+     "indicador": "K47",
+     "nombre": "Tiempo de restauración de servicios críticos frente al RTO",
+     "lecturas": "dos lecturas"
+    }
+   ],
+   "indicadores_en_la_misma_subfuncion_y_dominio": [
+    {
+     "indicador": "K178",
+     "nombre": "Incidentes significativos con causa raíz determinada"
+    },
+    {
+     "indicador": "K179",
+     "nombre": "Automatizaciones de respuesta fallidas"
+    },
+    {
+     "indicador": "K190",
+     "nombre": "Evidencia de incidentes preservada con cadena de custodia"
+    },
+    {
+     "indicador": "K45",
+     "nombre": "Tiempo medio de contención (MTTC)"
+    }
+   ],
+   "indicadores_en_la_subfuncion": 6,
+   "preguntas_que_cubren": 4,
+   "ejemplos_de_preguntas": [
+    "Si seguridad aísla un sistema durante un incidente, ¿qué pasa con mi operación?",
+    "Durante una investigación, ¿cómo preservamos la evidencia y el privilegio legal?"
+   ],
+   "productos_control_que_instancian_sus_conceptos": [
+    "ENDPOINTS",
+    "PRODUCTIVIDAD",
+    "SIEM",
+    "XDR"
+   ],
+   "biblioteca": [],
+   "nota_biblioteca": "Desde la versión 1.4 el grafo carga 112 vínculos candidatos entre pre-ensayos y elementos de la biblioteca metacognitiva (una lectura, la de la revisión crítica de la versión 1.2). Para la mayoría de las coordenadas no hay ninguno."
+  },
+  {
+   "caso": "N2",
+   "problema": "Aceptar el riesgo de dar más autonomía a un agente",
+   "coordenada": {
+    "territorio": "T07",
+    "dominio": "D02",
+    "subfuncion": "GV04",
+    "nombres": [
+     "T07 AI & AUTONOMOUS SYSTEMS",
+     "D02 Cyber Risk Management",
+     "GV04 Apetito, tolerancia y aceptación de riesgo"
+    ]
+   },
+   "por_que_esa_coordenada": "La regla 7 lleva el riesgo de la IA a D02 con la perspectiva de la autoridad no humana (T07).",
+   "pre_ensayos": [
+    {
+     "id": "AMP-17",
+     "titulo": "Autoridad delegada",
+     "confianza": "media",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "G4.2",
+     "edicion": "publica"
+    },
+    {
+     "id": "AMP-21",
+     "titulo": "Decisiones reversibles",
+     "confianza": "media",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": true,
+     "capa": "corpus base",
+     "unidad_gm24": "G5.2",
+     "edicion": "publica"
+    },
+    {
+     "id": "AMP-22",
+     "titulo": "Aceptación de riesgo de agentes",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "G5.2",
+     "edicion": "revisar"
+    },
+    {
+     "id": "APC-100",
+     "titulo": "Apetito de riesgo de IA anclado en resultados de negocio",
+     "confianza": "media",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": true,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APC-233",
+     "titulo": "Responsabilidad retenida por fallas de IA en el riesgo empresarial",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": true,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "G4.2-PA01",
+     "titulo": "KRIs de la flota de agentes y umbrales de intervención",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "G4.2",
+     "edicion": "revisar"
+    }
+   ],
+   "horizontes": [
+    {
+     "codigo": "H03",
+     "pre_ensayos": 3
+    },
+    {
+     "codigo": "H02",
+     "pre_ensayos": 3
+    }
+   ],
+   "fuerzas_y_mecanismos": [
+    {
+     "eje": "HR",
+     "codigo": "HOM01",
+     "nombre": "HOM01 Apetito y tolerancia al riesgo",
+     "pre_ensayos": 5
+    },
+    {
+     "eje": "HR",
+     "codigo": "HOM12",
+     "nombre": "HOM12 Gobierno de la autonomía (niveles, aprobación humana e interruptor probado)",
+     "pre_ensayos": 5
+    },
+    {
+     "eje": "HC",
+     "codigo": "CAT05",
+     "nombre": "CAT05 Transformación empresarial",
+     "pre_ensayos": 1
+    },
+    {
+     "eje": "HR",
+     "codigo": "HOM07",
+     "nombre": "HOM07 Rollback y recuperación",
+     "pre_ensayos": 1
+    },
+    {
+     "eje": "HI",
+     "codigo": "INH07",
+     "nombre": "INH07 Calidad insuficiente de datos",
+     "pre_ensayos": 1
+    },
+    {
+     "eje": "HI",
+     "codigo": "INH09",
+     "nombre": "INH09 Limitaciones operativas",
+     "pre_ensayos": 1
+    }
+   ],
+   "variables_en_juego": [
+    {
+     "variable": "HV01",
+     "nombre": "HV01 Exposición residual frente al apetito de riesgo",
+     "por": "la regulan",
+     "codigos": "HOM01"
+    },
+    {
+     "variable": "HV02",
+     "nombre": "HV02 Autoridad delegada frente a capacidad de supervisión",
+     "por": "la regulan",
+     "codigos": "HOM12"
+    },
+    {
+     "variable": "HV03",
+     "nombre": "HV03 Ritmo de cambio frente a capacidad de absorción",
+     "por": "la presionan",
+     "codigos": "CAT05 INH09"
+    },
+    {
+     "variable": "HV03",
+     "nombre": "HV03 Ritmo de cambio frente a capacidad de absorción",
+     "por": "la regulan",
+     "codigos": "HOM07"
+    },
+    {
+     "variable": "HV04",
+     "nombre": "HV04 Confianza de las partes interesadas sostenida por evidencia",
+     "por": "la presionan",
+     "codigos": "INH07"
+    },
+    {
+     "variable": "HV06",
+     "nombre": "HV06 Continuidad de los servicios críticos",
+     "por": "la regulan",
+     "codigos": "HOM07"
+    }
+   ],
+   "indicadores_principales_de_esas_variables": [
+    {
+     "variable": "HV01",
+     "indicador": "K24",
+     "nombre": "Pérdidas por incidentes frente a la tolerancia anual",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K25",
+     "nombre": "Riesgos residuales fuera del apetito",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K26",
+     "nombre": "Pérdida esperada de los escenarios prioritarios frente al apetito",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K87",
+     "nombre": "Umbrales de apetito superados con decisión en plazo",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K93",
+     "nombre": "Aceptaciones de riesgo vencidas sin renovar",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "K167",
+     "nombre": "Agentes con detención de emergencia probada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "K50",
+     "nombre": "Agentes con dueño humano y autoridad delegada acotada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "K88",
+     "nombre": "Tipos de acción de agentes con nivel de autonomía aprobado",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "K98",
+     "nombre": "Decisiones automatizadas de alto impacto con supervisión humana verificada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "KX13",
+     "nombre": "Decisiones reservadas ejecutadas sin aprobación",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "KX15",
+     "nombre": "Funciones externalizadas con capacidad interna de supervisión",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV03",
+     "indicador": "K116",
+     "nombre": "Iniciativas con revisión de arquitectura antes de producción",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV03",
+     "indicador": "K20",
+     "nombre": "Tiempo de habilitación segura de iniciativas",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV03",
+     "indicador": "K90",
+     "nombre": "Evaluaciones de riesgo actualizadas ante cambios materiales",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K57",
+     "nombre": "Obligaciones aplicables mapeadas a controles con evidencia vigente",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K58",
+     "nombre": "Calidad del reporte de ciberriesgo al Directorio",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K60",
+     "nombre": "Controles clave con efectividad probada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K96",
+     "nombre": "Utilidad del reporte de ciberriesgo para sus destinatarios",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "KSG05",
+     "nombre": "Nivel de evidencia de las prácticas de gobierno y gestión",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV06",
+     "indicador": "K28",
+     "nombre": "Respaldos inmutables de sistemas críticos con restauración probada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV06",
+     "indicador": "K29",
+     "nombre": "Operación degradada probada en procesos críticos",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV06",
+     "indicador": "K30",
+     "nombre": "Pruebas de recuperación que cumplen RTO y RPO",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV06",
+     "indicador": "K47",
+     "nombre": "Tiempo de restauración de servicios críticos frente al RTO",
+     "lecturas": "dos lecturas"
+    }
+   ],
+   "indicadores_en_la_misma_subfuncion_y_dominio": [
+    {
+     "indicador": "K04",
+     "nombre": "Aceptaciones de riesgo con alternativas, pre-mortem y vencimiento"
+    },
+    {
+     "indicador": "K24",
+     "nombre": "Pérdidas por incidentes frente a la tolerancia anual"
+    },
+    {
+     "indicador": "K25",
+     "nombre": "Riesgos residuales fuera del apetito"
+    },
+    {
+     "indicador": "K83",
+     "nombre": "Riesgos del registro con dueño, tratamiento y revisión vigentes"
+    },
+    {
+     "indicador": "K84",
+     "nombre": "Riesgos de ciberseguridad integrados al registro de la empresa"
+    },
+    {
+     "indicador": "K86",
+     "nombre": "Declaraciones de apetito con umbrales medibles"
+    },
+    {
+     "indicador": "K87",
+     "nombre": "Umbrales de apetito superados con decisión en plazo"
+    },
+    {
+     "indicador": "K92",
+     "nombre": "Planes de tratamiento en plazo"
+    },
+    {
+     "indicador": "K93",
+     "nombre": "Aceptaciones de riesgo vencidas sin renovar"
+    }
+   ],
+   "indicadores_en_la_subfuncion": 14,
+   "preguntas_que_cubren": 9,
+   "ejemplos_de_preguntas": [
+    "Cuando un agente delega en otro, ¿cómo se limita y se registra la autoridad?",
+    "¿Qué resultados de negocio esperamos de la IA y de los agentes, y qué riesgos estamos dispuestos a asumir para lograrlos?"
+   ],
+   "productos_control_que_instancian_sus_conceptos": [
+    "NUBE",
+    "XDR"
+   ],
+   "biblioteca": [
+    {
+     "pre_ensayo": "AMP-17",
+     "elemento": "SOFT-0016",
+     "nombre": "delegación",
+     "tipo": "HumanCapability",
+     "vinculo": "relacionado"
+    },
+    {
+     "pre_ensayo": "AMP-21",
+     "elemento": "MM-0019",
+     "nombre": "Decisiones reversibles e irreversibles",
+     "tipo": "MentalModel",
+     "vinculo": "mismo concepto"
+    }
+   ],
+   "nota_biblioteca": "Desde la versión 1.4 el grafo carga 112 vínculos candidatos entre pre-ensayos y elementos de la biblioteca metacognitiva (una lectura, la de la revisión crítica de la versión 1.2). Para la mayoría de las coordenadas no hay ninguno."
+  },
+  {
+   "caso": "N3",
+   "problema": "Un proveedor crítico sufre un incidente",
+   "coordenada": {
+    "territorio": "T04",
+    "dominio": "D17",
+    "subfuncion": "RS04",
+    "nombres": [
+     "T04 RISK & RESILIENCE",
+     "D17 Third-Party & Supply Chain Security",
+     "RS04 Gestión de incidentes con terceros"
+    ]
+   },
+   "por_que_esa_coordenada": "El objeto es el tercero y lo que se busca es gestionar el incidente con él.",
+   "pre_ensayos": [
+    {
+     "id": "APC-063",
+     "titulo": "Respuesta ante incidentes e interrupciones de proveedores críticos",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APS-23",
+     "titulo": "Respuesta ante un proveedor clave atacado a velocidad de máquina",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    }
+   ],
+   "horizontes": [
+    {
+     "codigo": "H02",
+     "pre_ensayos": 1
+    },
+    {
+     "codigo": "H01",
+     "pre_ensayos": 1
+    }
+   ],
+   "fuerzas_y_mecanismos": [
+    {
+     "eje": "HR",
+     "codigo": "HOM05",
+     "nombre": "HOM05 Respuesta a incidentes",
+     "pre_ensayos": 2
+    },
+    {
+     "eje": "HR",
+     "codigo": "HOM06",
+     "nombre": "HOM06 Continuidad",
+     "pre_ensayos": 2
+    },
+    {
+     "eje": "HI",
+     "codigo": "INH06",
+     "nombre": "INH06 Concentración y lock-in",
+     "pre_ensayos": 2
+    },
+    {
+     "eje": "HC",
+     "codigo": "CAT04",
+     "nombre": "CAT04 Evolución de amenazas",
+     "pre_ensayos": 1
+    }
+   ],
+   "variables_en_juego": [
+    {
+     "variable": "HV01",
+     "nombre": "HV01 Exposición residual frente al apetito de riesgo",
+     "por": "la presionan",
+     "codigos": "CAT04"
+    },
+    {
+     "variable": "HV04",
+     "nombre": "HV04 Confianza de las partes interesadas sostenida por evidencia",
+     "por": "la regulan",
+     "codigos": "HOM05"
+    },
+    {
+     "variable": "HV05",
+     "nombre": "HV05 Carga cognitiva frente a capacidad de decisión",
+     "por": "la presionan",
+     "codigos": "CAT04"
+    },
+    {
+     "variable": "HV06",
+     "nombre": "HV06 Continuidad de los servicios críticos",
+     "por": "la presionan",
+     "codigos": "INH06"
+    },
+    {
+     "variable": "HV06",
+     "nombre": "HV06 Continuidad de los servicios críticos",
+     "por": "la regulan",
+     "codigos": "HOM06 HOM05"
+    }
+   ],
+   "indicadores_principales_de_esas_variables": [
+    {
+     "variable": "HV01",
+     "indicador": "K24",
+     "nombre": "Pérdidas por incidentes frente a la tolerancia anual",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K25",
+     "nombre": "Riesgos residuales fuera del apetito",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K26",
+     "nombre": "Pérdida esperada de los escenarios prioritarios frente al apetito",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K87",
+     "nombre": "Umbrales de apetito superados con decisión en plazo",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K93",
+     "nombre": "Aceptaciones de riesgo vencidas sin renovar",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K57",
+     "nombre": "Obligaciones aplicables mapeadas a controles con evidencia vigente",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K58",
+     "nombre": "Calidad del reporte de ciberriesgo al Directorio",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K60",
+     "nombre": "Controles clave con efectividad probada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K96",
+     "nombre": "Utilidad del reporte de ciberriesgo para sus destinatarios",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "KSG05",
+     "nombre": "Nivel de evidencia de las prácticas de gobierno y gestión",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV05",
+     "indicador": "K101",
+     "nombre": "Trabajo no planificado del equipo",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV05",
+     "indicador": "K125",
+     "nombre": "Carga por analista",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV05",
+     "indicador": "K95",
+     "nombre": "Decisiones solicitadas a la dirección resueltas en plazo",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV06",
+     "indicador": "K28",
+     "nombre": "Respaldos inmutables de sistemas críticos con restauración probada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV06",
+     "indicador": "K29",
+     "nombre": "Operación degradada probada en procesos críticos",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV06",
+     "indicador": "K30",
+     "nombre": "Pruebas de recuperación que cumplen RTO y RPO",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV06",
+     "indicador": "K47",
+     "nombre": "Tiempo de restauración de servicios críticos frente al RTO",
+     "lecturas": "dos lecturas"
+    }
+   ],
+   "indicadores_en_la_misma_subfuncion_y_dominio": [
+    {
+     "indicador": "K62",
+     "nombre": "Incidentes de terceros notificados en el plazo contractual"
+    },
+    {
+     "indicador": "KX07",
+     "nombre": "Incidentes del proveedor notificados en el plazo contractual"
+    }
+   ],
+   "indicadores_en_la_subfuncion": 3,
+   "preguntas_que_cubren": 2,
+   "ejemplos_de_preguntas": [
+    "¿Qué haríamos si un proveedor crítico de nube, software o servicios gestionados sufriera un incidente o una interrupción prolongada?",
+    "Si un proveedor clave sufre un ataque automatizado con IA, ¿en cuánto tiempo nos enteramos, qué podemos desconectar y qué parte de la operación se detiene?"
+   ],
+   "productos_control_que_instancian_sus_conceptos": [],
+   "biblioteca": [],
+   "nota_biblioteca": "Desde la versión 1.4 el grafo carga 112 vínculos candidatos entre pre-ensayos y elementos de la biblioteca metacognitiva (una lectura, la de la revisión crítica de la versión 1.2). Para la mayoría de las coordenadas no hay ninguno."
+  },
+  {
+   "caso": "N4",
+   "problema": "Preparar la transición a la criptografía poscuántica",
+   "coordenada": {
+    "territorio": "T05",
+    "dominio": "D26",
+    "subfuncion": "PR02",
+    "nombres": [
+     "T05 SECURITY ARCHITECTURE",
+     "D26 Cryptography, Key Management & Post-Quantum Readiness",
+     "PR02 Protección de datos y privacidad por diseño"
+    ]
+   },
+   "por_que_esa_coordenada": "El objeto es la disciplina criptográfica, mirada desde el diseño.",
+   "pre_ensayos": [
+    {
+     "id": "APA-116",
+     "titulo": "Protección de datos de larga vida frente al descifrado cuántico",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APC-042",
+     "titulo": "Custodia y rotación de claves, secretos y certificados",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APC-043",
+     "titulo": "Inventario criptográfico y hoja de ruta poscuántica",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APC-215",
+     "titulo": "Migración poscuántica priorizada desde el inventario criptográfico",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APN-22",
+     "titulo": "Detección y revocación de secretos expuestos en prompts y código",
+     "confianza": "media",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    }
+   ],
+   "horizontes": [
+    {
+     "codigo": "H03",
+     "pre_ensayos": 3
+    },
+    {
+     "codigo": "H02",
+     "pre_ensayos": 1
+    },
+    {
+     "codigo": "H01",
+     "pre_ensayos": 1
+    }
+   ],
+   "fuerzas_y_mecanismos": [
+    {
+     "eje": "HC",
+     "codigo": "CAT01",
+     "nombre": "CAT01 Innovación tecnológica",
+     "pre_ensayos": 2
+    },
+    {
+     "eje": "HC",
+     "codigo": "CAT04",
+     "nombre": "CAT04 Evolución de amenazas",
+     "pre_ensayos": 2
+    },
+    {
+     "eje": "HI",
+     "codigo": "INH10",
+     "nombre": "INH10 Incertidumbre tecnológica",
+     "pre_ensayos": 2
+    },
+    {
+     "eje": "HR",
+     "codigo": "HOM03",
+     "nombre": "HOM03 Segregación de funciones",
+     "pre_ensayos": 1
+    },
+    {
+     "eje": "HR",
+     "codigo": "HOM04",
+     "nombre": "HOM04 Monitoreo continuo",
+     "pre_ensayos": 1
+    },
+    {
+     "eje": "HR",
+     "codigo": "HOM05",
+     "nombre": "HOM05 Respuesta a incidentes",
+     "pre_ensayos": 1
+    },
+    {
+     "eje": "HI",
+     "codigo": "INH09",
+     "nombre": "INH09 Limitaciones operativas",
+     "pre_ensayos": 1
+    }
+   ],
+   "variables_en_juego": [
+    {
+     "variable": "HV01",
+     "nombre": "HV01 Exposición residual frente al apetito de riesgo",
+     "por": "la presionan",
+     "codigos": "CAT04 CAT01"
+    },
+    {
+     "variable": "HV01",
+     "nombre": "HV01 Exposición residual frente al apetito de riesgo",
+     "por": "la regulan",
+     "codigos": "HOM04"
+    },
+    {
+     "variable": "HV02",
+     "nombre": "HV02 Autoridad delegada frente a capacidad de supervisión",
+     "por": "la presionan",
+     "codigos": "CAT01"
+    },
+    {
+     "variable": "HV02",
+     "nombre": "HV02 Autoridad delegada frente a capacidad de supervisión",
+     "por": "la regulan",
+     "codigos": "HOM03 HOM04"
+    },
+    {
+     "variable": "HV03",
+     "nombre": "HV03 Ritmo de cambio frente a capacidad de absorción",
+     "por": "la presionan",
+     "codigos": "INH09 INH10"
+    },
+    {
+     "variable": "HV04",
+     "nombre": "HV04 Confianza de las partes interesadas sostenida por evidencia",
+     "por": "la regulan",
+     "codigos": "HOM05"
+    },
+    {
+     "variable": "HV05",
+     "nombre": "HV05 Carga cognitiva frente a capacidad de decisión",
+     "por": "la presionan",
+     "codigos": "CAT04"
+    },
+    {
+     "variable": "HV06",
+     "nombre": "HV06 Continuidad de los servicios críticos",
+     "por": "la regulan",
+     "codigos": "HOM05"
+    }
+   ],
+   "indicadores_principales_de_esas_variables": [
+    {
+     "variable": "HV01",
+     "indicador": "K24",
+     "nombre": "Pérdidas por incidentes frente a la tolerancia anual",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K25",
+     "nombre": "Riesgos residuales fuera del apetito",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K26",
+     "nombre": "Pérdida esperada de los escenarios prioritarios frente al apetito",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K87",
+     "nombre": "Umbrales de apetito superados con decisión en plazo",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K93",
+     "nombre": "Aceptaciones de riesgo vencidas sin renovar",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "K167",
+     "nombre": "Agentes con detención de emergencia probada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "K50",
+     "nombre": "Agentes con dueño humano y autoridad delegada acotada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "K88",
+     "nombre": "Tipos de acción de agentes con nivel de autonomía aprobado",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "K98",
+     "nombre": "Decisiones automatizadas de alto impacto con supervisión humana verificada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "KX13",
+     "nombre": "Decisiones reservadas ejecutadas sin aprobación",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "KX15",
+     "nombre": "Funciones externalizadas con capacidad interna de supervisión",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV03",
+     "indicador": "K116",
+     "nombre": "Iniciativas con revisión de arquitectura antes de producción",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV03",
+     "indicador": "K20",
+     "nombre": "Tiempo de habilitación segura de iniciativas",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV03",
+     "indicador": "K90",
+     "nombre": "Evaluaciones de riesgo actualizadas ante cambios materiales",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K57",
+     "nombre": "Obligaciones aplicables mapeadas a controles con evidencia vigente",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K58",
+     "nombre": "Calidad del reporte de ciberriesgo al Directorio",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K60",
+     "nombre": "Controles clave con efectividad probada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K96",
+     "nombre": "Utilidad del reporte de ciberriesgo para sus destinatarios",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "KSG05",
+     "nombre": "Nivel de evidencia de las prácticas de gobierno y gestión",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV05",
+     "indicador": "K101",
+     "nombre": "Trabajo no planificado del equipo",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV05",
+     "indicador": "K125",
+     "nombre": "Carga por analista",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV05",
+     "indicador": "K95",
+     "nombre": "Decisiones solicitadas a la dirección resueltas en plazo",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV06",
+     "indicador": "K28",
+     "nombre": "Respaldos inmutables de sistemas críticos con restauración probada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV06",
+     "indicador": "K29",
+     "nombre": "Operación degradada probada en procesos críticos",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV06",
+     "indicador": "K30",
+     "nombre": "Pruebas de recuperación que cumplen RTO y RPO",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV06",
+     "indicador": "K47",
+     "nombre": "Tiempo de restauración de servicios críticos frente al RTO",
+     "lecturas": "dos lecturas"
+    }
+   ],
+   "indicadores_en_la_misma_subfuncion_y_dominio": [
+    {
+     "indicador": "K156",
+     "nombre": "Claves y secretos en bóveda con rotación"
+    }
+   ],
+   "indicadores_en_la_subfuncion": 10,
+   "preguntas_que_cubren": 5,
+   "ejemplos_de_preguntas": [
+    "¿Qué datos nuestros podrían descifrarse en el futuro y qué estamos haciendo hoy al respecto?",
+    "¿Cómo gestionamos claves, secretos y certificados (custodia, rotación, separación de funciones, módulos de seguridad de hardware)?"
+   ],
+   "productos_control_que_instancian_sus_conceptos": [],
+   "biblioteca": [],
+   "nota_biblioteca": "Desde la versión 1.4 el grafo carga 112 vínculos candidatos entre pre-ensayos y elementos de la biblioteca metacognitiva (una lectura, la de la revisión crítica de la versión 1.2). Para la mayoría de las coordenadas no hay ninguno."
+  },
+  {
+   "caso": "N5",
+   "problema": "Demostrar al directorio que los controles funcionan",
+   "coordenada": {
+    "territorio": "T08",
+    "dominio": "D28",
+    "subfuncion": "GV08",
+    "nombres": [
+     "T08 TRUST & ASSURANCE",
+     "D28 Security Assurance, Testing & Measurement",
+     "GV08 Assurance y revisión independiente"
+    ]
+   },
+   "por_que_esa_coordenada": "El objeto es el método para demostrar la eficacia, mirado desde la confianza y la evidencia.",
+   "pre_ensayos": [
+    {
+     "id": "AMP-13",
+     "titulo": "Evidencia continua",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "G3.2",
+     "edicion": "revisar"
+    },
+    {
+     "id": "AMP-14",
+     "titulo": "Aseguramiento de decisiones de IA",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "G3.2",
+     "edicion": "publica"
+    },
+    {
+     "id": "APA-014",
+     "titulo": "Mapa de aseguramiento de controles sobre IA y agentes",
+     "confianza": "media",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APA-039",
+     "titulo": "Biblioteca de evidencia para cuestionarios de seguridad de clientes",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APA-082",
+     "titulo": "Portafolio de atestaciones independientes para clientes",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APA-136",
+     "titulo": "Clasificación de controles de IA según evidencia auditable",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APA-188",
+     "titulo": "Ciclo de evaluación independiente del uso de IA",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APA-191",
+     "titulo": "Aseguramiento independiente de IA para clientes corporativos",
+     "confianza": "media",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": true,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APC-167",
+     "titulo": "Evidencia continua y revisión independiente de controles de IA",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APC-169",
+     "titulo": "Registro de controles de IA con eficacia no demostrada",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APC-188",
+     "titulo": "Demostración de confiabilidad de la IA ante terceros",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APC-235",
+     "titulo": "Alcance y biblioteca de controles para auditar la IA",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APC-287",
+     "titulo": "Evaluación independiente anual de los controles del cliente de IA",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APN-14",
+     "titulo": "Trazabilidad de la revisión humana antes de decidir con IA",
+     "confianza": "media",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APS-11",
+     "titulo": "Fidelidad de la evidencia de cumplimiento preparada con IA",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APS-13",
+     "titulo": "Aseguramiento asistido por IA con independencia y trazabilidad",
+     "confianza": "media",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APS-14",
+     "titulo": "Líneas de aseguramiento ante autoevaluaciones con IA",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APS-15",
+     "titulo": "Confianza del comité en pruebas continuas de controles con IA",
+     "confianza": "media",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APS-16",
+     "titulo": "Integridad de la información preparada con IA para auditores",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "APS-20",
+     "titulo": "Aseguramiento de detecciones y políticas creadas con IA",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "",
+     "edicion": "publica"
+    },
+    {
+     "id": "G2.2-K10",
+     "titulo": "Rol de Auditoría",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "G2.2",
+     "edicion": "publica"
+    },
+    {
+     "id": "G3.2-K02",
+     "titulo": "Aseguramiento Continuo",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "G3.2",
+     "edicion": "publica"
+    },
+    {
+     "id": "G3.2-K03",
+     "titulo": "Supervisión de Auditorías",
+     "confianza": "media",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "G3.2",
+     "edicion": "publica"
+    },
+    {
+     "id": "G3.2-K06",
+     "titulo": "Gestión de Evidencia",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "G3.2",
+     "edicion": "publica"
+    },
+    {
+     "id": "G3.2-PA01",
+     "titulo": "Aseguramiento continuo de la configuración del control (deriva)",
+     "confianza": "media",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "G3.2",
+     "edicion": "revisar"
+    },
+    {
+     "id": "G5.1-K10",
+     "titulo": "Auditoría Interna",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "G5.1",
+     "edicion": "publica"
+    },
+    {
+     "id": "G5.2-K10",
+     "titulo": "Auditoría Tratamiento",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "G5.2",
+     "edicion": "publica"
+    },
+    {
+     "id": "G6.2-K08",
+     "titulo": "Aseguramiento",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "G6.2",
+     "edicion": "publica"
+    },
+    {
+     "id": "HC-038",
+     "titulo": "Aseguramiento de la arquitectura Zero Trust",
+     "confianza": "media",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "G2.2 · M2.2 · M3.1 · M3.2",
+     "edicion": "publica"
+    },
+    {
+     "id": "M2.1-K09",
+     "titulo": "Auditoría Activos",
+     "confianza": "media",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "M2.1",
+     "edicion": "publica"
+    },
+    {
+     "id": "M2.2-K08",
+     "titulo": "Auditoría IAM",
+     "confianza": "alta",
+     "confianza_de": "el clasificador",
+     "coordenada_cambiada_en_la_1_4": false,
+     "capa": "corpus base",
+     "unidad_gm24": "M2.2",
+     "edicion": "publica"
+    }
+   ],
+   "horizontes": [
+    {
+     "codigo": "H02",
+     "pre_ensayos": 16
+    },
+    {
+     "codigo": "H01",
+     "pre_ensayos": 10
+    },
+    {
+     "codigo": "H03",
+     "pre_ensayos": 4
+    }
+   ],
+   "fuerzas_y_mecanismos": [
+    {
+     "eje": "HR",
+     "codigo": "HOM09",
+     "nombre": "HOM09 Assurance y validación",
+     "pre_ensayos": 31
+    },
+    {
+     "eje": "HR",
+     "codigo": "HOM03",
+     "nombre": "HOM03 Segregación de funciones",
+     "pre_ensayos": 8
+    },
+    {
+     "eje": "HC",
+     "codigo": "CAT01",
+     "nombre": "CAT01 Innovación tecnológica",
+     "pre_ensayos": 7
+    },
+    {
+     "eje": "HC",
+     "codigo": "CAT09",
+     "nombre": "CAT09 Expectativas de clientes",
+     "pre_ensayos": 4
+    },
+    {
+     "eje": "HR",
+     "codigo": "HOM04",
+     "nombre": "HOM04 Monitoreo continuo",
+     "pre_ensayos": 3
+    },
+    {
+     "eje": "HR",
+     "codigo": "HOM08",
+     "nombre": "HOM08 Gobierno y supervisión",
+     "pre_ensayos": 3
+    },
+    {
+     "eje": "HR",
+     "codigo": "HOM12",
+     "nombre": "HOM12 Gobierno de la autonomía (niveles, aprobación humana e interruptor probado)",
+     "pre_ensayos": 2
+    },
+    {
+     "eje": "HI",
+     "codigo": "INH02",
+     "nombre": "INH02 Presupuesto",
+     "pre_ensayos": 2
+    },
+    {
+     "eje": "HR",
+     "codigo": "HOM02",
+     "nombre": "HOM02 Gestión de cambios",
+     "pre_ensayos": 1
+    },
+    {
+     "eje": "HR",
+     "codigo": "HOM11",
+     "nombre": "HOM11 Metacognición y revisión de supuestos",
+     "pre_ensayos": 1
+    },
+    {
+     "eje": "HI",
+     "codigo": "INH03",
+     "nombre": "INH03 Déficit de capacidades",
+     "pre_ensayos": 1
+    },
+    {
+     "eje": "HI",
+     "codigo": "INH04",
+     "nombre": "INH04 Silos organizacionales",
+     "pre_ensayos": 1
+    }
+   ],
+   "variables_en_juego": [
+    {
+     "variable": "HV01",
+     "nombre": "HV01 Exposición residual frente al apetito de riesgo",
+     "por": "la presionan",
+     "codigos": "CAT01 INH02"
+    },
+    {
+     "variable": "HV01",
+     "nombre": "HV01 Exposición residual frente al apetito de riesgo",
+     "por": "la regulan",
+     "codigos": "HOM04 HOM09 HOM08"
+    },
+    {
+     "variable": "HV02",
+     "nombre": "HV02 Autoridad delegada frente a capacidad de supervisión",
+     "por": "la presionan",
+     "codigos": "CAT01 INH03 INH04"
+    },
+    {
+     "variable": "HV02",
+     "nombre": "HV02 Autoridad delegada frente a capacidad de supervisión",
+     "por": "la regulan",
+     "codigos": "HOM12 HOM03 HOM08 HOM04"
+    },
+    {
+     "variable": "HV03",
+     "nombre": "HV03 Ritmo de cambio frente a capacidad de absorción",
+     "por": "la presionan",
+     "codigos": "INH02"
+    },
+    {
+     "variable": "HV03",
+     "nombre": "HV03 Ritmo de cambio frente a capacidad de absorción",
+     "por": "la regulan",
+     "codigos": "HOM02"
+    },
+    {
+     "variable": "HV04",
+     "nombre": "HV04 Confianza de las partes interesadas sostenida por evidencia",
+     "por": "la presionan",
+     "codigos": "CAT09"
+    },
+    {
+     "variable": "HV04",
+     "nombre": "HV04 Confianza de las partes interesadas sostenida por evidencia",
+     "por": "la regulan",
+     "codigos": "HOM09 HOM08"
+    },
+    {
+     "variable": "HV05",
+     "nombre": "HV05 Carga cognitiva frente a capacidad de decisión",
+     "por": "la presionan",
+     "codigos": "INH03"
+    },
+    {
+     "variable": "HV05",
+     "nombre": "HV05 Carga cognitiva frente a capacidad de decisión",
+     "por": "la regulan",
+     "codigos": "HOM11"
+    }
+   ],
+   "indicadores_principales_de_esas_variables": [
+    {
+     "variable": "HV01",
+     "indicador": "K24",
+     "nombre": "Pérdidas por incidentes frente a la tolerancia anual",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K25",
+     "nombre": "Riesgos residuales fuera del apetito",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K26",
+     "nombre": "Pérdida esperada de los escenarios prioritarios frente al apetito",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K87",
+     "nombre": "Umbrales de apetito superados con decisión en plazo",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV01",
+     "indicador": "K93",
+     "nombre": "Aceptaciones de riesgo vencidas sin renovar",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "K167",
+     "nombre": "Agentes con detención de emergencia probada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "K50",
+     "nombre": "Agentes con dueño humano y autoridad delegada acotada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "K88",
+     "nombre": "Tipos de acción de agentes con nivel de autonomía aprobado",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "K98",
+     "nombre": "Decisiones automatizadas de alto impacto con supervisión humana verificada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "KX13",
+     "nombre": "Decisiones reservadas ejecutadas sin aprobación",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV02",
+     "indicador": "KX15",
+     "nombre": "Funciones externalizadas con capacidad interna de supervisión",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV03",
+     "indicador": "K116",
+     "nombre": "Iniciativas con revisión de arquitectura antes de producción",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV03",
+     "indicador": "K20",
+     "nombre": "Tiempo de habilitación segura de iniciativas",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV03",
+     "indicador": "K90",
+     "nombre": "Evaluaciones de riesgo actualizadas ante cambios materiales",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K57",
+     "nombre": "Obligaciones aplicables mapeadas a controles con evidencia vigente",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K58",
+     "nombre": "Calidad del reporte de ciberriesgo al Directorio",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K60",
+     "nombre": "Controles clave con efectividad probada",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "K96",
+     "nombre": "Utilidad del reporte de ciberriesgo para sus destinatarios",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV04",
+     "indicador": "KSG05",
+     "nombre": "Nivel de evidencia de las prácticas de gobierno y gestión",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV05",
+     "indicador": "K101",
+     "nombre": "Trabajo no planificado del equipo",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV05",
+     "indicador": "K125",
+     "nombre": "Carga por analista",
+     "lecturas": "dos lecturas"
+    },
+    {
+     "variable": "HV05",
+     "indicador": "K95",
+     "nombre": "Decisiones solicitadas a la dirección resueltas en plazo",
+     "lecturas": "dos lecturas"
+    }
+   ],
+   "indicadores_en_la_misma_subfuncion_y_dominio": [
+    {
+     "indicador": "K60",
+     "nombre": "Controles clave con efectividad probada"
+    },
+    {
+     "indicador": "K80",
+     "nombre": "Controles clave con evidencia recolectada de forma automática"
+    },
+    {
+     "indicador": "K82",
+     "nombre": "Cobertura del plan de aseguramiento"
+    },
+    {
+     "indicador": "K85",
+     "nombre": "Riesgos altos con revisión independiente reciente"
+    }
+   ],
+   "indicadores_en_la_subfuncion": 5,
+   "preguntas_que_cubren": 24,
+   "ejemplos_de_preguntas": [
+    "¿Qué controles clave tenemos y qué evidencia independiente demuestra que funcionan, no solo que existen?",
+    "¿Qué controles específicos tenemos sobre la IA y los agentes, y quién los audita?"
+   ],
+   "productos_control_que_instancian_sus_conceptos": [
+    "DATOS",
+    "ENDPOINTS",
+    "IDENTIDADES",
+    "NUBE",
+    "SIEM",
+    "XDR"
+   ],
+   "biblioteca": [
+    {
+     "pre_ensayo": "AMP-14",
+     "elemento": "DP-0124",
+     "nombre": "Toma de decisiones asistida por IA",
+     "tipo": "MetacognitivePractice",
+     "vinculo": "relacionado"
+    },
+    {
+     "pre_ensayo": "G3.2-K02",
+     "elemento": "DP-0013",
+     "nombre": "auditoría continua",
+     "tipo": "MetacognitivePractice",
+     "vinculo": "relacionado"
+    },
+    {
+     "pre_ensayo": "M2.2-K08",
+     "elemento": "DP-0007",
+     "nombre": "Análisis de roles efectivos frente a teóricos",
+     "tipo": "Concept",
+     "vinculo": "relacionado"
+    }
+   ],
+   "nota_biblioteca": "Desde la versión 1.4 el grafo carga 112 vínculos candidatos entre pre-ensayos y elementos de la biblioteca metacognitiva (una lectura, la de la revisión crítica de la versión 1.2). Para la mayoría de las coordenadas no hay ninguno."
+  },
+  {
+   "caso": "N0",
+   "problema": "La coordenada del ejemplo de la versión 1.1: delegar en un agente la remediación del correo, leída como T07 × D09 × RS02",
+   "coordenada": {
+    "territorio": "T07",
+    "dominio": "D09",
+    "subfuncion": "RS02",
+    "nombres": [
+     "T07 AI & AUTONOMOUS SYSTEMS",
+     "D09 Endpoint & Workplace Security",
+     "RS02 Contención, erradicación y preservación de evidencia"
+    ]
+   },
+   "por_que_esa_coordenada": "Se conserva para mostrar un silencio: la coordenada es válida y el corpus no tiene nada en ella.",
+   "pre_ensayos": [],
+   "horizontes": [],
+   "fuerzas_y_mecanismos": [],
+   "variables_en_juego": [],
+   "indicadores_principales_de_esas_variables": [],
+   "indicadores_en_la_misma_subfuncion_y_dominio": [],
+   "indicadores_en_la_subfuncion": 6,
+   "preguntas_que_cubren": 0,
+   "ejemplos_de_preguntas": [],
+   "productos_control_que_instancian_sus_conceptos": [],
+   "biblioteca": [],
+   "nota_biblioteca": "Desde la versión 1.4 el grafo carga 112 vínculos candidatos entre pre-ensayos y elementos de la biblioteca metacognitiva (una lectura, la de la revisión crítica de la versión 1.2). Para la mayoría de las coordenadas no hay ninguno."
+  }
+ ]
+}

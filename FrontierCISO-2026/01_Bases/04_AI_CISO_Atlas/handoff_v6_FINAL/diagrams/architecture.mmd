@@ -1,0 +1,17 @@
+flowchart TB
+  E[Ensayos y fuentes] --> C[Curator v6.0]
+  C --> S[Structural Classifier X/Y/Z]
+  C --> H[Evolutionary Analyzer H]
+  C --> L[Curriculum Mapper GM-24]
+  S --> G[Graph Contributor]
+  H --> G
+  L --> G
+  T[Taxonomy 5.3] --> S
+  O[Core Ontology 1.0] --> G
+  G --> SC[Sidecars]
+  G --> CS[ChangeSet proposed]
+  CS --> V[Validador determinista]
+  V --> R[Revisión humana]
+  R -->|approved| A[Aplicador local]
+  A --> DB[(SQLite property graph)]
+  R -->|extension| OCR[Ontology change request]

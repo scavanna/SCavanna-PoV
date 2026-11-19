@@ -1,0 +1,106 @@
+playbook_id: PB-RW-000
+name: Respuesta a ransomware
+adaptation_status: non_official
+scope: <TI/identity/cloud/OT/IoT/sector>
+owner: <Incident commander>
+technical_authority: <CISO/SOC/OT-Lead>
+business_authority: <dueño del servicio>
+safety_authority: <required/not_required/owner>
+triggers:
+  technical:
+    - actividad de cifrado o borrado masivo
+    - nota de rescate o extorsión
+    - desactivación de defensas o eliminación de backups
+    - anomalía de identidad/privilegio/movimiento/exfiltración
+  business:
+    - indisponibilidad anómala
+    - degradación del proceso o servicio
+  ot_safety:
+    - pérdida de supervisión/control
+    - desviación de condiciones seguras
+preconditions_for_automation:
+  - acción previamente autorizada para el activo
+  - no compromete safety ni operación segura
+  - preservación y logging de la acción
+  - rollback o modo degradado probado
+phases:
+  - phase: classify
+    objective: confirmar, dimensionar y asignar severidad
+    actions:
+      - validar señales y falsos positivos
+      - identificar servicio/activo y modo de operación
+      - registrar MAGERIT IDs y extensión EXT-001
+      - declarar impacto preliminar y titulares afectados
+    evidence: [ticket, logs, timeline, decisiones]
+  - phase: stabilize
+    objective: reducir daño sin introducir daño adicional
+    actions:
+      - activar autoridad de incidente
+      - preservar proceso seguro/modo degradado
+      - aplicar contención autorizada por zona
+    ot_rule: prohibido reiniciar, reconfigurar o escanear OT sin autoridad
+  - phase: contain
+    objective: limitar acceso propagación y exfiltración
+    actions:
+      - revocar sesiones/credenciales comprometidas
+      - bloquear cuentas/protocolos/rutas autorizadamente
+      - aislar endpoints/zonas según contexto
+      - impedir contacto con backups/infraestructura de recovery
+    evidence: [acciones, operador, hora, autorización, resultado]
+  - phase: investigate
+    objective: determinar alcance vector persistencia e impacto
+    actions:
+      - construir timeline
+      - identificar técnicas con evidencia
+      - evaluar integridad de identidad control plane datos y backups
+      - determinar datos/servicios/titulares afectados
+  - phase: eradicate
+    objective: retirar capacidad y causas
+    actions:
+      - reparar precondiciones
+      - reconstruir desde fuentes confiables
+      - eliminar persistencia y accesos
+      - validar configuración y componentes
+  - phase: recover
+    objective: restaurar misión de forma segura
+    actions:
+      - priorizar por criticidad y dependencia
+      - validar backups/firmware/configuración
+      - restaurar por etapas con gates
+      - probar integridad y RTO/RPO reales
+  - phase: communicate
+    objective: cumplir comunicaciones y coordinación
+    actions:
+      - informar a negocio/CISO/riesgo/Legal/DPO
+      - documentar base y alcance de notificación
+      - coordinar terceros autoridades y titulares según procedimiento
+      - usar hechos confirmados y marcar incertidumbre
+  - phase: learn
+    objective: cerrar y mejorar
+    actions:
+      - preservar lecciones y evidencia
+      - actualizar modelado y controles
+      - revalorar riesgo residual
+      - asignar acciones y fecha de nueva prueba
+severity_rules:
+  critical:
+    - impacto en seguridad humana o proceso físico no controlado
+    - servicio esencial/gobierno/infraestructura crítica fuera de tolerancia
+    - propagación amplia o compromiso confirmado de Tier-0
+  high:
+    - servicio crítico degradado o pérdida confirmada de datos sensibles
+  medium:
+    - alcance contenido con capacidad de recuperación validada
+  low:
+    - evento aislado sin impacto material y con evidencia de contención
+required_roles: [incident_commander, soc, it, business_owner, risk, legal_dpo, communications, forensics]
+ot_roles: [ot_operations, process_engineering, safety, vendor]
+optional_roles: [insurer, law_enforcement, regulator, external_ir]
+exit_criteria:
+  - servicio estable o modo degradado aprobado
+  - amenaza y persistencia contenidas con evidencia
+  - recuperación íntegra y monitorizada
+  - comunicaciones cumplidas
+  - riesgo residual aprobado
+  - follow-up y ejercicios registrados
+last_review: YYYY-MM-DD

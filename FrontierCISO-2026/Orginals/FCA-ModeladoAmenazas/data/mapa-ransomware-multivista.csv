@@ -1,0 +1,22 @@
+record_id,view,identifier,name,enterprise_hybrid,ot_industrial,relationship,validation_note
+RW-001,magerit,A.8,Difusión de software dañino,primary,primary,base_event,applicable according to delivery and execution evidence
+RW-002,magerit,A.11,Acceso no autorizado,primary,primary,precondition_or_event,requires route identity and privilege evidence
+RW-003,magerit,A.15,Modificación deliberada de la información,conditional,conditional,integrity_event,apply only when data or configuration is modified
+RW-004,magerit,A.18,Destrucción de información,primary,primary,impact_event,includes data/configuration destruction when evidenced
+RW-005,magerit,A.19,Divulgación de información,conditional,conditional,impact_event,apply to proven or plausible exfiltration
+RW-006,magerit,A.23,Manipulación de los equipos,secondary,primary,impact_or_ot_event,validate equipment/control capability rather than assume it
+RW-007,magerit,A.24,Denegación de servicio,conditional,primary,availability_impact,apply where service/process is made unavailable
+RW-008,magerit,A.29,Extorsión,conditional,primary,criminal_event,may exist independently of payment or communication
+RW-009,magerit,I.5,Avería de origen físico o lógico,secondary,conditional,dependency_comparison,compare industrial failure with malicious scenarios
+RW-010,magerit,I.8,Fallo de servicios de comunicaciones,secondary,conditional,dependency,validate shared communications and recovery
+RW-011,magerit,I.9,Interrupción de otros servicios y suministros esenciales,secondary,primary,dependency,include critical service dependencies
+RW-012,extension,EXT-001,Ransomware y doble extorsión,primary,primary,modern_specialization,maps to several MAGERIT threats; never replaces official codes
+RW-013,extension,EXT-021,Ciberseguridad OT/ciberfísica,not_applicable,primary,domain_extension,use when process or physical effect is in scope
+RW-014,technology,ATT&CK T1486,Data Encrypted for Impact,primary,conditional,behavior,validate ATT&CK version and applicability
+RW-015,technology,ATT&CK for ICS,Context-specific behaviors,conditional,primary,behavior,use only after verifying techniques against architecture
+RW-016,privacy,LINDDUN-Disclosure,Data disclosure,conditional,conditional,privacy_threat,requires data subject/treatment context
+RW-017,sector,Retail/POS/Ecommerce,Canal y reconciliación,conditional,not_applicable,sector_view,tolerance depends on peak and transaction context
+RW-018,sector,Health/Patient Safety,Continuidad asistencial,conditional,conditional,sector_view,prioritize human safety and clinical continuity
+RW-019,sector,Critical Infrastructure/Security,Continuidad y safety,conditional,primary,sector_view,escalation depends on designated obligations
+RW-020,playbook,PB-RW-IT,Respuesta ransomware TI,primary,secondary,operational_response,identity endpoints recovery and data scope
+RW-021,playbook,PB-RW-OT,Respuesta ransomware OT,not_applicable,primary,operational_response,safety process authority and non-disruptive containment

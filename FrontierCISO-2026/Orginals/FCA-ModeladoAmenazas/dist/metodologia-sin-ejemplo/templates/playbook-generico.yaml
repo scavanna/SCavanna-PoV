@@ -1,0 +1,55 @@
+playbook_id: PB-000
+name: <respuesta al escenario>
+scenario_ids: []
+context:
+  sector: <sector o transversal>
+  technology: <IT/cloud/OT/IoT/etc.>
+  service_or_process: <servicio>
+owner: <incident commander>
+version: 0.1.0
+adaptation_status: non_official
+triggers: []
+authorities:
+  technical: <rol>
+  business: <rol>
+  safety: <rol o no aplica>
+  privacy_legal: <rol o no aplica>
+preconditions_for_automation:
+  - acción previamente autorizada
+  - límites y rollback definidos
+  - safety y continuidad evaluadas
+  - logging y evidencia habilitados
+phases:
+  - phase: classify
+    objective: confirmar señal, severidad, activos y alcance
+    actions: []
+    evidence: []
+  - phase: stabilize
+    objective: limitar daño sin introducir un riesgo superior
+    actions: []
+    safety_constraints: []
+  - phase: contain
+    objective: detener propagación, acceso o degradación
+    actions: []
+    approval_required: []
+  - phase: investigate
+    objective: construir timeline, hipótesis y alcance
+    actions: []
+  - phase: eradicate
+    objective: retirar causas y persistencia
+    actions: []
+  - phase: recover
+    objective: restaurar misión de forma segura
+    actions: []
+    validation_gates: []
+  - phase: communicate
+    objective: coordinar partes y obligaciones
+    actions: []
+  - phase: learn
+    objective: actualizar modelo, controles y riesgo
+    actions: []
+severity_rules: {}
+required_roles: []
+optional_roles: []
+exit_criteria: []
+next_review: YYYY-MM-DD

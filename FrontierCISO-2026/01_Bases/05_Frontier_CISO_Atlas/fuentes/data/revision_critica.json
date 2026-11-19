@@ -1,0 +1,1600 @@
+{
+ "fecha": "2026-11-15",
+ "version_revisada": "1.1 (copia congelada)",
+ "revisores": 13,
+ "encargos": {
+  "C1": "Consistencia entre documentos y datos",
+  "C2": "Taxonomía y decisiones",
+  "C3": "Ontología y grafo",
+  "C4a": "Segunda lectura de D20",
+  "C4b": "Segunda lectura de las migraciones",
+  "C4c": "Muestra a ciegas del corpus",
+  "C5a": "Biblioteca: tipos y pilar",
+  "C5b": "Biblioteca: prácticas contra sesgos y territorios",
+  "C5c": "Biblioteca: duplicados y equivalencias",
+  "C6a": "Medición: indicadores y variables homeostáticas",
+  "C6b": "Medición: territorio y dominio de los indicadores",
+  "C6c": "Medición: subfunción de los indicadores",
+  "C8": "Lectura escéptica de un CISO y serie APX"
+ },
+ "verificaciones_externas": 3,
+ "hallazgos": {
+  "total": 364,
+  "por_decision": {
+   "Corregido": 163,
+   "Propuesta al autor": 129,
+   "Corregido en parte": 39,
+   "Diferido": 21,
+   "Documentado": 12
+  },
+  "por_severidad": {
+   "alta": 46,
+   "media": 213,
+   "baja": 70,
+   "observacion": 33,
+   "critica": 2
+  },
+  "por_severidad_y_decision": {
+   "critica": {
+    "Corregido": 2
+   },
+   "alta": {
+    "Corregido": 31,
+    "Corregido en parte": 5,
+    "Propuesta al autor": 10
+   },
+   "media": {
+    "Corregido": 77,
+    "Corregido en parte": 28,
+    "Propuesta al autor": 91,
+    "Diferido": 12,
+    "Documentado": 5
+   },
+   "baja": {
+    "Corregido": 46,
+    "Corregido en parte": 3,
+    "Propuesta al autor": 20,
+    "Documentado": 1
+   },
+   "observacion": {
+    "Corregido": 7,
+    "Corregido en parte": 3,
+    "Propuesta al autor": 8,
+    "Diferido": 9,
+    "Documentado": 6
+   }
+  },
+  "por_revisor": {
+   "C1": {
+    "Corregido": 41,
+    "Documentado": 1
+   },
+   "C2": {
+    "Propuesta al autor": 43,
+    "Documentado": 1,
+    "Corregido": 28,
+    "Corregido en parte": 10
+   },
+   "C3": {
+    "Corregido": 39,
+    "Corregido en parte": 11,
+    "Documentado": 2,
+    "Diferido": 2,
+    "Propuesta al autor": 10
+   },
+   "C4a": {
+    "Corregido": 2,
+    "Propuesta al autor": 9,
+    "Corregido en parte": 1,
+    "Documentado": 1
+   },
+   "C4b": {
+    "Propuesta al autor": 16,
+    "Documentado": 1
+   },
+   "C4c": {
+    "Propuesta al autor": 18,
+    "Documentado": 1
+   },
+   "C5a": {
+    "Corregido en parte": 3,
+    "Corregido": 5,
+    "Propuesta al autor": 7
+   },
+   "C5b": {
+    "Corregido": 13,
+    "Propuesta al autor": 4
+   },
+   "C5c": {
+    "Propuesta al autor": 4,
+    "Corregido": 2,
+    "Corregido en parte": 1,
+    "Documentado": 2
+   },
+   "C6a": {
+    "Diferido": 17,
+    "Corregido en parte": 2
+   },
+   "C6b": {
+    "Corregido en parte": 3,
+    "Propuesta al autor": 7,
+    "Corregido": 3,
+    "Documentado": 1
+   },
+   "C6c": {
+    "Corregido": 2,
+    "Corregido en parte": 1,
+    "Propuesta al autor": 7,
+    "Documentado": 1
+   },
+   "C8": {
+    "Corregido": 28,
+    "Propuesta al autor": 4,
+    "Corregido en parte": 7,
+    "Diferido": 2,
+    "Documentado": 1
+   }
+  },
+  "acciones_distintas": 164,
+  "criterio_de_cierre": "Ningún hallazgo de severidad crítica o alta queda sin tratar: se corrige, o se convierte en una decisión escrita para el autor con el texto propuesto."
+ },
+ "altos_y_criticos": [
+  {
+   "id": "C1-001",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "El documento afirma dos veces que «cada fuerza presiona al menos una» variable homeostática, pero 5 de las 22 fuerzas del catálogo (CAT08, INH02, INH04, INH05 e INH10) no presionan ninguna. La frase es texto fijo de los guiones y contradice la tabla de la misma sección y el grafo.",
+   "accion": "La frase pasa a «17 de las 22 fuerzas presionan al menos una variable» y nombra las cinco que no. El modelo de referencia no se completó: queda en la regla propuesta RP-15."
+  },
+  {
+   "id": "C1-013",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "El catálogo de 85 agentes del plano B entró al grafo con las columnas corridas. Los 85 nodos ApprovalGate, que deberían ser puntos de control humano, llevan valores de costo («Bajo», «Tokens», «Tokens/SCU», «Medio»). La pregunta P13, publicada como respondible, devuelve esos costos en la columna «punto_de_control».",
+   "accion": "Se corrigió la correspondencia de campos de los 85 agentes en el extracto del GM-24 (835 campos comprobados contra los anexos, sin diferencias) y se rehízo la carga: los puntos de control son ahora los que declara cada anexo."
+  },
+  {
+   "id": "C1-031",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "El resultado «0 errores y 0 advertencias» se presenta como validación contra la ontología 2.1.0, pero el validador evalúa 13 de las 37 reglas. Una de las reglas de nivel error que no evalúa, SV-003, exige descripción en todo nodo, y 1.809 de los 5.041 nodos no la tienen.",
+   "accion": "El validador comprueba ahora 19 de las 37 reglas, entre ellas SV-003 y SV-112, más una comprobación propia del paquete (PAQ-01), y la lista de comprobadas y no comprobadas se publica. El README y los documentos dicen que la validación es estructural."
+  },
+  {
+   "id": "C1-040",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "El paquete afirma que cada vínculo entre el corpus y un marco declara contra qué versión del artefacto se hizo. En el grafo, las 7.559 aristas del mapeo del GM-24 llevan en esa propiedad un mismo texto genérico que no nombra ninguna versión, y apuntan a elementos rotulados con la versión vigente hoy, no con la del mapeo.",
+   "accion": "Cada mapeo declara la versión contra la que el GM-24 dice haberlo hecho, o que el GM-24 no la declara; cada elemento de marco guarda la versión de la que procede su código y su nombre."
+  },
+  {
+   "id": "C2-001",
+   "severidad": "alta",
+   "decision": "Propuesta al autor",
+   "hallazgo": "El criterio C2 se aplicó con dos varas: W02 se rechaza porque su objeto «es una función (ID01, PR04) que cruza dominios», pero D28 se admite aunque el propio texto lo describe como una perspectiva (T08) más una función (GV08), y D25 aunque ya existían T05 y PR03 «arquitectura segura». W02 tiene más respaldo externo que tres de los cuatro dominios admitidos y 16 pre-ensayos de inventario, por encima del umbral de C3.",
+   "accion": "Regla propuesta RP-16 (criterios de admisión de dominios). No se aplicó."
+  },
+  {
+   "id": "C2-008",
+   "severidad": "alta",
+   "decision": "Propuesta al autor",
+   "hallazgo": "C5 pide una regla de precedencia «frente a cada dominio vecino», pero la de D28 solo nombra a D03, D02 y D22, cuando sus 54 migraciones llegaron desde 13 dominios. El resultado es desparejo: objetos casi idénticos quedaron a un lado y al otro de la frontera.",
+   "accion": "Regla propuesta RP-02 (cláusula de pilar y fronteras de D28). No se aplicó."
+  },
+  {
+   "id": "C2-016",
+   "severidad": "alta",
+   "decision": "Propuesta al autor",
+   "hallazgo": "El eje Y mezcla dominios de disciplina (gobierno, riesgo, monitoreo, respuesta, aseguramiento) con dominios de objeto o tecnología (identidad, datos, nube, IoT, IA), y no hay una regla general que diga cuál manda cuando un tema es una disciplina aplicada a un objeto. Las reglas parciales resuelven casos equivalentes en sentidos opuestos.",
+   "accion": "Regla propuesta RP-01 (precedencia general entre disciplina y objeto). No se aplicó: cambia el alojamiento de pre-ensayos y necesita la decisión del autor."
+  },
+  {
+   "id": "C2-021",
+   "severidad": "alta",
+   "decision": "Propuesta al autor",
+   "hallazgo": "Los ajustes de alcance que D-02 aprueba no se aplicaron al corpus y, salvo el que toca a D20, no tienen una decisión que ordene aplicarlos. La columna «Corpus 6.0» cuenta códigos de la 6.0 con el alojamiento de la 5.3, de modo que no mide los alcances ajustados.",
+   "accion": "Regla propuesta RP-18 (fronteras y alcances heredados). No se aplicó. La columna del documento 07 pasa a llamarse «Corpus 6.0 (códigos 6.0, alojamiento heredado)»: solo D20 tuvo una lectura completa."
+  },
+  {
+   "id": "C2-026",
+   "severidad": "alta",
+   "decision": "Propuesta al autor",
+   "hallazgo": "RC04 es una subfunción de Recuperar cuya única categoría de CSF 2.0 es ID.IM, que pertenece a Identificar. Por eso el Atlas cuenta como recuperación contenido de mejora continua y de auditoría, y mide el mismo objeto con dos funciones distintas.",
+   "accion": "Regla propuesta RP-13 (RC04 bajo la función Recuperar). No se aplicó."
+  },
+  {
+   "id": "C2-033",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "La afirmación de que «cada fuerza presiona al menos una» variable es falsa: cinco de las 22 fuerzas no presionan ninguna (CAT08, INH02, INH04, INH05 e INH10). Entre ellas está INH04, el segundo inhibidor más usado del corpus.",
+   "accion": "La frase pasa a «17 de las 22 fuerzas presionan al menos una variable» y nombra las cinco que no. El modelo de referencia no se completó: queda en la regla propuesta RP-15."
+  },
+  {
+   "id": "C2-042",
+   "severidad": "alta",
+   "decision": "Corregido en parte",
+   "hallazgo": "Las anclas de los pilares no describen dónde está cada pilar en el corpus: los territorios de ancla primaria reúnen 14,6 % de MM, 10,4 % de OS, 33,3 % de DO y 15,0 % de NX. El glosario define ancla como el territorio donde el pilar «tiene su asiento principal».",
+   "accion": "Las anclas de los pilares se declaran como hipótesis de diseño y se publica su medición en el corpus. Si deben derivarse de la definición del pilar lo decide el autor (RP-14)."
+  },
+  {
+   "id": "C2-043",
+   "severidad": "alta",
+   "decision": "Propuesta al autor",
+   "hallazgo": "La lectura de OS en dos escalas que D-04 pide confirmar no puede verificarse con el corpus: no existe un atributo de escala, la escala individual tiene dos pre-ensayos, y la de oficina se clasificó con una definición distinta de la del catálogo, que la vuelve casi equivalente a la función Gobernar.",
+   "accion": "Regla propuesta RP-14 (anclas del MCCS y escala del pilar OS). No se aplicó."
+  },
+  {
+   "id": "C2-044",
+   "severidad": "alta",
+   "decision": "Corregido en parte",
+   "hallazgo": "D-04 y D-08 se contradicen si se aceptan juntas: D-04 pone la energía, la atención y la resiliencia en la escala individual del pilar OS, y D-08 carga los 1.404 conceptos de la Biblioteca, incluidos los de atención, fatiga y resiliencia, con el pilar MM.",
+   "accion": "La lectura de OS en dos escalas se aplicó a la Biblioteca con una regla por categoría: las funciones ejecutivas y los factores humanos que son estados o condiciones van al pilar OS (59 conceptos); los demás quedan en MM. Por ser una regla por categoría, las habilidades socioemocionales y las mentalidades de resiliencia siguen en MM: el choque entre D-04 y D-08 queda abierto para ellas (decisión D-12.2). La corrección del ancla de HumanCapability en el diccionario se pide en OCR-CAND-03."
+  },
+  {
+   "id": "C2-055",
+   "severidad": "critica",
+   "decision": "Corregido",
+   "hallazgo": "Cinco de las diez decisiones no son proposiciones que se resuelvan con un «sí»: D-03 y D-10 preguntan «si», y D-07, D-09 y parte de D-08 piden validar contenido que el propio paquete declara sin revisar. Una aceptación en bloque no les da resultado, y ADR-019 y las reglas del grafo impiden leerla como aprobación del contenido.",
+   "accion": "Las diez decisiones se reformularon como proposiciones con la opción tomada, separadas en decisiones de diseño y tareas de validación (aceptadas como base de trabajo, sin validar). Las dos que la versión 1.1 planteaba como preguntas (D-03 y D-10) se registran como interpretadas y aplicadas, a confirmar por el autor en la decisión D-14. Se publican el texto original de cada decisión, sus dependencias y el orden en que se aplicaron."
+  },
+  {
+   "id": "C2-056",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "D-02 ya contiene lo que D-03, D-04 y D-06 presentan como decisiones aparte: la Taxonomía 6.0 incluye la regla 7 y los alcances de D01 y D02, las anclas de OS en T01 y T03, y las seis variables homeostáticas. Aprobar D-02 tal como está resuelve las otras tres, y resolver cualquiera de ellas en sentido contrario obliga a cambiar la taxonomía.",
+   "accion": "Las diez decisiones se reformularon como proposiciones con la opción tomada, separadas en decisiones de diseño y tareas de validación (aceptadas como base de trabajo, sin validar). Las dos que la versión 1.1 planteaba como preguntas (D-03 y D-10) se registran como interpretadas y aplicadas, a confirmar por el autor en la decisión D-14. Se publican el texto original de cada decisión, sus dependencias y el orden en que se aplicaron."
+  },
+  {
+   "id": "C2-057",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "Validar la categorización (D-07) junto con la taxonomía (D-02) aprueba a la vez una regla y un corpus que la incumple: 14 pre-ensayos de D20 son, según la lectura del propio paquete, gobierno o riesgo de la IA, y otros 16 del mismo tema ya están en D01, D02 o D03 con T07. La primera tanda de ensayos depende de esa decisión.",
+   "accion": "Orden aplicado: D-01; D-04 y D-06; D-02; D-03; D-05; D-08 y D-09; D-10; D-07 al final. D-03 se aplicó antes de fijar la categorización y la primera tanda."
+  },
+  {
+   "id": "C2-058",
+   "severidad": "alta",
+   "decision": "Propuesta al autor",
+   "hallazgo": "Si D-03 se resuelve como manda la regla 7 (la disciplina prevalece sobre la tecnología), seis de los siete pre-ensayos que D-10 propone para D19 aplican el criterio contrario: alojan en el dominio de la tecnología el inventario, la compra, el parcheo, el monitoreo, la respuesta y el modelado de amenazas de los dispositivos conectados.",
+   "accion": "Regla propuesta RP-01 (precedencia general entre disciplina y objeto). No se aplicó: cambia el alojamiento de pre-ensayos y necesita la decisión del autor. Los pre-ensayos APX quedan como capa de ampliación, fuera de las estadísticas del corpus base, hasta que se decida la regla."
+  },
+  {
+   "id": "C2-059",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "Las diez decisiones se presentan como una lista plana, pero tienen dependencias de orden que ningún documento declara para ellas: D-08 depende de D-04 y D-05; D-09, de D-02, D-05 y D-06; D-07, de D-02, D-03, D-04 y D-10; y D-02, de D-04 y D-06. El paquete solo ordena los requisitos R1 a R12 del grafo.",
+   "accion": "Orden aplicado: D-01; D-04 y D-06; D-02; D-03; D-05; D-08 y D-09; D-10; D-07 al final. D-03 se aplicó antes de fijar la categorización y la primera tanda."
+  },
+  {
+   "id": "C2-076",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "ADR-016 afirma que el plano A sigue siendo agnóstico de proveedor y docs/02 que los productos aparecen solo en el plano B, pero los 739 pre-ensayos están clasificados en el plano A y al menos 53 nombran productos de Microsoft, tres de ellos en el título.",
+   "accion": "Se detectan los nombres de producto y de proveedor en el plano A: 77 pre-ensayos (72 nombran productos y 5 solo al proveedor) quedan marcados «revisar» y el paquete lo informa como advertencia de una comprobación propia (PAQ-01), que no es una de las 37 reglas de la ontología. Los documentos dicen que el plano A se propone agnóstico de proveedor y que el corpus no lo es. Si esos pre-ensayos pasan al plano B lo decide el autor (RP-17)."
+  },
+  {
+   "id": "C3-001",
+   "severidad": "critica",
+   "decision": "Corregido",
+   "hallazgo": "Los 85 registros de agentes del plano B tienen las claves corridas dos posiciones y el grafo carga cada dato con otro nombre. Los 85 nodos ApprovalGate no son puntos de control humano sino categorías de costo, y se pierden la autonomía de los agentes, sus riesgos OWASP, sus dueños y las herramientas de 70 agentes.",
+   "accion": "Se corrigió la correspondencia de campos de los 85 agentes en el extracto del GM-24 (835 campos comprobados contra los anexos, sin diferencias) y se rehízo la carga: los puntos de control son ahora los que declara cada anexo."
+  },
+  {
+   "id": "C3-002",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "La regla SV-112 (autonomía L2 o superior con punto de control o justificación) nunca se pone a prueba. El guion inserta en cada tarea L2 o L3 la misma justificación genérica y la validación la acepta; ninguna tarea tiene una compuerta propia y siete tareas L2 no tienen agente que las ejecute.",
+   "accion": "La regla SV-112 se comprueba con los puntos de control que declaran los agentes, sin justificación automática: 92 asignaciones de nivel L2 o superior a agentes y 132 tareas tienen punto de control; 7 tareas no tienen agente ejecutor y lo dicen."
+  },
+  {
+   "id": "C3-003",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "De las 37 reglas de semantic_rules.json el guion comprueba 13, una de ellas solo en parte, y 24 se declaran sin comprobarse. La frase «valida contra la ontología 2.1.0 con 0 errores» y el estado «passed» de las 15 cabeceras solo valen para ese subconjunto.",
+   "accion": "El validador comprueba ahora 19 de las 37 reglas, entre ellas SV-003 y SV-112, más una comprobación propia del paquete (PAQ-01), y la lista de comprobadas y no comprobadas se publica. El README y los documentos dicen que la validación es estructural."
+  },
+  {
+   "id": "C3-004",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "La regla SV-003, de severidad error, y los 84 tipos exigen descripción, pero 1.809 de los 5.041 nodos (35,9 %) tienen la definición vacía, entre ellos los 379 conceptos del GM-24, las 595 preguntas y los 468 elementos de marco. El resultado publicado de 0 errores no lo refleja porque SV-003 no se comprueba.",
+   "accion": "Los 5.058 nodos tienen definición, tomada de la fuente cuando existe, y SV-003 se comprueba."
+  },
+  {
+   "id": "C3-005",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "SV-113 exige la versión del artefacto en cada MAPS_TO, pero 7.628 de las 8.422 aristas (90,6 %) llevan un texto que no es una versión. La validación solo comprueba que el campo no esté vacío, de modo que la regla se cumple de nombre y el mapeo no dice contra qué versión de cada marco se hizo.",
+   "accion": "Cada mapeo declara la versión contra la que el GM-24 dice haberlo hecho, o que el GM-24 no la declara; cada elemento de marco guarda la versión de la que procede su código y su nombre."
+  },
+  {
+   "id": "C3-006",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "El estado de cada pregunta de competencia es una constante escrita en el guion y no el resultado de una prueba. Ninguna consulta tiene criterio de aceptación: una que devolviera cero filas o datos erróneos se publicaría igual como «Respondible», y eso ocurre con P13.",
+   "accion": "El estado de cada pregunta de competencia se deriva de un criterio: si puede expresarse con la ontología, la cobertura de la consulta sobre su universo y el límite declarado. Resultado: 7 respondibles, 9 en parte y 6 todavía no (sobre las 20 originales: 6, 8 y 6)."
+  },
+  {
+   "id": "C3-007",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "Las notas de las preguntas sin respuesta citan relaciones y tipos que no sirven o no existen, y tres preguntas (P02, P05 y P08) no pueden expresarse con la ontología aunque se carguen instancias. La conclusión de que solo faltan datos de una organización y de que el Atlas sirve como vocabulario para las preguntas 1 a 5 no se sostiene.",
+   "accion": "Las notas de P01 a P06 usan tipos y relaciones del diccionario. P02 y P05 se declaran no expresables con la ontología 2.1.0, y la relación que falta queda pedida en OCR-CAND-03."
+  },
+  {
+   "id": "C3-008",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "Las operaciones UPSERT_NODE no incluyen la definición del nodo. Los conjuntos de cambios, que son la unidad que se revisa, se firma con SHA-256 y se aprueba, no alcanzan para reconstruir el grafo: 3.232 definiciones quedan fuera de la huella y de la aprobación.",
+   "accion": "Las operaciones llevan definición, versión y estado del nodo e identificador estable de arista; una prueba rearma el grafo solo con los archivos de operaciones y lo compara."
+  },
+  {
+   "id": "C4a-001",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "La política de migración solo admite cambios causados por un dominio nuevo o una subfunción nueva, y la ficha de D20 dice que su aclaración no cambia la frontera, pero la regla 7 y los ajustes de D01 y D02 sacan de D20 el gobierno y el riesgo de la IA hacia dominios que no son nuevos. Con los tres textos vigentes a la vez no se puede saber si los casos de gobierno que hoy están en D20 deben moverse.",
+   "accion": "La política de migración admite los ajustes de alcance de la Taxonomía 6.0 y una vía de corrección (ADR-028, que rige de forma provisoria). Se aplicaron las siete sugerencias del clasificador que un segundo lector, que las tenía a la vista, confirmó: es una confirmación, no una segunda lectura independiente."
+  },
+  {
+   "id": "C4a-002",
+   "severidad": "alta",
+   "decision": "Propuesta al autor",
+   "hallazgo": "Los 11 pre-ensayos de D20 con territorio T08 tratan de evidencia, pruebas, umbrales, auditoría, monitoreo o reevaluación de sistemas de IA. En 8 de ellos el objeto es el método para demostrar o medir, que corresponde a D28, pero todos siguen en D20. D28 es nuevo en 6.0, de modo que la política de migración sí admite ese cambio. La regla 6 solo resuelve el caso de la IA como instrumento de prueba (D22) y no dice qué corresponde cuando la IA es el objeto probado.",
+   "accion": "Los pre-ensayos de D20 con territorio T08 no se movieron donde las lecturas no coinciden: quedan listados para el autor, con las dos lecturas (decisión D-13 y regla RP-02)."
+  },
+  {
+   "id": "C4a-003",
+   "severidad": "alta",
+   "decision": "Propuesta al autor",
+   "hallazgo": "No hay regla de precedencia entre D20 y los dominios de disciplina cuando una disciplina se aplica a un objeto de IA y la ficha de esa disciplina no nombra la IA. La 6.0 lo resuelve para identidades (D05), observabilidad (D14) y cadena de suministro (D17), pero no para inventario (D13), amenazas (D12), ciclo de vida y cambios (D11), detención y reversión (D15 y D16) ni autorización (D05). El resultado es incoherente: el inventario general iría a D13 y el inventario de agentes de la misma unidad quedaría en D20.",
+   "accion": "Regla propuesta RP-01 (precedencia general entre disciplina y objeto). No se aplicó: cambia el alojamiento de pre-ensayos y necesita la decisión del autor."
+  },
+  {
+   "id": "C4a-010",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "Cuatro errores de clasificación que el propio clasificador llamó evidentes siguen sin corregirse. La política de migración conserva la coordenada 5.3 salvo cambios causados por el catálogo 6.0 y no prevé una vía para corregir errores, de modo que el paquete mantiene coordenadas que contradicen la tesis.",
+   "accion": "La política de migración admite los ajustes de alcance de la Taxonomía 6.0 y una vía de corrección (ADR-028, que rige de forma provisoria). Se aplicaron las siete sugerencias del clasificador que un segundo lector, que las tenía a la vista, confirmó: es una confirmación, no una segunda lectura independiente."
+  },
+  {
+   "id": "C4b-001",
+   "severidad": "alta",
+   "decision": "Propuesta al autor",
+   "hallazgo": "La regla 6 no tiene la cláusula de pilar que sí tiene la regla 3: solo enumera tres excepciones (D03, D02 y D22). No decide si la auditoría, la prueba o la métrica de un dominio concreto migra a D28 o queda en ese dominio, y es la frontera que más ítems del lote afecta.",
+   "accion": "Regla propuesta RP-02 (cláusula de pilar y fronteras de D28). No se aplicó."
+  },
+  {
+   "id": "C5a-001",
+   "severidad": "alta",
+   "decision": "Corregido en parte",
+   "hallazgo": "La Biblioteca contiene el mismo concepto en más de una categoría, y la regla por categoría le da a cada copia un tipo distinto. Encontré 30 grupos que suman 70 conceptos, sin búsqueda exhaustiva; en 18 la definición es casi idéntica.",
+   "accion": "Se unificó el tipo en siete conceptos de grupos con definición casi idéntica; los demás grupos se publican para que el autor decida si los fusiona (decisión D-12)."
+  },
+  {
+   "id": "C5a-002",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "Los 172 conceptos que la regla dejó como Concept no son un residuo homogéneo: leyendo nombre y definición, 71 corresponden a un tipo específico. Las cifras publicadas por tipo cambian en los cinco tipos.",
+   "accion": "Se aplicaron los veredictos de tipo de confianza alta o media (66 conceptos) y las ocho excepciones de la muestra; los cinco de confianza baja quedan como estaban."
+  },
+  {
+   "id": "C5a-004",
+   "severidad": "alta",
+   "decision": "Corregido en parte",
+   "hallazgo": "Los 1.404 conceptos llevan el pilar MM, incluidos los 388 HumanCapability, pero el diccionario de entidades del propio paquete ancla HumanCapability en el pilar OS a escala individual. Con la lectura de OS en dos escalas ya aceptada, cerca de 270 conceptos corresponden a otro pilar y el pilar OS queda vacío para la Biblioteca.",
+   "accion": "La lectura de OS en dos escalas se aplicó a la Biblioteca con una regla por categoría: las funciones ejecutivas y los factores humanos que son estados o condiciones van al pilar OS (59 conceptos); los demás quedan en MM. Por ser una regla por categoría, las habilidades socioemocionales y las mentalidades de resiliencia siguen en MM: el choque entre D-04 y D-08 queda abierto para ellas (decisión D-12.2). La corrección del ancla de HumanCapability en el diccionario se pide en OCR-CAND-03."
+  },
+  {
+   "id": "C5b-001",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "De los 142 vínculos «la práctica contrarresta el sesgo», leídos uno por uno, 57 se sostienen, 77 son débiles y 8 son incorrectos. La tabla de prácticas con más sesgos asociados cambia de orden cuando se cuentan solo los vínculos que se sostienen.",
+   "accion": "Se cargan solo los 57 vínculos que la segunda lectura juzgó sostenibles; los 77 débiles y los 8 incorrectos quedan en el CSV, con su motivo. El emparejamiento por nombres contenidos se corrigió."
+  },
+  {
+   "id": "C5b-002",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "El emparejamiento cuenta dos veces el texto «checklist de desesgo»: lo vincula con la práctica que nombra (DP-0016) y además con «Listas de verificación» (DP-0064), porque el alias «checklist» está contenido en ese nombre. Los seis vínculos con DP-0064 atribuyen a la base algo que no dice.",
+   "accion": "Se cargan solo los 57 vínculos que la segunda lectura juzgó sostenibles; los 77 débiles y los 8 incorrectos quedan en el CSV, con su motivo. El emparejamiento por nombres contenidos se corrigió."
+  },
+  {
+   "id": "C5b-012",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "Los territorios de la Biblioteca no se asignaron por concepto sino por categoría: cada categoría tiene un valor por defecto y el concepto lo hereda. Eso contradice la regla 1 (se clasifica por el objeto y la tesis). En la muestra de 100 conceptos, 49 asignaciones son dudosas. Las cifras por territorio describen la composición por categorías de la Biblioteca.",
+   "accion": "Los territorios de la Biblioteca no se cargan como clasificación: quedan como propiedad del nodo y en el CSV, rotulados como valor por categoría de la base. Derivarlos por concepto es la decisión D-12."
+  },
+  {
+   "id": "C5b-013",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "Hay 97 conceptos con más de tres territorios, 45 de ellos con siete de los ocho. La regla 2 admite un primario y hasta dos secundarios. La cantidad de territorios depende de la prioridad editorial y no del concepto, de modo que los conceptos más importantes son los que el eje X menos distingue.",
+   "accion": "Los territorios de la Biblioteca no se cargan como clasificación: quedan como propiedad del nodo y en el CSV, rotulados como valor por categoría de la base. Derivarlos por concepto es la decisión D-12."
+  },
+  {
+   "id": "C5b-014",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "El criterio «primario solo cuando la base declara un único territorio» da un resultado contrario a la lente que el mismo conjunto de cambios asigna. Los 1.404 conceptos llevan el pilar MM, cuya ancla primaria es T01, pero el mayor territorio primario de la Biblioteca resulta T03, y ningún sesgo tiene primario.",
+   "accion": "Los territorios de la Biblioteca no se cargan como clasificación: quedan como propiedad del nodo y en el CSV, rotulados como valor por categoría de la base. Derivarlos por concepto es la decisión D-12."
+  },
+  {
+   "id": "C6b-001",
+   "severidad": "alta",
+   "decision": "Corregido en parte",
+   "hallazgo": "Ninguno de los 64 indicadores con coordenada usa un dominio nuevo de la 6.0, aunque la política de migración manda cambiar la coordenada cuando el cambio lo causa un dominio nuevo. K60 mide la prueba de efectividad de los controles, que por la regla 6 es D28, y sigue en D03 con la nota «vigente en 6.0».",
+   "accion": "K60 pasa a D28 con D03 como secundario. La revisión de K59, K43 y K54 queda para el autor (decisión D-13). Ninguno de los otros 69 indicadores heredados usa un dominio nuevo de la 6.0: no tuvieron una lectura de migración."
+  },
+  {
+   "id": "C6c-001",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "Los cuatro indicadores ubicados en PR06 miden controles de acceso y de segmentación de red, no resiliencia de la infraestructura ni protección física o ambiental; se ubicaron por una regla mecánica (PR.IR lleva a PR06 salvo en la función GES-M3.1) que contradice la ubicación de esos mismos objetos en el corpus. Ubicados por objeto van a PR03, PR06 queda sin indicadores y dejan de sostenerse la afirmación de que las 34 subfunciones tienen indicador y el descarte de crear indicadores para PR06.",
+   "accion": "PR06 queda sin indicadores: K36 vuelve a PR03 y K159, K160 y K193 se ubican en PR03. Dos revisores coincidieron por separado."
+  },
+  {
+   "id": "C6c-002",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "La regla documentada dice que un indicador nuevo recibe subfunción solo cuando su categoría de CSF corresponde a una sola subfunción, pero el script también la asigna cuando corresponde a varias: toma la única de la misma función cuyo primer vínculo es esa categoría. Por eso 41 de los 89 indicadores con subfunción automática son de categorías con más de una subfunción, y las cifras publicadas (153 con subfunción y 71 solo con función) no salen de la regla documentada.",
+   "accion": "ADR-024 y el documento 06 describen la regla que el guion aplica. La subfunción derivada de la categoría de CSF sin lectura del indicador queda rotulada como tal, con confianza baja."
+  },
+  {
+   "id": "C8-001",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "El resumen dice que «el corpus está cargado hacia la ejecución» porque el pilar DO reúne 65,9 %, pero por función la mitad del corpus es gobierno y la operación es lo menos desarrollado. El pilar DO funciona como categoría residual y el rótulo «ejecución» lleva a la conclusión contraria a la que dan los ejes del propio Atlas.",
+   "accion": "El resumen informa el corpus por función: la mitad es gobierno y la operación es lo menos desarrollado. Las proporciones por pilar se dan sin decimales y con su reserva."
+  },
+  {
+   "id": "C8-003",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "La cifra de 883 conceptos de la Biblioteca con territorio T01 se compara con los 9 pre-ensayos de T01, pero los 9 llevan T01 como territorio primario y los 883 lo llevan en cualquier posición. Además, el 92 % de esos conceptos tiene la prioridad más baja de la propia base y más de la mitad es una lista de sesgos y falacias.",
+   "accion": "Se retira la comparación de 9 con 883. Los territorios de la Biblioteca son un valor por categoría de la base y ya no se afirman como clasificación; el documento da las cifras con su papel (315 con T01 como único territorio y 568 con T01 entre varios)."
+  },
+  {
+   "id": "C8-004",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "El documento afirma que los productos aparecen solo en el plano B, pero 65 pre-ensayos del corpus académico nombran productos de un único proveedor. Ninguno está marcado para revisión de la edición pública.",
+   "accion": "Se detectan los nombres de producto y de proveedor en el plano A: 77 pre-ensayos (72 nombran productos y 5 solo al proveedor) quedan marcados «revisar» y el paquete lo informa como advertencia de una comprobación propia (PAQ-01), que no es una de las 37 reglas de la ontología. Los documentos dicen que el plano A se propone agnóstico de proveedor y que el corpus no lo es. Si esos pre-ensayos pasan al plano B lo decide el autor (RP-17)."
+  },
+  {
+   "id": "C8-005",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "La muestra de control casi no mide la asignación de territorio y dominio: en 45 de 48 casos el clasificador recibió el valor vigente con la instrucción de conservarlo y solo decidió si migraba a un dominio nuevo. La confianza declarada, que ordena la revisión del curador y filtra la primera tanda, es el dato menos fiable del método.",
+   "accion": "La muestra de control ya no se presenta como medida de reproducibilidad. La medida es la muestra a ciegas, que la verificación de cierre completó con un estrato de confianza media: 87 pre-ensayos en tres estratos, informados por estrato y con su intervalo, con una estimación ponderada para los 595 pre-ensayos del marco. Los documentos dicen qué mide: el acuerdo de un lector automático con la coordenada vigente."
+  },
+  {
+   "id": "C8-006",
+   "severidad": "alta",
+   "decision": "Corregido",
+   "hallazgo": "El único ejemplo de uso del Atlas no se reproduce con el corpus: la coordenada que propone no devuelve ningún pre-ensayo y el pre-ensayo que trata ese mismo caso está clasificado en otro territorio y otro dominio. La navegación por coordenada no fue probada.",
+   "accion": "El ejemplo de uso se rehízo con una coordenada que el corpus resuelve y se agregaron casos de navegación con lo que devuelve cada uno."
+  }
+ ],
+ "d20": {
+  "total": 71,
+  "por_caso": {
+   "coinciden: queda": 34,
+   "coinciden: mover": 12,
+   "solo la segunda lectura mueve": 11,
+   "otro dominio: coinciden": 1,
+   "la segunda lectura lo deja en D20": 1,
+   "criterio: la segunda lectura mueve al dominio previsto": 9,
+   "criterio: la segunda lectura mueve a otro dominio": 2,
+   "ambas mueven, a dominios distintos": 1
+  },
+  "segunda_lectura_por_dominio": {
+   "D20": 35,
+   "D01": 15,
+   "D02": 6,
+   "D28": 11,
+   "D17": 2,
+   "D14": 1,
+   "D03": 1
+  }
+ },
+ "d20_aplicacion": {
+  "se_movieron": 26,
+  "por_destino": {
+   "D01": 16,
+   "D02": 6,
+   "D17": 2,
+   "D28": 1,
+   "D14": 1
+  },
+  "quedan_en_D20": 45,
+  "por_respaldo": {
+   "las dos lecturas deciden el mismo destino": 13,
+   "la primera lectura lo dejaba a criterio del curador y la segunda propone el destino": 9,
+   "adjudicación escrita en el triaje": 4
+  },
+  "a_destinos_de_la_regla_7": 22,
+  "a_otros_dominios": {
+   "AMP-49": "D17",
+   "HC-012": "D28",
+   "APC-122": "D17",
+   "APC-164": "D14"
+  },
+  "primera_lectura_de_los_que_salieron": {
+   "Mover": 13,
+   "Otro dominio (fuera de D-03)": 1,
+   "A criterio del curador": 9,
+   "Queda en D20": 3
+  },
+  "por_resolucion": {
+   "queda en D20: las dos lecturas coinciden": 34,
+   "se movió a D01: las dos lecturas deciden lo mismo": 8,
+   "se movió a D02: las dos lecturas deciden lo mismo": 4,
+   "queda en D20: la segunda lectura propone D28; sin coincidencia, a decisión del autor": 9,
+   "se movió a D17: coinciden la sugerencia del clasificador, la primera lectura y la segunda (fuera de D-03)": 1,
+   "queda en D20: la segunda lectura no acompaña el movimiento de la primera; a decisión del autor": 1,
+   "se movió a D28: la primera lectura lo dejaba a criterio del curador y la segunda propone ese destino": 1,
+   "se movió a D01: adjudicado en el triaje": 1,
+   "se movió a D17: adjudicado en el triaje": 1,
+   "se movió a D02: la primera lectura lo dejaba a criterio del curador y la segunda propone ese destino": 2,
+   "se movió a D14: adjudicado en el triaje": 1,
+   "se movió a D01: la primera lectura lo dejaba a criterio del curador y la segunda propone ese destino": 6,
+   "queda en D20: la segunda lectura propone D03; sin coincidencia, a decisión del autor": 1,
+   "se movió a D01: adjudicado en el triaje (destino discutido: la segunda lectura propone D28)": 1
+  }
+ },
+ "d20_sin_coincidencia": [
+  {
+   "id": "AMP-46",
+   "titulo": "Trazabilidad de decisiones autónomas",
+   "resolucion": "queda en D20: la segunda lectura propone D28; sin coincidencia, a decisión del autor"
+  },
+  {
+   "id": "HC-010",
+   "titulo": "Autonomía delegada y límites de acción",
+   "resolucion": "queda en D20: la segunda lectura no acompaña el movimiento de la primera; a decisión del autor"
+  },
+  {
+   "id": "APC-210",
+   "titulo": "Umbrales de desempeño y aseguramiento para aprobar despliegues de IA",
+   "resolucion": "queda en D20: la segunda lectura propone D28; sin coincidencia, a decisión del autor"
+  },
+  {
+   "id": "APC-212",
+   "titulo": "Compensación de mitigaciones adversariales sin garantía formal",
+   "resolucion": "queda en D20: la segunda lectura propone D28; sin coincidencia, a decisión del autor"
+  },
+  {
+   "id": "APA-053",
+   "titulo": "Pruebas de agentes antes de producción y tras cada cambio",
+   "resolucion": "queda en D20: la segunda lectura propone D28; sin coincidencia, a decisión del autor"
+  },
+  {
+   "id": "APA-068",
+   "titulo": "Inventario de sistemas de IA con impacto en clientes",
+   "resolucion": "queda en D20: la segunda lectura propone D03; sin coincidencia, a decisión del autor"
+  },
+  {
+   "id": "APA-075",
+   "titulo": "Registro auditable de agentes en producción y sus permisos",
+   "resolucion": "queda en D20: la segunda lectura propone D28; sin coincidencia, a decisión del autor"
+  },
+  {
+   "id": "APA-108",
+   "titulo": "Criterio de inclusión y completitud del inventario de IA",
+   "resolucion": "queda en D20: la segunda lectura propone D28; sin coincidencia, a decisión del autor"
+  },
+  {
+   "id": "APA-111",
+   "titulo": "Expediente de aprobación para producción de sistemas de IA",
+   "resolucion": "queda en D20: la segunda lectura propone D28; sin coincidencia, a decisión del autor"
+  },
+  {
+   "id": "APA-113",
+   "titulo": "Aseguramiento razonable frente a la manipulación de la IA",
+   "resolucion": "queda en D20: la segunda lectura propone D28; sin coincidencia, a decisión del autor"
+  },
+  {
+   "id": "APA-158",
+   "titulo": "Cobertura y adaptación de controles ante riesgos de IA",
+   "resolucion": "queda en D20: la segunda lectura propone D28; sin coincidencia, a decisión del autor"
+  }
+ ],
+ "migraciones": {
+  "total": 73,
+  "por_caso": {
+   "coinciden": 69,
+   "la segunda lectura propone otro dominio": 1,
+   "la segunda lectura conserva el dominio 5.3": 3
+  },
+  "coincidencia_pct": 94.5,
+  "por_dominio_1_1": {
+   "D25": {
+    "total": 14,
+    "coinciden": 13
+   },
+   "D26": {
+    "total": 5,
+    "coinciden": 5
+   },
+   "D28": {
+    "total": 54,
+    "coinciden": 51
+   }
+  }
+ },
+ "muestra": {
+  "que_mide": "El acuerdo entre una lectura automática a ciegas y la coordenada de la versión 1.1. En territorio y en dominio esa coordenada es casi siempre la heredada de la Taxonomía 5.3, que la política de migración mandaba conservar: la muestra mide sobre todo cuánto coincide un lector automático con la coordenada heredada, y no la reproducibilidad del método de clasificación. No es una revisión humana.",
+  "diseno": {
+   "marco": 595,
+   "fuera_del_marco": {
+    "pre-ensayos que estaban en D20": 71,
+    "migraciones a un dominio nuevo": 73,
+    "nota": "Tuvieron su propia segunda lectura, que no fue a ciegas."
+   },
+   "estratos": [
+    {
+     "estrato": "alta",
+     "poblacion": 419,
+     "muestra": 40,
+     "seleccion": "sorteo simple sin reposición"
+    },
+    {
+     "estrato": "media",
+     "poblacion": 169,
+     "muestra": 40,
+     "seleccion": "sorteo simple sin reposición"
+    },
+    {
+     "estrato": "baja",
+     "poblacion": 7,
+     "muestra": 7,
+     "seleccion": "todos, sin sorteo"
+    }
+   ],
+   "definicion_de_estrato": "La confianza que el clasificador declaró para su propuesta en la versión 1.1.",
+   "sorteos": [
+    {
+     "estratos": "alta y baja",
+     "cuando": "revisión crítica",
+     "semilla": 20261115,
+     "lector": "revisor C4c"
+    },
+    {
+     "estratos": "media",
+     "cuando": "verificación de cierre",
+     "semilla": 20261116,
+     "lector": "revisor C4d"
+    }
+   ]
+  },
+  "total": 87,
+  "por_estrato": {
+   "territorio": {
+    "mismo_primario": {
+     "alta": {
+      "k": 31,
+      "n": 40,
+      "pct": 77.5,
+      "ic95": [
+       62,
+       88
+      ]
+     },
+     "media": {
+      "k": 26,
+      "n": 40,
+      "pct": 65.0,
+      "ic95": [
+       50,
+       78
+      ]
+     },
+     "baja": {
+      "k": 2,
+      "n": 7,
+      "pct": 28.6,
+      "ic95": [
+       8,
+       64
+      ]
+     }
+    },
+    "primario_entre_el_primario_o_los_secundarios": {
+     "alta": {
+      "k": 37,
+      "n": 40,
+      "pct": 92.5,
+      "ic95": [
+       80,
+       97
+      ]
+     },
+     "media": {
+      "k": 33,
+      "n": 40,
+      "pct": 82.5,
+      "ic95": [
+       68,
+       91
+      ]
+     },
+     "baja": {
+      "k": 5,
+      "n": 7,
+      "pct": 71.4,
+      "ic95": [
+       36,
+       92
+      ]
+     }
+    }
+   },
+   "dominio": {
+    "mismo_primario": {
+     "alta": {
+      "k": 37,
+      "n": 40,
+      "pct": 92.5,
+      "ic95": [
+       80,
+       97
+      ]
+     },
+     "media": {
+      "k": 29,
+      "n": 40,
+      "pct": 72.5,
+      "ic95": [
+       57,
+       84
+      ]
+     },
+     "baja": {
+      "k": 2,
+      "n": 7,
+      "pct": 28.6,
+      "ic95": [
+       8,
+       64
+      ]
+     }
+    },
+    "primario_entre_el_primario_o_los_secundarios": {
+     "alta": {
+      "k": 40,
+      "n": 40,
+      "pct": 100.0,
+      "ic95": [
+       91,
+       100
+      ]
+     },
+     "media": {
+      "k": 37,
+      "n": 40,
+      "pct": 92.5,
+      "ic95": [
+       80,
+       97
+      ]
+     },
+     "baja": {
+      "k": 4,
+      "n": 7,
+      "pct": 57.1,
+      "ic95": [
+       25,
+       84
+      ]
+     }
+    }
+   },
+   "subfuncion": {
+    "mismo_primario": {
+     "alta": {
+      "k": 33,
+      "n": 40,
+      "pct": 82.5,
+      "ic95": [
+       68,
+       91
+      ]
+     },
+     "media": {
+      "k": 30,
+      "n": 40,
+      "pct": 75.0,
+      "ic95": [
+       60,
+       86
+      ]
+     },
+     "baja": {
+      "k": 5,
+      "n": 7,
+      "pct": 71.4,
+      "ic95": [
+       36,
+       92
+      ]
+     }
+    },
+    "primario_entre_el_primario_o_los_secundarios": {
+     "alta": {
+      "k": 39,
+      "n": 40,
+      "pct": 97.5,
+      "ic95": [
+       87,
+       100
+      ]
+     },
+     "media": {
+      "k": 39,
+      "n": 40,
+      "pct": 97.5,
+      "ic95": [
+       87,
+       100
+      ]
+     },
+     "baja": {
+      "k": 6,
+      "n": 7,
+      "pct": 85.7,
+      "ic95": [
+       49,
+       97
+      ]
+     }
+    }
+   },
+   "funcion": {
+    "mismo_primario": {
+     "alta": {
+      "k": 37,
+      "n": 40,
+      "pct": 92.5,
+      "ic95": [
+       80,
+       97
+      ]
+     },
+     "media": {
+      "k": 35,
+      "n": 40,
+      "pct": 87.5,
+      "ic95": [
+       74,
+       95
+      ]
+     },
+     "baja": {
+      "k": 7,
+      "n": 7,
+      "pct": 100.0,
+      "ic95": [
+       65,
+       100
+      ]
+     }
+    }
+   },
+   "los_tres_ejes": {
+    "mismo_primario": {
+     "alta": {
+      "k": 25,
+      "n": 40,
+      "pct": 62.5,
+      "ic95": [
+       47,
+       76
+      ]
+     },
+     "media": {
+      "k": 16,
+      "n": 40,
+      "pct": 40.0,
+      "ic95": [
+       26,
+       55
+      ]
+     },
+     "baja": {
+      "k": 0,
+      "n": 7,
+      "pct": 0.0,
+      "ic95": [
+       0,
+       35
+      ]
+     }
+    }
+   }
+  },
+  "ponderada_para_el_marco": {
+   "territorio": {
+    "pct": 73.4,
+    "ic95": [
+     64,
+     83
+    ],
+    "margen_en_puntos": 9.5
+   },
+   "dominio": {
+    "pct": 86.1,
+    "ic95": [
+     80,
+     93
+    ],
+    "margen_en_puntos": 6.5
+   },
+   "subfuncion": {
+    "pct": 80.2,
+    "ic95": [
+     72,
+     89
+    ],
+    "margen_en_puntos": 8.7
+   },
+   "funcion": {
+    "pct": 91.2,
+    "ic95": [
+     85,
+     97
+    ],
+    "margen_en_puntos": 6.1
+   },
+   "los_tres_ejes": {
+    "pct": 55.4,
+    "ic95": [
+     45,
+     66
+    ],
+    "margen_en_puntos": 10.9
+   }
+  },
+  "por_origen_de_la_coordenada": {
+   "territorio": {
+    "heredada de la Taxonomía 5.3": {
+     "k": 53,
+     "n": 78,
+     "pct": 67.9,
+     "ic95": [
+      57,
+      77
+     ]
+    },
+    "asignada por el clasificador": {
+     "k": 6,
+     "n": 9,
+     "pct": 66.7,
+     "ic95": [
+      35,
+      88
+     ]
+    }
+   },
+   "dominio": {
+    "heredada de la Taxonomía 5.3": {
+     "k": 60,
+     "n": 78,
+     "pct": 76.9,
+     "ic95": [
+      66,
+      85
+     ]
+    },
+    "asignada por el clasificador": {
+     "k": 8,
+     "n": 9,
+     "pct": 88.9,
+     "ic95": [
+      56,
+      98
+     ]
+    }
+   },
+   "subfuncion": {
+    "heredada de la Taxonomía 5.3": {
+     "k": 18,
+     "n": 27,
+     "pct": 66.7,
+     "ic95": [
+      48,
+      81
+     ]
+    },
+    "asignada por el clasificador": {
+     "k": 50,
+     "n": 60,
+     "pct": 83.3,
+     "ic95": [
+      72,
+      91
+     ]
+    }
+   }
+  },
+  "cambiados_en_la_1_2_por_otra_via": [
+   "M6.2-K10"
+  ],
+  "cambiados_en_la_1_2_por_otra_via_con_algun_eje_distinto": [
+   "M6.2-K10"
+  ],
+  "algun_eje_distinto": {
+   "alta": {
+    "k": 15,
+    "n": 40,
+    "pct": 37.5,
+    "ic95": [
+     24,
+     53
+    ]
+   },
+   "media": {
+    "k": 24,
+    "n": 40,
+    "pct": 60.0,
+    "ic95": [
+     45,
+     74
+    ]
+   },
+   "baja": {
+    "k": 7,
+    "n": 7,
+    "pct": 100.0,
+    "ic95": [
+     65,
+     100
+    ]
+   }
+  },
+  "tesis_que_repite_el_comienzo_del_texto": {
+   "primera_muestra": {
+    "k": 20,
+    "n": 47
+   },
+   "muestra_complementaria": {
+    "k": 32,
+    "n": 40
+   },
+   "criterio": "los primeros 60 caracteres del campo tesis son el comienzo del texto"
+  },
+  "limites": [
+   "Los textos se entregaron recortados: 1.100 caracteres del texto y 600 de la tesis.",
+   "En 52 de los 87 registros (20 de 47 en la primera muestra y 32 de 40 en la complementaria), el campo «tesis» que recibió el lector repite el comienzo del texto y no es una tesis propia.",
+   "El marco deja afuera los pre-ensayos que estaban en D20 y las migraciones: de ellos no hay lectura a ciegas.",
+   "Cada estrato tiene pocos casos: los intervalos son amplios, y con los 7 casos de confianza baja solo corresponde leer las fracciones.",
+   "En territorio y dominio casi todo lo que se compara es coordenada heredada: la muestra dice poco sobre las coordenadas que asignó el clasificador.",
+   "Los dos lectores son agentes automáticos con la misma configuración y pueden compartir un mismo error: el acuerdo no prueba que la coordenada sea correcta, y el desacuerdo no dice cuál de las dos lecturas se equivoca.",
+   "Los dos estratos sorteados los leyeron dos revisores distintos, en dos momentos, con el mismo extracto de reglas."
+  ],
+  "tabla": {
+   "columnas": [
+    "Eje",
+    "Confianza alta (419 en el marco)",
+    "Confianza media (169 en el marco)",
+    "Confianza baja (7 en el marco)",
+    "Estimación para los 595 del marco"
+   ],
+   "filas": [
+    [
+     "Territorio",
+     "31 de 40 (78 %; 62–88)",
+     "26 de 40 (65 %; 50–78)",
+     "2 de 7",
+     "73 % (64–83)"
+    ],
+    [
+     "Dominio",
+     "37 de 40 (93 %; 80–97)",
+     "29 de 40 (73 %; 57–84)",
+     "2 de 7",
+     "86 % (80–93)"
+    ],
+    [
+     "Subfunción",
+     "33 de 40 (83 %; 68–91)",
+     "30 de 40 (75 %; 60–86)",
+     "5 de 7",
+     "80 % (72–89)"
+    ],
+    [
+     "Función",
+     "37 de 40 (93 %; 80–97)",
+     "35 de 40 (88 %; 74–95)",
+     "7 de 7",
+     "91 % (85–97)"
+    ],
+    [
+     "Los tres ejes a la vez",
+     "25 de 40 (63 %; 47–76)",
+     "16 de 40 (40 %; 26–55)",
+     "0 de 7",
+     "55 % (45–66)"
+    ]
+   ],
+   "como_leer": "Cada celda da los casos en que el segundo lector eligió el mismo primario, el porcentaje y, entre paréntesis, el intervalo de confianza del 95 %. La última columna pondera los tres estratos por su tamaño."
+  },
+  "tabla_origen": {
+   "columnas": [
+    "Eje",
+    "Coordenada heredada de la Taxonomía 5.3",
+    "Coordenada asignada por el clasificador"
+   ],
+   "filas": [
+    [
+     "Territorio",
+     "53 de 78 (68 %; 57–77)",
+     "6 de 9 (67 %; 35–88)"
+    ],
+    [
+     "Dominio",
+     "60 de 78 (77 %; 66–85)",
+     "8 de 9 (89 %; 56–98)"
+    ],
+    [
+     "Subfunción",
+     "18 de 27 (67 %; 48–81)",
+     "50 de 60 (83 %; 72–91)"
+    ]
+   ]
+  },
+  "frase": "En una muestra a ciegas de 87 pre-ensayos, estratificada por la confianza del clasificador, el segundo lector eligió el mismo territorio en 31 de 40 casos de confianza alta, 26 de 40 de confianza media y 2 de 7 de confianza baja; el mismo dominio, en 37 de 40, 29 de 40 y 2 de 7; y la misma subfunción, en 33 de 40, 30 de 40 y 5 de 7. Ponderado para los 595 pre-ensayos del marco (el corpus sin los que estaban en D20 ni las migraciones), con su intervalo del 95 %: territorio 73 % (64–83), dominio 86 % (80–93) y subfunción 80 % (72–89).",
+  "frase_corta": "muestra a ciegas de 87 pre-ensayos en tres estratos; acuerdo estimado para los 595 del marco, con intervalo del 95 %: territorio 73 % (64–83), dominio 86 % (80–93), subfunción 80 % (72–89)"
+ },
+ "evidencia_por_preensayo": {
+  "pre_ensayos": 739,
+  "con_otra_lectura_ademas_del_clasificador": 237,
+  "con_una_sola_lectura": 502,
+  "con_lectura_a_ciegas": 87,
+  "por_tipo": {
+   "muestra a ciegas": 87,
+   "D20": 71,
+   "migraciones": 73,
+   "sugerencias confirmadas": 7
+  },
+  "con_revision_humana": 0,
+  "nota": "El horizonte, las fuerzas y el pilar no tuvieron segunda lectura en ningún pre-ensayo. El territorio y la subfunción solo la tuvieron en la muestra a ciegas."
+ },
+ "tipos_muestra": {
+  "total": 120,
+  "excepciones": 8,
+  "conceptos_que_nadie_leyo": 1071
+ },
+ "tipos_mixtos": {
+  "total": 213,
+  "cambian": 71,
+  "matriz": {
+   "Concept → CognitiveBias": 41,
+   "Concept → Concept": 101,
+   "Concept → HumanCapability": 13,
+   "Concept → MentalModel": 16,
+   "Concept → MetacognitivePractice": 1,
+   "HumanCapability → HumanCapability": 18,
+   "MetacognitivePractice → MetacognitivePractice": 23
+  },
+  "por_categoria": {
+   "factor humano": {
+    "total": 62,
+    "cambian": 25
+   },
+   "metacognición y juicio epistémico": {
+    "total": 61,
+    "cambian": 17
+   },
+   "otro constructo cognitivo": {
+    "total": 90,
+    "cambian": 29
+   }
+  },
+  "cambian_por_confianza": {
+   "media": 58,
+   "alta": 8,
+   "baja": 5
+  }
+ },
+ "practicas": {
+  "total": 142,
+  "por_veredicto": {
+   "debil": 77,
+   "sostenible": 57,
+   "incorrecto": 8
+  },
+  "por_confianza_y_veredicto": {
+   "baja / debil": 76,
+   "baja / incorrecto": 8,
+   "baja / sostenible": 51,
+   "media / debil": 1,
+   "media / sostenible": 6
+  },
+  "por_practica": {
+   "Abogado del diablo": {
+    "debil": 37,
+    "sostenible": 7
+   },
+   "Análisis de hipótesis competidoras": {
+    "sostenible": 2
+   },
+   "Calibración": {
+    "sostenible": 10,
+    "debil": 1
+   },
+   "Checklist de desesgo": {
+    "sostenible": 2,
+    "debil": 4
+   },
+   "Contemplación": {
+    "incorrecto": 1
+   },
+   "Des-sesgo cognitivo": {
+    "debil": 1
+   },
+   "Inspección externa aleatoria": {
+    "sostenible": 1
+   },
+   "Listas de verificación": {
+    "incorrecto": 6,
+    "sostenible": 8
+   },
+   "No confiar en la memoria": {
+    "sostenible": 1
+   },
+   "Planificación de escenarios": {
+    "sostenible": 1
+   },
+   "Premortem": {
+    "incorrecto": 1,
+    "debil": 16,
+    "sostenible": 5
+   },
+   "Red teaming": {
+    "sostenible": 2
+   },
+   "Revisión por pares": {
+    "sostenible": 2,
+    "debil": 6
+   },
+   "Técnicas analíticas estructuradas": {
+    "sostenible": 1
+   },
+   "Valor esperado": {
+    "sostenible": 13,
+    "debil": 9
+   },
+   "práctica deliberada": {
+    "sostenible": 2,
+    "debil": 3
+   }
+  }
+ },
+ "territorios_biblioteca": {
+  "total": 100,
+  "por_veredicto": {
+   "dudoso": 49,
+   "plausible": 51
+  }
+ },
+ "duplicados": {
+  "total": 138,
+  "por_veredicto": {
+   "mismo_concepto": 21,
+   "relacionado": 91,
+   "distinto": 26
+  },
+  "por_origen": {
+   "revisor / distinto": 8,
+   "revisor / mismo_concepto": 10,
+   "revisor / relacionado": 60,
+   "similitud / distinto": 18,
+   "similitud / mismo_concepto": 11,
+   "similitud / relacionado": 31
+  },
+  "mismo_concepto": [
+   [
+    "MM-0021",
+    "M3.1-K08"
+   ],
+   [
+    "MM-0077",
+    "M4.2-K02"
+   ],
+   [
+    "MM-0178",
+    "G1.1-K06"
+   ],
+   [
+    "SOFT-0010",
+    "G6.1-K03"
+   ],
+   [
+    "SOFT-0040",
+    "G1.1-K09"
+   ],
+   [
+    "SOFT-0059",
+    "G6.2-K01"
+   ],
+   [
+    "MM-0019",
+    "AMP-21"
+   ],
+   [
+    "MM-0086",
+    "M6.2-K07"
+   ],
+   [
+    "MM-0082",
+    "G4.1-K03"
+   ],
+   [
+    "META-0038",
+    "AMP-01"
+   ],
+   [
+    "SOFT-0033",
+    "G1.1-K09"
+   ],
+   [
+    "DP-0097",
+    "M5.2-K05"
+   ],
+   [
+    "SOFT-0027",
+    "M1.1-K08"
+   ],
+   [
+    "DP-0047",
+    "M2.2-K05"
+   ],
+   [
+    "DP-0006",
+    "M4.1-K03"
+   ],
+   [
+    "HF-0050",
+    "M6.1-K03"
+   ],
+   [
+    "SOFT-0084",
+    "G6.1-K10"
+   ],
+   [
+    "COG-0097",
+    "G1.2-K07"
+   ],
+   [
+    "BIAS-0167",
+    "AMP-02"
+   ],
+   [
+    "DP-0144",
+    "M5.1-K06"
+   ],
+   [
+    "DP-0115",
+    "M6.2-K08"
+   ]
+  ]
+ },
+ "subfunciones": {
+  "total": 71,
+  "por_confianza": {
+   "alta": 46,
+   "media": 23,
+   "baja": 2
+  },
+  "por_subfuncion": {
+   "DE02": 2,
+   "DE04": 4,
+   "GV01": 2,
+   "GV02": 8,
+   "GV03": 1,
+   "GV05": 4,
+   "GV06": 3,
+   "GV07": 6,
+   "GV08": 3,
+   "GV10": 1,
+   "ID01": 6,
+   "ID03": 8,
+   "ID04": 5,
+   "PR03": 11,
+   "PR04": 2,
+   "RC01": 2,
+   "RC02": 1,
+   "RC03": 1,
+   "RS04": 1
+  }
+ },
+ "coordenadas": {
+  "total": 160,
+  "por_confianza": {
+   "alta": 98,
+   "media": 59,
+   "baja": 3
+  },
+  "por_territorio": {
+   "T01": 2,
+   "T02": 16,
+   "T03": 18,
+   "T04": 25,
+   "T05": 34,
+   "T06": 34,
+   "T07": 8,
+   "T08": 23
+  },
+  "por_dominio": {
+   "D01": 15,
+   "D02": 11,
+   "D03": 4,
+   "D04": 13,
+   "D05": 10,
+   "D06": 5,
+   "D08": 3,
+   "D09": 6,
+   "D10": 3,
+   "D11": 2,
+   "D12": 2,
+   "D13": 12,
+   "D14": 9,
+   "D15": 10,
+   "D16": 5,
+   "D17": 22,
+   "D18": 1,
+   "D20": 5,
+   "D24": 8,
+   "D25": 5,
+   "D26": 1,
+   "D28": 8
+  }
+ },
+ "apx": {
+  "por_veredicto": {
+   "aceptar": 4,
+   "corregir": 12
+  },
+  "campos_corregidos": {
+   "titulo": 2,
+   "tesis": 10,
+   "tension": 4,
+   "producto": 8,
+   "desarrollo": 3,
+   "pregunta": 1,
+   "error_frecuente": 1
+  }
+ },
+ "cambios": {
+  "filas": 183,
+  "por_ambito": {
+   "Biblioteca": 86,
+   "Corpus": 37,
+   "Serie APX": 22,
+   "Medición": 20,
+   "Taxonomía (texto)": 13,
+   "Cruce con dominios": 3,
+   "Cruce con territorios": 1,
+   "Propuesta de remapeo": 1
+  },
+  "filas_de_un_elemento": 171,
+  "filas_agregadas": 12,
+  "elementos_en_filas_agregadas": 2429,
+  "por_respaldo": {
+   "adjudicación del triaje": {
+    "filas": 17,
+    "elementos": 17
+   },
+   "corrección de texto o de conteo": {
+    "filas": 13,
+    "elementos": 13
+   },
+   "dos lecturas": {
+    "filas": 14,
+    "elementos": 98
+   },
+   "dos lecturas no coinciden": {
+    "filas": 6,
+    "elementos": 6
+   },
+   "dos revisores coinciden": {
+    "filas": 4,
+    "elementos": 4
+   },
+   "heredado del catálogo del autor": {
+    "filas": 2,
+    "elementos": 11
+   },
+   "la primera lectura no decidió y la segunda propone": {
+    "filas": 9,
+    "elementos": 9
+   },
+   "sugerencia confirmada por un lector que la conocía": {
+    "filas": 7,
+    "elementos": 7
+   },
+   "tres revisores coinciden": {
+    "filas": 2,
+    "elementos": 2031
+   },
+   "una lectura": {
+    "filas": 97,
+    "elementos": 375
+   },
+   "una lectura y adjudicación del triaje": {
+    "filas": 10,
+    "elementos": 10
+   },
+   "verificación externa": {
+    "filas": 2,
+    "elementos": 19
+   }
+  },
+  "una_lectura": {
+   "filas": 97,
+   "elementos": 375,
+   "filas_de_un_elemento": 92
+  },
+  "nota": "Cada fila es un cambio. Las filas agregadas resumen un cambio hecho en bloque sobre muchos elementos y dicen en qué archivo está el detalle. El archivo trae dos columnas vacías para que el autor anote su decisión."
+ },
+ "equivalencias": {
+  "mismo_concepto": 21,
+  "relacionado": 91,
+  "distinto": 26
+ },
+ "propuestas_por_destino": {
+  "D-11: reglas propuestas": 103,
+  "Solicitud OCR-CAND-03 (ontología)": 12,
+  "D-13: casos de D20 sin coincidencia": 1,
+  "D-12: la Biblioteca": 11,
+  "Revisión humana: el criterio lo fija el autor": 1,
+  "D-14.4: el nombre, con la advertencia": 1
+ },
+ "hallazgos_sobre_reglas_de_la_muestra_complementaria": 16,
+ "defectos_de_la_biblioteca_senalados": 11,
+ "grupos_mismo_concepto": 45,
+ "grupos_por_alcance": {
+  "en_mas_de_una_categoria": 31,
+  "en_una_sola_categoria": 14
+ },
+ "dobletes_internos": 27,
+ "dobletes_por_origen": {
+  "leidos_por_un_revisor": 25,
+  "detectados_por_regla": 2
+ },
+ "observaciones_catalogo": 22,
+ "solicitud_ontologia": 16,
+ "limites": [
+  "Los revisores son agentes automáticos con la misma configuración que quien generó los artefactos: tienen contexto independiente, no juicio independiente. Donde hubo dos lecturas y coincidieron es menos probable un desliz de lectura; eso no dice nada de un error que compartan.",
+  "La mayor parte del contenido tiene una sola lectura: 502 de los 739 pre-ensayos, los 154 indicadores que no heredan su coordenada y 97 de las 183 filas de cambios.",
+  "Quien generó los artefactos preparó también los insumos de cada revisor, adjudicó los desacuerdos y decidió qué hacer con cada hallazgo. El triaje y las adjudicaciones no tuvieron una lectura independiente hasta la verificación de cierre, que revisó una parte.",
+  "La regla «dos lecturas coincidentes o una adjudicación escrita» se aplicó a las coordenadas heredadas del corpus. Lo demás se cambió con una lectura, y así está rotulado.",
+  "El horizonte, las fuerzas y el pilar de los pre-ensayos no tuvieron segunda lectura. El territorio y la subfunción solo la tuvieron en la muestra a ciegas.",
+  "Lo que se escribió durante la corrección (las reglas propuestas, la redacción corregida de 12 pre-ensayos de la serie APX y los textos de la taxonomía) no lo había leído ningún revisor. La verificación de cierre leyó una parte.",
+  "La muestra a ciegas mide el acuerdo de un lector automático con la coordenada vigente, que en territorio y dominio es casi siempre la heredada. Deja afuera los pre-ensayos que estaban en D20 y las migraciones, y sus intervalos son amplios.",
+  "Las segundas lecturas trabajaron con textos recortados (1.100 caracteres del texto y 600 de la tesis).",
+  "En 285 de los 739 pre-ensayos (clases K y HC), la mayor parte del texto es de plantilla (mediana del 70 % o más): su clasificación descansa en el título y en pocas oraciones.",
+  "El corpus no es neutral respecto de un proveedor: 77 pre-ensayos del plano A nombran sus productos o al proveedor, y es el organismo con más artefactos en la base de referencia.",
+  "Los cambios aplicados sin segunda lectura quedan rotulados «una lectura» y el autor puede revertirlos (decisión D-13).",
+  "Ningún elemento tiene validación humana."
+ ],
+ "incidentes": [
+  {
+   "que": "Dos revisores terminaron sin entregar resultados: su respuesta final quedó retenida y no habían guardado nada en disco, aunque el formato común pide guardar por tramos.",
+   "tratamiento": "Se relanzaron una vez, con el encargo dividido en dos y con guardado por tramos; los cuatro encargos resultantes cerraron. La causa no se estableció: pudo ser el tamaño del encargo, la forma de trabajar del revisor o la retención de la respuesta."
+  },
+  {
+   "que": "Por falsas alarmas sobre la configuración de los lanzamientos se detuvieron, en tres ocasiones, agentes que estaban bien lanzados: 3 en la versión 1.0, 14 al empezar la revisión y 4 en la verificación de cierre. Hubo una falsa alarma más, sin detención, al lanzar la lectura final de consistencia.",
+   "tratamiento": "El registro de eventos de la sesión muestra que, de los 53 agentes auxiliares lanzados entre el 15 y el 16 de noviembre, en 40 la configuración la agregó la plataforma y en 13 de la revisión crítica la escribió quien despachaba, sin que el autor lo pidiera y con el mismo valor que agrega la plataforma. Todos corrieron con la misma configuración y no se perdió ningún resultado, pero las detenciones y los relanzamientos costaron tiempo de trabajo, que no se midió. La nota de incidencia de las versiones 1.0 y 1.1 era inexacta en la atribución, y la primera rectificación que se le comunicó al autor durante el cierre también lo fue: se corrigió con el registro a la vista. El detalle está en las incidencias 12 y 13 de la bitácora."
+  },
+  {
+   "que": "Hubo dos desconexiones de la sesión durante el día, que impidieron iniciar 18 lanzamientos.",
+   "tratamiento": "Los lanzamientos se repitieron después de cada desconexión. No se perdió ningún resultado."
+  },
+  {
+   "que": "En la verificación de cierre, el revisor de la muestra complementaria terminó su primer turno con la respuesta retenida y sin guardar nada.",
+   "tratamiento": "Se le pidió por mensaje que guardara en disco y completó el encargo: 40 veredictos y 16 hallazgos sobre las reglas."
+  }
+ ]
+}

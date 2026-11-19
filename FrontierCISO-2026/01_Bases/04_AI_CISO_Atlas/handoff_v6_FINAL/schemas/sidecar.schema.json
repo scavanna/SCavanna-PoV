@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aiciso.local/schemas/sidecar.schema.json",
+  "title": "AI CISO Atlas Essay Sidecar",
+  "type": "object",
+  "required": [
+    "essay_id",
+    "taxonomy_version",
+    "ontology_version",
+    "structural",
+    "evolutionary",
+    "ontology_analysis",
+    "human_review"
+  ],
+  "properties": {
+    "essay_id": {
+      "type": "string",
+      "pattern": "^ESS-[0-9]{6}$"
+    },
+    "taxonomy_version": {
+      "const": "5.3"
+    },
+    "ontology_version": {
+      "const": "1.0.0"
+    },
+    "structural": {
+      "type": "object"
+    },
+    "evolutionary": {
+      "type": "object"
+    },
+    "curriculum": {
+      "type": "object"
+    },
+    "ontology_analysis": {
+      "type": "object",
+      "required": [
+        "entities",
+        "relationships",
+        "validation"
+      ],
+      "properties": {
+        "entities": {
+          "type": "array"
+        },
+        "relationships": {
+          "type": "array"
+        },
+        "validation": {
+          "type": "object"
+        }
+      }
+    },
+    "human_review": {
+      "const": true
+    }
+  },
+  "additionalProperties": true
+}

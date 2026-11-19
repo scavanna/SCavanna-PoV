@@ -1,0 +1,12 @@
+# 21 Customer Lockbox Customer Key y M365 PAM
+
+Ruta: `FrontierCISO-2026\01_Bases\09_Excelencia_Operacional_MS\guias_v2\21_Customer_Lockbox_Customer_Key_y_M365_PAM`
+
+[Carpeta superior](../indice-catalogo.md)
+
+## Archivos de esta carpeta
+
+- [Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.html](Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.html)
+- [Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.json](Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.json)
+- [Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.md](Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.md)
+- [Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.xlsx](Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.xlsx)

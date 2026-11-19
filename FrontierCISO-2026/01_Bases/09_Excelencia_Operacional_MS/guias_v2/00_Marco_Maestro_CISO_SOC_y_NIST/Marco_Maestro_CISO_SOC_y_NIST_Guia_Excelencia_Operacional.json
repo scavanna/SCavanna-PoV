@@ -1,0 +1,1283 @@
+{
+  "schemaVersion": "2.0",
+  "id": "00_Marco_Maestro_CISO_SOC_y_NIST",
+  "orden": 0,
+  "slug": "Marco_Maestro_CISO_SOC_y_NIST",
+  "nombre": "Marco Maestro de Excelencia Operacional para la Oficina del CISO, SOC Moderno y Gobierno NIST CSF 2.0",
+  "nombreCorto": "Marco Maestro CISO, SOC y NIST",
+  "categoria": "Marco Transversal CISO, SOC y NIST",
+  "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://security.microsoft.com",
+    "https://entra.microsoft.com",
+    "https://purview.microsoft.com",
+    "https://intune.microsoft.com",
+    "https://portal.azure.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "Oficina del CISO",
+    "Consejo de Administración (Board)",
+    "Cybersecurity Architect",
+    "SOC Manager",
+    "SOC L1 / L2 / L3",
+    "GRC & Risk Manager",
+    "Identity & Endpoint Leads",
+    "Data Security & Purview Lead",
+    "FinOps & MSSP Governance Lead"
+  ],
+  "relacionM365E5": {
+    "estado": "Asociado a M365 E5 (Marco Arquitectónico y de Gobierno Transversal sobre M365 E5 / E7 y Azure)",
+    "licencias": [
+      "Microsoft 365 E5 (suite base integral de productividad, identidad P2, seguridad Defender XDR, endpoints Intune P1/Windows E5 y Purview Suite)",
+      "Microsoft Defender Suite (antes Microsoft 365 E5 Security: incluye Entra ID P2, MDE P2, MDO P2, MDI, MDCA y elegibilidad al Data Grant de Sentinel)",
+      "Microsoft Purview Suite (antes Microsoft 365 E5 Compliance: incluye MIP, DLP, DLM/Records, IRM, Communication Compliance, Audit Premium, eDiscovery Premium y Lockbox/Key/PAM; NO incluye Entra ID P2)",
+      "Complementos especializados: Microsoft Entra Suite (SSE + ID Governance completo), Microsoft Intune Suite (EPM, Remote Help, Cloud PKI), Microsoft Sentinel (consumo Azure + Data Grant E5 de hasta 5 MB/usuario/día) y Microsoft Security Copilot (SCUs base limitadas en E5/E7 + SCUs Azure)",
+      "Microsoft 365 E7: The Frontier Suite (disponible desde el 1 de mayo de 2026: consolida M365 E5 + M365 Copilot + Microsoft Entra Suite + Microsoft Agent 365)"
+    ],
+    "prerrequisitos": [
+      "Gobierno formal de la función GOVERN de NIST CSF 2.0 retenido al 100% internamente por la Oficina del CISO y Comité Directivo",
+      "Atributo UsageLocation configurado en Microsoft Entra ID para correcta asignación de planes de servicio M365 E5/E7 y suites modulares",
+      "Incorporación del workspace primario de Microsoft Sentinel al portal unificado Microsoft Defender (https://security.microsoft.com) antes del retiro de Azure Portal tras el 31 de marzo de 2027",
+      "Despliegue de Privileged Identity Management (PIM), al menos dos cuentas Break-Glass cloud-only protegidas con FIDO2 o CBA y segregación RBAC multi-portal",
+      "Activación de Microsoft Purview Audit (Premium) y Compliance Manager para generación continua de evidencia auditable frente a las 22 categorías de NIST CSF 2.0"
+    ],
+    "notaLicenciamiento": "Este módulo transversal gobierna la arquitectura contractual completa de los 22 módulos tecnológicos (01 a 22). A noviembre de 2026, Microsoft renombró Microsoft 365 E5 Security como Microsoft Defender Suite y Microsoft 365 E5 Compliance como Microsoft Purview Suite (aclaración crítica de auditoría: Purview Suite no otorga Microsoft Entra ID P2). Microsoft Sentinel se factura por consumo/Commitment Tiers en Azure (Analytics Tier y Sentinel Data Lake integrado desde el 23 de septiembre de 2026), pero recibe hasta 5 MB/usuario/día gratuitos con M365 E5/E7 o Defender Suite. Finalmente, para gobernar y asegurar agentes autónomos a escala empresarial, Microsoft introdujo el 1 de mayo de 2026 Microsoft Agent 365 (disponible como add-on sobre E5 o incluido en Microsoft 365 E7: The Frontier Suite)."
+  },
+  "resumenEjecutivo": "El Marco Maestro de Excelencia Operacional establece la constitución ejecutiva, arquitectónica y operativa para la Oficina del CISO y el SOC moderno sobre el ecosistema Microsoft a noviembre de 2026. Articula el triple pivote del CISO: de operador reactivo de controles a gobernador fiduciario del riesgo empresarial bajo la función transversal GOVERN de NIST CSF 2.0 (CSWP 29: 6 funciones, 22 categorías y 106 subcategorías); de herramientas fragmentadas a la Unified SecOps Platform en security.microsoft.com (convergiendo Defender XDR, Sentinel con Data Lake integrado, Exposure Management CTEM, Purview Adaptive Protection y Entra ITDR); y de triaje manual exhaustivo a un SOC Agéntico sostenible gobernado mediante tres modos de orquestación Humano-IA (Human-IN, Human-ON y Human-OUT-of-the-Loop con Automatic Attack Disruption, Security Copilot y Microsoft Agent 365), SLAs basados en resultados para socios MSSP y métricas diferenciadas en tres altitudes para el SOC, el C-Suite y el Consejo de Administración.",
+  "principiosRectores": [
+    {
+      "principio": "Gobierno fiduciario indelegable centrado en NIST CSF 2.0 GOVERN",
+      "descripcion": "Retener al 100% dentro de la organización el contexto regulatorio (GV.OC), el apetito de riesgo cuantificado (GV.RM), la autoridad RACI (GV.RR), las políticas (GV.PO), la supervisión ante el Board (GV.OV) y el gobierno contractual del MSSP (GV.SC), ejecutando evaluaciones anuales bajo el patrón SFI de Microsoft.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/security/zero-trust/sfi/integrate-nist-2-governance"
+    },
+    {
+      "principio": "Plataformización Zero Trust sobre fragmentación multi-consola (SAF y MCRA Junio 2026)",
+      "descripcion": "Consolidar la visibilidad, prevención y respuesta sobre Microsoft Security Adoption Framework (SAF) y MCRA para reducir la carga cognitiva del analista y correlacionar nativamente más de 100 billones de señales diarias entre identidad, endpoints, datos, apps, red e IA.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/security/adoption/adoption"
+    },
+    {
+      "principio": "Mínimo privilegio universal y acceso Just-In-Time (Zero Standing Privileges)",
+      "descripcion": "Erradicar permisos administrativos permanentes en Entra, Defender URBAC, Azure, Intune y Purview mediante PIM JIT, MFA resistente a phishing (Passkeys FIDO2/WHfB/CBA), Endpoint Privilege Management y menos de 5 Global Administrators elegibles.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/entra/architecture/security-operations-privileged-accounts"
+    },
+    {
+      "principio": "Orquestación calibrada Humano-IA y contención a velocidad de máquina",
+      "descripcion": "Combinar Automatic Attack Disruption (>=99% SNR en modo Human-OUT-of-the-Loop) con agentes supervisados de Security Copilot y Microsoft Agent 365 (Human-ON-the-Loop), reservando validación humana paso a paso (Human-IN-the-Loop) para decisiones críticas de negocio.",
+      "estadoValidacion": "Propuesta Editorial",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-xdr/automatic-attack-disruption"
+    },
+    {
+      "principio": "Co-gestión estratégica con MSSP regida por SLAs de resultados (Outcomes)",
+      "descripcion": "Estructurar el SOC híbrido en tres zonas (núcleo interno estratégico, zona co-gestionada y ejecución 24x7 MSSP), exigiendo por contrato precisión de escalamiento y tiempos reales de contención auditados directamente en el tenant del cliente.",
+      "estadoValidacion": "Propuesta Editorial",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide"
+    },
+    {
+      "principio": "Sostenibilidad del talento humano, cultura Kaizen y métricas en tres altitudes",
+      "descripcion": "Prevenir el burnout manteniendo una holgura mínima del 15% en capacidad analítica y 20% de tiempo protegido para upskilling, traduciendo el valor de seguridad en tres altitudes: táctica (SOC), de negocio (C-Level) y fiduciaria/FAIR (Board).",
+      "estadoValidacion": "Propuesta Editorial",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/security/zero-trust/workshop-business-security-leaders"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Unified SecOps Platform en Microsoft Defender Portal",
+      "funcionOperativa": "Superficie operativa convergente de cola única de incidentes, correlación XDR+SIEM, Case Management, Advanced Hunting y transición obligatoria de Sentinel antes del 31 de marzo de 2027.",
+      "portalRuta": "https://security.microsoft.com > Investigation & response / Microsoft Sentinel",
+      "integraciones": [
+        "Microsoft Defender XDR (MDE, MDO, MDI, MDCA)",
+        "Microsoft Sentinel & Sentinel Data Lake",
+        "Microsoft Security Copilot"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Security Exposure Management (MSEM)",
+      "funcionOperativa": "Motor nativo CTEM que descubre activos multi-nube, clasifica joyas de la corona, modela rutas de ataque (Attack Paths), identifica cuellos de botella (Chokepoints) y mide iniciativas Zero Trust.",
+      "portalRuta": "https://security.microsoft.com > Exposure management > Exposure insights",
+      "integraciones": [
+        "Defender Vulnerability Management",
+        "Microsoft Entra ID",
+        "Microsoft Defender for Cloud"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Plano de Control de Identidad, Red y Agentes (Microsoft Entra)",
+      "funcionOperativa": "Autenticación resistente a phishing, Conditional Access adaptativo (Token Protection, CAE estricto), Identity Protection (ITDR), PIM JIT, Global Secure Access y Microsoft Entra Agent ID.",
+      "portalRuta": "https://entra.microsoft.com > Identity / Protection / Identity governance / Agent ID",
+      "integraciones": [
+        "Microsoft Defender XDR (EntraIdSignInEvents)",
+        "Microsoft Intune Compliance",
+        "Microsoft Agent 365"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Sentinel Data Lake, Graph y Automatización SOAR",
+      "funcionOperativa": "Almacenamiento integrado de escala petabyte (desde sep-2026) con compresión 6:1 y hasta 12 años de retención, normalización ASIM, Sentinel Graph y playbooks Logic Apps con Managed Identity.",
+      "portalRuta": "https://security.microsoft.com > Microsoft Sentinel > Configuration / Data management",
+      "integraciones": [
+        "Azure Monitor Logs Ingestion API & DCR",
+        "Microsoft Fabric OneLake",
+        "Azure Logic Apps"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Capa de IA Generativa y Gobierno Agéntico (Security Copilot + Agent 365)",
+      "funcionOperativa": "Asistencia embebida, agentes autónomos supervisados vía MCP y registro/protección unificada de agentes empresariales bajo Microsoft Agent 365 y Microsoft 365 E7.",
+      "portalRuta": "https://security.microsoft.com / https://securitycopilot.microsoft.com / https://admin.microsoft.com > Agents",
+      "integraciones": [
+        "Microsoft Entra Agent ID",
+        "Microsoft Purview DSPM for AI",
+        "Microsoft Defender XDR & Intune"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Gestión Unificada y Seguridad de Endpoints (Intune + Windows Enterprise E5)",
+      "funcionOperativa": "Cumplimiento continuo de dispositivos, baselines de endurecimiento, cifrado BitLocker, Windows LAPS, Windows Hello for Business y Endpoint Privilege Management (Intune Suite).",
+      "portalRuta": "https://intune.microsoft.com > Devices / Endpoint security",
+      "integraciones": [
+        "Microsoft Entra Conditional Access",
+        "Microsoft Defender for Endpoint",
+        "Microsoft Security Copilot"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Seguridad de Datos, Riesgo Interno y Gobierno Regulatorio (Microsoft Purview)",
+      "funcionOperativa": "Clasificación y cifrado MIP, prevención de fuga DLP unificada, Insider Risk Adaptive Protection, retención inmutable DLM, Audit Premium, eDiscovery Premium y Compliance Manager.",
+      "portalRuta": "https://purview.microsoft.com > Solutions > Information Protection / DLP / Insider Risk / Compliance Manager",
+      "integraciones": [
+        "Microsoft Defender XDR Incidents",
+        "Microsoft Entra Conditional Access (Adaptive Protection)",
+        "Microsoft 365 Copilot & Agent 365"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Arquitectura de Supervisión Co-Gestionada (Azure Lighthouse, URBAC y Workbooks)",
+      "funcionOperativa": "Delegación granular de lectura/respuesta hacia socios MSSP sin ceder gobierno del tenant y tableros ejecutivos multi-audiencia en Workbooks y Power BI.",
+      "portalRuta": "https://portal.azure.com > My customers (Lighthouse) / https://security.microsoft.com > Permissions",
+      "integraciones": [
+        "Microsoft Defender Unified RBAC",
+        "Microsoft Sentinel Workbooks",
+        "Power BI"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "CISO / Líder de Oficina del CISO (Security Reader / Reports Reader)",
+      "nivelSOC": "Ejecutivo / Gobierno Fiduciario (GV)",
+      "permisosClave": "Lectura transversal de postura en Exposure Management, Secure Score, Purview Compliance Manager y dashboards ejecutivos sin permisos de modificación técnica.",
+      "asignacionPIM": "Activa de solo lectura protegida con MFA resistente a phishing; prohibición expresa de Global Administrator operativo.",
+      "responsabilidadOperativa": "Presidir el Comité de Ciberseguridad, proponer el apetito de riesgo al Board, gobernar la estrategia SAF y supervisar el desempeño del programa.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "rol": "Enterprise Cybersecurity Architect (Security Reader + Conditional Access Admin elegible)",
+      "nivelSOC": "Estratégico / Diseño Zero Trust (ID / PR)",
+      "permisosClave": "Análisis de rutas de ataque en MSEM, diseño de políticas Zero Trust alineadas a MCRA y validación técnica en comité de cambios (CAB).",
+      "asignacionPIM": "Eligible en PIM (máximo 4 horas, justificación con ticket CAB aprobado y MFA FIDO2/WHfB).",
+      "responsabilidadOperativa": "Mantener la arquitectura de referencia, priorizar Chokepoints en Exposure Management y auditar deriva de políticas.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "GRC, Cyber Risk & Audit Lead (Compliance Administrator elegible + View-Only Audit Logs)",
+      "nivelSOC": "Gobierno, Riesgo y Auditoría (GV / ID)",
+      "permisosClave": "Gestión de evaluaciones NIST CSF 2.0 / ISO 27001 en Purview Compliance Manager, lectura inmutable de logs de auditoría y revisión de Access Reviews.",
+      "asignacionPIM": "Lectura activa permanente; escritura en Compliance Manager vía PIM Eligible (máximo 8 horas).",
+      "responsabilidadOperativa": "Mantener el Risk Register (Open FAIR), liderar la evaluación anual NIST CSF 2.0 y auditar SLAs contractuales del MSSP.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "SOC Manager / CSIRT Lead (Defender URBAC SOC Lead + Sentinel Responder)",
+      "nivelSOC": "Dirección Operativa SecOps (DE / RS)",
+      "permisosClave": "Administración de cola unificada de incidentes, aprobación de acciones en Action Center, autorización de Live Response y declaración formal de incidentes P1.",
+      "asignacionPIM": "Eligible en PIM por turno operativo de 8 horas con MFA resistente a phishing.",
+      "responsabilidadOperativa": "Comandar la operación diaria del SOC híbrido, liderar crisis mayores (Incident Commander) y asegurar cumplimiento de MTTA/MTTC.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "SOC Analysts L1 / L2 y Analistas MSSP (Defender URBAC Scoped + Sentinel Responder)",
+      "nivelSOC": "Monitoreo y Respuesta Táctica 24x7 (DE / RS)",
+      "permisosClave": "Investigación y clasificación de incidentes, uso supervisado de Security Copilot y contención táctica pre-aprobada sin poder borrar reglas ni conectores.",
+      "asignacionPIM": "PIM for Groups por turno de 8 horas; para MSSP, delegación vía Azure Lighthouse con alcance restringido.",
+      "responsabilidadOperativa": "Ejecutar triaje continuo 24x7, enriquecimiento contextual, contención inicial y escalamiento preciso en <=15 minutos para incidentes críticos.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "SOC L3 / Detection Engineer & Threat Hunter (Sentinel Contributor + Custom Detections)",
+      "nivelSOC": "Caza Avanzada e Ingeniería (DE / ID.IM)",
+      "permisosClave": "Creación de reglas analíticas KQL/ASIM, Custom Detection Rules, campañas Hunts, Live Response avanzado y playbooks en Azure Logic Apps.",
+      "asignacionPIM": "Eligible en PIM (4 a 8 horas con justificación y MFA resistente a phishing); despliegues vía CI/CD revisado por pares.",
+      "responsabilidadOperativa": "Ejecutar caza proactiva por hipótesis, afinar falsos positivos, operar SOC Optimization y liderar ejercicios Purple Team.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Domain Platform Leads (Authentication Policy, Conditional Access, Intune & Purview Admins)",
+      "nivelSOC": "Ingeniería Preventiva por Dominio (PR / RC)",
+      "permisosClave": "Configuración especializada en Entra ID, Intune o Purview según segregación estricta de dominios, sin acumular privilegios cruzados.",
+      "asignacionPIM": "100% Eligible en PIM (máximo 4 horas; Privileged Role Administrator exige aprobación dual y Authentication Context FIDO2).",
+      "responsabilidadOperativa": "Implementar baselines seguras, Passkeys, Token Protection, cifrado MIP/BitLocker y políticas DLP aprobadas.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "AI & Agent Governance Lead (Agent ID Administrator + Security Copilot Contributor)",
+      "nivelSOC": "Gobierno de Agentes IA y SCUs (GV / PR)",
+      "permisosClave": "Administración de Agent Identity Blueprints, patrocinio en Microsoft Agent 365, Conditional Access para agentes y monitoreo de cuotas SCU.",
+      "asignacionPIM": "Eligible en PIM (máximo 4 horas con MFA resistente a phishing y ticket de aprobación).",
+      "responsabilidadOperativa": "Gobernar el registro unificado de agentes IA, auditar agentes en riesgo y prevenir Shadow AI o sobrecostos de cómputo generativo.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Supervisión matutina de cola unificada de incidentes críticos y traspaso 24x7 (SIEM + XDR)",
+      "objetivo": "Asegurar visibilidad táctica sobre todo incidente Critical o High abierto, validando MTTA <= 15 minutos y calidad del traspaso nocturno o del MSSP.",
+      "consolaRuta": "https://security.microsoft.com > Investigation & response > Incidents & alerts > Incidents",
+      "procedimiento": [
+        "Filtrar la cola unificada por Severity: Critical, High y Status: New, In progress ordenando por antigüedad.",
+        "Verificar que el 100% de los incidentes tengan propietario nominal asignado y tareas activas en Case Management.",
+        "Contrastar el resumen ejecutivo de Security Copilot con la evidencia técnica del grafo de ataque.",
+        "Escalar de inmediato al CSIRT Lead cualquier afectación sobre activos Crown Jewels o cuentas privilegiadas."
+      ],
+      "rolResponsable": "SOC Manager / SOC L2 Lead",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MA-02",
+      "mitreTactic": "Multi-Tactic (All Enterprise Tactics)",
+      "evidenciaAuditable": "Exportación diaria o snapshot en Workbook de SecurityIncident sin casos críticos huérfanos > 15 min.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Ruta de cola unificada verificada en Microsoft Learn; umbral MTTA <= 15 min es criterio editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/investigate-incidents"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Auditoría Human-ON-the-Loop del Action Center y Automatic Attack Disruption",
+      "objetivo": "Supervisar todas las contenciones autónomas ejecutadas a velocidad de máquina en las últimas 24 horas y resolver acciones pendientes.",
+      "consolaRuta": "https://security.microsoft.com > Investigation & response > Actions & submissions > Action center",
+      "procedimiento": [
+        "Revisar todos los incidentes etiquetados con Attack Disruption en las últimas 24 horas.",
+        "Auditar en Action center > History las contenciones automáticas ejecutadas sobre dispositivos, IPs, apps OAuth y usuarios en Entra/AD.",
+        "Aprobar o rechazar en menos de 2 horas las remediaciones pendientes en la pestaña Pending.",
+        "Confirmar erradicación forense completa antes de autorizar cualquier reversión o liberación de activos contenidos."
+      ],
+      "rolResponsable": "SOC L2 / SOC L3",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Lateral Movement / Impact",
+      "evidenciaAuditable": "Bitácora exportada del Action Center con usuario revisor, activo contenido y marca temporal.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Capacidades y flujo del Action Center y Attack Disruption verificados en Microsoft Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/automatic-attack-disruption"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Verificación diaria de salud de conectores, telemetría XDR y consumo en Sentinel",
+      "objetivo": "Prevenir puntos ciegos de visibilidad entre Entra ID, Defender XDR, Purview, nubes externas y Microsoft Sentinel.",
+      "consolaRuta": "https://security.microsoft.com > Microsoft Sentinel > Configuration > Data connectors",
+      "procedimiento": [
+        "Consultar SentinelHealth buscando errores de ingesta o fallos de autenticación en conectores CCF, AMA/DCR y API.",
+        "Validar recepción continua de eventos en EntraIdSignInEvents, DeviceProcessEvents, EmailEvents, IdentityLogonEvents y OfficeActivity.",
+        "Verificar salud operativa de sensores de Defender for Identity en controladores de dominio.",
+        "Contrastar el volumen diario en GB con la línea base presupuestaria y el beneficio Microsoft 365 E5 Data Grant."
+      ],
+      "rolResponsable": "Platform / SIEM Engineer",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Defense Evasion",
+      "evidenciaAuditable": "Resultado diario de consulta KQL sobre SentinelHealth y tabla Usage archivado en Workbook operativo.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tablas SentinelHealth, Usage y EntraIdSignInEvents verificadas en documentación oficial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/monitor-data-connector-health"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Vigilancia de cuentas Break-Glass y elevaciones privilegiadas críticas",
+      "objetivo": "Garantizar ausencia absoluta de uso no autorizado de cuentas de emergencia y auditar toda activación administrativa Tier-0.",
+      "consolaRuta": "https://entra.microsoft.com > Identity > Monitoring & health > Audit logs / PIM Resource audit",
+      "procedimiento": [
+        "Confirmar cero eventos no autorizados en la regla de alerta crítica Severidad 0 sobre los ObjectId de las cuentas Break-Glass.",
+        "Revisar en PIM todas las activaciones de Global Administrator, Privileged Role Administrator y Security Administrator del último día.",
+        "Correlacionar cada elevación con su ticket aprobado de cambio o incidente y verificar horario/ubicación.",
+        "Investigar como incidente inmediato cualquier evento Add member to role realizado fuera de MS-PIM."
+      ],
+      "rolResponsable": "SOC L2 + Identity Security Analyst",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Privilege Escalation / Persistence",
+      "evidenciaAuditable": "Registro diario conciliado de AuditLogs y estado limpio de alertas de emergencia.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Monitoreo Severidad 0 sobre cuentas Break-Glass y auditoría PIM verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-emergency-access"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Triaje transversal de riesgo de usuarios, workload identities y agentes IA",
+      "objetivo": "Contener en menos de 4 horas identidades humanas, principales de servicio y agentes autónomos en riesgo alto no auto-remediados.",
+      "consolaRuta": "https://entra.microsoft.com > ID Protection > Risky users / Risky workload identities / Risky agents",
+      "procedimiento": [
+        "Filtrar identidades humanas, service principals y agentes en estado At risk con nivel High.",
+        "Correlacionar detecciones (anomalousToken, leakedCredentials, entraDirectoryReconnaissance, suspiciousCredentialUsage) en Advanced Hunting.",
+        "Ejecutar Confirm compromise, revocación de sesiones o Disable sobre entidades comprometidas.",
+        "Notificar al propietario de aplicación o Sponsor humano en Microsoft Agent 365 cuando afecte identidades no humanas."
+      ],
+      "rolResponsable": "SOC L1 / L2 (ITDR)",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Credential Access / Valid Accounts",
+      "evidenciaAuditable": "Reporte diario de colas de riesgo con cero entidades High pendientes > 4 horas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Reportes Risky users, workload identities y Risky agents verificados en MS Learn; SLA < 4h es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-protection/concept-risky-agents"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Revisión diaria de alertas críticas de fuga de datos (Purview DLP) y riesgo interno elevado",
+      "objetivo": "Integrar las alertas de exfiltración de datos sensibles y Adaptive Protection al flujo diario de respuesta de seguridad.",
+      "consolaRuta": "https://purview.microsoft.com > Solutions > Data Loss Prevention > Alerts",
+      "procedimiento": [
+        "Revisar alertas DLP de severidad High generadas en endpoints, Exchange, SharePoint, navegadores e interacciones con IA.",
+        "Verificar aplicación efectiva de bloqueos automáticos por Adaptive Protection sobre usuarios en nivel Elevated risk.",
+        "Escalar exfiltraciones dolosas confirmadas al protocolo conjunto estrictamente confidencial con Legal y RRHH."
+      ],
+      "rolResponsable": "Data Security Analyst / SOC L2 autorizado",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-10",
+      "mitreTactic": "Collection / Exfiltration",
+      "evidenciaAuditable": "Cola de alertas DLP High atendida dentro de SLA de 24 horas y auditada en Purview Audit.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Integración de alertas Purview DLP/Adaptive Protection verificada en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/dlp-alerts-dashboard-get-started"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Evaluación diaria de inteligencia de amenazas emergentes y vulnerabilidades CISA KEV",
+      "objetivo": "Determinar en menos de 24 horas la exposición del entorno ante nuevas campañas adversarias o vulnerabilidades zero-day explotadas.",
+      "consolaRuta": "https://security.microsoft.com > Threat intelligence > Threat analytics / Vulnerability management",
+      "procedimiento": [
+        "Revisar informes nuevos o actualizados en Threat analytics priorizando aquellos con activos internos expuestos.",
+        "Cruzar nuevos CVEs en explotación activa (CISA KEV / EPSS alto) contra el inventario real en Defender Vulnerability Management.",
+        "Emitir orden de parcheo fuera de banda o mitigación compensatoria (ASR/WAF/IOCs) con SLA de 24 a 48 horas."
+      ],
+      "rolResponsable": "Threat Intelligence Analyst / SOC L3",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-02",
+      "mitreTactic": "Initial Access / Exploitation",
+      "evidenciaAuditable": "Bitácora diaria de boletines Threat Analytics evaluados y tickets urgentes abiertos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Consolas Threat Analytics y Defender Vulnerability Management verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/threat-analytics"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Comité táctico semanal de operaciones híbridas (SOC interno + MSSP) y tuning de ruido",
+      "objetivo": "Auditar calidad investigativa, tiempos MTTA/MTTC, precisión de escalamiento del MSSP y reducir falsos positivos.",
+      "consolaRuta": "https://security.microsoft.com > Microsoft Sentinel > Threat management > Workbooks",
+      "procedimiento": [
+        "Revisar métricas semanales de MTTA, MTTC y proporción de cierres TP, BP y FP por severidad.",
+        "Auditar una muestra aleatoria del 10% de incidentes cerrados por el MSSP verificando adherencia a runbooks.",
+        "Seleccionar las 5 reglas analíticas o políticas más ruidosas de la semana para ajuste por Ingeniería de Detección."
+      ],
+      "rolResponsable": "SOC Manager + MSSP Delivery Lead + Detection Lead",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.SC-07",
+      "mitreTactic": "Defense Evasion",
+      "evidenciaAuditable": "Minuta semanal firmada y registro de reglas ajustadas en repositorio de código.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Práctica recomendada de supervisión operativa sobre Workbook oficial Security Operations Efficiency.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/ops-guide"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Gestión semanal de rutas de ataque críticas y Chokepoints en Exposure Management",
+      "objetivo": "Romper proactivamente caminos de ataque hacia activos críticos priorizando nodos cuello de botella.",
+      "consolaRuta": "https://security.microsoft.com > Exposure management > Exposure insights > Attack paths / Chokepoints",
+      "procedimiento": [
+        "Revisar rutas de ataque activas que alcanzan activos clasificados como Crown Jewels.",
+        "Priorizar remediación sobre los Chokepoints con mayor impacto agregado de reducción de riesgo.",
+        "Medir avance semanal porcentual de las Initiatives activas (Zero Trust, Ransomware Protection, Identity Security)."
+      ],
+      "rolResponsable": "Cybersecurity Architect + Vulnerability Lead",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-05",
+      "mitreTactic": "Lateral Movement / Privilege Escalation",
+      "evidenciaAuditable": "Exportación semanal de Chokepoints mitigados y evolución de Initiatives en MSEM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Funcionalidades Attack Paths, Chokepoints e Initiatives verificadas en Microsoft Security Exposure Management.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security-exposure-management/attack-paths-overview"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Ejecución de SOC Optimization y gobernanza FinOps (Sentinel Data Lake + Security Copilot SCUs)",
+      "objetivo": "Cerrar brechas de cobertura MITRE ATT&CK v18 y optimizar costos de almacenamiento de logs y cómputo de IA.",
+      "consolaRuta": "https://security.microsoft.com > Microsoft Sentinel > Configuration > SOC optimization",
+      "procedimiento": [
+        "Aplicar recomendaciones de cobertura de amenazas y optimización de valor de datos en SOC Optimization.",
+        "Re-enrutar tablas verbosas sin uso analítico hacia el Sentinel Data Lake mediante transformaciones DCR.",
+        "Auditar el consumo semanal de SCUs en Security Copilot (dotación base E5/E7 vs capacidad Azure y overage)."
+      ],
+      "rolResponsable": "Sentinel Platform Lead + FinOps Security Analyst",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.IM-02",
+      "mitreTactic": "Multi-Tactic (MITRE ATT&CK v18 Coverage)",
+      "evidenciaAuditable": "Reporte semanal de recomendaciones SOC Optimization cerradas y balance de consumo GB/SCUs.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "SOC Optimization, Sentinel Data Lake y monitoreo de SCUs verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/soc-optimization/soc-optimization-reference"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Campaña semanal de caza proactiva de amenazas guiada por hipótesis (Threat Hunting)",
+      "objetivo": "Descubrir compromisos sigilosos que operan con credenciales válidas o abuso de herramientas legítimas.",
+      "consolaRuta": "https://security.microsoft.com > Investigation & response > Hunting > Advanced hunting",
+      "procedimiento": [
+        "Formular hipótesis semanal basada en TTPs recientes del sector o brechas detectadas en MITRE ATT&CK.",
+        "Ejecutar consultas KQL multi-dominio sobre XDR (30 días) y Sentinel / Data Lake asistidas por Security Copilot.",
+        "Documentar evidencias con Bookmarks y convertir cazas fructíferas en Custom Detection Rules permanentes."
+      ],
+      "rolResponsable": "Threat Hunter interno (SOC L3)",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Persistence / Command and Control",
+      "evidenciaAuditable": "Expediente semanal de Hunt cerrado con consultas ejecutadas y reglas promovidas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo de Hunts, Bookmarks y Custom Detection Rules verificado en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/hunting-conduct-hunt"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Control de deriva de configuración y promoción segura de políticas Report-Only",
+      "objetivo": "Auditar cambios semanales en controles preventivos y promover políticas validadas desde Report-only hacia aplicación activa.",
+      "consolaRuta": "https://entra.microsoft.com > Protection > Conditional Access > Policies",
+      "procedimiento": [
+        "Ejecutar validación automatizada de postura como código (ej. Maester) sobre políticas de Entra, Defender y Purview.",
+        "Analizar en Conditional Access Insights el impacto de políticas en Report-only (incluyendo Microsoft-managed policies antes de 45 días).",
+        "Aprobar en CAB el paso controlado a estado On y purgar exclusiones temporales vencidas."
+      ],
+      "rolResponsable": "Cybersecurity Architect + Domain Leads",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.PO-02",
+      "mitreTactic": "Defense Evasion",
+      "evidenciaAuditable": "Reporte automatizado semanal de postura y acta CAB de políticas activadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Ventana de 45 días de Microsoft-managed policies y modo Report-only verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/managed-policies"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Gobierno semanal del registro de agentes IA (Agent 365), apps OAuth y Shadow AI",
+      "objetivo": "Asegurar que todo agente autónomo y aplicación OAuth opere con identidad gobernada, Sponsor activo y privilegio mínimo.",
+      "consolaRuta": "https://admin.microsoft.com > Agents / https://entra.microsoft.com > Agent ID / https://security.microsoft.com > Cloud apps",
+      "procedimiento": [
+        "Revisar altas semanales en Microsoft Agent 365 y Entra Agent ID validando Blueprint autorizado y Sponsor humano.",
+        "Auditar en Defender for Cloud Apps nuevos consentimientos OAuth con permisos sensibles y uso de GenAI no sancionada.",
+        "Bloquear o revocar agentes y apps fuera de política y aplicar controles en Purview DSPM for AI."
+      ],
+      "rolResponsable": "AI & Agent Governance Lead + Cloud App Security Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-02",
+      "mitreTactic": "Persistence / Exfiltration",
+      "evidenciaAuditable": "Inventario semanal conciliado de agentes IA y aplicaciones OAuth de alto privilegio.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Registro convergente Agent 365 y Entra Agent ID verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/capabilities-entra"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Comité operativo mensual de la Oficina del CISO y evaluación de sostenibilidad del equipo",
+      "objetivo": "Revisar tendencias de 6 meses de KPIs maestros (Altitud 2) y verificar indicadores de salud y capacidad del talento humano.",
+      "consolaRuta": "Tablero Ejecutivo Power BI conectado a MSEM, Sentinel, Entra ID y Purview",
+      "procedimiento": [
+        "Evaluar cumplimiento mensual de los 8 KPIs maestros junto a líderes de dominio y pares de TI/Operaciones.",
+        "Verificar que la carga operativa no supere el 85% de capacidad disponible y que se respete el 20% de tiempo Kaizen.",
+        "Asignar planes de acción correctiva (CAPA) con vencimiento a 30 días para métricas en estado Ámbar o Rojo."
+      ],
+      "rolResponsable": "CISO + Líderes de Seguridad",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-01",
+      "mitreTactic": "Gobierno Transversal (N/A)",
+      "evidenciaAuditable": "Paquete mensual de indicadores de la Oficina del CISO y seguimiento CAPA en plataforma GRC.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Cadencia ejecutiva mensual y regla de holgura del 15% son propuestas editoriales del marco CISO.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/adoption/adoption"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Revisión mensual de postura global en Secure Score y Purview Compliance Manager",
+      "objetivo": "Medir la reducción mensual de deuda técnica preventiva y el cumplimiento frente a NIST CSF 2.0 e ISO 27001.",
+      "consolaRuta": "https://security.microsoft.com > Exposure management > Secure score / https://purview.microsoft.com > Compliance Manager",
+      "procedimiento": [
+        "Comparar el Microsoft Secure Score global y por dominio frente a la meta objetivo (>=85%).",
+        "Auditar el avance de acciones técnicas de mejora en las evaluaciones activas de Purview Compliance Manager.",
+        "Incorporar las 10 acciones de mayor retorno preventivo al sprint mensual de plataformas."
+      ],
+      "rolResponsable": "GRC Lead + Cybersecurity Architect",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-02",
+      "mitreTactic": "Initial Access / Defense Evasion",
+      "evidenciaAuditable": "Exportación mensual PDF/CSV de Secure Score y Compliance Manager archivada en GRC.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Herramientas Secure Score y Purview Compliance Manager verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/compliance-manager"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría mensual de privilegios, alertas PIM y certificaciones críticas de acceso",
+      "objetivo": "Asegurar cumplimiento estricto de Zero Standing Privileges en Entra, Defender, Azure, Intune y Purview.",
+      "consolaRuta": "https://entra.microsoft.com > Identity governance > Privileged Identity Management > Alerts / Access reviews",
+      "procedimiento": [
+        "Remediar el 100% de las alertas activas en PIM (roles sin MFA, asignaciones fuera de PIM, cuentas obsoletas).",
+        "Confirmar menos de 5 Global Administrators elegibles y cero asignaciones permanentes salvo cuentas Break-Glass.",
+        "Validar el cierre y revocación automática en Access Reviews mensuales de invitados B2B críticos y cuentas MSSP."
+      ],
+      "rolResponsable": "Identity Governance Lead + GRC Auditor",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Privilege Escalation / Valid Accounts",
+      "evidenciaAuditable": "Reporte mensual CSV de asignaciones PIM e historial firmado de Access Reviews.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Alertas nativas de PIM y Access Reviews con auto-apply verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-how-to-configure-security-alerts"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Conciliación mensual de licenciamiento, adopción M365 E5/E7 y optimización FinOps",
+      "objetivo": "Garantizar alineación contractual plena de licencias asignadas, reclamar licencias ociosas y optimizar tiers en Azure.",
+      "consolaRuta": "https://admin.microsoft.com > Billing > Licenses / https://portal.azure.com > Cost Management + Billing",
+      "procedimiento": [
+        "Auditar correspondencia entre usuarios protegidos por capacidades P2/Defender/Purview/Agent 365 y licencias asignadas.",
+        "Reclamar automáticamente licencias E5/E7 retenidas en cuentas deshabilitadas o inactivas > 60 días.",
+        "Evaluar ajuste de Simplified Commitment Tiers en Sentinel y SCUs aprovisionadas en Security Copilot."
+      ],
+      "rolResponsable": "FinOps Security Lead + Office of the CISO",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-03",
+      "mitreTactic": "Gobierno Financiero (N/A)",
+      "evidenciaAuditable": "Informe mensual de utilización de licencias y optimización financiera cloud.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Gobierno mensual FinOps sobre portales oficiales de facturación M365 y Azure.",
+      "urlSoporte": "https://www.microsoft.com/licensing/guidance/subscription-suites"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Evaluación independiente mensual de SLAs de resultado del proveedor MSSP / MXDR",
+      "objetivo": "Auditar con datos propios del tenant el rendimiento real del socio operativo externo frente a cláusulas de resultados.",
+      "consolaRuta": "https://security.microsoft.com > Microsoft Sentinel > Workbooks",
+      "procedimiento": [
+        "Calcular directamente sobre SecurityIncident y AuditLogs la precisión de escalamiento (>=90%) y cumplimiento SLA P1 (>=95%).",
+        "Revisar altas, bajas y accesos delegados del personal del MSSP en Azure Lighthouse o grupos B2B.",
+        "Celebrar comité mensual de servicio documentando mejoras, bonificaciones o créditos contractuales."
+      ],
+      "rolResponsable": "Vendor Performance Lead + SOC Manager",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.SC-07",
+      "mitreTactic": "Trusted Relationship",
+      "evidenciaAuditable": "Scorecard mensual auditado del MSSP y minuta firmada por ambas partes.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Modelo de supervisión TPRM basado en outcomes para contratos SecOps co-gestionados.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/lighthouse/overview"
+    },
+    {
+      "codigo": "M-06",
+      "cadencia": "Mensual",
+      "actividad": "Campaña mensual de simulación de ataques y medición de resiliencia humana (AST)",
+      "objetivo": "Evaluar y reducir continuamente la tasa de compromiso humano frente a phishing moderno, QR y AiTM.",
+      "consolaRuta": "https://security.microsoft.com > Email & collaboration > Attack simulation training",
+      "procedimiento": [
+        "Ejecutar campaña mensual en Attack simulation training inspirada en señuelos reales del sector.",
+        "Medir tasa de compromiso real frente a tasa predicha y porcentaje de reportes proactivos de usuarios.",
+        "Auditar completitud de entrenamientos correctivos asignados automáticamente a usuarios vulnerables."
+      ],
+      "rolResponsable": "Security Awareness Lead + MDO Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AT-01",
+      "mitreTactic": "Initial Access (Phishing)",
+      "evidenciaAuditable": "Reporte mensual de campaña AST con métricas de compromiso y formación completada.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Capacidades nativas de Attack Simulation Training en MDO Plan 2 verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/attack-simulation-training-get-started"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Reporte ejecutivo trimestral al Comité de Riesgos y Board of Directors (Scorecard & FAIR)",
+      "objetivo": "Traducir el desempeño técnico y la exposición cibernética a lenguaje fiduciario y financiero (ALE Open FAIR) para el Directorio.",
+      "consolaRuta": "Scorecard Ejecutivo Trimestral (Altitud 1) alimentado por MSEM, Compliance Manager y Risk Register",
+      "procedimiento": [
+        "Actualizar la cuantificación financiera anualizada (ALE) para los 5 escenarios principales de riesgo cibernético.",
+        "Presentar en formato ejecutivo la alineación con el apetito de riesgo aprobado, postura regulatoria y ROI.",
+        "Documentar en acta del Directorio las decisiones formales de inversión, mitigación o aceptación de riesgo."
+      ],
+      "rolResponsable": "CISO",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-01",
+      "mitreTactic": "Gobierno Ejecutivo (N/A)",
+      "evidenciaAuditable": "Presentación trimestral al Board y acta firmada del Comité de Riesgos / Auditoría.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Práctica ejecutiva recomendada alineada a NIST SP 1303 (ERM) y Open FAIR.",
+      "urlSoporte": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.1303.pdf"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Ejercicio Purple Team multi-dominio y prueba obligatoria de cuentas Break-Glass (90 días)",
+      "objetivo": "Comprobar empíricamente controles de detección/bloqueo ante TTPs reales y validar operatividad de cuentas de emergencia.",
+      "consolaRuta": "https://security.microsoft.com / https://entra.microsoft.com",
+      "procedimiento": [
+        "Emular cadenas de ataque priorizadas en MITRE ATT&CK v18 verificando telemetría, alerta y bloqueo efectivo.",
+        "Ejecutar la validación obligatoria cada <=90 días de las cuentas Break-Glass con llave FIDO2/CBA desde una PAW.",
+        "Confirmar disparo inmediato de la alerta Severidad 0 al SOC y registrar mejoras en SOC Optimization."
+      ],
+      "rolResponsable": "SOC L3 / Purple Team Lead + Identity Lead",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.IM-02",
+      "mitreTactic": "Credential Access / Lateral Movement",
+      "evidenciaAuditable": "Informe técnico Purple Team y acta trimestral de prueba Break-Glass con captura de alerta.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Validación al menos cada 90 días de cuentas de emergencia verificada textualmente en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-emergency-access"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Simulacro ejecutivo de crisis cibernética, continuidad (BCP/DRP) e integración MSSP",
+      "objetivo": "Entrenar la respuesta coordinada entre C-Suite, Legal, Comunicaciones, TI y MSSP/IR Retainer junto con pruebas de recuperación limpia.",
+      "consolaRuta": "Sala de crisis out-of-band + https://security.microsoft.com + infraestructura BCDR",
+      "procedimiento": [
+        "Ejecutar ejercicio Tabletop semestral con alta dirección, Legal, RRPP y el socio MSSP sobre un escenario severo.",
+        "Realizar prueba técnica de restauración limpia validando cumplimiento de RTO/RPO e integridad anti-malware previa a reconexión.",
+        "Actualizar el Incident Response Plan (IRP) y protocolos de escalamiento en menos de 15 días hábiles."
+      ],
+      "rolResponsable": "CISO + CSIRT Lead + BCDR Manager",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-01",
+      "mitreTactic": "Impact (Inhibit System Recovery)",
+      "evidenciaAuditable": "Informe semestral de evaluación del simulacro, asistencia ejecutiva y versión actualizada del IRP/DRP.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Cadencia semestral alineada a mejores prácticas SAF y NIST CSF 2.0 (GV.SC-08, RC.RP).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/zero-trust/sfi/integrate-nist-2-governance"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Autoevaluación anual de madurez NIST CSF 2.0 (patrón SFI), Zero Trust Assessment y roadmap anual",
+      "objetivo": "Medir objetivamente la madurez anual en las 6 funciones y 22 categorías de NIST CSF 2.0 y renovar la estrategia plurianual.",
+      "consolaRuta": "https://purview.microsoft.com > Compliance Manager + Microsoft Zero Trust Assessment",
+      "procedimiento": [
+        "Definir alcance basado en riesgo y calificar Perfil Actual vs Perfil Objetivo en NIST CSF 2.0 usando Implementation Tiers (1-4).",
+        "Ejecutar la herramienta automatizada Microsoft Zero Trust Assessment sobre el tenant para contrastar configuración real.",
+        "Renovar la Declaración de Apetito de Riesgo, actualizar el Manifiesto de Excelencia Operacional y aprobar presupuesto anual con el Board."
+      ],
+      "rolResponsable": "CISO + GRC Lead + Enterprise Cybersecurity Architect",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-01",
+      "mitreTactic": "Gobierno Estratégico Anual (N/A)",
+      "evidenciaAuditable": "Informe anual NIST CSF 2.0 Maturity Assessment, reporte Zero Trust Assessment y plan estratégico aprobado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Patrón anual oficial documentado por Microsoft en Secure Future Initiative (integrate-nist-2-governance).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/zero-trust/sfi/integrate-nist-2-governance"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Activación de crisis mayor (P1), contención coordinada XDR y gobierno ejecutivo de respuesta",
+      "objetivo": "Contener ataques severos en minutos bajo liderazgo interno, preservar evidencia legal y gestionar notificaciones regulatorias.",
+      "consolaRuta": "https://security.microsoft.com > Incidents + canal de crisis out-of-band",
+      "procedimiento": [
+        "Declarar incidente P1 en <=15 minutos, designar Incident Commander interno y activar canal fuera de banda.",
+        "Verificar y ampliar contención inmediata en Defender XDR, Entra ID y Active Directory (aislamiento de hosts, suspensión y revocación de sesiones).",
+        "Activar Legal Hold en Purview eDiscovery Premium y resguardo forense en Purview Audit y Sentinel Data Lake.",
+        "Coordinar con Legal y Dirección las notificaciones regulatorias obligatorias y emitir informe PIR en <=7 días hábiles post-cierre."
+      ],
+      "rolResponsable": "CSIRT Lead + CISO",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MA-01",
+      "mitreTactic": "Impact / Exfiltration",
+      "evidenciaAuditable": "Expediente maestro P1, preservación con cadena de custodia, notificaciones regulatorias y acta PIR.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujos técnicos de respuesta multi-dominio y preservación verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/operations/incident-response-overview"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de contención ante compromiso o comportamiento malicioso de agentes IA",
+      "objetivo": "Interrumpir inmediatamente el acceso de agentes autónomos comprometidos o manipulados mediante Prompt Injection.",
+      "consolaRuta": "https://entra.microsoft.com > ID Protection > Risky agents / https://admin.microsoft.com > Agents",
+      "procedimiento": [
+        "Ejecutar Confirm compromise y Disable sobre el agente en Risky agents para activar bloqueo inmediato en Conditional Access for agents.",
+        "Revocar sesiones del usuario sujeto si hubo flujo delegado OBO e inspeccionar credenciales del Agent Identity Blueprint padre.",
+        "Reconstruir accesos a SharePoint, buzones y servidores MCP mediante logs de agente y Purview Audit / DSPM for AI.",
+        "Exigir remediación y recertificación por el Sponsor humano registrado en Microsoft Agent 365 antes de rehabilitar."
+      ],
+      "rolResponsable": "SOC L2/L3 + AI & Agent Governance Lead",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Valid Accounts / Collection",
+      "evidenciaAuditable": "Evento adminConfirmedAgentCompromised, trazas forenses auditadas y dictamen firmado del Sponsor.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Acciones Confirm compromise y Disable en Risky agents verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-protection/concept-risky-agents"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Protocolo de apertura de emergencia y revisión Post-Mortem de cuenta Break-Glass",
+      "objetivo": "Restaurar el control administrativo del tenant durante bloqueos críticos auditando exhaustivamente cada acción ejecutada.",
+      "consolaRuta": "Bóveda física ignífuga + PAW dedicada + https://entra.microsoft.com",
+      "procedimiento": [
+        "Si la alerta Severidad 0 se disparó sin autorización previa, activar respuesta P1 inmediata por posible compromiso Tier-0.",
+        "En emergencia autorizada, retirar llave FIDO2 o smartcard CBA bajo control dual y autenticar exclusivamente desde una PAW.",
+        "Ejecutar únicamente el cambio mínimo indispensable para restaurar acceso administrativo normal y cerrar sesión.",
+        "Preservar SigninLogs y AuditLogs completos y realizar revisión formal Post-Mortem en menos de 48 horas."
+      ],
+      "rolResponsable": "Identity Lead + CISO + Comité Post-Mortem",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-01",
+      "mitreTactic": "Initial Access / Persistence",
+      "evidenciaAuditable": "Autorización de apertura, logs inmutables de sesión y acta formal Post-Mortem.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Guía de custodia, autenticación FIDO2/CBA en PAW y equipo Post-Mortem verificada en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-emergency-access"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Gobierno de seguridad en M&A, interconexiones Cross-Tenant B2B o transición de MSSP",
+      "objetivo": "Evaluar e integrar nuevos entornos sin importar riesgo oculto y asegurar revocación limpia al rotar proveedores críticos.",
+      "consolaRuta": "https://entra.microsoft.com > External Identities > Cross-tenant access settings / Azure Lighthouse",
+      "procedimiento": [
+        "Ejecutar debida diligencia técnica y Microsoft Zero Trust Assessment sobre el tenant entrante antes de conectar redes o identidades.",
+        "Configurar Cross-tenant access settings restrictivos reconociendo solo MFA resistente a phishing y dispositivos conformes auditados.",
+        "Incorporar el entorno a Defender Multi-Tenant Management y Sentinel para visibilidad inmediata.",
+        "Al finalizar contrato con un MSSP, revocar delegaciones Azure Lighthouse/GDAP, cuentas B2B y tokens API asegurando transferencia documental."
+      ],
+      "rolResponsable": "Cybersecurity Architect + GRC TPRM Lead",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.SC-06",
+      "mitreTactic": "Trusted Relationship",
+      "evidenciaAuditable": "Dictamen de riesgo M&A/TPRM, políticas Cross-tenant exportadas y checklist de offboarding limpio.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Controles Cross-tenant access, Multi-tenant Defender y Azure Lighthouse verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/external-id/cross-tenant-access-overview"
+    },
+    {
+      "codigo": "AH-05",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Evaluación y aprobación excepcional de Customer Lockbox o elevación M365 PAM",
+      "objetivo": "Controlar con aprobación explícita y segregación de funciones todo acceso temporal de soporte Microsoft o tareas críticas M365.",
+      "consolaRuta": "https://admin.microsoft.com > Settings > Org settings > Security & privacy > Customer Lockbox",
+      "procedimiento": [
+        "Verificar legitimidad del ticket de soporte, alcance exacto del dato requerido y ventana acotada de tiempo.",
+        "Aprobar o denegar mediante un responsable autorizado distinto del solicitante original.",
+        "Auditar todas las operaciones registradas en Purview Audit al concluir la ventana temporal."
+      ],
+      "rolResponsable": "Data Security / Compliance Approver + CISO Office",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-01",
+      "mitreTactic": "Trusted Relationship / Collection",
+      "evidenciaAuditable": "Registro inmutable de aprobación/rechazo de Customer Lockbox y logs asociados en Purview Audit.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo oficial de Customer Lockbox para Microsoft 365 verificado en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-lockbox-requests"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Desempeño ejecutivo de incidentes unificados SIEM + XDR (MTTA, MTTC y FPR — 30 días)",
+      "plataforma": "Microsoft Sentinel / Microsoft Defender Portal",
+      "tablaPrincipal": "SecurityIncident",
+      "consulta": "SecurityIncident\n| where TimeGenerated > ago(30d)\n| summarize arg_max(TimeGenerated, *) by IncidentNumber\n| extend AckMinutes = iff(isnotempty(FirstModifiedTime), datetime_diff('minute', FirstModifiedTime, CreatedTime), real(null)),\n         CloseHours = iff(Status == \"Closed\" and isnotempty(ClosedTime), round(datetime_diff('minute', ClosedTime, CreatedTime) / 60.0, 2), real(null))\n| summarize TotalIncidents = count(),\n            ActiveOpen = countif(Status != \"Closed\"),\n            MedianMTTA_Min = percentile(AckMinutes, 50),\n            MedianMTTC_Hours = percentile(CloseHours, 50),\n            TruePositives = countif(Classification == \"TruePositive\"),\n            FalsePositives = countif(Classification == \"FalsePositive\")\n            by Severity\n| extend FalsePositivePct = round(todouble(FalsePositives) * 100.0 / todouble(TotalIncidents), 2)\n| order by case(Severity == \"High\", 1, Severity == \"Medium\", 2, Severity == \"Low\", 3, 4) asc",
+      "proposito": "Calcular de manera auditable e independiente del MSSP los indicadores medianos MTTA, MTTC y tasa de falsos positivos por severidad.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Supervisión Human-ON-the-Loop de incidentes con Automatic Attack Disruption",
+      "plataforma": "Microsoft Defender XDR / Microsoft Sentinel",
+      "tablaPrincipal": "SecurityIncident",
+      "consulta": "SecurityIncident\n| where TimeGenerated > ago(14d)\n| summarize arg_max(TimeGenerated, *) by IncidentNumber\n| where Title has \"(attack disruption)\" or tostring(Labels) has \"Attack Disruption\" or tostring(AdditionalData) has \"AttackDisruption\"\n| project CreatedTime, IncidentNumber, Title, Severity, Status, AssignedTo = tostring(Owner.assignedTo), Classification, IncidentUrl\n| order by CreatedTime desc",
+      "proposito": "Listar todos los incidentes contenidos automáticamente por IA de alta confianza para verificar erradicación de causa raíz.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Cobertura de MFA y dispositivos conformes en EntraIdSignInEvents (esquema vigente post 2026-10-19)",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "EntraIdSignInEvents",
+      "consulta": "EntraIdSignInEvents\n| where Timestamp > ago(7d)\n| where ErrorCode == 0 and LogonType has \"interactive\" and IsExternalUser == 0\n| summarize TotalSignIns = count(),\n            MfaSignIns = countif(AuthenticationRequirement == \"multiFactorAuthentication\"),\n            CompliantDeviceSignIns = countif(IsCompliant == 1),\n            ManagedDevices = dcountif(EntraIdDeviceId, IsManaged == 1),\n            HighRiskEvents = countif(RiskLevelAggregated == 100)\n            by Application\n| where TotalSignIns >= 50\n| extend MfaPct = round(todouble(MfaSignIns) * 100.0 / todouble(TotalSignIns), 2),\n         CompliantDevicePct = round(todouble(CompliantDeviceSignIns) * 100.0 / todouble(TotalSignIns), 2)\n| order by TotalSignIns desc",
+      "proposito": "Auditar el cumplimiento Zero Trust sobre la tabla nativa EntraIdSignInEvents que reemplazó a AADSignInEventsBeta en octubre de 2026.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Gobierno FinOps de ingesta elegible para Microsoft 365 E5 Data Grant vs consumo neto",
+      "plataforma": "Microsoft Sentinel / Log Analytics",
+      "tablaPrincipal": "Usage",
+      "consulta": "let E5EligibleTables = dynamic([\n    \"SigninLogs\", \"AuditLogs\", \"AADNonInteractiveUserSignInLogs\", \"AADServicePrincipalSignInLogs\",\n    \"AADManagedIdentitySignInLogs\", \"AADProvisioningLogs\", \"ADFSSignInLogs\",\n    \"DeviceEvents\", \"DeviceFileEvents\", \"DeviceImageLoadEvents\", \"DeviceInfo\", \"DeviceLogonEvents\",\n    \"DeviceNetworkEvents\", \"DeviceNetworkInfo\", \"DeviceProcessEvents\", \"DeviceRegistryEvents\",\n    \"EmailAttachmentInfo\", \"EmailEvents\", \"EmailPostDeliveryEvents\", \"EmailUrlInfo\",\n    \"UrlClickEvents\", \"CloudAppEvents\", \"IdentityInfo\", \"IdentityLogonEvents\",\n    \"IdentityQueryEvents\", \"IdentityDirectoryEvents\", \"AlertEvidence\", \"McasShadowItReporting\"\n]);\nUsage\n| where TimeGenerated > ago(30d)\n| where IsBillable == true\n| extend BillingCategory = iff(DataType in (E5EligibleTables), \"Elegible M365 E5 Data Grant\", \"Facturable Neto Azure / Terceros\")\n| summarize TotalGB_30d = round(sum(Quantity) / 1024.0, 2), AvgDailyGB = round(sum(Quantity) / 1024.0 / 30.0, 2) by BillingCategory, DataType\n| order by TotalGB_30d desc",
+      "proposito": "Cuantificar la absorción mensual del beneficio gratuito de hasta 5 MB/usuario/día de M365 E5/E7/Defender Suite frente a fuentes pagas.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Exposición de activos críticos (Crown Jewels) en Microsoft Security Exposure Management",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "ExposureGraphNodes",
+      "consulta": "ExposureGraphNodes\n| where NodeLabel in (\"device\", \"user\", \"serviceprincipal\", \"virtualmachine\")\n| extend CriticalityLevel = toint(parse_json(NodeProperties).rawData.criticalityLevel.criticalityLevel)\n| where CriticalityLevel <= 2 or tostring(NodeProperties) has_any (\"CrownJewel\", \"CriticalAsset\", \"Tier0\")\n| join kind=inner (\n    ExposureGraphEdges\n    | project SourceNodeId, TargetNodeId, EdgeLabel\n) on $left.NodeId == $right.TargetNodeId\n| summarize InboundVectors = count(), DistinctSources = dcount(SourceNodeId), RelationshipTypes = make_set(EdgeLabel, 10) by NodeName, NodeLabel, CriticalityLevel\n| order by InboundVectors desc",
+      "proposito": "Priorizar remediación sobre activos críticos expuestos a vectores entrantes en el grafo de exposición CTEM.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría unificada de cambios en políticas críticas de Entra ID y Purview DLP",
+      "plataforma": "Microsoft Sentinel",
+      "tablaPrincipal": "AuditLogs",
+      "consulta": "let IdentityPolicyAudit = AuditLogs\n| where TimeGenerated > ago(7d)\n| where Category == \"Policy\" and OperationName has_any (\"Conditional Access\", \"authentication method\", \"Authentication Strength\")\n| project TimeGenerated, Domain = \"Entra ID\", OperationName, Initiator = tostring(InitiatedBy.user.userPrincipalName), TargetPolicy = tostring(TargetResources[0].displayName), Result;\nlet DataPolicyAudit = OfficeActivity\n| where TimeGenerated > ago(7d)\n| where Operation has_any (\"New-DlpCompliancePolicy\", \"Set-DlpCompliancePolicy\", \"Remove-DlpCompliancePolicy\", \"Set-DlpComplianceRule\", \"New-RetentionCompliancePolicy\")\n| project TimeGenerated, Domain = \"Microsoft Purview\", OperationName = Operation, Initiator = UserId, TargetPolicy = OfficeObjectId, Result = ResultStatus;\nunion IdentityPolicyAudit, DataPolicyAudit\n| order by TimeGenerated desc",
+      "proposito": "Consolidar cambios administrativos sobre el plano de acceso y seguridad de datos para control de cambios y auditoría GV.PO-02.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Extracción de agentes IA en riesgo vía Microsoft Graph PowerShell (riskyAgents)",
+      "plataforma": "Microsoft Graph PowerShell / Entra ID Protection for Agents",
+      "tablaPrincipal": "identityProtection/riskyAgents",
+      "consulta": "Connect-MgGraph -Scopes \"IdentityRiskyAgent.Read.All\", \"IdentityRiskEvent.Read.All\" -NoWelcome\n$riskyAgentsUri = \"https://graph.microsoft.com/beta/identityProtection/riskyAgents?`$filter=riskState eq 'atRisk'\"\n$agents = (Invoke-MgGraphRequest -Method GET -Uri $riskyAgentsUri).value\n$agents | Select-Object id, agentDisplayName, riskLevel, riskState, riskLastUpdatedDateTime | Format-Table -AutoSize",
+      "proposito": "Auditar programáticamente los agentes autónomos marcados en riesgo medio o alto dentro del gobierno del SOC Agéntico.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Velocidad de Reconocimiento y Contención Crítica (MTTA / MTTC P1)",
+      "definicion": "Tiempo mediano transcurrido desde la creación de un incidente crítico/alto verdadero positivo hasta su atención inicial y su contención efectiva.",
+      "formula": "Mediana(FirstModifiedTime - CreatedTime) y Mediana(ContainmentTime - CreatedTime) en incidentes Critical/High TP",
+      "metaSugerida": "MTTA <= 15 minutos; MTTC <= 60 minutos",
+      "frecuencia": "Diaria / Semanal",
+      "audiencia": "Altitud 3: SOC Manager y Equipo SecOps",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Calculado sobre tabla oficial SecurityIncident; umbrales numéricos basados en mejores prácticas de infraestructura crítica."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Cobertura de Autenticación Resistente a Phishing",
+      "definicion": "Porcentaje de usuarios activos que autentican mediante Passkeys (FIDO2), Windows Hello for Business o Certificate-Based Authentication.",
+      "formula": "(Usuarios autenticando con FIDO2, WHfB o CBA / Total de usuarios activos en alcance) * 100",
+      "metaSugerida": "100% en Roles Privilegiados; >= 85% en Usuarios Generales",
+      "frecuencia": "Mensual",
+      "audiencia": "Altitud 2: CISO, IAM Lead y CIO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Alineado a Authentication Strengths de MS Learn y patrón SFI de reducción de ataques de credenciales."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Índice de Mitigación de Rutas de Ataque Críticas y Postura (MSEM)",
+      "definicion": "Proporción de rutas de ataque críticas hacia activos Crown Jewels cerradas dentro de SLA combinada con Microsoft Secure Score.",
+      "formula": "(Rutas de ataque críticas cerradas en el período / Total rutas críticas detectadas hacia Crown Jewels) * 100",
+      "metaSugerida": ">= 90% rutas críticas mitigadas en SLA; Microsoft Secure Score >= 85%",
+      "frecuencia": "Semanal / Mensual",
+      "audiencia": "Altitud 2: CISO, Cybersecurity Architects y CTO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en telemetría oficial de Microsoft Security Exposure Management y Secure Score."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Tasa de Automatización Tier-1 y Precisión de Agentes IA",
+      "definicion": "Porcentaje de incidentes Tier-1 enriquecidos o resueltos sin intervención manual y porcentaje de decisiones agénticas validadas como correctas.",
+      "formula": "(Incidentes Tier-1 auto-procesados / Total incidentes Tier-1) * 100 y % acierto en auditoría muestral Human-ON-the-Loop",
+      "metaSugerida": "60% - 70% automatización Tier-1; >= 95% precisión validada de agentes IA",
+      "frecuencia": "Semanal / Mensual",
+      "audiencia": "Altitud 3 y 2: SOC Manager y CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Métrica clave de transición hacia CMMI 3.0+ y gobierno responsable del SOC Agéntico."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Índice de Cero Privilegio Permanente (Zero Standing Privilege Ratio)",
+      "definicion": "Porcentaje de sesiones administrativas en Entra, Defender, Azure, Intune y Purview ejecutadas mediante elevación temporal PIM JIT.",
+      "formula": "(Sesiones administrativas vía elevación PIM JIT / Total de sesiones administrativas del tenant) * 100",
+      "metaSugerida": ">= 98% vía PIM JIT (< 5 Global Administrators elegibles; solo 2 Break-Glass activas sin uso)",
+      "frecuencia": "Mensual",
+      "audiencia": "Altitud 2: CISO, IAM Lead y Auditoría Interna",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mide materialización operativa del principio Zero Trust de privilegio mínimo."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Efectividad Contractual del MSSP Basada en Resultados (Outcome SLA)",
+      "definicion": "Proporción de escalamientos realizados por el MSSP que corresponden a amenazas reales documentadas dentro del tiempo pactado.",
+      "formula": "(Escalamientos verdaderos positivos con contexto completo en SLA / Total de escalamientos del MSSP) * 100",
+      "metaSugerida": ">= 90% precisión de escalamiento; >= 95% cumplimiento SLA en incidentes P1",
+      "frecuencia": "Mensual",
+      "audiencia": "Altitud 2: CISO, Compras/TPRM y SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Evita incentivos perversos basados en cantidad de tickets cerrados en contratos co-gestionados."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Índice de Sostenibilidad Operativa y Retención del Talento",
+      "definicion": "Holgura de capacidad analítica frente al volumen esperado de trabajo y tasa anual de retención del equipo interno de ciberseguridad.",
+      "formula": "((Horas Analista Disponibles - Horas Trabajo Esperado) / Horas Disponibles) * 100 y % retención anual",
+      "metaSugerida": "Holgura operativa >= 15%; Retención anual del equipo >= 88%",
+      "frecuencia": "Mensual / Trimestral",
+      "audiencia": "Altitud 2 y 1: CISO, RRHH y Comité Ejecutivo",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Operacionaliza el principio Kaizen y prevención de burnout del Manifiesto de Excelencia Operacional."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Alineación al Apetito de Riesgo (FAIR) y Madurez NIST CSF 2.0",
+      "definicion": "Cumplimiento de la exposición anualizada residual (ALE) frente al umbral aprobado por el Directorio y avance a Tier 3+ en NIST CSF 2.0.",
+      "formula": "% escenarios materiales con ALE <= Tolerancia aprobada y (Subcategorías CSF 2.0 en Tier >= 3 / 106) * 100",
+      "metaSugerida": "100% escenarios dentro de tolerancia o con plan financiado; >= 85% subcategorías en Tier 3 (Repeatable)",
+      "frecuencia": "Trimestral / Anual",
+      "audiencia": "Altitud 1: Consejo de Administración (Board), CEO y CFO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Integra la cuantificación financiera Open FAIR con la evaluación anual SFI/NIST CSF 2.0."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.OC-03",
+      "descripcionResultado": "Los requisitos legales, regulatorios y contractuales relativos a ciberseguridad y privacidad se comprenden y gestionan.",
+      "capacidadMicrosoft": "Microsoft Purview Compliance Manager (plantillas regulatorias multi-norma), políticas de retención DLM y matriz legal de la Oficina del CISO.",
+      "evidenciaAuditoria": "Exportación fechada de evaluaciones regulatorias activas en Compliance Manager con controles técnicos vinculados y dueños internos asignados.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RM-02",
+      "descripcionResultado": "Las declaraciones de apetito y tolerancia al riesgo se establecen, comunican y mantienen.",
+      "capacidadMicrosoft": "Cuantificación Open FAIR traducida técnicamente en políticas automáticas de bloqueo por riesgo en Entra ID Protection, MSEM y Purview Adaptive Protection.",
+      "evidenciaAuditoria": "Acta anual del Directorio aprobando la Declaración de Apetito de Riesgo junto con exportación JSON de políticas alineadas a dichos umbrales.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles, responsabilidades y autoridades de ciberseguridad se establecen, comunican, aplican y revisan.",
+      "capacidadMicrosoft": "Microsoft Entra RBAC, Privileged Identity Management (PIM), Defender Unified RBAC, Purview Role Groups y asignación de Sponsors en Microsoft Agent 365.",
+      "evidenciaAuditoria": "Reporte mensual de asignaciones Eligible vs Active en PIM, configuración de roles URBAC y matriz RACI firmada con segregación frente al MSSP.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.SC-07",
+      "descripcionResultado": "Los riesgos planteados por un proveedor, sus productos y sus servicios se comprenden, registran, priorizan, evalúan y monitorean continuamente.",
+      "capacidadMicrosoft": "Workbooks independientes de SLA en Sentinel, delegación controlada con Azure Lighthouse, Defender for Cloud Apps OAuth Governance y Customer Lockbox.",
+      "evidenciaAuditoria": "Scorecard mensual recalculado en KQL sobre el desempeño del MSSP, inventario gobernado de apps OAuth de terceros y registros Customer Lockbox.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-05",
+      "descripcionResultado": "Los recursos se priorizan según clasificación, criticidad, recursos y valor de impacto para el negocio.",
+      "capacidadMicrosoft": "Clasificación de activos críticos (Crown Jewels) en Microsoft Security Exposure Management, taxonomía Purview MIP y registro unificado Agent 365.",
+      "evidenciaAuditoria": "Catálogo exportado de activos críticos en MSEM conciliado con análisis BIA y reporte de cobertura de etiquetado de sensibilidad.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-05",
+      "descripcionResultado": "Amenazas, vulnerabilidades, probabilidades e impactos se utilizan conjuntamente para comprender el riesgo y priorizar la respuesta.",
+      "capacidadMicrosoft": "Attack Paths y Chokepoints en Exposure Management combinados con Defender Vulnerability Management (CVSS/EPSS/CISA KEV) y Threat Analytics.",
+      "evidenciaAuditoria": "Informe semanal de Chokepoints mitigados y cola priorizada de remediación vinculada a activos de alto valor.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.IM-02",
+      "descripcionResultado": "Se identifican mejoras a partir de pruebas de seguridad, ejercicios y revisiones operativas y de recuperación.",
+      "capacidadMicrosoft": "Microsoft Sentinel SOC Optimization, ejercicios trimestrales Purple Team, simulacros semestrales y autoevaluación anual SFI/NIST CSF 2.0.",
+      "evidenciaAuditoria": "Historial de recomendaciones implementadas en SOC Optimization, informes Purple Team con delta MITRE ATT&CK y actas PIR cerradas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Los permisos de acceso, derechos y autorizaciones se definen, gestionan, aplican y revisan incorporando mínimo privilegio y segregación.",
+      "capacidadMicrosoft": "Entra Conditional Access (Authentication Strengths, Token Protection, CAE), PIM JIT, Intune Endpoint Privilege Management y Conditional Access for agents.",
+      "evidenciaAuditoria": "Exportación auditada de políticas CA, reportes CSV de Access Reviews con revocación automática e historial de elevaciones JIT.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.DS-01",
+      "descripcionResultado": "Se protegen la confidencialidad, integridad y disponibilidad de los datos en reposo.",
+      "capacidadMicrosoft": "Cifrado persistente Purview Information Protection, BitLocker gestionado en Intune, soberanía BYOK con Customer Key y Preservation Lock en DLM.",
+      "evidenciaAuditoria": "Reporte de cumplimiento de cifrado en Intune, analítica de documentos cifrados con MIP y políticas de retención inmutable activas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.AE-02",
+      "descripcionResultado": "Los eventos potencialmente adversos se analizan para comprender mejor las actividades asociadas y detectar incidentes.",
+      "capacidadMicrosoft": "Correlación multi-dominio Defender XDR, reglas KQL/ASIM y UEBA en Sentinel, tabla nativa EntraIdSignInEvents y asistencia de Security Copilot.",
+      "evidenciaAuditoria": "Expedientes unificados de incidentes con Attack Story, mapeo MITRE ATT&CK v18 y registro inmutable de consultas en LAQueryLogs.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Los incidentes de ciberseguridad son contenidos oportunamente.",
+      "capacidadMicrosoft": "Automatic Attack Disruption en Defender XDR, playbooks en Azure Logic Apps con Managed Identity, aislamiento MDE y suspensión en Entra ID / Agent ID.",
+      "evidenciaAuditoria": "Bitácora del Action Center y métricas de SecurityIncident demostrando contención efectiva dentro de SLA.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-05",
+      "descripcionResultado": "Se verifica la integridad de los activos restaurados, se restauran sistemas y servicios, y se confirma el retorno a operación normal.",
+      "capacidadMicrosoft": "Liberación auditada en Defender Action Center, reprovisionamiento limpio con Windows Autopilot/Intune, rotación de credenciales Entra y validación post-incidente.",
+      "evidenciaAuditoria": "Checklists firmados de escaneo e integridad previos a reconexión productiva, logs de liberación de aislamiento y cierre formal del incidente.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Módulo maestro compilado desde los ensayos ejecutivos de la Oficina del CISO (Duplas 1, 2 y 3, Manifiesto de Excelencia Operacional) y los bloques de mapeo NIST SAFVAL, revalidado íntegramente al 11 de noviembre de 2026 contra Microsoft Learn MCP, guías oficiales de licenciamiento Microsoft y NIST CSWP 29.",
+    "correccionesAplicadas": [
+      "Corrección taxonómica de NIST CSF 2.0 (CSWP 29): se corrigió el conteo previo de 23 categorías a las 22 categorías y 106 subcategorías oficiales, eliminando la categoría inexistente RC.IM al haberse consolidado toda mejora continua en ID.IM.",
+      "Actualización contractual de suites renombradas: se incorporó el renombre oficial de Microsoft 365 E5 Security a Microsoft Defender Suite y de Microsoft 365 E5 Compliance a Microsoft Purview Suite (ratificando que Purview Suite no incluye Entra ID P2).",
+      "Incorporación de Microsoft Agent 365 y Microsoft 365 E7 (The Frontier Suite, disponible desde el 1 de mayo de 2026) conectando el gobierno ejecutivo y el SOC Agéntico con Entra Agent ID y el Módulo 22.",
+      "Alineación con la publicación oficial en Microsoft Learn del Microsoft Security Adoption Framework (SAF), la edición junio de 2026 de MCRA, el volumen actualizado de más de 100 billones de señales diarias y el patrón SFI integrate-nist-2-governance.",
+      "Reflejo del retiro definitivo de Microsoft Sentinel en Azure Portal después del 31 de marzo de 2027 y la integración nativa por defecto del Microsoft Sentinel Data Lake vigente desde el 23 de septiembre de 2026.",
+      "Actualización del esquema de caza avanzada en Defender XDR tras la deprecación el 19 de octubre de 2026 de AADSignInEventsBeta en favor de EntraIdSignInEvents (y EntraIdDeviceId).",
+      "Posicionamiento de Microsoft Security Exposure Management (MSEM) como motor primario CTEM de rutas de ataque y activos críticos en consonancia con MCRA 2025/2026.",
+      "Sustitución de la certificación retirada SC-400 por SC-401 (Administering Information Security in Microsoft 365) en la ruta curricular oficial de especialistas de datos e IA."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Inalienabilidad 100% interna de la función GOVERN y arquitectura SecOps híbrida en tres zonas",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Previene la abdicación fiduciaria y el conflicto de interés inherente a delegar políticas, apetito de riesgo o supervisión en el mismo proveedor MSSP que ejecuta el monitoreo."
+      },
+      {
+        "elemento": "Modelo de gobernanza Humano-IA en tres modos (Human-IN, Human-ON y Human-OUT-of-the-Loop)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Otorga un criterio auditable frente a reguladores y comités de riesgo para equilibrar contención autónoma a velocidad de máquina con supervisión humana explicable."
+      },
+      {
+        "elemento": "Arquitectura de métricas en tres altitudes y metas cuantitativas de los 8 KPIs maestros",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Elimina métricas de vanidad alineando el reporte al nivel cognitivo y decisorio del SOC, del C-Suite y del Board con objetivos exigentes pero alcanzables."
+      },
+      {
+        "elemento": "Regla Kaizen de sostenibilidad humana (holgura mínima del 15% de capacidad y 20% de tiempo para upskilling)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Formaliza la prevención del agotamiento y rotación del talento como prerrequisito operativo indispensable para sostener decisiones de alta calidad durante incidentes críticos."
+      },
+      {
+        "elemento": "Mapa integrador de los 23 módulos del repositorio sobre las 22 categorías de NIST CSF 2.0 con declaración de fronteras",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Aporta trazabilidad completa entre documentos sin sobredimensionar capacidades de consola donde se requiere gobierno legal, físico o de continuidad corporativa."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Microsoft Security Adoption Framework (SAF) Overview",
+      "url": "https://learn.microsoft.com/en-us/security/adoption/adoption",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Security Documentation",
+      "comentario": "Marco operativo oficial que articula escenarios de negocio, disciplinas de seguridad, tecnologías y soluciones técnicas Zero Trust.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Integrate NIST CSF 2.0 governance into annual cybersecurity assessments (Secure Future Initiative)",
+      "url": "https://learn.microsoft.com/en-us/security/zero-trust/sfi/integrate-nist-2-governance",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Secure Future Initiative (SFI)",
+      "comentario": "Patrón de ingeniería y gobierno de Microsoft para ejecutar autoevaluaciones anuales alineadas a las 6 funciones de NIST CSF 2.0.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Microsoft Cybersecurity Reference Architectures (MCRA)",
+      "url": "https://learn.microsoft.com/en-us/security/adoption/mcra",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Security Architecture Team",
+      "comentario": "Arquitectura maestra de referencia actualizada en junio de 2026 con Exposure Management, Security Copilot, Passkeys y estándares Open Group.",
+      "verificacion": "Verificado vía Microsoft Learn MCP y notas de versión 2026"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "The Chief Information Security Officer (CISO) Workshop",
+      "url": "https://learn.microsoft.com/en-us/security/zero-trust/workshop-business-security-leaders",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Security",
+      "comentario": "Taller estratégico oficial para modernizar la postura Zero Trust, el modelo operativo del SOC y la alineación ejecutiva.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Microsoft Sentinel in the Microsoft Defender portal (Unified SecOps Platform)",
+      "url": "https://learn.microsoft.com/en-us/azure/sentinel/microsoft-sentinel-defender-portal",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Sentinel Documentation",
+      "comentario": "Documentación canónica de convergencia SIEM+XDR en security.microsoft.com y retiro de Azure Portal tras el 31 de marzo de 2027.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Automatic attack disruption in Microsoft Defender XDR",
+      "url": "https://learn.microsoft.com/en-us/defender-xdr/automatic-attack-disruption",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Defender XDR Documentation",
+      "comentario": "Detalle técnico de contención autónoma con confianza >=99% SNR sobre Entra ID, Active Directory, MDE, MDA, Okta y AWS.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "What is Microsoft Security Exposure Management?",
+      "url": "https://learn.microsoft.com/en-us/security-exposure-management/overview",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Security Documentation",
+      "comentario": "Capacidades CTEM de inventario unificado, activos críticos, rutas de ataque, Chokepoints e iniciativas de postura.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "What is Microsoft Entra Agent ID? & Protect agent identities with Microsoft Entra",
+      "url": "https://learn.microsoft.com/en-us/entra/agent-id/what-is-microsoft-entra-agent-id",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Entra Documentation",
+      "comentario": "Plataforma de identidad, blueprints, Conditional Access, ID Protection y relación de licenciamiento con Microsoft Agent 365 y M365 E7.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (actualizado jun-2026, consultado 2026-11-11)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Subscription Suites Licensing Guidance (M365 E5, E7, Defender Suite & Purview Suite)",
+      "url": "https://www.microsoft.com/licensing/guidance/subscription-suites",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Licensing",
+      "comentario": "Tabla contractual oficial que documenta M365 E5, M365 E7, Microsoft Defender Suite (antes E5 Security) y Microsoft Purview Suite (antes E5 Compliance).",
+      "verificacion": "Verificado vía búsqueda web sobre microsoft.com (2026-11-11)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "AADSignInEventsBeta replacement by EntraIdSignInEvents in Defender XDR",
+      "url": "https://learn.microsoft.com/en-us/defender-xdr/advanced-hunting-aadsignineventsbeta-table",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Defender XDR Documentation",
+      "comentario": "Confirmación oficial del reemplazo de AADSignInEventsBeta por EntraIdSignInEvents efectivo el 19 de octubre de 2026.",
+      "verificacion": "Verificado vía Microsoft Learn MCP (2026-11-11)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Secure agentic AI for your Frontier Transformation (Microsoft Agent 365 & M365 E7)",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/03/09/secure-agentic-ai-for-your-frontier-transformation/",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Vasu Jakkal (CVP, Microsoft Security)",
+      "comentario": "Anuncio ejecutivo de Microsoft Agent 365 y Microsoft 365 E7: The Frontier Suite (disponible desde el 1 de mayo de 2026).",
+      "verificacion": "Verificado vía búsqueda web oficial (2026-11-11)"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Microsoft Security Adoption Framework (SAF) & June 2026 MCRA Architecture Guidance",
+      "url": "https://learn.microsoft.com/en-us/security/adoption/security-adoption-existing-guidance",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Mark Simos (Principal Lead Cybersecurity Architect, Microsoft)",
+      "comentario": "Integración del CISO Workshop, MCRA, SDL, SFI e iniciativas de modernización SecOps dentro de SAF.",
+      "verificacion": "Verificado vía Microsoft Learn MCP y publicaciones del autor (2026-11-11)"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Announcing Microsoft Entra Agent ID: Secure and manage your AI agents",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-entra-blog/announcing-microsoft-entra-agent-id-secure-and-manage-your-ai-agents/3827392",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Alex Simons (CVP, Microsoft Identity & Network Access)",
+      "comentario": "Fundamentos estratégicos de gestión y protección de identidades no humanas y agentes autónomos en Microsoft Entra.",
+      "verificacion": "Verificado vía búsqueda web Tech Community (2026-11-11)"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Entra.News & Maester Security Testing Automation Framework",
+      "url": "https://entra.news/archive",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Merill Fernando (Principal Product Manager, Microsoft Entra)",
+      "comentario": "Cobertura continua de novedades operativas de Microsoft Entra, M365 E7 y pruebas automatizadas de postura como código con Maester.",
+      "verificacion": "Verificado vía búsqueda web noviembre 2026 (edición #174)"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "Defender Monthly News & Integrating Microsoft Defender/Sentinel Data Lake with Microsoft Fabric",
+      "url": "https://jeffreyappel.nl/defender-monthly-news-october-2026/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Jeffrey Appel (Microsoft Security MVP)",
+      "comentario": "Análisis práctico sobre el onboarding integrado del Sentinel Data Lake (sep-2026), retención multi-año y novedades mensuales XDR.",
+      "verificacion": "Verificado vía búsqueda web octubre/noviembre 2026"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "Practical Microsoft Entra, Conditional Access & Passkey Security Guides",
+      "url": "https://janbakker.tech/categories/entra/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Jan Bakker (Microsoft Security & Entra MVP)",
+      "comentario": "Guías técnicas de implementación y endurecimiento operativo sobre Microsoft Entra, Passkeys y Global Secure Access.",
+      "verificacion": "Verificado vía búsqueda web noviembre 2026"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)",
+      "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Documento normativo oficial de las 6 funciones (GV, ID, PR, DE, RS, RC), 22 categorías y 106 subcategorías.",
+      "verificacion": "Verificado contra publicación oficial NIST CSWP 29"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "NIST CSF 2.0: Enterprise Risk Management (ERM) Quick-Start Guide (NIST SP 1303)",
+      "url": "https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.1303.pdf",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Guía oficial para articular registros de riesgo cibernético, apetito de riesgo y gobierno ERM corporativo.",
+      "verificacion": "Verificado vía referencia directa en Microsoft Learn SFI"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "Cybersecurity Capability Maturity Model (C2M2) Version 2.1",
+      "url": "https://www.energy.gov/ceser/cybersecurity-capability-maturity-model-c2m2",
+      "tipoFuente": "Marco Normativo",
+      "autor": "U.S. Department of Energy (DOE)",
+      "comentario": "Modelo de evaluación táctica de madurez en 10 dominios (MIL0 a MIL3) utilizado en infraestructura crítica y empresas reguladas.",
+      "verificacion": "Verificado contra portal oficial DOE CESER"
+    },
+    {
+      "id": "REF-20",
+      "titulo": "Open FAIR Risk Analysis Standards & MITRE ATT&CK Enterprise v18",
+      "url": "https://attack.mitre.org",
+      "tipoFuente": "Marco Normativo",
+      "autor": "The Open Group / MITRE Corporation",
+      "comentario": "Estándares de cuantificación financiera de riesgo (LEF x LM) y taxonomía global de tácticas y técnicas adversarias.",
+      "verificacion": "Verificado contra estándares vigentes 2026"
+    }
+  ]
+}

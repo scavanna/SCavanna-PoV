@@ -1,0 +1,12 @@
+stateDiagram-v2
+  [*] --> Proposed
+  Proposed --> SchemaValidated: schema pass
+  SchemaValidated --> SemanticallyValidated: ontology pass
+  SemanticallyValidated --> Reviewed: curator review
+  Reviewed --> Approved: approve
+  Reviewed --> Rejected: reject
+  Approved --> Applied: local transactional apply
+  SemanticallyValidated --> ExtensionRequested: novel valid concept
+  ExtensionRequested --> Proposed: ontology release + rebase
+  Applied --> [*]
+  Rejected --> [*]

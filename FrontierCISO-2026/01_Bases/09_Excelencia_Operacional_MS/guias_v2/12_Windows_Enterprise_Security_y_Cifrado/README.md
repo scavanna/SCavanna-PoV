@@ -1,0 +1,12 @@
+# 12 Windows Enterprise Security y Cifrado
+
+Ruta: `FrontierCISO-2026\01_Bases\09_Excelencia_Operacional_MS\guias_v2\12_Windows_Enterprise_Security_y_Cifrado`
+
+[Carpeta superior](../indice-catalogo.md)
+
+## Archivos de esta carpeta
+
+- [Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.html](Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.html)
+- [Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.json](Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.json)
+- [Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.md](Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.md)
+- [Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.xlsx](Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.xlsx)

@@ -1,0 +1,52 @@
+{
+ "changeset_id": "CHG-CAND-17",
+ "id_note": "Identificador provisional de candidato; el definitivo (CHG-######) lo reserva el registro de identificadores al aprobar.",
+ "title": "Equivalencias entre pre-ensayos y elementos de la biblioteca metacognitiva halladas por la revisión crítica de la versión 1.2 (una lectura; no se fusionan nodos)",
+ "depends_on": [
+  "CHG-CAND-04",
+  "CHG-CAND-12"
+ ],
+ "apply_order": 17,
+ "origin": "data/equivalencias_biblioteca_corpus.csv",
+ "schema_version": "2.0",
+ "ontology_version": "2.2.0",
+ "taxonomy_version": "6.1",
+ "created": "2026-11-16",
+ "regenerated": "2026-11-16",
+ "product_version": "1.4",
+ "status": "proposed",
+ "requires_human_approval": true,
+ "operations_summary": {
+  "UPSERT_NODE": 0,
+  "UPSERT_EDGE": 112
+ },
+ "node_types": {},
+ "edge_types": {
+  "SAME_CONCEPT_AS": 21,
+  "RELATES_TO": 91
+ },
+ "operations_file": "CHG-CAND-17.operaciones.jsonl",
+ "operations_sha256": "2e60ba4fea3b57f6b550af56c58b3a80e5d73c074a3475be0b8d23e124e988b9",
+ "semantic_validation": {
+  "status": "passed",
+  "scope": "validación determinista del lote completo (tipo, dominio, rango, par permitido, propiedades obligatorias, procedencia, un primario por eje, autonomía con punto de control, modelo de referencia de la homeostasis y de la medición)",
+  "validator": "scripts/construir_grafo.py",
+  "rules_checked": 25,
+  "rules_defined": 42,
+  "errors": 0,
+  "warnings": 80
+ },
+ "author_acceptance": {
+  "date": "2026-11-15",
+  "by": "Santiago Cavanna, autor",
+  "scope": "Aceptación en bloque de las decisiones D-01 a D-10 como base de trabajo, sin validación ítem por ítem. Cubre el contenido de la versión 1.1.",
+  "responses_2026_11_16": "El autor confirmó de forma literal las decisiones D-14 y D-15, los 37 cambios de coordenada de la versión 1.2 (D-13.2) y los cambios de la Biblioteca, la medición, la serie APX y los textos. Aprobó los encargos en cola y la solicitud de cambio de la ontología. Sobre los puntos abiertos de las reglas, los cambios de la relectura y el tamaño de la revisión humana respondió «Procede con la decision de mayor rigurosidad», sin definir esa rigurosidad; el curador leyó la frase como una delegación, y esa lectura espera su confirmación (D-16.14).",
+  "not_covered": "Lo que el curador decidió en la versión 1.4 (Taxonomía 6.1, reglas de asignación revisión 3, modelo de equilibrio revisión 2, la implementación de la ontología 2.2.0) y los cambios de coordenada de la relectura: el autor no los vio y esperan su confirmación (D-16). Este conjunto es nuevo en la versión 1.4: carga las equivalencias por una decisión del curador que el autor todavía no confirmó (D-16.10). La aceptación del 15 de noviembre no lo alcanza. La lista de cambios de coordenada está en scripts/datos_de_trabajo/ajustes_relectura_1_4.json; reemplazarla es una versión nueva (ADR-033)."
+ },
+ "approval": {
+  "status": "pending",
+  "approver": null,
+  "date": null,
+  "note": "La aceptación del autor no es la aprobación del conjunto: la promoción al grafo aprobado sigue el procedimiento de ADR-019."
+ }
+}

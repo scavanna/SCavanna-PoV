@@ -1,0 +1,1246 @@
+{
+  "metadata": {
+    "document_id": "MS-SECOPS-SOAR-AGENTIC-2026-V1",
+    "title": "Guía de Arquitectura, Mejores Prácticas y Assessment: Azure Logic Apps como SOAR Central Multi-SIEM rumbo a un SOC Agéntico",
+    "subtitle": "Estrategia para clientes Microsoft 365 E5 + Defender for Servers Plan 2 en convivencia plurianual con Splunk On-Premises",
+    "version": "1.0",
+    "last_updated": "2026-11-11",
+    "language": "es-ES",
+    "target_audience": [
+      "CISO y Dirección de Ciberseguridad",
+      "Arquitectos de Seguridad Cloud e Híbrida",
+      "Líderes del SOC (SecOps Managers) e Ingenieros SOAR/SIEM",
+      "Especialistas en Microsoft Sentinel, Defender XDR, Logic Apps y Splunk"
+    ],
+    "synchronized_artifacts": {
+      "markdown": "Guia_SOAR_LogicApps_SOC_Agentico.md",
+      "json": "Guia_SOAR_LogicApps_SOC_Agentico.json",
+      "excel": "Guia_Assessment_SOAR_LogicApps_SOC_Agentico.xlsx",
+      "html": "Portal_SOAR_LogicApps_SOC_Agentico.html"
+    }
+  },
+  "client_parameters": {
+    "client_name": "Cliente Enterprise M365 E5 (Editable)",
+    "m365_e5_licenses": 3500,
+    "mdc_servers_p2_count": 250,
+    "splunk_onprem_daily_gb": 850,
+    "sentinel_workspaces_count": 2,
+    "Splunk_instances_count": 1,
+    "coexistence_horizon_years": 3,
+    "sentinel_payg_price_per_gb_usd": 4.3,
+    "scu_overage_price_per_hour_usd": 4.0,
+    "e5_grant_mb_per_user_day": 5,
+    "mdc_p2_grant_mb_per_server_day": 500,
+    "e5_scu_per_1000_users_month": 400,
+    "e5_scu_max_cap_month": 10000
+  },
+  "executive_summary": {
+    "central_question": "¿Es viable utilizar Case Management, la Consola Unificada de Microsoft Defender, Azure Logic Apps y Microsoft Security Copilot para construir un SOAR centralizado que priorice el ecosistema Microsoft independientemente de cuántos SIEM estén en uso (múltiples instancias de Sentinel, Splunk On-Prem, etc.), evolucionando hacia un SOC Agéntico durante varios años de convivencia?",
+    "direct_answer": "Sí, es totalmente viable y constituye el patrón de referencia recomendado por Microsoft para arquitecturas híbridas multi-SIEM ('SIEM-Agnostic Central SOAR & Unified Case Management Hub'). En lugar de duplicar terabytes de logs crudos desde Splunk On-Prem hacia Sentinel (lo cual generaría costos innecesarios fuera de los beneficios E5 y Defender for Servers P2), se establece el Portal Unificado de Microsoft Defender (con Sentinel integrado y Case Management nativo) como la única consola operativa y de gobierno del analista, mientras que Azure Logic Apps actúa como el bus central de orquestación, enriquecimiento federado bajo demanda ('Zero-Copy Context') y remediación, habilitando a Microsoft Security Copilot y sus Agentes para investigar y actuar transversalmente sobre todos los SIEM conectados.",
+    "strategic_pillars": [
+      {
+        "id": "PIL-01",
+        "name": "Consola Única y Case Management Centralizado",
+        "summary": "Adopción del Portal Unificado de Microsoft Defender (security.microsoft.com) y Case Management (Incident Cases + Generic Cases + auditoría en SecurityCaseEvent) como sistema maestro de registro del SOC, absorbiendo alertas correlacionadas de M365 XDR, múltiples Workspaces de Sentinel y Notable Events de Splunk On-Prem."
+      },
+      {
+        "id": "PIL-02",
+        "name": "Protección Estricta del Alcance Financiero (FinOps E5 + MDC P2)",
+        "summary": "Maximización de la ingesta gratuita de hasta 5 MB/usuario/día por M365 E5, fuentes siempre gratuitas (OfficeActivity, AzureActivity, alertas XDR) y 500 MB/servidor/día por Defender for Servers Plan 2 (bajo medidores simplificados/unificados), manteniendo logs voluminosos de terceros/red en Splunk On-Prem sin re-ingesta masiva."
+      },
+      {
+        "id": "PIL-03",
+        "name": "Logic Apps como Bus SOAR Modular y Agnóstico al SIEM",
+        "summary": "Diseño de playbooks desacoplados ('Padre-Hijo') en Azure Logic Apps Standard con conectividad híbrida (VNet Integration / On-Premises Data Gateway) capaces de normalizar alertas entrantes de cualquier SIEM, consultar Splunk vía API REST bajo demanda y ejecutar contenciones gobernadas (Human-in-the-Loop en Teams)."
+      },
+      {
+        "id": "PIL-04",
+        "name": "Evolución Progresiva hacia el SOC Agéntico",
+        "summary": "Activación del beneficio incluido de Security Copilot en M365 E5 (400 SCUs/mes por cada 1.000 usuarios), uso del Plugin nativo de Splunk, exposición de Logic Apps como Skills/Servidores MCP (Model Context Protocol) y ejecución de sesiones agénticas autónomas supervisadas directamente desde los Incident Cases."
+      }
+    ],
+    "key_outcomes": [
+      "Eliminación del 'swivel-chair' (cambio constante entre consolas de Splunk y portales de Microsoft) mediante sincronización bidireccional automatizada.",
+      "Ahorro del 100% en costos de doble ingesta SIEM al federar únicamente alertas priorizadas y consultar logs crudos de Splunk bajo demanda vía Logic Apps.",
+      "Reutilización total de playbooks de contención (Entra ID, MDE, MDC P2, Firewalls On-Prem) sin importar si la detección se originó en Sentinel #1, Sentinel #2 o Splunk On-Prem.",
+      "Transición sin fricción hacia un SOC Agéntico: cuando en el futuro se retiren o migren cargas de Splunk (p. ej. a Sentinel Data Lake), la capa SOAR, los casos y los agentes de IA no requieren rediseño."
+    ]
+  },
+  "licensing_and_finops": {
+    "overview": "Para que la arquitectura sea financieramente sostenible durante varios años de convivencia con Splunk On-Prem, el diseño separa rigurosamente el 'Plano de Almacenamiento de Logs Crudos' del 'Plano de Gestión de Casos, Orquestación SOAR y Razonamiento Agéntico'.",
+    "benefits": [
+      {
+        "id": "BEN-01",
+        "benefit_name": "Microsoft 365 E5 - Concesión de Datos en Sentinel",
+        "allowance_formula": "Hasta 5 MB por licencia de usuario M365 E5 por día (calculado y descontado automáticamente en medidores Azure).",
+        "eligible_tables_and_sources": "Entra ID (SigninLogs, AuditLogs), Tablas de Advanced Hunting de Microsoft Defender XDR (DeviceEvents, DeviceProcessEvents, DeviceNetworkEvents, DeviceFileEvents, DeviceLogonEvents, DeviceRegistryEvents, DeviceImageLoadEvents, EmailEvents, EmailAttachmentInfo, EmailUrlInfo, EmailPostDeliveryEvents, IdentityLogonEvents, IdentityQueryEvents, IdentityDirectoryEvents, CloudAppEvents, AlertEvidence), Microsoft Purview Information Protection y Defender for Cloud Apps Shadow IT Discovery.",
+        "critical_guardrails": "Verificar en Cost Analysis agrupando por Meter ('M365') que el cargo sea $0. Seleccionar únicamente las tablas de Advanced Hunting necesarias para reglas analíticas o enriquecimiento que no cubran ya las Custom Detections gratuitas en Defender XDR."
+      },
+      {
+        "id": "BEN-02",
+        "benefit_name": "Fuentes Siempre Gratuitas en Microsoft Sentinel",
+        "allowance_formula": "Ilimitado ($0 USD por ingesta y 90 días de retención estándar en Sentinel).",
+        "eligible_tables_and_sources": "Azure Activity Logs (AzureActivity), Office 365 Audit Logs (OfficeActivity: Exchange, SharePoint, Teams), Alertas e Incidentes sincronizados bidireccionalmente desde Microsoft Defender XDR (MDE, MDO, MDI, MDCA) y alertas de Microsoft Defender for Cloud (SecurityAlert, SecurityIncident).",
+        "critical_guardrails": "Priorizar Custom Detections en el portal de Microsoft Defender XDR sobre datos nativos de Defender antes de copiar tablas crudas masivas de Advanced Hunting al workspace de Sentinel."
+      },
+      {
+        "id": "BEN-03",
+        "benefit_name": "Defender for Cloud - Defender for Servers Plan 2",
+        "allowance_formula": "500 MB por servidor protegido por día (bolsa diaria compartida 'pooled' entre todos los servidores con Plan 2 reportando al mismo Log Analytics Workspace).",
+        "eligible_tables_and_sources": "SecurityEvent, WindowsEvent (EXCLUSIVAMENTE eventos del stream Microsoft-SecurityEvent), SecurityAlert, SecurityBaseline, SecurityBaselineSummary, SecurityDetection, WindowsFirewall, ProtectionStatus, Update, UpdateSummary, MDCFileIntegrityMonitoringEvents (FIM sin agente), DeviceCustomFileEvents, DeviceCustomRegistryEvents.",
+        "critical_guardrails": "CRÍTICO: El Workspace DEBE estar en 'Medidores Simplificados/Unificados de Microsoft Sentinel' (Simplified/Unified pricing tiers) para que los 500 MB/día cubran tanto Log Analytics como Sentinel (en medidores clásicos solo cubre Log Analytics). Los canales Windows System/Application, Syslog Linux genérico, IIS o CEF de firewalls NO están cubiertos por este beneficio."
+      },
+      {
+        "id": "BEN-04",
+        "benefit_name": "Microsoft Security Copilot incluido en Microsoft 365 E5",
+        "allowance_formula": "400 Security Compute Units (SCUs) por mes por cada 1.000 licencias de usuario M365 E5 (prorrateado, hasta un tope de 10.000 SCUs/mes sin costo adicional).",
+        "eligible_tables_and_sources": "Agentes integrados de Security Copilot en Microsoft Defender (Phishing Triage, Alert Triage / Security Analyst), Microsoft Entra (Conditional Access Optimization), Microsoft Purview (Data Security Triage) e Intune, más sesiones interactivas y promptbooks según cuota mensual.",
+        "critical_guardrails": "Monitorear consumo mensual de SCUs. Reservar SCUs incluidas para triaje de incidentes de severidad Media/Alta y agentes nativos; en flujos SOAR de muy alto volumen (>miles/día), aplicar pre-filtrado determinista en Logic Apps antes de invocar prompts de IA, o habilitar SCUs aprovisionadas/overage controlado."
+      },
+      {
+        "id": "BEN-05",
+        "benefit_name": "Splunk Enterprise On-Premises (Capacidad Instalada Existente)",
+        "allowance_formula": "Licencia On-Premises vigente (por GB/día de indexación o por carga de trabajo SVC).",
+        "eligible_tables_and_sources": "Logs de red de alto volumen (Firewalls NGFW, Proxies, DNS, Balanceadores, VPN), telemetría OT/IoT industrial, aplicaciones legadas on-premises, bases de datos locales y Syslog no cubierto por MDC Servers P2.",
+        "critical_guardrails": "NO reenviar estos índices crudos a Sentinel. Mantener la indexación y búsquedas de correlación locales en Splunk; enviar a Logic Apps únicamente los 'Notable Events / Fired Alerts' (pocos KB por alerta) y usar consultas SPL bajo demanda desde Logic Apps / Security Copilot."
+      }
+    ],
+    "data_placement_matrix": [
+      {
+        "source_category": "Identidad, Productividad, Endpoints Corporativos y Correo (M365 E5)",
+        "raw_log_destination": "Defender XDR + Microsoft Sentinel (Cubierto por 5 MB/usr/día + Fuentes Gratuitas)",
+        "detection_engine": "Defender XDR Custom Detections + Sentinel Analytics",
+        "case_and_soar_plane": "Defender Unified Case Management + Logic Apps + Security Copilot"
+      },
+      {
+        "source_category": " Eventos de Seguridad Windows Server / FIM / Baselines (Servidores Híbridos con Azure Arc + MDC P2)",
+        "raw_log_destination": "Microsoft Sentinel con Medidores Unificados (Cubierto por 500 MB/srv/día de MDC P2 vía AMA)",
+        "detection_engine": "Defender for Servers P2 + MDE + Sentinel Analytics",
+        "case_and_soar_plane": "Defender Unified Case Management + Logic Apps + Security Copilot"
+      },
+      {
+        "source_category": "Firewalls, Proxies, Red On-Prem, Apps Legadas, Syslog No-Seguridad y OT",
+        "raw_log_destination": "Splunk Enterprise On-Premises (Sin ingesta cruda en Sentinel)",
+        "detection_engine": "Splunk Correlation Searches / Splunk ES Notable Events",
+        "case_and_soar_plane": "Webhook -> Logic Apps Normalizer -> Defender Unified Case Management + Enriquecimiento SPL bajo demanda"
+      },
+      {
+        "source_category": "Múltiples Instancias / Workspaces Adicionales de Microsoft Sentinel (Filiales, M&A, Regiones)",
+        "raw_log_destination": "Workspace Regional de Sentinel correspondiente",
+        "detection_engine": "Sentinel Analytics local / Multi-Workspace",
+        "case_and_soar_plane": "Multi-Workspace Defender Portal / Azure Lighthouse + Automation Rules hacia el Hub Central de Logic Apps"
+      }
+    ]
+  },
+  "architecture_guide": {
+    "mermaid_diagram": "flowchart TB\n    subgraph SIEMs[\"Capa 1: Fuentes de Detección y SIEMs (Convivencia Plurianual)\"]\n        XDR[\"Microsoft Defender XDR (M365 E5)\\nMDE + MDO + MDI + MDCA + Entra ID\"]\n        MDC[\"Defender for Servers Plan 2\\nAzure Arc + AMA (500 MB/srv/día)\"]\n        SENT1[\"Sentinel Workspace Principal\\n(Beneficio E5 5MB/usr + MDC P2)\"]\n        SENTN[\"Sentinel Workspaces Secundarios\\n(Multi-Workspace / Lighthouse)\"]\n        SPLUNK[\"Splunk Enterprise On-Premises\\n(FW, Proxy, Legacy, OT - Sin copia cruda)\"]\n    end\n\n    subgraph HYBRID[\"Capa 2: Conectividad Híbrida Segura\"]\n        APIM[\"Azure API Management /\\nWebhook HTTPS Receptor\"]\n        VNET[\"VNet Integration + VPN/ExpressRoute\\no On-Premises Data Gateway (OPDG)\"]\n    end\n\n    subgraph SOAR[\"Capa 3: Bus SOAR Central Agnóstico al SIEM (Azure Logic Apps Standard)\"]\n        NORM[\"Workflow Normalizador Canónico\\n(Mapeo Entidades ASIM + Dedup)\"]\n        ORCH[\"Orquestador Padre (Router)\\nGestión de Ciclo de Vida y SLA\"]\n        ENRICH[\"Sub-Playbooks Enriquecimiento\\nEntra, TI, MDC y SPL Bajo Demanda\"]\n        RESP[\"Sub-Playbooks Contención\\nAislar Host, Bloquear Usuario/IP, HITL Teams\"]\n        SYNC[\"Sub-Playbook Sync Bidireccional\\nCierre/Notas -> Splunk ES API :8089\"]\n    end\n\n    subgraph UNIFIED[\"Capa 4: Consola Única y Case Management (security.microsoft.com)\"]\n        INC[\"Cola Unificada de Incidentes\\nCorrelación Multi-Dominio\"]\n        CASE[\"Case Management Nativo\\nIncident Cases + Generic Cases + Tareas/SLA\"]\n        AUDIT[\"Tabla SecurityCaseEvent\\nAuditoría y KPIs SOC (MTTA/MTTR)\"]\n    end\n\n    subgraph AGENTIC[\"Capa 5: Capa Cognitiva y SOC Agéntico (Security Copilot)\"]\n        SCOP[\"Microsoft Security Copilot\\n(400 SCUs/1k E5 + Capacidad Elástica)\"]\n        AGENTS[\"Agentes Nativos y Personalizados\\nPhishing, Triage, Identity, Custom SOC Agent\"]\n        PLUGINS[\" Herramientas Agénticas\\nLogic Apps Skills/MCP + Splunk Plugin + Sentinel MCP\"]\n    end\n\n    XDR --> SENT1\n    MDC --> SENT1\n    SENT1 --> INC\n    SENTN --> INC\n    SPLUNK -- \"1. Push Notable Event (JSON ligero)\" --> APIM\n    APIM --> NORM\n    NORM -- \"2. Crea Incidente/Alerta c/ Entidades\" --> INC\n    INC <--> CASE\n    CASE --> AUDIT\n    INC -- \"3. Automation Rule\" --> ORCH\n    ORCH --> ENRICH\n    ENRICH -- \"4. Query SPL puntual (:8089)\" --> VNET\n    VNET <--> SPLUNK\n    ORCH --> RESP\n    CASE -- \"5. Cambio Estado/Cierre\" --> SYNC\n    SYNC --> VNET\n    ORCH <--> SCOP\n    CASE <--> AGENTS\n    SCOP <--> AGENTS\n    AGENTS <--> PLUGINS\n    PLUGINS <--> ORCH\n    PLUGINS -- \"Consultas SPL Naturales\" --> VNET",
+    "integration_patterns": [
+      {
+        "id": "PAT-01",
+        "name": "Federación y Normalización Canónica de Alertas Multi-SIEM (Inbound Alert Broker)",
+        "problem_solved": "Cómo consolidar incidentes de Splunk On-Prem y múltiples instancias de Sentinel en una sola cola sin duplicar la ingesta de logs crudos.",
+        "mechanism": "En Splunk On-Premises, las Correlation Searches o Notable Events ejecutan una Alert Action (Webhook HTTPS autenticado vía Entra OAuth2 / mTLS tras Azure API Management) hacia un workflow 'SOAR-Inbound-Normalizer' en Azure Logic Apps Standard. Este flujo transforma los campos propietarios de Splunk (src_ip, dest_nt_host, user, rule_name, sid, urgency) a un esquema canónico alineado con ASIM y crea el incidente mediante Microsoft Sentinel REST API ('Microsoft.SecurityInsights/incidents') o Microsoft Graph Security API, poblando entidades estructuradas (Account, Host, IP, Malware, URL), etiquetas ('SourceSIEM:SplunkOnPrem') y un Deep Link directo a la búsqueda en Splunk.",
+        "priority_tech": "Azure Logic Apps Standard + Azure API Management + Sentinel/Defender Unified Incident Queue"
+      },
+      {
+        "id": "PAT-02",
+        "name": "Enriquecimiento Federado 'Zero-Copy' hacia Splunk On-Prem (Query-on-Demand)",
+        "problem_solved": "Cómo dar al analista y a Security Copilot visibilidad sobre firewalls, proxies o apps legadas alojadas en Splunk sin pagar ingesta en Sentinel.",
+        "mechanism": "Cuando se abre un incidente en la consola unificada (provenga de Defender XDR, Sentinel o del propio Splunk), un sub-playbook de Logic Apps invoca la API REST de Splunk On-Premises ('https://<splunk>:8089/services/search/jobs/export') a través de VNet Integration (ExpressRoute/VPN) o del On-Premises Data Gateway (OPDG). Ejecuta una consulta SPL parametrizada y acotada en tiempo (ej. ±15 minutos sobre las entidades IP/Usuario del incidente, limitada a top 50 eventos resumidos) y publica el resultado como tabla Markdown en los comentarios/evidencia del Incident Case.",
+        "priority_tech": "Logic Apps Standard + VNet Integration / On-Premises Data Gateway + Splunk REST API (:8089)"
+      },
+      {
+        "id": "PAT-03",
+        "name": "Arquitectura Desacoplada de Playbooks 'Padre-Hijo' (SIEM-Agnostic Micro-Playbooks)",
+        "problem_solved": "Evitar reescribir o duplicar playbooks para cada SIEM (Sentinel #1, Sentinel #2, Defender XDR, Splunk) y permitir invocación desde agentes de IA.",
+        "mechanism": "Los playbooks se dividen en dos capas: (1) 'Trigger Adapters' muy livianos (uno para Automation Rules de Sentinel/Defender, otro para Webhooks de Splunk, otro para invocación directa desde Security Copilot), que extraen las entidades a un contrato JSON común; y (2) 'Child Action Workflows' reutilizables invocados por HTTP interno/Workflow Call (ej. 'Child-Isolate-MDE-Machine', 'Child-Disable-Entra-User', 'Child-Block-Firewall-IP', 'Child-Query-Splunk-Context'). Así, cualquier SIEM o Agente reutiliza exactamente los mismos bloques de respuesta.",
+        "priority_tech": "Azure Logic Apps Standard (Stateful para orquestación/HITL + Stateless para enriquecimiento rápido)"
+      },
+      {
+        "id": "PAT-04",
+        "name": "Case Management Unificado con Human-in-the-Loop (HITL) y Sincronización Bidireccional",
+        "problem_solved": "Evitar que un analista cierre un caso en Microsoft y quede abierto en Splunk ES (o viceversa), y controlar acciones críticas en servidores productivos.",
+        "mechanism": "El SOC adopta Case Management en el Portal de Microsoft Defender (Incident Cases para incidentes operativos y Generic Cases para cacerías o investigaciones mayores, con plantillas de SLA y tareas). Antes de ejecutar acciones disruptivas (ej. aislar un servidor Windows/Linux con Defender for Servers P2 o revocar acceso VIP), Logic Apps envía una Adaptive Card en Microsoft Teams solicitando aprobación; la decisión se registra en el Caso. Al actualizarse o cerrarse el incidente/caso (auditado en 'SecurityCaseEvent'), una Automation Rule dispara 'Child-Sync-Splunk-Notable' que invoca '/services/notable_update' en Splunk ES o escribe el evento de cierre vía HEC (:8088).",
+        "priority_tech": "Defender Portal Case Management + SecurityCaseEvent + Teams Adaptive Cards + Logic Apps"
+      },
+      {
+        "id": "PAT-05",
+        "name": "Orquestación Cognitiva y Agéntica (Security Copilot + Logic Apps Plugins / MCP + Splunk Plugin)",
+        "problem_solved": "Transicionar del SOAR estático basado en árboles rígidos if/else hacia un SOC Agéntico capaz de razonar sobre señales híbridas.",
+        "mechanism": "Doble integración: (A) Inbound (SOAR llama a IA): Logic Apps usa el conector nativo de Microsoft Security Copilot para enviar el dossier consolidado (alertas M365 E5 + MDC P2 + extracto SPL de Splunk) a un Promptbook que redacta la hipótesis del ataque, severidad real y plan de remediación en el Caso. (B) Outbound/Agéntico (IA llama a SOAR y SIEMs): Se habilita el Plugin oficial de Splunk en Security Copilot y se publican los Child Workflows de Logic Apps como Skills (manifiesto YAML) o Servidores MCP (Model Context Protocol). Los analistas y los Agentes ejecutan sesiones agénticas directamente dentro del Incident Case.",
+        "priority_tech": "Microsoft Security Copilot (SCUs E5) + Logic Apps Plugin/MCP + Splunk Plugin + Sentinel MCP"
+      }
+    ],
+    "logic_apps_best_practices": [
+      {
+        "id": "BP-01",
+        "category": "Elección de Plan (SKU)",
+        "title": "Priorizar Logic Apps Standard para el Hub Central y Conectividad Híbrida",
+        "recommendation": "Utilizar Azure Logic Apps Standard (Plan Workflow Standard WS1/WS2) para el motor central SOAR porque incluye integración nativa con VNet privada (acceso directo a Splunk On-Prem por VPN/ExpressRoute sin exponer endpoints públicos), soporte conjunto de flujos Stateful (auditoría completa y esperas HITL de días) y Stateless (enriquecimiento sub-segundo), muchos flujos en un solo plan de costo predecible y despliegue CI/CD empaquetado. Reservar Logic Apps Consumption únicamente para conectores disparadores simples o pruebas rápidas."
+      },
+      {
+        "id": "BP-02",
+        "category": "Identidad y Secretos",
+        "title": "Zero Trust en Automatización: Managed Identities y Azure Key Vault",
+        "recommendation": "Prohibir cuentas de servicio con usuario/contraseña en conectores Microsoft. Asignar System-Assigned o User-Assigned Managed Identity a las Logic Apps con roles mínimos: 'Microsoft Sentinel Responder', permisos de aplicación Microsoft Graph ('SecurityIncident.ReadWrite.All', 'SecurityAlert.ReadWrite.All', 'Machine.Isolate', 'User.RevokeSessions.All') y RBAC en Defender. Para los tokens REST/HEC de Splunk On-Premises, almacenarlos exclusivamente en Azure Key Vault accedidos por Managed Identity con rotación trimestral."
+      },
+      {
+        "id": "BP-03",
+        "category": "Resiliencia Híbrida",
+        "title": "Desacoplamiento con Cola, Idempotencia y Control de Concurrencia",
+        "recommendation": "Si el enlace WAN hacia Splunk On-Prem sufre microcortes o una regla en Splunk genera una tormenta de alertas, colocar Azure Service Bus (o Event Grid) delante de flujos pesados, activar 'Concurrency Control' (ej. grado 10-25) en el trigger de Logic Apps, configurar políticas de reintento exponencial (4 reintentos, base 15s) e implementar llave de idempotencia usando 'SplunkSID + EventHash' en una Watchlist o tabla auxiliar para jamás duplicar incidentes en el Portal Unificado."
+      },
+      {
+        "id": "BP-04",
+        "category": "Gobernanza y Auditoría",
+        "title": "SOAR-as-Code, Telemetría de Salud y Etiquetado Estándar",
+        "recommendation": "Versionar todos los workflows JSON, manifiestos YAML de Security Copilot y plantillas Bicep/Terraform en Git (GitHub o Azure DevOps) con promoción Dev -> Prod. Enviar 'WorkflowRuntime' diagnostics de todas las Logic Apps al workspace de Log Analytics (o tabla operativa) para alertar automáticamente si un playbook crítico falla, y auditar las acciones de casos mediante la tabla 'SecurityCaseEvent'."
+      },
+      {
+        "id": "BP-05",
+        "category": "Protección de SCUs de IA",
+        "title": "Compuertas Deterministas antes de Invocar Security Copilot",
+        "recommendation": "No invocar prompts de Security Copilot de forma indiscriminada en alertas informativas o repetitivas conocidas. Usar Logic Apps primero para deduplicar, enriquecer con listas blancas/Watchlists y calcular un umbral de riesgo; invocar Security Copilot automáticamente solo en incidentes de severidad Alta/Crítica o alertas multi-dominio novedosas, maximizando el rendimiento de las SCUs incluidas en M365 E5."
+      }
+    ]
+  },
+  "playbook_and_agent_catalog": [
+    {
+      "id": "PB-01",
+      "name": "SOAR-Core-Inbound-Alert-Normalizer",
+      "type": "Logic App Standard (Stateful)",
+      "trigger": "HTTPS Webhook (vía APIM desde Splunk On-Prem / SIEM externo)",
+      "target_systems": "Splunk On-Prem -> Sentinel / Defender Unified Incidents",
+      "description": "Recibe Notable Events de Splunk o alertas de terceros, valida firma/token, verifica idempotencia, mapea entidades (UPN, Host, IP, Hash, MITRE) y crea/agrega al incidente unificado con enlace profundo a Splunk.",
+      "phase": "Fase 1"
+    },
+    {
+      "id": "PB-02",
+      "name": "SOAR-Enrich-Splunk-ZeroCopy-Context",
+      "type": "Logic App Standard (Stateless/Stateful)",
+      "trigger": "Child Workflow HTTP / Automation Rule / Security Copilot Skill",
+      "target_systems": "Splunk REST API (:8089) vía VNet/OPDG -> Incident Case",
+      "description": "Ejecuta búsquedas SPL acotadas bajo demanda sobre índices de Firewall, Proxy, VPN o Apps legadas en Splunk On-Prem para las entidades del incidente y publica el resumen forense en el Caso sin ingerir logs crudos en Sentinel.",
+      "phase": "Fase 2"
+    },
+    {
+      "id": "PB-03",
+      "name": "SOAR-Enrich-Unified-Entity360",
+      "type": "Logic App Standard (Child Workflow)",
+      "trigger": "Creación de Incidente (Sentinel #1, Sentinel #N o Splunk)",
+      "target_systems": "Entra ID P2 + MDE + MDC Servers P2 + Defender TI + Watchlists",
+      "description": "Consulta riesgo del usuario en Entra ID Protection, criticidad del activo/servidor en Defender for Cloud P2 (etiquetas, vulnerabilidades abiertas, exposición a Internet), reputación TI de IPs/Hashes y actualiza prioridad/tags del Caso.",
+      "phase": "Fase 1"
+    },
+    {
+      "id": "PB-04",
+      "name": "SOAR-Contain-Compromised-Identity",
+      "type": "Logic App Standard (con HITL Teams)",
+      "trigger": "Incidente de Identidad / Invocación desde Caso o Agente",
+      "target_systems": "Microsoft Entra ID P2 + Active Directory On-Prem (vía MDI/Hybrid Worker)",
+      "description": "Revoca tokens de actualización, fuerza restablecimiento de contraseña, marca usuario como 'Confirm Compromised' en Entra ID (activando Acceso Condicional) y solicita aprobación por Adaptive Card si es cuenta VIP/Admin.",
+      "phase": "Fase 2"
+    },
+    {
+      "id": "PB-05",
+      "name": "SOAR-Contain-Hybrid-Server-MDC-P2",
+      "type": "Logic App Standard (con HITL Teams)",
+      "trigger": "Alerta en Servidor Protegido (MDC Servers P2 / MDE / Splunk)",
+      "target_systems": "Defender for Endpoint / Defender for Servers P2 / Azure Arc",
+      "description": "Solicita aprobación rápida del propietario del servidor en Teams y ejecuta aislamiento de red selectivo MDE, captura paquete de investigación forense (Collect Investigation Package), escaneo antimalware y restricción de ejecución de apps.",
+      "phase": "Fase 2"
+    },
+    {
+      "id": "PB-06",
+      "name": "SOAR-Contain-Network-Block-Hybrid",
+      "type": "Logic App Standard (Child Workflow)",
+      "trigger": "IOC Malicioso Confirmado / Invocación Agéntica",
+      "target_systems": "Defender Custom TI Indicators + Firewall On-Prem (Palo Alto/Fortinet/Cisco vía OPDG/VNet)",
+      "description": "Publica IPs, dominios o hashes maliciosos en los indicadores de bloqueo de Defender for Endpoint y simultáneamente actualiza el External Dynamic List (EDL) o grupo de bloqueo en el firewall on-premises.",
+      "phase": "Fase 2"
+    },
+    {
+      "id": "PB-07",
+      "name": "SOAR-Sync-Bidirectional-Case-SplunkES",
+      "type": "Logic App Standard (Stateful)",
+      "trigger": "Sentinel Incident Updated Trigger / SecurityCaseEvent",
+      "target_systems": "Defender Case Management <-> Splunk ES (/services/notable_update & HEC :8088)",
+      "description": "Sincroniza cambios de estado (En Curso, Cerrado), clasificación (TP/FP/BP), analista asignado y resumen de resolución desde la consola unificada de Microsoft hacia el Notable Event original en Splunk On-Prem.",
+      "phase": "Fase 1"
+    },
+    {
+      "id": "PB-08",
+      "name": "SOAR-Case-Lifecycle-SLA-Orchestrator",
+      "type": "Logic App Standard + Case Templates",
+      "trigger": "Creación de Incidente Alto/Crítico o Alerta de Vulnerabilidad Explotada MDC P2",
+      "target_systems": "Defender Portal Case Management + Microsoft Teams + Correo Ejecutivo",
+      "description": "Aplica plantilla de Caso según tipología (Ransomware, Exfiltración, BEC, Compromiso Servidor Crítico), crea tareas obligatorias con SLA, abre canal de sala de guerra en Teams si es Crítico y escala incumplimientos de MTTA.",
+      "phase": "Fase 2"
+    },
+    {
+      "id": "PB-09",
+      "name": "AI-Triage-MultiSIEM-Copilot-Assessor",
+      "type": "Logic App + Conector Microsoft Security Copilot",
+      "trigger": "Post-enriquecimiento de Incidente Media/Alta/Crítica",
+      "target_systems": "Microsoft Security Copilot -> Comentario estructurado en Incident Case",
+      "description": "Envía a un Promptbook de Security Copilot el contexto unificado (Entra + MDE + MDC P2 + extracto SPL de Splunk) para obtener narrativa del ataque en español, mapeo MITRE, veredicto preliminar de severidad y acciones sugeridas.",
+      "phase": "Fase 3"
+    },
+    {
+      "id": "PB-10",
+      "name": "Agent-Native-E5-Triage-Suite",
+      "type": "Agentes Integrados de Security Copilot (Beneficio M365 E5)",
+      "trigger": "Autónomo / Basado en Cola de Alertas y Sesiones en Incident Cases",
+      "target_systems": "Defender Phishing Triage, Alert Triage, Entra Conditional Access, Purview Triage",
+      "description": "Agentes nativos incluidos con M365 E5 que clasifican autónomamente reportes de phishing y alertas repetitivas, descartando falsos positivos documentados y escalando solo amenazas reales a los Incident Cases del SOC.",
+      "phase": "Fase 3"
+    },
+    {
+      "id": "PB-11",
+      "name": "Agent-Plugin-Splunk-Natural-Investigator",
+      "type": "Plugin Splunk + Custom Agent en Security Copilot",
+      "trigger": "Sesión Agéntica desde Incident Case o Prompt del Analista",
+      "target_systems": "Security Copilot <-> Splunk Enterprise On-Premises + Sentinel MCP",
+      "description": "Permite que un Agente de Investigación o un analista N1/N2 consulte Splunk sin escribir SPL manual complejo, correlacionando en lenguaje natural hallazgos de red/legacy en Splunk con el grafo de ataque en Microsoft Sentinel y Defender.",
+      "phase": "Fase 3"
+    },
+    {
+      "id": "PB-12",
+      "name": "Agent-MCP-Autonomous-SOAR-Responder",
+      "type": "Agente Personalizado Security Copilot + Logic Apps MCP Server",
+      "trigger": "Evento de Caso Crítico / Invocación desde Incident Case (Agentic Session)",
+      "target_systems": "Security Copilot Agent -> Logic Apps MCP Tools (PB-02, PB-03, PB-04, PB-05, PB-06)",
+      "description": "Agente autónomo supervisado por objetivos que razona dinámicamente qué herramientas de Logic Apps invocar vía MCP para investigar entre múltiples SIEMs, ensamblar toda la evidencia en el Caso y preparar la contención lista para aprobación humana.",
+      "phase": "Fase 4"
+    }
+  ],
+  "multi_year_roadmap": [
+    {
+      "phase_id": "Fase 0",
+      "horizon": "Semanas 1 - 4",
+      "title": "Descubrimiento, Línea Base FinOps y Validación de Cimientos",
+      "objective": "Auditar lo que el cliente ya tiene operando en M365 E5, Defender for Servers P2, Sentinel y Splunk On-Premises, corrigiendo brechas de facturación e ingesta antes de escalar automatizaciones.",
+      "splunk_coexistence_state": "Splunk opera de forma independiente; se inventarían sus Correlation Searches críticas y conectividad de red hacia Azure.",
+      "key_deliverables": [
+        "Verificación de medidores simplificados/unificados en Sentinel para activar los 500 MB/servidor/día de MDC P2.",
+        "Validación de concesión gratuita M365 E5 (5 MB/usuario/día) y Data Collection Rules (AMA) filtradas solo a tablas elegibles.",
+        "Onboarding verificado al Portal Unificado de Microsoft Defender y RBAC Unificado."
+      ]
+    },
+    {
+      "phase_id": "Fase 1",
+      "horizon": "Meses 1 - 3",
+      "title": "Consola Unificada, Case Management y Puente de Alertas Multi-SIEM",
+      "objective": "Centralizar la operación diaria del SOC en Case Management de Defender y desplegar el bus inicial en Logic Apps Standard para recibir Notable Events de Splunk y sincronizar cierres.",
+      "splunk_coexistence_state": "Splunk conserva el 100% de sus logs e índices actuales, pero sus alertas accionables fluyen automáticamente como Incidentes/Casos hacia Microsoft con sincronización bidireccional.",
+      "key_deliverables": [
+        "Plantillas de Incident Cases y Generic Cases configuradas con SLAs y auditoría en SecurityCaseEvent.",
+        "Despliegue de Azure Logic Apps Standard con Managed Identity, Key Vault y conectividad híbrida (VNet/OPDG) hacia Splunk.",
+        "En producción PB-01 (Normalizador Multi-SIEM), PB-03 (Entity 360) y PB-07 (Sync Bidireccional con Splunk ES)."
+      ]
+    },
+    {
+      "phase_id": "Fase 2",
+      "horizon": "Meses 4 - 9",
+      "title": "SOAR Modular Centralizado, Enriquecimiento Zero-Copy y Contención HITL",
+      "objective": "Eliminar las consultas manuales a Splunk durante el triaje y automatizar las acciones de contención en identidad, servidores híbridos y red bajo aprobación en Teams.",
+      "splunk_coexistence_state": "Los analistas N1/N2 operan 90%+ desde la consola unificada de Microsoft; Logic Apps extrae bajo demanda el contexto crudo desde Splunk (:8089) y lo deposita en el Caso.",
+      "key_deliverables": [
+        "En producción PB-02 (Query SPL Zero-Copy), PB-04 (Identidad Entra), PB-05 (Servidores MDC P2) y PB-06 (Bloqueo de Red Híbrido).",
+        "Flujos de aprobación Human-in-the-Loop mediante Adaptive Cards en Microsoft Teams.",
+        "Repositorio Git SOAR-as-Code y tablero ejecutivo de métricas MTTA/MTTR y salud de playbooks."
+      ]
+    },
+    {
+      "phase_id": "Fase 3",
+      "horizon": "Meses 10 - 18",
+      "title": "SOC Asistido por IA: Security Copilot en E5, Plugins Híbridos y Agentes de Triaje",
+      "objective": "Incorporar razonamiento generativo y agentes nativos sobre la capa SOAR ya estandarizada, aprovechando las SCUs incluidas en M365 E5.",
+      "splunk_coexistence_state": "Security Copilot consulta tanto Sentinel/Defender como Splunk On-Premises (vía Splunk Plugin y Logic Apps Skills), correlacionando hallazgos entre ambos mundos en segundos.",
+      "key_deliverables": [
+        "Activación y gobierno de SCUs incluidas en M365 E5 (400 SCUs/1.000 usuarios/mes).",
+        "Despliegue de Agentes nativos (Phishing Triage, Alert Triage, Conditional Access) y PB-09 (Triaje Cognitivo Multi-SIEM).",
+        "Publicación de Child Workflows de Logic Apps como Skills invocables desde Security Copilot y habilitación del Plugin de Splunk."
+      ]
+    },
+    {
+      "phase_id": "Fase 4",
+      "horizon": "Meses 18 - 36+",
+      "title": "SOC Agéntico Autónomo y Racionalización Gradual de Datos (Data Lake + MCP)",
+      "objective": "Operar con sesiones agénticas autónomas supervisadas por objetivos dentro de los Incident Cases y optimizar el TCO de largo plazo conforme venzan contratos o hardware on-prem de Splunk.",
+      "splunk_coexistence_state": "Convivencia selectiva o migración gradual de fuentes históricas de alto volumen hacia Microsoft Sentinel Data Lake (bajo costo), sin tocar los casos, playbooks ni agentes ya construidos.",
+      "key_deliverables": [
+        "Exposición de Logic Apps Standard como Servidores MCP (Model Context Protocol) consumidos por Agentes personalizados en Incident Cases.",
+        "Integración con Microsoft Sentinel Graph y Sentinel Data Lake para hunting multi-año económico.",
+        "Operación consolidada de SOC Agéntico donde los analistas actúan como supervisores estratégicos y cazadores de amenazas."
+      ]
+    }
+  ],
+  "assessment_domains": [
+    {
+      "domain_id": "DOM-01",
+      "domain_name": "Gobernanza SecOps y Consola Unificada"
+    },
+    {
+      "domain_id": "DOM-02",
+      "domain_name": "FinOps y Beneficios M365 E5 / MDC Servers P2"
+    },
+    {
+      "domain_id": "DOM-03",
+      "domain_name": "Arquitectura e Ingeniería SOAR en Logic Apps"
+    },
+    {
+      "domain_id": "DOM-04",
+      "domain_name": "Integración Multi-SIEM y Convivencia Splunk On-Prem"
+    },
+    {
+      "domain_id": "DOM-05",
+      "domain_name": "Case Management Unificado y Procesos SOC"
+    },
+    {
+      "domain_id": "DOM-06",
+      "domain_name": "Microsoft Security Copilot y Preparación Agéntica"
+    }
+  ],
+  "maturity_scale": [
+    {
+      "score": 0,
+      "level": "0 - Inexistente",
+      "description": "Capacidad no implementada ni diseñada; operación manual o en silos desconectados."
+    },
+    {
+      "score": 1,
+      "level": "1 - Inicial / Ad-hoc",
+      "description": "Implementación parcial o experimental sin estandarización; alta dependencia de tareas manuales y cambios de consola."
+    },
+    {
+      "score": 2,
+      "level": "2 - Definido / Básico",
+      "description": "Componentes principales habilitados en producción con flujos básicos unidireccionales y controles esenciales."
+    },
+    {
+      "score": 3,
+      "level": "3 - Gestionado / Integrado",
+      "description": "Arquitectura modular multi-SIEM operativa, sincronización bidireccional, gobernanza Zero Trust y métricas medidas."
+    },
+    {
+      "score": 4,
+      "level": "4 - Optimizado / SOC Agéntico",
+      "description": "Orquestación cognitiva con Security Copilot/Agentes/MCP, sesiones agénticas en casos, mejora continua como código y FinOps óptimo."
+    }
+  ],
+  "assessment_items": [
+    {
+      "id": "ASM-01",
+      "domain_id": "DOM-01",
+      "domain_name": "Gobernanza SecOps y Consola Unificada",
+      "control_title": "Integración del Workspace en el Portal Unificado de Microsoft Defender",
+      "what_to_validate": "Verificar en security.microsoft.com > System > Settings > Microsoft Sentinel que el workspace principal (y secundarios si aplica) esté conectado con sincronización bidireccional de incidentes y alertas activa.",
+      "level_0_desc": "Sentinel se opera aisladamente en el portal legado de Azure sin conexión a Defender XDR.",
+      "level_2_desc": "Workspace principal conectado a security.microsoft.com; analistas aún alternan portales ocasionalmente.",
+      "level_4_desc": "100% de la operación SecOps centralizada en security.microsoft.com con soporte Multi-Workspace / Multitenant.",
+      "weight": 1.2,
+      "current_score": 2,
+      "target_score": 4,
+      "recommended_action": "Completar el onboarding de todos los workspaces de Sentinel al portal Defender y retirar accesos operativos rutinarios a la vista clásica.",
+      "client_notes": "Validar estado de workspaces secundarios si existen."
+    },
+    {
+      "id": "ASM-02",
+      "domain_id": "DOM-01",
+      "domain_name": "Gobernanza SecOps y Consola Unificada",
+      "control_title": "Modelo RBAC Unificado (Microsoft Defender Unified RBAC)",
+      "what_to_validate": "Comprobar en Permissions > Microsoft Defender XDR > Roles si el modelo Unified RBAC está activado cubriendo cargas XDR, Sentinel y permisos de Case Management (Security Data Read/Manage).",
+      "level_0_desc": "Permisos dispersos con roles excesivos (Global Admin / Security Admin permanentes).",
+      "level_2_desc": "Roles separados en Azure RBAC (Sentinel Responder) y roles básicos en Defender.",
+      "level_4_desc": "Unified RBAC activo por niveles (Tier 1, Tier 2, Threat Hunter, SOAR Admin) integrado con Entra ID PIM Just-in-Time.",
+      "weight": 1.0,
+      "current_score": 1,
+      "target_score": 4,
+      "recommended_action": "Diseñar y activar roles personalizados en Defender Unified RBAC alineados a funciones del SOC y Case Management.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-03",
+      "domain_id": "DOM-01",
+      "domain_name": "Gobernanza SecOps y Consola Unificada",
+      "control_title": "Estrategia de Detecciones: Custom Detections XDR vs. Sentinel Analytics",
+      "what_to_validate": "Revisar si las detecciones sobre telemetría nativa de M365 E5 (MDE, MDO, MDI) usan Custom Detections de Defender XDR para ahorrar ingesta de Advanced Hunting en Sentinel.",
+      "level_0_desc": "No hay catálogo formal de reglas o se duplican alertas entre XDR y Sentinel.",
+      "level_2_desc": "Reglas out-of-the-box activas en Sentinel, con cierto solapamiento con alertas XDR.",
+      "level_4_desc": "Matriz clara: detecciones XDR en tiempo real sobre telemetría E5, Sentinel para correlación multi-dominio y Splunk para red/legacy.",
+      "weight": 1.0,
+      "current_score": 1,
+      "target_score": 3,
+      "recommended_action": "Migrar reglas puramente de endpoint/identidad/email a Custom Detections en Defender XDR para preservar la bolsa gratuita de 5 MB/usuario/día.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-04",
+      "domain_id": "DOM-01",
+      "domain_name": "Gobernanza SecOps y Consola Unificada",
+      "control_title": "Visibilidad Multi-Instancia (Múltiples Sentinel / Tenants / Regiones)",
+      "what_to_validate": "Validar si existen múltiples instancias de Sentinel o múltiples tenants y si están federados con Azure Lighthouse y Multi-Workspace Incident View.",
+      "level_0_desc": "Instancias de Sentinel aisladas revisadas manualmente una por una.",
+      "level_2_desc": "Acceso delegado básico con Azure Lighthouse pero sin automatización SOAR compartida.",
+      "level_4_desc": "Vista centralizada multi-workspace/multitenant y enrutamiento único de incidentes hacia el Hub SOAR de Logic Apps.",
+      "weight": 0.8,
+      "current_score": 1,
+      "target_score": 3,
+      "recommended_action": "Habilitar Azure Lighthouse y conectar Automation Rules de workspaces secundarios hacia el endpoint central de Logic Apps.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-05",
+      "domain_id": "DOM-02",
+      "domain_name": "FinOps y Beneficios M365 E5 / MDC Servers P2",
+      "control_title": "Aprovechamiento y Verificación del Beneficio M365 E5 (5 MB/usuario/día)",
+      "what_to_validate": "Auditar en Azure Cost Analysis (agrupado por Meter filtrando 'M365') y en el Workbook 'Microsoft Sentinel Cost' que la concesión de 5 MB/usuario/día se aplique correctamente sin sobrecostos imprevistos.",
+      "level_0_desc": "Conectores M365 desconectados o ingiriendo tablas no elegibles con alto costo PAYG.",
+      "level_2_desc": "Beneficio activo, pero sin monitoreo continuo del umbral diario de 5 MB/usuario.",
+      "level_4_desc": "Consumo E5 monitoreado con alertas de presupuesto, ingiriendo 100% fuentes gratuitas y tablas elegibles de alto valor.",
+      "weight": 1.3,
+      "current_score": 2,
+      "target_score": 4,
+      "recommended_action": "Desplegar el Workbook de Costos y configurar alertas automáticas al 80% del umbral diario del beneficio M365 E5.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-06",
+      "domain_id": "DOM-02",
+      "domain_name": "FinOps y Beneficios M365 E5 / MDC Servers P2",
+      "control_title": "Activación Efectiva de los 500 MB/servidor/día de Defender for Servers Plan 2",
+      "what_to_validate": "Confirmar que: (1) Defender for Servers Plan 2 está activo en el mismo Workspace de Sentinel, (2) el Workspace usa Medidores Simplificados/Unificados de Sentinel (NO clásicos), y (3) los servidores on-prem reportan vía Azure Arc + AMA.",
+      "level_0_desc": "Plan 2 activo solo a nivel suscripción o el Workspace usa medidores clásicos (no descuenta Sentinel) o usa agente MMA legado.",
+      "level_2_desc": "Plan 2 activo en el workspace con AMA, pero con cobertura incompleta de servidores on-prem (Azure Arc).",
+      "level_4_desc": "100% de servidores protegidos reportando al workspace en medidores unificados, aprovechando el pool de 500 MB/srv/día a costo $0.",
+      "weight": 1.4,
+      "current_score": 1,
+      "target_score": 4,
+      "recommended_action": "Validar inmediatamente el modelo de facturación unificado de Sentinel en el workspace y estandarizar onboarding vía Azure Arc + AMA.",
+      "client_notes": "Punto crítico habitual de fuga de costos en clientes híbridos."
+    },
+    {
+      "id": "ASM-07",
+      "domain_id": "DOM-02",
+      "domain_name": "FinOps y Beneficios M365 E5 / MDC Servers P2",
+      "control_title": "Higiene de Data Collection Rules (DCR) para Tablas Elegibles de Servidores",
+      "what_to_validate": "Inspeccionar las DCR de Azure Monitor Agent (AMA) para asegurar que envían SecurityEvent / Microsoft-SecurityEvent stream y FIM elegible, sin mezclar canales System/Application ni Syslog ruidoso facturable.",
+      "level_0_desc": "DCR enviando todos los Event Logs (System, Application, Verbose) generando facturación inesperada en Sentinel.",
+      "level_2_desc": "DCR separadas por tipo de servidor pero sin XPath filtering ni transformación de ingesta.",
+      "level_4_desc": "DCR quirúrgicas con XPath/KQL DCR Transformations ceñidas estrictamente a tablas cubiertas por MDC P2; resto permanece en Splunk.",
+      "weight": 1.2,
+      "current_score": 1,
+      "target_score": 4,
+      "recommended_action": "Auditar cada DCR conectada al workspace de Sentinel y separar telemetría operativa no cubierta por el beneficio P2.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-08",
+      "domain_id": "DOM-02",
+      "domain_name": "FinOps y Beneficios M365 E5 / MDC Servers P2",
+      "control_title": "Política de Cero Duplicación de Logs Crudos entre Splunk y Sentinel",
+      "what_to_validate": "Ejecutar consulta KQL de volumen por tabla ('Usage | where IsBillable == true') para verificar que no se estén reenviando logs crudos de Firewalls/Proxies desde Splunk hacia tablas Analytics de Sentinel.",
+      "level_0_desc": "Doble ingesta activa de logs de red/terceros en ambos SIEMs pagando doble licenciamiento.",
+      "level_2_desc": "Duplicación reducida pero aún existen conectores CEF/Syslog redundantes en Sentinel.",
+      "level_4_desc": "Cero duplicación de logs crudos: terceros viven en Splunk (o Data Lake futuro) y solo se federan alertas + contexto bajo demanda.",
+      "weight": 1.3,
+      "current_score": 2,
+      "target_score": 4,
+      "recommended_action": "Implementar política formal de ubicación de datos y reemplazar reenvío de logs por el patrón Query-on-Demand en Logic Apps.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-09",
+      "domain_id": "DOM-03",
+      "domain_name": "Arquitectura e Ingeniería SOAR en Logic Apps",
+      "control_title": "Adopción de Azure Logic Apps Standard y Arquitectura Padre-Hijo",
+      "what_to_validate": "Revisar si los playbooks actuales son flujos monolíticos aislados en Consumption o si existe un Hub en Logic Apps Standard con workflows modulares reutilizables (Trigger Adapters + Child Action Workflows).",
+      "level_0_desc": "Sin playbooks o únicamente pruebas manuales aisladas.",
+      "level_2_desc": "Playbooks individuales en Logic Apps Consumption acoplados fuertemente al trigger de un solo workspace de Sentinel.",
+      "level_4_desc": "Hub en Logic Apps Standard (Stateful + Stateless) con arquitectura Padre-Hijo 100% reutilizable por cualquier SIEM y por Agentes IA.",
+      "weight": 1.3,
+      "current_score": 1,
+      "target_score": 4,
+      "recommended_action": "Provisionar Azure Logic Apps Standard como motor central SOAR y refactorizar acciones comunes en Child Workflows desacoplados.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-10",
+      "domain_id": "DOM-03",
+      "domain_name": "Arquitectura e Ingeniería SOAR en Logic Apps",
+      "control_title": "Seguridad Zero Trust en Playbooks (Managed Identity y Key Vault)",
+      "what_to_validate": "Auditar todas las API Connections de Logic Apps para detectar credenciales de usuarios humanos, Client Secrets expirables en texto plano o permisos excesivos.",
+      "level_0_desc": "Conexiones autenticadas con cuentas nominales de administradores o secretos hardcodeados en el workflow.",
+      "level_2_desc": "Uso parcial de Managed Identity para Sentinel, pero secretos estáticos en parámetros para herramientas externas.",
+      "level_4_desc": "100% Managed Identities con permisos Graph/RBAC de mínimo privilegio + Azure Key Vault con rotación para tokens de Splunk/Firewalls.",
+      "weight": 1.2,
+      "current_score": 1,
+      "target_score": 4,
+      "recommended_action": "Migrar todas las conexiones Microsoft a Managed Identity y centralizar tokens de Splunk (:8089/:8088) en Azure Key Vault.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-11",
+      "domain_id": "DOM-03",
+      "domain_name": "Arquitectura e Ingeniería SOAR en Logic Apps",
+      "control_title": "Resiliencia, Idempotencia, Manejo de Errores y Monitoreo SOAR",
+      "what_to_validate": "Comprobar si los workflows implementan bloques 'Scope (Try/Catch/Finally)', políticas de reintento exponencial, control de concurrencia, deduplicación por llave única y alertas ante fallo de ejecución.",
+      "level_0_desc": "Si un playbook falla o Splunk se desconecta temporalmente, el error pasa inadvertido y se pierden alertas.",
+      "level_2_desc": "Reintentos por defecto de Logic Apps y revisión manual esporádica del historial de ejecuciones.",
+      "level_4_desc": "Patrón Try/Catch estandarizado, cola intermedia para picos, idempotencia garantizada y alertas automáticas sobre WorkflowRuntime.",
+      "weight": 1.1,
+      "current_score": 0,
+      "target_score": 4,
+      "recommended_action": "Crear plantilla base de workflow con Scope Try/Catch, control de concurrencia y enviar diagnósticos a Log Analytics.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-12",
+      "domain_id": "DOM-03",
+      "domain_name": "Arquitectura e Ingeniería SOAR en Logic Apps",
+      "control_title": "Gobierno SOAR-as-Code (Control de Versiones y CI/CD)",
+      "what_to_validate": "Verificar si los playbooks, Automation Rules y plantillas de casos están respaldados en Git (GitHub / Azure DevOps) y se despliegan mediante Bicep/Terraform.",
+      "level_0_desc": "Edición directa en producción desde el diseñador web sin respaldo ni control de cambios.",
+      "level_2_desc": "Exportación manual ocasional de plantillas ARM a un repositorio documental.",
+      "level_4_desc": "Pipeline CI/CD automatizado (Dev -> Prod) en GitHub/Azure DevOps para Logic Apps Standard, conexiones y manifiestos de agentes.",
+      "weight": 0.9,
+      "current_score": 0,
+      "target_score": 3,
+      "recommended_action": "Integrar el proyecto de Logic Apps Standard en un repositorio Git corporativo con despliegue parametrizado.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-13",
+      "domain_id": "DOM-04",
+      "domain_name": "Integración Multi-SIEM y Convivencia Splunk On-Prem",
+      "control_title": "Conectividad Híbrida Segura y Alta Disponibilidad entre Azure y Splunk On-Prem",
+      "what_to_validate": "Evaluar cómo se comunican bidireccionalmente Azure Logic Apps y Splunk On-Premises (VNet Integration sobre ExpressRoute/VPN S2S, Private Link, o clúster de On-Premises Data Gateway).",
+      "level_0_desc": "Sin conectividad entre Azure y la red de gestión de Splunk On-Premises.",
+      "level_2_desc": "Webhook unidireccional saliente desde Splunk hacia Internet, pero Azure no puede consultar la API interna de Splunk (:8089).",
+      "level_4_desc": "Conectividad privada bidireccional HA (VNet Integration + ExpressRoute/VPN o clúster OPDG) con TLS 1.2+ y filtrado estricto en firewall.",
+      "weight": 1.4,
+      "current_score": 1,
+      "target_score": 4,
+      "recommended_action": "Habilitar VNet Integration en Logic Apps Standard hacia el túnel híbrido (o instalar clúster OPDG) con acceso controlado a Splunk :8089 y :8088.",
+      "client_notes": "Requisito habilitador indispensable para enriquecimiento Zero-Copy y Splunk Plugin."
+    },
+    {
+      "id": "ASM-14",
+      "domain_id": "DOM-04",
+      "domain_name": "Integración Multi-SIEM y Convivencia Splunk On-Prem",
+      "control_title": "Ingesta y Mapeo Canónico de Entidades desde Alertas de Splunk",
+      "what_to_validate": "Comprobar si cuando Splunk envía un Notable Event a Sentinel/Defender se mapean entidades reales (Account, Host, IP, FileHash) que permitan correlación automática en el grafo de incidentes, o si solo llega texto plano.",
+      "level_0_desc": "Las alertas de Splunk se revisan únicamente en Splunk o llegan por correo electrónico.",
+      "level_2_desc": "Se crean incidentes básicos vía API, pero toda la información queda en la descripción textual sin entidades estructuradas.",
+      "level_4_desc": "Normalizador en Logic Apps mapea entidades fuertes (UPN, Entra ObjectId, FQDN, IP, SHA256), tácticas MITRE y Deep Link a Splunk.",
+      "weight": 1.3,
+      "current_score": 0,
+      "target_score": 4,
+      "recommended_action": "Implementar PB-01 con transformación canónica para que Defender correlacione automáticamente alertas de Splunk con incidentes XDR existentes.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-15",
+      "domain_id": "DOM-04",
+      "domain_name": "Integración Multi-SIEM y Convivencia Splunk On-Prem",
+      "control_title": "Enriquecimiento Federado Bajo Demanda (SPL Query-on-Demand)",
+      "what_to_validate": "Verificar si ante un incidente originado en Microsoft (ej. usuario comprometido o alerta en servidor MDC P2) Logic Apps consulta automáticamente en Splunk la actividad de red/firewall relacionada.",
+      "level_0_desc": "El analista debe copiar la IP/usuario, abrir Splunk manualmente y ejecutar búsquedas SPL desde cero.",
+      "level_2_desc": "Existen consultas SPL documentadas en una wiki para que el analista las ejecute manualmente.",
+      "level_4_desc": "Sub-playbooks en Logic Apps ejecutan búsquedas SPL parametrizadas vía REST API (:8089) en segundos y adjuntan la tabla de evidencia al Caso.",
+      "weight": 1.3,
+      "current_score": 0,
+      "target_score": 4,
+      "recommended_action": "Desplegar PB-02 con catálogo de 5 a 8 consultas SPL preaprobadas (Firewall, Proxy, DNS, VPN, App Legada).",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-16",
+      "domain_id": "DOM-04",
+      "domain_name": "Integración Multi-SIEM y Convivencia Splunk On-Prem",
+      "control_title": "Sincronización Bidireccional de Estado, Asignación y Cierre",
+      "what_to_validate": "Validar qué ocurre en Splunk Enterprise Security cuando un analista cierra o clasifica un incidente originado en Splunk desde el Portal de Microsoft Defender.",
+      "level_0_desc": "Sin sincronización; los analistas deben cerrar incidentes manualmente en ambas consolas.",
+      "level_2_desc": "Notificación por correo o webhook simple sin actualizar formalmente el estado del Notable Event en Splunk.",
+      "level_4_desc": "Sincronización bidireccional completa (estado, severidad, dueño, clasificación TP/FP y comentario de cierre) auditada de extremo a extremo.",
+      "weight": 1.1,
+      "current_score": 0,
+      "target_score": 4,
+      "recommended_action": "Configurar Automation Rule en 'Incident Updated' que ejecute PB-07 contra el endpoint '/services/notable_update' de Splunk ES.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-17",
+      "domain_id": "DOM-05",
+      "domain_name": "Case Management Unificado y Procesos SOC",
+      "control_title": "Adopción de Incident Cases y Generic Cases en el Portal de Defender",
+      "what_to_validate": "Revisar en security.microsoft.com > Investigation & response > Cases el uso activo de Incident Cases (respuesta a incidentes) y Generic Cases (threat hunting, investigaciones forenses o gestión de vulnerabilidades críticas).",
+      "level_0_desc": "El seguimiento de casos se lleva en hojas de cálculo, correo o un ITSM genérico sin contexto de seguridad.",
+      "level_2_desc": "Se usa la cola básica de incidentes, pero sin tareas estructuradas, evidencias adjuntas ni casos genéricos.",
+      "level_4_desc": "Case Management en Defender opera como centro único del SOC (Incident + Generic Cases), sincronizado si se requiere con ITSM corporativo (ServiceNow/Jira).",
+      "weight": 1.2,
+      "current_score": 1,
+      "target_score": 4,
+      "recommended_action": "Habilitar y operativizar la vista de Cases en el Portal de Defender como mesa de trabajo estándar de N1, N2 y N3.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-18",
+      "domain_id": "DOM-05",
+      "domain_name": "Case Management Unificado y Procesos SOC",
+      "control_title": "Estandarización con Plantillas de Casos (Case Templates), Tareas y SLAs",
+      "what_to_validate": "Comprobar si existen Case Templates configurados con campos personalizados (ej. 'SIEM Origen', 'Impacto Negocio', 'ID Splunk'), listas de tareas obligatorias por playbook y políticas de SLA.",
+      "level_0_desc": "Cada analista documenta e investiga con criterios propios sin pasos estandarizados.",
+      "level_2_desc": "Procedimientos operativos (SOPs) en documentos PDF/Word externos a la consola.",
+      "level_4_desc": "Case Templates dinámicos aplicados automáticamente según categoría MITRE/incidente con SLAs medidos en tiempo real.",
+      "weight": 1.0,
+      "current_score": 0,
+      "target_score": 4,
+      "recommended_action": "Crear plantillas de casos para los 5 escenarios top (Phishing/BEC, Identidad, Malware/Ransomware en Servidor, Exfiltración, Alerta Crítica Red/Splunk).",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-19",
+      "domain_id": "DOM-05",
+      "domain_name": "Case Management Unificado y Procesos SOC",
+      "control_title": "Contención Automatizada con Aprobación Human-in-the-Loop (HITL)",
+      "what_to_validate": "Evaluar si el SOC ejecuta acciones de contención desde playbooks y cómo se gobierna la autorización para activos críticos (ej. servidores productivos protegidos con MDC P2 o cuentas ejecutivas).",
+      "level_0_desc": "100% de las contenciones se solicitan por ticket manual a los equipos de IT/Infraestructura/Redes.",
+      "level_2_desc": "Contención manual desde botones de MDE/Entra para casos puntuales, sin orquestación transversal.",
+      "level_4_desc": "Contención automática inmediata para riesgo confirmado en endpoints estándar y flujo HITL vía Adaptive Cards en Teams (<2 min) para servidores/VIPs.",
+      "weight": 1.2,
+      "current_score": 1,
+      "target_score": 4,
+      "recommended_action": "Implementar PB-04, PB-05 y PB-06 diferenciando matriz de auto-contención vs. aprobación interactiva en Microsoft Teams.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-20",
+      "domain_id": "DOM-05",
+      "domain_name": "Case Management Unificado y Procesos SOC",
+      "control_title": "Auditoría y Analítica Operativa del SOC (SecurityCaseEvent y KPIs)",
+      "what_to_validate": "Verificar el uso de la tabla 'SecurityCaseEvent' y 'SecurityIncident' en Log Analytics / Workbooks para medir MTTD, MTTA, MTTR, tasa de falsos positivos por SIEM y porcentaje de incidentes automatizados.",
+      "level_0_desc": "Sin métricas confiables o reportes armados manualmente a fin de mes.",
+      "level_2_desc": "Métricas básicas de volumen de incidentes de Sentinel, excluyendo carga proveniente de Splunk o tareas de casos.",
+      "level_4_desc": "Tablero ejecutivo unificado en tiempo real combinando SecurityIncident + SecurityCaseEvent + ejecuciones SOAR y ROI de automatización.",
+      "weight": 1.0,
+      "current_score": 1,
+      "target_score": 4,
+      "recommended_action": "Construir Workbook ejecutivo del SOC consultando SecurityCaseEvent y métricas por etiqueta 'SourceSIEM'.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-21",
+      "domain_id": "DOM-06",
+      "domain_name": "Microsoft Security Copilot y Preparación Agéntica",
+      "control_title": "Activación y Gobierno de Capacidad Security Copilot (Beneficio M365 E5 / SCUs)",
+      "what_to_validate": "Confirmar si el cliente ya activó su asignación incluida en M365 E5 (400 SCUs/mes por cada 1.000 usuarios, hasta 10.000 SCUs/mes), definió roles de acceso y presupuesto de SCUs adicionales si requiere operación 24x7 intensiva.",
+      "level_0_desc": "Security Copilot no habilitado; el cliente desconoce o aún no activa el beneficio incluido en su licenciamiento M365 E5.",
+      "level_2_desc": "Acceso habilitado para un grupo piloto reducido en modo chat manual sin integración con flujos SOAR.",
+      "level_4_desc": "Capacidad E5 activa, gobernanza de consumo SCU instrumentada y políticas de uso integradas al flujo diario del SOC.",
+      "weight": 1.3,
+      "current_score": 0,
+      "target_score": 4,
+      "recommended_action": "Activar el workspace de Security Copilot con el beneficio M365 E5 y configurar monitoreo de consumo de SCUs.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-22",
+      "domain_id": "DOM-06",
+      "domain_name": "Microsoft Security Copilot y Preparación Agéntica",
+      "control_title": "Adopción de Agentes Nativos (Defender, Entra, Purview) y Sesiones en Incident Cases",
+      "what_to_validate": "Evaluar si están configurados los agentes integrados (Phishing Triage Agent, Alert Triage, Conditional Access Agent) y si los analistas ejecutan sesiones agénticas vinculadas directamente a los Incident Cases.",
+      "level_0_desc": "Ningún agente habilitado; triaje de phishing y alertas repetitivas 100% manual.",
+      "level_2_desc": "Uso manual de resúmenes de incidentes con Copilot en Defender, sin agentes autónomos activos.",
+      "level_4_desc": "Agentes nativos operando en producción con revisión supervisada y sesiones agénticas trazables dentro de cada Incident Case.",
+      "weight": 1.2,
+      "current_score": 0,
+      "target_score": 4,
+      "recommended_action": "Activar gradualmente Phishing Triage Agent y Alert Triage Agent en modo supervisado sobre la cola unificada.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-23",
+      "domain_id": "DOM-06",
+      "domain_name": "Microsoft Security Copilot y Preparación Agéntica",
+      "control_title": "Habilitación del Plugin de Splunk y Promptbooks Multi-SIEM",
+      "what_to_validate": "Verificar si Security Copilot cuenta con el Plugin de Splunk configurado (búsquedas ad-hoc, saved searches y fired alerts) y Promptbooks estandarizados que correlacionen hallazgos entre Sentinel/Defender y Splunk.",
+      "level_0_desc": "Security Copilot no tiene visibilidad alguna sobre los datos ni alertas alojadas en Splunk On-Premises.",
+      "level_2_desc": "El analista pega manualmente texto exportado de Splunk en el prompt de Security Copilot.",
+      "level_4_desc": "Plugin de Splunk y sub-playbooks Zero-Copy integrados con Promptbooks bilingües que correlacionan automáticamente ambos entornos.",
+      "weight": 1.2,
+      "current_score": 0,
+      "target_score": 4,
+      "recommended_action": "Configurar el Plugin de Splunk en Security Copilot con cuenta de servicio de solo lectura acotada a índices de seguridad.",
+      "client_notes": ""
+    },
+    {
+      "id": "ASM-24",
+      "domain_id": "DOM-06",
+      "domain_name": "Microsoft Security Copilot y Preparación Agéntica",
+      "control_title": "Exposición de Logic Apps como Herramientas Agénticas (Skills YAML y Servidores MCP)",
+      "what_to_validate": "Revisar si los workflows modulares de Logic Apps cuentan con descripciones semánticas claras, esquemas JSON tipados y están publicados como Plugins YAML o Servidores MCP para ser invocados por Agentes de Security Copilot.",
+      "level_0_desc": "Los playbooks solo pueden dispararse por reglas rígidas de alerta, sin interfaz invocable por agentes de IA.",
+      "level_2_desc": "Integración unidireccional básica (Logic Apps llama a un prompt de Security Copilot).",
+      "level_4_desc": "Integración bidireccional completa: Agentes personalizados descubren e invocan Child Workflows de Logic Apps vía Skills/MCP con controles HITL.",
+      "weight": 1.3,
+      "current_score": 0,
+      "target_score": 4,
+      "recommended_action": "Documentar contratos JSON de los Child Workflows de Logic Apps y publicarlos como Skills/MCP Server para Security Copilot.",
+      "client_notes": ""
+    }
+  ],
+  "step_by_step_plan": [
+    {
+      "step_id": "STEP-01",
+      "order": 1,
+      "phase": "Fase 0: Descubrimiento y FinOps",
+      "action_type": "Validar Existente",
+      "domain": "Consola Unificada",
+      "activity": "Auditar conexión de Workspaces de Sentinel al Portal de Microsoft Defender",
+      "technical_procedure": "Ingresar a security.microsoft.com > System > Settings > Microsoft Sentinel. Verificar el workspace primario conectado y listar cualquier workspace secundario o en otros tenants.",
+      "acceptance_criteria": "Inventario confirmado de workspaces y sincronización bidireccional de incidentes XDR <-> Sentinel operativa.",
+      "owner_role": "Arquitecto SecOps",
+      "effort_hours": 4,
+      "priority": "Crítica",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-02",
+      "order": 2,
+      "phase": "Fase 0: Descubrimiento y FinOps",
+      "action_type": "Validar y Ajustar",
+      "domain": "FinOps MDC P2",
+      "activity": "Verificar Medidores Simplificados/Unificados de Sentinel y Defender for Servers P2",
+      "technical_procedure": "En Microsoft Defender for Cloud > Environment Settings, seleccionar el Log Analytics Workspace de Sentinel: confirmar que 'Defender for Servers Plan 2' esté ON en ese workspace y en Sentinel > Settings > Pricing confirmar tier 'Simplified/Unified' para que los 500 MB/srv/día cubran Sentinel.",
+      "acceptance_criteria": "Evidencia en Cost Analysis de descuento automático por medidor Defender for Servers P2 sobre tablas SecurityEvent/SecurityAlert.",
+      "owner_role": "Arquitecto Cloud / FinOps",
+      "effort_hours": 6,
+      "priority": "Crítica",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-03",
+      "order": 3,
+      "phase": "Fase 0: Descubrimiento y FinOps",
+      "action_type": "Validar y Ajustar",
+      "domain": "FinOps M365 E5",
+      "activity": "Auditar Concesión de 5 MB/usuario/día de M365 E5 y DCRs de Servidores",
+      "technical_procedure": "Ejecutar KQL 'Usage | where TimeGenerated > ago(30d) | summarize GB=sum(Quantity)/1000 by DataType, IsBillable'. Verificar DCRs de AMA para asegurar que WindowsEvent solo recolecte el stream Microsoft-SecurityEvent y no System/Application no cubiertos.",
+      "acceptance_criteria": "Cero ingesta accidental no elegible; Workbook 'Microsoft Sentinel Cost' instalado con alerta de presupuesto al 80%.",
+      "owner_role": "Ingeniero Sentinel",
+      "effort_hours": 8,
+      "priority": "Crítica",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-04",
+      "order": 4,
+      "phase": "Fase 0: Descubrimiento y FinOps",
+      "action_type": "Validar Existente",
+      "domain": "Splunk On-Prem",
+      "activity": "Inventariar Fuentes de Datos, Correlation Searches y Notable Events en Splunk",
+      "technical_procedure": "Exportar desde Splunk On-Premises (:8000 / :8089) el listado de índices por volumen GB/día y las Correlation Searches / Alertas activas. Clasificar cuáles deben federar alertas al Hub SOAR central (Alta/Media confianza) vs. cuáles requieren tuning previo.",
+      "acceptance_criteria": "Matriz aprobada de ubicación de datos (Zero-Copy) y top 15-25 alertas de Splunk seleccionadas para federación inicial.",
+      "owner_role": "Especialista Splunk + Líder SOC",
+      "effort_hours": 12,
+      "priority": "Alta",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-05",
+      "order": 5,
+      "phase": "Fase 0: Descubrimiento y FinOps",
+      "action_type": "Validar Existente",
+      "domain": "SOAR Existente",
+      "activity": "Evaluar Playbooks, Scripts y Automatizaciones Existentes en Sentinel y Splunk",
+      "technical_procedure": "Revisar Automation Rules y Logic Apps actuales en Azure, así como Adaptive Response Actions o scripts Python/SOAR en Splunk. Identificar credenciales legadas, dependencias de red y lógica reutilizable.",
+      "acceptance_criteria": "Catálogo de automatizaciones actuales clasificado en: Mantener/Refactorizar, Migrar a Logic Apps Standard o Retirar.",
+      "owner_role": "Ingeniero SOAR",
+      "effort_hours": 8,
+      "priority": "Alta",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-06",
+      "order": 6,
+      "phase": "Fase 0: Descubrimiento y FinOps",
+      "action_type": "Validar y Ajustar",
+      "domain": "Red Híbrida",
+      "activity": "Validar Ruta de Red Bidireccional entre Azure y Splunk On-Premises",
+      "technical_procedure": "Verificar subred delegable para Logic Apps Standard con conectividad vía ExpressRoute o VPN Site-to-Site hacia Splunk Search Head API (:8089) y HEC (:8088). Si no hay ruta privada directa de entrada, dimensionar clúster de On-Premises Data Gateway (OPDG).",
+      "acceptance_criteria": "Diseño de red aprobado por Seguridad de Red con pruebas de conectividad TLS 1.2+ hacia :8089 y :8088.",
+      "owner_role": "Arquitecto de Red / Cloud",
+      "effort_hours": 8,
+      "priority": "Crítica",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-07",
+      "order": 7,
+      "phase": "Fase 1: Consola Única y Federación",
+      "action_type": "Construir Nuevo",
+      "domain": "Consola Unificada",
+      "activity": "Configurar Microsoft Defender Unified RBAC para Roles del SOC y Case Management",
+      "technical_procedure": "Crear roles en Defender Unified RBAC otorgando 'Security Data Read' / 'Security Data Manage' para Incident Cases y permisos de Generic Cases/Templates según perfil (Analista N1, N2, Líder SOC, Ingeniero SOAR).",
+      "acceptance_criteria": "Analistas acceden a Incidentes y Cases en security.microsoft.com bajo principio de mínimo privilegio.",
+      "owner_role": "Admin Seguridad Entra/Defender",
+      "effort_hours": 6,
+      "priority": "Alta",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-08",
+      "order": 8,
+      "phase": "Fase 1: Consola Única y Federación",
+      "action_type": "Construir Nuevo",
+      "domain": "Case Management",
+      "activity": "Habilitar Case Management y Crear Plantillas de Casos (Case Templates) y SLAs",
+      "technical_procedure": "En security.microsoft.com > Cases, configurar Case Templates con campos personalizados ('SourceSIEM', 'SplunkEventID', 'BusinessUnit'), políticas de SLA por severidad y listas de tareas estándar para los 5 escenarios principales.",
+      "acceptance_criteria": "Creación exitosa de Incident Cases y Generic Cases de prueba verificando registros de auditoría en la tabla 'SecurityCaseEvent'.",
+      "owner_role": "Líder SOC + Ingeniero SecOps",
+      "effort_hours": 10,
+      "priority": "Alta",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-09",
+      "order": 9,
+      "phase": "Fase 1: Consola Única y Federación",
+      "action_type": "Construir Nuevo",
+      "domain": "Infraestructura SOAR",
+      "activity": "Desplegar Hub Central en Azure Logic Apps Standard con VNet, Managed Identity y Key Vault",
+      "technical_procedure": "Provisionar recurso Azure Logic Apps Standard (WS1), integrar a VNet híbrida, habilitar System/User-Assigned Managed Identity, crear Azure Key Vault para resguardar tokens de Splunk y asignar roles RBAC/Graph mínimos.",
+      "acceptance_criteria": "Recurso Logic Apps Standard operativo, sin secretos en código y con conectividad verificada hacia Microsoft Graph, Sentinel y Key Vault.",
+      "owner_role": "Ingeniero SOAR / Cloud",
+      "effort_hours": 12,
+      "priority": "Crítica",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-10",
+      "order": 10,
+      "phase": "Fase 1: Consola Única y Federación",
+      "action_type": "Construir Nuevo",
+      "domain": "Integración Splunk",
+      "activity": "Establecer Canal Seguro con Splunk On-Premises (Cuentas de Servicio API :8089 y HEC :8088)",
+      "technical_procedure": "En Splunk On-Premises, crear rol de mínimo privilegio con cuenta de servicio para consultas REST API (:8089) y token HTTP Event Collector (:8088) para auditoría/cierres. Guardar tokens en Azure Key Vault y probar llamada desde Logic Apps Standard.",
+      "acceptance_criteria": "Respuesta HTTP 200 desde un workflow de prueba en Logic Apps consultando '/services/server/info' en Splunk On-Prem.",
+      "owner_role": "Especialista Splunk + Ingeniero SOAR",
+      "effort_hours": 8,
+      "priority": "Crítica",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-11",
+      "order": 11,
+      "phase": "Fase 1: Consola Única y Federación",
+      "action_type": "Construir Nuevo",
+      "domain": "Ingesta Multi-SIEM",
+      "activity": "Construir Playbook Normalizador Canónico de Alertas Multi-SIEM (PB-01)",
+      "technical_procedure": "Desarrollar 'SOAR-Core-Inbound-Alert-Normalizer' expuesto tras API Management (o Function/HTTPS con Entra Auth). Mapear campos de Splunk Notable Events a entidades fuertes de Sentinel/Defender, controlar idempotencia por 'sid' y configurar Webhook en las Correlation Searches de Splunk.",
+      "acceptance_criteria": "Una alerta disparada en Splunk crea en <30s un incidente en security.microsoft.com con entidades clicables (IP, Host, Usuario) y Deep Link a Splunk.",
+      "owner_role": "Ingeniero SOAR",
+      "effort_hours": 16,
+      "priority": "Crítica",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-12",
+      "order": 12,
+      "phase": "Fase 1: Consola Única y Federación",
+      "action_type": "Construir Nuevo",
+      "domain": "Multi-SIEM Sentinel",
+      "activity": "Federar Workspaces Secundarios de Sentinel hacia el Hub Central de Logic Apps",
+      "technical_procedure": "Si existen múltiples workspaces de Sentinel, configurar Azure Lighthouse / Multi-Workspace en el Portal de Defender y crear Automation Rules que apunten al mismo Orquestador Padre en Logic Apps Standard.",
+      "acceptance_criteria": "Incidentes de cualquier workspace de Sentinel invocan exactamente el mismo catálogo central de playbooks sin duplicar código.",
+      "owner_role": "Arquitecto SecOps",
+      "effort_hours": 8,
+      "priority": "Media",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-13",
+      "order": 13,
+      "phase": "Fase 1: Consola Única y Federación",
+      "action_type": "Construir Nuevo",
+      "domain": "Sincronización",
+      "activity": "Implementar Sincronización Bidireccional de Incidentes/Casos hacia Splunk ES (PB-07)",
+      "technical_procedure": "Configurar Automation Rule con trigger 'When incident is updated' filtrando etiqueta 'SourceSIEM:SplunkOnPrem' que ejecute 'SOAR-Sync-Bidirectional-Case-SplunkES' invocando '/services/notable_update' (estado, dueño, comentario y resolución).",
+      "acceptance_criteria": "Cerrar o reasignar el caso en el Portal de Defender actualiza automáticamente el Notable Event en Splunk sin bucles infinitos.",
+      "owner_role": "Ingeniero SOAR + Especialista Splunk",
+      "effort_hours": 12,
+      "priority": "Alta",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-14",
+      "order": 14,
+      "phase": "Fase 2: SOAR Modular y Zero-Copy",
+      "action_type": "Construir Nuevo",
+      "domain": "Arquitectura SOAR",
+      "activity": "Estructurar Orquestador Padre y Plantilla Estándar de Child Workflows",
+      "technical_procedure": "Crear el workflow enrutador principal ('SOAR-Parent-Orchestrator') con manejo de errores Try/Catch, telemetría de ejecución y contrato JSON estándar de entrada/salida para invocar sub-playbooks modulares.",
+      "acceptance_criteria": "Arquitectura Padre-Hijo documentada y probada con registro centralizado de fallos en Log Analytics.",
+      "owner_role": "Ingeniero SOAR",
+      "effort_hours": 12,
+      "priority": "Alta",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-15",
+      "order": 15,
+      "phase": "Fase 2: SOAR Modular y Zero-Copy",
+      "action_type": "Construir Nuevo",
+      "domain": "Enriquecimiento 360",
+      "activity": "Desarrollar Child Workflow de Enriquecimiento Microsoft Entity 360 (PB-03)",
+      "technical_procedure": "Construir sub-playbook que consulte Entra ID (riesgo usuario, MFA, cargo/VIP), MDE (exposición y alertas recientes), Defender for Cloud P2 (etiquetas del servidor, vulnerabilidades críticas CVE) y Defender TI, publicando resumen en el Caso.",
+      "acceptance_criteria": "100% de incidentes nuevos reciben tabla de contexto Entity 360 en <45 segundos.",
+      "owner_role": "Ingeniero SOAR",
+      "effort_hours": 14,
+      "priority": "Alta",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-16",
+      "order": 16,
+      "phase": "Fase 2: SOAR Modular y Zero-Copy",
+      "action_type": "Construir Nuevo",
+      "domain": "Zero-Copy Splunk",
+      "activity": "Desarrollar Child Workflow de Enriquecimiento Federado SPL Bajo Demanda (PB-02)",
+      "technical_procedure": "Construir 'SOAR-Enrich-Splunk-ZeroCopy-Context' que reciba IP/Host/Usuario y ventana de tiempo, ejecute búsqueda one-shot/export en Splunk (:8089) sobre índices de Firewall/Proxy/VPN/Apps y anexe las filas clave como evidencia en el Caso.",
+      "acceptance_criteria": "Incidentes de Defender/Sentinel se enriquecen automáticamente con trazas de red de Splunk con 0 MB de ingesta facturada en Sentinel.",
+      "owner_role": "Ingeniero SOAR + Especialista Splunk",
+      "effort_hours": 16,
+      "priority": "Crítica",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-17",
+      "order": 17,
+      "phase": "Fase 2: SOAR Modular y Zero-Copy",
+      "action_type": "Construir Nuevo",
+      "domain": "Contención Identidad",
+      "activity": "Implementar Playbook de Contención de Identidad con HITL en Teams (PB-04)",
+      "technical_procedure": "Construir sub-playbook que valide en Watchlist si el usuario es VIP/Crítico; envíe Adaptive Card interactiva al canal SOC en Teams y, tras aprobación (o automático en alto riesgo confirmado), revoque sesiones y marque usuario comprometido en Entra ID.",
+      "acceptance_criteria": "Tiempo de contención de cuenta comprometida reducido a <2 minutos con trazabilidad del aprobador en el Caso.",
+      "owner_role": "Ingeniero SOAR + Admin Entra",
+      "effort_hours": 12,
+      "priority": "Alta",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-18",
+      "order": 18,
+      "phase": "Fase 2: SOAR Modular y Zero-Copy",
+      "action_type": "Construir Nuevo",
+      "domain": "Contención Servidores",
+      "activity": "Implementar Playbook de Contención de Servidores Híbridos MDC P2 / MDE (PB-05)",
+      "technical_procedure": "Construir sub-playbook para servidores protegidos con Defender for Servers P2: recolectar paquete forense automáticamente y enviar Adaptive Card de aprobación (SOC + Dueño del Servidor) para aislamiento de red MDE o ejecución de respuesta en vivo.",
+      "acceptance_criteria": "Prueba controlada en servidor no productivo validando recolección de evidencia y aislamiento tras clic en Teams.",
+      "owner_role": "Ingeniero SOAR + Admin Infraestructura",
+      "effort_hours": 14,
+      "priority": "Alta",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-19",
+      "order": 19,
+      "phase": "Fase 2: SOAR Modular y Zero-Copy",
+      "action_type": "Construir Nuevo",
+      "domain": "Contención Red",
+      "activity": "Implementar Playbook de Bloqueo de IOCs en Endpoint y Firewall On-Prem (PB-06)",
+      "technical_procedure": "Construir sub-playbook que publique IPs/URLs/Hashes en la API de Indicadores de Defender for Endpoint y actualice la lista dinámica externa (EDL) o API del firewall perimetral vía VNet/OPDG, registrando expiración (TTL).",
+      "acceptance_criteria": "IOC malicioso bloqueado simultáneamente en flota MDE y perímetro on-premises con opción de rollback en un clic.",
+      "owner_role": "Ingeniero SOAR + Ing. Seguridad Red",
+      "effort_hours": 14,
+      "priority": "Media",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-20",
+      "order": 20,
+      "phase": "Fase 2: SOAR Modular y Zero-Copy",
+      "action_type": "Construir Nuevo",
+      "domain": "DevSecOps / KPIs",
+      "activity": "Establecer Repositorio Git SOAR-as-Code y Workbook Ejecutivo de Casos/SOAR",
+      "technical_procedure": "Subir workflows de Logic Apps Standard y plantillas Bicep a GitHub/Azure DevOps. Crear Workbook en Sentinel combinando 'SecurityIncident', 'SecurityCaseEvent' y 'WorkflowRuntime' desglosado por SIEM de origen.",
+      "acceptance_criteria": "Pipeline CI/CD operativo y dashboard visible para el CISO con MTTA, MTTR, ahorro de horas analista y salud de playbooks.",
+      "owner_role": "Ingeniero SOAR",
+      "effort_hours": 12,
+      "priority": "Media",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-21",
+      "order": 21,
+      "phase": "Fase 3: Security Copilot y SOC Asistido",
+      "action_type": "Validar y Ajustar",
+      "domain": "Security Copilot E5",
+      "activity": "Activar Beneficio Security Copilot en M365 E5 y Configurar Gobierno de SCUs",
+      "technical_procedure": "En securitycopilot.microsoft.com, validar elegibilidad y cuota incluida de M365 E5 (400 SCUs / 1.000 usuarios / mes), configurar workspace, permisos RBAC de contribuidores/operadores y alertas de consumo mensual de SCUs.",
+      "acceptance_criteria": "Security Copilot activo en el tenant e integrado en el Portal de Microsoft Defender con cuota SCU monitoreada.",
+      "owner_role": "Admin Seguridad Global / Arquitecto",
+      "effort_hours": 6,
+      "priority": "Crítica",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-22",
+      "order": 22,
+      "phase": "Fase 3: Security Copilot y SOC Asistido",
+      "action_type": "Construir Nuevo",
+      "domain": "Agentes Nativos E5",
+      "activity": "Habilitar y Calibrar Agentes Integrados de Security Copilot (Phishing y Alert Triage)",
+      "technical_procedure": "En el Portal de Defender, activar en modo supervisado el Phishing Triage Agent y los agentes de triaje de alertas/identidad incluidos en E5. Revisar precisión de veredictos junto con analistas N2 durante 2 semanas.",
+      "acceptance_criteria": "Reducción demostrable de tiempo de triaje manual en cola de phishing y alertas repetitivas con precisión validada >90%.",
+      "owner_role": "Líder SOC + Analistas N2",
+      "effort_hours": 10,
+      "priority": "Alta",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-23",
+      "order": 23,
+      "phase": "Fase 3: Security Copilot y SOC Asistido",
+      "action_type": "Construir Nuevo",
+      "domain": "Plugin Splunk IA",
+      "activity": "Configurar el Plugin Oficial de Splunk en Microsoft Security Copilot (PB-11)",
+      "technical_procedure": "Configurar conectividad y credenciales seguras del Plugin de Splunk en Security Copilot apuntando a la instancia de Splunk. Probar skills de búsquedas one-shot, saved searches e inspección de fired alerts desde sesiones interactivas.",
+      "acceptance_criteria": "Analistas consultan eventos de Splunk desde Security Copilot usando lenguaje natural en español sin cambiar de consola.",
+      "owner_role": "Especialista Splunk + Arquitecto IA",
+      "effort_hours": 10,
+      "priority": "Alta",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-24",
+      "order": 24,
+      "phase": "Fase 3: Security Copilot y SOC Asistido",
+      "action_type": "Construir Nuevo",
+      "domain": "Triaje Cognitivo",
+      "activity": "Construir Playbook de Triaje Multi-SIEM con Conector Security Copilot (PB-09)",
+      "technical_procedure": "Agregar compuerta en el Orquestador Padre (solo severidad Media/Alta tras deduplicación) que invoque el conector de Security Copilot en Logic Apps pasándole el Entity 360 + el resultado SPL Zero-Copy (PB-02), publicando el análisis ejecutivo en el Caso.",
+      "acceptance_criteria": "Cada Incident Case prioritario amanece con hipótesis de ataque correlacionada (Microsoft + Splunk) y plan de acción en español.",
+      "owner_role": "Ingeniero SOAR",
+      "effort_hours": 12,
+      "priority": "Alta",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-25",
+      "order": 25,
+      "phase": "Fase 3: Security Copilot y SOC Asistido",
+      "action_type": "Construir Nuevo",
+      "domain": "Logic Apps Plugins",
+      "activity": "Publicar Child Workflows de Logic Apps como Skills Invocables (YAML) en Security Copilot",
+      "technical_procedure": "Crear manifiestos YAML de skillset para los Child Workflows (PB-02, PB-03, PB-04, PB-05, PB-06) con descripciones precisas de parámetros, cargarlos como Custom Plugins en Security Copilot y restringir acceso RBAC.",
+      "acceptance_criteria": "Desde Security Copilot, un prompt o Promptbook invoca exitosamente un workflow de Logic Apps para traer evidencia o lanzar aprobación HITL.",
+      "owner_role": "Ingeniero SOAR + Arquitecto IA",
+      "effort_hours": 14,
+      "priority": "Alta",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-26",
+      "order": 26,
+      "phase": "Fase 4: SOC Agéntico y Evolución",
+      "action_type": "Construir Nuevo",
+      "domain": "MCP Server SOAR",
+      "activity": "Exponer el Hub de Logic Apps Standard como Servidor MCP (Model Context Protocol)",
+      "technical_procedure": "Habilitar capacidades de servidor MCP sobre los flujos de trabajo estándar de Logic Apps y conectar el servidor MCP de Microsoft Sentinel / Defender para que los agentes descubran herramientas con tipado estricto y trazabilidad.",
+      "acceptance_criteria": "Catálogo de herramientas SOAR disponible vía protocolo estándar MCP para agentes de seguridad.",
+      "owner_role": "Arquitecto SecOps / IA",
+      "effort_hours": 16,
+      "priority": "Media",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-27",
+      "order": 27,
+      "phase": "Fase 4: SOC Agéntico y Evolución",
+      "action_type": "Construir Nuevo",
+      "domain": "Agentes Personalizados",
+      "activity": "Desarrollar Agente Personalizado de Investigación Híbrida Multi-SIEM (PB-12)",
+      "technical_procedure": "En el espacio de creación de agentes de Security Copilot, definir instrucciones de sistema, objetivos, límites de seguridad y herramientas conectadas (Sentinel, Defender XDR, Splunk Plugin y Logic Apps MCP) para investigar incidentes multi-dominio de punta a punta.",
+      "acceptance_criteria": "El agente ejecuta autónomamente iteraciones de consulta entre Sentinel y Splunk, documenta evidencias y propone remediación con cero alucinaciones sobre datos ausentes.",
+      "owner_role": "Arquitecto IA + Líder Threat Hunting",
+      "effort_hours": 20,
+      "priority": "Alta",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-28",
+      "order": 28,
+      "phase": "Fase 4: SOC Agéntico y Evolución",
+      "action_type": "Construir Nuevo",
+      "domain": "Case Management Agéntico",
+      "activity": "Operativizar Sesiones Agénticas Directamente desde Incident Cases en Defender",
+      "technical_procedure": "Integrar la ejecución de playbooks agénticos soportados dentro de la vista de Incident Cases en el Portal de Defender, capacitando a los analistas para supervisar el estado de la sesión agéntica, auditar sus salidas y autorizar cierres o contenciones.",
+      "acceptance_criteria": "Trazabilidad completa de sesiones agénticas vinculadas al ciclo de vida del caso y auditadas en SecurityCaseEvent.",
+      "owner_role": "Líder SOC + Analistas N2/N3",
+      "effort_hours": 12,
+      "priority": "Alta",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-29",
+      "order": 29,
+      "phase": "Fase 4: SOC Agéntico y Evolución",
+      "action_type": "Validar y Ajustar",
+      "domain": "Evolución Data Lake",
+      "activity": "Evaluar Microsoft Sentinel Data Lake y Sentinel Graph frente a Renovaciones de Splunk",
+      "technical_procedure": "Seis meses antes de cualquier renovación de hardware o licencias de Splunk On-Premises, modelar el TCO de mover logs de red/firewall de baja frecuencia hacia niveles económicos de Microsoft Sentinel Data Lake, manteniendo intacta la capa SOAR y Agéntica.",
+      "acceptance_criteria": "Caso de negocio FinOps comparativo aprobado por el CISO para decidir qué cargas permanecen on-prem y cuáles migran sin impacto operativo en el SOC.",
+      "owner_role": "CISO + Arquitecto SecOps / FinOps",
+      "effort_hours": 16,
+      "priority": "Media",
+      "status": "Pendiente",
+      "notes": ""
+    },
+    {
+      "step_id": "STEP-30",
+      "order": 30,
+      "phase": "Fase 4: SOC Agéntico y Evolución",
+      "action_type": "Validar Existente",
+      "domain": "Mejora Continua",
+      "activity": "Ejecutar Simulacros Purple Team Multi-SIEM (Ataque Cruzado On-Prem + Cloud)",
+      "technical_procedure": "Simular un escenario donde la intrusión inicial genera rastros en un firewall/app monitoreado por Splunk On-Prem, pivota a un servidor híbrido con MDC P2 y compromete una identidad M365 E5, midiendo la respuesta integral de Logic Apps + Case Management + Agentes.",
+      "acceptance_criteria": "Detección correlacionada en un único Incident Case, enriquecimiento automático desde ambos SIEMs y contención HITL validada en <15 minutos.",
+      "owner_role": "Purple Team + SOC Completo",
+      "effort_hours": 16,
+      "priority": "Alta",
+      "status": "Pendiente",
+      "notes": ""
+    }
+  ]
+}
