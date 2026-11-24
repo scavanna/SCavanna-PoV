@@ -1,0 +1,1305 @@
+{
+  "schemaVersion": "2.0",
+  "id": "22_Microsoft_Agent_365",
+  "orden": 22,
+  "slug": "Microsoft_Agent_365",
+  "nombre": "Microsoft Agent 365 (Plano de Control Empresarial de Identidad, Seguridad, Datos y Gobierno para Agentes de IA)",
+  "nombreCorto": "Microsoft Agent 365",
+  "categoria": "Gobierno y Seguridad de Agentes IA",
+  "bloqueOrigen": "Nuevo desde Microsoft Learn MCP (Nov 2026)",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://admin.microsoft.com",
+    "https://entra.microsoft.com",
+    "https://security.microsoft.com",
+    "https://purview.microsoft.com",
+    "https://intune.microsoft.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "CIO",
+    "Chief AI Officer (CAIO)",
+    "AI Administrator",
+    "Agent Registry Admin",
+    "Entra Agent ID Admin",
+    "Security Admin",
+    "Purview Data Security AI Admin",
+    "Agent Sponsor / Business Owner",
+    "SOC Manager",
+    "SOC L2/L3",
+    "GRC / AI Ethics"
+  ],
+  "relacionM365E5": {
+    "estado": "Complemento / Add-on sobre M365 E5 (Standalone o incluido en Microsoft 365 E7: The Frontier Suite)",
+    "licencias": [
+      "Microsoft Agent 365 Standalone Add-on (USD $15 por usuario/mes en compromiso anual, GA comercial desde el 1 de mayo de 2026; cubre a cada usuario que administra, patrocina o utiliza agentes que actúan en su nombre)",
+      "Microsoft 365 E7: The Frontier Suite (USD $99 por usuario/mes con o sin Teams, GA desde el 1 de mayo de 2026; unifica Microsoft 365 E5, Microsoft 365 Copilot con Work IQ, Microsoft Agent 365 y Microsoft Entra Suite)",
+      "Microsoft 365 E5 / A5 / Business Premium (o combinación de Microsoft Defender Suite + Microsoft Purview Suite + Microsoft Entra ID P1/P2) como base recomendada para habilitar las integraciones avanzadas de seguridad, postura y cumplimiento",
+      "Suscripción de Azure vinculada en modalidad Pay-As-You-Go únicamente para auditoría Purview de aplicaciones de IA generativa no Microsoft fuera del ecosistema conectado (AIAppInteraction, retención 180 días)"
+    ],
+    "prerrequisitos": [
+      "Al menos una licencia elegible de Microsoft Agent 365 o Microsoft 365 E7 asignada en el tenant y aceptación expresa de los términos del servicio por un Global Administrator en https://admin.microsoft.com",
+      "Activación de Security for AI en Microsoft Defender (https://security.microsoft.com > Settings > Security for AI > Get started) y conexión activa del conector Microsoft 365 con Microsoft Entra ID Management events, Microsoft 365 activities y Microsoft Entra Users and groups",
+      "Para descubrimiento y bloqueo de agentes locales Shadow AI: dispositivos Windows inscritos en Microsoft Intune, Microsoft Defender for Endpoint en modo activo, licencia M365 E5/E7, inscripción en el programa Frontier (para capacidades en preview) y reenvío de tráfico Global Secure Access habilitado",
+      "Para gobierno e inspección en línea de servidores MCP externos: instancia configurada de Azure AI Gateway (tier AI Gateway en Azure API Management con token delegado de usuario Entra ID) o proxy empresarial LiteLLM registrado en Entra ID",
+      "Habilitación de etiquetas de sensibilidad para archivos Office en SharePoint Online y OneDrive y concesión explícita de derechos de uso VIEW y EXTRACT a las instancias autorizadas de agentes sobre contenido cifrado"
+    ],
+    "notaLicenciamiento": "Microsoft Agent 365 NO se incluye completo dentro de Microsoft 365 E5; opera como el complemento de plano de control agéntico que extiende las capacidades de Entra, Defender, Purview e Intune de clientes M365 E5 hacia actores no humanos, o se adquiere consolidado en Microsoft 365 E7: The Frontier Suite ($99/usuario/mes). Los planes empresariales base (M365 E3/E5) incluyen únicamente inventario básico y acciones elementales en el Agent Registry del M365 Admin Center, así como la creación base de identidades Entra Agent ID y la Default Agent Identity Inactivity Lifecycle Policy (60/90/455 días). Todas las capacidades avanzadas —Agent Map, Security Policy Templates, gobierno tenant-wide de servidores MCP, APIs Graph de registro, Conditional Access e ID Protection para agentes, Access Packages y ciclos de vida por sponsor, controles de red SASE para agentes, Purview DSPM AI Observability, DLP inline/canales, política Risky Agents en Insider Risk Management, postura/detección/bloqueo runtime en Defender y bloqueo Intune de agentes locales— exigen licencia de Microsoft Agent 365 ($15/usuario/mes) o Microsoft 365 E7. Al 1 de octubre de 2026, Agent 365 cumple todos los controles FedRAMP High evaluados por asesor independiente."
+  },
+  "resumenEjecutivo": "Microsoft Agent 365 (anunciado en Microsoft Ignite en noviembre de 2025 y disponible comercialmente en GA desde el 1 de mayo de 2026 como add-on a USD $15/usuario/mes y como pilar central de Microsoft 365 E7: The Frontier Suite a USD $99/usuario/mes) es el plano de control empresarial unificado de Microsoft para descubrir, observar, gobernar y proteger agentes de IA a gran escala. Articulado sobre cinco pilares arquitectónicos oficiales —Registry, Access Control, Visualization, Interoperability y Security—, Agent 365 elimina la proliferación descontrolada (agent sprawl y shadow AI) gobernando desde el Microsoft 365 Admin Center tanto agentes nativos (Copilot Studio, Microsoft Foundry, Agent Builder, SharePoint, Agents Toolkit) como agentes e Agent Factories de partners (Adobe, ServiceNow, Workday, Salesforce, Kore.ai, Kasisto, n8n, NVIDIA, Genspark, Zendesk), nubes sincronizadas (Amazon Bedrock y Google Vertex AI) y agentes locales en endpoints (OpenClaw, Claude Desktop, ChatGPT Desktop). Su arquitectura dota a cada agente de una identidad de primera clase en Microsoft Entra Agent ID con patrocinadores humanos responsables, acceso condicional basado en riesgo y gobernanza de inactividad, habilita interoperabilidad gobernada sobre Work IQ MCP y pasarelas MCP, y extiende la defensa en tiempo de ejecución de Microsoft Defender y el gobierno de datos de Microsoft Purview, alineando la operación con NIST CSF 2.0, NIST AI RMF 1.0 / AI 600-1, OWASP Top 10 for LLM & Agentic Applications y MITRE ATLAS.",
+  "principiosRectores": [
+    {
+      "principio": "Registro único convergente y visibilidad cero puntos ciegos (Registry Convergence)",
+      "descripcion": "Centralizar en el Agent Registry del Microsoft 365 Admin Center la totalidad de agentes primera parte, de partners, multi-nube (AWS Bedrock, Google Cloud, Foundry) y agentes locales Shadow AI, bloqueando o poniendo en cuarentena cualquier activo no autorizado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/agent-registry-overview"
+    },
+    {
+      "principio": "Identidad agéntica de primera clase y responsabilidad humana ineludible (Entra Agent ID + Sponsors)",
+      "descripcion": "Asignar a cada agente una identidad dedicada en Microsoft Entra Agent ID (Blueprint, Agent Identity y opcionalmente Agent User) vinculada a un Owner técnico y un Sponsor humano de negocio con traspaso automático ante bajas laborales.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/entra/id-governance/agent-id-governance-overview"
+    },
+    {
+      "principio": "Mínimo privilegio dinámico y bloqueo inmutable de permisos críticos (Access Packages + Tool-Level MCP)",
+      "descripcion": "Restringir permisos mediante Access Packages temporales, hacer cumplir el bloqueo en plataforma de más de 50 permisos críticos de Microsoft Graph, excluir cuentas agentUser de grupos dinámicos humanos y deshabilitar herramientas destructivas individuales en servidores MCP.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/graph/api/resources/agentid-platform-overview?view=graph-rest-beta"
+    },
+    {
+      "principio": "Verificación explícita en cada flujo de autenticación y red (Conditional Access + SASE para Agentes)",
+      "descripcion": "Evaluar políticas separadas de Acceso Condicional para los tres patrones de acceso agéntico (delegado OBO, autónomo App-Only y Agent-User), bloqueando agentes de alto riesgo en ID Protection e inspeccionando su tráfico saliente mediante Global Secure Access.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/agent-id"
+    },
+    {
+      "principio": "Seguridad de datos, respeto de clasificación y trazabilidad legal nativa (Microsoft Purview)",
+      "descripcion": "Exigir derechos explícitos VIEW y EXTRACT sobre contenido cifrado con etiquetas de sensibilidad, aplicar DLP inline y por canal, monitorear comportamiento anómalo con la política Risky Agents en IRM y preservar evidencia completa en Audit y eDiscovery.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/ai-agent-365"
+    },
+    {
+      "principio": "Asumir brecha en el bucle agéntico y defensa en tiempo de ejecución (Defender Real-Time Protection)",
+      "descripcion": "Gestionar continuamente configuraciones erróneas y rutas de ataque en Defender e interceptar en tiempo real ataques de Indirect Prompt Injection (XPIA), propagación maliciosa, técnicas de evasión y exfiltración de secretos antes de que la herramienta se ejecute.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-xdr/security-for-ai/ai-agent-real-time-protection"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Agent Registry y Motor de Ciclo de Vida en Microsoft 365 Admin Center",
+      "funcionOperativa": "Fuente única convergente de inventario para 4 tipos de publicadores y 10 tipos técnicos de agentes, con flujo de activación mediante Security Policy Templates (12 políticas y licencia automática), bloqueo global, soft-delete de 30 días, detección en vivo de Agents without owners y Registry Sync con Amazon Bedrock, Google Vertex AI y Foundry.",
+      "portalRuta": "admin.microsoft.com > Agents > All agents > Registry / Requests",
+      "integraciones": [
+        "Microsoft Copilot Studio y Agent Builder",
+        "Microsoft Foundry, Amazon Bedrock y Google Vertex AI",
+        "Microsoft Agent Store y Microsoft Graph Package APIs"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Descubrimiento y Control de Agentes Locales Shadow AI",
+      "funcionOperativa": "Detección en endpoints corporativos de asistentes y agentes autónomos no gestionados (OpenClaw, ChatGPT Desktop, Claude Desktop, Ollama Desktop, Poe Desktop, Claw/ZeroClaw, OpenCode), telemetría de red por FQDN y propagación automática de políticas de bloqueo Intune como A365 - Block OpenClaw.",
+      "portalRuta": "admin.microsoft.com > Agents > Shadow AI | intune.microsoft.com > Devices > Configuration",
+      "integraciones": [
+        "Microsoft Defender for Endpoint",
+        "Microsoft Intune",
+        "Microsoft Entra Global Secure Access"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Agent Overview, Agent Map y Single Agent Map (Visualization & Observability)",
+      "funcionOperativa": "Panel ejecutivo de adopción y riesgo (Active users, Agent run-time a 30 días, tarjeta Agents at risk con agregación High/Medium/Low de Defender, Entra y Purview), mapa visual agrupado por plataforma constructora y grafo individual de top 50 usuarios y top 50 herramientas con alerta visual en excepciones >1 %.",
+      "portalRuta": "admin.microsoft.com > Agents > Overview | Agents > All Agents > Map",
+      "integraciones": [
+        "Microsoft Agent 365 SDK (OpenTelemetry -> CloudAppEvents)",
+        "Señales de riesgo de Defender, Entra ID Protection y Purview IRM",
+        "Reportes de uso de Microsoft 365 Copilot"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Tools Registry, Work IQ MCP y Tools Gateway (Interoperability)",
+      "funcionOperativa": "Catálogo y aprobación de plugins, skills y servidores MCP (endpoint unificado Work IQ MCP con 10 herramientas genéricas en GA y servidores BYO MCP), control granular de encendido/apagado de herramientas individuales dentro de cada servidor MCP y conexión de pasarelas Azure AI Gateway y LiteLLM con protección en tiempo de ejecución.",
+      "portalRuta": "admin.microsoft.com > Agents > Tools > Registry / Requests | Agents > Settings > Gateways",
+      "integraciones": [
+        "Work IQ API y Work IQ MCP",
+        "Azure API Management (AI Gateway tier) y LiteLLM Proxy",
+        "Protocolo multi-agente A2A y Windows 365 for Agents"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Entra Agent ID y Conditional Access para Agentes",
+      "funcionOperativa": "Plataforma de identidad dedicada compuesta por agentIdentityBlueprint, agentIdentityBlueprintPrincipal, agentIdentity y agentUser, bloqueo en plataforma de más de 50 permisos críticos de Microsoft Graph y motor de Acceso Condicional para flujos OBO, App-Only y Agent-User con atributos personalizados y validación de entorno.",
+      "portalRuta": "entra.microsoft.com > Agent ID | Protection > Conditional Access",
+      "integraciones": [
+        "Microsoft Graph REST API y Microsoft Entra PowerShell",
+        "Custom Security Attributes y Continuous Access Evaluation (CAE)",
+        "Windows 365 Cloud PCs for Agents e Intune Device Compliance"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Entra ID Protection (riskyAgents) e ID Governance para Agentes",
+      "funcionOperativa": "Detección conductual de agentes riesgosos con Learning Mode sobre 8 tipos de evento (incluyendo earlyLifeMaliciousActivity, suspiciousCredentialUsage y entraDirectoryReconnaissance), asignación temporal vía Access Packages, portales de autogestión para Sponsors y Default Agent Identity Inactivity Lifecycle Policy (60/90/455 días).",
+      "portalRuta": "entra.microsoft.com > Protection > Identity Protection > Risky agents | ID Governance > Lifecycle Policies > Agent ID",
+      "integraciones": [
+        "Portales myaccount.microsoft.com y myaccess.microsoft.com",
+        "Lifecycle Workflows (transferencia automática de Sponsor al Manager)",
+        "Exportación diagnóstica a Log Analytics y Microsoft Sentinel"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Entra Global Secure Access (Secure Web and AI Gateway para Agentes)",
+      "funcionOperativa": "Proxy SASE distribuido globalmente que intercepta y evalúa el tráfico saliente HTTP, conectores personalizados y conectores MCP de agentes de Microsoft Copilot Studio y endpoints locales, aplicando filtrado de contenido web, inteligencia de amenazas e inspección de movimiento de archivos.",
+      "portalRuta": "entra.microsoft.com > Global Secure Access | admin.powerplatform.microsoft.com",
+      "integraciones": [
+        "Entornos y grupos de entornos de Microsoft Copilot Studio",
+        "Tabla NetworkAccessGenerativeAIInsights en Log Analytics / Sentinel",
+        "Panel Total traffic en Shadow AI del M365 Admin Center"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Defender Security for AI Agents (Posture, XDR & Real-Time Protection)",
+      "funcionOperativa": "Inventario y postura de seguridad de agentes (Assets > AI agents y tabla KQL AgentsInfo), mapa de rutas de exposición (agente-dispositivo-MCP-identidad-cloud), detección cuasi en tiempo real correlacionada en incidentes XDR y reglas de Real-time protection que bloquean propagación maliciosa, exfiltración de secretos, evasión y dominios de correo inseguros.",
+      "portalRuta": "security.microsoft.com > Assets > AI agents | Settings > Security for AI > Policies & rules > Real-time protection",
+      "integraciones": [
+        "Tablas KQL AgentsInfo, CloudAppEvents, BehaviorInfo y AlertEvidence",
+        "Microsoft Prompt Shields y Prompt evidence collection redactada",
+        "Microsoft Defender XDR Incidents y Microsoft Sentinel"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Purview Data Security & Compliance para Agent 365",
+      "funcionOperativa": "Visibilidad de riesgos de datos a 30 días en DSPM > AI observability, exigencia de derechos VIEW y EXTRACT en etiquetas cifradas, DLP inline en prompts y canales M365, política preconstruida Risky Agents en Insider Risk Management, Communication Compliance, retención DLM, Audit (XPIADetected/JailbreakDetected), eDiscovery y Compliance Manager.",
+      "portalRuta": "purview.microsoft.com > DSPM > AI observability | Insider Risk Management | DLP | Audit | eDiscovery",
+      "integraciones": [
+        "Compartición bidireccional de riesgo con M365 Admin Center y Defender XDR",
+        "SharePoint Advanced Management (Restricted Access Control y DAG)",
+        "Assessments for AI regulations en Purview Compliance Manager"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "AI Administrator",
+      "nivelSOC": "Gobierno Ejecutivo / Plataforma IA (M365 Admin Center)",
+      "permisosClave": "Visibilidad e insights a escala de tenant en admin.microsoft.com > Agents, acceso a Agent Map, aprobación de activaciones con Security Policy Templates, instalación/bloqueo/borrado de agentes y aprobación con consentimiento tenant-wide de servidores MCP remotos.",
+      "asignacionPIM": "Elegible en Microsoft Entra PIM; activación JIT máxima de 4 horas con MFA resistente al phishing (FIDO2/Passkey), justificación con ticket y aprobación par. No autoriza crear políticas CA, Access Packages ni conectar gateways Azure AI / LiteLLM (requiere Global Admin).",
+      "responsabilidadOperativa": "Gobernar el flujo de alta de agentes y herramientas MCP, administrar plantillas de seguridad en M365 Admin Center y presidir la revisión mensual de adopción y ROI.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Agent Registry Admin",
+      "nivelSOC": "Operación Diaria de Inventario (AI Reader permanente + AI Administrator JIT)",
+      "permisosClave": "Monitoreo continuo en modo lectura mediante AI Reader sobre Agent Overview, Registry y Shadow AI; elevación puntual a AI Administrator para reasignar agentes huérfanos (Agents without owners), cargar paquetes .zip, gestionar agentes fijados y sincronizar registros externos.",
+      "asignacionPIM": "AI Reader asignado activo permanente para supervisión sin riesgo de cambio; elevación JIT en PIM a AI Administrator limitada a ventanas de 2 horas para remediación de inventario.",
+      "responsabilidadOperativa": "Mantener en cero el contador diario de agentes sin propietario, conciliar Registry Sync multi-nube (Bedrock, Vertex AI, Foundry) y triar la tarjeta diaria Agents at risk.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Entra Agent ID Admin",
+      "nivelSOC": "Ingeniería de Identidad y Acceso (Entra Admin Center)",
+      "permisosClave": "Combinación segregada de Agent ID Administrator, Conditional Access Administrator y Lifecycle Workflows Administrator para administrar Blueprints, Agent Identities y Agent Users, políticas CA para agentes, Access Packages y políticas de inactividad.",
+      "asignacionPIM": "Elegible en Microsoft Entra PIM; activación JIT máxima de 4 horas desde estación administrada conforme (Intune/PAW) con Authentication Context y aprobación dual para políticas de Acceso Condicional.",
+      "responsabilidadOperativa": "Diseñar la arquitectura de Blueprints, blindar grupos dinámicos con user.agentIdentityBlueprintId -eq null, mantener políticas CA por patrón OAuth y operar el ciclo de vida 60/90/455 días.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Security Admin",
+      "nivelSOC": "Arquitectura SecOps y Postura IA (Defender & Intune)",
+      "permisosClave": "Security Administrator en Entra/Defender (coordinado con Intune Administrator para bloqueo endpoint): habilitación de Security for AI y conector M365, gestión de postura en Assets > AI agents, creación de reglas de bloqueo en Real-time protection y políticas de bloqueo Shadow AI.",
+      "asignacionPIM": "Elegible en Microsoft Entra PIM; activación JIT máxima de 4 horas con MFA FIDO2 y control de cambios formal para reglas de bloqueo en tiempo real sobre agentes productivos.",
+      "responsabilidadOperativa": "Reducir la superficie de ataque agéntica, configurar reglas de bloqueo runtime en Defender, gobernar el bloqueo de agentes locales no autorizados en Intune y dirigir ejercicios de AI Red Teaming.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Purview Data Security AI Admin",
+      "nivelSOC": "Seguridad de Datos y Riesgo Interno (Purview Portal)",
+      "permisosClave": "Compliance Administrator / Data Security AI Admin junto con membresía explícita en Insider Risk Management Investigators o Analysts (indispensable para ver alertas IRM de agentes, incluso para un Global Admin, y sin alcance de Administrative Units).",
+      "asignacionPIM": "Roles de lectura analítica bajo seudonimización por defecto; elevación JIT de 4 horas para modificar políticas DLP de bloqueo, configurar retención DLM o ejecutar exportaciones forenses en eDiscovery.",
+      "responsabilidadOperativa": "Operar DSPM > AI observability, administrar políticas DLP y etiquetas con derechos VIEW+EXTRACT, investigar alertas de la política Risky Agents en IRM y ejecutar preservaciones legales.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Agent Sponsor / Business Owner",
+      "nivelSOC": "Gobierno Delegado en Unidades de Negocio (My Account / My Access)",
+      "permisosClave": "Relación administrativa sponsor y owner en metadatos de Microsoft Entra Agent ID (sin privilegios de administrador del tenant); gestión de acceso en myaccess.microsoft.com y estado operativo en myaccount.microsoft.com.",
+      "asignacionPIM": "Usuario estándar con MFA resistente al phishing; por diseño de plataforma, el sponsor no puede restaurar ni rehabilitar un agente deshabilitado por inactividad o seguridad (requiere owner o administrador).",
+      "responsabilidadOperativa": "Responder por el propósito de negocio del agente, aprobar/renovar trimestralmente sus Access Packages, atender notificaciones de inactividad a los 60 días y validar impactos de bloqueos DLP.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "SOC L2/L3",
+      "nivelSOC": "Detección, Respuesta y Caza de Amenazas (SOC 24x7)",
+      "permisosClave": "Security Operator y Security Reader en Microsoft Defender XDR y Entra ID Protection: investigación de incidentes agénticos, Advanced Hunting sobre AgentsInfo/CloudAppEvents/BehaviorInfo y ejecución de Confirm compromise o Disable sobre Risky Agents.",
+      "asignacionPIM": "Security Reader permanente durante guardia; activación JIT ágil en PIM de Security Operator por turnos de hasta 8 horas con MFA resistente al phishing.",
+      "responsabilidadOperativa": "Ejecutar el triaje diario de alertas XDR y Risky Agents, liderar los playbooks de contención ante XPIA, compromiso de credenciales o servidores MCP maliciosos y realizar caza proactiva semanal.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "GRC / AI Ethics",
+      "nivelSOC": "Segunda y Tercera Línea de Defensa (Auditoría y Cumplimiento Regulatorio)",
+      "permisosClave": "AI Reader, Security Reader, Reports Reader y Compliance Manager Assessor para inspección transversal de solo lectura sobre inventario Agent 365, riesgos agregados y evaluaciones regulatorias en Purview Compliance Manager.",
+      "asignacionPIM": "Asignación de solo lectura sin capacidad de modificación técnica (cero permisos de Install, Approve, Block o edición de políticas), recertificada trimestralmente mediante Entra Access Reviews.",
+      "responsabilidadOperativa": "Auditar el cumplimiento contra NIST CSF 2.0, NIST AI RMF / AI 600-1, EU AI Act e ISO 42001, validar evaluaciones trimestrales en Compliance Manager y supervisar criterios de IA Responsable.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Triaje matutino de la tarjeta Agents at risk y señales agregadas multi-plataforma",
+      "objetivo": "Identificar y priorizar todos los agentes con señales activas de riesgo High, Medium o Low consolidadas desde Microsoft Defender, Microsoft Entra y Microsoft Purview.",
+      "consolaRuta": "admin.microsoft.com > Overview (Agents at risk) | Agents > All agents > Registry (Risks)",
+      "procedimiento": [
+        "Revisar la tarjeta Agents at risk en la página Overview y pulsar View agents para abrir el registro ordenado por riesgo (considerando hasta 1 hora de latencia frente a portales origen).",
+        "Abrir el panel Risk details en la columna Risks de cada agente con severidad High o Medium, verificando Occurrences y desglose por instancia.",
+        "Navegar por los deep links de plataforma hacia Defender, Entra o Purview IRM y abrir ticket de contención con SLA menor a 30 minutos para riesgos High."
+      ],
+      "rolResponsable": "Agent Registry Admin / SOC L2/L3",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Initial Access / Execution (OWASP ASI10 Rogue Agents)",
+      "evidenciaAuditable": "Exportación CSV fechada del filtro Agents at risk y tickets ITSM/SecOps vinculados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "La interfaz de columna Risks, Occurrences, latencia máxima de 1 hora y deep links por rol está verificada en MS Learn; el SLA de 30 minutos es criterio editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/agent-registry-overview#agent-risks"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Investigación y respuesta a alertas cuasi en tiempo real y bloqueos runtime en Microsoft Defender",
+      "objetivo": "Contener ataques activos contra agentes gestionados como Indirect Prompt Injection (XPIA), jailbreak, propagación maliciosa, exfiltración de secretos o dominios inseguros.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts > Incidents | Assets > AI agents",
+      "procedimiento": [
+        "Filtrar la cola unificada de incidentes de Defender XDR por entidades de agentes IA y analizar el grafo de ataque y radio de explosión.",
+        "Revisar los fragmentos redactados en Prompt evidence collection dentro de la alerta para confirmar intención maliciosa.",
+        "Correlacionar AlertInfo, BehaviorInfo y CloudAppEvents en Advanced Hunting para verificar si Real-time protection bloqueó la herramienta o si requiere activar el playbook AH-01."
+      ],
+      "rolResponsable": "SOC L2/L3",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "Initial Access / Exfiltration (MITRE ATLAS AML.T0051.001 / OWASP ASI01)",
+      "evidenciaAuditable": "Expediente de incidente clasificado en Defender XDR con evidencia KQL adjunta.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo de alertas cuasi en tiempo real, Prompt evidence collection y correlación en BehaviorInfo verificados en documentación oficial de Defender XDR.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/security-for-ai/ai-agent-detection-protection"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Revisión y respuesta sobre agentes riesgosos en Microsoft Entra ID Protection",
+      "objetivo": "Detectar compromisos de identidad en la operación autónoma de agentes (uso sospechoso de credenciales nuevas en blueprints, picos de inicio de sesión o reconocimiento de directorio).",
+      "consolaRuta": "entra.microsoft.com > Protection > Identity Protection > Risky agents | Risk detections > Agent detections",
+      "procedimiento": [
+        "Filtrar el reporte Risky agents por niveles High y Medium y revisar los eventos riskEventType de las últimas 24 horas en la pestaña Agent detections.",
+        "Validar con el Sponsor u Owner del agente si medió algún cambio legítimo de arquitectura o despliegue.",
+        "Ejecutar Confirm compromise (disparando bloqueo por Acceso Condicional) o Disable ante compromiso real; aplicar Confirm safe o Dismiss risk solo con respaldo documental."
+      ],
+      "rolResponsable": "SOC L2/L3 / Security Admin",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Credential Access / Valid Accounts (T1078.004 / OWASP ASI03)",
+      "evidenciaAuditable": "Registros de acción en DirectoryAudit y colección agentRiskDetections exportada al SIEM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Los 8 tipos de riskEventType, Learning Mode y acciones Confirm compromise / Disable están verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-protection/concept-risky-agents"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo de alertas de la política Risky Agents en Microsoft Purview Insider Risk Management",
+      "objetivo": "Identificar agentes de Copilot Studio, Foundry o P4AI SDK que generen respuestas sensibles, procesen prompts riesgosos, accedan a datos críticos o visiten sitios riesgosos.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Insider Risk Management > Alerts",
+      "procedimiento": [
+        "Acceder con cuenta perteneciente a IRM Investigators o IRM Analysts (sin ámbito de Administrative Unit) y filtrar alertas de las políticas Risky Agents y Risky AI usage.",
+        "Inspeccionar el contexto de interacción y sensibilidad de datos (teniendo en cuenta que en sesiones de invitados solo se exponen indicadores sensibles).",
+        "Confirmar las alertas verdaderas para abrir caso de investigación y propagar el score de riesgo hacia DSPM AI Observability y M365 Admin Center."
+      ],
+      "rolResponsable": "Purview Data Security AI Admin",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Collection / Exfiltration (MITRE ATLAS AML.T0057 / OWASP ASI06)",
+      "evidenciaAuditable": "Cola de alertas triada en Purview IRM y actualización reflejada en DSPM > AI observability.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Comportamiento de la política predeterminada Risky Agents y limitaciones de invitados y Administrative Units verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-management-monitoring-agents"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Evaluación y aprobación gobernada de solicitudes de activación de agentes con plantillas de seguridad",
+      "objetivo": "Asegurar que todo agente solicitado reciba validación de propietario/patrocinador, alcance mínimo de usuarios y aplicación obligatoria de una Security Policy Template antes de activarse.",
+      "consolaRuta": "admin.microsoft.com > Agents > All agents > Requests (estado Allow activation)",
+      "procedimiento": [
+        "Revisar los metadatos de cada solicitud pendiente: publicador, Owner, Sponsor, fuentes de conocimiento y herramientas conectadas.",
+        "Restringir la audiencia en el asistente de activación a los grupos de seguridad estrictamente necesarios.",
+        "Aplicar la Default template (12 políticas predefinidas y asignación automática de licencia) o una Custom template reforzada, validar permisos OAuth y completar la activación."
+      ],
+      "rolResponsable": "AI Administrator",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Persistence / Privilege Escalation (NIST AI RMF GOVERN-1.3)",
+      "evidenciaAuditable": "Registro de activación de paquete y consentimiento administrativo en el Unified Audit Log.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "El flujo de 8 pasos de activación, las 12 políticas de la Default template y la asignación automática de licencia están verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/agent-actions#activate-agents"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Revisión de solicitudes de registro de servidores MCP remotos y acceso a plugins",
+      "objetivo": "Prevenir riesgos de cadena de suministro agéntica controlando qué servidores MCP y plugins quedan disponibles y apagando herramientas individuales peligrosas.",
+      "consolaRuta": "admin.microsoft.com > Agents > Tools > Requests (preview) | Tools > Registry",
+      "procedimiento": [
+        "Revisar en la pestaña Requests (preview) el nombre del servidor MCP o plugin, publicador, solicitante, permisos Entra requeridos y herramientas declaradas.",
+        "Aprobar o rechazar la solicitud y otorgar el consentimiento administrativo únicamente si cumple políticas de arquitectura y tránsito por Gateway.",
+        "Abrir inmediatamente la pestaña Tools del servidor MCP aprobado y desactivar (Disabled) las herramientas individuales de escritura destructiva, borrado o pagos."
+      ],
+      "rolResponsable": "AI Administrator",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Initial Access / Execution (MITRE ATLAS AML.T0043 / OWASP ASI04)",
+      "evidenciaAuditable": "Estado de solicitudes en Agents > Tools, toggles granulares guardados y consentimiento auditado en Entra ID.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Requisito dual de acceso a Tools y consentimiento tenant-wide (AI Admin o Global Admin) y control granular por herramienta verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/manage-plugins-skills-mcp-servers"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Detección y remediación inmediata de agentes huérfanos (Agents without owners)",
+      "objetivo": "Cerrar en menos de 24 horas cualquier brecha de propiedad provocada cuando el creador de un agente compartido es eliminado del directorio.",
+      "consolaRuta": "admin.microsoft.com > Agents > All agents > Registry > tarjeta Agents without owners",
+      "procedimiento": [
+        "Seleccionar la tarjeta Agents without owners (actualizada en tiempo real tras cada hard delete de usuario) para filtrar los agentes sin propietario.",
+        "Si el agente mantiene uso legítimo de negocio, ejecutar Assign a new owner hacia el responsable activo validado con el área.",
+        "Si el agente carece de patrocinio o actividad válida, ejecutar Block o Delete agent (soft-delete con retención de 30 días)."
+      ],
+      "rolResponsable": "Agent Registry Admin",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-02",
+      "mitreTactic": "Defense Evasion / Persistence (OWASP ASI03)",
+      "evidenciaAuditable": "Indicador Agents without owners igual a 0 al cierre diario y evento de reasignación o borrado en Audit.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "El filtro de un clic y actualización en tiempo real de Agents without owners están verificados en MS Learn; la meta de 0 en <24h es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/agent-registry-overview#agents-without-owners"
+    },
+    {
+      "codigo": "D-08",
+      "cadencia": "Diaria",
+      "actividad": "Supervisión de bloqueos DLP inline/canales y evaluaciones DLP diferidas sobre agentes",
+      "objetivo": "Asegurar que las políticas DLP contengan fugas de datos sensibles en prompts y respuestas sin generar fallos operativos inadvertidos ni diferimientos crónicos.",
+      "consolaRuta": "purview.microsoft.com > Data Loss Prevention > Alerts | DSPM > Activity explorer > AI activities",
+      "procedimiento": [
+        "Revisar alertas DLP originadas por instancias de agentes en Teams, SharePoint, OneDrive y correo, así como Inline DLP en Copilot Studio.",
+        "Comunicar proactivamente los bloqueos al Agent Owner para ajustar el flujo de trabajo, dado que el agente no percibe de forma nativa la causa del bloqueo DLP.",
+        "Auditar registros con DLPEvaluationDeferred distinto de cero para descartar degradaciones de evaluación en Prompt, Response, Grounding o WebGrounding."
+      ],
+      "rolResponsable": "Purview Data Security AI Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-01",
+      "mitreTactic": "Exfiltration (OWASP LLM02:2025 / MITRE ATLAS AML.T0057)",
+      "evidenciaAuditable": "Alertas DLP gestionadas en Purview y comunicación registrada con el propietario del agente.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "La falta de conciencia nativa del bloqueo DLP por la instancia del agente y el bitmask DLPEvaluationDeferred están verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/ai-agent-365#data-loss-prevention-and-ai-interactions"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Descubrimiento y bloqueo de agentes locales no gestionados (Shadow AI) en endpoints",
+      "objetivo": "Detectar agentes autónomos instalados localmente por usuarios (OpenClaw, Claude Desktop, ChatGPT Desktop, Ollama) y aplicar políticas de bloqueo Intune.",
+      "consolaRuta": "admin.microsoft.com > Agents > Shadow AI | intune.microsoft.com > Devices > Configuration",
+      "procedimiento": [
+        "Inspeccionar en la página Shadow AI (Frontier) los agentes locales detectados, dispositivos afectados, usuarios únicos y tráfico FQDN reportado vía Global Secure Access.",
+        "Para agentes no aprobados con bloqueo nativo disponible como OpenClaw, ir a Security policies > Block > Apply Policies para desplegar la política Intune A365 - Block OpenClaw.",
+        "Verificar la convergencia de la política en Intune (15 min a 8 h) y complementar con controles AppLocker/WDAC y bloqueo FQDN para el resto de binarios Shadow AI no autorizados."
+      ],
+      "rolResponsable": "Security Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-02",
+      "mitreTactic": "Execution / Command and Control (T1059 / OWASP ASI05)",
+      "evidenciaAuditable": "Reporte de cumplimiento de la política A365 - Block OpenClaw en Intune y métrica semanal de dispositivos detectados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tabla de 7 agentes detectados en Shadow AI y política automática Intune A365 - Block OpenClaw verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/agent-shadow-ai"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Evaluación de postura de seguridad, recomendaciones y rutas de exposición de agentes en Microsoft Defender",
+      "objetivo": "Identificar y remediar vulnerabilidades, configuraciones inseguras y caminos de ataque desde agentes locales o cloud hacia datos y recursos críticos.",
+      "consolaRuta": "security.microsoft.com > Assets > AI agents > Agents > Security recommendations",
+      "procedimiento": [
+        "Filtrar el inventario de AI agents en Defender por Risk level High y Medium y examinar sus Risk indicators activos.",
+        "Inspeccionar el grafo de exposición (dispositivo, servidores MCP, identidades asociadas y recursos cloud alcanzables) en la página detallada del agente.",
+        "Asignar los Remediation steps con SLA semanal de cierre a los responsables técnicos de Copilot Studio, Foundry o endpoints."
+      ],
+      "rolResponsable": "Security Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "Initial Access / Lateral Movement (NIST AI RMF MAP-4.1)",
+      "evidenciaAuditable": "Exportación semanal de recomendaciones abiertas/cerradas en Defender Security for AI.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Columnas Risk level, Risk indicators, Recommendations y grafo de relaciones verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/security-for-ai/ai-agent-inventory"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Revisión de postura de datos y sobrescompartición en Purview DSPM AI Observability",
+      "objetivo": "Detectar oversharing, exfiltración y brechas de etiquetado o DLP en instancias activas de agentes durante los últimos 30 días.",
+      "consolaRuta": "purview.microsoft.com > Solutions > DSPM > AI observability",
+      "procedimiento": [
+        "Acceder a la versión actual de DSPM > AI observability (no DSPM classic) y revisar los agentes ordenados por nivel de riesgo de Insider Risk Management.",
+        "Analizar las actividades riesgosas de oversharing, exfiltration y unethical behavior y auditar los permisos explícitos VIEW y EXTRACT sobre etiquetas cifradas.",
+        "Aplicar recomendaciones de un clic de Purview y restringir sitios sensibles con SharePoint Advanced Management."
+      ],
+      "rolResponsable": "Purview Data Security AI Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-01",
+      "mitreTactic": "Collection / Exfiltration (OWASP LLM02:2025 / NIST AI 600-1)",
+      "evidenciaAuditable": "Informe semanal de DSPM AI Observability y políticas de protección actualizadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Exclusividad de soporte de Agent 365 en la versión nueva de DSPM > AI observability y requisito VIEW+EXTRACT verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/ai-agent-365"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Caza proactiva de amenazas (Threat Hunting) sobre telemetría agéntica, MCP y banderas XPIA",
+      "objetivo": "Descubrir cadenas sutiles de abuso de herramientas, inyecciones indirectas en documentos y llamadas anómalas de inferencia mediante KQL.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Hunting > Advanced hunting",
+      "procedimiento": [
+        "Ejecutar consultas correlacionadas entre AgentsInfo (usando arg_max), CloudAppEvents (InvokeAgent, ExecuteToolByGateway, ExecuteToolByMCPServer) y BehaviorInfo.",
+        "Cruzar eventos de auditoría unificada con banderas XPIADetected o JailbreakDetected activas y tráfico no sancionado en NetworkAccessGenerativeAIInsights.",
+        "Convertir patrones maliciosos confirmados en reglas de bloqueo en Defender Real-time protection o Custom Detection Rules."
+      ],
+      "rolResponsable": "SOC L2/L3",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "Execution / Defense Evasion (MITRE ATLAS AML.T0051 / AML.T0054)",
+      "evidenciaAuditable": "Bitácora semanal de Threat Hunting con resultados KQL y reglas promovidas.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Tablas y campos KQL verificados en MS Learn; cadencia semanal de caza combinada estructurada como práctica recomendada SOC.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/security-for-ai/ai-agent-detection-protection"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Gobierno de plugins, skills, servidores Work IQ / BYO MCP y pasarelas Tools Gateway",
+      "objetivo": "Garantizar que todas las herramientas expuestas a agentes mantengan mínimo privilegio y protección activa en Azure AI Gateway y LiteLLM.",
+      "consolaRuta": "admin.microsoft.com > Agents > Tools > Registry | Agents > Settings > Gateways",
+      "procedimiento": [
+        "Validar en Agent and plugin access que solo las categorías de publicadores autorizadas estén permitidas a nivel organizacional.",
+        "Comprobar la salud de conexión y políticas de amenazas (Agent 365 tool threat protection y Guardrails) en Azure AI Gateway y LiteLLM.",
+        "Revisar los servidores MCP registrados, confirmar la adopción de Work IQ MCP frente a servidores legacy por carga y auditar toggles Enabled/Disabled por herramienta."
+      ],
+      "rolResponsable": "AI Administrator",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Execution / Supply Chain (OWASP ASI02 & ASI04)",
+      "evidenciaAuditable": "Inventario auditado de servidores MCP, plugins y estado de pasarelas en M365 Admin Center.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Integración de Azure AI Gateway, LiteLLM, Work IQ MCP y control granular por herramienta verificados en MS Learn (noviembre 2026).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/manage-tools-gateway"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Análisis visual de topología y herramientas con tasa de excepción >1 % en Agent Map y Single Agent Map",
+      "objetivo": "Identificar cuellos de botella, fallos en cascada y errores recurrentes en llamadas a herramientas antes de que degraden flujos críticos.",
+      "consolaRuta": "admin.microsoft.com > Agents > All Agents > Map > All connections (Single Agent Map)",
+      "procedimiento": [
+        "Abrir Agent Map y filtrar por Usage > Exception rate: Has exceptions (>0%) y por Security alerts.",
+        "Seleccionar All connections sobre los agentes prioritarios para abrir Single Agent Map (7 y 30 días) y localizar las líneas resaltadas con tasa de excepción superior al 1 %.",
+        "Abrir ticket técnico al Owner del agente o administrador del servidor MCP para remediar errores de esquema, permisos o disponibilidad."
+      ],
+      "rolResponsable": "Agent Registry Admin",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Impact (OWASP ASI08 Cascading Failures)",
+      "evidenciaAuditable": "Archivo Excel exportado desde Agent Map y tickets correctivos generados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Agrupación por clústeres, filtro de excepciones y umbral visual >1 % en Single Agent Map verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-map"
+    },
+    {
+      "codigo": "S-07",
+      "cadencia": "Semanal",
+      "actividad": "Supervisión de cumplimiento conductual y ético en Purview Communication Compliance",
+      "objetivo": "Detectar lenguaje inapropiado, acoso, infracciones regulatorias o manipulación de confianza humana en interacciones de agentes en Teams y correo.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies",
+      "procedimiento": [
+        "Revisar las alertas semanales de políticas de IA generativa que cubren interacciones agent-to-human y human-to-agent.",
+        "Evaluar bajo controles de privacidad seudonimizada si el incidente requiere ajuste en las instrucciones del sistema del agente o escalamiento disciplinario/regulatorio.",
+        "Documentar la resolución y actualizar clasificadores o guardrails del agente cuando corresponda."
+      ],
+      "rolResponsable": "Purview Data Security AI Admin / GRC",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "Impact / Manipulation (OWASP ASI09 / NIST AI 600-1)",
+      "evidenciaAuditable": "Historial auditable de alertas resueltas en Purview Communication Compliance.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Soporte de interacciones agent-to-human y human-to-agent en Teams y correo verificado en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/ai-agent-365#communication-compliance-and-ai-interactions"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Conciliación de inventario multi-nube (Registry Sync con AWS Bedrock, Google Vertex AI y Foundry)",
+      "objetivo": "Asegurar que el 100 % de los agentes construidos en plataformas cloud estén registrados y gobernados en Agent 365, reduciendo a cero los Unmanaged agents.",
+      "consolaRuta": "admin.microsoft.com > Agents > Overview (Registry sync) | Agents > All agents > Registry",
+      "procedimiento": [
+        "Auditar el estado de sincronización de Registry Sync con Amazon Bedrock, Google Cloud (Vertex AI) y proyectos de Microsoft Foundry.",
+        "Revisar la métrica Unmanaged agents e instrumentar los agentes detectados con el Agent 365 SDK / Agent 365 CLI y Microsoft Entra Agent ID, o detener su cómputo (Start and stop en Foundry).",
+        "Conciliar registros dobles legítimos por diseño (Shared by creator frente a Published by your org) y registrar cualquier blueprint previo faltante."
+      ],
+      "rolResponsable": "AI Administrator",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-02",
+      "mitreTactic": "Resource Development / Defense Evasion (NIST AI RMF MAP-3.4)",
+      "evidenciaAuditable": "Acta mensual de conciliación multi-nube y exportación CSV completa del Agent Registry.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Registry Sync con Bedrock/Google Cloud, acción Start/Stop para Foundry y registros múltiples por diseño verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/agent-365-integration"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría de reglas dinámicas para cuentas agentUser (user.agentIdentityBlueprintId) y licenciamiento",
+      "objetivo": "Impedir que cuentas agentUser coincidan con reglas dinámicas amplias de empleados y hereden licencias grupales, sitios SharePoint o permisos de aplicaciones.",
+      "consolaRuta": "entra.microsoft.com > Identity > Groups > All groups | Graph API evaluateDynamicMembership",
+      "procedimiento": [
+        "Auditar todas las reglas dinámicas de grupos de usuarios vinculadas a asignación de licencias, aplicaciones empresariales, Teams y políticas de Acceso Condicional.",
+        "Asegurar que los grupos exclusivos de humanos incluyan la condición -and (user.agentIdentityBlueprintId -eq null) sin comillas (evitando el error -eq \"\").",
+        "Validar mediante la API evaluateDynamicMembership contra un objeto agentUser y depurar licencias heredadas indebidamente en assignedLicenses."
+      ],
+      "rolResponsable": "Entra Agent ID Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-01",
+      "mitreTactic": "Privilege Escalation / Valid Accounts (OWASP ASI03)",
+      "evidenciaAuditable": "Resultados JSON de validación evaluateDynamicMembership y reporte depurado de licencias en cuentas agentUser.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Evaluación de agentUser por reglas dinámicas de usuario y filtro user.agentIdentityBlueprintId verificados en documentación Entra y pruebas técnicas MVP (agosto 2026).",
+      "urlSoporte": "https://merill.net/2026/08/entra-agent-users-dynamic-groups/"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Revisión de políticas de Acceso Condicional por patrón agéntico y proxy Global Secure Access",
+      "objetivo": "Confirmar cobertura completa sobre flujos OBO, App-Only y Agent-User, así como inspección de red SASE para agentes de Copilot Studio y endpoints.",
+      "consolaRuta": "entra.microsoft.com > Protection > Conditional Access > Policies | Global Secure Access",
+      "procedimiento": [
+        "Ejecutar simulaciones What If verificando que existan políticas independientes para Users (OBO), Agent Identities / Blueprints (App-Only) y Agent Users (digital workers).",
+        "Validar el bloqueo automático ante High Agent Risk, el uso de Custom Security Attributes y el requisito de dispositivo conforme para Windows 365 for Agents.",
+        "Confirmar en Power Platform Admin Center que todos los entornos productivos de Copilot Studio tengan habilitado el reenvío de tráfico HTTP, conectores y MCP hacia Global Secure Access."
+      ],
+      "rolResponsable": "Entra Agent ID Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Initial Access / Command and Control (OWASP ASI01 & ASI03)",
+      "evidenciaAuditable": "Matriz de simulaciones What If documentada y logs activos en NetworkAccessGenerativeAIInsights.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Separación estricta de sujetos en políticas CA (Users vs. Agent Identities vs. Agent Users) y reenvío GSA verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/agent-id"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Gobierno de agentes inactivos (60/90/455 días) y continuidad de Sponsors humanos en Entra ID Governance",
+      "objetivo": "Deshabilitar y retirar automáticamente identidades de agentes sin uso y garantizar que el 100 % conserve patrocinadores humanos vigentes.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Lifecycle Workflows > Lifecycle Policies > Agent ID",
+      "procedimiento": [
+        "Comprobar que la Default Agent Identity Inactivity Lifecycle Policy (60d aviso, 90d deshabilitación, 455d borrado) y políticas personalizadas prioritarias estén habilitadas con destinatarios fallback.",
+        "Auditar la lista de exclusiones (All Agent IDs except selected) para confirmar que solo contenga agentes estacionales debidamente aprobados.",
+        "Verificar la ejecución exitosa de Lifecycle Workflows de transferencia automática de patrocinio al manager ante bajas de sponsors."
+      ],
+      "rolResponsable": "Entra Agent ID Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-01",
+      "mitreTactic": "Persistence (NIST AI RMF MANAGE-2.4)",
+      "evidenciaAuditable": "Historial mensual de deshabilitaciones por inactividad y cobertura del 100 % de Sponsors activos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Plazos fijos de 60, 90 y 455 días de la política gratuita predeterminada y transferencia automática al manager verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/agent-default-inactivity-policy"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Evaluación ejecutiva de adopción, Agent run-time, ROI y depuración de agentes sin impacto",
+      "objetivo": "Optimizar el portafolio empresarial de agentes midiendo horas efectivas trabajadas, usuarios activos y retirando agentes abandonados.",
+      "consolaRuta": "admin.microsoft.com > Agents > Overview | Agents > All Agents > Map",
+      "procedimiento": [
+        "Consolidar los indicadores de 30 días de Active users y Agent run-time (horas trabajadas en llamadas de herramientas y preparación de respuestas).",
+        "Filtrar en Agent Map los agentes con No sessions durante 60 días consecutivos para coordinar su desinstalación o soft-delete.",
+        "Actualizar la priorización de agentes destacados (Manage pinned agents, hasta 3 visibles prioritarios por usuario/canal) según valor de negocio."
+      ],
+      "rolResponsable": "AI Administrator",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "Attack Surface Reduction (NIST AI RMF MEASURE-1.1)",
+      "evidenciaAuditable": "Informe ejecutivo mensual del Comité de Gobierno de IA y registro de bajas aplicadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Definición de métricas Active users, Agent run-time y límite de 3 agentes fijados verificados en MS Learn; umbral de 60 días sin sesiones para retiro es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/agent-365-overview"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Certificación trimestral de Access Packages, permisos OAuth heredables en Blueprints y atestación por Sponsors",
+      "objetivo": "Recertificar el mínimo privilegio de cada agente sobre grupos de seguridad, permisos Graph/API y roles de directorio con intervención humana obligatoria.",
+      "consolaRuta": "entra.microsoft.com > ID Governance > Entitlement management > Access packages | Access reviews",
+      "procedimiento": [
+        "Ejecutar campañas trimestrales de Access Reviews sobre todas las asignaciones de Access Packages de agentIdentity y agentUser, requiriendo decisión explícita del Sponsor en myaccess.microsoft.com.",
+        "Permitir la expiración automática de todo paquete no renovado por su Sponsor dentro de la ventana de revisión.",
+        "Auditar los permisos heredables configurados en cada agentIdentityBlueprint y eliminar alcances innecesarios."
+      ],
+      "rolResponsable": "Entra Agent ID Admin / Agent Sponsor / Business Owner",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Privilege Escalation / Persistence (OWASP ASI03)",
+      "evidenciaAuditable": "Actas cerradas de campañas de Access Reviews en Entra ID Governance.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo de Access Packages para agentes, aprobación por Sponsor y expiración automática verificados en MS Learn; periodicidad trimestral es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-governance/agent-id-governance-overview"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Evaluación regulatoria de IA en Purview Compliance Manager y revisión de políticas de retención DLM",
+      "objetivo": "Medir la conformidad del parque de agentes frente a marcos regulatorios de IA (EU AI Act, ISO 42001, NIST AI RMF) y verificar retención/borrado normativo.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Compliance Manager > Assessments | Data Lifecycle Management",
+      "procedimiento": [
+        "Ejecutar la revisión trimestral de las plantillas Assessments for AI regulations (a las cuales se incorporan automáticamente las instancias de Agent 365).",
+        "Comprobar que las políticas DLM retengan y eliminen en plazo las interacciones de agentes en Teams, Exchange, SharePoint y OneDrive.",
+        "Auditar controles compensatorios de etiquetado sobre documentos creados por agentes (dado que el contenido nuevo no hereda automáticamente la etiqueta fuente)."
+      ],
+      "rolResponsable": "GRC / AI Ethics / Purview Data Security AI Admin",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "Compliance & Governance Assurance (NIST AI 600-1)",
+      "evidenciaAuditable": "Reporte trimestral exportado de Purview Compliance Manager y matriz vigente de retención DLM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Inclusión automática en Assessments for AI regulations y no herencia automática en contenido nuevo creado por Agent 365 verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/ai-agent-365"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Ejercicio semestral de AI Red Teaming contra OWASP Agentic Top 10 (ASI01-ASI10) y MITRE ATLAS",
+      "objetivo": "Poner a prueba los controles preventivos y detectivos de Defender Real-time protection, Prompt Shields, DLP inline y Conditional Access frente a cadenas de ataque agénticas reales.",
+      "consolaRuta": "security.microsoft.com > Settings > Security for AI > Real-time protection | Microsoft Foundry AI Red Teaming Agent",
+      "procedimiento": [
+        "Ejecutar en entorno controlado escenarios adversarios de secuestro de objetivo (ASI01 / AML.T0051.001), abuso de herramientas MCP (ASI02), escalada de identidad (ASI03 / AML.T0054), envenenamiento de memoria (ASI06) y exfiltración de secretos (AML.T0057).",
+        "Medir la tasa de intercepción en BehaviorInfo, la generación de alertas XDR con evidencia redactada y el tiempo de respuesta del SOC.",
+        "Ajustar reglas personalizadas de bloqueo runtime, permisos de servidores MCP y plantillas de seguridad a partir de las brechas detectadas."
+      ],
+      "rolResponsable": "Security Admin / SOC L2/L3",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "Full Agentic Kill Chain (OWASP ASI01-ASI10 / MITRE ATLAS)",
+      "evidenciaAuditable": "Informe técnico semestral de AI Red Teaming y registro de remediaciones aplicadas.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Capacidades técnicas de AI Red Teaming Agent y Real-time protection verificadas en MS Learn; alcance y periodicidad semestral definidos como estándar editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/foundry/concepts/ai-red-teaming-agent"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Revisión arquitectónica anual del plano de control Agent 365, soberanía de datos y modelo FinOps E5 vs. E7",
+      "objetivo": "Recertificar las plantillas corporativas de seguridad, validar el cumplimiento de residencia geográfica de datos y optimizar la estrategia de licenciamiento.",
+      "consolaRuta": "admin.microsoft.com | entra.microsoft.com | security.microsoft.com | purview.microsoft.com",
+      "procedimiento": [
+        "Revisar y actualizar las Security Policy Templates corporativas en M365 Admin Center y la línea base de Acceso Condicional y Global Secure Access.",
+        "Evaluar la relación costo-beneficio entre Microsoft 365 E5 + Agent 365 standalone ($15/u/m) frente a la consolidación en Microsoft 365 E7: The Frontier Suite ($99/u/m).",
+        "Auditar los flujos transfronterizos entre regiones Azure de Microsoft Foundry (agent365Config opt-out) y la geografía de almacenamiento del tenant Microsoft Entra."
+      ],
+      "rolResponsable": "AI Administrator / Entra Agent ID Admin / GRC / AI Ethics",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "Strategic Architecture Governance (NIST CSF 2.0 GV)",
+      "evidenciaAuditable": "Documento anual de Arquitectura y Gobierno de Agentes IA aprobado por CISO, CIO y Legal.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Precios públicos ($15 y $99) y modelo dual de residencia Foundry vs. Entra verificados en MS Learn y blogs oficiales; cadencia anual consultiva.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/agent-365-integration#data-residency"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de respuesta ante secuestro de objetivo de agente (Agent Goal Hijack / Indirect Prompt Injection - XPIA)",
+      "objetivo": "Aislar de inmediato un agente manipulado por instrucciones ocultas en documentos, correos o respuestas de herramientas externas y erradicar el artefacto contaminado.",
+      "consolaRuta": "security.microsoft.com > Incidents & alerts | admin.microsoft.com > Agents > All agents | purview.microsoft.com > Audit",
+      "procedimiento": [
+        "Ejecutar Block inmediato sobre el agente afectado en M365 Admin Center o aplicar regla de bloqueo urgente en Defender Real-time protection.",
+        "Analizar el snippet de Prompt evidence collection y buscar en Purview Audit (AccessedResources con XPIADetected:true) el documento, sitio o correo exacto que inyectó el payload.",
+        "Poner en cuarentena el recurso contaminado, auditar en CloudAppEvents todas las llamadas ExecuteTool* realizadas por el agente durante el incidente y revertir efectos secundarios antes de restaurar servicio."
+      ],
+      "rolResponsable": "SOC L2/L3",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Initial Access / Execution (OWASP ASI01 / MITRE ATLAS AML.T0051.001)",
+      "evidenciaAuditable": "Expediente forense XDR con artefacto XPIA aislado, bitácora KQL de herramientas invocadas y registro de bloqueo/desbloqueo.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Controles de bloqueo, bandera XPIADetected y telemetría ExecuteTool* verificados en MS Learn; secuencia orquestada como playbook SOC.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/security-for-ai/ai-agent-real-time-protection"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de contención ante compromiso de Microsoft Entra Agent ID o credencial sospechosa en Blueprint",
+      "objetivo": "Cortar la emisión y uso de tokens de un agente autónomo comprometido y limpiar credenciales o permisos inyectados en su Blueprint.",
+      "consolaRuta": "entra.microsoft.com > Protection > Identity Protection > Risky agents | Agent ID > Agent blueprints",
+      "procedimiento": [
+        "Marcar Confirm compromise (forzando bloqueo inmediato por Acceso Condicional) y Disable sobre el agente en el reporte Risky agents.",
+        "Inspeccionar DirectoryAudit para identificar quién agregó credenciales al agentIdentityBlueprint, modificó permisos heredables o alteró owners/sponsors.",
+        "Revocar credenciales ilegítimas y asignaciones de Access Packages, investigar la cuenta administradora origen, rotar secretos/certificados y validar antes de marcar Confirm safe."
+      ],
+      "rolResponsable": "SOC L2/L3 / Entra Agent ID Admin",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Credential Access / Persistence (T1098.001 / OWASP ASI03)",
+      "evidenciaAuditable": "Evento adminConfirmedAgentCompromised, traza de revocación de credenciales en Entra y cierre de incidente.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Detección suspiciousCredentialUsage y acciones Confirm compromise / Disable verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/entra/id-protection/concept-risky-agents"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de emergencia ante servidor MCP comprometido o abuso de herramienta conectada (Supply Chain)",
+      "objetivo": "Neutralizar a escala de tenant un servidor MCP o herramienta maliciosa/vulnerable y determinar todos los agentes y usuarios expuestos.",
+      "consolaRuta": "admin.microsoft.com > Agents > Tools > Registry | security.microsoft.com > Hunting > Advanced hunting",
+      "procedimiento": [
+        "Desactivar al instante la herramienta afectada en la pestaña Tools del servidor MCP (aplicado en runtime por el Agent 365 Tooling Gateway) o pulsar Block sobre el servidor MCP completo y sus plugins dependientes.",
+        "Consultar AgentsInfo (McpServers) y CloudAppEvents (ExecuteToolByMCPServer / ExecuteToolByGateway) para listar todos los agentes y sesiones que invocaron el servidor en los últimos 30 días.",
+        "Revocar el consentimiento OAuth del service principal asociado en Entra ID y bloquear sus dominios/IPs en Global Secure Access."
+      ],
+      "rolResponsable": "AI Administrator / SOC L2/L3",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Supply Chain Compromise / Execution (MITRE ATLAS AML.T0043 / OWASP ASI04)",
+      "evidenciaAuditable": "Servidor MCP en estado Blocked, revocación OAuth en Entra y reporte forense KQL de alcance.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Bloqueo global de servidor MCP, bloqueo en cascada de plugins dependientes y apagado individual en Tooling Gateway verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/manage-plugins-skills-mcp-servers"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de mitigación ante exfiltración de secretos o exposición masiva de datos sensibles por un agente",
+      "objetivo": "Detener la fuga de información confidencial o credenciales a través de respuestas o herramientas agénticas y remediar permisos subyacentes.",
+      "consolaRuta": "purview.microsoft.com > DSPM > AI observability | Data Loss Prevention | admin.microsoft.com > Agents",
+      "procedimiento": [
+        "Bloquear temporalmente el agente o añadir su instancia a una política Purview DLP restrictiva en modo Block sobre Teams, SharePoint, OneDrive y correo.",
+        "Extraer en Purview Audit la colección AccessedResources con SensitivityLabelId para inventariar exactamente qué archivos protegidos fueron leídos o generados.",
+        "Revocar derechos VIEW/EXTRACT indebidos o restringir sitios con SharePoint Advanced Management, etiquetar/cifrar salidas derivadas no heredadas y rotar cualquier secreto expuesto."
+      ],
+      "rolResponsable": "Purview Data Security AI Admin / Security Admin",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "Exfiltration (MITRE ATLAS AML.T0024 & AML.T0057 / OWASP LLM02)",
+      "evidenciaAuditable": "Listado auditable de AccessedResources afectados, rotación de credenciales y políticas DLP/SAM aplicadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Estructura de AccessedResources con SensitivityLabelId y controles DLP/SAM sobre agentes verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/audit-copilot"
+    },
+    {
+      "codigo": "AH-05",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de preservación legal (Legal Hold) y búsqueda forense en Purview eDiscovery sobre actividad de agentes",
+      "objetivo": "Preservar con validez probatoria todas las interacciones, prompts, respuestas y archivos asociados a un agente ante litigios, auditorías o investigaciones regulatorias.",
+      "consolaRuta": "purview.microsoft.com > Solutions > eDiscovery > Cases | Audit",
+      "procedimiento": [
+        "Crear un caso en Purview eDiscovery incorporando como custodios/fuentes tanto a los usuarios humanos implicados como a la instancia del agente (agentUser).",
+        "Colocar retención legal (eDiscovery Hold) sobre los buzones, sitios SharePoint, OneDrive y Teams pertinentes para prevalecer sobre cualquier política de borrado DLM.",
+        "Ejecutar búsqueda con la condición Type > Contains any of > Copilot activity, cargar los resultados en un Review set y exportar junto con los logs inmutables de Purview Audit."
+      ],
+      "rolResponsable": "Purview Data Security AI Admin / GRC / AI Ethics",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-05",
+      "mitreTactic": "Forensic Preservation & Non-Repudiation (NIST CSF 2.0 RS.AN-03 / RC)",
+      "evidenciaAuditable": "Caso de eDiscovery con Hold activo, Review set preservado y paquete de exportación con hash verificable.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Identificación de instancias de agente como usuario en eDiscovery y filtro Copilot activity verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/ai-agent-365#ediscovery-and-ai-interactions"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Inventario maestro y postura de agentes activos en Defender XDR (AgentsInfo)",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting (security.microsoft.com)",
+      "tablaPrincipal": "AgentsInfo",
+      "consulta": "AgentsInfo\n| summarize arg_max(Timestamp, *) by AgentId\n| where LifecycleStatus != \"Deleted\"\n| extend OwnerCount = array_length(Owners),\n         McpCount = array_length(McpServers),\n         ToolCount = array_length(DeclaredTools),\n         HasEntraAgentId = isnotempty(EntraAgentId)\n| project Timestamp, AgentName, AgentId, Platform, PublishedStatus, LifecycleStatus, Availability, HasEntraAgentId, EntraAgentId, EntraBlueprintId, OwnerCount, McpCount, ToolCount, Model, Guardrails\n| order by HasEntraAgentId asc, McpCount desc",
+      "proposito": "Obtener el último snapshot de cada agente activo (migrado desde la retirada tabla AIAgentsInfo post 1-jul-2026) para detectar agentes publicados sin EntraAgentId, sin propietarios o con servidores MCP conectados.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría de invocaciones de agentes, inferencias y ejecución de herramientas MCP (CloudAppEvents)",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "CloudAppEvents",
+      "consulta": "CloudAppEvents\n| where Timestamp > ago(7d)\n| where ActionType in (\"InvokeAgent\", \"InferenceCall\", \"ExecuteToolBySDK\", \"ExecuteToolByGateway\", \"ExecuteToolByMCPServer\")\n| extend RawJson = parse_json(tostring(RawEventData))\n| extend AgentId = coalesce(tostring(RawJson.AgentId), tostring(RawJson.TargetAgentId), tostring(RawJson.PlatformTargetAgentId)),\n         ToolName = tostring(RawJson.ToolName),\n         McpServer = tostring(RawJson.McpServerName)\n| summarize TotalEvents = count(), ToolCalls = countif(ActionType startswith \"ExecuteTool\"), DistinctUsers = dcount(AccountObjectId), ToolsUsed = make_set_if(ToolName, isnotempty(ToolName), 20) by AgentId, ActionType, McpServer\n| order by ToolCalls desc, TotalEvents desc",
+      "proposito": "Rastrear el flujo real de telemetría OpenTelemetry de Agent 365 y auditar qué herramientas SDK, Gateway o servidores MCP invoca cada agente en producción.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Investigación de bloqueos y auditorías de Defender Real-time protection y Prompt Shields",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting",
+      "tablaPrincipal": "BehaviorInfo",
+      "consulta": "BehaviorInfo\n| where Timestamp > ago(7d)\n| where ServiceSource has_any (\"Microsoft Defender\", \"Security for AI\", \"Agent\") or ActionType has_any (\"AiAgent\", \"PromptShield\", \"RealTimeProtection\", \"Tool\")\n| join kind=leftouter (\n    BehaviorEntities\n    | where Timestamp > ago(7d)\n    | project BehaviorId, EntityType, EntityRole, AccountUpn, AdditionalFields\n) on BehaviorId\n| project Timestamp, BehaviorId, Title, Category, Severity, ActionType, Description, EntityType, EntityRole, AccountUpn, AdditionalFields\n| order by Timestamp desc",
+      "proposito": "Correlacionar bloqueos en tiempo real y eventos en modo auditoría generados por reglas de exfiltración de secretos, propagación maliciosa, evasión, dominios inseguros y Prompt Shields.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección de tráfico hacia servicios de IA generativa no sancionados (Shadow AI en red)",
+      "plataforma": "Microsoft Sentinel / Azure Monitor Log Analytics",
+      "tablaPrincipal": "NetworkAccessGenerativeAIInsights",
+      "consulta": "let sanctionedAiServices = dynamic([\"copilot.microsoft.com\", \"m365.cloud.microsoft\", \"copilot.cloud.microsoft\"]);\nNetworkAccessGenerativeAIInsights\n| where TimeGenerated > ago(7d)\n| extend DestinationHost = tolower(tostring(parse_url(DestinationUrl).Host))\n| where isnotempty(DestinationHost) and DestinationHost !in (sanctionedAiServices)\n| summarize PromptCount = count(), UnsanctionedServices = make_set(DestinationHost, 15), FirstSeen = min(TimeGenerated), LastSeen = max(TimeGenerated) by UserPrincipalName\n| where PromptCount > 0\n| order by PromptCount desc",
+      "proposito": "Identificar mediante Entra Global Secure Access usuarios o agentes locales que envían prompts o tráfico hacia plataformas de IA externas fuera del catálogo corporativo autorizado.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Caza forense de ataques XPIA, intentos de Jailbreak y evaluaciones DLP diferidas en Purview Audit",
+      "plataforma": "Microsoft Sentinel / Log Analytics (Conector Office 365 / Purview Unified Audit)",
+      "tablaPrincipal": "OfficeActivity",
+      "consulta": "OfficeActivity\n| where TimeGenerated > ago(7d)\n| where RecordType in (\"CopilotInteraction\", \"ConnectedAIAppInteraction\", \"AIAppInteraction\") or OfficeWorkload in (\"Copilot\", \"ConnectedAIApp\", \"AIApp\")\n| extend AuditJson = parse_json(AuditData)\n| extend AgentId = tostring(AuditJson.AgentId),\n         AgentName = tostring(AuditJson.AgentName),\n         DlpDeferredMask = toint(AuditJson.DLPEvaluationDeferred),\n         DlpDeferredReason = tostring(AuditJson.DLPEvaluationDeferredReason),\n         HasXPIA = tostring(AuditJson.AccessedResources) has '\"XPIADetected\":true',\n         HasJailbreak = tostring(AuditJson.Messages) has '\"JailbreakDetected\":true'\n| where HasXPIA or HasJailbreak or DlpDeferredMask > 0\n| project TimeGenerated, UserId, Operation, AgentName, AgentId, HasXPIA, HasJailbreak, DlpDeferredMask, DlpDeferredReason\n| order by TimeGenerated desc",
+      "proposito": "Localizar registros de auditoría donde recursos consultados por un agente contenían Cross Prompt Injection Attacks (XPIADetected), mensajes con JailbreakDetected o etapas DLP diferidas.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría de Agent Blueprints, Agent Identities y colección riskyAgents vía Entra PowerShell y Graph",
+      "plataforma": "Microsoft Entra PowerShell (v1.3+) y Microsoft Graph SDK",
+      "tablaPrincipal": "agentIdentityBlueprint / riskyAgents (Microsoft Graph)",
+      "consulta": "Connect-Entra -Scopes 'Application.Read.All', 'IdentityRiskyAgent.Read.All', 'IdentityRiskEvent.Read.All'\n$blueprints = Get-EntraAgentIdentityBlueprint -All\nforeach ($bp in $blueprints) {\n    $identities = Get-EntraAgentIdentity -AgentIdentityBlueprintId $bp.Id\n    [PSCustomObject]@{ BlueprintDisplayName = $bp.DisplayName; BlueprintId = $bp.Id; AgentIdentityCount = ($identities | Measure-Object).Count }\n}\nInvoke-MgGraphRequest -Method GET -Uri \"https://graph.microsoft.com/beta/identityProtection/riskyAgents?`$filter=riskLevel eq 'high' or riskLevel eq 'medium'\"",
+      "proposito": "Enumerar programáticamente todas las plantillas de identidad agéntica en el directorio, contar sus instancias derivadas y extraer los agentes marcados en riesgo medio o alto por ID Protection.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Validación preventiva de exclusión de cuentas agentUser en grupos dinámicos de usuarios",
+      "plataforma": "Microsoft Graph PowerShell (API evaluateDynamicMembership)",
+      "tablaPrincipal": "groups/evaluateDynamicMembership (agentUser)",
+      "consulta": "Connect-MgGraph -Scopes 'Group.Read.All', 'User.Read.All'\n$candidateRule = '(user.objectId -ne null) -and (user.userType -eq \"Member\") -and (user.agentIdentityBlueprintId -eq null)'\n$body = @{ memberId = '<AGENT-USER-OBJECT-ID>'; membershipRule = $candidateRule } | ConvertTo-Json\nInvoke-MgGraphRequest -Method POST -Uri 'https://graph.microsoft.com/beta/groups/evaluateDynamicMembership' -Body $body -ContentType 'application/json'",
+      "proposito": "Comprobar sin impacto en producción que una regla dinámica de usuarios humanos devuelva membershipRuleEvaluationResult = false frente a una cuenta agentUser, evitando fuga de licencias y permisos.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Cobertura de Agentes Gobernados en Microsoft Agent 365",
+      "definicion": "Porcentaje del total de agentes descubiertos en el ecosistema empresarial (incluyendo sincronización multi-nube) que operan bajo gestión activa y políticas de Microsoft Agent 365.",
+      "formula": "(Total agents gestionados en Agent 365 / (Total agents + Unmanaged agents)) * 100",
+      "metaSugerida": ">= 98 %",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO, CIO, AI Administrator",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en los contadores oficiales Total agents y Unmanaged agents del Agent Registry y Agent Map; meta porcentual consultiva."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Tasa de Agentes con Owner y Sponsor Humano Activo",
+      "definicion": "Porcentaje de agentes e identidades agénticas activas que cuentan simultáneamente con un Owner técnico y al menos un Sponsor humano vigente en el directorio.",
+      "formula": "((Total agentes activos - Agents without owners ni sponsor) / Total agentes activos) * 100",
+      "metaSugerida": "100 % (0 agentes huérfanos por más de 24 horas)",
+      "frecuencia": "Diaria",
+      "audiencia": "AI Administrator, Entra Agent ID Admin",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Medido directamente sobre la tarjeta Agents without owners en M365 Admin Center y metadatos sponsor en Entra Agent ID."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Cobertura de Identidad Entra Agent ID y Acceso Condicional",
+      "definicion": "Proporción de agentes publicados en producción que poseen EntraAgentId único y están cubiertos por políticas de Acceso Condicional acordes a su patrón OAuth.",
+      "formula": "(Agentes publicados con EntraAgentId y política CA activa / Total agentes publicados) * 100",
+      "metaSugerida": ">= 99 %",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO, Entra Agent ID Admin",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Calculable cruzando la columna EntraAgentId de la tabla AgentsInfo con las asignaciones de políticas CA en Entra."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Tiempo Medio de Contención de Agentes de Alto Riesgo (MTTC-Agent)",
+      "definicion": "Tiempo promedio transcurrido desde la generación de una señal de riesgo High en Defender, Entra ID Protection o Purview hasta el bloqueo efectivo del agente (Block / Confirm compromise / Disable).",
+      "formula": "Promedio(Timestamp acción Block o Disable - Timestamp detección High Risk)",
+      "metaSugerida": "<= 30 minutos",
+      "frecuencia": "Diaria",
+      "audiencia": "SOC Manager, CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "SLA operativo recomendado para limitar el radio de explosión de agentes autónomos que operan a velocidad de máquina."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Tasa de Mitigación de Agentes Locales Shadow AI No Autorizados",
+      "definicion": "Porcentaje de dispositivos Windows gestionados donde se detectaron agentes locales no aprobados que cuentan con política de bloqueo Intune aplicada o remoción confirmada.",
+      "formula": "(Dispositivos con política Intune de bloqueo aplicada o agente removido / Total dispositivos detectados en Shadow AI) * 100",
+      "metaSugerida": ">= 95 % en menos de 7 días",
+      "frecuencia": "Semanal",
+      "audiencia": "Security Admin, Endpoint Management Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en los paneles Detections, Detected devices y Security policies de la página Agents > Shadow AI."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Cobertura de Gobernanza Granular y Gateway en Servidores MCP",
+      "definicion": "Porcentaje de servidores MCP activos en el tenant que fueron aprobados formalmente, tienen revisión granular por herramienta aplicada y operan a través de Work IQ MCP o Tools Gateway.",
+      "formula": "(Servidores MCP aprobados con revisión tool-level y Gateway / Total servidores MCP utilizados por agentes) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Semanal",
+      "audiencia": "AI Administrator, Security Admin",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Sustentado en el inventario de Agents > Tools > Registry y conectores Azure AI Gateway / LiteLLM."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Índice de Confiabilidad de Herramientas Agénticas (Tasa de Excepción <= 1 %)",
+      "definicion": "Porcentaje de agentes productivos con telemetría de observabilidad cuyas herramientas conectadas mantienen una tasa de excepción igual o inferior al umbral del 1 % en Single Agent Map.",
+      "formula": "(Agentes con todas sus herramientas <= 1 % de excepción / Total agentes instrumentados en Single Agent Map) * 100",
+      "metaSugerida": ">= 95 %",
+      "frecuencia": "Semanal",
+      "audiencia": "CIO, CAIO, Agent Owners",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Alineado al umbral nativo >1 % que resalta líneas de error en Single Agent Map dentro del M365 Admin Center."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Puntaje de Cumplimiento Regulatorio de IA y Control de Sobrescompartición",
+      "definicion": "Nivel de cumplimiento alcanzado en las evaluaciones regulatorias de IA de Purview Compliance Manager combinado con la ausencia de agentes en riesgo High sin mitigar en DSPM AI Observability.",
+      "formula": "Compliance Score en Assessments for AI regulations (%) y conteo de agentes High Risk > 7 días en DSPM AI Observability",
+      "metaSugerida": ">= 90 % de puntaje y 0 agentes High Risk sin remediación > 7 días",
+      "frecuencia": "Trimestral",
+      "audiencia": "GRC / AI Ethics, Purview Data Security AI Admin, CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Combina las métricas nativas de Purview Compliance Manager y DSPM > AI observability en un indicador ejecutivo auditable."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.OC-03",
+      "descripcionResultado": "Los requisitos legales, regulatorios y contractuales relativos a privacidad, obligaciones civiles y uso responsable de inteligencia artificial se comprenden y gestionan.",
+      "capacidadMicrosoft": "Incorporación automática de instancias de Agent 365 a Assessments for AI regulations en Purview Compliance Manager, políticas DLM y control de residencia de datos entre regiones Azure de Foundry y geografía del tenant Entra.",
+      "evidenciaAuditoria": "Informe trimestral exportado de Purview Compliance Manager y configuración documentada de agent365Config en recursos Foundry sujetos a soberanía estricta.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles, responsabilidades y autoridades de seguridad cibernética y gobierno de actores autónomos están establecidos, comunicados y exigidos.",
+      "capacidadMicrosoft": "Segregación RBAC (AI Administrator, AI Reader, Agent ID Administrator, IRM Investigator) y relaciones obligatorias owner, sponsor y manager en Entra Agent ID con transferencia automática ante bajas.",
+      "evidenciaAuditoria": "Configuración de roles elegibles en Entra PIM, indicador Agents without owners en 0 e historial de Lifecycle Workflows de patrocinadores.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-02",
+      "descripcionResultado": "Los inventarios de software, servicios cloud y agentes autónomos mantenidos o utilizados por la organización se mantienen completos y actualizados.",
+      "capacidadMicrosoft": "Agent Registry convergente y Agent Map en Microsoft 365 Admin Center, Registry Sync con Amazon Bedrock, Google Vertex AI y Foundry, página Shadow AI y tabla KQL AgentsInfo.",
+      "evidenciaAuditoria": "Exportación CSV mensual del Agent Registry, resultado de consulta KQL arg_max sobre AgentsInfo y estado conectado de Registry Sync.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-01",
+      "descripcionResultado": "Las vulnerabilidades, configuraciones erróneas y rutas de exposición en activos y agentes de IA se identifican, validan y registran.",
+      "capacidadMicrosoft": "Postura de seguridad de agentes en Microsoft Defender (Assets > AI agents > Security recommendations), grafo de exposición hacia MCP/cloud, DSPM > AI observability y AI Red Teaming Agent.",
+      "evidenciaAuditoria": "Reportes semanales de recomendaciones cerradas en Defender Security for AI, panel DSPM AI Observability e informe semestral de AI Red Teaming.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-01",
+      "descripcionResultado": "Las identidades y credenciales para usuarios, servicios y agentes autónomos autorizados son gestionadas durante todo su ciclo de vida.",
+      "capacidadMicrosoft": "Microsoft Entra Agent ID (agentIdentityBlueprint, agentIdentity, agentUser), blindaje de grupos dinámicos (user.agentIdentityBlueprintId -eq null) y Default Agent Identity Inactivity Lifecycle Policy (60/90/455 días).",
+      "evidenciaAuditoria": "Inventario de Blueprints e identidades vía Entra PowerShell, pruebas evaluateDynamicMembership y política de inactividad en estado Enabled.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Los permisos de acceso, derechos y autorizaciones incorporan los principios de mínimo privilegio y separación de funciones.",
+      "capacidadMicrosoft": "Conditional Access para agentes (OBO, App-Only, Agent-User), Access Packages con expiración aprobados por Sponsors, lista negra en plataforma de >50 permisos Graph críticos y control granular por herramienta MCP.",
+      "evidenciaAuditoria": "Políticas CA exportadas, actas trimestrales de Entra Access Reviews y configuración de herramientas individuales deshabilitadas en Agents > Tools.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.DS-01",
+      "descripcionResultado": "La confidencialidad, integridad y disponibilidad de los datos en reposo y en uso por sistemas de IA están protegidas.",
+      "capacidadMicrosoft": "Exigencia explícita de derechos VIEW y EXTRACT en etiquetas de sensibilidad con cifrado, Inline DLP en Copilot Studio, políticas DLP sobre instancias de agentes y proxy SASE Global Secure Access.",
+      "evidenciaAuditoria": "Políticas DLP y etiquetas de sensibilidad exportadas desde Purview, políticas SharePoint Restricted Access Control y logs de Global Secure Access.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-03",
+      "descripcionResultado": "Las actividades de usuarios y agentes autónomos y el uso de herramientas conectadas se monitorean continuamente para detectar eventos potencialmente adversos.",
+      "capacidadMicrosoft": "Telemetría OpenTelemetry de Agent 365 en CloudAppEvents, monitoreo conductual en Entra ID Protection (riskyAgents) y política predeterminada Risky Agents en Purview Insider Risk Management.",
+      "evidenciaAuditoria": "Consultas activas sobre CloudAppEvents, reporte auditado de Risky Agents en Entra y cola triada de alertas en Purview IRM.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.AE-02",
+      "descripcionResultado": "Los eventos potencialmente adversos se analizan y correlacionan para detectar ciberataques y manipulaciones agénticas (XPIA, jailbreak, abuso MCP).",
+      "capacidadMicrosoft": "Detección cuasi en tiempo real en Microsoft Defender correlacionada en incidentes XDR, Prompt evidence collection redactada y banderas XPIADetected y JailbreakDetected en Purview Audit.",
+      "evidenciaAuditoria": "Expedientes de incidentes XDR con entidades de agentes y búsquedas KQL sobre BehaviorInfo y OfficeActivity / Purview Audit.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Los incidentes son contenidos en tiempo real para impedir la propagación lateral o la ejecución de acciones destructivas.",
+      "capacidadMicrosoft": "Reglas de bloqueo en Defender Real-time protection y Azure AI Gateway / LiteLLM, botón Block en Agent Registry y Tools Registry, Confirm compromise / Disable en Entra y política Intune A365 - Block OpenClaw.",
+      "evidenciaAuditoria": "Eventos de bloqueo registrados en BehaviorInfo, trazas de Confirm compromise en Entra AuditLogs y estado de cumplimiento en Microsoft Intune.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.AN-03",
+      "descripcionResultado": "Se realiza análisis forense de extremo a extremo para establecer la secuencia de acciones autónomas ocurridas y su causa raíz.",
+      "capacidadMicrosoft": "Registros unificados Purview Audit (CopilotInteraction, ConnectedAIAppInteraction con AccessedResources), casos de Purview eDiscovery con condición Copilot activity y grafo Single Agent Map.",
+      "evidenciaAuditoria": "Casos de Purview eDiscovery con Legal Hold y Review sets exportados junto con líneas de tiempo forenses KQL.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-05",
+      "descripcionResultado": "La integridad de los agentes y credenciales restauradas se verifica, los servicios se restablecen con seguridad y se confirma el funcionamiento normal.",
+      "capacidadMicrosoft": "Retención de 30 días tras soft-delete con acción Restore agent en M365 Admin Center, rotación controlada de credenciales en Agent Blueprints y confirmación Confirm safe en Entra ID Protection.",
+      "evidenciaAuditoria": "Registros de auditoría de restauración de agentes, validación de tasa de excepción <= 1 % en Single Agent Map y cierre documentado del playbook.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Módulo construido íntegramente desde cero y verificado exhaustivamente al 11 de noviembre de 2026 contra la documentación oficial de Microsoft Learn (hubs de Microsoft Agent 365, Service Descriptions, Microsoft Entra Agent ID, Microsoft Graph Beta/v1.0, Microsoft Defender XDR Security for AI y Microsoft Purview Data Security for Agent 365), anuncios ejecutivos oficiales de Microsoft (Ignite noviembre 2025, marzo 2026 y lanzamiento GA del 1 de mayo de 2026), investigación técnica MVP sobre grupos dinámicos en Entra y marcos internacionales de seguridad de IA (NIST CSF 2.0 CSWP 29, NIST AI RMF 1.0 / NIST AI 600-1, OWASP Top 10 for LLM 2025 & Agentic Applications 2026 ASI01-ASI10 y MITRE ATLAS).",
+    "correccionesAplicadas": [
+      "Verificación exacta de disponibilidad comercial y precios públicos: Microsoft Agent 365 alcanzó disponibilidad general (GA) comercial el 1 de mayo de 2026 a USD $15 por usuario/mes como add-on standalone y como componente incluido en Microsoft 365 E7: The Frontier Suite a USD $99 por usuario/mes (operando de forma óptima sobre Microsoft 365 E5 y habiendo superado la evaluación independiente de controles FedRAMP High al 1 de octubre de 2026).",
+      "Incorporación de la convergencia arquitectónica del Agent Registry (abril-mayo 2026): las antiguas APIs de registro en Microsoft Graph (agentRegistry, agentCardManifest, agentInstance, agentCollection) fueron deprecadas a favor del registro unificado en Microsoft 365 Admin Center (admin.microsoft.com > Agents > All agents > Registry), reservando Microsoft Entra para el plano de identidad (Entra Agent ID).",
+      "Alineación obligatoria con el esquema Advanced Hunting vigente tras el 1 de julio de 2026: se utiliza exclusivamente la tabla AgentsInfo (con agregación arg_max(Timestamp, *) by AgentId) en sustitución de la tabla retirada AIAgentsInfo.",
+      "Inclusión de la salvaguarda crítica en grupos dinámicos de Microsoft Entra ID (verificada en agosto de 2026): dado que las cuentas agentUser tienen userType igual a Member y coinciden con reglas dinámicas amplias heredando licencias y permisos, se exige añadir la condición -and (user.agentIdentityBlueprintId -eq null) usando null sin comillas.",
+      "Documentación precisa de fronteras RBAC entre portales verificadas en MS Learn: AI Administrator no puede conectar Azure AI Gateway ni LiteLLM (requiere Global Administrator) ni crear políticas de Acceso Condicional o Access Packages; a su vez, Global Administrator por sí solo no puede visualizar alertas de Purview Insider Risk Management sobre agentes sin el rol IRM Analyst o IRM Investigator.",
+      "Distinción técnica verificada en Microsoft Purview: únicamente la versión actual de DSPM (DSPM > AI observability) soporta Agent 365 (DSPM classic no lo soporta), el acceso a archivos cifrados exige conceder explícitamente VIEW y EXTRACT a la instancia del agente, y el contenido nuevo creado por Agent 365 no hereda de forma automática la etiqueta del archivo origen.",
+      "Incorporación de las capacidades más recientes de interoperabilidad y ciclo de vida a noviembre de 2026: endpoint unificado Work IQ MCP (10 herramientas genéricas en GA que reemplazan a los servidores MCP legacy por aplicación), gobierno de pasarelas Azure AI Gateway y LiteLLM, bloqueo endpoint de Shadow AI (A365 - Block OpenClaw) y Default Agent Identity Inactivity Lifecycle Policy gratuita (60/90/455 días)."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Umbrales cuantitativos y SLAs de los 8 KPIs operacionales (cobertura >= 98 %, 0 agentes huérfanos > 24 h, MTTC-Agent <= 30 min, tasa de excepción <= 1 % en >= 95 % del parque)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft Learn provee los contadores nativos, reportes y el umbral visual >1 % en Single Agent Map, pero delega los objetivos numéricos a cada organización; se definen metas ejecutivas alineadas a sectores regulados."
+      },
+      {
+        "elemento": "Parámetros PIM/JIT por rol (ventanas de 2 a 4 horas para administración, 8 horas para operadores SOC en guardia) y política de doble Sponsor humano para agentes productivos críticos",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Operacionaliza el principio oficial de mínimo privilegio de Microsoft Entra evitando cuellos de botella en respuesta a incidentes y previniendo orfandad operativa ante ausencias temporales."
+      },
+      {
+        "elemento": "Distribución estructurada de 29 actividades operacionales en 7 cadencias (8 diarias, 7 semanales, 5 mensuales, 2 trimestrales, 1 semestral, 1 anual y 5 playbooks Ad-Hoc)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Convierte las capacidades distribuidas entre M365 Admin Center, Entra, Defender, Purview e Intune en un catálogo auditable y repetible para equipos de TI, Identidad, SOC y Cumplimiento."
+      },
+      {
+        "elemento": "Modelo de Madurez Operacional de 5 niveles (desde Agent Sprawl inicial hasta Empresa Frontera Resiliente)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Facilita al CISO y al CAIO trazar una hoja de ruta gradual de adopción y aseguramiento sobre inversiones existentes en Microsoft 365 E5 hacia Agent 365 o Microsoft 365 E7."
+      },
+      {
+        "elemento": "Mapeo normativo simultáneo a NIST CSF 2.0 (CSWP 29), NIST AI RMF 1.0 / AI 600-1, OWASP Top 10 for LLM & Agentic Applications (ASI01-ASI10) y MITRE ATLAS",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Unifica los marcos clásicos de ciberseguridad del repositorio maestro con las taxonomías específicas de amenazas y riesgos de agentes autónomos vigentes en auditorías de IA de 2026."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Microsoft Agent 365 overview & documentation hub",
+      "url": "https://learn.microsoft.com/en-us/microsoft-agent-365/overview",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Definición oficial del plano de control Microsoft Agent 365, pilares Observe/Govern/Secure, fecha de GA (1 de mayo de 2026) y prerrequisito óptimo con Microsoft 365 E5.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado octubre-noviembre 2026)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Microsoft Agent 365 - Service Descriptions (Available plans and feature availability)",
+      "url": "https://learn.microsoft.com/en-us/office365/servicedescriptions/microsoft-agent-365/microsoft-agent-365",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Matriz oficial de 26 capacidades comparando planes base de Microsoft 365 frente a Microsoft Agent 365 / Microsoft 365 E7, disponibilidad GCC y evaluación FedRAMP High al 1 de octubre de 2026.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado octubre 2026)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Agent Registry in Microsoft 365 admin center",
+      "url": "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/agent-registry-overview",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Documentación técnica del Agent Registry, tipos de publicador, detección en tiempo real de Agents without owners y columna agregada de señales de riesgo con roles requeridos.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado octubre 2026)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Governance and Lifecycle actions & Agent management roles in Microsoft 365 admin center",
+      "url": "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/agent-actions",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Detalle del flujo de activación, las 12 políticas predefinidas en la Default Security Template, asignación automática de licencia, bloqueo y retención soft-delete de 30 días.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado octubre 2026)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Use Agent Map in the Microsoft 365 admin center",
+      "url": "https://learn.microsoft.com/en-us/microsoft-365/admin/manage/agent-map",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Visualización topológica agrupada por clústeres de plataforma y grafo Single Agent Map (preview) con resaltado automático de herramientas con tasa de excepción >1 %.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado octubre 2026)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Understand Shadow AI in Microsoft 365 admin center",
+      "url": "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/agent-shadow-ai",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Descubrimiento de 7 agentes locales (OpenClaw, ChatGPT Desktop, Claude Desktop, Ollama, etc.), enriquecimiento con Global Secure Access y política Intune A365 - Block OpenClaw.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado octubre 2026)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Manage Tools Gateway, Plugins, Skills, and Work IQ MCP in Microsoft 365 admin center",
+      "url": "https://learn.microsoft.com/en-us/microsoft-agent-365/admin/manage-tools-gateway",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Conexión y protección de llamadas a herramientas MCP mediante Azure AI Gateway y LiteLLM, control granular por herramienta individual y adopción de Work IQ MCP.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado 6 de noviembre de 2026)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Microsoft Entra Agent ID documentation & Microsoft Graph Agent ID APIs",
+      "url": "https://learn.microsoft.com/en-us/graph/api/resources/agentid-platform-overview?view=graph-rest-beta",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Arquitectura de objetos agentIdentityBlueprint, agentIdentity y agentUser, convergencia del Agent Registry en mayo de 2026 y tabla oficial de permisos Graph bloqueados para agentes.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado julio-octubre 2026)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Conditional Access for Agents & Secure Web and AI Gateway in Microsoft Entra",
+      "url": "https://learn.microsoft.com/en-us/entra/identity/conditional-access/agent-id",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Evaluación de Acceso Condicional para los tres patrones OAuth (OBO, App-Only y Agent-User), atributos personalizados, fronteras de alcance y controles de red Global Secure Access.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado octubre 2026)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "ID Protection for Agents (riskyAgents) & Governing Agent Identities (Default Inactivity Policy)",
+      "url": "https://learn.microsoft.com/en-us/entra/id-protection/concept-risky-agents",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Detecciones de riesgo conductual para agentes autónomos, Learning Mode, Access Packages con Sponsors y política predeterminada de inactividad de 60, 90 y 455 días.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado octubre-noviembre 2026)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Discover AI agents (AgentsInfo), detect threats, and protect AI agents in real time using Microsoft Defender",
+      "url": "https://learn.microsoft.com/en-us/defender-xdr/security-for-ai/ai-agent-real-time-protection",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Gestión de postura, migración de AIAgentsInfo a AgentsInfo (1 de julio de 2026), detección XPIA/jailbreak, bloqueo en tiempo real y correlación en BehaviorInfo y CloudAppEvents.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado noviembre 2026)"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Use Microsoft Purview for Microsoft Agent 365 & Monitoring agents with Insider Risk Management",
+      "url": "https://learn.microsoft.com/en-us/purview/ai-agent-365",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Cobertura Purview para Agent 365: DSPM > AI observability, etiquetas con derechos VIEW+EXTRACT, DLP, política Risky Agents en IRM, Audit (XPIADetected), eDiscovery y DLM.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado junio-agosto 2026)"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Microsoft Agent 365 integration with Foundry & Ecosystem partner agents",
+      "url": "https://learn.microsoft.com/en-us/azure/foundry/agents/concepts/agent-365-integration",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Definición oficial de los 5 pilares de Agent 365 (Registry, Access control, Visualization, Interoperability, Security), Autopilots, modelo de residencia de datos y catálogo de partners/Agent Factories.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado agosto-octubre 2026)"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Microsoft Agent 365: The control plane for AI agents (Anuncio Microsoft Ignite 2025)",
+      "url": "https://www.microsoft.com/en-us/copilot/blog/2025/11/18/microsoft-agent-365-the-control-plane-for-ai-agents/",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Charles Lamanna (EVP, Copilot, Agents, and Platform)",
+      "comentario": "Anuncio fundacional en Microsoft Ignite (18 de noviembre de 2025) presentando los cinco pilares arquitectónicos de Microsoft Agent 365 y el ecosistema de partners.",
+      "verificacion": "Verificado en Microsoft Copilot Blog oficial"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "Introducing the First Frontier Suite built on Intelligence + Trust",
+      "url": "https://blogs.microsoft.com/blog/2026/03/09/introducing-the-first-frontier-suite-built-on-intelligence-trust/",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Judson Althoff (CEO, Microsoft Commercial Business)",
+      "comentario": "Anuncio ejecutivo del 9 de marzo de 2026 confirmando GA el 1 de mayo de 2026 y precios públicos de Microsoft Agent 365 ($15/usuario/mes) y Microsoft 365 E7: The Frontier Suite ($99/usuario/mes).",
+      "verificacion": "Verificado en The Official Microsoft Blog"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "Secure agentic AI for your Frontier Transformation & Microsoft Agent 365 General Availability",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/05/01/microsoft-agent-365-now-generally-available-expands-capabilities-and-integrations/",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Vasu Jakkal (9-mar-2026) / Nirav Shah, Rob Lefferts y Jared Spataro (mar-may 2026)",
+      "comentario": "Anuncio oficial de disponibilidad general (1 de mayo de 2026), descubrimiento local Shadow AI, Windows 365 for Agents, Registry Sync multi-nube y controles de red.",
+      "verificacion": "Verificado en Microsoft Security Blog y Microsoft Copilot Blog"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "Microsoft Entra agent users can join your dynamic groups. Here is what to check",
+      "url": "https://merill.net/2026/08/entra-agent-users-dynamic-groups/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Merill Fernando",
+      "comentario": "Investigación técnica empírica (agosto de 2026) validando con evaluateDynamicMembership la regla user.agentIdentityBlueprintId -eq null para excluir cuentas agentUser de grupos dinámicos humanos.",
+      "verificacion": "Verificado en merill.net (actualizado 15 de agosto de 2026)"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)",
+      "url": "https://doi.org/10.6028/NIST.CSWP.29",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Marco normativo base de seis funciones (GV, ID, PR, DE, RS, RC) utilizado para el mapeo de controles y evidencia auditable del módulo.",
+      "verificacion": "Verificado en publicación oficial NIST CSWP 29"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "Artificial Intelligence Risk Management Framework: Generative Artificial Intelligence Profile (NIST AI 600-1)",
+      "url": "https://doi.org/10.6028/NIST.AI.600-1",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Perfil oficial transversal de IA Generativa complementario a NIST AI RMF 1.0 (funciones GOVERN, MAP, MEASURE, MANAGE) aplicado al gobierno de agentes autónomos.",
+      "verificacion": "Verificado en publicación oficial NIST AI 600-1"
+    },
+    {
+      "id": "REF-20",
+      "titulo": "OWASP Top 10 for LLM (2025) & Agentic Applications (2026: ASI01-ASI10) y MITRE ATLAS",
+      "url": "https://genai.owasp.org/initiatives/top-10-for-llm-and-genai/",
+      "tipoFuente": "Marco Normativo",
+      "autor": "OWASP GenAI Security Project (Agentic Security Initiative) & MITRE ATLAS (https://atlas.mitre.org/)",
+      "comentario": "Taxonomía comunitaria de referencia para amenazas agénticas (ASI01 Agent Goal Hijack a ASI10 Rogue Agents) y técnicas adversarias ML/LLM (AML.T0051, AML.T0054, AML.T0043, AML.T0057).",
+      "verificacion": "Verificado en portales oficiales genai.owasp.org y atlas.mitre.org"
+    }
+  ]
+}

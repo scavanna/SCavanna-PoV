@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Defender for Office 365 — Guía Operacional (Configuración, Rutinas y Playbooks)</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--cp-bg);
+  color: var(--cp-text);
+  font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  line-height: 1.72;
+}
+code, pre, .mono {
+  font-family: Consolas, "Courier New", Courier, monospace;
+}
+code {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 6px;
+  padding: 2px 7px;
+  font-size: 0.88em;
+  color: var(--cp-text);
+  word-break: break-word;
+}
+a { color: var(--cp-link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Sticky Top Navigation */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--cp-panel-strong);
+  border-bottom: 1px solid var(--cp-border);
+  backdrop-filter: blur(10px);
+  padding: 12px 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+.topbar-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border-strong);
+  text-decoration: none;
+}
+.btn-primary {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.btn-primary:hover {
+  background: var(--cp-accent-hover);
+  border-color: var(--cp-accent-hover);
+  color: var(--cp-accent-fg);
+}
+.btn-sm {
+  padding: 5px 11px;
+  font-size: 12.5px;
+}
+.select-input, .search-input {
+  padding: 9px 14px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+}
+.search-input { min-width: 260px; flex: 1; }
+
+/* Two-Column Spacious App Layout */
+.app-shell {
+  max-width: 1520px;
+  margin: 0 auto;
+  padding: 28px 32px 56px 32px;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+.sidebar {
+  position: sticky;
+  top: 76px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 20px 16px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+}
+.nav-section-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cp-text-soft);
+  padding: 12px 12px 6px 12px;
+}
+.nav-section-label:first-child { padding-top: 2px; }
+.nav-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 4px;
+  border-radius: 0.625rem;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.nav-item:hover {
+  background: var(--cp-surface-soft);
+  border-color: var(--cp-border);
+}
+.nav-item.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.nav-subitem {
+  padding-left: 24px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.nav-count {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--cp-surface-soft);
+  color: var(--cp-text-muted);
+  border: 1px solid var(--cp-border);
+}
+.nav-item.active .nav-count {
+  background: var(--cp-panel-strong);
+  color: var(--cp-text);
+  border-color: transparent;
+}
+.sidebar-progress {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cp-border);
+}
+.prog-row { margin-bottom: 12px; }
+.prog-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--cp-text-muted);
+  font-weight: 600;
+}
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--cp-accent);
+  width: 0%;
+  transition: width 0.25s ease;
+}
+
+/* Main Reading Area */
+.main-area {
+  max-width: 1080px;
+  width: 100%;
+}
+.view-panel { display: none; }
+.view-panel.active { display: block; }
+
+/* Hero & Section Headers */
+.hero-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 32px 36px;
+  margin-bottom: 28px;
+}
+.hero-card h1 {
+  margin: 10px 0 14px 0;
+  font-size: 28px;
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+}
+.hero-lead {
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: var(--cp-text-muted);
+  margin: 0;
+}
+.section-banner {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-left: 5px solid var(--cp-accent);
+  border-radius: 16px;
+  padding: 26px 32px;
+  margin-bottom: 28px;
+}
+.section-banner h2 {
+  margin: 0 0 8px 0;
+  font-size: 23px;
+  line-height: 1.3;
+}
+.section-banner p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15.5px;
+}
+
+/* Mode Selector Cards on Overview */
+.modes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.mode-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+}
+.mode-kicker {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cp-accent);
+}
+.mode-card h3 {
+  margin: 6px 0 10px 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+.mode-card p {
+  margin: 0;
+  color: var(--cp-text-muted);
+  font-size: 15px;
+}
+
+/* Badges & Inline Tags */
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 0.625rem;
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface-soft);
+  color: var(--cp-text);
+}
+.badge-accent {
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border-color: var(--cp-accent);
+}
+.badge-learn {
+  border-color: var(--cp-success);
+  color: var(--cp-success);
+  background: var(--cp-surface-soft);
+}
+.badge-editorial {
+  border-color: var(--cp-warning);
+  color: var(--cp-warning);
+  background: var(--cp-surface-soft);
+}
+.inline-tag {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 6px;
+  margin-left: 4px;
+  vertical-align: middle;
+  border: 1px solid var(--cp-border);
+}
+.tag-learn { color: var(--cp-success); border-color: var(--cp-success); background: var(--cp-surface-soft); }
+.tag-edit { color: var(--cp-warning); border-color: var(--cp-warning); background: var(--cp-surface-soft); }
+
+/* Sub-navigation Switcher */
+.subnav-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.subnav-pill {
+  padding: 10px 18px;
+  border-radius: 0.625rem;
+  border: 1px solid var(--cp-border);
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.subnav-pill:hover { border-color: var(--cp-border-strong); background: var(--cp-surface-soft); }
+.subnav-pill.active {
+  background: var(--cp-accent);
+  color: var(--cp-accent-fg);
+  border-color: var(--cp-accent);
+}
+.filter-toolbar {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Spacious Operational, Setup & Playbook Cards */
+.spacious-card {
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  padding: 30px 34px;
+  margin-bottom: 24px;
+}
+.spacious-card.is-done {
+  border-color: var(--cp-success);
+  background: var(--cp-bg-elevated);
+}
+.adhoc-card {
+  border-left: 5px solid var(--cp-accent);
+}
+.card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.card-title-group {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+  min-width: 280px;
+}
+.task-checkbox {
+  width: 22px;
+  height: 22px;
+  margin-top: 4px;
+  accent-color: var(--cp-accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.card-code {
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 8px;
+  background: var(--cp-accent-soft);
+  color: var(--cp-accent);
+  border: 1px solid var(--cp-accent);
+  display: inline-block;
+  margin-bottom: 6px;
+}
+.card-heading {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.35;
+}
+
+/* Info Callout Boxes inside Cards */
+.info-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-bottom: 22px;
+}
+.info-box {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+.info-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-soft);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.info-content {
+  font-size: 15px;
+  line-height: 1.65;
+}
+.trigger-banner {
+  background: var(--cp-accent-soft);
+  border: 1px solid var(--cp-accent);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+}
+.trigger-banner .info-label {
+  color: var(--cp-accent);
+}
+
+/* Step-by-Step Spacious List */
+.steps-section-title {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cp-text-muted);
+  margin: 0 0 12px 0;
+}
+.steps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.step-row:hover { border-color: var(--cp-border-strong); }
+.step-row.step-checked {
+  border-color: var(--cp-success);
+  opacity: 0.88;
+}
+.step-num {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border-strong);
+  color: var(--cp-text);
+  font-weight: 700;
+  font-size: 13.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-row.step-checked .step-num {
+  background: var(--cp-success);
+  border-color: var(--cp-success);
+  color: var(--cp-accent-fg);
+}
+.step-body {
+  font-size: 15.5px;
+  line-height: 1.72;
+  flex: 1;
+}
+
+/* Validation & Evidence Footer Box */
+.validation-footer {
+  background: var(--cp-surface-soft);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.validation-footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--cp-border);
+  font-size: 13.5px;
+  color: var(--cp-text-muted);
+}
+
+/* Grids & Tables for Secondary Views */
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.subsection-heading {
+  font-size: 20px;
+  margin: 34px 0 16px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--cp-border);
+}
+pre.code-block {
+  background: var(--cp-bg-elevated);
+  border: 1px solid var(--cp-border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 14px 0 0 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.table-wrap {
+  overflow-x: auto;
+  background: var(--cp-surface);
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th, td { padding: 16px 18px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--cp-border); line-height: 1.6; }
+th { background: var(--cp-bg-elevated); font-weight: 700; }
+tr:last-child td { border-bottom: none; }
+.muted { color: var(--cp-text-muted); }
+
+.footer {
+  margin-top: 48px;
+  padding: 24px 0;
+  border-top: 1px solid var(--cp-border);
+  color: var(--cp-text-muted);
+  font-size: 13.5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (max-width: 1080px) {
+  .app-shell { grid-template-columns: 1fr; padding: 18px; gap: 20px; }
+  .sidebar { position: static; max-height: none; }
+  .grid-2, .info-pair { grid-template-columns: 1fr; }
+  .spacious-card, .hero-card { padding: 22px; }
+}
+@media print {
+  .topbar, .sidebar, .filter-toolbar, .subnav-bar { display: none !important; }
+  .app-shell { display: block; padding: 0; }
+  .view-panel { display: block !important; margin-bottom: 32px; }
+  body { background: var(--cp-surface); font-size: 13px; }
+}
+</style></head>
+<body>
+<header class="topbar">
+  <div class="topbar-group">
+    <a class="btn btn-primary" href="../index.html">← Portal Maestro (23 Módulos)</a>
+    <a class="btn" id="prevModBtn" href="#">Anterior</a>
+    <select class="select-input" id="modJumpSelect" aria-label="Cambiar de módulo"></select>
+    <a class="btn" id="nextModBtn" href="#">Siguiente</a>
+  </div>
+  <div class="topbar-group">
+    <a class="btn" id="xlsxLink" href="#" download>Libro .XLSX</a>
+    <a class="btn" id="mdLink" href="#">Guía .MD</a>
+    <button class="btn" type="button" id="exportCsvBtn">Exportar CSV</button>
+    <button class="btn" type="button" id="printBtn">Imprimir / PDF</button>
+    <button class="btn" type="button" id="themeToggleBtn">Tema Claro / Oscuro</button>
+  </div>
+</header>
+
+<div class="app-shell">
+  <aside class="sidebar" aria-label="Navegación de la guía operativa">
+    <div class="nav-section-label">Introducción</div>
+    <button class="nav-item active" type="button" data-view="view-overview">
+      <span>Visión General y Mapa</span>
+    </button>
+
+    <div class="nav-section-label">1 · Configuración Puntual</div>
+    <button class="nav-item" type="button" data-view="view-config">
+      <span>Configuración y Validaciones</span>
+      <span class="nav-count" id="navCntConfig">0</span>
+    </button>
+
+    <div class="nav-section-label">2 · Acciones Periódicas</div>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Diaria">
+      <span>Rutinas Diarias</span>
+      <span class="nav-count" id="navCntDiaria">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Semanal">
+      <span>Rutinas Semanales</span>
+      <span class="nav-count" id="navCntSemanal">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="Mensual">
+      <span>Rutinas Mensuales</span>
+      <span class="nav-count" id="navCntMensual">0</span>
+    </button>
+    <button class="nav-item nav-subitem" type="button" data-view="view-periodic" data-cad="CICLOS_LARGOS">
+      <span>Trimestral · Semestral · Anual</span>
+      <span class="nav-count" id="navCntLargos">0</span>
+    </button>
+
+    <div class="nav-section-label">3 · Respuesta a Señales</div>
+    <button class="nav-item" type="button" data-view="view-adhoc">
+      <span>Playbooks Ad-Hoc (Alertas)</span>
+      <span class="nav-count" id="navCntAdhoc">0</span>
+    </button>
+
+    <div class="nav-section-label">Verificación y Gobierno</div>
+    <button class="nav-item" type="button" data-view="view-queries">
+      <span>Consultas KQL / Graph / PS</span>
+      <span class="nav-count" id="navCntQueries">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-kpis">
+      <span>KPIs, Madurez y Formación</span>
+      <span class="nav-count" id="navCntKpis">0</span>
+    </button>
+    <button class="nav-item" type="button" data-view="view-nist">
+      <span>Auditoría NIST 2.0 y Fuentes</span>
+      <span class="nav-count" id="navCntNist">0</span>
+    </button>
+
+    <div class="sidebar-progress" id="sidebarProgress"></div>
+  </aside>
+
+  <main class="main-area">
+    <!-- VISTA 0: OVERVIEW & MAPA DE LOS 3 MODOS -->
+    <section class="view-panel active" id="view-overview">
+      <div class="hero-card">
+        <div class="pill-row" id="heroBadges"></div>
+        <h1 id="heroTitle"></h1>
+        <p class="hero-lead" id="heroSummary"></p>
+      </div>
+
+      <h2 class="subsection-heading" style="margin-top:0;">Cómo operar esta tecnología: Los 3 Niveles de Acción</h2>
+      <div class="modes-grid" id="modesSummaryGrid"></div>
+
+      <div class="spacious-card" id="licensingOverviewCard"></div>
+
+      <h2 class="subsection-heading">Principios Rectores Oficiales (Zero Trust)</h2>
+      <div class="grid-2" id="principlesGrid"></div>
+    </section>
+
+    <!-- VISTA 1: ACCIONES PUNTUALES DE CONFIGURACIÓN Y VALIDACIONES -->
+    <section class="view-panel" id="view-config">
+      <div class="section-banner">
+        <h2>1. Acciones Puntuales de Configuración y Validaciones sobre la Plataforma</h2>
+        <p>Controles que se ejecutan al desplegar la tecnología, activar nuevas capacidades o auditar su línea base. Distingue qué debes configurar una sola vez y cómo validar técnicamente ("Proof of Life") que cada ajuste está activo y protegiendo el entorno.</p>
+      </div>
+
+      <div class="subnav-bar" id="configSubnav">
+        <a class="subnav-pill" href="#cfg-prereqs">1A. Puesta en Marcha Inicial</a>
+        <a class="subnav-pill" href="#cfg-validations">1B. Validaciones de Configuración ("Proof of Life")</a>
+        <a class="subnav-pill" href="#cfg-components">1C. Configuración por Componente</a>
+        <a class="subnav-pill" href="#cfg-rbac">1D. Privilegio Mínimo RBAC y PIM</a>
+      </div>
+
+      <h3 class="subsection-heading" id="cfg-prereqs">1A. Checklist de Puesta en Marcha y Prerrequisitos Puntuales</h3>
+      <div id="prereqsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-validations">1B. Validaciones Técnicas sobre las Configuraciones ("Proof of Life")</h3>
+      <p class="muted" style="margin-top:-8px;margin-bottom:20px;">Comprueba cada uno de estos indicadores en consola o mediante consulta para confirmar que la configuración no quedó solo en papel o en modo auditoría incompleta.</p>
+      <div id="validationsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-components">1C. Configuración Base por Componente e Integraciones</h3>
+      <div id="componentsContainer"></div>
+
+      <h3 class="subsection-heading" id="cfg-rbac">1D. Configuración Puntual de Roles Administrativos y Estrategia PIM / JIT</h3>
+      <div id="rbacContainer"></div>
+    </section>
+
+    <!-- VISTA 2: ACCIONES PERIÓDICAS PROGRAMADAS -->
+    <section class="view-panel" id="view-periodic">
+      <div class="section-banner">
+        <h2 id="periodicTitle">2. Acciones Periódicas Programadas</h2>
+        <p id="periodicSubtitle">Rutinas recurrentes preventivas, de higiene operativa, tuning y gobierno. Selecciona la frecuencia deseada para leer cómodamente solo las actividades de ese ciclo.</p>
+      </div>
+
+      <div class="subnav-bar" id="periodicCadBar">
+        <button class="subnav-pill active" type="button" data-pcad="Diaria">Diarias</button>
+        <button class="subnav-pill" type="button" data-pcad="Semanal">Semanales</button>
+        <button class="subnav-pill" type="button" data-pcad="Mensual">Mensuales</button>
+        <button class="subnav-pill" type="button" data-pcad="CICLOS_LARGOS">Trimestrales · Semestrales · Anuales</button>
+        <button class="subnav-pill" type="button" data-pcad="ALL_PERIODIC">Ver Todas las Periódicas</button>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="perSearch" placeholder="Buscar acción periódica, consola, tabla KQL, control a validar o rol...">
+        <select class="select-input" id="perRole"><option value="ALL">Rol Responsable: Todos</option></select>
+        <select class="select-input" id="perOrigin">
+          <option value="ALL">Origen: Todos</option>
+          <option value="Verificado MS Learn">Verificado MS Learn</option>
+          <option value="Propuesta Editorial">Propuesta Editorial</option>
+        </select>
+        <button class="btn btn-sm" type="button" id="resetChecksBtn">Reiniciar Progreso</button>
+      </div>
+
+      <p class="muted" id="perCountLabel" style="margin-bottom:18px;"></p>
+      <div id="periodicCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 3: ACCIONES AD-HOC ANTE SEÑALES, ALERTAS E INCIDENTES -->
+    <section class="view-panel" id="view-adhoc">
+      <div class="section-banner">
+        <h2>3. Acciones Ad-Hoc ante Señales, Alertas e Incidentes (Playbooks del Analista)</h2>
+        <p>Procedimientos reactivos bajo demanda. A diferencia de las rutinas periódicas, estos playbooks se activan únicamente cuando una señal de riesgo, alerta de detección, anomalía o emergencia exige la intervención inmediata de un analista.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="adhocSearch" placeholder="Filtrar playbooks por alerta disparadora, síntoma, técnica MITRE o acción de contención...">
+      </div>
+
+      <div id="adhocCardsContainer"></div>
+    </section>
+
+    <!-- VISTA 4: CONSULTAS KQL / GRAPH / POWERSHELL -->
+    <section class="view-panel" id="view-queries">
+      <div class="section-banner">
+        <h2>4. Consultas Técnicas de Validación, Monitoreo y Threat Hunting</h2>
+        <p>Consultas KQL, llamadas Microsoft Graph API y scripts PowerShell listos para auditar configuraciones puntuales, medir salud periódica o investigar alertas ad-hoc.</p>
+      </div>
+
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="kqlSearch" placeholder="Buscar consulta por nombre, tabla (SigninLogs, DeviceEvents, SentinelHealth...), comando o propósito...">
+        <select class="select-input" id="kqlUsageFilter">
+          <option value="ALL">Momento de Uso: Todos</option>
+          <option value="Validación de Configuración y Postura">1. Validación de Configuración y Postura</option>
+          <option value="Control Periódico de Salud, Auditoría y KPIs">2. Control Periódico de Salud y KPIs</option>
+          <option value="Investigación Ad-Hoc y Threat Hunting">3. Investigación Ad-Hoc y Hunting</option>
+        </select>
+      </div>
+
+      <div id="queriesContainer"></div>
+    </section>
+
+    <!-- VISTA 5: KPIs, MADUREZ Y FORMACIÓN -->
+    <section class="view-panel" id="view-kpis">
+      <div class="section-banner">
+        <h2>5. Indicadores Clave (KPIs), Modelo de Madurez y Ruta de Formación</h2>
+        <p>Métricas objetivas para medir eficacia operativa ante el CISO, evolución en 5 niveles de madurez y habilitación técnica recomendada por rol.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Indicadores Clave de Desempeño (KPIs)</h3>
+      <div class="grid-2" id="kpiContainer"></div>
+
+      <h3 class="subsection-heading">Modelo de Madurez Operacional (Niveles 1 a 5)</h3>
+      <div id="maturityContainer"></div>
+
+      <h3 class="subsection-heading">Ruta de Habilitación y Formación por Rol</h3>
+      <div id="trainingContainer"></div>
+    </section>
+
+    <!-- VISTA 6: AUDITORÍA NIST CSF 2.0, TRANSPARENCIA Y REFERENCIAS -->
+    <section class="view-panel" id="view-nist">
+      <div class="section-banner">
+        <h2>6. Mapeo de Auditoría NIST CSF 2.0, Revalidación (Nov 2026) y Referencias</h2>
+        <p>Evidencia auditable reproducible para las seis funciones de NIST CSF 2.0 (CSWP 29), registro transparente de verificaciones en Microsoft Learn frente a propuestas editoriales y fuentes públicas.</p>
+      </div>
+
+      <h3 class="subsection-heading" style="margin-top:0;">Matriz de Evidencia Auditable NIST CSF 2.0</h3>
+      <div class="filter-toolbar">
+        <select class="select-input" id="nistFuncSelect">
+          <option value="ALL">Función NIST CSF 2.0: Todas (6 Funciones)</option>
+          <option value="GOVERN">GOVERN (GV)</option>
+          <option value="IDENTIFY">IDENTIFY (ID)</option>
+          <option value="PROTECT">PROTECT (PR)</option>
+          <option value="DETECT">DETECT (DE)</option>
+          <option value="RESPOND">RESPOND (RS)</option>
+          <option value="RECOVER">RECOVER (RC)</option>
+        </select>
+      </div>
+      <div id="nistCardsContainer"></div>
+
+      <h3 class="subsection-heading">Registro de Revalidación Técnica (Noviembre 2026) y Decisiones Editoriales</h3>
+      <div class="spacious-card" id="auditSummaryBox"></div>
+      <div class="grid-2">
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Hallazgos y Actualizaciones Verificadas en MS Learn</h3>
+          <div id="corrContainer"></div>
+        </div>
+        <div class="spacious-card">
+          <h3 style="margin-top:0;">Decisiones y Propuestas Editoriales Explícitas</h3>
+          <div id="decContainer"></div>
+        </div>
+      </div>
+
+      <h3 class="subsection-heading">Directorio de Referencias Públicas Verificadas</h3>
+      <div class="filter-toolbar">
+        <input class="search-input" type="search" id="refSearch" placeholder="Filtrar referencias por título, autor, MVP o URL...">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Recurso Oficial / Comunitario</th>
+              <th>Tipo</th>
+              <th>Autor / Entidad</th>
+              <th>Comentario de Alcance</th>
+            </tr>
+          </thead>
+          <tbody id="refTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>Guía Maestra de Excelencia Operacional Microsoft — Edición Espaciada v3.0 (Validación: 2026-11-11)</div>
+      <div>Configuración Puntual · Rutinas Periódicas · Playbooks Ad-Hoc · NIST CSF 2.0</div>
+    </footer>
+  </main>
+</div>
+
+<script>
+const MODULE_DATA = {"schemaVersion": "2.0", "id": "05_Microsoft_Defender_for_Office_365", "orden": 5, "slug": "Microsoft_Defender_for_Office_365", "nombre": "Microsoft Defender for Office 365 (Plan 1 y Plan 2)", "nombreCorto": "Defender for Office 365", "categoria": "SecOps, XDR y SIEM", "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn", "fechaValidacion": "2026-11-11", "portalesPrincipales": ["https://security.microsoft.com", "https://admin.exchange.microsoft.com", "https://purview.microsoft.com", "https://entra.microsoft.com"], "audiencia": ["CISO", "SOC Manager", "SOC L1", "SOC L2", "SOC L3", "Messaging & Collaboration Security Engineer", "Security Admin", "Attack Simulation Administrator", "GRC"], "relacionM365E5": {"estado": "Incluido en M365 E5", "licencias": ["Microsoft 365 E5", "Microsoft 365 E7", "Office 365 E5", "Microsoft Defender Suite (antes Microsoft 365 E5 Security)", "Microsoft Defender for Office 365 Plan 2", "Microsoft Defender for Office 365 Plan 1 (incluido en Microsoft 365 E3, Office 365 E3 y Business Premium)"], "prerrequisitos": ["Registros DNS SPF, firma DKIM (2048 bits) y politica DMARC configurados en todos los dominios personalizados (ARC configurado si existen intermediarios legitimos)", "Registro de auditoria unificada de Microsoft Purview habilitado (requisito obligatorio para AIR en MDO Plan 2)", "Microsoft Defender Unified RBAC (URBAC) planificado/activo (modelo predeterminado para nuevas organizaciones MDO Plan 2 desde julio de 2026) y Entra PIM para roles de purga", "Safe Attachments para SharePoint, OneDrive y Microsoft Teams habilitado y Zero-hour Auto Purge (ZAP) para Teams activado", "Configuracion independiente de envios reportados por usuarios activa tanto para Outlook como para Microsoft Teams"], "notaLicenciamiento": "MDO Plan 2 esta incluido en M365 E5, M365 E7, O365 E5, M365 A5/G5 y Microsoft Defender Suite (Safe Documents requiere especificamente M365 E5 o Defender Suite). Desde julio de 2026, M365 E3 y O365 E3 incluyen MDO Plan 1 (sin Threat Explorer, AIR ni campanas completas de Attack Simulation Training)."}, "resumenEjecutivo": "Microsoft Defender for Office 365 (MDO) es la plataforma nativa de proteccion, deteccion, investigacion automatizada, respuesta y simulacion de ataques para el correo electronico y las herramientas de colaboracion empresarial (Exchange Online, Microsoft Teams, SharePoint Online, OneDrive for Business y aplicaciones de Microsoft 365) integrada en Microsoft Defender XDR. Mientras Exchange Online Protection (EOP) aporta higiene perimetral y MDO Plan 1 incorpora prevencion zero-day (Safe Attachments, Safe Links en tiempo de clic, anti-phishing con ML y, desde 2026, ZAP y reportes de usuarios en Microsoft Teams), MDO Plan 2 habilita una operacion SOC completa mediante Threat Explorer, Campaign Views, Automated Investigation and Response (AIR) con auto-remediacion de clusteres de similitud, Attack Simulation Training (AST), tablas completas de Advanced Hunting (incluyendo MessageEvents y CallActivityEvents) e integracion nativa con Security Copilot (Security Alert Triage Agent).", "principiosRectores": [{"principio": "Autenticacion compuesta y verificacion explicita de remitentes (Zero Trust)", "descripcion": "Validar criptograficamente todo dominio propio y entrante combinando SPF, DKIM, DMARC (en progresion a p=reject), ARC e implicit/composite authentication (compauth) antes de evaluar politicas de contenido.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/defender-office-365/email-authentication-about"}, {"principio": "Prevencion sin deriva mediante Preset Security Policies (Standard y Strict)", "descripcion": "Adoptar las politicas preestablecidas Standard para la poblacion general y Strict para cuentas prioritarias y de alto riesgo, delegando la actualizacion continua de umbrales recomendados al servicio.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/defender-office-365/preset-security-policies"}, {"principio": "Asumir brecha en correo y colaboracion (ZAP, Reclasificacion y AIR)", "descripcion": "Operar controles post-entrega continuos mediante Zero-hour Auto Purge (ZAP) en buzones (48h) y Microsoft Teams, reevaluacion al clic en Safe Links y auto-remediacion de clusteres maliciosos con AIR.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/defender-office-365/zero-hour-auto-purge"}, {"principio": "Operacion centrada en incidentes XDR y no en alertas aisladas", "descripcion": "Priorizar y contener desde la cola unificada de incidentes de Microsoft Defender XDR correlacionando senales de correo y Teams con Entra ID, endpoints y aplicaciones SaaS.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/defender-office-365/mdo-sec-ops-guide"}, {"principio": "Minimo privilegio y separacion de funciones sobre contenido y purga (URBAC + PIM)", "descripcion": "Separar permisos de lectura de metadatos, previsualizacion de correos asociados a alertas y ejecucion de purgas en buzones mediante Unified RBAC y activacion temporal JIT en Entra PIM.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/defender-office-365/mdo-portal-permissions"}, {"principio": "Retroalimentacion continua de ML y reduccion medible del riesgo humano", "descripcion": "Reportar sistematicamente falsos positivos y falsos negativos a Microsoft en vez de crear listas blancas permanentes, y transformar a los usuarios en sensores activos mediante Attack Simulation Training.", "estadoValidacion": "Verificado MS Learn", "fuenteUrl": "https://learn.microsoft.com/en-us/defender-office-365/attack-simulation-training-get-started"}], "arquitecturaYComponentes": [{"componente": "Preset Security Policies (Built-in, Standard y Strict)", "funcionOperativa": "Aplica baselines automatizados recomendados por Microsoft para antispam, antimalware, anti-phishing, Safe Links y Safe Attachments sin deriva de configuracion.", "portalRuta": "security.microsoft.com > Email & collaboration > Policies & rules > Threat policies > Preset security policies", "integraciones": ["Exchange Online Protection", "Configuration Analyzer", "Priority Accounts"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Safe Attachments y Dynamic Delivery (Correo, SPO, ODB y Teams)", "funcionOperativa": "Detonacion dinamica en sandbox de archivos desconocidos antes de la entrega en correo y escaneo asincrono de archivos maliciosos en bibliotecas colaborativas.", "portalRuta": "security.microsoft.com > Email & collaboration > Policies & rules > Threat policies > Safe Attachments", "integraciones": ["Exchange Online", "SharePoint Online", "OneDrive for Business", "Microsoft Teams"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Safe Links (Correo, Microsoft Teams y Aplicaciones Microsoft 365)", "funcionOperativa": "Inspeccion en tiempo de clic de URLs y codigos QR, con advertencias casi en tiempo real en mensajes de Teams hasta 48 horas despues de la entrega.", "portalRuta": "security.microsoft.com > Email & collaboration > Policies & rules > Threat policies > Safe Links", "integraciones": ["Outlook", "Microsoft Teams", "Microsoft 365 Apps", "UrlClickEvents"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Zero-hour Auto Purge (ZAP) para Correo y Microsoft Teams", "funcionOperativa": "Neutralizacion retroactiva post-entrega de malware, phishing y spam en buzones cloud (48h) y cuarentena automatica de malware y phishing de alta confianza en chats internos y canales estandar/compartidos de Teams.", "portalRuta": "security.microsoft.com > Settings > Email & collaboration > Microsoft Teams protection", "integraciones": ["Quarantine", "EmailPostDeliveryEvents", "MessagePostDeliveryEvents", "AIR"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Threat Explorer, Real-time Detections y Campaign Views", "funcionOperativa": "Investigacion interactiva de 30 dias, filtrado por tecnologias de deteccion (LLM BEC, Prompt injection, Mail bombing, URLs en QR), diagramas Sankey de campanas y ejecucion directa de acciones Take action.", "portalRuta": "security.microsoft.com > Email & collaboration > Explorer / Campaigns", "integraciones": ["AIR", "Tenant Allow/Block List", "Quarantine", "Submissions"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Automated Investigation and Response (AIR) y Action Center", "funcionOperativa": "Playbooks automatizados que investigan alertas, envios de usuario, ZAP y clics, auto-remedian clusteres de similitud maliciosos (URL y archivo) y gestionan aprobaciones con auditoria ApproverUpn.", "portalRuta": "security.microsoft.com > Actions & submissions > Action center / Investigations", "integraciones": ["Microsoft Defender XDR", "Purview Audit", "Microsoft Sentinel", "Security Alert Triage Agent"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Proteccion Avanzada de Microsoft Teams (Mensajes, Dominios Externos y Llamadas)", "funcionOperativa": "Paneles de entidad de mensajes y llamadas de Teams, bloqueo directo de dominios y remitentes externos sincronizado con Teams Admin Center, expulsion administrativa de usuarios de chats (P2) y cacería en CallActivityEvents.", "portalRuta": "security.microsoft.com > Settings > Email & collaboration > Microsoft Teams user reported settings", "integraciones": ["Microsoft Teams Admin Center", "Tenant Allow/Block List", "MessageEvents", "CallActivityEvents"], "estadoValidacion": "Verificado MS Learn"}, {"componente": "Attack Simulation Training (AST) y Priority Account Protection", "funcionOperativa": "Simulacion realista de ingenieria social (incluyendo codigos QR y OAuth) con asignacion automatica de capacitacion, sumada a heuristicas calibradas para hasta 250 cuentas ejecutivas etiquetadas.", "portalRuta": "security.microsoft.com > Email & collaboration > Attack simulation training / Settings > User tags", "integraciones": ["Microsoft Secure Score", "Exchange Online Mail Flow Reports", "Microsoft Defender XDR"], "estadoValidacion": "Verificado MS Learn"}], "rbacYRoles": [{"rol": "URBAC Custom: SOC L1 Email & Collaboration Analyst", "nivelSOC": "Tier 1 / L1", "permisosClave": "Security data basics (read), Alerts (manage) y Email & collaboration metadata (read) sin acceso al cuerpo ni descarga de correos.", "asignacionPIM": "Activa permanente o elegible sin privilegios destructivos", "responsabilidadOperativa": "Triaje inicial de cola de incidentes, analisis de encabezados y escalamiento sin exposicion de contenido confidencial ni capacidad de purga.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "URBAC Custom: SOC L2 Collaboration Responder (+ Exchange Security Operator)", "nivelSOC": "Tier 2 / L2", "permisosClave": "Permisos L1 mas Email & collaboration content: Emails associated with alerts (read) y rol Tenant AllowBlockList Manager en Exchange Online.", "asignacionPIM": "Elegible en Entra PIM (maximo 8 horas con MFA resistente a phishing y justificacion)", "responsabilidadOperativa": "Investigacion de correos ligados a alertas, gestion de Submissions (Outlook y Teams), liberacion validada de cuarentena y bloqueo tactico en TABL.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "URBAC Custom: SOC L3 Threat Hunter & Purge Responder", "nivelSOC": "Tier 3 / L3", "permisosClave": "Email & collaboration content (read) y Email & collaboration advanced actions (manage) (equivalente funcional a Preview + Search and Purge).", "asignacionPIM": "Elegible en Entra PIM (maximo 4 horas con aprobacion cruzada del SOC Lead, limitado a 3-5 analistas)", "responsabilidadOperativa": "Caceria avanzada en Threat Explorer y KQL, inicio manual de AIR, aprobacion de purgas masivas Soft/Hard Delete y expulsion de usuarios en chats de Teams.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Security Administrator", "nivelSOC": "Ingenieria / Administracion de Seguridad", "permisosClave": "Authorization and settings / Security settings / Email & collaboration (manage) y gestion integral de politicas en Defender portal.", "asignacionPIM": "Elegible en Entra PIM (maximo 4 horas con MFA resistente a phishing y ticket de cambio)", "responsabilidadOperativa": "Configuracion de Preset Security Policies, Anti-Phishing, Safe Links/Attachments, ZAP para Teams, Priority Accounts, URBAC y Configuration Analyzer.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Attack Simulation Administrator / Attack Payload Author", "nivelSOC": "Gobierno de Concientizacion / Riesgo Humano", "permisosClave": "Creacion de payloads, programacion de simulaciones y revision de metricas en Attack Simulation Training (no cubierto por URBAC a nov 2026).", "asignacionPIM": "Elegible en Entra PIM (maximo 8 horas durante ventana de campana)", "responsabilidadOperativa": "Diseno y operacion de campanas mensuales de simulacion y formacion sin permisos para alterar politicas productivas de filtrado.", "estadoValidacion": "Verificado MS Learn"}, {"rol": "Security Reader / Global Reader", "nivelSOC": "Auditoria / GRC / Privacidad", "permisosClave": "Lectura global de politicas, reportes, Microsoft Secure Score, Configuration Analyzer e historial del Action Center sin capacidad de modificacion.", "asignacionPIM": "Elegible en Entra PIM para revisiones mensuales y trimestrales", "responsabilidadOperativa": "Auditoria independiente de cumplimiento NIST CSF 2.0, revision de overrides, control de SoD y trazabilidad de aprobadores.", "estadoValidacion": "Verificado MS Learn"}], "actividadesOperacionales": [{"codigo": "D-01", "cadencia": "Diaria", "actividad": "Triaje priorizado de la cola unificada de incidentes MDO en Defender XDR", "objetivo": "Atender en orden estricto de criticidad los incidentes de correo y colaboracion antes de que un clic o compromiso derive en movimiento lateral.", "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts > Incidents", "procedimiento": ["Filtrar incidentes con Status = New / In progress y Severity = High / Medium originados o correlacionados con Defender for Office 365.", "Aplicar el orden oficial de precedencia de Microsoft: 1) Clic en URL potencialmente maliciosa, 2) Usuario restringido para enviar correo, 3) Patrones sospechosos de envio, 4) Reportes multiples de usuarios, 5) Remociones post-entrega ZAP, 6) Entregas por override ETR/IP Allow, 7) Amenazas no purgadas por ZAP deshabilitado.", "Asignar propietario, investigar entidades correlacionadas y clasificar obligatoriamente como True Positive (indicando tipo de amenaza) o False Positive al resolver."], "rolResponsable": "SOC L1 / SOC L2", "funcionNIST": "DE", "subcategoriaNIST": "DE.AE-03", "mitreTactic": "Initial Access / Execution (TA0001 / TA0002)", "evidenciaAuditable": "Exportacion de cola de incidentes, tiempos de asignacion y clasificacion registrada en SecurityIncident.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Orden de precedencia de 7 niveles documentado textualmente en MDO Security Operations Guide; SLAs especificos son decision interna.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/mdo-sec-ops-guide", "pasosDetallados": ["Filtrar `Status = New, In progress`, `Severity = High, Medium` y verificar incidentes con alertas originadas por *Microsoft Defender for Office 365* correlacionadas con Entra ID y MDE `[Verificado MS Learn]`.", "Aplicar estrictamente el **orden oficial de precedencia de triaje de Microsoft Learn** `[Verificado MS Learn]`: 1) *A potentially malicious URL click was detected* (riesgo inminente de compromiso activo); 2) *User restricted from sending email* (posible cuenta comprometida enviando spam/BEC); 3) *Suspicious email sending patterns detected*; 4) *Email reported by user / Multiple users reported email as malware or phish*; 5) *Email messages containing malicious file/URL/campaign removed after delivery* (ZAP ejecutado); 6) *Phish delivered due to an ETR override / Junk Mail disabled / IP allow policy*; 7) *Malware or Phish not zapped because ZAP is disabled*.", "Asignar propietario, cambiar estado a `In progress` (meta MTTA < 15 min High / < 45 min Medium `[Decisión / Propuesta Editorial]`) y clasificar obligatoriamente al cierre (`True positive` con tipo de amenaza o `False positive`) `[Verificado MS Learn]`."], "disparadorAlerta": "Atender en orden estricto de criticidad los incidentes de correo y colaboracion antes de que un clic o compromiso derive en movimiento lateral.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-02", "cadencia": "Diaria", "actividad": "Revision y aprobacion de investigaciones AIR pendientes en Action Center", "objetivo": "Ejecutar sin demora las remediaciones propuestas por AIR que requieren decision humana y auditar las auto-remediaciones de clusteres.", "consolaRuta": "security.microsoft.com > Actions & submissions > Action center > Pending / History", "procedimiento": ["Verificar en la pestana History las auto-remediaciones automaticas ejecutadas por AIR sobre clusteres de similitud de URLs y archivos.", "Evaluar en la pestana Pending las acciones en espera (purga de buzones, desactivacion de reenvio externo, bloqueo de indicadores) antes de su expiracion de 7 dias.", "Aprobar (usando Soft delete por defecto) o rechazar de forma documentada tras validar encabezados y resultados de detonacion."], "rolResponsable": "SOC L2 / SOC L3", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Initial Access / Collection (TA0001 / TA0009)", "evidenciaAuditable": "Registro en Action Center History y columna ApproverUpn en la tabla EmailPostDeliveryEvents.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Flujo AIR, auto-remediacion de clusteres y nuevo campo ApproverUpn (octubre 2026) verificados en Microsoft Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/air-about", "pasosDetallados": ["Verificar que los clústeres de similitud maliciosos (URL y archivo) hayan sido auto-remediados correctamente en la pestaña `History` `[Verificado MS Learn]`.", "Inspeccionar la pestaña `Pending` para acciones que requieren validación humana (ej. purga de mensajes fuera de auto-remediación, desactivación de reenvío externo) antes de su expiración semanal `[Verificado MS Learn]`.", "Validar evidencia de detonación, encabezados `Authentication-Results` y alcance de destinatarios; aprobar (`Soft delete` por defecto) o rechazar si corresponde a falso positivo `[Verificado MS Learn]`."], "disparadorAlerta": "Ejecutar sin demora las remediaciones propuestas por AIR que requieren decision humana y auditar las auto-remediaciones de clusteres.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-03", "cadencia": "Diaria", "actividad": "Gestion de envios reportados por usuarios en Outlook y Microsoft Teams", "objetivo": "Convertir los reportes de usuarios en detecciones tempranas de campanas evasivas y retroalimentar los modelos de ML de Microsoft.", "consolaRuta": "security.microsoft.com > Actions & submissions > Submissions > User reported / User reported Teams messages", "procedimiento": ["Revisar veredictos emitidos por el Security Alert Triage Agent (si Security Copilot esta activo) sobre correos reportados.", "Inspeccionar mensajes de correo y elementos de Teams (mensajes con contexto, llamadas scam y reuniones reportadas) marcados como Should have been blocked o pendientes.", "Enviar falsos negativos y falsos positivos a Microsoft (Submit to Microsoft) y aplicar Mark as and notify con plantillas localizadas."], "rolResponsable": "SOC L1 / SOC L2", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-01", "mitreTactic": "Initial Access (TA0001 - T1566)", "evidenciaAuditable": "Historial de envios en el portal Submissions, IDs de reevaluacion y notificaciones enviadas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Incluye soporte de reportes de llamadas/reuniones de Teams y plantillas localizadas (marzo-octubre 2026).", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/defender-for-office-365-whats-new", "pasosDetallados": ["Revisar las clasificaciones autónomas emitidas por el **Security Alert Triage Agent** (si Security Copilot está activo) y auditar una muestra diaria para retroalimentar su precisión `[Verificado MS Learn]`.", "Filtrar mensajes de correo y elementos de Teams (mensajes con contexto de +/-15 mensajes, llamadas 1:1/grupales y reuniones reportadas) con resultado *Should have been blocked* o sin veredicto `[Verificado MS Learn]`.", "Ejecutar *Submit to Microsoft for analysis* para falsos negativos o falsos positivos y accionar *Mark as and notify* (notificación localizada automáticamente según idioma de Outlook del usuario desde julio de 2026) `[Verificado MS Learn]`."], "disparadorAlerta": "Convertir los reportes de usuarios en detecciones tempranas de campanas evasivas y retroalimentar los modelos de ML de Microsoft.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-04", "cadencia": "Diaria", "actividad": "Gestion segura de cuarentena y solicitudes de liberacion (Correo y Teams)", "objetivo": "Resolver falsos positivos legitimos sin exponer a los usuarios a malware o phishing de alta confianza.", "consolaRuta": "security.microsoft.com > Email & collaboration > Review > Quarantine (Email / Teams messages)", "procedimiento": ["Atender solicitudes de liberacion recordando que Malware, High confidence phishing y mensajes ZAP de Teams son de gestion exclusiva de administradores.", "Validar alineacion SPF/DKIM/DMARC, compauth y destino de enlaces con permiso granular de previsualizacion.", "Si se confirma falso positivo, liberar marcando Report message to Microsoft for analysis (crea entrada temporal de 45 dias tras ultimo uso)."], "rolResponsable": "SOC L1 / SOC L2", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-01", "mitreTactic": "Initial Access (TA0001)", "evidenciaAuditable": "Atribucion de liberacion en el panel de resumen de cuarentena y registro en EmailPostDeliveryEvents.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Restricciones de liberacion y ventana de 45 dias verificadas en documentacion oficial de Quarantine y ZAP.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/zero-hour-auto-purge", "pasosDetallados": ["Revisar solicitudes de liberación (*Release requests*); recordar que los destinatarios finales **nunca** pueden liberar por sí mismos mensajes clasificados como *Malware* o *High confidence phishing*, ni mensajes de Teams cuarentenados por ZAP `[Verificado MS Learn]`.", "Inspeccionar `compauth`, `SPF/DKIM/DMARC`, URLs y adjuntos mediante rol `Preview` / permiso URBAC correspondiente `[Verificado MS Learn]`.", "Si se confirma legítimo, ejecutar *Release message* marcando *Report message to Microsoft for analysis* (lo cual crea entrada temporal de 45 días tras último uso en TABL sin abrir brechas permanentes) `[Verificado MS Learn]`."], "disparadorAlerta": "Resolver falsos positivos legitimos sin exponer a los usuarios a malware o phishing de alta confianza.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-05", "cadencia": "Diaria", "actividad": "Verificacion y rehabilitacion de cuentas en Restricted Entities", "objetivo": "Asegurar la erradicacion completa de compromisos antes de restituir la capacidad de envio de correo a un usuario bloqueado.", "consolaRuta": "security.microsoft.com > Email & collaboration > Review > Restricted entities", "procedimiento": ["Identificar usuarios bloqueados para envio de correo saliente por detecciones de spam o patrones anomalos.", "Confirmar revocacion de sesiones Entra ID, restablecimiento de contrasena, MFA activo y eliminacion de reglas de reenvio u ocultamiento en el buzon.", "Ejecutar Unblock documentando las mitigaciones y monitorear envios del usuario durante las siguientes 24 horas."], "rolResponsable": "SOC L2", "funcionNIST": "RC", "subcategoriaNIST": "RC.RP-05", "mitreTactic": "Persistence / Lateral Movement (TA0003 / TA0008)", "evidenciaAuditable": "Registro de desbloqueo en Restricted entities y lista de verificacion firmada en el ticket de incidente.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Procedimiento oficial para usuarios restringidos en MDO.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/removing-user-from-restricted-users-portal-after-spam", "pasosDetallados": ["Identificar buzones restringidos automáticamente para envío saliente por volumen anómalo o spam (frecuente síntoma de BEC o token robado) `[Verificado MS Learn]`.", "Antes de desbloquear, ejecutar lista de verificación obligatoria: revocación de sesiones en Entra ID, restablecimiento de credenciales/MFA, eliminación de reglas de bandeja (`ForwardTo` / `RedirectTo`) y conectores ilícitos `[Verificado MS Learn]`.", "Desbloquear la cuenta confirmando mitigaciones e informar que la restitución del envío demora hasta 60 minutos; monitorear el buzón por 24 horas `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar la erradicacion completa de compromisos antes de restituir la capacidad de envio de correo a un usuario bloqueado.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-06", "cadencia": "Diaria", "actividad": "Revision y purga de campanas de phishing y malware con entrega en buzon", "objetivo": "Eliminar mensajes remanentes de campanas coordinadas que hayan alcanzado carpetas Inbox antes de ser clicados.", "consolaRuta": "security.microsoft.com > Email & collaboration > Review > Campaigns", "procedimiento": ["Filtrar campanas de las ultimas 24 horas que presenten mensajes entregados en Inbox no remediados aun por ZAP o AIR.", "Analizar el diagrama Sankey de la campana para medir alcance (Targeted, Inboxed, Clicked) y extraer IOCs.", "Ejecutar Soft delete sobre los mensajes entregados y registrar bloqueos en Tenant Allow/Block List."], "rolResponsable": "SOC L2", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Initial Access (TA0001)", "evidenciaAuditable": "Informe descargado de Campaign Views y acciones registradas en Action Center.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tarea diaria prescriptiva en MDO Security Operations Guide.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/mdo-sec-ops-guide", "pasosDetallados": ["Filtrar campañas de las últimas 24 horas donde existan mensajes en `Inbox` no purgados aún por ZAP o AIR `[Verificado MS Learn]`.", "Analizar el diagrama Sankey de flujo (IPs -> dominios -> veredicto -> clics permitidos vs bloqueados) `[Verificado MS Learn]`.", "Ejecutar purga masiva (`Soft delete`) de remanentes y agregar indicadores tácticos (URLs, hashes SHA256, dominios) en *Tenant Allow/Block List* `[Verificado MS Learn]`."], "disparadorAlerta": "Eliminar mensajes remanentes de campanas coordinadas que hayan alcanzado carpetas Inbox antes de ser clicados.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-07", "cadencia": "Diaria", "actividad": "Validacion de eventos ZAP y deteccion de clics ocurridos antes de la purga", "objetivo": "Detectar usuarios que abrieron o hicieron clic en un enlace malicioso durante la ventana previa a la actuacion de ZAP.", "consolaRuta": "security.microsoft.com > Hunting > Advanced hunting / Email & collaboration > Explorer", "procedimiento": ["Consultar eventos con accion ZAP en EmailPostDeliveryEvents y MessagePostDeliveryEvents de las ultimas 24 horas.", "Cruzar por NetworkMessageId o Url con la tabla UrlClickEvents filtrando ActionType == 'ClickAllowed' con timestamp anterior a la purga.", "Iniciar contencion preventiva de sesion e identidad para cualquier usuario expuesto."], "rolResponsable": "SOC L1 / SOC L2", "funcionNIST": "DE", "subcategoriaNIST": "DE.AE-03", "mitreTactic": "Execution / Credential Access (TA0002 / TA0006)", "evidenciaAuditable": "Ejecucion diaria de consulta KQL documentada y tickets generados por exposicion pre-ZAP.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "ZAP y UrlClickEvents estan verificados en MS Learn; el cruce diario sistematico por KQL es una practica recomendada de excelencia SOC.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/zero-hour-auto-purge", "pasosDetallados": ["En *Threat Explorer* (vista *All email*), filtrar `Additional action = ZAP` en las últimas 24 horas, y cruzar con `EmailPostDeliveryEvents` y `MessagePostDeliveryEvents` `[Verificado MS Learn]`.", "Cruzar los `NetworkMessageId` / `TeamsMessageId` purgados con la tabla `UrlClickEvents` buscando eventos `ActionType == \"ClickAllowed\"` ocurridos **antes** de que ZAP neutralizara el mensaje `[Verificado MS Learn]`.", "Escalar inmediatamente a protocolo de contención de identidad cualquier usuario con clic permitido previo a ZAP `[Verificado MS Learn]`."], "disparadorAlerta": "Detectar usuarios que abrieron o hicieron clic en un enlace malicioso durante la ventana previa a la actuacion de ZAP.", "tipoAccion": "Periódica Programada"}, {"codigo": "D-08", "cadencia": "Diaria", "actividad": "Monitoreo de detecciones LLM BEC, Prompt Injection y Mail Bombing", "objetivo": "Identificar ataques de ingenieria social sin malware e inundaciones de correo precursoras de llamadas fraudulentas en Teams.", "consolaRuta": "security.microsoft.com > Email & collaboration > Explorer", "procedimiento": ["Filtrar en Threat Explorer detecciones recientes por tecnologias LLM BEC, Prompt injection y Mail bombing.", "Para victimas de Mail bombing, verificar en CallActivityEvents y MessageEvents si recibieron llamadas o chats externos sospechosos en las 4 horas posteriores.", "Alertar al usuario afectado y bloquear el dominio externo atacante en Tenant Allow/Block List."], "rolResponsable": "SOC L2", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-01", "mitreTactic": "Initial Access / Impact (TA0001 / TA0040)", "evidenciaAuditable": "Registro de detecciones revisadas y correlacion con CallActivityEvents.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Detecciones de Mail bombing (jun 2025), Prompt injection (jul 2026) y tabla CallActivityEvents (oct 2026) verificadas en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/defender-for-office-365-whats-new", "pasosDetallados": ["Revisar en *Threat Explorer* detecciones clasificadas por filtros LLM de BEC, *Prompt injection* y ataques de *Mail bombing* (`Detection technology = Mail bombing`, precursor habitual de llamadas fraudulentas por Teams/vishing) `[Verificado MS Learn]`.", "Verificar alertas y eventos `CloudAppEvents` / auditoría Exchange de creación de reglas de bandeja con reenvío externo o borrado silencioso de correos financieros `[Verificado MS Learn]`.", "Ante confirmación de sospecha en cuenta ejecutiva (*Priority account*), activar de inmediato el Playbook `AH-02` `[Verificado MS Learn]`."], "disparadorAlerta": "Identificar ataques de ingenieria social sin malware e inundaciones de correo precursoras de llamadas fraudulentas en Teams.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-01", "cadencia": "Semanal", "actividad": "Revision semanal de tendencias en Threat Protection Status y Mailflow Reports", "objetivo": "Identificar anomalias volumetricas, cambios en vectores de ataque y eficacia por capa de filtrado.", "consolaRuta": "security.microsoft.com > Reports > Email & collaboration > Email & collaboration reports", "procedimiento": ["Analizar la evolucion semanal de malware, phishing de alta confianza, spoofing, impersonacion y spam frente a correo limpio.", "Revisar el Mailflow Status Report para detectar picos de correo saliente o variaciones inusuales de ZAP.", "Registrar hallazgos para ajustar politicas o crear hipotesis de threat hunting."], "rolResponsable": "SOC L2 / Security Admin", "funcionNIST": "ID", "subcategoriaNIST": "ID.RA-03", "mitreTactic": "Initial Access (TA0001)", "evidenciaAuditable": "Exportacion semanal de reportes de estado de proteccion y flujo de correo.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Actividad semanal prescriptiva en MDO Security Operations Guide.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/mdo-sec-ops-guide", "pasosDetallados": ["Analizar la evolucion semanal de malware, phishing de alta confianza, spoofing, impersonacion y spam frente a correo limpio.", "Revisar el Mailflow Status Report para detectar picos de correo saliente o variaciones inusuales de ZAP.", "Registrar hallazgos para ajustar politicas o crear hipotesis de threat hunting."], "disparadorAlerta": "Identificar anomalias volumetricas, cambios en vectores de ataque y eficacia por capa de filtrado.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-02", "cadencia": "Semanal", "actividad": "Evaluacion de campanas emergentes en Threat Analytics", "objetivo": "Anteporner defensas y cacería ante nuevas campanas globales de phishing, AiTM o explotacion colaborativa.", "consolaRuta": "security.microsoft.com > Threat intelligence > Threat analytics", "procedimiento": ["Revisar los informes nuevos o actualizados de analistas de Microsoft relacionados con correo, phishing QR, robo de tokens y Teams.", "Comprobar incidentes relacionados en el tenant y brechas de configuracion senaladas en la pestana Exposure.", "Ejecutar las consultas KQL recomendadas en el informe y aplicar mitigaciones preventivas."], "rolResponsable": "SOC L3 / Threat Hunter", "funcionNIST": "ID", "subcategoriaNIST": "ID.RA-03", "mitreTactic": "Reconnaissance / Initial Access (TA0043 / TA0001)", "evidenciaAuditable": "Bitacora semanal de boletines Threat Analytics revisados y acciones derivadas.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Actividad semanal oficial en MDO Security Operations Guide.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/mdo-sec-ops-guide", "pasosDetallados": ["Analizar informes nuevos de analistas de Microsoft sobre campañas de phishing, AiTM, abuso de códigos QR o explotación en herramientas colaborativas", "revisar *Related incidents*, verificar puntaje de exposición de configuraciones recomendadas y ejecutar las consultas KQL asociadas `[Verificado MS Learn]`."], "disparadorAlerta": "Anteporner defensas y cacería ante nuevas campanas globales de phishing, AiTM o explotacion colaborativa.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-03", "cadencia": "Semanal", "actividad": "Revision de Top Targeted Users y actualizacion de etiquetas Priority Accounts", "objetivo": "Garantizar que los usuarios mas atacados y los nuevos ejecutivos reciban heuristicas reforzadas y politicas Strict.", "consolaRuta": "security.microsoft.com > Email & collaboration > Explorer (Top targeted users) / Settings > User tags", "procedimiento": ["Consultar la pestana Top targeted users en las vistas All email, Malware y Phish de Threat Explorer.", "Cruzar los usuarios mas atacados y altas ejecutivas con la membresia actual de la etiqueta Priority account (maximo 250 cuentas).", "Incorporar cuentas criticas faltantes a Priority accounts y al grupo asignado a la Preset Security Policy Strict."], "rolResponsable": "SOC L2 / Security Admin", "funcionNIST": "ID", "subcategoriaNIST": "ID.AM-05", "mitreTactic": "Initial Access (TA0001 - T1566)", "evidenciaAuditable": "Listado exportado de Priority accounts y reporte Email issues for priority accounts.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Tarea semanal documentada en MDO Security Operations Guide.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/priority-accounts-turn-on-priority-account-protection", "pasosDetallados": ["Identificar los 20 buzones con mayor volumen de intentos de phishing y malware durante los últimos 7 días", "incorporar nuevos ejecutivos, roles críticos de tesorería o blancos recurrentes a la etiqueta **Priority account** (respetando el límite de 250 cuentas y usando etiquetas personalizadas adicionales si se supera) y asegurar su inclusión en la política preestablecida **Strict** `[Verificado MS Learn]`."], "disparadorAlerta": "Garantizar que los usuarios mas atacados y los nuevos ejecutivos reciban heuristicas reforzadas y politicas Strict.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-04", "cadencia": "Semanal", "actividad": "Threat Hunting proactivo sobre correo evasivo, codigos QR y Microsoft Teams", "objetivo": "Descubrir campanas sutiles que evadieron detecciones preventivas en correo, adjuntos HTML/contenedor y mensajeria/llamadas de Teams.", "consolaRuta": "security.microsoft.com > Hunting > Advanced hunting / Explorer", "procedimiento": ["Ejecutar consultas KQL sobre adjuntos .html/.iso/.lnk/.svg entregados en Inbox y filtrar URLs extraidas de codigos QR en Threat Explorer.", "Cazar enlaces externos sospechosos en MessageEvents y MessageUrlInfo, asi como actividad anomala en CallActivityEvents.", "Ejecutar acciones directas (Submit to Microsoft, Add to TABL, Initiate automated investigation) desde los resultados de Advanced Hunting."], "rolResponsable": "SOC L3 / Threat Hunter", "funcionNIST": "DE", "subcategoriaNIST": "DE.CM-01", "mitreTactic": "Defense Evasion / Initial Access (TA0005 / TA0001)", "evidenciaAuditable": "Consultas compartidas guardadas, resultados de cacería y acciones disparadas desde Advanced Hunting.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Filtros QR, tablas Message*/CallActivityEvents y acciones directas desde Advanced Hunting verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/threat-explorer-threat-hunting", "pasosDetallados": ["Ejecutar hipótesis semanales sobre: 1) mensajes entregados en `Inbox` con adjuntos `.html`, `.htm`, `.iso`, `.lnk`, `.one` o PDFs con URLs de códigos QR", "2) enlaces externos compartidos en chats/reuniones de Teams (`MessageEvents`, `MessageUrlInfo`) y llamadas externas sospechosas (`CallActivityEvents`)", "3) clics permitidos hacia dominios recién registrados `[Verificado MS Learn]`. Ejecutar *Take action* directamente desde *Advanced Hunting* (disponible desde finales de 2025) cuando se detecten amenazas `[Verificado MS Learn]`."], "disparadorAlerta": "Descubrir campanas sutiles que evadieron detecciones preventivas en correo, adjuntos HTML/contenedor y mensajeria/llamadas de Teams.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-05", "cadencia": "Semanal", "actividad": "Auditoria de deriva de configuracion con Configuration Analyzer y ORCA", "objetivo": "Detectar de inmediato cualquier cambio accidental o malicioso que debilite las politicas frente a los perfiles Standard y Strict.", "consolaRuta": "security.microsoft.com > Email & collaboration > Policies & rules > Threat policies > Configuration analyzer", "procedimiento": ["Revisar recomendaciones de Configuration Analyzer contra los perfiles Standard y Strict.", "Ejecutar complementariamente Get-ORCAReport en Exchange Online PowerShell para validacion profunda.", "Remediar desviaciones no autorizadas o registrar la justificacion formal con fecha de vencimiento."], "rolResponsable": "Security Admin", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-01", "mitreTactic": "Defense Evasion (TA0005 - T1562)", "evidenciaAuditable": "Informe de Configuration Analyzer / ORCA exportado y tickets de remediacion.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Herramientas oficiales recomendadas en MDO Security Operations Guide; cadencia semanal propuesta para control estricto de drift.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/configuration-analyzer-for-security-policies", "pasosDetallados": ["Revisar recomendaciones de Configuration Analyzer contra los perfiles Standard y Strict.", "Ejecutar complementariamente Get-ORCAReport en Exchange Online PowerShell para validacion profunda.", "Remediar desviaciones no autorizadas o registrar la justificacion formal con fecha de vencimiento."], "disparadorAlerta": "Detectar de inmediato cualquier cambio accidental o malicioso que debilite las politicas frente a los perfiles Standard y Strict.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-06", "cadencia": "Semanal", "actividad": "Revision y ajuste de Spoof Intelligence e Impersonation Insights", "objetivo": "Cerrar vectores de suplantacion intra-organizacion y cross-domain exigiendo autenticacion estandar a terceros legitimos.", "consolaRuta": "security.microsoft.com > Email & collaboration > Policies & rules > Threat policies > Spoof intelligence / Impersonation insights", "procedimiento": ["Analizar remitentes detectados suplantando dominios propios o externos en la ventana de 7 dias.", "Bloquear infraestructuras maliciosas y abrir requerimiento de correccion SPF/DKIM/DMARC a proveedores legitimos antes de considerar excepciones acotadas.", "Revisar detecciones de impersonacion de usuarios VIP y dominios similares (typosquatting)."], "rolResponsable": "Security Admin / Messaging Engineer", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-01", "mitreTactic": "Defense Evasion (TA0005 - T1656)", "evidenciaAuditable": "Registro de decisiones en Spoof intelligence y tickets de alineacion DMARC con proveedores.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Capacidad oficial documentada en anti-spoofing-spoof-intelligence.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/anti-spoofing-spoof-intelligence", "pasosDetallados": ["Revisar remitentes detectados suplantando dominios internos o externos en los últimos 7 días", "bloquear dominios maliciosos y exigir a los propietarios de aplicaciones/proveedores legítimos que corrijan sus registros SPF/DKIM/DMARC en lugar de depender indefinidamente de entradas *Allowed to spoof* `[Verificado MS Learn]`."], "disparadorAlerta": "Cerrar vectores de suplantacion intra-organizacion y cross-domain exigiendo autenticacion estandar a terceros legitimos.", "tipoAccion": "Periódica Programada"}, {"codigo": "S-07", "cadencia": "Semanal", "actividad": "Auditoria de System Overrides y Reglas de Transporte de Exchange (ETR)", "objetivo": "Eliminar bypasses silenciosos (SCL=-1, IP Allow o Safe Senders) que entregan phishing o malware detectado por MDO.", "consolaRuta": "security.microsoft.com/reports/TPSMessageOverrideReportATP y admin.exchange.microsoft.com/#/transportrules", "procedimiento": ["Analizar el desglose de mensajes maliciosos entregados por System overrides en el Threat Protection Status Report.", "Auditar reglas de transporte en Exchange Admin Center buscando acciones Set SCL to -1 o redirecciones externas.", "Deshabilitar reglas u overrides sin aprobacion vigente y migrar pruebas de phishing de terceros a Advanced Delivery Policy."], "rolResponsable": "Security Admin / Messaging Team", "funcionNIST": "GV", "subcategoriaNIST": "GV.PO-01", "mitreTactic": "Defense Evasion (TA0005)", "evidenciaAuditable": "Reporte semanal de System overrides y listado auditado de Transport Rules.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Revision de overrides e integracion con Advanced Delivery Policy documentadas en MDO SecOps Guide.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/mdo-sec-ops-guide", "pasosDetallados": ["Analizar el desglose de mensajes maliciosos entregados por System overrides en el Threat Protection Status Report.", "Auditar reglas de transporte en Exchange Admin Center buscando acciones Set SCL to -1 o redirecciones externas.", "Deshabilitar reglas u overrides sin aprobacion vigente y migrar pruebas de phishing de terceros a Advanced Delivery Policy."], "disparadorAlerta": "Eliminar bypasses silenciosos (SCL=-1, IP Allow o Safe Senders) que entregan phishing o malware detectado por MDO.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-01", "cadencia": "Mensual", "actividad": "Evaluacion mensual de postura en Microsoft Secure Score (Email & Collaboration)", "objetivo": "Medir y elevar de forma continua la postura preventiva y detectiva del plano de correo y colaboracion.", "consolaRuta": "security.microsoft.com > Exposure management > Secure score", "procedimiento": ["Filtrar acciones recomendadas para Microsoft Defender for Office 365 y Exchange Online.", "Evaluar la tendencia de puntaje de los ultimos 30 dias y comparar frente a benchmarks similares.", "Priorizar e implementar de 3 a 5 mejoras de alto impacto mediante control de cambios."], "rolResponsable": "Security Admin / SOC Manager", "funcionNIST": "GV", "subcategoriaNIST": "GV.PO-01", "mitreTactic": "Initial Access (TA0001)", "evidenciaAuditable": "Exportacion mensual de Microsoft Secure Score y plan de accion actualizado.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Practica oficial de gestion de postura en el portal Microsoft Defender.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/microsoft-secure-score", "pasosDetallados": ["Filtrar acciones recomendadas para Microsoft Defender for Office 365 y Exchange Online.", "Evaluar la tendencia de puntaje de los ultimos 30 dias y comparar frente a benchmarks similares.", "Priorizar e implementar de 3 a 5 mejoras de alto impacto mediante control de cambios."], "disparadorAlerta": "Medir y elevar de forma continua la postura preventiva y detectiva del plano de correo y colaboracion.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-02", "cadencia": "Mensual", "actividad": "Ajuste fino de politicas Anti-Phishing y Anti-Spam con Policy What-If Insights", "objetivo": "Endurecer umbrales de suplantacion, impersonacion y correo masivo previendo el impacto operativo con datos historicos reales.", "consolaRuta": "security.microsoft.com > Email & collaboration > Policies & rules > Threat policies > Anti-phishing / Anti-spam", "procedimiento": ["Analizar falsos positivos y falsos negativos acumulados en el mes por grupo de usuarios.", "Utilizar Policy what-if insights para evaluar el efecto en volumen de cuarentena antes de ajustar umbrales BCL, spoof o impersonation.", "Aplicar ajustes aprobados manteniendo alineacion con los perfiles Standard y Strict."], "rolResponsable": "Security Admin / Security Architect", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-01", "mitreTactic": "Initial Access / Defense Evasion (TA0001 / TA0005)", "evidenciaAuditable": "Capturas de simulacion Policy what-if insights y registro de cambio aprobado.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Capacidad Policy what-if insights verificada en las novedades de MDO en Microsoft Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/anti-phishing-protection-tuning", "pasosDetallados": ["Utilizar *Policy what-if insights* para simular con datos históricos reales el impacto antes de modificar umbrales BCL (incluyendo entrega opcional a carpeta *Promotions* en Preview), suplantación o impersonación", "validar umbrales de phishing avanzado (nivel 2 en Standard, 3-4 en Strict) `[Verificado MS Learn]`."], "disparadorAlerta": "Endurecer umbrales de suplantacion, impersonacion y correo masivo previendo el impacto operativo con datos historicos reales.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-03", "cadencia": "Mensual", "actividad": "Limpieza y gobierno de Tenant Allow/Block List (Correo y Dominios Teams)", "objetivo": "Evitar que entradas Allow temporales o bloqueos obsoletos degraden la postura de seguridad del tenant.", "consolaRuta": "security.microsoft.com > Policies & rules > Threat policies > Tenant Allow/Block Lists", "procedimiento": ["Revisar entradas en Domains & addresses (incluyendo bloqueos de Teams), Spoofed senders, URLs, Files e IPs (IPv4/IPv6).", "Confirmar que las entradas Allow procedentes de Submissions conserven la expiracion predeterminada de 45 dias desde el ultimo uso.", "Revocar entradas Spoofed senders sin fecha de expiracion cuyos remitentes ya hayan implementado SPF/DKIM/DMARC."], "rolResponsable": "Security Admin / SOC L2", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-01", "mitreTactic": "Initial Access (TA0001)", "evidenciaAuditable": "Exportacion mensual de TABL antes y despues de la depuracion.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Vencimiento de 45 dias tras ultimo uso, soporte IPv6 y bloqueo de dominios de Teams verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/defender-for-office-365-whats-new", "pasosDetallados": ["Auditar todas las pestañas (*Domains & addresses*, *Spoofed senders*, *URLs*, *Files*, *IPv4/IPv6* y dominios/direcciones bloqueadas para **Microsoft Teams**)", "verificar que las entradas *Allow* derivadas de envíos mantengan la caducidad predeterminada de **45 días tras el último uso** (`45 days after last used date`) y revocar entradas *Spoofed senders* sin expiración que ya hayan corregido DMARC `[Verificado MS Learn]`."], "disparadorAlerta": "Evitar que entradas Allow temporales o bloqueos obsoletos degraden la postura de seguridad del tenant.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-04", "cadencia": "Mensual", "actividad": "Operacion y medicion mensual de Attack Simulation Training (AST)", "objetivo": "Reducir de forma medible la tasa de clic y entrega de credenciales ante tecnicas actuales de ingenieria social.", "consolaRuta": "security.microsoft.com > Email & collaboration > Attack simulation training", "procedimiento": ["Analizar resultados mensuales de Simulation Automations (tasas de compromiso real vs predicho, tasa de reporte y finalizacion de cursos).", "Seleccionar nuevos payloads basados en amenazas reales vistas en el mes (incluyendo codigos QR, Credential Harvest y OAuth Consent).", "Asignar Training Campaigns de refuerzo obligatorio a usuarios reincidentes."], "rolResponsable": "Attack Simulation Administrator / SOC Manager", "funcionNIST": "PR", "subcategoriaNIST": "PR.AT-01", "mitreTactic": "Initial Access / Credential Access (TA0001 / TA0006)", "evidenciaAuditable": "Reporte mensual exportado de campanas AST y cumplimiento de capacitacion.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Capacidades AST, payloads QR y regiones soportadas verificadas en Microsoft Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/attack-simulation-training-get-started", "pasosDetallados": ["Analizar resultados mensuales de Simulation Automations (tasas de compromiso real vs predicho, tasa de reporte y finalizacion de cursos).", "Seleccionar nuevos payloads basados en amenazas reales vistas en el mes (incluyendo codigos QR, Credential Harvest y OAuth Consent).", "Asignar Training Campaigns de refuerzo obligatorio a usuarios reincidentes."], "disparadorAlerta": "Reducir de forma medible la tasa de clic y entrega de credenciales ante tecnicas actuales de ingenieria social.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-05", "cadencia": "Mensual", "actividad": "Auditoria de roles Unified RBAC, permisos de purga y activaciones Entra PIM", "objetivo": "Asegurar cumplimiento estricto de minimo privilegio y separacion de funciones sobre el contenido de correo y Teams.", "consolaRuta": "security.microsoft.com > System > Permissions & roles y entra.microsoft.com > Identity Governance > PIM", "procedimiento": ["Auditar asignaciones en roles URBAC con permisos de lectura de contenido o acciones avanzadas (purga) y grupos heredados si existiesen.", "Confirmar cero asignaciones permanentes en roles de administracion o purga, verificando que toda elevacion paso por Entra PIM.", "Cruzar activaciones PIM con las acciones ejecutadas por ApproverUpn en EmailPostDeliveryEvents."], "rolResponsable": "Security Admin / GRC", "funcionNIST": "GV", "subcategoriaNIST": "GV.RR-02", "mitreTactic": "Privilege Escalation / Collection (TA0004 / TA0009)", "evidenciaAuditable": "Informe mensual de revision de accesos privilegiados, logs PIM y auditoria ApproverUpn.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Modelo URBAC (MC1246006), PIM en MDO y columna ApproverUpn verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/pim-in-mdo-configure", "pasosDetallados": ["Verificar que no existan asignaciones permanentes no autorizadas en roles con permisos de purga o lectura masiva de contenido (`Email & collaboration content (read)` / `Search and Purge`)", "auditar el historial de activaciones PIM del mes contra tickets de incidentes reales y cruzar con el campo `ApproverUpn` en `EmailPostDeliveryEvents` `[Verificado MS Learn]`."], "disparadorAlerta": "Asegurar cumplimiento estricto de minimo privilegio y separacion de funciones sobre el contenido de correo y Teams.", "tipoAccion": "Periódica Programada"}, {"codigo": "M-06", "cadencia": "Mensual", "actividad": "Respaldo versionado de politicas MDO/EXO y verificacion de ingesta en Sentinel", "objetivo": "Garantizar capacidad de restauracion rapida de politicas y continuidad de correlacion SIEM.", "consolaRuta": "Exchange Online PowerShell y security.microsoft.com (Sentinel Data Connectors)", "procedimiento": ["Ejecutar script PowerShell mensual exportando politicas AntiPhish, SafeLinks, SafeAttachments, AntiSpam, AntiMalware, TeamsProtection, DKIM y TransportRules.", "Almacenar los artefactos en repositorio controlado con historial de cambios.", "Verificar mediante KQL que las tablas EmailEvents, UrlClickEvents, MessageEvents y CallActivityEvents fluyan sin brechas hacia Sentinel."], "rolResponsable": "Security Engineer", "funcionNIST": "RC", "subcategoriaNIST": "RC.RP-05", "mitreTactic": "Defense Evasion (TA0005)", "evidenciaAuditable": "Registro de respaldo mensual en repositorio Git y grafica de ingesta de tablas en Sentinel.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Cmdlets y conector Sentinel verificados en MS Learn; la rutina mensual de backup versionado es buena practica editorial de ingenieria.", "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/connect-microsoft-365-defender", "pasosDetallados": ["Ejecutar script PowerShell mensual exportando politicas AntiPhish, SafeLinks, SafeAttachments, AntiSpam, AntiMalware, TeamsProtection, DKIM y TransportRules.", "Almacenar los artefactos en repositorio controlado con historial de cambios.", "Verificar mediante KQL que las tablas EmailEvents, UrlClickEvents, MessageEvents y CallActivityEvents fluyan sin brechas hacia Sentinel."], "disparadorAlerta": "Garantizar capacidad de restauracion rapida de politicas y continuidad de correlacion SIEM.", "tipoAccion": "Periódica Programada"}, {"codigo": "T-01", "cadencia": "Trimestral", "actividad": "Auditoria trimestral de SPF, DKIM (2048-bit), DMARC p=reject y Trusted ARC Sealers", "objetivo": "Impedir la suplantacion criptografica de todos los dominios corporativos activos y estacionados.", "consolaRuta": "security.microsoft.com/dkimv2 y registros DNS publicos", "procedimiento": ["Auditar registros SPF, rotacion y estado de claves DKIM de 2048 bits y politicas DMARC en todos los dominios del tenant y dominios parqueados.", "Analizar reportes agregados DMARC (rua) para avanzar dominios pendientes hacia p=reject.", "Revisar la lista de Trusted ARC Sealers confirmando que solo incluya servicios intermediarios vigentes."], "rolResponsable": "Messaging Security Architect", "funcionNIST": "PR", "subcategoriaNIST": "PR.PS-01", "mitreTactic": "Initial Access / Defense Evasion (TA0001 / TA0005)", "evidenciaAuditable": "Matriz trimestral de estado SPF/DKIM/DMARC/ARC por dominio corporativo.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Controles de autenticacion verificados en email-authentication-about; cadencia trimestral de auditoria propuesta.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/email-authentication-about", "pasosDetallados": ["Auditar todos los dominios y subdominios corporativos (incluyendo dominios estacionados o sin envío de correo, publicando `v=spf1 -all` y `v=DMARC1", "p=reject;`), rotar claves DKIM de 2048 bits según calendario criptográfico, avanzar dominios restantes de `p=none`/`p=quarantine` a `p=reject` y validar *Trusted ARC Sealers* `[Verificado MS Learn]`."], "disparadorAlerta": "Impedir la suplantacion criptografica de todos los dominios corporativos activos y estacionados.", "tipoAccion": "Periódica Programada"}, {"codigo": "SM-01", "cadencia": "Semestral", "actividad": "Recalibracion semestral de alcance Standard/Strict, Alert Tuning y Security Alert Triage Agent", "objetivo": "Alinear la agresividad de controles preventivos y la autonomia de agentes IA con la evolucion del riesgo organizacional.", "consolaRuta": "security.microsoft.com/presetSecurityPolicies y security.microsoft.com/securitysettings/defender/alert_suppression", "procedimiento": ["Evaluar la expansion del perfil Strict hacia unidades de negocio sensibles adicionales (Finanzas, Legal, Compras, TI).", "Auditar todas las reglas de Alert tuning confirmando que no silencien alertas requeridas por el Security Alert Triage Agent.", "Revisar metricas semestrales de precision y acciones revertidas de AIR y del agente de triaje."], "rolResponsable": "Security Architect / SOC Lead", "funcionNIST": "GV", "subcategoriaNIST": "GV.PO-01", "mitreTactic": "Initial Access (TA0001)", "evidenciaAuditable": "Acta semestral de recalibracion de arquitectura MDO y gobierno de IA en el SOC.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Interaccion entre Alert tuning y el agente de triaje documentada en MS Learn; revision semestral formal definida editorialmente.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/air-about", "pasosDetallados": ["Evaluar la expansion del perfil Strict hacia unidades de negocio sensibles adicionales (Finanzas, Legal, Compras, TI).", "Auditar todas las reglas de Alert tuning confirmando que no silencien alertas requeridas por el Security Alert Triage Agent.", "Revisar metricas semestrales de precision y acciones revertidas de AIR y del agente de triaje."], "disparadorAlerta": "Alinear la agresividad de controles preventivos y la autonomia de agentes IA con la evolucion del riesgo organizacional.", "tipoAccion": "Periódica Programada"}, {"codigo": "A-01", "cadencia": "Anual", "actividad": "Ejercicio Tabletop interdisciplinario de BEC ejecutivo, Quishing AiTM y abuso de Teams", "objetivo": "Validar tiempos reales de coordinacion entre SOC, Identidad, Tesoreria, Legal y Direccion ante un fraude multi-canal.", "consolaRuta": "Ejercicio de mesa basado en escenarios reales en Microsoft Defender XDR", "procedimiento": ["Simular cadena completa: phishing con codigo QR -> robo de sesion AiTM -> reglas ocultas en buzon ejecutivo -> Mail bombing + llamada externa en Teams.", "Medir tiempos de contencion tecnica (MTTC), bloqueo financiero en Tesoreria y escalamiento ejecutivo.", "Documentar brechas en After-Action Report (AAR) y actualizar playbooks operativos."], "rolResponsable": "CISO / Incident Response Manager", "funcionNIST": "RC", "subcategoriaNIST": "RC.IM-01", "mitreTactic": "Initial Access / Credential Access / Impact (TA0001 / TA0006 / TA0040)", "evidenciaAuditable": "Informe anual After-Action Report firmado y registro de actualizacion de playbooks.", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Alineado a NIST SP 800-61 Rev. 3 y a la disciplina SecOps del Microsoft Security Adoption Framework.", "urlSoporte": "https://learn.microsoft.com/en-us/security/zero-trust/security-operations-incident-response-readiness", "pasosDetallados": ["Ejecutar simulación de mesa inspirada en NIST SP 800-61 Rev. 3 combinando phishing AiTM por código QR, robo de sesión, creación de reglas ocultas de buzón, *Mail bombing* distractivo y contacto fraudulento por llamada externa de Microsoft Teams", "medir tiempos de decisión financiera, contención técnica y comunicación regulatoria `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Validar tiempos reales de coordinacion entre SOC, Identidad, Tesoreria, Legal y Direccion ante un fraude multi-canal.", "tipoAccion": "Periódica Programada"}, {"codigo": "A-02", "cadencia": "Anual", "actividad": "Revision anual de cobertura de licencias (E3 P1 vs E5 P2 / Defender Suite), SCU y novedades", "objetivo": "Asegurar que ningun grupo de usuarios quede sin la cobertura esperada y planificar la adopcion de capacidades nuevas.", "consolaRuta": "admin.microsoft.com y learn.microsoft.com/defender-office-365/defender-for-office-365-whats-new", "procedimiento": ["Auditar asignacion de licencias MDO Plan 1 (E3) frente a MDO Plan 2 (E5 / Defender Suite) y Safe Documents.", "Revisar consumo anual de Security Compute Units (SCU) por agentes de Security Copilot asociados a MDO.", "Actualizar la hoja de ruta anual del SOC con las funcionalidades GA liberadas durante el ano."], "rolResponsable": "CISO / Enterprise Security Architect", "funcionNIST": "GV", "subcategoriaNIST": "GV.PO-01", "mitreTactic": "Initial Access (TA0001)", "evidenciaAuditable": "Informe anual de gobierno de licencias, capacidad SCU y roadmap tecnologico.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Diferencias de servicio E3/E5/Defender Suite verificadas en Service Description oficial.", "urlSoporte": "https://learn.microsoft.com/en-us/office365/servicedescriptions/office-365-advanced-threat-protection-service-description", "pasosDetallados": ["Auditar asignacion de licencias MDO Plan 1 (E3) frente a MDO Plan 2 (E5 / Defender Suite) y Safe Documents.", "Revisar consumo anual de Security Compute Units (SCU) por agentes de Security Copilot asociados a MDO.", "Actualizar la hoja de ruta anual del SOC con las funcionalidades GA liberadas durante el ano."], "disparadorAlerta": "Asegurar que ningun grupo de usuarios quede sin la cobertura esperada y planificar la adopcion de capacidades nuevas.", "tipoAccion": "Periódica Programada"}, {"codigo": "AH-01", "cadencia": "Ad-Hoc", "actividad": "Playbook de respuesta ante brote masivo de Phishing, AiTM o Quishing (Outbreak)", "objetivo": "Cuantificar el radio de impacto en minutos, purgar todos los buzones afectados y contener sesiones expuestas.", "consolaRuta": "security.microsoft.com/threatexplorer, security.microsoft.com/tenantAllowBlockList y entra.microsoft.com", "procedimiento": ["Cuantificar alcance en Threat Explorer / Campaign Views (incluyendo filtro por URL de codigo QR) y listar usuarios con ClickAllowed en UrlClickEvents.", "Bloquear inmediatamente URLs, hashes SHA256 y dominios en Tenant Allow/Block List y ejecutar Take action > Purge (Soft delete).", "Para todo usuario con clic permitido o inicio de sesion sospechoso en EntraIdSignInEvents, revocar sesiones, marcar como comprometido y auditar MFA."], "rolResponsable": "SOC L2 / SOC L3", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Initial Access / Credential Access (TA0001 / TA0006)", "evidenciaAuditable": "Timeline del incidente en Defender XDR, entradas TABL y registro de purga con ApproverUpn.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Alineado al Phishing investigation playbook oficial del Microsoft Security Adoption Framework.", "urlSoporte": "https://learn.microsoft.com/en-us/security/zero-trust/security-operations-playbook-phishing", "pasosDetallados": ["**Alcance (< 15 min `[Decisión / Propuesta Editorial]`):** En *Threat Explorer* / *Campaign Views*, filtrar por dominio remitente, hash SHA256 o URL (incluyendo filtro de URL en código QR) para cuantificar entregados en `Inbox` y clics permitidos en `UrlClickEvents`.", "**Contención de Mensajería (< 30 min `[Decisión / Propuesta Editorial]`):** Bloquear URL, hash y dominio en *Tenant Allow/Block List* (propagación en 5-10 min) y ejecutar *Take action > Purge (Soft delete)* desde *Threat Explorer* o *Advanced Hunting*.", "**Contención de Identidades Expuestas:** Para todo usuario con `ActionType == \"ClickAllowed\"` o inicio de sesión sospechoso en `EntraIdSignInEvents`, revocar sesiones activas, marcar cuenta como comprometida (`Mark as compromised`) y auditar métodos MFA recién registrados.", "**Erradicación y Post-Incidente:** Iniciar investigación AIR manual sobre variantes residuales, verificar que no existan ETRs ni *overrides* que permitieron el ingreso y emitir lecciones aprendidas."], "disparadorAlerta": "Alerta de campaña activa, pico de reportes de usuarios o detección de múltiples clics permitidos en `UrlClickEvents` `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-02", "cadencia": "Ad-Hoc", "actividad": "Playbook de respuesta y rehabilitacion ante compromiso de buzon / fraude BEC", "objetivo": "Cortar el acceso persistente del adversario sobre el buzon comprometido e impedir desvio fraudulento de fondos o datos.", "consolaRuta": "security.microsoft.com, entra.microsoft.com y Exchange Online PowerShell", "procedimiento": ["Deshabilitar temporalmente la cuenta en Entra ID (accion preferida por Microsoft durante la investigacion) y revocar todas las sesiones activas.", "Eliminar metodos MFA no reconocidos, consentimientos OAuth ilicitos, delegaciones de buzon y reglas ocultas de bandeja (Get-InboxRule -IncludeHidden / ForwardingSmtpAddress).", "Investigar MailItemsAccessed y correos enviados por el atacante, alertar a Tesoreria/contrapartes si hubo intento de fraude y rehabilitar con contrasena nueva y MFA resistente a phishing."], "rolResponsable": "SOC L2 / SOC L3 / Identity Responder", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Persistence / Collection / Exfiltration (TA0003 / TA0009 / TA0010)", "evidenciaAuditable": "Checklist BEC completado, exportacion forense de reglas/auditoria y registro en Action Center.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Secuencia oficial verificada en Respond to a compromised cloud email account.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/responding-to-a-compromised-email-account", "pasosDetallados": ["**Deshabilitar la cuenta en Entra ID** (acción preferida por Microsoft mientras se investiga para impedir reconexión del atacante).", "**Revocar todas las sesiones y tokens activos** (`Revoke-MgUserSignInSession` o acción directa desde el portal Defender).", "**Auditar persistencia de identidad:** Eliminar dispositivos MFA, aplicaciones OAuth con consentimiento ilícito o delegaciones de buzón (`FullAccess`, `SendAs`, `SendOnBehalf`) agregadas por el adversario.", "**Limpiar persistencia en buzón:** Inspeccionar con `Get-InboxRule -IncludeHidden` y `Get-Mailbox | Select Forwarding*`; eliminar reglas de borrado/ocultamiento o reenvío externo.", "**Análisis forense de alcance:** Revisar `MailItemsAccessed` en Purview Audit, rastrear correos salientes fraudulentos enviados por el atacante mediante *Message Trace* / `EmailEvents` y alertar a clientes/proveedores o tesorería si hubo instrucción de cambio bancario.", "**Rehabilitación controlada:** Restablecer contraseña robusta, exigir MFA resistente a phishing (FIDO2/Passkey), habilitar la cuenta y retirar de *Restricted entities* si aplicaba."], "disparadorAlerta": "Alerta *User restricted from sending email*, *Suspicious email sending patterns*, regla de reenvío externo o reporte de fraude de pago `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-03", "cadencia": "Ad-Hoc", "actividad": "Playbook de contencion de ataques en Microsoft Teams (Mensajes, Dominios Externos y Chats)", "objetivo": "Interrumpir campanas de ingenieria social, enlaces maliciosos o llamadas fraudulentas ejecutadas sobre Microsoft Teams.", "consolaRuta": "security.microsoft.com (Teams message/call entity panel y Tenant Allow/Block List)", "procedimiento": ["Inspeccionar el Teams message entity panel o Teams call entity panel y cuantificar alcance en MessageEvents, MessageUrlInfo y CallActivityEvents.", "Bloquear el dominio o remitente externo malicioso en Tenant Allow/Block List para Teams (sincroniza con Teams Admin Center y elimina mensajes existentes).", "Utilizar Remove users from Teams chats (MDO P2) para expulsar cuentas internas comprometidas de conversaciones activas y aislar endpoints si hubo descarga."], "rolResponsable": "SOC L2 / SOC L3", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Initial Access / Lateral Movement (TA0001 / TA0008)", "evidenciaAuditable": "Bloqueo de dominio externo registrado en TABL, accion de remocion de chat e historial del incidente.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Bloqueo de dominios externos en Teams (ene 2026), Remove users from chats GA (abr 2026) y CallActivityEvents (oct 2026) verificados en MS Learn.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/mdo-support-teams-about", "pasosDetallados": ["Abrir el **Teams message entity panel** o **Teams call entity panel** desde la alerta/incidente e inspeccionar metadatos y los +/-15 mensajes contextuales si hubo reporte de usuario `[Verificado MS Learn]`.", "Ejecutar caza en `MessageEvents`, `MessageUrlInfo`, `MessagePostDeliveryEvents` y `CallActivityEvents` para identificar todos los usuarios contactados por el dominio o UPN externo `[Verificado MS Learn]`.", "**Contención directa en Teams (capacidades 2026):** Bloquear el dominio o dirección del remitente externo en `Tenant Allow/Block List > Domains & addresses` para Teams (corta chats nuevos, invitaciones y elimina mensajes previos sincronizando con Teams Admin Center) y, si un actor malicioso o cuenta interna comprometida permanece en una conversación, usar **Remove users from Teams chats** (MDO P2) `[Verificado MS Learn]`.", "Si un usuario ejecutó archivos descargados desde el enlace de Teams, aislar el equipo en Defender for Endpoint."], "disparadorAlerta": "Reporte de usuario en Teams (mensaje, llamada scam o reunión sospechosa), alerta de clic en Teams o campaña de *Mail bombing* seguida de contacto por Teams `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}, {"codigo": "AH-04", "cadencia": "Ad-Hoc", "actividad": "Ejecucion controlada de purga multi-buzon (Threat Explorer / Purview Content Search)", "objetivo": "Erradicar mensajes maliciosos o derrames criticos de informacion con trazabilidad de doble control y posibilidad de recuperacion.", "consolaRuta": "security.microsoft.com/threatexplorer o purview.microsoft.com (Content Search)", "procedimiento": ["Activar rol elegible en Entra PIM con permisos de purga (URBAC Email & collaboration advanced actions manage o Search and Purge).", "Validar alcance exacto de destinatarios y muestra de mensajes antes de ejecutar la accion.", "Ejecutar Soft delete de forma predeterminada (reservando Hard delete para escenarios criticos con aprobacion expresa del SOC Manager) y verificar ApproverUpn."], "rolResponsable": "SOC L3", "funcionNIST": "RS", "subcategoriaNIST": "RS.MI-01", "mitreTactic": "Collection / Impact (TA0009 / TA0040)", "evidenciaAuditable": "Autorizacion documentada, registro en Action Center y trazabilidad ApproverUpn en EmailPostDeliveryEvents.", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "Mecanismos de purga verificados en MS Learn; requisito de doble aprobacion para Hard delete es control de gobierno editorial.", "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/remediate-malicious-email-delivered-office-365", "pasosDetallados": ["Para campañas dentro de los últimos 30 días y <= 100 mensajes seleccionados en vista directa (o purga masiva por filtro), priorizar `Take action > Purge` desde *Threat Explorer* con aprobación en *Action Center* `[Verificado MS Learn]`.", "Cuando el escenario requiera búsqueda histórica (> 30 días) o criterios documentales en `https://purview.microsoft.com`, activar rol `Data Investigator` + `Search and Purge` vía PIM, validar muestra previa, aplicar preferentemente `Soft delete` y exigir doble control para `Hard delete` `[Verificado MS Learn]` / `[Decisión / Propuesta Editorial]`."], "disparadorAlerta": "Necesidad de eliminar mensajes específicos más allá de los límites interactivos estándar o con criterios complejos de contenido `[Verificado MS Learn]`.", "tipoAccion": "Ad-Hoc (Señal / Alerta)"}], "consultasKQLyVerificacion": [{"nombre": "Clics permitidos en Safe Links ocurridos antes de la purga post-entrega (ZAP o manual)", "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel", "tablaPrincipal": "UrlClickEvents / EmailPostDeliveryEvents", "consulta": "let PurgedEmails = EmailPostDeliveryEvents | where Timestamp > ago(7d) | where ActionType has_any ('ZAP', 'Manual remediation', 'Phish ZAP', 'Malware ZAP') and ActionResult == 'Success' | project PurgeTime = Timestamp, NetworkMessageId, ActionType, ApproverUpn; UrlClickEvents | where Timestamp > ago(7d) and Workload == 'Email' and ActionType == 'ClickAllowed' | join kind=inner PurgedEmails on NetworkMessageId | where Timestamp < PurgeTime | project ClickTime = Timestamp, PurgeTime, AccountUpn, Url, IPAddress, ActionType, ApproverUpn, NetworkMessageId", "proposito": "Identificar usuarios cuya sesion o credenciales pueden haberse comprometido en la ventana temporal previa a que ZAP o el SOC eliminaran el correo.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Auditoria de aprobadores de acciones de remediacion post-entrega (ApproverUpn)", "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel", "tablaPrincipal": "EmailPostDeliveryEvents", "consulta": "EmailPostDeliveryEvents | where Timestamp > ago(30d) | where isnotempty(ApproverUpn) | summarize TotalMessages = count(), DistinctRecipients = dcount(RecipientEmailAddress) by ApproverUpn, ActionType, Action, ActionResult | order by TotalMessages desc", "proposito": "Auditar quien aprobo cada purga o accion manual sobre buzones utilizando el campo ApproverUpn incorporado en octubre de 2026.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Control Periódico de Salud, Auditoría y KPIs"}, {"nombre": "Correlacion de ataques Mail Bombing seguidos de llamadas en Microsoft Teams", "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel", "tablaPrincipal": "EmailEvents / CallActivityEvents", "consulta": "let MailBombed = EmailEvents | where Timestamp > ago(24h) | where DetectionMethods has 'Mail bombing' | summarize BombCount = count(), FirstBomb = min(Timestamp) by RecipientEmailAddress; CallActivityEvents | where Timestamp > ago(24h) | mv-expand P = parse_json(Participants) | extend Upn = tostring(P.Upn) | join kind=inner MailBombed on $left.Upn == $right.RecipientEmailAddress | where Timestamp between (FirstBomb .. (FirstBomb + 4h)) | project Timestamp, FirstBomb, Upn, BombCount, CallId, ActivityType", "proposito": "Detectar la tactica moderna de inundar el buzon del usuario (Mail bombing) para luego contactarlo por llamada de Microsoft Teams suplantando soporte de TI.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Caceria de clics en URLs y purgas post-entrega en Microsoft Teams", "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel", "tablaPrincipal": "MessagePostDeliveryEvents / MessageUrlInfo / UrlClickEvents", "consulta": "MessagePostDeliveryEvents | where Timestamp > ago(7d) | join kind=inner (MessageUrlInfo | where Timestamp > ago(7d)) on TeamsMessageId | join kind=inner (UrlClickEvents | where Timestamp > ago(7d) and Workload == 'Teams') on Url | project Timestamp, TeamsMessageId, SenderEmailAddress, Url, ActionType, IsClickedThrough", "proposito": "Rastrear extremo a extremo enlaces maliciosos compartidos por chat o canales de Teams y verificar si algun usuario alcanzo el sitio destino.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Amenazas detectadas por MDO pero entregadas en Inbox debido a System Overrides", "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel", "tablaPrincipal": "EmailEvents", "consulta": "EmailEvents | where Timestamp > ago(7d) | where DeliveryLocation in ('Inbox', 'Folder') and ThreatTypes has_any ('Phish', 'Malware') | where isnotempty(OrgLevelAction) or isnotempty(UserLevelAction) | summarize DeliveredThreats = count(), AffectedUsers = dcount(RecipientEmailAddress) by ThreatTypes, OrgLevelAction, OrgLevelPolicy, UserLevelAction, SenderFromDomain | order by DeliveredThreats desc", "proposito": "Identificar reglas de transporte ETR, listas blancas o Safe Senders de usuario que esten anulando los veredictos de seguridad de MDO.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}, {"nombre": "Caceria de archivos susceptibles de HTML Smuggling o contenedores entregados en Inbox", "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel", "tablaPrincipal": "EmailAttachmentInfo / EmailEvents", "consulta": "EmailAttachmentInfo | where Timestamp > ago(7d) and FileType in~ ('html', 'htm', 'iso', 'vhd', 'vhdx', 'lnk', 'one', 'svg') | join kind=inner (EmailEvents | where Timestamp > ago(7d) and EmailDirection == 'Inbound' and DeliveryLocation == 'Inbox') on NetworkMessageId | project Timestamp, SenderFromAddress, RecipientEmailAddress, Subject, FileName, FileType, SHA256, NetworkMessageId", "proposito": "Localizar adjuntos de alto riesgo de evasion que hayan llegado al buzon sin firma inicial conocida para detonacion o bloqueo preventivo.", "estadoValidacion": "Verificado MS Learn", "usoOperativo": "Investigación Ad-Hoc y Threat Hunting"}], "kpisYMetricas": [{"id": "KPI-01", "nombre": "Tiempo medio y p90 de reconocimiento de incidentes MDO (MTTA)", "definicion": "Tiempo transcurrido desde la creacion del incidente con senales de MDO en Defender XDR hasta su asignacion y cambio a estado activo.", "formula": "percentiles(FirstModifiedTime - CreatedTime, 50, 90) por severidad sobre SecurityIncident deduplicado", "metaSugerida": "Mediana (p50) < 15 min / p90 < 30 min en severidad Alta", "frecuencia": "Semanal", "audiencia": "SOC Manager", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Columnas de SecurityIncident documentadas en MS Learn; los umbrales en minutos son propuesta editorial para SOC 24x7."}, {"id": "KPI-02", "nombre": "Tiempo de contencion de campana y clics maliciosos (MTTC-MDO)", "definicion": "Tiempo entre la deteccion de una campana entregada o clic permitido y la ejecucion efectiva de la purga de buzones mas revocacion de sesion.", "formula": "percentiles(Timestamp_Purga_o_Revocacion - CreatedTime_Incidente, 50, 90)", "metaSugerida": "p90 < 30 minutos (severidad Alta) / < 2 horas (severidad Media)", "frecuencia": "Semanal", "audiencia": "SOC Manager / CISO", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Emparejar siempre con el conteo de acciones revertidas en Action Center para cuidar la precision."}, {"id": "KPI-03", "nombre": "Tasa de automatizacion efectiva en AIR y Security Alert Triage Agent", "definicion": "Porcentaje de investigaciones de correo resueltas por auto-remediacion de clusteres AIR o clasificadas por el agente sin requerir reversion.", "formula": "(Investigaciones auto-remediadas o cerradas sin amenaza y sin reversion / Total investigaciones AIR) * 100", "metaSugerida": "> 80% de automatizacion con < 2% de acciones revertidas", "frecuencia": "Semanal", "audiencia": "SOC Manager", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Auto-remediacion de clusteres e historial de deshacer verificados en MS Learn; meta porcentual consultiva."}, {"id": "KPI-04", "nombre": "Mensajes maliciosos entregados por System Overrides", "definicion": "Volumen de correos clasificados como Phish o Malware que ingresaron al Inbox debido a reglas ETR, IP Allow o Safe Senders.", "formula": "Conteo semanal en EmailEvents con ThreatTypes in ('Phish','Malware') y OrgLevelAction/UserLevelAction override", "metaSugerida": "Tendencia a 0 (0 reglas ETR con SCL=-1 sin excepcion temporal aprobada)", "frecuencia": "Semanal", "audiencia": "Security Admin / CISO", "estadoValidacion": "Verificado MS Learn", "notaValidacion": "MDO SecOps Guide exige investigar y eliminar activamente overrides que entreguen correo malicioso."}, {"id": "KPI-05", "nombre": "Indice de alineacion en Configuration Analyzer (Standard / Strict)", "definicion": "Porcentaje de parametros de politicas MDO/EOP alineados con las recomendaciones oficiales Standard y Strict sin deriva no documentada.", "formula": "(Recomendaciones cumplidas + excepciones formalmente aprobadas / Total evaluadas en Configuration Analyzer) * 100", "metaSugerida": ">= 95% de alineacion tecnica y 0 desviaciones sin aprobacion", "frecuencia": "Mensual", "audiencia": "Security Architect / GRC", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Herramienta oficial Configuration Analyzer verificada en MS Learn; meta numerica definida editorialmente."}, {"id": "KPI-06", "nombre": "Tasa de compromiso en Attack Simulation Training (AST Compromise Rate)", "definicion": "Porcentaje de usuarios evaluados que interactuaron de forma insegura (clic, entrega de credenciales o consentimiento) en simulaciones mensuales.", "formula": "(Usuarios comprometidos en simulacion / Total usuarios incluidos en la campana AST) * 100", "metaSugerida": "< 6% poblacion general y < 3% en Priority Accounts", "frecuencia": "Mensual", "audiencia": "CISO / Comite de Riesgos", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Metrica nativa de AST en Defender portal; umbrales objetivo sujetos a linea base cultural de cada organizacion."}, {"id": "KPI-07", "nombre": "Ratio de reporte frente a compromiso humano (Report-to-Compromise Ratio)", "definicion": "Relacion entre usuarios que reportaron proactivamente la simulacion con el boton integrado y usuarios que cayeron en el engaño.", "formula": "Usuarios que reportaron simulacion / Usuarios comprometidos en simulacion", "metaSugerida": "> 3:1 con > 95% de finalizacion de capacitacion correctiva en 30 dias", "frecuencia": "Mensual", "audiencia": "CISO / Concientizacion", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "Mide la efectividad real de los empleados como sensores humanos para el SOC."}, {"id": "KPI-08", "nombre": "Cobertura de autenticacion criptografica DMARC p=reject y DKIM", "definicion": "Porcentaje de dominios propios (activos y estacionados) protegidos con politica DMARC en modo reject y firma DKIM de 2048 bits.", "formula": "(Dominios con DMARC p=reject + DKIM 2048-bit activo / Total dominios registrados de la organizacion) * 100", "metaSugerida": "100% de dominios corporativos", "frecuencia": "Trimestral", "audiencia": "CISO / Auditoria Interna", "estadoValidacion": "Propuesta Editorial", "notaValidacion": "MS Learn establece que cualquier configuracion incompleta de SPF/DKIM/DMARC brinda proteccion subestandar."}], "mapeoNISTCSF20": [{"funcion": "GOVERN (GV)", "subcategoria": "GV.PO-01", "descripcionResultado": "Se establecen, comunican y aplican politicas de gestion de riesgos de ciberseguridad basadas en el contexto organizacional.", "capacidadMicrosoft": "Preset Security Policies (Standard y Strict), politicas de cuarentena restringidas para malware/phishing de alta confianza y vencimiento de 45 dias en TABL.", "evidenciaAuditoria": "Exportacion de Get-EOPProtectionPolicyRule / Get-ATPProtectionPolicyRule y reporte sin desvios en Configuration Analyzer.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "GOVERN (GV)", "subcategoria": "GV.RR-02", "descripcionResultado": "Los roles, responsabilidades y autoridades de ciberseguridad se establecen, comunican y hacen cumplir.", "capacidadMicrosoft": "Modelo Microsoft Defender Unified RBAC (URBAC) con permisos granulares separados para metadatos, previsualizacion y purga, gobernados con Entra PIM.", "evidenciaAuditoria": "Configuracion de roles URBAC, historial de activaciones PIM y auditoria de la columna ApproverUpn en EmailPostDeliveryEvents.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.AM-05", "descripcionResultado": "Los recursos y activos se priorizan segun su clasificacion, criticidad y valor para el negocio.", "capacidadMicrosoft": "Etiquetado de hasta 250 ejecutivos y puestos financieros criticos mediante Priority Account Protection y asignacion a politicas Strict.", "evidenciaAuditoria": "Listado exportado de User tags (Priority account) e informe Email issues for priority accounts.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "IDENTIFY (ID)", "subcategoria": "ID.RA-03", "descripcionResultado": "Las amenazas internas y externas relevantes para la organizacion son identificadas y registradas.", "capacidadMicrosoft": "Visibilidad de campanas dirigidas en Campaign Views, Threat Explorer, Threat Analytics y Predicted Compromise Rate en AST.", "evidenciaAuditoria": "Informes descargados de Campaign Views y actas semanales de evaluacion de boletines Threat Analytics.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.PS-01", "descripcionResultado": "Se establecen y mantienen practicas seguras de gestion de configuracion sobre plataformas y servicios.", "capacidadMicrosoft": "Autenticacion SPF/DKIM/DMARC/ARC, Safe Attachments en sandbox, Safe Links en tiempo de clic y bloqueo de dominios externos en Microsoft Teams.", "evidenciaAuditoria": "Registros DNS publicados, informe ORCA y respaldo mensual versionado de politicas MDO/EXO.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "PROTECT (PR)", "subcategoria": "PR.AT-01", "descripcionResultado": "El personal recibe concientizacion y formacion practica para reconocer y reportar amenazas.", "capacidadMicrosoft": "Campanas automatizadas de Attack Simulation Training (incluyendo payloads QR y OAuth) con asignacion adaptativa de modulos formativos.", "evidenciaAuditoria": "Reportes mensuales de cobertura AST, tasas de compromiso/reporte y porcentaje de cursos completados.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.CM-01", "descripcionResultado": "Las redes y servicios de comunicacion se monitorean continuamente para detectar actividades potencialmente adversas.", "capacidadMicrosoft": "Monitoreo continuo de correo, SharePoint, OneDrive y Microsoft Teams (mensajes, URLs y llamadas) con ML, LLM BEC, Prompt injection y Mail bombing.", "evidenciaAuditoria": "Consultas KQL auditables sobre EmailEvents, UrlClickEvents, MessageEvents y CallActivityEvents.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "DETECT (DE)", "subcategoria": "DE.AE-03", "descripcionResultado": "La informacion de eventos adversos se correlaciona desde multiples fuentes para caracterizar incidentes.", "capacidadMicrosoft": "Correlacion nativa de alertas MDO, clics en URLs y reportes de usuarios con señales de Entra ID, MDE y MDCA en incidentes XDR.", "evidenciaAuditoria": "Exportacion de incidentes multi-dominio correlacionados en security.microsoft.com/incidents.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RESPOND (RS)", "subcategoria": "RS.MI-01", "descripcionResultado": "Los incidentes se contienen de forma oportuna para evitar la expansion del compromiso.", "capacidadMicrosoft": "Zero-hour Auto Purge (ZAP) en correo y Teams, auto-remediacion de clusteres en AIR, purga masiva y expulsion de usuarios de chats de Teams.", "evidenciaAuditoria": "Registros de ejecucion en EmailPostDeliveryEvents, MessagePostDeliveryEvents y Action Center History.", "estadoValidacion": "Propuesta Editorial"}, {"funcion": "RECOVER (RC)", "subcategoria": "RC.IM-01", "descripcionResultado": "Las lecciones aprendidas de incidentes y ejercicios se incorporan para mejorar controles y procesos futuros.", "capacidadMicrosoft": "Revisiones post-incidente soportadas por Policy what-if insights, ajuste de overrides y nuevas simulaciones AST inspiradas en incidentes reales.", "evidenciaAuditoria": "Informes After-Action Report (AAR) de incidentes/tabletop y trazabilidad de ajustes aplicados en politicas.", "estadoValidacion": "Propuesta Editorial"}], "validacionYDecisionesEditoriales": {"fechaRevalidacion": "2026-11-11", "resumenAuditoria": "Contenido compilado desde los bloques maestros MSEOP-MD de MDO y revalidado integralmente contra Microsoft Learn mediante MCP en noviembre de 2026. Se actualizaron cambios estructurales de 2025-2026 en licenciamiento E3/Defender Suite, Unified RBAC predeterminado, capacidades de Microsoft Teams (ZAP en P1, bloqueo de dominios externos, expulsion de chats y tabla CallActivityEvents), auto-remediacion de clusteres en AIR, columna ApproverUpn y operacion con el Security Alert Triage Agent.", "correccionesAplicadas": ["Actualizacion de licenciamiento (julio 2026): inclusion de MDO Plan 1 en Microsoft 365 E3 y Office 365 E3, adopcion del nombre comercial Microsoft Defender Suite (antes M365 E5 Security), referencia a M365 E7 y aclaracion de que Safe Documents requiere M365 E5 o Defender Suite.", "Adopcion de Microsoft Defender Unified RBAC (URBAC) como modelo predeterminado para nuevas organizaciones MDO Plan 2 desde julio de 2026 (MC1246006) e inclusion del permiso granular 'Emails associated with alerts (read)' (abril 2026).", "Correccion tecnica sobre AIR en MDO Plan 2: confirmacion de que AIR permanece plenamente vigente (a diferencia del cambio en MDE de septiembre 2026) y aprueba automaticamente la remediacion de clusteres de similitud maliciosos de URLs y archivos.", "Actualizacion de proteccion de Microsoft Teams (enero-octubre 2026): ZAP para Teams y cuarentena administrada disponibles desde MDO Plan 1, bloqueo directo de dominios/remitentes externos de Teams en TABL, Remove users from Teams chats en GA (P2) y pagina independiente teamsUserSubmission (MC1478463).", "Actualizacion del esquema Advanced Hunting a noviembre de 2026: tablas MessageEvents, MessagePostDeliveryEvents, MessageUrlInfo y MessageContents en GA, incorporacion de CallActivityEvents (octubre 2026) y nuevo campo ApproverUpn en EmailPostDeliveryEvents (octubre 2026).", "Incorporacion del Security Alert Triage Agent (antes Phishing Triage Agent) con su requisito operativo de desactivar la regla integrada de Alert tuning de auto-resolucion, mas detecciones nativas de Prompt injection (julio 2026) y Mail bombing.", "Migracion de rutas de cumplimiento hacia el portal unificado Microsoft Purview (purview.microsoft.com) y ajuste del vencimiento predeterminado de entradas Allow por envios en TABL a 45 dias desde el ultimo uso."], "decisionesEditoriales": [{"elemento": "Metas cuantitativas de SLA y KPIs (MTTA p50 < 15 min, MTTC p90 < 30 min, AST Compromise Rate < 6%)", "tipo": "Propuesta Editorial", "justificacion": "Microsoft Learn documenta el orden de prioridad y las tablas de metricas, pero indica que cada SOC debe definir sus umbrales segun cobertura horaria y apetito de riesgo."}, {"elemento": "Ventanas maximas de elevacion JIT en Entra PIM (4 h para purga/admin, 8 h para respuesta L2) y limite de 3-5 titulares con Search and Purge", "tipo": "Propuesta Editorial", "justificacion": "Microsoft recomienda usar PIM con MDO, pero los tiempos exactos de expiracion y aprobacion cruzada constituyen politicas organizacionales de gobierno privilegiado."}, {"elemento": "Modelo de Madurez Operacional de 5 niveles y ruta formativa 30-60-90 dias", "tipo": "Propuesta Editorial", "justificacion": "Construccion consultiva basada en la escalera de capacidades EOP/P1/P2, el Microsoft Security Adoption Framework (SAF) y SOC-CMM."}, {"elemento": "Mapeo de subcategorias y artefactos de auditoria hacia NIST CSF 2.0", "tipo": "Propuesta Editorial", "justificacion": "NIST CSF 2.0 define resultados (outcomes) agnosticos a tecnologia; la trazabilidad con controles de MDO es una propuesta metodologica defendible ante auditoria."}, {"elemento": "Rutina mensual de respaldo de politicas en XML versionado y ejercicio Tabletop anual multi-canal", "tipo": "Propuesta Editorial", "justificacion": "Practicas recomendadas de ingenieria de resiliencia y preparacion de respuesta a incidentes alineadas a NIST SP 800-61 Rev. 3."}]}, "referenciasVerificadas": [{"id": "REF-01", "titulo": "Microsoft Defender for Office 365 Security Operations Guide", "url": "https://learn.microsoft.com/en-us/defender-office-365/mdo-sec-ops-guide", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Guia oficial maestra del SOC con orden de precedencia de incidentes, actividades diarias, semanales, ad-hoc, permisos e integracion SIEM.", "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-02", "titulo": "What's new in Microsoft Defender for Office 365", "url": "https://learn.microsoft.com/en-us/defender-office-365/defender-for-office-365-whats-new", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Historial oficial de novedades 2025-2026: CallActivityEvents, ApproverUpn, reportes separados de Teams, URBAC predeterminado, MDO P1 en E3 y Prompt injection.", "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-03", "titulo": "Preset security policies in cloud organizations", "url": "https://learn.microsoft.com/en-us/defender-office-365/preset-security-policies", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Documentacion oficial de los perfiles Built-in protection, Standard y Strict y su orden de precedencia.", "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-04", "titulo": "Microsoft Defender for Office 365 support for Microsoft Teams", "url": "https://learn.microsoft.com/en-us/defender-office-365/mdo-support-teams-about", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Matriz comparativa de capacidades de proteccion en Teams para licencias base, Plan 1 y Plan 2 y configuracion de ZAP para Teams.", "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-05", "titulo": "Zero-hour auto purge (ZAP) in Microsoft Defender for Office 365", "url": "https://learn.microsoft.com/en-us/defender-office-365/zero-hour-auto-purge", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Alcance tecnico, ventana de 48 horas, interaccion con Dynamic Delivery/Holds y comportamiento en chats y canales de Teams.", "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-06", "titulo": "Automated investigation and response (AIR) in Microsoft Defender for Office 365 Plan 2", "url": "https://learn.microsoft.com/en-us/defender-office-365/air-about", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Flujo completo de AIR, auto-remediacion de clusteres, permisos URBAC e interaccion con Alert tuning y el agente de triaje.", "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-07", "titulo": "Email authentication in cloud organizations", "url": "https://learn.microsoft.com/en-us/defender-office-365/email-authentication-about", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Arquitectura de SPF, DKIM, DMARC, ARC y autenticacion implicita/compuesta (compauth) en Microsoft 365.", "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-08", "titulo": "Microsoft Defender for Office 365 permissions in the Microsoft Defender portal", "url": "https://learn.microsoft.com/en-us/defender-office-365/mdo-portal-permissions", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Gobierno de permisos y transicion hacia Microsoft Defender Unified RBAC por defecto para nuevas organizaciones Plan 2.", "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"}, {"id": "REF-09", "titulo": "Respond to a compromised cloud email account", "url": "https://learn.microsoft.com/en-us/defender-office-365/responding-to-a-compromised-email-account", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Playbook oficial de Microsoft para contencion, limpieza de persistencia en buzon y rehabilitacion ante BEC.", "verificacion": "Verificado en Ninja Training 2026 y Microsoft Learn (Nov 2026)"}, {"id": "REF-10", "titulo": "Phishing investigation playbook (Microsoft Security Adoption Framework)", "url": "https://learn.microsoft.com/en-us/security/zero-trust/security-operations-playbook-phishing", "tipoFuente": "Microsoft Learn", "autor": "Microsoft Corporation", "comentario": "Playbook operativo actualizado en la disciplina SecOps del Security Adoption Framework (SAF).", "verificacion": "Verificado en Ninja Training 2026 (Nov 2026)"}, {"id": "REF-11", "titulo": "Introducing the Microsoft Defender for Office 365 Security Operations Guide", "url": "https://techcommunity.microsoft.com/blog/microsoftdefenderforoffice365blog/introducing-the-microsoft-defender-for-office-365-security-operations-guide/3638250", "tipoFuente": "Blog Oficial Microsoft", "autor": "Microsoft Defender for Office 365 Team", "comentario": "Publicacion oficial del equipo de producto presentando el modelo operativo SecOps para MDO.", "verificacion": "Verificado en repositorio documental y Tech Community"}, {"id": "REF-12", "titulo": "Microsoft Ignite: Transforming phishing response with agentic innovation", "url": "https://techcommunity.microsoft.com/blog/MicrosoftDefenderforOffice365Blog/microsoft-ignite-2025-transforming-phishing-response-with-agentic-innovation/4470791", "tipoFuente": "Blog Oficial Microsoft", "autor": "Microsoft Defender for Office 365 Team", "comentario": "Anuncio oficial de disponibilidad general y evolucion del agente de triaje autonomo de phishing en Defender.", "verificacion": "Verificado en Ninja Training 2026 (Nov 2026)"}, {"id": "REF-13", "titulo": "Become a Microsoft Defender for Office 365 Ninja", "url": "https://techcommunity.microsoft.com/blog/microsoftdefenderforoffice365blog/become-a-microsoft-defender-for-office-365-ninja--june-2022/2187392", "tipoFuente": "Empleado Microsoft", "autor": "ang31a (Microsoft Defender for Office 365 Engineering)", "comentario": "Programa oficial Ninja Training de MDO organizado por roles de configuracion, investigacion y operaciones.", "verificacion": "Verificado en Ninja Training 2026 (Nov 2026)"}, {"id": "REF-14", "titulo": "Sentinel & Defender XDR KQL Queries Repository", "url": "https://github.com/reprise99/Sentinel-Queries", "tipoFuente": "Empleado Microsoft", "autor": "Matt Zorich (reprise99 - Microsoft GHOST)", "comentario": "Repositorio de consultas KQL avanzadas para investigacion forense en Microsoft 365, correo e identidad.", "verificacion": "Verificado en Directorio de Referentes Ninja Training 2026"}, {"id": "REF-15", "titulo": "Hunting-Queries-Detection-Rules for Microsoft Defender XDR & Sentinel", "url": "https://github.com/Bert-JanP/Hunting-Queries-Detection-Rules", "tipoFuente": "MVP Seguridad", "autor": "Bert-Jan Pals (Microsoft Security MVP)", "comentario": "Coleccion comunitaria de consultas KQL sobre EmailEvents, UrlClickEvents y reglas de deteccion para el SOC.", "verificacion": "Verificado en Directorio de Referentes Ninja Training 2026"}, {"id": "REF-16", "titulo": "Jeffrey Appel - Microsoft Security & Defender XDR Technical Blog", "url": "https://jeffreyappel.nl/", "tipoFuente": "MVP Seguridad", "autor": "Jeffrey Appel (Microsoft Security MVP)", "comentario": "Analisis practicos mensuales de novedades de Microsoft Defender XDR, MDO y respuesta automatizada.", "verificacion": "Verificado en Directorio de Referentes Ninja Training 2026"}, {"id": "REF-17", "titulo": "Blog d3fend.me — Operaciones y Laboratorios con Defender XDR y Sentinel", "url": "https://blog.d3fend.me/", "tipoFuente": "MVP Seguridad", "autor": "Jorge Castaneda (Microsoft Security MVP)", "comentario": "Referente tecnico en espanol con practicas de laboratorio y metricas ejecutivas sobre Defender XDR.", "verificacion": "Verificado en Directorio de Referentes Ninja Training 2026"}, {"id": "REF-18", "titulo": "NIST Cybersecurity Framework (CSF) 2.0 (CSWP 29)", "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf", "tipoFuente": "Marco Normativo", "autor": "National Institute of Standards and Technology (NIST)", "comentario": "Especificacion oficial de las seis funciones y subcategorias basadas en outcomes del NIST CSF 2.0.", "verificacion": "Verificado documento normativo publico"}], "validacionesConfiguracion": [{"control": "Autenticación de Dominios de Correo (SPF, DKIM y DMARC)", "comoValidar": "security.microsoft.com > Email & collaboration > Policies & rules > Threat policies > Email authentication settings + DNS público.", "estadoEsperado": "DKIM habilitado con rotación 2048 bits en todos los dominios aceptados, SPF con hardfail (-all) y DMARC en p=quarantine o p=reject.", "origen": "Verificado MS Learn"}, {"control": "Preset Security Policies (Standard y Strict) y Configuration Analyzer", "comoValidar": "Threat policies > Preset security policies y Configuration analyzer (pestañas Standard recommendations y Strict recommendations).", "estadoEsperado": "Perfil Strict asignado a ejecutivos/VIPs/administradores, Standard al resto de usuarios y cero desviaciones críticas sin justificar.", "origen": "Verificado MS Learn"}, {"control": "Safe Links y Safe Attachments en Correo, Teams y Office Apps", "comoValidar": "Threat policies > Safe Links y Safe Attachments (verificar casillas Turn on Defender for Office 365 for SharePoint, OneDrive, and Microsoft Teams).", "estadoEsperado": "Reescritura/verificación en tiempo real de URLs sin permitir click-through de usuario, y detonación Dynamic Delivery / Block activa en correo y Teams.", "origen": "Verificado MS Learn"}, {"control": "Zero-hour Auto Purge (ZAP) para Phishing, Malware y Teams", "comoValidar": "Threat policies > Anti-phishing / Anti-spam / Zero-hour auto purge para Microsoft Teams y Action center > History.", "estadoEsperado": "ZAP activo moviendo retroactivamente mensajes maliciosos/phishing entregados en buzones Exchange y chats internos de Teams.", "origen": "Verificado MS Learn"}, {"control": "Buzón de Reporte de Usuarios y Flujo Phishing Triage", "comoValidar": "System > Settings > Email & collaboration > User reported settings y pestaña Submissions > User reported.", "estadoEsperado": "Botón nativo Report en Outlook operativo, enrutamiento simultáneo a buzón SOC y a Microsoft para análisis, y AIR habilitado.", "origen": "Verificado MS Learn"}, {"control": "Higiene de Tenant Allow/Block List (TABL) y Cero Overrides Inseguros", "comoValidar": "Threat policies > Tenant Allow/Block Lists y auditoría de Mail flow rules (Exchange Transport Rules con SCL = -1).", "estadoEsperado": "Cero reglas de transporte o IP Allow Lists que puenteen EOP/MDO (salvo Enhanced Filtering for Connectors en escenarios híbridos validados).", "origen": "Verificado MS Learn"}], "modeloMadurez": [{"nivel": "**Nivel 1 — Inicial**", "estadio": "Perimetral reactivo", "descripcion": "Solo EOP por defecto, DMARC en `none` o inexistente, reglas ETR heredadas con `SCL=-1`, sin triaje diario estructurado ni simulaciones AST."}, {"nivel": "**Nivel 2 — Básico Gestionado**", "estadio": "Prevención estándar", "descripcion": "MDO Plan 1 activo (ej. base M365 E3), *Preset Policy Standard* desplegada, ZAP en correo y Teams habilitado, revisión básica de cuarentena."}, {"nivel": "**Nivel 3 — Intermedio XDR**", "estadio": "Operaciones SOC estructuradas", "descripcion": "MDO Plan 2 desplegado, *Preset Policy Strict* en *Priority Accounts*, URBAC y PIM activos, *AIR* operando con revisión diaria en *Action Center*, *Configuration Analyzer* mensual."}, {"nivel": "**Nivel 4 — Avanzado Proactivo**", "estadio": "Cacería multi-canal e integración SIEM", "descripcion": "Hunting semanal KQL sobre `Email*`, `UrlClickEvents`, `Message*` y `CallActivityEvents`, conectores Sentinel activos, campañas AST automatizadas mensuales, DMARC `p=reject` al 100%."}, {"nivel": "**Nivel 5 — Optimizado / Agéntico**", "estadio": "Excelencia operacional demostrable", "descripcion": "*Security Alert Triage Agent* gobernado con muestreo de calidad, auto-remediación de clústeres + *Automatic Attack Disruption*, respaldo de políticas como código, *Tabletop* anuales y KPIs p50/p90 auditables ante el Directorio."}], "rutaFormacion": {"headers": ["Rol", "Días 1–30 (Fundamentos)", "Días 31–60 (Operación Autónoma)", "Días 61–90 (Dominio Avanzado)"], "rows": [["**Analista SOC L1**", "Fundamentos MDO Ninja, arquitectura EOP/P1/P2, triaje en cola XDR (`D-01`) y cuarentena (`D-04`).", "Gestión de *User Submissions* en correo y Teams (`D-03`), verificación ZAP (`D-07`) y KQL esencial sobre `EmailEvents` y `UrlClickEvents`.", "Detección temprana de *Mail bombing* y BEC (`D-08`), validación de veredictos del *Security Alert Triage Agent*."], ["**Analista SOC L2**", "Todo L1 + operación de **AIR** y *Action Center* (`D-02`), *Restricted entities* (`D-05`) y *Campaign Views* (`D-06`).", "Investigación interactiva en *Threat Explorer*, uso de *Take action*, administración táctica de TABL (correo y Teams).", "Ejecución completa de los playbooks de contención `AH-01`, `AH-02` (BEC) y `AH-03` (Teams) y preparación certificación **SC-200**."], ["**Analista SOC L3 / Hunter**", "Dominio del esquema completo `Email*`, `Message*`, `CallActivityEvents` y correlación con `EntraIdSignInEvents` y `Device*`.", "Cacería semanal por hipótesis (`S-04`), creación de *Custom Detection Rules* con acciones automatizadas y purgas controladas (`AH-04`).", "Liderazgo de incidentes mayores multi-dominio, calibración de *Alert tuning* (`T-02`) y ejercicios Purple Team / Tabletop (`A-01`)."], ["**Security Admin / Engineer**", "Plan oficial de 8 pasos MDO: autenticación SPF/DKIM/DMARC/ARC, *Preset Security Policies* (`Standard`/`Strict`) y *Priority Accounts*.", "Migración y diseño de roles mínimos en **Unified RBAC (URBAC)**, configuración PIM/JIT, ZAP para Teams y *Configuration Analyzer* / `ORCA`.", "Ajuste basado en *Policy What-If insights* (`M-02`), automatización de respaldos PowerShell (`M-06`), gestión de AST (`M-04`) e integración Sentinel."], ["**Auditor GRC / CISO Office**", "Comprensión diferencial MDO P1 (E3) vs MDO P2 (E5 / Defender Suite) y metodología *Outcome-based* de NIST CSF 2.0.", "Verificación de evidencias en solo lectura (`Global Reader`/`Security Reader`), trazabilidad `ApproverUpn` y control de SoD/PIM (`M-05`).", "Evaluación anual de madurez operacional, gobierno de agentes de IA en el SOC y reporte de reducción de riesgo al Directorio."]]}};
+const NAV_INDEX = [{"id": "00_Marco_Maestro_CISO_SOC_y_NIST", "orden": 0, "folder": "00_Marco_Maestro_CISO_SOC_y_NIST", "slug": "Marco_Maestro_CISO_SOC_y_NIST", "nombreCorto": "Marco Maestro CISO, SOC y NIST", "categoria": "Marco Transversal CISO, SOC y NIST", "htmlRel": "../00_Marco_Maestro_CISO_SOC_y_NIST/Marco_Maestro_CISO_SOC_y_NIST_Guia_Excelencia_Operacional.html"}, {"id": "01_Microsoft_Entra_ID", "orden": 1, "folder": "01_Microsoft_Entra_ID", "slug": "Microsoft_Entra_ID", "nombreCorto": "Microsoft Entra ID", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../01_Microsoft_Entra_ID/Microsoft_Entra_ID_Guia_Excelencia_Operacional.html"}, {"id": "02_Microsoft_Entra_ID_Governance", "orden": 2, "folder": "02_Microsoft_Entra_ID_Governance", "slug": "Microsoft_Entra_ID_Governance", "nombreCorto": "Microsoft Entra ID Governance", "categoria": "Identidad y Acceso (Microsoft Entra)", "htmlRel": "../02_Microsoft_Entra_ID_Governance/Microsoft_Entra_ID_Governance_Guia_Excelencia_Operacional.html"}, {"id": "03_Microsoft_Defender_XDR", "orden": 3, "folder": "03_Microsoft_Defender_XDR", "slug": "Microsoft_Defender_XDR", "nombreCorto": "Defender XDR", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../03_Microsoft_Defender_XDR/Microsoft_Defender_XDR_Guia_Excelencia_Operacional.html"}, {"id": "04_Microsoft_Defender_for_Endpoint", "orden": 4, "folder": "04_Microsoft_Defender_for_Endpoint", "slug": "Microsoft_Defender_for_Endpoint", "nombreCorto": "Defender for Endpoint", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../04_Microsoft_Defender_for_Endpoint/Microsoft_Defender_for_Endpoint_Guia_Excelencia_Operacional.html"}, {"id": "05_Microsoft_Defender_for_Office_365", "orden": 5, "folder": "05_Microsoft_Defender_for_Office_365", "slug": "Microsoft_Defender_for_Office_365", "nombreCorto": "Defender for Office 365", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../05_Microsoft_Defender_for_Office_365/Microsoft_Defender_for_Office_365_Guia_Excelencia_Operacional.html"}, {"id": "06_Microsoft_Defender_for_Identity", "orden": 6, "folder": "06_Microsoft_Defender_for_Identity", "slug": "Microsoft_Defender_for_Identity", "nombreCorto": "Defender for Identity", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../06_Microsoft_Defender_for_Identity/Microsoft_Defender_for_Identity_Guia_Excelencia_Operacional.html"}, {"id": "07_Microsoft_Defender_for_Cloud_Apps", "orden": 7, "folder": "07_Microsoft_Defender_for_Cloud_Apps", "slug": "Microsoft_Defender_for_Cloud_Apps", "nombreCorto": "Defender for Cloud Apps", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../07_Microsoft_Defender_for_Cloud_Apps/Microsoft_Defender_for_Cloud_Apps_Guia_Excelencia_Operacional.html"}, {"id": "08_Microsoft_Sentinel", "orden": 8, "folder": "08_Microsoft_Sentinel", "slug": "Microsoft_Sentinel", "nombreCorto": "Microsoft Sentinel", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../08_Microsoft_Sentinel/Microsoft_Sentinel_Guia_Excelencia_Operacional.html"}, {"id": "09_Microsoft_Security_Copilot", "orden": 9, "folder": "09_Microsoft_Security_Copilot", "slug": "Microsoft_Security_Copilot", "nombreCorto": "Microsoft Security Copilot", "categoria": "SecOps, XDR y SIEM", "htmlRel": "../09_Microsoft_Security_Copilot/Microsoft_Security_Copilot_Guia_Excelencia_Operacional.html"}, {"id": "10_Microsoft_Intune_Plan_1", "orden": 10, "folder": "10_Microsoft_Intune_Plan_1", "slug": "Microsoft_Intune_Plan_1", "nombreCorto": "Microsoft Intune Plan 1", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../10_Microsoft_Intune_Plan_1/Microsoft_Intune_Plan_1_Guia_Excelencia_Operacional.html"}, {"id": "11_Microsoft_Intune_Suite", "orden": 11, "folder": "11_Microsoft_Intune_Suite", "slug": "Microsoft_Intune_Suite", "nombreCorto": "Microsoft Intune Suite", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../11_Microsoft_Intune_Suite/Microsoft_Intune_Suite_Guia_Excelencia_Operacional.html"}, {"id": "12_Windows_Enterprise_Security_y_Cifrado", "orden": 12, "folder": "12_Windows_Enterprise_Security_y_Cifrado", "slug": "Windows_Enterprise_Security_y_Cifrado", "nombreCorto": "Windows Enterprise Security y Cifrado", "categoria": "Endpoints, Dispositivos y Plataforma Windows", "htmlRel": "../12_Windows_Enterprise_Security_y_Cifrado/Windows_Enterprise_Security_y_Cifrado_Guia_Excelencia_Operacional.html"}, {"id": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "orden": 13, "folder": "13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "slug": "Microsoft_Purview_Suite_Arquitectura_y_Gobierno", "nombreCorto": "Microsoft Purview Suite", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../13_Microsoft_Purview_Suite_Arquitectura_y_Gobierno/Microsoft_Purview_Suite_Arquitectura_y_Gobierno_Guia_Excelencia_Operacional.html"}, {"id": "14_Purview_Information_Protection", "orden": 14, "folder": "14_Purview_Information_Protection", "slug": "Purview_Information_Protection", "nombreCorto": "Purview Information Protection", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../14_Purview_Information_Protection/Purview_Information_Protection_Guia_Excelencia_Operacional.html"}, {"id": "15_Purview_Data_Loss_Prevention", "orden": 15, "folder": "15_Purview_Data_Loss_Prevention", "slug": "Purview_Data_Loss_Prevention", "nombreCorto": "Purview Data Loss Prevention", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../15_Purview_Data_Loss_Prevention/Purview_Data_Loss_Prevention_Guia_Excelencia_Operacional.html"}, {"id": "16_Purview_Data_Lifecycle_y_Records_Management", "orden": 16, "folder": "16_Purview_Data_Lifecycle_y_Records_Management", "slug": "Purview_Data_Lifecycle_y_Records_Management", "nombreCorto": "Purview DLCM y Records Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../16_Purview_Data_Lifecycle_y_Records_Management/Purview_Data_Lifecycle_y_Records_Management_Guia_Excelencia_Operacional.html"}, {"id": "17_Purview_Insider_Risk_Management", "orden": 17, "folder": "17_Purview_Insider_Risk_Management", "slug": "Purview_Insider_Risk_Management", "nombreCorto": "Purview Insider Risk Management", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../17_Purview_Insider_Risk_Management/Purview_Insider_Risk_Management_Guia_Excelencia_Operacional.html"}, {"id": "18_Purview_Communication_Compliance", "orden": 18, "folder": "18_Purview_Communication_Compliance", "slug": "Purview_Communication_Compliance", "nombreCorto": "Purview Communication Compliance", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../18_Purview_Communication_Compliance/Purview_Communication_Compliance_Guia_Excelencia_Operacional.html"}, {"id": "19_Purview_Audit_Premium", "orden": 19, "folder": "19_Purview_Audit_Premium", "slug": "Purview_Audit_Premium", "nombreCorto": "Purview Audit (Premium)", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../19_Purview_Audit_Premium/Purview_Audit_Premium_Guia_Excelencia_Operacional.html"}, {"id": "20_Purview_eDiscovery_Premium", "orden": 20, "folder": "20_Purview_eDiscovery_Premium", "slug": "Purview_eDiscovery_Premium", "nombreCorto": "Purview eDiscovery Premium", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../20_Purview_eDiscovery_Premium/Purview_eDiscovery_Premium_Guia_Excelencia_Operacional.html"}, {"id": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "orden": 21, "folder": "21_Customer_Lockbox_Customer_Key_y_M365_PAM", "slug": "Customer_Lockbox_Customer_Key_y_M365_PAM", "nombreCorto": "Customer Lockbox, Customer Key y M365 PAM", "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)", "htmlRel": "../21_Customer_Lockbox_Customer_Key_y_M365_PAM/Customer_Lockbox_Customer_Key_y_M365_PAM_Guia_Excelencia_Operacional.html"}, {"id": "22_Microsoft_Agent_365", "orden": 22, "folder": "22_Microsoft_Agent_365", "slug": "Microsoft_Agent_365", "nombreCorto": "Microsoft Agent 365", "categoria": "Gobierno y Seguridad de Agentes IA", "htmlRel": "../22_Microsoft_Agent_365/Microsoft_Agent_365_Guia_Excelencia_Operacional.html"}];
+
+(() => {
+  const memStore = {};
+  const storageKey = "mseop_v3_state_" + MODULE_DATA.id;
+  function loadState() {
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      return raw ? JSON.parse(raw) : { tasks: {}, steps: {} };
+    } catch (_) {
+      return memStore[storageKey] || { tasks: {}, steps: {} };
+    }
+  }
+  function saveState(st) {
+    memStore[storageKey] = st;
+    try { window.localStorage.setItem(storageKey, JSON.stringify(st)); } catch (_) {}
+  }
+
+  let uiState = loadState();
+  if (!uiState.tasks) uiState.tasks = {};
+  if (!uiState.steps) uiState.steps = {};
+  let activeView = "view-overview";
+  let activePeriodicCad = "Diaria";
+
+  function esc(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // Converts inline Markdown (**bold**, `code`, [Verificado MS Learn], [Decisión / Propuesta Editorial]) into clean readable HTML
+  function richText(str) {
+    let s = esc(str);
+    s = s.replace(/`\[Verificado MS Learn\]`|\[Verificado MS Learn\]/g, '<span class="inline-tag tag-learn">Verificado MS Learn</span>');
+    s = s.replace(/`\[Decisión \/ Propuesta Editorial\]`|\[Decisión \/ Propuesta Editorial\]|`\[Propuesta Editorial\]`|\[Propuesta Editorial\]/g, '<span class="inline-tag tag-edit">Propuesta Editorial</span>');
+    s = s.replace(/`([^`]+)`/g, "<code>$1</code>");
+    s = s.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+    s = s.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+    return s;
+  }
+
+  function valBadge(status) {
+    const isLearn = String(status).indexOf("Verificado") !== -1;
+    return '<span class="' + (isLearn ? "badge badge-learn" : "badge badge-editorial") + '">' + esc(status) + '</span>';
+  }
+
+  // Partition activities cleanly into Periodic vs Ad-Hoc
+  const allActs = MODULE_DATA.actividadesOperacionales || [];
+  const periodicActs = allActs.filter((a) => a.cadencia !== "Ad-Hoc");
+  const adhocActs = allActs.filter((a) => a.cadencia === "Ad-Hoc");
+  const prereqs = (MODULE_DATA.relacionM365E5 && MODULE_DATA.relacionM365E5.prerrequisitos) || [];
+  const validations = MODULE_DATA.validacionesConfiguracion || [];
+  const components = MODULE_DATA.arquitecturaYComponentes || [];
+  const rbacRoles = MODULE_DATA.rbacYRoles || [];
+
+  const dailyActs = periodicActs.filter((a) => a.cadencia === "Diaria");
+  const weeklyActs = periodicActs.filter((a) => a.cadencia === "Semanal");
+  const monthlyActs = periodicActs.filter((a) => a.cadencia === "Mensual");
+  const longCycleActs = periodicActs.filter((a) => ["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) !== -1);
+
+  // Topbar links & module switcher
+  const baseName = MODULE_DATA.slug + "_Guia_Excelencia_Operacional";
+  document.getElementById("xlsxLink").href = "./" + baseName + ".xlsx";
+  document.getElementById("mdLink").href = "./" + baseName + ".md";
+
+  const jumpSel = document.getElementById("modJumpSelect");
+  NAV_INDEX.forEach((m) => {
+    const opt = document.createElement("option");
+    opt.value = m.htmlRel;
+    opt.textContent = String(m.orden).padStart(2, "0") + " — " + m.nombreCorto;
+    if (m.id === MODULE_DATA.id) opt.selected = true;
+    jumpSel.appendChild(opt);
+  });
+  jumpSel.addEventListener("change", (e) => { if (e.target.value) window.location.href = e.target.value; });
+
+  const curIdx = NAV_INDEX.findIndex((m) => m.id === MODULE_DATA.id);
+  const prevBtn = document.getElementById("prevModBtn");
+  const nextBtn = document.getElementById("nextModBtn");
+  if (curIdx > 0) prevBtn.href = NAV_INDEX[curIdx - 1].htmlRel;
+  else { prevBtn.style.opacity = "0.4"; prevBtn.style.pointerEvents = "none"; }
+  if (curIdx >= 0 && curIdx < NAV_INDEX.length - 1) nextBtn.href = NAV_INDEX[curIdx + 1].htmlRel;
+  else { nextBtn.style.opacity = "0.4"; nextBtn.style.pointerEvents = "none"; }
+
+  document.getElementById("themeToggleBtn").addEventListener("click", () => {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+  });
+  document.getElementById("printBtn").addEventListener("click", () => window.print());
+
+  // Sidebar counters
+  const totalConfigChecks = prereqs.length + validations.length;
+  document.getElementById("navCntConfig").textContent = totalConfigChecks;
+  document.getElementById("navCntDiaria").textContent = dailyActs.length;
+  document.getElementById("navCntSemanal").textContent = weeklyActs.length;
+  document.getElementById("navCntMensual").textContent = monthlyActs.length;
+  document.getElementById("navCntLargos").textContent = longCycleActs.length;
+  document.getElementById("navCntAdhoc").textContent = adhocActs.length;
+  document.getElementById("navCntQueries").textContent = (MODULE_DATA.consultasKQLyVerificacion || []).length;
+  document.getElementById("navCntKpis").textContent = (MODULE_DATA.kpisYMetricas || []).length;
+  document.getElementById("navCntNist").textContent = (MODULE_DATA.mapeoNISTCSF20 || []).length;
+
+  function switchView(viewId, periodicCadOverride) {
+    activeView = viewId;
+    if (periodicCadOverride) activePeriodicCad = periodicCadOverride;
+
+    document.querySelectorAll(".view-panel").forEach((p) => p.classList.remove("active"));
+    const target = document.getElementById(viewId);
+    if (target) target.classList.add("active");
+
+    document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+      const bv = btn.getAttribute("data-view");
+      const bc = btn.getAttribute("data-cad");
+      if (bv === viewId && (!bc || bc === activePeriodicCad)) btn.classList.add("active");
+      else btn.classList.remove("active");
+    });
+
+    if (viewId === "view-periodic") {
+      syncPeriodicSubnav();
+      renderPeriodicCards();
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.querySelectorAll(".sidebar .nav-item").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      switchView(btn.getAttribute("data-view"), btn.getAttribute("data-cad") || null);
+    });
+  });
+
+  // Handle incoming URL hash (#config, #periodic-diaria, #adhoc, etc.)
+  function applyInitialHash() {
+    const h = (window.location.hash || "").replace("#", "");
+    if (h === "config") switchView("view-config");
+    else if (h === "periodic-diaria") switchView("view-periodic", "Diaria");
+    else if (h === "periodic-semanal") switchView("view-periodic", "Semanal");
+    else if (h === "periodic-mensual") switchView("view-periodic", "Mensual");
+    else if (h === "periodic-largos") switchView("view-periodic", "CICLOS_LARGOS");
+    else if (h === "adhoc") switchView("view-adhoc");
+    else if (h === "queries") switchView("view-queries");
+    else if (h === "nist") switchView("view-nist");
+  }
+
+  function updateProgressTracker() {
+    let cfgDone = 0;
+    prereqs.forEach((_, i) => { if (uiState.tasks["CFG-" + (i + 1)]) cfgDone++; });
+    validations.forEach((_, i) => { if (uiState.tasks["VAL-" + (i + 1)]) cfgDone++; });
+    const cfgPct = totalConfigChecks ? Math.round((cfgDone / totalConfigChecks) * 100) : 0;
+
+    const perDone = periodicActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const perPct = periodicActs.length ? Math.round((perDone / periodicActs.length) * 100) : 0;
+
+    const ahDone = adhocActs.filter((a) => !!uiState.tasks[a.codigo]).length;
+    const ahPct = adhocActs.length ? Math.round((ahDone / adhocActs.length) * 100) : 0;
+
+    document.getElementById("sidebarProgress").innerHTML =
+      '<div class="nav-section-label" style="padding-left:0;">Tu Progreso de Revisión</div>' +
+      '<div class="prog-row"><div class="prog-head"><span>1. Configuración y Validación</span><span>' + cfgDone + '/' + totalConfigChecks + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + cfgPct + '%"></div></div></div>' +
+      '<div class="prog-row"><div class="prog-head"><span>2. Rutinas Periódicas</span><span>' + perDone + '/' + periodicActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + perPct + '%"></div></div></div>' +
+      '<div class="prog-row" style="margin-bottom:0;"><div class="prog-head"><span>3. Playbooks Ad-Hoc</span><span>' + ahDone + '/' + adhocActs.length + '</span></div><div class="progress-track"><div class="progress-fill" style="width:' + ahPct + '%"></div></div></div>';
+  }
+
+  // VISTA 0: OVERVIEW
+  document.getElementById("heroTitle").textContent = MODULE_DATA.nombre;
+  document.getElementById("heroSummary").textContent = MODULE_DATA.resumenEjecutivo;
+  document.getElementById("heroBadges").innerHTML = [
+    '<span class="badge badge-accent">Módulo ' + String(MODULE_DATA.orden).padStart(2, "0") + ' de 22</span>',
+    '<span class="badge">' + esc(MODULE_DATA.categoria) + '</span>',
+    '<span class="badge badge-learn">' + esc(MODULE_DATA.relacionM365E5.estado) + '</span>',
+    '<span class="badge">Validación: ' + esc(MODULE_DATA.fechaValidacion) + '</span>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").innerHTML = [
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 1 · Acciones Puntuales</div>' +
+        '<h3>Configuración Base y Validaciones</h3>' +
+        '<p>Qué debes habilitar al inicio (' + prereqs.length + ' prerrequisitos, ' + components.length + ' componentes y ' + rbacRoles.length + ' roles RBAC/PIM) y <strong>' + validations.length + ' validaciones "Proof of Life"</strong> para comprobar que todo quedó bien configurado.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-config">Ir a Configuración y Validaciones →</button></div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 2 · Operación Programada</div>' +
+        '<h3>Rutinas Periódicas por Frecuencia</h3>' +
+        '<p><strong>' + periodicActs.length + ' procedimientos preventivos</strong> separados con claridad en ciclos Diarios (' + dailyActs.length + '), Semanales (' + weeklyActs.length + '), Mensuales (' + monthlyActs.length + ') y Trimestrales/Anuales (' + longCycleActs.length + ').</p>' +
+      '</div>' +
+      '<div class="pill-row">' +
+        '<button class="btn btn-primary btn-sm" type="button" data-goto="view-periodic" data-gocad="Diaria">Diarias (' + dailyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Semanal">Semanales (' + weeklyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="Mensual">Mensuales (' + monthlyActs.length + ')</button>' +
+        '<button class="btn btn-sm" type="button" data-goto="view-periodic" data-gocad="CICLOS_LARGOS">Trim./Anual (' + longCycleActs.length + ')</button>' +
+      '</div>' +
+    '</div>',
+    '<div class="mode-card">' +
+      '<div>' +
+        '<div class="mode-kicker">Modo 3 · Reacción del Analista</div>' +
+        '<h3>Playbooks Ad-Hoc ante Alertas</h3>' +
+        '<p><strong>' + adhocActs.length + ' playbooks tácticos</strong> que no siguen calendario: se disparan cuando una alerta, señal de compromiso o incidente requiere contención e investigación del analista.</p>' +
+      '</div>' +
+      '<div><button class="btn btn-primary" type="button" data-goto="view-adhoc">Abrir Playbooks Ad-Hoc →</button></div>' +
+    '</div>'
+  ].join("");
+
+  document.getElementById("modesSummaryGrid").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-goto]");
+    if (!b) return;
+    switchView(b.getAttribute("data-goto"), b.getAttribute("data-gocad") || null);
+  });
+
+  const rel = MODULE_DATA.relacionM365E5;
+  document.getElementById("licensingOverviewCard").innerHTML =
+    '<h3 style="margin-top:0;font-size:20px;">Encaje de Licenciamiento en Microsoft 365 E5 y Portales Oficiales</h3>' +
+    '<p style="margin-bottom:16px;">' + richText(rel.notaLicenciamiento) + '</p>' +
+    '<div class="info-pair" style="margin-bottom:0;">' +
+      '<div class="info-box"><div class="info-label">Licencias y SKUs Aplicables</div><ul style="margin:6px 0 0 0;padding-left:20px;">' +
+        (rel.licencias || []).map((l) => '<li style="margin-bottom:6px;">' + richText(l) + '</li>').join("") +
+      '</ul></div>' +
+      '<div class="info-box"><div class="info-label">Consolas Oficiales de Administración y SOC</div><div class="pill-row" style="margin-top:10px;">' +
+        (MODULE_DATA.portalesPrincipales || []).map((u) => '<a class="btn" href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + ' ↗</a>').join("") +
+      '</div><div style="margin-top:16px;"><div class="info-label">Roles Involucrados</div><div class="pill-row" style="margin-top:6px;">' +
+        (MODULE_DATA.audiencia || []).map((au) => '<span class="badge">' + esc(au) + '</span>').join("") +
+      '</div></div></div>' +
+    '</div>';
+
+  document.getElementById("principlesGrid").innerHTML = (MODULE_DATA.principiosRectores || []).map((p) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:10px;">' +
+        '<h3 style="margin:0;font-size:17.5px;">' + esc(p.principio) + '</h3>' +
+        valBadge(p.estadoValidacion) +
+      '</div>' +
+      '<p class="muted" style="margin:0 0 12px 0;">' + richText(p.descripcion) + '</p>' +
+      (p.fuenteUrl ? '<a href="' + esc(p.fuenteUrl) + '" target="_blank" rel="noopener noreferrer">Consultar referencia en Microsoft Learn ↗</a>' : '') +
+    '</div>'
+  )).join("");
+
+  // VISTA 1: CONFIGURACIÓN PUNTUAL Y VALIDACIONES
+  function renderConfigView() {
+    document.getElementById("prereqsContainer").innerHTML = prereqs.map((pr, idx) => {
+      const code = "CFG-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '" style="padding:22px 28px;margin-bottom:16px;">' +
+          '<div class="card-title-group">' +
+            '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+            '<div style="flex:1;">' +
+              '<div class="pill-row" style="margin-bottom:6px;">' +
+                '<span class="card-code" style="margin-bottom:0;">' + code + '</span>' +
+                '<span class="badge">Acción Puntual de Puesta en Marcha</span>' +
+              '</div>' +
+              '<div style="font-size:16px;font-weight:600;">' + richText(pr) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("validationsContainer").innerHTML = validations.map((v, idx) => {
+      const code = "VAL-" + String(idx + 1).padStart(2, "0");
+      const done = !!uiState.tasks[code];
+      return (
+        '<div class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + code + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + code + ' · Validación de Configuración</span>' +
+                '<h4 class="card-heading">' + richText(v.control) + '</h4>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' + valBadge(v.origen || "Verificado MS Learn") + '</div>' +
+          '</div>' +
+          '<div class="info-pair" style="margin-bottom:0;">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Dónde y Cómo Validar la Configuración</div>' +
+              '<div class="info-content">' + richText(v.comoValidar) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label">Estado / Resultado Esperado ("Proof of Life")</div>' +
+              '<div class="info-content">' + richText(v.estadoEsperado) + '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join("");
+
+    document.getElementById("componentsContainer").innerHTML = components.map((c, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">COMP-' + String(idx + 1).padStart(2, "0") + ' · Subsistema Técnico</span>' +
+            '<h4 class="card-heading">' + esc(c.componente) + '</h4>' +
+          '</div>' +
+          valBadge(c.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Qué Configurar y Habilitar en este Componente</div>' +
+            '<div class="info-content">' + richText(c.funcionOperativa) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Ruta Exacta en Consola</div>' +
+            '<div class="info-content"><code>' + esc(c.portalRuta) + '</code></div>' +
+            '<div class="info-label" style="margin-top:14px;">Integraciones que Validar</div>' +
+            '<div class="pill-row" style="margin-top:6px;">' + (c.integraciones || []).map((i) => '<span class="badge">' + esc(i) + '</span>').join("") + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+
+    document.getElementById("rbacContainer").innerHTML = rbacRoles.map((r) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">RBAC / PIM · ' + esc(r.nivelSOC) + '</span>' +
+            '<h4 class="card-heading">' + esc(r.rol) + '</h4>' +
+          '</div>' +
+          valBadge(r.estadoValidacion) +
+        '</div>' +
+        '<div class="info-pair" style="margin-bottom:14px;">' +
+          '<div class="info-box">' +
+            '<div class="info-label">Configuración Puntual en PIM / Asignación</div>' +
+            '<div class="info-content">' + richText(r.asignacionPIM) + '</div>' +
+          '</div>' +
+          '<div class="info-box">' +
+            '<div class="info-label">Alcance de Permisos a Validar</div>' +
+            '<div class="info-content">' + richText(r.permisosClave) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="validation-footer">' +
+          '<div><strong>Uso operativo autorizado:</strong> ' + richText(r.responsabilidadOperativa) + '</div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+
+  // Helper to render step-by-step lists with clickable step checkmarks
+  function renderStepRows(actCode, steps) {
+    return '<ol class="steps-list">' + (steps || []).map((st, idx) => {
+      const stepKey = actCode + "_S" + (idx + 1);
+      const isChecked = !!uiState.steps[stepKey];
+      return (
+        '<li class="step-row ' + (isChecked ? "step-checked" : "") + '" data-step="' + esc(stepKey) + '" title="Haz clic para marcar o desmarcar este paso">' +
+          '<span class="step-num">' + (isChecked ? "✓" : (idx + 1)) + '</span>' +
+          '<div class="step-body">' + richText(st) + '</div>' +
+        '</li>'
+      );
+    }).join("") + '</ol>';
+  }
+
+  // VISTA 2: ACCIONES PERIÓDICAS
+  const roleSet = new Set();
+  periodicActs.forEach((a) => {
+    String(a.rolResponsable || "").split(/[\/+,]/).forEach((r) => {
+      const clean = r.trim();
+      if (clean) roleSet.add(clean);
+    });
+  });
+  const perRoleSel = document.getElementById("perRole");
+  Array.from(roleSet).sort().forEach((r) => {
+    const o = document.createElement("option");
+    o.value = r; o.textContent = "Rol: " + r;
+    perRoleSel.appendChild(o);
+  });
+
+  function syncPeriodicSubnav() {
+    document.querySelectorAll("#periodicCadBar .subnav-pill").forEach((b) => {
+      b.classList.toggle("active", b.getAttribute("data-pcad") === activePeriodicCad);
+    });
+    const titles = {
+      "Diaria": ["2. Acciones Periódicas — Rutinas Diarias", "Controles diarios del turno SOC y administración para asegurar salud de plataforma, triaje a tiempo y cero caídas silenciosas."],
+      "Semanal": ["2. Acciones Periódicas — Rutinas Semanales", "Actividades semanales de tuning de falsos positivos, caza proactiva, revisión de postura e higiene operativa."],
+      "Mensual": ["2. Acciones Periódicas — Rutinas Mensuales", "Gobierno mensual de privilegios RBAC/PIM, optimización financiera/retención, pruebas de automatización y reporte ejecutivo al CISO."],
+      "CICLOS_LARGOS": ["2. Acciones Periódicas — Ciclos Trimestrales, Semestrales y Anuales", "Ejercicios Tabletop/Purple Team, análisis de cobertura MITRE ATT&CK, simulacros de continuidad y auditoría estratégica anual."],
+      "ALL_PERIODIC": ["2. Todas las Acciones Periódicas Programadas", "Listado consolidado de todas las rutinas preventivas y de gobierno del módulo (excluyendo playbooks reactivos Ad-Hoc)."]
+    };
+    const pair = titles[activePeriodicCad] || titles["ALL_PERIODIC"];
+    document.getElementById("periodicTitle").textContent = pair[0];
+    document.getElementById("periodicSubtitle").textContent = pair[1];
+  }
+
+  document.getElementById("periodicCadBar").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-pcad]");
+    if (!b) return;
+    activePeriodicCad = b.getAttribute("data-pcad");
+    syncPeriodicSubnav();
+    switchView("view-periodic", activePeriodicCad);
+  });
+
+  function getFilteredPeriodic() {
+    const q = document.getElementById("perSearch").value.trim().toLowerCase();
+    const rol = document.getElementById("perRole").value;
+    const orig = document.getElementById("perOrigin").value;
+
+    return periodicActs.filter((a) => {
+      if (activePeriodicCad === "CICLOS_LARGOS") {
+        if (["Trimestral", "Semestral", "Anual"].indexOf(a.cadencia) === -1) return false;
+      } else if (activePeriodicCad !== "ALL_PERIODIC") {
+        if (a.cadencia !== activePeriodicCad) return false;
+      }
+      if (rol !== "ALL" && String(a.rolResponsable).indexOf(rol) === -1) return false;
+      if (orig !== "ALL" && a.estadoValidacion !== orig) return false;
+      if (q) {
+        const hay = [a.codigo, a.cadencia, a.actividad, a.objetivo, a.consolaRuta, a.rolResponsable, a.evidenciaAuditable, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderPeriodicCards() {
+    const list = getFilteredPeriodic();
+    document.getElementById("perCountLabel").textContent =
+      "Mostrando " + list.length + " acciones periódicas en esta vista (haz clic en cada paso numerado para llevar control de lectura o ejecución).";
+
+    const box = document.getElementById("periodicCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay actividades periódicas que coincidan con los filtros seleccionados.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + ' aria-label="Completar ' + esc(a.codigo) + '">' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Rutina ' + esc(a.cadencia) + '</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge">' + esc(a.rolResponsable) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Objetivo de la Rutina</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Consola y Ruta Exacta</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Acciones Paso a Paso a Ejecutar y Validar (' + steps.length + ' pasos)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación de cierre y evidencia auditable:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<span>MITRE ATT&amp;CK: ' + esc(a.mitreTactic) + ' · ' + esc(a.notaValidacion) + '</span>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Ver guía oficial en MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+
+  ["perSearch", "perRole", "perOrigin"].forEach((id) => {
+    document.getElementById(id).addEventListener("input", renderPeriodicCards);
+    document.getElementById(id).addEventListener("change", renderPeriodicCards);
+  });
+
+  // VISTA 3: PLAYBOOKS AD-HOC (ALERTAS Y SEÑALES)
+  function renderAdhocCards() {
+    const q = document.getElementById("adhocSearch").value.trim().toLowerCase();
+    const list = adhocActs.filter((a) => {
+      if (!q) return true;
+      const hay = [a.codigo, a.actividad, a.disparadorAlerta, a.objetivo, a.consolaRuta, a.rolResponsable, a.mitreTactic, (a.pasosDetallados || []).join(" ")].join(" ").toLowerCase();
+      return hay.indexOf(q) !== -1;
+    });
+
+    const box = document.getElementById("adhocCardsContainer");
+    if (!list.length) {
+      box.innerHTML = '<div class="spacious-card"><p class="muted" style="margin:0;">No hay playbooks Ad-Hoc que coincidan con la búsqueda.</p></div>';
+      return;
+    }
+
+    box.innerHTML = list.map((a) => {
+      const done = !!uiState.tasks[a.codigo];
+      const steps = a.pasosDetallados || a.procedimiento || [];
+      return (
+        '<article class="spacious-card adhoc-card ' + (done ? "is-done" : "") + '">' +
+          '<div class="card-top">' +
+            '<div class="card-title-group">' +
+              '<input type="checkbox" class="task-checkbox" data-task="' + esc(a.codigo) + '" ' + (done ? "checked" : "") + '>' +
+              '<div>' +
+                '<span class="card-code">' + esc(a.codigo) + ' · Playbook Reactivo del Analista (Ad-Hoc)</span>' +
+                '<h3 class="card-heading">' + esc(a.actividad) + '</h3>' +
+              '</div>' +
+            '</div>' +
+            '<div class="pill-row">' +
+              '<span class="badge badge-accent">MITRE: ' + esc(a.mitreTactic) + '</span>' +
+              '<span class="badge">NIST ' + esc(a.subcategoriaNIST) + '</span>' +
+              valBadge(a.estadoValidacion) +
+            '</div>' +
+          '</div>' +
+
+          '<div class="trigger-banner">' +
+            '<div class="info-label">Señal, Alerta o Evento Disparador (Cuándo debe actuar el analista)</div>' +
+            '<div class="info-content" style="font-weight:600;">' + richText(a.disparadorAlerta) + '</div>' +
+          '</div>' +
+
+          '<div class="info-pair">' +
+            '<div class="info-box">' +
+              '<div class="info-label">Meta de Contención y Erradicación</div>' +
+              '<div class="info-content">' + richText(a.objetivo) + '</div>' +
+            '</div>' +
+            '<div class="info-box">' +
+              '<div class="info-label"><span>Analista Ejecutor y Consola de Intervención</span><button class="btn btn-sm copy-text-btn" type="button" data-copy="' + esc(a.consolaRuta) + '">Copiar ruta</button></div>' +
+              '<div class="info-content"><strong>Rol:</strong> ' + esc(a.rolResponsable) + '<br><code>' + esc(a.consolaRuta) + '</code></div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="steps-section-title">Secuencia Táctica del Analista (' + steps.length + ' pasos de respuesta)</div>' +
+          renderStepRows(a.codigo, steps) +
+
+          '<div class="validation-footer">' +
+            '<div><strong>Validación post-contención y evidencia forense:</strong> ' + richText(a.evidenciaAuditable) + '</div>' +
+            '<div class="validation-footer-meta">' +
+              '<button class="btn btn-sm go-queries-btn" type="button">Abrir Consultas KQL / Scripts de Apoyo →</button>' +
+              (a.urlSoporte ? '<a href="' + esc(a.urlSoporte) + '" target="_blank" rel="noopener noreferrer">Documentación oficial de respuesta MS Learn ↗</a>' : '') +
+            '</div>' +
+          '</div>' +
+        '</article>'
+      );
+    }).join("");
+  }
+  document.getElementById("adhocSearch").addEventListener("input", renderAdhocCards);
+
+  // Global delegation for task checkboxes, step rows, copy buttons & query jumps
+  document.addEventListener("change", (e) => {
+    const chk = e.target.closest(".task-checkbox");
+    if (!chk) return;
+    const key = chk.getAttribute("data-task");
+    uiState.tasks[key] = chk.checked;
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  document.addEventListener("click", (e) => {
+    const stepEl = e.target.closest(".step-row");
+    if (stepEl && !e.target.closest("a")) {
+      const sk = stepEl.getAttribute("data-step");
+      uiState.steps[sk] = !uiState.steps[sk];
+      saveState(uiState);
+      renderPeriodicCards();
+      renderAdhocCards();
+      return;
+    }
+    const copyBtn = e.target.closest(".copy-text-btn");
+    if (copyBtn) {
+      const txt = copyBtn.getAttribute("data-copy") || "";
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(() => {
+          const prev = copyBtn.textContent;
+          copyBtn.textContent = "¡Copiado!";
+          setTimeout(() => { copyBtn.textContent = prev; }, 1400);
+        });
+      }
+      return;
+    }
+    if (e.target.closest(".go-queries-btn")) {
+      switchView("view-queries");
+    }
+  });
+
+  document.getElementById("resetChecksBtn").addEventListener("click", () => {
+    uiState = { tasks: {}, steps: {} };
+    saveState(uiState);
+    updateProgressTracker();
+    renderConfigView();
+    renderPeriodicCards();
+    renderAdhocCards();
+  });
+
+  // Export CSV (all activities with action type distinction)
+  document.getElementById("exportCsvBtn").addEventListener("click", () => {
+    const hdr = ["TipoAccion", "Codigo", "Cadencia", "Actividad", "Disparador_u_Objetivo", "ConsolaRuta", "RolResponsable", "FuncionNIST", "SubcategoriaNIST", "MITRE", "EstadoValidacion", "Completado", "EvidenciaAuditable"];
+    const lines = [hdr.join(",")];
+    allActs.forEach((a) => {
+      const vals = [
+        a.tipoAccion, a.codigo, a.cadencia, a.actividad,
+        a.cadencia === "Ad-Hoc" ? a.disparadorAlerta : a.objetivo,
+        a.consolaRuta, a.rolResponsable, a.funcionNIST, a.subcategoriaNIST,
+        a.mitreTactic, a.estadoValidacion, uiState.tasks[a.codigo] ? "Si" : "No", a.evidenciaAuditable
+      ].map((v) => '"' + String(v || "").replace(/"/g, '""') + '"');
+      lines.push(vals.join(","));
+    });
+    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url; link.download = MODULE_DATA.slug + "_Guia_Operacional.csv";
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  });
+
+  // VISTA 4: QUERIES
+  function renderQueries() {
+    const q = document.getElementById("kqlSearch").value.trim().toLowerCase();
+    const uf = document.getElementById("kqlUsageFilter").value;
+    const list = (MODULE_DATA.consultasKQLyVerificacion || []).filter((it) => {
+      if (uf !== "ALL" && it.usoOperativo !== uf) return false;
+      if (q && [it.nombre, it.plataforma, it.tablaPrincipal, it.proposito, it.consulta, it.usoOperativo].join(" ").toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+
+    document.getElementById("queriesContainer").innerHTML = list.map((it, idx) => (
+      '<div class="spacious-card">' +
+        '<div class="card-top">' +
+          '<div>' +
+            '<span class="card-code">Q-' + String(idx + 1).padStart(2, "0") + ' · ' + esc(it.usoOperativo) + '</span>' +
+            '<h3 class="card-heading">' + esc(it.nombre) + '</h3>' +
+          '</div>' +
+          '<div class="pill-row">' +
+            '<span class="badge badge-accent">' + esc(it.plataforma) + '</span>' +
+            '<span class="badge mono">' + esc(it.tablaPrincipal) + '</span>' +
+            valBadge(it.estadoValidacion) +
+            '<button class="btn btn-sm copy-kql-btn" type="button" data-qidx="' + idx + '">Copiar consulta</button>' +
+          '</div>' +
+        '</div>' +
+        '<p style="margin:0 0 12px 0;"><strong>Qué valida o detecta:</strong> ' + richText(it.proposito) + '</p>' +
+        '<pre class="code-block">' + esc(it.consulta) + '</pre>' +
+      '</div>'
+    )).join("");
+
+    document.querySelectorAll(".copy-kql-btn").forEach((b) => {
+      b.addEventListener("click", () => {
+        const item = list[Number(b.getAttribute("data-qidx"))];
+        if (item && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(item.consulta).then(() => {
+            b.textContent = "¡Consulta copiada!";
+            setTimeout(() => { b.textContent = "Copiar consulta"; }, 1500);
+          });
+        }
+      });
+    });
+  }
+  document.getElementById("kqlSearch").addEventListener("input", renderQueries);
+  document.getElementById("kqlUsageFilter").addEventListener("change", renderQueries);
+
+  // VISTA 5: KPIs, MATURITY & TRAINING
+  document.getElementById("kpiContainer").innerHTML = (MODULE_DATA.kpisYMetricas || []).map((k) => (
+    '<div class="spacious-card" style="margin-bottom:0;">' +
+      '<div class="card-top" style="margin-bottom:12px;">' +
+        '<div><span class="card-code">' + esc(k.id) + '</span><h4 class="card-heading" style="font-size:18px;">' + esc(k.nombre) + '</h4></div>' +
+        valBadge(k.estadoValidacion) +
+      '</div>' +
+      '<p style="margin:0 0 12px 0;">' + richText(k.definicion) + '</p>' +
+      '<pre class="code-block" style="margin:0 0 14px 0;">Fórmula: ' + esc(k.formula) + '</pre>' +
+      '<div class="pill-row">' +
+        '<span class="badge badge-accent">Meta: ' + esc(k.metaSugerida) + '</span>' +
+        '<span class="badge">Medición: ' + esc(k.frecuencia) + '</span>' +
+        '<span class="badge">' + esc(k.audiencia) + '</span>' +
+      '</div>' +
+      '<p class="muted" style="font-size:13px;margin:10px 0 0 0;">' + richText(k.notaValidacion) + '</p>' +
+    '</div>'
+  )).join("");
+
+  const mat = MODULE_DATA.modeloMadurez || [];
+  document.getElementById("maturityContainer").innerHTML = mat.map((m) => (
+    '<div class="spacious-card" style="padding:22px 28px;margin-bottom:14px;">' +
+      '<div class="pill-row" style="margin-bottom:6px;">' +
+        '<span class="card-code" style="margin-bottom:0;">' + richText(m.nivel) + '</span>' +
+        (m.estadio ? '<strong style="font-size:17px;">' + richText(m.estadio) + '</strong>' : '') +
+        '<span class="badge badge-editorial">Propuesta Editorial</span>' +
+      '</div>' +
+      '<div style="font-size:15.5px;">' + richText(m.descripcion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  const tr = MODULE_DATA.rutaFormacion || { headers: [], rows: [] };
+  if (tr.rows && tr.rows.length) {
+    document.getElementById("trainingContainer").innerHTML =
+      '<div class="table-wrap"><table><thead><tr>' +
+      tr.headers.map((h) => '<th>' + richText(h) + '</th>').join("") +
+      '</tr></thead><tbody>' +
+      tr.rows.map((row) => '<tr>' + row.map((cell, ci) => '<td>' + (ci === 0 ? '<strong>' + richText(cell) + '</strong>' : richText(cell)) + '</td>').join("") + '</tr>').join("") +
+      '</tbody></table></div>';
+  }
+
+  // VISTA 6: NIST CSF 2.0, AUDIT & REFS
+  function renderNist() {
+    const fn = document.getElementById("nistFuncSelect").value;
+    const rows = (MODULE_DATA.mapeoNISTCSF20 || []).filter((n) => fn === "ALL" || String(n.funcion).indexOf(fn) !== -1);
+    document.getElementById("nistCardsContainer").innerHTML = rows.map((n) => (
+      '<div class="spacious-card" style="padding:24px 30px;margin-bottom:16px;">' +
+        '<div class="card-top" style="margin-bottom:14px;">' +
+          '<div class="pill-row">' +
+            '<span class="card-code" style="margin-bottom:0;">' + esc(n.subcategoria) + '</span>' +
+            '<strong style="font-size:17px;">' + esc(n.funcion) + '</strong>' +
+          '</div>' +
+          valBadge(n.estadoValidacion) +
+        '</div>' +
+        '<p style="margin:0 0 14px 0;"><strong>Outcome NIST CSWP 29:</strong> ' + richText(n.descripcionResultado) + '</p>' +
+        '<div class="info-pair" style="margin-bottom:0;">' +
+          '<div class="info-box"><div class="info-label">Capacidad Habilitadora en Microsoft</div><div class="info-content">' + richText(n.capacidadMicrosoft) + '</div></div>' +
+          '<div class="info-box"><div class="info-label">Evidencia Auditable Reproducible</div><div class="info-content">' + richText(n.evidenciaAuditoria) + '</div></div>' +
+        '</div>' +
+      '</div>'
+    )).join("");
+  }
+  document.getElementById("nistFuncSelect").addEventListener("change", renderNist);
+
+  const vd = MODULE_DATA.validacionYDecisionesEditoriales || {};
+  document.getElementById("auditSummaryBox").innerHTML =
+    '<h4 style="margin:0 0 8px 0;font-size:18px;">Resumen de Auditoría Documental (' + esc(vd.fechaRevalidacion) + ')</h4>' +
+    '<p style="margin:0;">' + richText(vd.resumenAuditoria) + '</p>';
+
+  document.getElementById("corrContainer").innerHTML = '<ol style="padding-left:20px;margin:0;">' +
+    (vd.correccionesAplicadas || []).map((c) => '<li style="margin-bottom:12px;">' + richText(c) + '</li>').join("") + '</ol>';
+
+  document.getElementById("decContainer").innerHTML = (vd.decisionesEditoriales || []).map((d) => (
+    '<div class="info-box" style="margin-bottom:12px;">' +
+      '<div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;"><strong>' + esc(d.elemento) + '</strong>' + valBadge(d.tipo) + '</div>' +
+      '<div class="muted" style="font-size:14.5px;">' + richText(d.justificacion) + '</div>' +
+    '</div>'
+  )).join("");
+
+  function renderRefs() {
+    const q = document.getElementById("refSearch").value.trim().toLowerCase();
+    const list = (MODULE_DATA.referenciasVerificadas || []).filter((r) => {
+      if (!q) return true;
+      return [r.id, r.titulo, r.tipoFuente, r.autor, r.comentario, r.url].join(" ").toLowerCase().indexOf(q) !== -1;
+    });
+    document.getElementById("refTableBody").innerHTML = list.map((r) => (
+      '<tr>' +
+        '<td class="mono"><strong>' + esc(r.id) + '</strong></td>' +
+        '<td><a href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer"><strong>' + esc(r.titulo) + ' ↗</strong></a><br><span class="mono muted" style="font-size:12px;">' + esc(r.url) + '</span></td>' +
+        '<td><span class="badge">' + esc(r.tipoFuente) + '</span></td>' +
+        '<td>' + esc(r.autor) + '</td>' +
+        '<td>' + richText(r.comentario) + '</td>' +
+      '</tr>'
+    )).join("");
+  }
+  document.getElementById("refSearch").addEventListener("input", renderRefs);
+
+  // Initial render
+  updateProgressTracker();
+  renderConfigView();
+  syncPeriodicSubnav();
+  renderPeriodicCards();
+  renderAdhocCards();
+  renderQueries();
+  renderNist();
+  renderRefs();
+  applyInitialHash();
+})();
+</script>
+</body>
+</html>

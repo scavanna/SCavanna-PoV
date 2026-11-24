@@ -1,0 +1,84 @@
+document_type: magerit_compatible_threat_risk_analysis
+adaptation_status: non_official
+adaptation_notice: >-
+  Adaptación no oficial basada en MAGERIT v3. Conserva el núcleo metodológico y lo amplía
+  con referencias externas; no sustituye los libros oficiales ni constituye interpretación normativa.
+analysis_id: RS-000
+analysis_version: 0.1.0
+review_date: YYYY-MM-DD
+owner: <responsable_del_riesgo>
+scope:
+  system_or_service: <nombre>
+  business_processes: []
+  jurisdictions: []
+  included: []
+  excluded: []
+  assumptions: []
+assets:
+  - asset_id: <ACT-000>
+    name: <activo>
+    owner: <dueño>
+    magerit_dimensions: []
+    value_and_basis: <valoración MAGERIT y fundamento>
+    dependencies: []
+    data_classification: <si aplica>
+threat:
+  magerit_id: <N/E/I/A.n o vacío>
+  magerit_name: <nombre oficial>
+  origin: <natural/industrial/error/deliberado>
+  extension_id: <EXT-000 o vacío>
+  actor_or_source: <actor/fuente>
+  event: <evento amenazante>
+  preconditions: []
+  attack_patterns_or_techniques:
+    - source: <ATT&CK/CAPEC/ATLAS/OWASP>
+      id: <ID>
+      version: <versión>
+      applicability_reason: <por qué aplica>
+scenario:
+  statement: >-
+    Existe riesgo de <consecuencia medible> sobre <activo/proceso> cuando <evento>,
+    facilitado por <precondiciones>, afectando <objetivos/titulares>.
+  degradation_by_dimension: {}
+  accumulated_and_transferred_impact: {}
+  consequence_business: []
+  consequence_privacy: []
+  consequence_human_safety: []
+valuation:
+  method: MAGERIT
+  threat_likelihood_or_frequency: <valor y fundamento>
+  inherent_impact: <valor y fundamento>
+  inherent_risk: <valor y fundamento>
+  uncertainty: []
+safeguards:
+  - safeguard_id: CTL-000
+    description: <medida>
+    lifecycle_state: <proposed/designed/deployed/tested/effective/ineffective/not_applicable>
+    objective: <reduce likelihood/reduce consequence/detect/respond/recover>
+    magerit_threats_addressed: []
+    external_control_mapping: []
+    owner: <responsable>
+    evidence: []
+    effectiveness_basis: <diseño/operación/última prueba>
+residual:
+  residual_impact: <valor>
+  residual_risk: <valor>
+  appetite_decision: <accept/modify/avoid/transfer/escalate>
+  approved_by: <aprobador>
+  expiry_or_review_date: YYYY-MM-DD
+treatment:
+  plan: []
+  exception: []
+  deadlines: []
+  metrics: []
+privacy:
+  applicable: <yes/no/unknown>
+  linddun_types: []
+  data_subjects: []
+  purpose_and_lawful_basis: []
+  dpia_reference: <ID/enlace o no aplica>
+governance:
+  consulted: []
+  informed: []
+  incidents_or_exercises: []
+  next_review: YYYY-MM-DD

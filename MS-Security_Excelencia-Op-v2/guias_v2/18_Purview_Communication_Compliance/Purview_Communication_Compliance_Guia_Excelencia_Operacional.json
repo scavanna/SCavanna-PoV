@@ -1,0 +1,1267 @@
+{
+  "schemaVersion": "2.0",
+  "id": "18_Purview_Communication_Compliance",
+  "orden": 18,
+  "slug": "Purview_Communication_Compliance",
+  "nombre": "Microsoft Purview Communication Compliance (Riesgo Conductual, Supervisión Regulatoria e Interacciones IA)",
+  "nombreCorto": "Purview Communication Compliance",
+  "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)",
+  "bloqueOrigen": "Nuevo desde Microsoft Learn MCP (Nov 2026)",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://purview.microsoft.com",
+    "https://admin.teams.microsoft.com",
+    "https://security.microsoft.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "Chief Compliance Officer (CCO)",
+    "Legal & Regulatory Counsel",
+    "Human Resources (Employee Relations)",
+    "Insider Risk Manager",
+    "AI Governance Lead",
+    "Purview Compliance Admin",
+    "SOC L2 / L3",
+    "GRC / Data Protection Officer"
+  ],
+  "relacionM365E5": {
+    "estado": "Incluido en Microsoft 365 E5 / Microsoft Purview Suite (+ Pay-As-You-Go para fuentes no-M365/IA)",
+    "licencias": [
+      "Microsoft 365 E5 / E7 / A5 / F5 Compliance / G5 o Office 365 E5",
+      "Microsoft Purview Suite (denominación oficial desde el 1 de octubre de 2025 para M365 E5 Compliance) o E5 Insider Risk Management add-on",
+      "Microsoft 365 Copilot (incluido sin cargos Pay-As-You-Go para supervisar interacciones de M365 Copilot y M365 Copilot Chat)",
+      "Microsoft Purview Pay-As-You-Go en Azure (medidor por registros de texto de 1.000 caracteres para Copilot Studio, Fabric Copilot, Security Copilot, Anthropic Claude Enterprise y otras apps IA empresariales/externas)",
+      "Microsoft Security Copilot SCUs (requerido para la función Summarize with Copilot in Microsoft Purview sobre mensajes de 100 a 15.000 palabras)"
+    ],
+    "prerrequisitos": [
+      "Ingesta del registro de auditoría unificado habilitada (UnifiedAuditLogIngestionEnabled = True en Exchange Online PowerShell)",
+      "Buzones alojados en Exchange Online para usuarios supervisados y obligatoriamente para todos los Reviewers asignados a las políticas",
+      "Segregación explícita de grupos de roles en purview.microsoft.com (Communication Compliance Admins, Analysts, Investigators, Viewers) dejando vacío el grupo monolítico Communication Compliance",
+      "Viva Engage configurado en Native Mode si se supervisan comunidades o mensajes privados de Viva Engage",
+      "Transcripción de reuniones habilitada en Teams Admin Center si se supervisan transcripciones de reuniones de Microsoft Teams",
+      "Suscripción activa de Azure vinculada a Microsoft Purview Pay-As-You-Go antes de habilitar Enterprise AI apps u Other AI apps"
+    ],
+    "notaLicenciamiento": "Communication Compliance se licencia por usuario supervisado dentro de Microsoft 365 E5/E7 y Microsoft Purview Suite sin costo por consumo adicional para Exchange Online, Microsoft Teams, Viva Engage y Microsoft 365 Copilot / M365 Copilot Chat. Para interacciones con aplicaciones GenAI no-M365 (Copilot Studio, Copilot en Fabric, Security Copilot, agentes externos, apps conectadas vía Entra/Data Map como Anthropic Claude Enterprise y apps IA detectadas en navegador/red), aplica facturación complementaria Pay-As-You-Go en Azure medida en Text records (1 registro de texto = 1.000 caracteres redondeado hacia arriba; ej. 7.500 caracteres = 8 registros), diferenciando tarifa Standard y tarifa Premium (aplicable al evaluar clasificadores Code of conduct LLM —Hate, Self-harm, Violence, Sexual— o Risky Gen AI —Prompt Shields, Protected material—)."
+  },
+  "resumenEjecutivo": "Microsoft Purview Communication Compliance es la solución de riesgo interno, supervisión regulatoria (SEC Rule 17a-4, FINRA Rule 3110, MiFID II) y gobernanza de interacciones con IA Generativa dentro de Microsoft Purview Suite, operada íntegramente desde https://purview.microsoft.com. Construida bajo principios estrictos de privacidad por diseño (seudonimización predeterminada de identidades, bloqueo por defecto de lectura para Global Administrators, opt-in explícito de administradores y trazabilidad completa de auditoría), permite inspeccionar cada hora comunicaciones en Exchange Online, Microsoft Teams (chats, canales privados/públicos/compartidos, adjuntos modernos OneDrive/SharePoint, imágenes OCR y transcripciones de reuniones), Viva Engage en modo nativo, conectores de terceros (Instant Bloomberg, Slack, Zoom, WhatsApp, SMS), Microsoft 365 Copilot, Copilot Studio, instancias de agentes en Microsoft Agent 365 y aplicaciones IA empresariales o externas. Integra clasificadores entrenables de Microsoft, clasificadores LLM de Azure AI Content Safety (severidad >= 4), Prompt Shields contra jailbreak, evaluación de sentimiento, resumen contextual con Security Copilot, preservación configurable de coincidencias (1 mes a 7 años) y escalamiento nativo hacia Insider Risk Management y eDiscovery (Premium).",
+  "principiosRectores": [
+    {
+      "principio": "Privacidad por Diseño y Seudonimización Predeterminada",
+      "descripcion": "Mantener activada por defecto la seudonimización de identidades (ej. ANON2340) para evitar sesgos durante el triaje inicial, exigiendo opt-in explícito y auditoría inmutable de cada acción de revisión.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/insider-risk-solution-privacy"
+    },
+    {
+      "principio": "Segregación Estricta entre Configuración Técnica e Investigación de Mensajes",
+      "descripcion": "Garantizar que Global Administrators y Communication Compliance Admins configuren políticas y privacidad sin acceso al contenido de alertas, restringiendo la lectura y remediación exclusivamente a Analysts e Investigators designados como Reviewers.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/communication-compliance-permissions"
+    },
+    {
+      "principio": "Supervisión Unificada de Canales Humanos, Agentes Autónomos e IA Generativa",
+      "descripcion": "Inspeccionar bajo un mismo modelo operativo correo, Teams, Viva Engage y conectores financieros junto con prompts y respuestas de Microsoft 365 Copilot, Copilot Studio, Microsoft Agent 365 y LLMs empresariales frente a Prompt Shields y Protected material.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/communication-compliance-copilot"
+    },
+    {
+      "principio": "Detección Multimodal de Alta Precisión y Reducción Sistemática de Ruido",
+      "descripcion": "Combinar SITs, diccionarios personalizados (hasta 100 KB comprimidos), clasificadores entrenables, clasificadores LLM de Azure AI Content Safety (severidad >= 4), sentimiento y OCR (100 KB a 4 MB), habilitando Filter email blasts y Cross-policy resolution.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/communication-compliance-policies"
+    },
+    {
+      "principio": "Gobierno Proactivo de Cuotas de Almacenamiento y Policy Match Preservation",
+      "descripcion": "Vigilar preventivamente el tope de 100 GB o 1 millón de mensajes por buzón de política y alinear Policy Match Preservation (1 mes, 6 meses, 1 año o 7 años) con Data Lifecycle Management sin eliminar políticas desactivadas con evidencia requerida.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/communication-compliance-investigate-remediate"
+    },
+    {
+      "principio": "Orquestación Transversal con Insider Risk Management y eDiscovery (Premium)",
+      "descripcion": "Alimentar señales conductuales reiteradas (>= 5 mensajes riesgosos en 24 h) hacia políticas de fuga de datos en Insider Risk Management y escalar evidencia crítica directamente hacia casos de eDiscovery (Premium) con hasta 100 mensajes por lote.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/communication-compliance-policies#integrate-communication-compliance-with-microsoft-purview-insider-risk-management"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Motor de Políticas, Plantillas Inteligentes y Condition Builder",
+      "funcionOperativa": "Gestión exclusiva vía portal Purview (PowerShell no soportado para crear/editar políticas) con 7 plantillas preconfiguradas, muestreo porcentual y lógica anidada AND/OR/NOT.",
+      "portalRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies",
+      "integraciones": [
+        "Purview Adaptive Scopes",
+        "Sensitive Information Types (SITs)",
+        "Custom Keyword Dictionaries (hasta 100 KB post-compresión)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Clasificadores Entrenables de Microsoft y Azure AI Content Safety (LLM)",
+      "funcionOperativa": "Evaluación mediante 11 clasificadores entrenables regulatorios/conductuales, 4 clasificadores LLM (Hate, Sexual, Violence, Self-harm con severidad >= 4), Prompt Shield, Protected material e imágenes Adult/Racy.",
+      "portalRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies > Conditions",
+      "integraciones": [
+        "Azure AI Content Safety",
+        "Purview Trainable Classifiers",
+        "Microsoft 365 Copilot & Viva Engage"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Inspector de Adjuntos Modernos, Escaneo OCR y Análisis de Sentimiento",
+      "funcionOperativa": "Extracción automática a .txt de archivos vinculados en OneDrive/SharePoint desde Teams, OCR impreso y manuscrito en imágenes (100 KB a 4 MB), sentimiento (Positive/Negative/Neutral hasta 5.120 palabras) y Pattern detected.",
+      "portalRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies > [Policy] > Pending",
+      "integraciones": [
+        "OneDrive for Business & SharePoint Online",
+        "Azure AI Vision OCR",
+        "Azure AI Language Sentiment & Translator"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Cobertura de IA Generativa y Agentes Autónomos (Copilot, Agent 365, Enterprise AI)",
+      "funcionOperativa": "Captura y análisis separado de prompts y respuestas en M365 Copilot, Copilot Studio, instancias registradas en Microsoft Agent 365, apps conectadas vía Entra/Data Map (ej. Claude Enterprise) y apps IA de red/navegador.",
+      "portalRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies / DSPM > AI observability",
+      "integraciones": [
+        "Microsoft 365 Copilot & Copilot Studio",
+        "Microsoft Agent 365 & Purview DSPM",
+        "Microsoft Defender for Cloud Apps & Purview PAYG"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Política del Sistema User-Reported Messages (Teams y Viva Engage)",
+      "funcionOperativa": "Recepción centralizada de mensajes reportados voluntariamente por empleados en chats 1:1/grupales de Microsoft Teams y conversaciones de Viva Engage con clasificación automática Content Safety.",
+      "portalRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies > User-reported messages",
+      "integraciones": [
+        "Microsoft Teams Admin Center (Messaging Policies)",
+        "Viva Engage Admin Center (Report Conversations)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Consola de Investigación, Remediación y Summarize with Copilot",
+      "funcionOperativa": "Vistas Source, Plain text, Conversation, Translation y User activity; síntesis contextual con Security Copilot (100 a 15.000 palabras) y acciones Resolve, Tag as, Notify, Escalate, Remove message in Teams y Power Automate.",
+      "portalRuta": "purview.microsoft.com > Solutions > Communication Compliance > Alerts / Policies > Pending",
+      "integraciones": [
+        "Microsoft Security Copilot in Purview",
+        "Microsoft Teams Client Policy Tips",
+        "Microsoft Power Automate"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Policy Health (Preview), Policy Match Preservation y Review Mailboxes",
+      "funcionOperativa": "Monitoreo de advertencias por cuota de 100 GB o 1 millón de mensajes por política, recomendaciones anti-ruido y preservación configurable de coincidencias (1 mes, 6 meses, 1 año o 7 años).",
+      "portalRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies > Policy health / Settings",
+      "integraciones": [
+        "Exchange Online Scoped Review Mailboxes",
+        "Microsoft Purview Data Lifecycle Management"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Integración Nativa con Insider Risk Management y eDiscovery (Premium)",
+      "funcionOperativa": "Disparo automático de alcance hacia IRM (>= 5 mensajes riesgosos en 24 h), indicadores de IA/conducta compartidos y apertura directa de casos en eDiscovery (Premium) con hasta 100 mensajes multi-canal.",
+      "portalRuta": "purview.microsoft.com > Solutions > Insider Risk Management / eDiscovery",
+      "integraciones": [
+        "Microsoft Purview Insider Risk Management",
+        "Microsoft Purview eDiscovery (Premium)",
+        "Conectores 3rd-Party (Bloomberg, Slack, Zoom, WhatsApp)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "Communication Compliance Admins",
+      "nivelSOC": "Ingeniería de Cumplimiento / Plataforma Purview",
+      "permisosClave": "Configurar políticas, condiciones, ajustes globales de privacidad (seudonimización, Policy Match Preservation, Cross-policy resolution), plantillas de aviso y exportar actualizaciones de políticas. Sin acceso a alertas ni lectura de mensajes.",
+      "asignacionPIM": "Asignación con fecha de expiración en Purview (julio 2026) o elegible vía Entra PIM for Groups (máx. 4 h JIT con MFA resistente a phishing); mantener mínimo 2 cuentas para evitar escenario zero-admin.",
+      "responsabilidadOperativa": "Crear, copiar, pausar y optimizar políticas, gestionar cuotas de 100 GB/1M mensajes y mantener configuraciones de privacidad.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Communication Compliance Analysts",
+      "nivelSOC": "Analista de Supervisión L1 (Compliance / RR. HH. / FINRA)",
+      "permisosClave": "Acceder y revisar alertas de políticas donde figure como Reviewer, usar Summarize con Copilot, etiquetar (Tag as), enviar avisos (Notify), escalar a otro revisor y resolver (Resolve). No ve pestañas Conversation/Translation ni remediación avanzada.",
+      "asignacionPIM": "Asignación activa controlada con revisión mensual/trimestral de membresía operando bajo seudonimización predeterminada.",
+      "responsabilidadOperativa": "Triaje diario de colas pendientes, descarte de falsos positivos y ejecución de muestreos regulatorios.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Communication Compliance Investigators",
+      "nivelSOC": "Investigador Sénior L2/L3 (Legal / Relaciones Laborales / Forense)",
+      "permisosClave": "Todos los permisos de Analysts más acceso a pestañas Conversation y Translation, Remove message in Teams, Escalate for investigation hacia eDiscovery (Premium), descarga/exportación de ítems y ejecución de flujos Power Automate.",
+      "asignacionPIM": "Elegible vía Entra PIM for Groups (máx. 8 h JIT con justificación de caso) o membresía nominal estrictamente acotada con auditoría mensual.",
+      "responsabilidadOperativa": "Investigación profunda de incidentes graves, contención de mensajes tóxicos en Teams y escalamiento probatorio a Legal e IRM.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Communication Compliance Viewers",
+      "nivelSOC": "Gobierno, Riesgo, Auditoría Interna y DPO",
+      "permisosClave": "Visualizar widgets e informes estadísticos en Reports y exportar actualizaciones de configuración de políticas, sin acceso a alertas individuales ni contenido de mensajes.",
+      "asignacionPIM": "Asignación permanente o con vencimiento semestral para supervisión ejecutiva y control de cumplimiento.",
+      "responsabilidadOperativa": "Seguimiento de KPIs, cumplimiento de cuotas regulatorias y presentación de métricas a comités.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Communication Compliance (Grupo Monolítico)",
+      "nivelSOC": "Rol Todo-en-Uno (Restringido / No recomendado en producción)",
+      "permisosClave": "Agrupa todos los privilegios de Admins, Analysts, Investigators y Viewers en un solo grupo.",
+      "asignacionPIM": "Mantener con 0 miembros en producción empresarial para preservar la segregación de funciones.",
+      "responsabilidadOperativa": "Uso exclusivo en tenants de laboratorio o validación inicial antes de adoptar el modelo de 4 grupos segregados.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Microsoft Entra Compliance Administrator",
+      "nivelSOC": "Gobierno Global de Microsoft Purview",
+      "permisosClave": "Habilita acceso administrativo inicial a Communication Compliance con permisos equivalentes a Communication Compliance Admins (sin lectura de alertas/mensajes).",
+      "asignacionPIM": "Elegible en Microsoft Entra PIM (máx. 2 h JIT, aprobación dual y MFA FIDO2/Passkey).",
+      "responsabilidadOperativa": "Configuración fundacional del tenant, vinculación de Administrative Units, conectores y facturación Pay-As-You-Go.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Security Copilot Contributor",
+      "nivelSOC": "Habilitador de Asistencia IA en Investigación",
+      "permisosClave": "Permite a Analysts e Investigators ejecutar la acción Summarize en el panel lateral de Copilot in Microsoft Purview.",
+      "asignacionPIM": "Asignado mediante grupo de seguridad restringido a revisores autorizados para consumir SCUs.",
+      "responsabilidadOperativa": "Acelerar la comprensión contextual de hilos extensos, transcripciones y adjuntos de entre 100 y 15.000 palabras.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Audit Reader / Permiso Graph AuditLogsQuery.Read.All",
+      "nivelSOC": "Auditoría Independiente de Privacidad (Watch the Watchers)",
+      "permisosClave": "Consultar y exportar eventos SupervisionPolicyCreated, SupervisionPolicyUpdated, SupervisionPolicyDeleted y SupervisoryReviewTag en Purview Audit y Microsoft Graph.",
+      "asignacionPIM": "Asignado a personal de Privacidad/Auditoría Interna totalmente independiente de los revisores de Communication Compliance.",
+      "responsabilidadOperativa": "Auditar mensualmente las acciones de administradores e investigadores garantizando el respeto a la privacidad laboral.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Triaje priorizado de alertas por severidad LLM (>= 4), sentimiento negativo y patrones repetitivos",
+      "objetivo": "Clasificar las coincidencias de las últimas 24 horas priorizando amenazas severas de conducta y seguridad psicológica.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Alerts / Policies > Pending",
+      "procedimiento": [
+        "Abrir la vista Alerts para identificar políticas con mayor severidad en los últimos 30 días y acceder a aquellas con New pending today > 0.",
+        "Filtrar la pestaña Pending por columna Severity >= 4 (clasificadores LLM Hate, Violence, Sexual, Self-harm) y Sentiment = Negative.",
+        "Verificar si el detalle del mensaje exhibe la alerta Pattern detected (>= 2 mensajes del mismo remitente al mismo destinatario en 30 días).",
+        "Utilizar Summarize de Copilot in Microsoft Purview en mensajes de 100 a 15.000 palabras y aplicar Tag as, Notify, Escalate o Resolve."
+      ],
+      "rolResponsable": "Communication Compliance Analyst / Investigator",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-02",
+      "mitreTactic": "Impact / Insider Behavioral Precursor",
+      "evidenciaAuditable": "Eventos SupervisoryReviewTag en Purview Audit y cola de alta severidad atendida en < 24 horas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Umbrales de severidad LLM >= 4, Sentiment y Pattern detected verificados en MS Learn; SLA de 24 h es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-investigate-remediate"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Supervisión de interacciones riesgosas en IA Generativa (Prompt Shields, Protected material y SITs)",
+      "objetivo": "Detectar intentos de jailbreak, uso de material con copyright o envío de datos sensibles en M365 Copilot, Copilot Studio y apps IA empresariales/externas.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies > [Política GenAI] > Pending",
+      "procedimiento": [
+        "Acceder a las políticas con ubicaciones Microsoft Copilot experiences, Enterprise AI apps y Other AI apps.",
+        "Identificar el prefijo [Copilot] o [AI app] en Subject y distinguir entradas de prompt frente a respuestas generadas.",
+        "Evaluar el disparo de Prompt Shield, Protected material o Sensitive Information Types en la barra superior de condiciones.",
+        "Etiquetar como Noncompliant, enviar aviso educativo con Notify o escalar a SOC/IRM ante inyección adversaria deliberada."
+      ],
+      "rolResponsable": "Communication Compliance Investigator / AI Governance Analyst",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "MITRE ATLAS AML.T0051 / AML.T0054 (LLM Prompt Injection & Jailbreak)",
+      "evidenciaAuditable": "Historial de remediación del par prompt-respuesta y correlación con registros CopilotInteraction.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo y clasificadores GenAI verificados en Configure a Communication Compliance policy to detect generative AI interactions.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-copilot"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Atención y remoción en Teams de mensajes reportados por usuarios (User-reported messages)",
+      "objetivo": "Investigar reportes enviados por empleados desde Microsoft Teams y Viva Engage, conteniendo mensajes abusivos.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies > User-reported messages > Pending",
+      "procedimiento": [
+        "Revisar los nuevos reportes en la política del sistema User-reported messages junto con su severidad Content Safety.",
+        "Inspeccionar el contexto en la pestaña Conversation (hasta 20 mensajes previos y posteriores en Teams).",
+        "Ejecutar Remove message in Teams cuando se confirme acoso, violencia o contenido explícito para sustituirlo por un policy tip.",
+        "Aplicar etiqueta Noncompliant, registrar folio de Relaciones Laborales y pulsar Resolve."
+      ],
+      "rolResponsable": "Communication Compliance Investigator",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Impact / Workplace Harassment Containment",
+      "evidenciaAuditable": "Registro auditado de la acción Remove message in Teams en View item history.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Política del sistema User-reported messages y acción Remove message in Teams verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-policies#user-reported-messages-policy"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Ejecución de muestreo diario de supervisión regulatoria financiera (SEC / FINRA / MiFID II)",
+      "objetivo": "Cumplir la revisión supervisada obligatoria sobre comunicaciones de personal regulado en Exchange, Teams, transcripciones y conectores (Bloomberg/WhatsApp).",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies > [Política Regulatoria] > Pending",
+      "procedimiento": [
+        "Filtrar por Item class y clasificadores regulatorios (Stock manipulation, Regulatory collusion, Money laundering, Gifts & entertainment, Unauthorized disclosure, Customer complaints).",
+        "Revisar marcas de tiempo (30 s antes/después) en transcripciones de reuniones de Teams y usar Translation para mensajes en otros idiomas.",
+        "Etiquetar cada coincidencia como Compliant, Questionable o Noncompliant con comentario justificativo obligatorio.",
+        "Resolver los ítems revisados o escalar hallazgos materiales a Legal/eDiscovery."
+      ],
+      "rolResponsable": "Communication Compliance Analyst / Supervisor Regulatorio",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "Exfiltration / Financial Regulatory Non-Compliance",
+      "evidenciaAuditable": "Message details report exportable demostrando supervisión oportuna bajo FINRA Rule 3110.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Plantilla financiera del 10 %, clasificadores y soporte de transcripciones verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Inspección de adjuntos modernos extraídos (.txt), imágenes OCR y coincidencias ocultas",
+      "objetivo": "Asegurar la revisión completa de archivos vinculados de OneDrive/SharePoint, capturas de pantalla escaneadas con OCR y cadenas codificadas.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies > [Política] > Pending > Attachments / Source",
+      "procedimiento": [
+        "Filtrar la cola Pending por Has attachment = Yes o File class = attachment.",
+        "Revisar los archivos .txt extraídos de Modern attachments en Teams (.docx, .xlsx, .pptx, .pdf, .csv, .txt) y los ítems hijos generados por OCR (100 KB a 4 MB).",
+        "Ante coincidencias sin texto resaltado visible en Plain text, descargar el .zip (< 3 MB) e inspeccionar el .eml buscando etiquetas HTML, atributos alt o cadenas Base64.",
+        "Documentar la decisión y resolver conjuntamente el mensaje padre y sus elementos hijos."
+      ],
+      "rolResponsable": "Communication Compliance Investigator",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Defense Evasion — Obfuscated Files or Information (T1027)",
+      "evidenciaAuditable": "Trazabilidad de resolución sobre elementos de adjuntos e imágenes OCR en el historial de la política.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Extracción de Modern attachments, OCR (100 KB-4 MB) y protocolo de Hidden matches verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-investigate-remediate#understanding-hidden-matches"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Verificación operativa de escaneo horario (Last policy scan y Messages scanned today)",
+      "objetivo": "Confirmar que todas las políticas activas procesan señales cada hora sin errores de estado ni caída de conectores.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies",
+      "procedimiento": [
+        "Inspeccionar las columnas Status, Last policy scan (UTC) y Messages scanned today en el listado general de políticas.",
+        "Investigar cualquier política activa con Messages scanned today = 0 persistente o estado Error in pausing / Error in resuming.",
+        "Verificar que ninguna política crítica haya pasado a estado Deactivated por saturación de almacenamiento."
+      ],
+      "rolResponsable": "Communication Compliance Admin",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-06",
+      "mitreTactic": "Defense Evasion — Impair Defenses (T1562)",
+      "evidenciaAuditable": "Exportación diaria de Policy settings and status confirmando escaneo horario activo.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Frecuencia de escaneo de 1 hora y columnas de monitoreo verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-policies#policy-activity-detection"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Correlación de severidad de usuario entre Communication Compliance e Insider Risk Management",
+      "objetivo": "Detectar empleados donde infracciones comunicacionales o de IA coinciden con exfiltración inusual de archivos.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies > Pending > User activity",
+      "procedimiento": [
+        "Abrir la pestaña User activity en toda alerta marcada como Questionable o Noncompliant.",
+        "Evaluar el indicador Insider risk severity y el conteo de Risk activities y Unusual activities de los últimos 30 días.",
+        "Escalar al equipo de Insider Risk Management usando Open in insider risk management cuando confluyan hostilidad/sabotaje y movimiento anómalo de datos."
+      ],
+      "rolResponsable": "Communication Compliance Investigator / Insider Risk Investigator",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-07",
+      "mitreTactic": "Exfiltration / Insider Threat Correlation",
+      "evidenciaAuditable": "Registro de escalamiento cruzado documentado en comentarios de remediación.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Integración de la pestaña User activity con severidad de IRM verificada en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-investigate-remediate#examine-the-message-details"
+    },
+    {
+      "codigo": "D-08",
+      "cadencia": "Diaria",
+      "actividad": "Supervisión de comportamiento comunicacional de agentes autónomos en DSPM > AI observability (Agent 365)",
+      "objetivo": "Monitorear instancias de agentes registrados en Microsoft Agent 365 por comunicaciones poco éticas en Teams y correo.",
+      "consolaRuta": "purview.microsoft.com > Solutions > DSPM > AI observability / Communication Compliance > Policies",
+      "procedimiento": [
+        "Revisar en DSPM > AI observability las instancias de agentes con actividad en los últimos 30 días priorizadas por riesgo de IRM y categoría Unethical behavior.",
+        "Confirmar que toda instancia nueva de Agent 365 productiva esté incluida en políticas de Communication Compliance.",
+        "Notificar al propietario del agente (Agent Owner) registrado en Entra ID para remediar prompts del sistema ante respuestas Noncompliant."
+      ],
+      "rolResponsable": "AI Governance Lead / Communication Compliance Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-01",
+      "mitreTactic": "MITRE ATLAS AML.T0048 (Rogue / Misaligned AI Agent Behavior)",
+      "evidenciaAuditable": "Vista actualizada de AI observability y trazabilidad de remediación con propietarios de agentes.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Soporte de Agent 365 en Communication Compliance y DSPM > AI observability verificado en MS Learn (mayo 2026).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/ai-agent-365"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Revisión de Policy Health (Preview), activación de Filter email blasts y cierre de puntos ciegos",
+      "objetivo": "Resolver advertencias de capacidad y aplicar recomendaciones de reducción de ruido y cobertura de usuarios.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies > Policy health",
+      "procedimiento": [
+        "Inspeccionar el resumen superior de Warnings y Recommendations en la página Policies.",
+        "Activar Filter email blasts en políticas con ruido de boletines y auditar el informe Email blast senders.",
+        "Revisar usuarios sugeridos por Reduce user scoping blind spots y decidir su inclusión formal con Legal/RR. HH."
+      ],
+      "rolResponsable": "Communication Compliance Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.IM-02",
+      "mitreTactic": "N/A (Detection Tuning & Coverage)",
+      "evidenciaAuditable": " Cero advertencias críticas abiertas en Policy Health y exportación de Email blast senders.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Advertencias y recomendaciones de Policy health (preview) verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-policies#policy-health-preview"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Afinamiento de condiciones booleanas, excepciones NOT y diccionarios personalizados",
+      "objetivo": "Disminuir la tasa de falsos positivos analizando elementos resueltos como Item was misclassified.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies > Edit / Reports",
+      "procedimiento": [
+        "Exportar Items and actions per policy para identificar políticas con baja proporción de hallazgos accionables.",
+        "Refinar grupos anidados NOT en el Condition builder para excluir firmas corporativas o dominios transaccionales legítimos.",
+        "Actualizar diccionarios personalizados verificando que el tamaño total comprimido no exceda los 100 KB en el tenant."
+      ],
+      "rolResponsable": "Communication Compliance Admin",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-03",
+      "mitreTactic": "N/A (Classifier & Lexicon Optimization)",
+      "evidenciaAuditable": "Evento SupervisionPolicyUpdated y mejora del KPI de precisión en la semana posterior.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Límite de 100 KB post-compresión, operador NOT anidado e Item was misclassified verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-policies"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Verificación por PowerShell de cuota de Review Mailboxes (límite de 100 GB o 1 millón de mensajes)",
+      "objetivo": "Prevenir la desactivación automática de políticas al alcanzar el 100 % de su capacidad de almacenamiento.",
+      "consolaRuta": "Exchange Online PowerShell (Get-SupervisoryReviewPolicyV2 y Get-MailboxStatistics)",
+      "procedimiento": [
+        "Ejecutar el script semanal de consulta de ItemCount y TotalItemSize sobre la propiedad ReviewMailbox de cada política.",
+        "Detectar políticas que superen el umbral preventivo del 70-80 % (70 GB o 700.000 mensajes).",
+        "Ejecutar Copy policy para rotar preventivamente políticas de alto volumen sin eliminar la política anterior mientras requiera preservación."
+      ],
+      "rolResponsable": "Communication Compliance Admin / Exchange Online Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.IR-04",
+      "mitreTactic": "N/A (Platform Capacity Management)",
+      "evidenciaAuditable": "Reporte semanal CSV de estadísticas de ReviewMailbox bajo el 80 % de utilización.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tope de 100 GB / 1M mensajes, alertas 80/90/95 % y cmdlet Get-SupervisoryReviewPolicyV2 verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-reports-audits"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Conciliación de escalamientos hacia eDiscovery (Premium) y disparadores de Insider Risk Management",
+      "objetivo": "Confirmar que toda investigación escalada mantenga cadena de custodia y resolución sincronizada.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Reports / Solutions > eDiscovery",
+      "procedimiento": [
+        "Contrastar la columna Case created en Items and actions per policy contra los casos activos en eDiscovery (Premium).",
+        "Verificar que los ítems escalados en Communication Compliance hayan sido etiquetados con custom tag Escalated y resueltos oportunamente.",
+        "Comprobar la salud de la política automática Insider risk trigger vinculada a plantillas de IRM."
+      ],
+      "rolResponsable": "Communication Compliance Investigator + eDiscovery Manager",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MA-03",
+      "mitreTactic": "Exfiltration / Legal Chain of Custody",
+      "evidenciaAuditable": "Matriz semanal conciliada entre Match IDs de CC y Case IDs de eDiscovery Premium.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Comportamiento de Escalate for investigation (no resuelve automáticamente el ítem en CC, máx. 100 mensajes) verificado en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-investigate-remediate#decide-on-a-remediation-action"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Control FinOps de consumo Pay-As-You-Go de Text records para IA no-M365",
+      "objetivo": "Gobernar el gasto en Azure generado por el escaneo de interacciones con aplicaciones IA no-M365 y Copilot Studio.",
+      "consolaRuta": "portal.azure.com > Cost Management + Billing / purview.microsoft.com > Settings > Account and billing",
+      "procedimiento": [
+        "Revisar el consumo semanal de medidores Standard y Premium de Text records (1.000 caracteres por unidad redondeado hacia arriba).",
+        "Identificar políticas con Review percentage al 100 % sin condiciones sobre Enterprise AI apps u Other AI apps.",
+        "Ajustar porcentajes de muestreo o condiciones tras completar fases iniciales de descubrimiento."
+      ],
+      "rolResponsable": "Communication Compliance Admin + FinOps Analyst",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-02",
+      "mitreTactic": "N/A (FinOps & AI Governance)",
+      "evidenciaAuditable": "Reporte semanal de consumo PAYG dentro del umbral presupuestario aprobado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Cálculo de Text records (1.000 caracteres) y tarifas Standard/Premium verificados en Purview billing models.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/purview-billing-models#text-records"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Control de envejecimiento de ítems pendientes (Pending for days) y balanceo de revisores",
+      "objetivo": "Garantizar que ninguna coincidencia supere el SLA máximo de permanencia sin revisión en la cola Pending.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies > Export report",
+      "procedimiento": [
+        "Descargar el Message details report programado semanalmente desde la pestaña Exports.",
+        "Filtrar registros con Item Status = Pending y evaluar la columna Pending for (days).",
+        "Escalar o redistribuir carga hacia revisores suplentes cuando se detecten demoras mayores a 5 días hábiles."
+      ],
+      "rolResponsable": "Compliance Manager / Communication Compliance Viewer",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-03",
+      "mitreTactic": "N/A (Operational SLA Oversight)",
+      "evidenciaAuditable": "Archivo CSV semanal de Message details report sin alertas envejecidas.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Columna Pending for (days) y hasta 5 reportes programados por política verificados en MS Learn; umbral de 5 días es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-reports-audits#export-a-message-details-report"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría independiente de privacidad sobre acciones de administradores y revisores (Watch the Watchers)",
+      "objetivo": "Verificar que ningún administrador ni investigador abuse de sus privilegios o modifique configuraciones de privacidad sin autorización.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit (Graph AuditLogQuery) / Communication Compliance > Export review activities",
+      "procedimiento": [
+        "Ejecutar consulta en Microsoft Graph security/auditLog/queries para operaciones SupervisionPolicyCreated, SupervisionPolicyUpdated, SupervisionPolicyDeleted y SupervisoryReviewTag.",
+        "Exportar desde cada política sensible los archivos CSV de Export policy updates y Export review activities.",
+        "Conciliar cambios de privacidad, des-seudonimizaciones y exportaciones .zip contra aprobaciones formales de Legal/DPO."
+      ],
+      "rolResponsable": "Data Protection Officer (DPO) / Audit Reader",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Valid Accounts (T1078) — Privileged Insider Oversight",
+      "evidenciaAuditable": "Acta mensual de auditoría de privacidad firmada por el DPO.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Operaciones de auditoría y controles Export policy updates / Export review activities verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-reports-audits#review-communication-compliance-audit-data"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Recertificación de grupos de roles RBAC, fechas de vencimiento y revisores de User-reported messages",
+      "objetivo": "Mantener segregación estricta de funciones y remover Global Admins residuales de políticas del sistema.",
+      "consolaRuta": "purview.microsoft.com > Settings > Roles and scopes > Role groups / Communication Compliance > Policies",
+      "procedimiento": [
+        "Confirmar que el grupo monolítico Communication Compliance tenga 0 miembros y que Communication Compliance Admins cuente con al menos 2 titulares.",
+        "Revisar las fechas de expiración de asignaciones en grupos de roles Purview y revocar usuarios transferidos.",
+        "Verificar que la política User-reported messages solo tenga revisores de RR. HH./Ética y ningún Global Administrator."
+      ],
+      "rolResponsable": "Communication Compliance Admin + Identity Governance Admin",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-02",
+      "mitreTactic": "Account Manipulation (T1098)",
+      "evidenciaAuditable": "Evidencia de recertificación RBAC mensual y prueba negativa de acceso con cuenta Global Admin.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Asignación inicial de Global Admins en User-reported messages y recomendación de reemplazo inmediato verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-permissions"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Reporte ejecutivo mensual de tendencias por canal, SITs expuestos e interacciones con IA",
+      "objetivo": "Entregar visibilidad cuantitativa al CISO, CCO y RR. HH. sobre riesgos emergentes de comunicación y uso de IA.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Reports",
+      "procedimiento": [
+        "Exportar los informes detallados Items and actions per location, Items and actions per policy y Sensitive information type per location (preview).",
+        "Analizar la distribución de SITs en Email, Teams, Microsoft 365 Copilot, Viva Engage y Third-party sources.",
+        "Definir acciones preventivas focalizadas (entrenamiento o reglas DLP) para áreas con alta reincidencia."
+      ],
+      "rolResponsable": "Communication Compliance Viewer / Chief Compliance Officer",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OV-01",
+      "mitreTactic": "N/A (Executive Risk Reporting)",
+      "evidenciaAuditable": "Paquete mensual de reportes CSV y presentación ante el Comité de Riesgo y Cumplimiento.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Informes detallados y desglose Sensitive information type per location verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-reports-audits"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Pruebas sintéticas Proof of Life de conectores de terceros, Viva Engage Native Mode y transcripciones Teams",
+      "objetivo": "Comprobar que todas las fuentes externas e internas entreguen e indexen mensajes dentro de sus ventanas de latencia.",
+      "consolaRuta": "purview.microsoft.com > Settings > Data connectors / admin.teams.microsoft.com",
+      "procedimiento": [
+        "Validar el estado saludable de sincronización de conectores regulados (Instant Bloomberg, Slack, Zoom, WhatsApp, SMS).",
+        "Confirmar en Teams Admin Center que las políticas de reuniones mantengan activa la transcripción para grupos supervisados.",
+        "Comprobar en Viva Engage Admin Center la vigencia de Native Mode y Report Conversations."
+      ],
+      "rolResponsable": "Communication Compliance Admin + Collaboration Admin",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-06",
+      "mitreTactic": "Impair Defenses (T1562)",
+      "evidenciaAuditable": "Bitácora mensual de pruebas sintéticas exitosas por canal.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Prerrequisitos técnicos de canales y latencias de 1 a 48 h verificados en MS Learn; cadencia mensual de prueba sintética es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-channels"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría de alcance de Adaptive Scopes, Administrative Units y límites de canales públicos de Teams",
+      "objetivo": "Prevenir brechas de supervisión derivadas de limitaciones arquitectónicas entre alcances dinámicos y canales públicos.",
+      "consolaRuta": "purview.microsoft.com > Settings > Roles and scopes > Adaptive scopes / Admin units",
+      "procedimiento": [
+        "Auditar las consultas OPATH/atributos Entra de los Adaptive Scopes utilizados en políticas activas.",
+        "Verificar que no existan intentos incompatibles de mezclar Administrative Units con Adaptive Scopes.",
+        "Asegurar cobertura estática segmentada (< 250 usuarios) o explícita por canal para canales públicos críticos de Teams."
+      ],
+      "rolResponsable": "Communication Compliance Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-05",
+      "mitreTactic": "N/A (Scope Governance)",
+      "evidenciaAuditable": "Inventario mensual validado de alcances y cobertura de canales públicos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Incompatibilidad AU + Adaptive Scopes y límites de canales públicos de Teams (250 usuarios estáticos / sin Adaptive Scopes) verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-channels#channel-limits"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Revisión jurídico-regulatoria de Policy Match Preservation y alineación con Data Lifecycle Management",
+      "objetivo": "Garantizar que el plazo de preservación de coincidencias (1m, 6m, 1y o 7y) cumpla mandatos legales y de minimización de privacidad.",
+      "consolaRuta": "purview.microsoft.com > Settings > Communication Compliance > Policy Match Preservation",
+      "procedimiento": [
+        "Revisar el ajuste global Policy Match Preservation (por defecto 1 año) y las sobreescrituras por política individual.",
+        "Alinear políticas financieras con 7 años cuando corresponda y políticas conductuales con plazos proporcionales de privacidad.",
+        "Verificar en Data Lifecycle Management las políticas de retención inmutable sobre los elementos originales en buzones y Teams."
+      ],
+      "rolResponsable": "Legal & Regulatory Counsel + Communication Compliance Admin",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "N/A (Regulatory Retention Alignment)",
+      "evidenciaAuditable": "Dictamen trimestral firmado de alineación entre Policy Match Preservation y DLM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Ajuste Policy Match Preservation (vigente desde junio de 2025 con opciones 1m, 6m, 1y, 7y) verificado en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-investigate-remediate#policy-match-preservation-setting"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Revisión de Notice Templates, taxonomía de Custom Tags y seguridad de flujos Power Automate",
+      "objetivo": "Mantener actualizadas las plantillas educativas enviadas a empleados y asegurar los flujos automatizados de remediación.",
+      "consolaRuta": "purview.microsoft.com > Settings > Communication Compliance > Notice templates / make.powerautomate.com",
+      "procedimiento": [
+        "Evaluar la tasa de reincidencia de usuarios notificados y actualizar textos legales/idiomas de las Notice templates.",
+        "Homologar las etiquetas personalizadas (máx. 10 por política) evitando borrar etiquetas históricas en uso.",
+        "Auditar permisos, propietarios y políticas DLP de los flujos Power Automate conectados a Communication Compliance."
+      ],
+      "rolResponsable": "Communication Compliance Admin + RR. HH.",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AT-01",
+      "mitreTactic": "N/A (Security Awareness & SOAR Hygiene)",
+      "evidenciaAuditable": "Catálogo trimestral aprobado de plantillas de notificación y flujos Power Automate.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Límite de 10 custom tags, impacto retroactivo al eliminarlas e integración Power Automate verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-investigate-remediate#create-a-custom-tag"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Ejercicio Tabletop integrado de amenaza interna, acoso laboral y abuso de IA Generativa",
+      "objetivo": "Validar tiempos de detección, contención en Teams y escalamiento coordinado entre CC, IRM, SOC, Legal y RR. HH.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance / Insider Risk Management / eDiscovery",
+      "procedimiento": [
+        "Ejecutar con cuentas de prueba autorizadas un escenario combinado: >= 5 mensajes riesgosos en 24 h, intento de Prompt Injection en Copilot e imagen con texto sensible OCR.",
+        "Medir la activación del alcance automático en IRM, la ejecución de Remove message in Teams y el escalamiento a eDiscovery (Premium).",
+        "Documentar brechas operativas y actualizar el playbook interdepartamental."
+      ],
+      "rolResponsable": "CISO + Chief Compliance Officer + General Counsel + HR Director",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MA-01",
+      "mitreTactic": "Exfiltration & Insider Threat End-to-End Readiness",
+      "evidenciaAuditable": "Informe semestral de ejercicio práctico con métricas de respuesta y mejoras aprobadas.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Práctica recomendada de excelencia operacional basada en las integraciones nativas CC + IRM + eDiscovery.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Evaluación de Impacto en Privacidad (DPIA), revisión con comités laborales y gobernanza regulatoria IA",
+      "objetivo": "Ratificar la proporcionalidad legal y ética del monitoreo de comunicaciones humanas y agénticas frente a leyes globales.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Compliance Manager / Settings > Communication Compliance",
+      "procedimiento": [
+        "Auditar el cumplimiento anual de los 4 principios de privacidad: seudonimización, RBAC estricto, opt-in explícito y logs de auditoría.",
+        "Actualizar las plantillas Assessments for AI regulations en Purview Compliance Manager (EU AI Act, ISO 42001, leyes locales).",
+        "Renovar las cláusulas informativas a empleados y la carta anual de confidencialidad de todos los revisores."
+      ],
+      "rolResponsable": "Data Protection Officer (DPO) + Chief Compliance Officer + CISO",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.PO-02",
+      "mitreTactic": "N/A (Annual Privacy & AI Regulatory Governance)",
+      "evidenciaAuditable": "DPIA anual firmado, puntaje en Compliance Manager y atestaciones firmadas de revisores.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Principios de privacidad y Assessments for AI regulations en Compliance Manager verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/insider-risk-solution-privacy"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de emergencia ante amenaza inminente de violencia física, autolesión o acoso grave",
+      "objetivo": "Contener daño inmediato, preservar evidencia legal y activar protocolos de seguridad humana y laboral.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies > Pending",
+      "procedimiento": [
+        "Inspeccionar de inmediato el mensaje con Severity >= 4 (Violence / Self-harm) o Threat y revisar contexto en pestaña Conversation.",
+        "Obtener aprobación de emergencia de Legal/RR. HH. para revelar identidad si aplica seudonimización.",
+        "Ejecutar Remove message in Teams si el mensaje permanece visible en canales o chats grupales.",
+        "Activar protocolo de Seguridad Física/RR. HH. y ejecutar Escalate for investigation hacia eDiscovery (Premium)."
+      ],
+      "rolResponsable": "Communication Compliance Investigator + HR / Corporate Security",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Impact / Physical & Workplace Safety",
+      "evidenciaAuditable": "Caso abierto en eDiscovery (Premium), mensaje bloqueado en Teams y acta de emergencia.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Clasificadores Violence/Self-harm/Threat y acciones de contención/escalamiento verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-investigate-remediate"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de respuesta ante ataque de Prompt Injection / Jailbreak o exfiltración vía Copilot / Agent 365",
+      "objetivo": "Investigar y contener abusos adversarios contra modelos GenAI o agentes autónomos empresariales.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Pending / DSPM > AI observability / Audit",
+      "procedimiento": [
+        "Analizar en Pending tanto el prompt del usuario como la respuesta generada por Copilot, Agent 365 o la app IA conectada.",
+        "Correlacionar en Purview Audit el registro CopilotInteraction verificando AccessedResources, SensitivityLabelId y XPIADetected.",
+        "Si un agente de Agent 365 o Copilot Studio responde de forma comprometida, coordinar su suspensión inmediata con el propietario del agente.",
+        "Escalar evidencia a SOC L2/L3 e Insider Risk Management para contención de la cuenta si se confirma malicia."
+      ],
+      "rolResponsable": "Communication Compliance Investigator + SOC L2 + AI Governance Lead",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.AN-03",
+      "mitreTactic": "MITRE ATLAS AML.T0051 / Exfiltration via AI",
+      "evidenciaAuditable": "Par prompt-respuesta exportado, registro CopilotInteraction y ticket de incidente SOC.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Propiedades AccessedResources, JailbreakDetected y XPIADetected verificadas en Audit logs for Copilot and AI applications.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-copilot"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de contingencia ante saturación del 90-95 % o desactivación por límite de 100 GB / 1M mensajes",
+      "objetivo": "Restablecer de inmediato la captura continua sin destruir evidencia histórica almacenada en la política saturada.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies",
+      "procedimiento": [
+        "Seleccionar la política que emitió alerta del 80/90/95 % o quedó Deactivated y ejecutar Copy policy con nombre versionado.",
+        "Ajustar alcance o filtros anti-ruido en la nueva política y confirmar que pase a estado Active.",
+        "Mantener la política anterior pausada o desactivada SIN eliminarla hasta completar todas las revisiones y ejecutar Export files (hasta 3 GB por lote)."
+      ],
+      "rolResponsable": "Communication Compliance Admin",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-02",
+      "mitreTactic": "N/A (Compliance Continuity Recovery)",
+      "evidenciaAuditable": "Nueva política activa en Export policy updates y archivos exportados en pestaña Exports.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Desactivación automática al llegar a 100 GB o 1M mensajes y procedimiento Copy policy verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-policies#storage-limit-notification"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Onboarding controlado de nueva aplicación GenAI empresarial (ej. Claude Enterprise) o conector regulado",
+      "objetivo": "Incorporar nuevas plataformas de IA o mensajería externa bajo supervisión de cumplimiento y control de costos PAYG.",
+      "consolaRuta": "purview.microsoft.com > Settings > Data connectors / Communication Compliance > Policies",
+      "procedimiento": [
+        "Confirmar la vinculación de suscripción Azure Pay-As-You-Go y configurar alertas presupuestarias para Text records.",
+        "Registrar el conector en Entra ID / Purview Data Map o Data connectors y validar la ingesta de mensajes de prueba.",
+        "Agregar la ubicación Enterprise AI apps, instancia de Agent 365 o fuente Third-Party en las políticas aplicables."
+      ],
+      "rolResponsable": "Communication Compliance Admin + AI Governance Lead",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "Shadow AI / Unmonitored Channel Mitigation",
+      "evidenciaAuditable": "Coincidencia de prueba validada en Pending y alerta presupuestaria activa en Azure.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Onboarding de Enterprise AI apps (incl. Claude Enterprise en ago-2026) y conectores de terceros verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/ai-claude-enterprise"
+    },
+    {
+      "codigo": "AH-05",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Reapertura auditable de coincidencias cerradas (Unresolve) y exportación forense masiva",
+      "objetivo": "Rehabilitar elementos previamente resueltos ante auditorías regulatorias o litigios sobrevenidos.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Communication Compliance > Policies > Resolved / Exports",
+      "procedimiento": [
+        "Filtrar en la pestaña Resolved los mensajes requeridos por fecha UTC, remitente o clasificador.",
+        "Seleccionar los ítems y ejecutar Unresolve registrando el número de requerimiento legal en Comment.",
+        "En la pestaña Pending, ejecutar Escalate for investigation o Export files (seleccionando manualmente los adjuntos requeridos, hasta 3 GB)."
+      ],
+      "rolResponsable": "Communication Compliance Investigator",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.CO-03",
+      "mitreTactic": "N/A (Legal Audit & Post-Resolution Recovery)",
+      "evidenciaAuditable": "Registro completo de Unresolve en History of remediation actions y paquete descargado desde Exports.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Comando Unresolve y requisito de selección manual de adjuntos en Export files (máx. 3 GB) verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/communication-compliance-investigate-remediate#unresolve-messages"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Detección de creación, edición o borrado de políticas de Communication Compliance",
+      "plataforma": "Microsoft Sentinel / Defender Unified SecOps (KQL)",
+      "tablaPrincipal": "OfficeActivity",
+      "consulta": "OfficeActivity\n| where TimeGenerated > ago(30d)\n| where Operation in (\"SupervisionPolicyCreated\", \"SupervisionPolicyUpdated\", \"SupervisionPolicyDeleted\")\n| extend AuditDetails = parse_json(AuditData)\n| project TimeGenerated, UserId, Operation, PolicyName = tostring(AuditDetails.PolicyName), ClientIP, ResultStatus\n| sort by TimeGenerated desc",
+      "proposito": "Auditar cualquier cambio administrativo sobre el alcance o existencia de políticas de supervisión para prevenir desactivación maliciosa.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoría mensual Watch the Watchers vía Microsoft Graph AuditLogQuery API (GA oct-2026)",
+      "plataforma": "Microsoft Graph PowerShell SDK v1.0",
+      "tablaPrincipal": "security/auditLog/queries",
+      "consulta": "Connect-MgGraph -Scopes \"AuditLogsQuery.Read.All\"\n$params = @{\n  \"@odata.type\" = \"#microsoft.graph.security.auditLogQuery\"\n  displayName = \"Auditoria-Revisores-CC\"\n  filterStartDateTime = (Get-Date).AddDays(-30).ToUniversalTime().ToString(\"o\")\n  filterEndDateTime = (Get-Date).ToUniversalTime().ToString(\"o\")\n  recordTypeFilters = @(\"aeD\", \"discovery\", \"complianceSupervisionExchange\")\n  operationFilters = @(\"SupervisoryReviewTag\", \"SupervisionPolicyCreated\", \"SupervisionPolicyUpdated\", \"SupervisionPolicyDeleted\")\n}\nInvoke-MgGraphRequest -Method POST -Uri \"https://graph.microsoft.com/v1.0/security/auditLog/queries\" -Body ($params | ConvertTo-Json -Depth 5)",
+      "proposito": "Reemplazar Search-UnifiedAuditLog (retiro 15-oct-2027) para auditar de forma escalable todas las acciones de etiquetado y revisión de investigadores.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Monitoreo preventivo del límite de 100 GB o 1 millón de mensajes en Review Mailboxes",
+      "plataforma": "Exchange Online PowerShell",
+      "tablaPrincipal": "Get-SupervisoryReviewPolicyV2 / Get-MailboxStatistics",
+      "consulta": "Connect-ExchangeOnline -ShowBanner:$false\nForEach ($p in Get-SupervisoryReviewPolicyV2 | Sort-Object Name) {\n  $stats = Get-MailboxStatistics -Identity $p.ReviewMailbox -ErrorAction SilentlyContinue\n  [PSCustomObject]@{ PolicyName = $p.Name; ReviewMailbox = $p.ReviewMailbox; ItemCount = $stats.ItemCount; TotalItemSize = $stats.TotalItemSize.ToString() }\n}",
+      "proposito": "Inspeccionar el volumen real del buzón oculto de cada política antes de que el sistema la desactive automáticamente al llegar al 100 %.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Detección de picos de coincidencias de supervisión por usuario (>= 5 en 24 h)",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting (KQL)",
+      "tablaPrincipal": "CloudAppEvents",
+      "consulta": "CloudAppEvents\n| where Timestamp > ago(14d)\n| where ActionType == \"SupervisionRuleMatch\"\n| summarize TotalMatches = count() by bin(Timestamp, 1d), AccountObjectId\n| where TotalMatches >= 5\n| order by TotalMatches desc",
+      "proposito": "Identificar volúmenes anómalos de infracciones que alcanzan el umbral de disparo automático hacia Insider Risk Management sin leer el contenido privado.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Correlación de intentos de Jailbreak en interacciones Copilot con alertas Prompt Shield",
+      "plataforma": "Microsoft Graph REST / PowerShell v1.0",
+      "tablaPrincipal": "security/auditLog/queries (CopilotInteraction)",
+      "consulta": "$body = @{\n  \"@odata.type\" = \"#microsoft.graph.security.auditLogQuery\"\n  displayName = \"Correlacion-PromptShield-Copilot\"\n  filterStartDateTime = (Get-Date).AddDays(-7).ToUniversalTime().ToString(\"o\")\n  filterEndDateTime = (Get-Date).ToUniversalTime().ToString(\"o\")\n  operationFilters = @(\"CopilotInteraction\", \"ConnectedAIAppInteraction\", \"AIAppInteraction\")\n  keywordFilter = \"JailbreakDetected\"\n}\nInvoke-MgGraphRequest -Method POST -Uri \"https://graph.microsoft.com/v1.0/security/auditLog/queries\" -Body ($body | ConvertTo-Json)",
+      "proposito": "Cruzar coincidencias de Prompt Shield en Communication Compliance con los recursos accedidos (AccessedResources) en Purview Audit.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Verificación de habilitación del reporte de mensajes inapropiados en políticas de Teams",
+      "plataforma": "Microsoft Teams PowerShell (>= 4.2.0)",
+      "tablaPrincipal": "CsTeamsMessagingPolicy",
+      "consulta": "Connect-MicrosoftTeams\nGet-CsTeamsMessagingPolicy | Select-Object Identity, AllowSecurityEndUserReporting",
+      "proposito": "Confirmar que los empleados puedan reportar mensajes abusivos en Teams hacia la política User-reported messages.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Consulta heredada de transición con Search-UnifiedAuditLog (vigente hasta 15-oct-2027)",
+      "plataforma": "Exchange Online PowerShell",
+      "tablaPrincipal": "UnifiedAuditLog",
+      "consulta": "Search-UnifiedAuditLog -StartDate (Get-Date).AddDays(-7) -EndDate (Get-Date) -RecordType AeD -Operations SupervisoryReviewTag -ResultSize 1000 | Select-Object CreationDate, UserIds, Operations, AuditData",
+      "proposito": "Proveer compatibilidad temporal para scripts existentes mientras se completa la migración obligatoria a Microsoft Graph AuditLogQuery antes del 15-oct-2027.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "SLA de Triaje de Alertas de Severidad Alta (LLM >= 4 y Amenazas)",
+      "definicion": "Porcentaje de coincidencias con severidad LLM >= 4 (Hate, Violence, Sexual, Self-harm) o clasificador Threat revisadas en menos de 24 horas.",
+      "formula": "(Alertas severidad alta revisadas en <= 24 h / Total alertas severidad alta generadas) * 100",
+      "metaSugerida": ">= 98 %",
+      "frecuencia": "Diaria / Semanal",
+      "audiencia": "Chief Compliance Officer, RR. HH., SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Meta operativa consultiva basada en severidad LLM >= 4 verificada en MS Learn."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Cumplimiento de Cuota de Supervisión Regulatoria (SEC / FINRA)",
+      "definicion": "Porcentaje de coincidencias en políticas regulatorias financieras etiquetadas y resueltas con comentario dentro del ciclo obligatorio.",
+      "formula": "(Coincidencias regulatorias resueltas con Tag y comentario / Total coincidencias pendientes del periodo) * 100",
+      "metaSugerida": "100 % (0 ítems pendientes > 5 días hábiles)",
+      "frecuencia": "Semanal / Mensual",
+      "audiencia": "Chief Compliance Officer, Auditoría Interna",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Alineado a exigencias de supervisión razonable de FINRA Rule 3110."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Tasa de Precisión de Políticas (Actionable / True Positive Rate)",
+      "definicion": "Proporción de coincidencias revisadas que resultan verdaderamente cuestionables o no conformes frente a falsos positivos.",
+      "formula": "((Ítems etiquetados Noncompliant + Questionable) / Total ítems resueltos) * 100",
+      "metaSugerida": ">= 65 % (Falsos positivos <= 35 %)",
+      "frecuencia": "Semanal",
+      "audiencia": "Communication Compliance Admin, Lead Analyst",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mide la efectividad de Filter email blasts y condiciones booleanas."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Cobertura de Supervisión sobre Aplicaciones GenAI y Agentes (Agent 365)",
+      "definicion": "Porcentaje de aplicaciones GenAI corporativas e instancias activas de Microsoft Agent 365 incluidas en políticas de Communication Compliance.",
+      "formula": "(Apps IA empresariales + instancias Agent 365 supervisadas / Total apps e instancias IA autorizadas en producción) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO, AI Governance Lead",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Cruza inventario de DSPM > AI observability con políticas activas."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Tiempo Medio de Contención de Mensajes Reportados en Teams",
+      "definicion": "Tiempo promedio transcurrido desde el reporte de un mensaje abusivo por un empleado hasta su remoción efectiva en Teams.",
+      "formula": "Promedio(Timestamp Remove message in Teams - Timestamp ingreso a User-reported messages)",
+      "metaSugerida": "<= 4 horas laborales",
+      "frecuencia": "Semanal",
+      "audiencia": "RR. HH., Relaciones Laborales",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Reduce exposición laboral a contenido hostil o explícito."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Salud de Capacidad de Buzones de Supervisión (Review Mailboxes)",
+      "definicion": "Porcentaje de políticas activas cuyo almacenamiento se mantiene bajo el umbral seguro del 80 % de 100 GB o 1 millón de mensajes.",
+      "formula": "(Políticas activas con uso < 80 GB y < 800.000 mensajes / Total políticas activas) * 100",
+      "metaSugerida": "100 % (0 desactivaciones automáticas por saturación)",
+      "frecuencia": "Semanal",
+      "audiencia": "Communication Compliance Admin",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en el límite oficial de 100 GB / 1M mensajes de MS Learn."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Índice de Integridad de Segregación RBAC y Seudonimización",
+      "definicion": "Cumplimiento simultáneo de grupo monolítico vacío, ausencia de Global Admins como revisores y seudonimización activa.",
+      "formula": "(Controles de privacidad y RBAC conformes / Total controles auditados mensualmente) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Mensual",
+      "audiencia": "Data Protection Officer (DPO), CISO, Auditoría Interna",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Verifica operacionalización de Privacy by Design."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Efectividad Pedagógica Post-Notificación (Tasa de No-Reincidencia)",
+      "definicion": "Porcentaje de usuarios que tras recibir una advertencia educativa vía Notify no vuelven a generar infracciones en los siguientes 90 días.",
+      "formula": "(Usuarios notificados sin nuevas coincidencias Noncompliant en 90 días / Total usuarios notificados) * 100",
+      "metaSugerida": ">= 85 %",
+      "frecuencia": "Trimestral",
+      "audiencia": "Chief Compliance Officer, Cultura y Ética, CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Medido mediante la vista User history y Activity by user."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.OC-03",
+      "descripcionResultado": "Los requisitos legales, regulatorios y contractuales relativos a privacidad, supervisión financiera e IA se comprenden y gestionan.",
+      "capacidadMicrosoft": "Plantillas regulatorias SEC/FINRA, Policy Match Preservation configurable (1 mes a 7 años) y seudonimización predeterminada.",
+      "evidenciaAuditoria": "Exportación de Policy settings and status y DPIA anual firmado junto con matriz legal de preservación.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles, responsabilidades y autoridades de seguridad y cumplimiento se establecen, comunican y hacen cumplir.",
+      "capacidadMicrosoft": "Segregación estricta en 4 grupos de roles (Admins, Analysts, Investigators, Viewers) y bloqueo por defecto a Global Administrators.",
+      "evidenciaAuditoria": "Listado auditado de miembros de grupos de roles en Purview y prueba negativa documentada con cuenta Global Admin.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-01",
+      "descripcionResultado": "Se identifican y registran vulnerabilidades y riesgos de uso indebido en plataformas colaborativas y agentes de IA.",
+      "capacidadMicrosoft": "Detección de comportamiento poco ético de agentes en DSPM > AI observability (Agent 365) y recomendaciones de puntos ciegos en Policy health.",
+      "evidenciaAuditoria": "Informe mensual de DSPM > AI observability y exportación de Sensitive information type per location.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.IM-02",
+      "descripcionResultado": "Se identifican mejoras en procesos y políticas a partir de revisiones operativas y ejercicios.",
+      "capacidadMicrosoft": "Retroalimentación Item was misclassified, reporte Email blast senders y ejercicios semestrales integrados con IRM.",
+      "evidenciaAuditoria": "Archivo CSV Export policy updates e informe de calibración trimestral de políticas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Los derechos de acceso y permisos se gestionan aplicando los principios de mínimo privilegio y separación de funciones.",
+      "capacidadMicrosoft": "Doble control obligatorio (membresía de rol + asignación nominal en Reviewers), asignaciones con vencimiento y Administrative Units restringidas.",
+      "evidenciaAuditoria": "Actas mensuales de recertificación RBAC y consultas AuditLogQuery sobre SupervisionPolicyUpdated.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AT-01",
+      "descripcionResultado": "El personal recibe formación y recordatorios contextuales para cumplir políticas de seguridad y conducta.",
+      "capacidadMicrosoft": "Acción de remediación Notify con Notice templates personalizadas ante desvíos conductuales o uso imprudente de IA.",
+      "evidenciaAuditoria": "Métrica User notified en Items and actions per policy y seguimiento trimestral de no-reincidencia.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-03",
+      "descripcionResultado": "Las actividades del personal y servicios tecnológicos se monitorean para detectar eventos potencialmente adversos.",
+      "capacidadMicrosoft": "Escaneo horario sobre Exchange, Teams (chats, canales, transcripciones, adjuntos modernos, OCR), Viva Engage, Copilot y conectores.",
+      "evidenciaAuditoria": "Message details report y registros SupervisionRuleMatch en el log unificado de auditoría.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.AE-02",
+      "descripcionResultado": "Los eventos potencialmente adversos se analizan con contexto enriquecido para determinar su severidad.",
+      "capacidadMicrosoft": "Clasificadores LLM Azure AI Content Safety (severidad >= 4), Prompt Shield, Protected material, Sentiment y pestaña User activity (IRM).",
+      "evidenciaAuditoria": "Historial de triaje en Pending/Resolved con severidad registrada y notas de correlación IRM.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MA-02",
+      "descripcionResultado": "Los reportes de incidentes y alertas se clasifican, priorizan y validan oportunamente.",
+      "capacidadMicrosoft": "Canal User-reported messages en Teams/Viva Engage y síntesis contextual mediante Summarize with Copilot in Purview.",
+      "evidenciaAuditoria": "Eventos SupervisoryReviewTag y reporte semanal de cumplimiento de SLA sobre Pending for (days).",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Los incidentes activos se contienen para impedir su propagación o daño continuo.",
+      "capacidadMicrosoft": "Acción Remove message in Teams (bloqueo con policy tip) y trigger automático hacia Insider Risk Management (>= 5 mensajes/24 h).",
+      "evidenciaAuditoria": "Registro de Remove message in Teams en View item history y alerta vinculada en Insider Risk Management.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-02",
+      "descripcionResultado": "Las acciones de preservación probatoria y continuidad operativa se ejecutan de forma controlada.",
+      "capacidadMicrosoft": "Escalamiento directo Escalate for investigation hacia eDiscovery (Premium) (hasta 100 mensajes) y rotación preventiva vía Copy policy.",
+      "evidenciaAuditoria": "Casos creados en eDiscovery (Premium) y continuidad demostrada ante límites de 100 GB/1M mensajes.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.CO-03",
+      "descripcionResultado": "Las actividades de cierre, auditoría y reapertura legal se comunican y documentan formalmente.",
+      "capacidadMicrosoft": "Exportaciones programadas CSV, paquetes externos Export files (hasta 3 GB) y reapertura auditable mediante Unresolve.",
+      "evidenciaAuditoria": "Lotes descargados en pestaña Exports y trazabilidad completa en History of remediation actions.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Revalidación exhaustiva contra Microsoft Learn y anuncios oficiales del Message Center a corte 11 de noviembre de 2026. Se verificaron la consolidación en purview.microsoft.com, el renombre a Microsoft Purview Suite, la entrada en vigor de Policy Match Preservation (junio 2025), el soporte nativo y Pay-As-You-Go para IA Generativa (M365 Copilot, Copilot Studio, Microsoft Agent 365 en GA desde mayo 2026 y Anthropic Claude Enterprise desde agosto 2026), los clasificadores LLM de Azure AI Content Safety, las restricciones entre Administrative Units y Adaptive Scopes, la ausencia de soporte PowerShell para crear políticas y la transición hacia Microsoft Graph AuditLogQuery (MC1505599).",
+    "correccionesAplicadas": [
+      "Actualización del licenciamiento al nombre oficial Microsoft Purview Suite (vigente desde el 1 de octubre de 2025) y adición del modelo Pay-As-You-Go medido en Text records de 1.000 caracteres redondeados hacia arriba para IA no-M365.",
+      "Incorporación del ajuste obligatorio Policy Match Preservation (vigente desde el 1 de junio de 2025 con opciones de 1 mes, 6 meses, 1 año por defecto y 7 años), diferenciándolo de la retención de mensajes originales en Data Lifecycle Management.",
+      "Integración completa de Microsoft Agent 365 (GA 1 de mayo de 2026, vista DSPM > AI observability) y aplicaciones IA empresariales conectadas como Anthropic Claude Enterprise (agosto de 2026), junto con clasificadores Prompt Shield y Protected material.",
+      "Documentación exacta de los clasificadores basados en LLM (Hate, Sexual, Violence, Self-harm para >= 5 palabras y hasta 10.000 caracteres con alerta en Severity >= 4) y de la discrepancia oficial de nombre entre Targeted harassment (plantilla) y Harassment (definiciones).",
+      "Inclusión explícita de restricciones arquitectónicas verificadas en MS Learn: imposibilidad de combinar Administrative Units con Adaptive Scopes, límite de 250 usuarios estáticos y cero soporte de Adaptive Scopes de usuarios en canales públicos de Teams.",
+      "Eliminación de cualquier referencia errónea a creación de políticas por PowerShell (no soportado oficialmente), documentando en su lugar Get-SupervisoryReviewPolicyV2 + Get-MailboxStatistics para vigilar el tope de 100 GB o 1 millón de mensajes.",
+      "Alineación de consultas de auditoría de supervisión al retiro anunciado de Search-UnifiedAuditLog el 15 de octubre de 2027 (MC1505599), priorizando Microsoft Graph AuditLogQuery API en GA desde octubre de 2026."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Prohibición operativa de poblar el grupo monolítico Communication Compliance en entornos productivos",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Garantiza segregación estricta de funciones entre administradores de políticas/privacidad e investigadores con acceso de lectura al contenido privado de los empleados."
+      },
+      {
+        "elemento": "SLAs operativos de triaje (< 24 h severidad alta LLM/Threat, <= 4 h remoción en Teams y <= 5 días hábiles en muestreo regulatorio)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Establece estándares medibles alineados al deber de cuidado laboral y a auditorías de supervisión razonable bajo FINRA Rule 3110 / SEC."
+      },
+      {
+        "elemento": "Umbral preventivo del 70-80 % sobre ReviewMailbox para ejecutar rotación mediante Copy policy",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Evita que una política de alto volumen (como revisión de IA) alcance el 100 % (100 GB o 1M mensajes) y sufra desactivación automática dejando una brecha de captura."
+      },
+      {
+        "elemento": "Catálogo de 8 KPIs ejecutivos (KPI-01 a KPI-08) y Modelo de Madurez de 5 niveles",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Permite evaluar objetivamente la precisión de detección, la cobertura sobre IA/agentes, la higiene RBAC y el impacto cultural de las notificaciones."
+      },
+      {
+        "elemento": "Mapeo estructurado de 12 subcategorías a través de las 6 funciones de NIST CSF 2.0 y MITRE ATT&CK / ATLAS",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Traduce las capacidades de supervisión conductual e IA de Purview en evidencia auditable reutilizable ante marcos internacionales de ciberseguridad."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Learn about Communication Compliance",
+      "url": "https://learn.microsoft.com/en-us/purview/communication-compliance",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Visión general arquitectónica, casos de uso corporativos/regulatorios y capacidades principales de supervisión.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Assign permissions in Communication Compliance",
+      "url": "https://learn.microsoft.com/en-us/purview/communication-compliance-permissions",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Matriz oficial de los grupos de roles, aislamiento de Global Admin e impacto/restricciones de Administrative Units.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Detect channel signals with Communication Compliance",
+      "url": "https://learn.microsoft.com/en-us/purview/communication-compliance-channels",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Cobertura detallada de GenAI, Teams (chats, canales compartidos/públicos, adjuntos modernos), Exchange, Viva Engage Native Mode y límites por canal.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Configure a Communication Compliance policy to detect generative AI interactions",
+      "url": "https://learn.microsoft.com/en-us/purview/communication-compliance-copilot",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Configuración para M365 Copilot, Copilot Studio, Enterprise AI apps y Other AI apps, clases IPM.SkypeTeams.Message.Copilot.* y requisitos PAYG.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Manage Communication Compliance policies",
+      "url": "https://learn.microsoft.com/en-us/purview/communication-compliance-policies",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Plantillas, clasificadores entrenables y LLM Content Safety, Prompt Shield, OCR (100 KB-4 MB), integración IRM, Policy health y límite de 100 GB/1M mensajes.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Investigate and remediate Communication Compliance alerts",
+      "url": "https://learn.microsoft.com/en-us/purview/communication-compliance-investigate-remediate",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Policy Match Preservation (junio 2025), sentimiento, Summarize con Copilot (100-15.000 palabras), coincidencias ocultas y flujo completo de remediación.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Use Communication Compliance reports and audits",
+      "url": "https://learn.microsoft.com/en-us/purview/communication-compliance-reports-audits",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Widgets, informes CSV exportables, Message details report programado, eventos de auditoría y verificación de ReviewMailbox con Get-SupervisoryReviewPolicyV2.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Microsoft Purview Insider Risk Management and Communication Compliance privacy guide",
+      "url": "https://learn.microsoft.com/en-us/purview/insider-risk-solution-privacy",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Cuatro principios oficiales de privacidad por diseño: seudonimización, RBAC, opt-in explícito de administradores y logs de auditoría.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Use Microsoft Purview to manage data security & compliance for Microsoft Agent 365",
+      "url": "https://learn.microsoft.com/en-us/purview/ai-agent-365",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Soporte de Communication Compliance, Audit y DSPM > AI observability para instancias de agentes autónomos en Microsoft Agent 365.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "How does Microsoft Purview support Agent 365?",
+      "url": "https://learn.microsoft.com/en-us/microsoft-agent-365/guidance/purview-agent-365",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Agent 365 Documentation",
+      "comentario": "Arquitectura de observabilidad consistente de datos y cumplimiento sobre actividad humana y agéntica en tiempo real.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Use Microsoft Purview to manage data security & compliance for Anthropic Claude (Enterprise)",
+      "url": "https://learn.microsoft.com/en-us/purview/ai-claude-enterprise",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Extensión de controles de Communication Compliance y Purview hacia interacciones con Anthropic Claude Enterprise (agosto 2026).",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Learn about Microsoft Purview billing models",
+      "url": "https://learn.microsoft.com/en-us/purview/purview-billing-models",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Definición oficial del medidor Pay-As-You-Go de Text records (1.000 caracteres) y tarifas Standard vs. Premium en Communication Compliance.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Trainable classifier definitions",
+      "url": "https://learn.microsoft.com/en-us/purview/trainable-classifiers-definitions",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Purview Documentation",
+      "comentario": "Catálogo, idiomas soportados y requisitos mínimos de palabras de los clasificadores entrenables regulatorios, conductuales y Protected material.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Study guide for Applied Skills: Implement retention, eDiscovery, and Communication Compliance in Microsoft Purview (APL-5007)",
+      "url": "https://learn.microsoft.com/en-us/credentials/applied-skills/resources/study-guides/apl-5007",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Credentials",
+      "comentario": "Credencial práctica oficial vigente en 2026 para validar competencias operativas sobre Communication Compliance.",
+      "verificacion": "Verificado MS Learn (2026-11-11)"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "New Purview Communication Compliance features for Copilot and Insider Risk Management",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-security-blog/new-purview-communication-compliance-features-for-copilot-and-insider-risk-manag/4296775",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Microsoft Security Team",
+      "comentario": "Anuncio oficial de indicadores GenAI, Prompt Shields e integración de señales entre Communication Compliance e Insider Risk Management.",
+      "verificacion": "Verificado Blog Oficial Microsoft (2026-11-11)"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "Microsoft 365 E7 and Agent 365 are now generally available",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft_365blog/microsoft-365-e7-and-agent-365-are-now-generally-available/4516295",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Microsoft 365 Team",
+      "comentario": "Hito de disponibilidad general (1 de mayo de 2026) de Microsoft 365 E7 y Microsoft Agent 365.",
+      "verificacion": "Verificado Blog Oficial Microsoft (2026-11-11)"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "Become a Communication Compliance Ninja",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-security-blog/become-a-communication-compliance-ninja/3283283",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Microsoft Purview Product Engineering",
+      "comentario": "Ruta formativa Ninja fundacional para arquitectos, analistas e investigadores de Communication Compliance.",
+      "verificacion": "Verificado Blog Oficial Microsoft (2026-11-11)"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "MC1505599 - Microsoft Purview Audit: AuditLogQuery API generally available and Search-UnifiedAuditLog retiring",
+      "url": "https://mc.merill.net/message/MC1505599",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Merill Fernando (Microsoft Message Center Archive)",
+      "comentario": "Confirmación del GA de Microsoft Graph AuditLogQuery API en octubre de 2026 y retiro programado de Search-UnifiedAuditLog el 15 de octubre de 2027.",
+      "verificacion": "Verificado Archivo Message Center (2026-11-11)"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "SEC Rule 17a-4 Compliance Offering and NIST Cybersecurity Framework (CSF) 2.0 (CSWP 29)",
+      "url": "https://learn.microsoft.com/en-us/compliance/regulatory/offering-SEC-docs",
+      "tipoFuente": "Marco Normativo",
+      "autor": "Microsoft Regulatory Compliance / NIST",
+      "comentario": "Base regulatoria de supervisión y trazabilidad probatoria para servicios financieros y mapeo de funciones NIST CSF 2.0.",
+      "verificacion": "Verificado MS Learn y NIST (2026-11-11)"
+    }
+  ]
+}

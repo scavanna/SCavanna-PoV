@@ -1,0 +1,1259 @@
+{
+  "schemaVersion": "2.0",
+  "id": "21_Customer_Lockbox_Customer_Key_y_M365_PAM",
+  "orden": 21,
+  "slug": "Customer_Lockbox_Customer_Key_y_M365_PAM",
+  "nombre": "Microsoft Purview Customer Lockbox, Customer Key y Privileged Access Management (M365 PAM)",
+  "nombreCorto": "Customer Lockbox, Customer Key y M365 PAM",
+  "categoria": "Seguridad de Datos, Cumplimiento y Gobierno (Microsoft Purview)",
+  "bloqueOrigen": "Nuevo desde Microsoft Learn MCP (Nov 2026)",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://admin.microsoft.com",
+    "https://purview.microsoft.com",
+    "https://portal.azure.com",
+    "https://intune.microsoft.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "Cloud Security Architect",
+    "Cryptography & PKI Lead",
+    "Identity & Privileged Access Lead",
+    "Exchange & SharePoint Platform Leads",
+    "Compliance Officer / DPO",
+    "SOC L2 / L3",
+    "Internal Audit / GRC",
+    "FinOps"
+  ],
+  "relacionM365E5": {
+    "estado": "Incluido en Microsoft 365 E5 / Microsoft Purview Suite (+ costos Azure Key Vault / Managed HSM para Customer Key)",
+    "licencias": [
+      "Microsoft 365 E5 / A5 / G5 (incluye derechos completos para Customer Lockbox, Customer Key y Microsoft Purview Privileged Access Management)",
+      "Office 365 E5 / A5 / G5 (incluye Customer Lockbox, Customer Key y M365 PAM)",
+      "Microsoft Purview Suite (anteriormente Microsoft 365 E5 Compliance, renombrado el 1 de octubre de 2025) para los tres pilares",
+      "Microsoft 365 E5 / A5 / F5 / G5 Information Protection and Governance Add-on (incluye Customer Key)",
+      "Microsoft 365 E5 / A5 / F5 / G5 Insider Risk Management Add-on (incluye Customer Lockbox y M365 PAM)",
+      "Dos suscripciones Azure de pago independientes (Enterprise Agreement / MCA; no se admiten Free, Trial, Sponsorship ni MSDN) para alojar Azure Key Vault Premium (HSM) o Azure Key Vault Managed HSM en Customer Key",
+      "Plan de soporte de Azure nivel Developer o superior (requerido únicamente para el control complementario Customer Lockbox for Microsoft Azure)"
+    ],
+    "prerrequisitos": [
+      "Dos suscripciones Azure de pago distintas creadas bajo el mismo tenant de Microsoft Entra ID y administradas por custodios separados para cumplir el aislamiento de claves raíz de Customer Key",
+      "Aprovisionamiento de 6 Azure Key Vaults Premium SKU (3 pares para MDEP, Exchange y SharePoint) o 2 instancias Azure Key Vault Managed HSM (FIPS 140-2 Level 3) con Soft Delete de 90 días y Purge Protection obligatorios desde la creación, modelo Azure RBAC y firewall con Allow Trusted Microsoft Services",
+      "Claves RSA / RSA-HSM de hasta 4.096 bits sin fecha de expiración (curvas elípticas EC no soportadas) y respaldo inmediato online/offline con Backup-AzKeyVaultKey",
+      "Registro en el tenant de los principales de servicio oficiales: Customer Key Onboarding (19f7f505-34aa-44a4-9dcc-6a768854d2ea), M365DataAtRestEncryption (c066d759-24ae-40e7-a56f-027002b5d3e4), Exchange Online (00000002-0000-0ff1-ce00-000000000000) y SharePoint Online (00000003-0000-0ff1-ce00-000000000000)",
+      "Validación aprobada (ValidationResult = Success) mediante el módulo oficial M365CustomerKeyOnboarding en modo Validate antes de ejecutar Enable",
+      "Creación de un grupo de seguridad habilitado para correo (mail-enabled security group) como grupo aprobador dedicado antes de activar M365 PAM y asignación del rol Customer Lockbox access approver para evitar el uso cotidiano de Global Administrator"
+    ],
+    "notaLicenciamiento": "Customer Lockbox, Customer Key y M365 PAM están incluidos como derechos de licencia dentro de Microsoft 365 E5 y Microsoft Purview Suite sin costo extra por usuario en M365, pero Customer Key exige costear en Azure dos suscripciones de pago para las llaves HSM (Premium Key Vault o Managed HSM) y operaciones wrapKey/unwrapKey. Microsoft valida periódicamente las cantidades de licencias elegibles de Customer Key: para Multi-workload DEP el tenant debe tener al menos tantas licencias Customer Key como el mayor número entre usuarios con licencia Exchange o Teams; para SharePoint DEP debe igualar o superar el total de usuarios con licencia SharePoint; y en Exchange DEP cada buzón de usuario requiere licencia persistente. Si el tenant cae por debajo del conteo requerido, el cifrado revierte automáticamente a claves administradas por Microsoft."
+  },
+  "resumenEjecutivo": "Microsoft Purview Customer Lockbox, Customer Key y Privileged Access Management (M365 PAM) conforman la tríada de soberanía de datos, custodia criptográfica BYOK y privilegio administrativo cero permanente (Zero Standing Privileges) en Microsoft 365 E5 y Microsoft Purview Suite. Customer Lockbox garantiza que ningún ingeniero de Microsoft acceda al contenido del cliente (Exchange, SharePoint, OneDrive, Teams, Windows 365 e interacciones de Microsoft 365 Copilot) sin aprobación explícita del cliente con ventana máxima de 4 horas y auditoría inmutable bajo Microsoft Operator. Customer Key permite controlar en Azure Key Vault Premium o Managed HSM (FIPS 140-2 Level 3) en dos suscripciones y regiones distintas las claves raíz de cifrado de servicio (DEPs para múltiples cargas incluyendo Copilot y Windows 365 Cloud PCs, buzones Exchange y SharePoint/OneDrive) manteniendo compatibilidad total con Copilot, DLP y eDiscovery —a diferencia de Double Key Encryption (DKE)—, respaldado por una Availability Key aislada para resiliencia. Finalmente, M365 PAM complementa a Microsoft Entra PIM imponiendo aprobación Just-in-Time por pares a nivel de tarea o cmdlet individual en el sustrato de Exchange Online.",
+  "principiosRectores": [
+    {
+      "principio": "Autorización explícita del cliente sobre accesos de soporte del proveedor (Zero Standing Vendor Access)",
+      "descripcion": "Exigir aprobación formal del cliente mediante Customer Lockbox antes de cualquier acceso temporal (máx. 4 h) de ingenieros de Microsoft a contenido M365, Copilot o Windows 365, auditando cada acción de Microsoft Operator.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/customer-lockbox-requests"
+    },
+    {
+      "principio": "Doble suscripción, doble región y custodia dual segregada en claves raíz (Customer Key)",
+      "descripcion": "Alojar las dos claves raíz de cada Data Encryption Policy (DEP) en dos suscripciones Azure de pago independientes bajo administradores distintos para impedir pérdida o sabotaje unilateral.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/customer-key-set-up"
+    },
+    {
+      "principio": "Inmutabilidad criptográfica antidestrucción (Soft Delete 90d, Purge Protection y preservación de versiones)",
+      "descripcion": "Imponer Soft Delete de 90 días, Purge Protection, claves RSA/RSA-HSM sin fecha de expiración y prohibición absoluta de borrar o deshabilitar versiones históricas requeridas por respaldos.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/customer-key-availability-key-roll"
+    },
+    {
+      "principio": "Soberanía compatible con IA y cumplimiento (Customer Key para el 95 % vs. DKE para el 5 %)",
+      "descripcion": "Usar Customer Key como estándar de cifrado en reposo preservando Microsoft 365 Copilot, eDiscovery, DLP y coautoría web, reservando Double Key Encryption (DKE) solo para activos Top Secret que deban ser opacos al servicio.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/double-key-encryption"
+    },
+    {
+      "principio": "Defensa en profundidad Rol + Tarea (Microsoft Entra PIM + Microsoft Purview PAM)",
+      "descripcion": "Combinar la activación JIT de roles de directorio en Entra PIM con la aprobación por pares a nivel de cmdlet individual en M365 PAM sobre el Exchange Management runspace.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/privileged-access-management"
+    },
+    {
+      "principio": "Gobierno estricto entre Rollback operativo y Data Purge Path irreversible",
+      "descripcion": "Separar con controles ejecutivos el regreso seguro a claves gestionadas por Microsoft (Rollback conservando Key Vaults) de la destrucción criptográfica regulada con Data Purge eDocument exclusiva para salida definitiva de Exchange.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/purview/customer-key-manage"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Microsoft Purview Customer Lockbox (para Microsoft 365)",
+      "funcionOperativa": "Flujo de aprobación explícita del cliente (expira en 12 h; acceso máximo de 4 h sin enlaces de sign-in en correos) para solicitudes de soporte sobre Exchange, SharePoint, OneDrive, Teams, Windows 365 y M365 Copilot.",
+      "portalRuta": "admin.microsoft.com > Settings > Org Settings > Security & Privacy > Customer Lockbox / Support > Customer Lockbox Requests",
+      "integraciones": [
+        "Microsoft Purview Audit (Set-AccessToCustomerDataRequest y Microsoft Operator)",
+        "Microsoft Defender for Cloud Apps (alertamiento)",
+        "Microsoft 365 Copilot & Windows 365"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Customer Lockbox for Microsoft Azure (Control Complementario MCSB PA-8)",
+      "funcionOperativa": "Gobierno de solicitudes de acceso de soporte a datos en más de 40 servicios Azure (incluyendo Azure OpenAI, Foundry, SQL, Storage y AKS) con cola de 4 días y auditoría en Activity Log / Entra Audit Log.",
+      "portalRuta": "portal.azure.com > Customer Lockbox for Microsoft Azure > Administration / Pending Requests",
+      "integraciones": [
+        "Azure Activity Logs & Microsoft Entra Audit Logs (Access Reviews)",
+        "Microsoft Cloud Security Benchmark v2 (PA-8)",
+        "Azure Support Plan (>= Developer)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Infraestructura Raíz Azure Key Vault Premium (HSM) y Managed HSM",
+      "funcionOperativa": "Custodia de claves RSA/RSA-HSM (hasta 4.096 bits, sin expiración) en dos suscripciones Azure de pago con Soft Delete 90d, Purge Protection y Azure RBAC (6 Key Vaults Premium o solo 2 instancias Managed HSM FIPS 140-2 L3).",
+      "portalRuta": "portal.azure.com > Key vaults / Managed HSMs",
+      "integraciones": [
+        "Azure RBAC (Key Vault / Managed HSM Crypto Service Encryption User)",
+        "Azure Monitor & Microsoft Sentinel (AzureDiagnostics)",
+        "M365CustomerKeyOnboarding PowerShell Service"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Customer Key Multi-Workload DEP (Scenario MDEP)",
+      "funcionOperativa": "Política única activa por tenant que cifra en reposo Windows 365 Cloud PCs (Enterprise y Frontline), Teams, interacciones Microsoft 365 Copilot, Purview Information Protection (EDM/etiquetas) y exportaciones CMK de eDiscovery.",
+      "portalRuta": "Exchange Online PowerShell (New/Set-M365DataAtRestEncryptionPolicyAssignment)",
+      "integraciones": [
+        "Service Principal M365DataAtRestEncryption (c066d759-24ae-40e7-a56f-027002b5d3e4)",
+        "Microsoft Intune (Windows 365 Cloud PCs)",
+        "Microsoft Purview eDiscovery (CMK direct exports preview)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Customer Key Exchange Mailbox DEPs y SharePoint/OneDrive Geo DEPs",
+      "funcionOperativa": "Hasta 50 DEPs activas para buzones individuales/híbridos en Exchange Online y 1 DEP por Geo en SharePoint/OneDrive (jerarquía TIK -> Site Keys -> Blob Keys -> File chunks).",
+      "portalRuta": "Exchange Online PowerShell (New-DataEncryptionPolicy) / SharePoint PowerShell (Register-SPODataEncryptionPolicy)",
+      "integraciones": [
+        "Exchange Online (00000002-0000-0ff1-ce00-000000000000)",
+        "SharePoint Online & OneDrive (00000003-0000-0ff1-ce00-000000000000)",
+        "Data Purge Path regulado (exclusivo de Exchange DEPs)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Availability Key y Almacenes Internos Aislados de Recuperación",
+      "funcionOperativa": "Tercera clave raíz generada por DEP y protegida por código de servicio M365 para resiliencia ante fallos sistémicos transitorios (EXO/MDEP) y recuperación explícita ante pérdida total de claves del cliente.",
+      "portalRuta": "purview.microsoft.com > Solutions > Audit (RecordType: CustomerKeyServiceEncryption)",
+      "integraciones": [
+        "Microsoft Purview Audit (Fallback to availability key)",
+        "Microsoft Internal Lockbox & Secret Stores",
+        "Microsoft Support Recovery Workflow"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Integración Customer Key para Windows 365 Cloud PCs en Microsoft Intune",
+      "funcionOperativa": "Orquestación de re-cifrado deliberado (con reinicio automático en lotes de hasta 20.000 equipos) de discos, instantáneas e imágenes de Cloud PCs usando claves de la Multi-workload DEP.",
+      "portalRuta": "intune.microsoft.com > Tenant administration > Cloud PC encryption type",
+      "integraciones": [
+        "Windows 365 Enterprise & Frontline (Dedicated/Shared)",
+        "Azure Storage Server-Side Encryption (SSE)",
+        "Multi-Workload DEP (MDEP)"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Microsoft Purview Privileged Access Management (M365 PAM)",
+      "funcionOperativa": "Motor JIT/JEA en el sustrato M365 y Exchange Management runspace con hasta 30 políticas de aprobación (Task, Role, Role Group), expiración de solicitud de 24 h y ventana aprobada por defecto de 4 h.",
+      "portalRuta": "admin.microsoft.com > Settings > Org Settings > Security & Privacy > Privileged access",
+      "integraciones": [
+        "Exchange Management Runspace (New/Approve/Deny-ElevatedAccessRequest)",
+        "Microsoft Entra Privileged Identity Management (defensa en profundidad)",
+        "Microsoft Purview Audit & Graph auditLog/queries"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "Customer Lockbox Access Approver",
+      "nivelSOC": "CISO / DPO / Executive Governance",
+      "permisosClave": "Activar/desactivar Customer Lockbox en admin.microsoft.com y aprobar, rechazar o cancelar solicitudes de acceso a datos de soporte (Set-AccessToCustomerDataRequest).",
+      "asignacionPIM": "Elegible en Microsoft Entra PIM (activación <= 1 hora bajo verificación del ticket de soporte) para evitar uso de Global Administrator.",
+      "responsabilidadOperativa": "Validar con el dueño técnico del ticket cada solicitud Lockbox dentro de la ventana de 12 h y ordenar auditoría posterior de Microsoft Operator.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Azure Customer Lockbox Approver for Subscription",
+      "nivelSOC": "Cloud Security Governance",
+      "permisosClave": "Revisar, aprobar o denegar solicitudes de Customer Lockbox for Microsoft Azure acotadas a recursos dentro de la suscripción asignada.",
+      "asignacionPIM": "Asignación directa sobre grupo restringido de gobierno (en Azure Lockbox el rol debe estar activo antes de iniciarse la solicitud; no admite Management Groups).",
+      "responsabilidadOperativa": "Gobernar accesos excepcionales de ingeniería de Azure sobre máquinas virtuales, bases de datos, Azure OpenAI y almacenamiento dentro del plazo de 4 días.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Key Vault / Managed HSM Crypto Custodian (Suscripción 1 y Suscripción 2)",
+      "nivelSOC": "Cryptography & PKI Lead (Tier 0 Crypto)",
+      "permisosClave": "Key Vault Administrator / Managed HSM Administrator (create, backup, restore, get, list; por diseño en RBAC de Customer Key sin borrado accidental) en UNA sola de las dos suscripciones.",
+      "asignacionPIM": "Elegible en Azure PIM (máximo 2 h, aprobación dual y MFA FIDO2) con separación estricta entre el custodio de la Suscripción 1 y el de la Suscripción 2.",
+      "responsabilidadOperativa": "Generar claves RSA/RSA-HSM sin fecha de expiración, crear nuevas versiones en rotaciones autorizadas y custodiar respaldos Backup-AzKeyVaultKey.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Key Vault RBAC Security Officer",
+      "nivelSOC": "Cloud IAM / Security Architect",
+      "permisosClave": "Key Vault Contributor / Role Based Access Control Administrator para asignar Key Vault / Managed HSM Crypto Service Encryption User a los principales de M365.",
+      "asignacionPIM": "Elegible en Azure PIM (máximo 1 h con ticket de cambio aprobado).",
+      "responsabilidadOperativa": "Mantener el modelo Azure RBAC puro en las bóvedas, migrar políticas de acceso heredadas y asegurar el firewall de servicios de confianza.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Customer Key Policy Administrator (MDEP / EXO / SPO)",
+      "nivelSOC": "M365 Platform Security Engineer",
+      "permisosClave": "Compliance Administrator, Exchange Administrator o SharePoint Administrator para ejecutar cmdlets de creación, asignación y refresco de DEPs.",
+      "asignacionPIM": "Elegible en Entra PIM y sujeto a política de aprobación Manual en M365 PAM para cmdlets Set-DataEncryptionPolicy y Set-M365DataAtRestEncryptionPolicyAssignment.",
+      "responsabilidadOperativa": "Ejecutar validaciones M365CustomerKeyOnboarding, asignar DEPs a cargas y buzones, coordinar cifrado Windows 365 en Intune y monitorear Get-SPODataEncryptionPolicy.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "M365 PAM Policy Administrator",
+      "nivelSOC": "Identity & Privileged Access Architect (Tier 0)",
+      "permisosClave": "Global Administrator requerido oficialmente para ejecutar Enable/Disable-ElevatedAccessControl y administrar las hasta 30 políticas New/Remove-ElevatedAccessApprovalPolicy.",
+      "asignacionPIM": "Estricto JIT en Microsoft Entra PIM (máximo 1 hora con aprobación cruzada del CISO y autenticación resistente al phishing).",
+      "responsabilidadOperativa": "Habilitar M365 PAM, definir el grupo aprobador por defecto, restringir al mínimo -SystemAccounts y mantener el catálogo de 30 políticas críticas.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "M365 PAM Approver Group Member",
+      "nivelSOC": "SecOps Lead / Messaging Architecture Lead",
+      "permisosClave": "Miembro del mail-enabled security group aprobador para ejecutar Approve-ElevatedAccessRequest y Deny-ElevatedAccessRequest en PowerShell (o en portal con Exchange Administrator).",
+      "asignacionPIM": "Membresía nominal recertificada mensualmente; prohibido autoaprobar solicitudes propias.",
+      "responsabilidadOperativa": "Evaluar justificación y duración solicitada antes de autorizar la ejecución JIT de cmdlets críticos de Exchange Online y revocar accesos ante anomalías.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Purview Audit & SIEM Cryptographic Monitor",
+      "nivelSOC": "SOC L2 / Compliance Auditor",
+      "permisosClave": "View-Only Audit Logs en Purview, permiso Graph AuditLogsQuery.Read.All y lectura en Microsoft Sentinel sobre OfficeActivity y AzureDiagnostics.",
+      "asignacionPIM": "Activo en solo lectura para vigilancia continua 24x7.",
+      "responsabilidadOperativa": "Auditar acciones de Microsoft Operator, alertar sobre eventos CustomerKeyServiceEncryption (Fallback to availability key) y vigilar elevaciones M365 PAM.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Evaluación y decisión anti-phishing sobre solicitudes Customer Lockbox (M365 y Azure)",
+      "objetivo": "Aprobar o rechazar con verificación interna toda solicitud de acceso de ingenieros de Microsoft dentro de la ventana de 12 h (M365) o 4 días (Azure).",
+      "consolaRuta": "admin.microsoft.com > Support > Customer Lockbox Requests / portal.azure.com > Customer Lockbox > Pending Requests",
+      "procedimiento": [
+        "Navegar manualmente al portal oficial sin abrir enlaces sospechosos (Microsoft nunca incluye enlaces de sign-in en correos de notificación de M365 Lockbox).",
+        "Contrastar el Service Request Number, la carga afectada y la duración solicitada (máximo 4 h en M365) con el responsable interno que abrió el ticket.",
+        "Ejecutar Approve o Deny en consola o mediante Set-AccessToCustomerDataRequest documentando la justificación."
+      ],
+      "rolResponsable": "Customer Lockbox Access Approver",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.SC-07",
+      "mitreTactic": "Initial Access (T1199)",
+      "evidenciaAuditable": "Registro Set-AccessToCustomerDataRequest en Purview Audit o Approve/Deny Lockbox Request en Azure Activity Log.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Ausencia de enlaces en correos M365 Lockbox, expiración de 12 h vs. 4 días y tope de 4 h verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-lockbox-requests"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Auditoría forense posterior de sesiones aprobadas ejecutadas por Microsoft Operator",
+      "objetivo": "Verificar el 100 % de las acciones realizadas por el ingeniero de soporte durante las 4 horas siguientes a una aprobación de Customer Lockbox.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit / security.microsoft.com (Sentinel OfficeActivity)",
+      "procedimiento": [
+        "Ejecutar búsqueda de auditoría filtrando UserId igual a 'Microsoft Operator' en la ventana posterior a la aprobación.",
+        "Validar dirección IP del operador, cmdlets ejecutados y correspondencia exacta con el incidente reportado.",
+        "Archivar el extracto de auditoría firmado junto al ticket cerrado en el sistema ITSM."
+      ],
+      "rolResponsable": "SOC L2 / Compliance Officer",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Collection",
+      "evidenciaAuditable": "Exportación de registros Microsoft Operator en Purview Audit / Sentinel.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Identificador exacto 'Microsoft Operator' y ventana de 4 horas verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-lockbox-requests"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Revisión y aprobación peer-review de solicitudes JIT de tareas en M365 PAM",
+      "objetivo": "Autorizar o denegar solicitudes de cmdlets críticos de Exchange antes de su expiración de 24 h asegurando control de cuatro ojos.",
+      "consolaRuta": "admin.microsoft.com > Settings > Org Settings > Security & Privacy > Privileged access / Exchange Online PowerShell",
+      "procedimiento": [
+        "Inspeccionar solicitudes pendientes con Get-ElevatedAccessRequest validando tarea (ej. Exchange\\New-TransportRule), motivo y ticket de cambio.",
+        "Confirmar que el aprobador sea distinto del solicitante y que DurationHours sea el mínimo necesario (por defecto 4 h).",
+        "Ejecutar Approve-ElevatedAccessRequest o Deny-ElevatedAccessRequest con comentario trazable y revocar anticipadamente al concluir el cambio."
+      ],
+      "rolResponsable": "M365 PAM Approver Group Member",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Persistence (T1098)",
+      "evidenciaAuditable": "Eventos New/Approve/Deny-ElevatedAccessRequest y ejecución en Exchange Management runspace en Purview Audit.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Expiración de 24 h en cola, duración por defecto de 4 h y cmdlets verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/privileged-access-management-configuration"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo de eventos Fallback to availability key (CustomerKeyServiceEncryption)",
+      "objetivo": "Detectar de inmediato fallos simultáneos o problemas de acceso en los dos Azure Key Vaults / Managed HSM de Customer Key.",
+      "consolaRuta": "purview.microsoft.com > Solutions > Audit / security.microsoft.com (Sentinel OfficeActivity)",
+      "procedimiento": [
+        "Consultar diariamente eventos con RecordType 'CustomerKeyServiceEncryption' y Activity 'Fallback to availability key'.",
+        "De existir registros en cargas Exchange o M365DataAtRestEncryption, correlacionar DEP ID con AzureDiagnostics de ambas bóvedas.",
+        "Escalar como incidente P1 cualquier denegación HTTP 403 o indisponibilidad de clave antes de afectar operaciones de usuario."
+      ],
+      "rolResponsable": "SOC L2 / Cryptography & PKI Lead",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Impact",
+      "evidenciaAuditable": "Resultado diario sin anomalías sobre RecordType CustomerKeyServiceEncryption.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Esquema exacto de auditoría CustomerKeyServiceEncryption y disparadores de fallback verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-availability-key-understand"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Vigilancia SIEM de operaciones críticas en Azure Key Vaults y Managed HSM",
+      "objetivo": "Detectar cualquier intento de borrado, cambio de firewall, alteración RBAC o acceso ajeno a los principales oficiales de M365.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel (AzureDiagnostics / AzureActivity)",
+      "procedimiento": [
+        "Monitorear eventos KeyDelete, KeyPurge, KeyUpdate, VaultPatch y RoleAssignmentDelete en las dos suscripciones dedicadas a Customer Key.",
+        "Verificar que KeyWrap y KeyUnwrap provengan exclusivamente de los AppId oficiales de MDEP, Exchange Online y SharePoint Online.",
+        "Investigar de inmediato cualquier código HTTP >= 400 o cambio administrativo fuera de ventana aprobada."
+      ],
+      "rolResponsable": "SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-09",
+      "mitreTactic": "Credential Access (T1552)",
+      "evidenciaAuditable": "Tablero diario de telemetría criptográfica en Microsoft Sentinel.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "AppIds oficiales verificados en MS Learn; correlación SIEM continua es práctica editorial recomendada.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-set-up"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Supervisión de actividad de cuentas excluidas (-SystemAccounts) en M365 PAM",
+      "objetivo": "Confirmar que las cuentas de automatización excluidas de M365 PAM no presenten inicios de sesión interactivos ni desvíos de comandos.",
+      "consolaRuta": "security.microsoft.com > Microsoft Sentinel (OfficeActivity + SigninLogs)",
+      "procedimiento": [
+        "Auditar todos los cmdlets ejecutados por las identidades incluidas en el parámetro -SystemAccounts de Enable-ElevatedAccessControl.",
+        "Correlacionar contra IPs de runners autorizados y confirmar cero inicios de sesión interactivos humanos.",
+        "Bloquear la cuenta y revocar la exclusión ante cualquier comando fuera del catálogo automatizado."
+      ],
+      "rolResponsable": "SOC L2 / Identity Lead",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Privilege Escalation (T1078.004)",
+      "evidenciaAuditable": "Reporte diario de actividad automatizada de SystemAccounts sin alertas.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en la recomendación oficial de MS Learn de auditar rigurosamente las exclusiones -SystemAccounts.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/privileged-access-management-configuration"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Verificación de estado de cifrado Customer Key en Windows 365 Cloud PCs",
+      "objetivo": "Asegurar que los Cloud PCs Enterprise y Frontline permanezcan cifrados con claves del cliente en Microsoft Intune.",
+      "consolaRuta": "intune.microsoft.com > Tenant administration > Cloud PC encryption type",
+      "procedimiento": [
+        "Revisar la hoja Cloud PC encryption type verificando que Microsoft Purview Customer Key figure activo y sin errores de lote.",
+        "Confirmar mediante Get-M365DataAtRestEncryptionPolicyAssignment que la política MDEP del tenant permanezca asignada."
+      ],
+      "rolResponsable": "Endpoint / Windows 365 Administrator",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-01",
+      "mitreTactic": "Collection",
+      "evidenciaAuditable": "Estado conforme en Intune Admin Center > Cloud PC encryption type.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Ruta exacta en Intune Admin Center verificada en la documentación oficial de Windows 365.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/windows-365/enterprise/purview-customer-key"
+    },
+    {
+      "codigo": "D-08",
+      "cadencia": "Diaria",
+      "actividad": "Conciliación diaria de tickets severos de soporte frente a colas Lockbox y pre-activación PIM en Azure",
+      "objetivo": "Evitar expiraciones accidentales en tickets críticos y asegurar que aprobadores Azure Lockbox tengan rol activo antes del inicio de solicitudes.",
+      "consolaRuta": "admin.microsoft.com > Support / portal.azure.com > Help + support & Customer Lockbox",
+      "procedimiento": [
+        "Cruzar los casos P1/P2 abiertos con Microsoft Support contra las colas pendientes de Customer Lockbox en M365 y Azure.",
+        "Si un caso de Azure anticipa acceso a datos, asegurar que el aprobador tenga activo el rol Owner o Azure Customer Lockbox Approver antes de que ingeniería emita la solicitud.",
+        "Verificar recepción de notificaciones en buzones alternativos configurados en Azure Lockbox."
+      ],
+      "rolResponsable": "Cloud Governance / Service Desk Lead",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.SC-07",
+      "mitreTactic": "Initial Access",
+      "evidenciaAuditable": "Bitácora diaria de conciliación de soporte crítico Microsoft.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Requisito crítico verificado en MS Learn: Azure Lockbox no reconoce activaciones PIM realizadas después de iniciada la solicitud.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/security/fundamentals/customer-lockbox-overview"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Verificación de salud y asignación de DEPs en Multi-Workload, Exchange y SharePoint/OneDrive",
+      "objetivo": "Confirmar que el 100 % de políticas DEP estén activas/registradas y asignar DEP a buzones nuevos o en pre-migración.",
+      "consolaRuta": "Exchange Online PowerShell / SharePoint Online Management Shell",
+      "procedimiento": [
+        "Ejecutar Get-M365DataAtRestEncryptionPolicyAssignment y Get-DataEncryptionPolicy validando estado Enabled.",
+        "Auditar buzones recién creados o MailUsers híbridos (Set-MailUser pre-migración) verificando Get-MailboxStatistics | fl IsEncrypted,DataEncryptionPolicyID.",
+        "Ejecutar Get-SPODataEncryptionPolicy confirmando estado Registered al 100 % en cada geo."
+      ],
+      "rolResponsable": "Customer Key Policy Administrator",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-01",
+      "mitreTactic": "Collection",
+      "evidenciaAuditable": "Salidas semanales firmadas de estado de DEPs en las tres cargas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Cmdlets oficiales y eficiencia de asignar Set-MailUser antes de migrar verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-manage"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Ejecución preventiva de M365CustomerKeyOnboarding en modo Validate",
+      "objetivo": "Auditar de forma no destructiva las 9 reglas oficiales de configuración de suscripciones, licencias, claves y permisos.",
+      "consolaRuta": "Azure PowerShell (M365CustomerKeyOnboarding)",
+      "procedimiento": [
+        "Ejecutar New-CustomerKeyOnboardingRequest con -OnboardingMode Validate para los escenarios MDEP y EXO.",
+        "Comprobar ValidationResult = Success y ausencia de reglas en FailedValidations (KeyNeverExpires, RecoveryLevel, KeyOperationsSupported).",
+        "Corregir de inmediato cualquier desviación detectada antes de que impacte renovaciones o re-envoltura de claves."
+      ],
+      "rolResponsable": "Cryptography & PKI Lead",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-06",
+      "mitreTactic": "Defense Evasion",
+      "evidenciaAuditable": "Salida semanal PassedValidations del Customer Key Onboarding Service.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "El modo Validate puede ejecutarse tantas veces como sea necesario sin realizar cambios según MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-set-up"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Auditoría de cobertura de las hasta 30 políticas de M365 PAM y revisión de solicitudes expiradas",
+      "objetivo": "Garantizar que el control global de M365 PAM siga encendido y cubriendo los cmdlets más críticos de Exchange Online.",
+      "consolaRuta": "admin.microsoft.com > Settings > Org Settings > Security & Privacy > Privileged access / Exchange PowerShell",
+      "procedimiento": [
+        "Verificar que Require approvals for privileged tasks permanezca activo.",
+        "Revisar Get-ElevatedAccessApprovalPolicy confirmando modo Manual sobre reglas de transporte, conectores, permisos de buzón, roles y DEPs.",
+        "Analizar solicitudes expiradas (> 24 h) o denegadas en Get-ElevatedAccessRequest para detectar intentos no autorizados."
+      ],
+      "rolResponsable": "Identity & Privileged Access Lead",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Exfiltration (T1114.003)",
+      "evidenciaAuditable": "Listado exportado de políticas activas y resumen semanal de solicitudes PAM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Límite de 30 políticas y expiración de 24 h verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/privileged-access-management"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Verificación de estado activo de Customer Lockbox en M365 y Microsoft Azure (MCSB PA-8)",
+      "objetivo": "Asegurar que el control de aprobación explícita permanezca habilitado en ambos planos cloud.",
+      "consolaRuta": "admin.microsoft.com > Security & Privacy > Customer Lockbox / portal.azure.com > Customer Lockbox",
+      "procedimiento": [
+        "Comprobar que la casilla Require approval for all data access requests continúe marcada en M365 Admin Center.",
+        "Verificar la habilitación del módulo Administration en Azure Lockbox y el estado conforme del control PA-8 en Defender for Cloud."
+      ],
+      "rolResponsable": "Compliance Officer",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.SC-07",
+      "mitreTactic": "Trusted Relationship (T1199)",
+      "evidenciaAuditable": "Evidencia semanal de estado habilitado y puntuación MCSB PA-8.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Integración oficial con MCSB v2 PA-8 verificada en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/security/fundamentals/customer-lockbox-overview"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Revisión de métricas de disponibilidad, latencia y firewall de Key Vaults / Managed HSM",
+      "objetivo": "Prevenir fallbacks o interrupciones validando salud de red y excepción de servicios confiables de Microsoft.",
+      "consolaRuta": "portal.azure.com > Key vaults / Managed HSMs > Monitoring & Networking",
+      "procedimiento": [
+        "Revisar métricas Availability y ServiceApiLatency en las bóvedas de ambas regiones Azure.",
+        "Confirmar en configuración de firewall que 'Allow Trusted Microsoft Services to bypass this firewall' permanezca habilitado."
+      ],
+      "rolResponsable": "Cloud Security Architect",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.IR-01",
+      "mitreTactic": "Impact",
+      "evidenciaAuditable": "Reporte semanal de salud de Azure Monitor sobre bóvedas de Customer Key.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Requisito Allow Trusted Microsoft Services en firewall verificado en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-set-up"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Control semanal de umbral de licenciamiento elegible para evitar reversión de Customer Key",
+      "objetivo": "Mantener superávit de licencias Customer Key frente al conteo de usuarios Exchange, Teams y SharePoint.",
+      "consolaRuta": "admin.microsoft.com > Billing > Licenses",
+      "procedimiento": [
+        "Calcular el ratio de licencias Customer Key disponibles frente a Máx(Usuarios Exchange, Usuarios Teams) y frente a Usuarios SharePoint.",
+        "Si el margen libre baja del 5 %, aprovisionar licencias adicionales de inmediato para impedir reversión automática al cifrado por defecto."
+      ],
+      "rolResponsable": "Licensing Admin / Compliance Officer",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.OC-03",
+      "mitreTactic": "Impact",
+      "evidenciaAuditable": "Tabla semanal de conciliación contractual de licencias Customer Key.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "La validación periódica y reversión automática por falta de licencias están verificadas en MS Learn; el margen del 5 % es propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/office365/servicedescriptions/microsoft-365-service-descriptions/microsoft-365-tenantlevel-services-licensing-guidance/microsoft-purview-service-description"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Recertificación de aprobadores Lockbox, grupo aprobador PAM, SystemAccounts y custodios HSM",
+      "objetivo": "Garantizar segregación estricta de funciones entre suscripciones criptográficas y entre solicitantes y aprobadores.",
+      "consolaRuta": "entra.microsoft.com > Identity governance > Access reviews / Azure RBAC",
+      "procedimiento": [
+        "Recertificar titulares de Customer Lockbox access approver (M365) y Azure Customer Lockbox Approver for Subscription.",
+        "Auditar membresía del mail-enabled security group aprobador de M365 PAM y justificar cada cuenta en -SystemAccounts.",
+        "Comprobar que ningún usuario posea roles simultáneos en la Suscripción Azure 1 y en la Suscripción Azure 2 de Customer Key."
+      ],
+      "rolResponsable": "CISO / Identity Governance Lead",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-02",
+      "mitreTactic": "Valid Accounts (T1078)",
+      "evidenciaAuditable": "Actas mensuales de Entra Access Reviews y matriz de segregación SoD.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Separación de administradores entre ambas suscripciones y requisito mail-enabled security group verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-set-up"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Verificación de custodia dual online/offline de backups de claves raíz (Backup-AzKeyVaultKey)",
+      "objetivo": "Asegurar que toda clave y versión activa cuente con respaldo íntegro fuera de banda y cero fechas de expiración.",
+      "consolaRuta": "Azure PowerShell / Bóveda de respaldo criptográfico offline",
+      "procedimiento": [
+        "Listar todas las claves y versiones con Get-AzKeyVaultKey -IncludeVersions verificando que Expires sea nulo.",
+        "Conciliar los archivos generados por Backup-AzKeyVaultKey en ubicaciones online y offline segregadas.",
+        "Verificar que ninguna versión histórica haya sido deshabilitada ni marcada para borrado."
+      ],
+      "rolResponsable": "Cryptography & PKI Lead",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-03",
+      "mitreTactic": "Inhibit System Recovery (T1490)",
+      "evidenciaAuditable": "Inventario firmado de respaldos online/offline con hashes SHA-256.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Obligación de almacenar backups online y offline y no deshabilitar versiones antiguas verificada en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-set-up"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Auditoría de configuración Azure RBAC, Soft Delete (90d) y Purge Protection en bóvedas",
+      "objetivo": "Confirmar inmutabilidad al 100 % y ausencia de legacy access policies en todos los Key Vaults / Managed HSM.",
+      "consolaRuta": "portal.azure.com > Key vaults > Access configuration / Azure Policy",
+      "procedimiento": [
+        "Auditar EnableRbacAuthorization = True, EnableSoftDelete = True (90 días) y EnablePurgeProtection = True en cada bóveda.",
+        "Si se detecta algún baúl legado con Vault access policy, migrarlo a Azure RBAC removiendo políticas previas con Remove-AzKeyVaultAccessPolicy."
+      ],
+      "rolResponsable": "Key Vault RBAC Security Officer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AA-05",
+      "mitreTactic": "Modify Cloud Compute Infrastructure",
+      "evidenciaAuditable": "Reporte mensual de cumplimiento de Azure Policy sobre Key Vaults y Managed HSM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Procedimiento oficial de migración de legacy access policies a Azure RBAC verificado en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-manage"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Prueba de alertas en Defender for Cloud Apps / Sentinel y migración a Graph auditLog/queries",
+      "objetivo": "Garantizar alertamiento en tiempo real para Lockbox/CK/PAM y completar salida de Search-UnifiedAuditLog antes del 15-oct-2027.",
+      "consolaRuta": "security.microsoft.com / Microsoft Graph security/auditLog/queries",
+      "procedimiento": [
+        "Validar el funcionamiento de la política de alerta en Defender for Cloud Apps sobre Set-AccessToCustomerDataRequest y Microsoft Operator.",
+        "Probar las consultas programadas en Microsoft Graph auditLog/queries (GA octubre 2026) verificando paridad con Search-UnifiedAuditLog."
+      ],
+      "rolResponsable": "SOC L3 / Detection Engineer",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-03",
+      "mitreTactic": "Defense Evasion",
+      "evidenciaAuditable": "Registro de prueba mensual de reglas SIEM y avance de migración Graph Audit.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Uso de Defender for Cloud Apps para alertas Lockbox y retiro de Search-UnifiedAuditLog (MC1505599) verificados.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-lockbox-requests"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Control de aislamiento, facturación activa y bloqueos CanNotDelete en las 2 suscripciones Azure",
+      "objetivo": "Impedir suspensión por facturación o contaminación con recursos ajenos en las dos suscripciones dedicadas a Customer Key.",
+      "consolaRuta": "portal.azure.com > Subscriptions / Locks / Cost Management",
+      "procedimiento": [
+        "Confirmar estado Active y vigencia financiera de ambas suscripciones de pago.",
+        "Verificar con Azure Resource Graph que solo existan recursos de Customer Key y monitoreo asociado en dichas suscripciones.",
+        "Validar bloqueos CanNotDelete sobre grupos de recursos y bóvedas."
+      ],
+      "rolResponsable": "FinOps / Cloud Governance",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RM-02",
+      "mitreTactic": "Impact",
+      "evidenciaAuditable": "Informe mensual de higiene y continuidad financiera de suscripciones Customer Key.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "La dedicación exclusiva de las 2 suscripciones de pago está recomendada en MS Learn; los bloqueos CanNotDelete son propuesta editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-set-up"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Simulacro técnico de elevación/revocación en M365 PAM y ejercicio anti-phishing Lockbox",
+      "objetivo": "Validar la destreza operativa de aprobadores y analistas ante elevaciones reales y notificaciones Lockbox falsificadas.",
+      "consolaRuta": "admin.microsoft.com > Privileged access / Exchange Online PowerShell",
+      "procedimiento": [
+        "Ejecutar en ventana controlada New-ElevatedAccessRequest, Approve-ElevatedAccessRequest y revocación anticipada Revoke verificando logs.",
+        "Realizar simulacro de correo falso de Customer Lockbox con enlace de inicio de sesión comprobando su reporte inmediato como phishing."
+      ],
+      "rolResponsable": "CISO / Identity Lead / SOC Manager",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Phishing / Valid Accounts",
+      "evidenciaAuditable": "Acta trimestral de simulacro PAM y Lockbox con métricas de respuesta.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Diseñado sobre comportamientos oficiales verificados de M365 PAM y notificaciones Lockbox sin enlaces.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/privileged-access-management-configuration"
+    },
+    {
+      "codigo": "T-02",
+      "cadencia": "Trimestral",
+      "actividad": "Prueba empírica de restauración de claves raíz en bóveda aislada (Restore-AzKeyVaultKey)",
+      "objetivo": "Comprobar que cada archivo .backup pueda restaurarse íntegramente en caso de desastre.",
+      "consolaRuta": "Azure PowerShell (bóveda de laboratorio aislada)",
+      "procedimiento": [
+        "Aprovisionar un Key Vault / HSM temporal limpio sin colisión de nombres de clave.",
+        "Ejecutar Restore-AzKeyVaultKey -VaultName <TestVault> -InputFile <BackupFile> comprobando restauración de todas las versiones.",
+        "Eliminar la bóveda temporal de laboratorio y firmar el acta de validación."
+      ],
+      "rolResponsable": "Cryptography & PKI Lead",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-03",
+      "mitreTactic": "Inhibit System Recovery",
+      "evidenciaAuditable": "Evidencia de ejecución exitosa de Restore-AzKeyVaultKey en entorno aislado.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Valida en práctica la restricción documentada en MS Learn de fallo de Restore-AzKeyVaultKey si el nombre ya existe.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-manage"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Revisión arquitectónica de cobertura Customer Key (Windows 365 >20k lotes, Copilot, CMK eDiscovery y frontera DKE)",
+      "objetivo": "Asegurar cobertura completa sobre nuevas cargas y evitar bloqueos de IA/colaboración por mal uso de DKE.",
+      "consolaRuta": "intune.microsoft.com / purview.microsoft.com / Exchange & SPO PowerShell",
+      "procedimiento": [
+        "Verificar si existen lotes adicionales de Windows 365 Cloud PCs pendientes de cifrar (límite de 20.000 por ejecución con reinicio).",
+        "Evaluar la adopción de CMK para exportaciones directas de Purview eDiscovery.",
+        "Auditar etiquetas DKE confirmando que se limiten al ~5 % ultra-secreto sin afectar repositorios de Microsoft 365 Copilot."
+      ],
+      "rolResponsable": "Cloud Security Architect / Compliance Lead",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-05",
+      "mitreTactic": "Collection",
+      "evidenciaAuditable": "Informe semestral de arquitectura criptográfica M365.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Lote de 20.000 Cloud PCs y frontera funcional Customer Key vs. DKE verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/windows-365/enterprise/purview-customer-key"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Ceremonia gobernada de rotación de claves Customer Key (solo cuando la política lo exija)",
+      "objetivo": "Ejecutar rotación controlada mediante nueva versión de clave (-Refresh / Update-SPODataEncryptionPolicy) conservando todas las versiones previas.",
+      "consolaRuta": "Azure PowerShell / Exchange Online PowerShell / SharePoint PowerShell",
+      "procedimiento": [
+        "Confirmar mandato regulatorio de rotación (rotar únicamente si la política de cumplimiento de la organización lo exige).",
+        "Crear nueva versión sin fecha de expiración con Add-AzKeyVaultKey y respaldarla de inmediato con Backup-AzKeyVaultKey.",
+        "Ejecutar Set-M365DataAtRestEncryptionPolicy -Refresh, Set-DataEncryptionPolicy -Refresh y en SharePoint Update-SPODataEncryptionPolicy una clave a la vez hasta estado Registered, sin borrar ni deshabilitar versiones anteriores."
+      ],
+      "rolResponsable": "Cryptography & PKI Lead / Customer Key Policy Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.DS-01",
+      "mitreTactic": "Credential Access",
+      "evidenciaAuditable": "Acta anual de ceremonia de rotación con salidas Registered y respaldos actualizados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Advertencia de rotar solo si es requerido, rotación secuencial en SPO y prohibición de borrar versiones previas verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-availability-key-roll"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de reemplazo de claves raíz ante sospecha de compromiso (Método -Replace)",
+      "objetivo": "Sustituir claves potencialmente comprometidas por claves nuevas sin provocar interrupción de servicio ni pérdida de datos.",
+      "consolaRuta": "Azure PowerShell / Exchange Online PowerShell / SharePoint PowerShell",
+      "procedimiento": [
+        "Revocar accesos administrativos comprometidos en Entra ID manteniendo la clave anterior temporalmente activa mientras se completa el reemplazo.",
+        "Generar nuevas claves RSA/RSA-HSM con nombres nuevos, respaldarlas y validar permisos RBAC.",
+        "Ejecutar Set-M365DataAtRestEncryptionPolicy -Replace -AzureKeyIDs <URI1>,<URI2>, Set-DataEncryptionPolicy -Replace y Update-SPODataEncryptionPolicy secuencialmente.",
+        "Esperar obligatoriamente al menos 24 horas antes de deshabilitar la clave antigua y 24-48 horas adicionales, sin purgar versiones requeridas por backups."
+      ],
+      "rolResponsable": "Cryptography & PKI Lead / Incident Commander",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-02",
+      "mitreTactic": "Credential Access (T1552)",
+      "evidenciaAuditable": "Registro cronológico del reemplazo con espera verificada de 24 h / 48 h.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Sintaxis -Replace y tiempos obligatorios de espera de 24 h y 24-48 h verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-availability-key-roll"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de recuperación ante pérdida total de claves del cliente usando la Availability Key",
+      "objetivo": "Restaurar el acceso a los datos y migrar hacia una nueva DEP cuando ambas claves en Azure Key Vault se hayan perdido.",
+      "consolaRuta": "Microsoft Support + Azure PowerShell + Exchange / SharePoint PowerShell",
+      "procedimiento": [
+        "Para Exchange y Multi-workload: crear 2 nuevas claves en suscripciones Azure válidas, crear una nueva DEP y asignarla permitiendo re-cifrado en segundo plano con la Availability Key (hasta 72 h).",
+        "Para SharePoint y OneDrive: abrir ticket crítico con Microsoft Support para activar explícitamente la Availability Key, crear nueva DEP y re-incorporar (~4 h tras activación).",
+        "Monitorear los eventos CustomerKeyServiceEncryption en Purview Audit hasta estabilizar la nueva jerarquía."
+      ],
+      "rolResponsable": "CISO / Cryptography Lead / Platform Leads",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-03",
+      "mitreTactic": "Impact (T1490)",
+      "evidenciaAuditable": "Ticket de recuperación Microsoft Support, nueva DEP activa y trazas de auditoría.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tiempos y diferencia de recuperación EXO/MDEP (72 h autogestionable) vs. SPO (requiere Support, ~4 h) verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-availability-key-understand"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de rechazo inmediato de solicitud Customer Lockbox anómala o detección de phishing",
+      "objetivo": "Bloquear cualquier intento de acceso externo no correlacionado o campaña de suplantación de notificaciones Lockbox.",
+      "consolaRuta": "admin.microsoft.com > Support > Customer Lockbox Requests / Defender for Office 365",
+      "procedimiento": [
+        "Si el correo contiene enlaces de inicio de sesión, declararlo incidente de phishing (las notificaciones legítimas de M365 Lockbox nunca contienen links de sign-in).",
+        "Si existe solicitud en el portal sin aprobación del propietario interno del incidente, pulsar Deny o ejecutar Set-AccessToCustomerDataRequest para rechazarla.",
+        "Escalar formalmente con Microsoft Support citando el Service Request Number para auditoría de seguridad."
+      ],
+      "rolResponsable": "Customer Lockbox Access Approver / SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Initial Access (T1199)",
+      "evidenciaAuditable": "Registro Set-AccessToCustomerDataRequest con ApprovalDecision = Deny.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Regla oficial anti-phishing de notificaciones sin enlaces y flujo Deny verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-lockbox-requests"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de revocación de emergencia de ventana activa en M365 PAM ante compromiso administrativo",
+      "objetivo": "Cortar instantáneamente la ejecución de tareas privilegiadas en Exchange Online para un administrador bajo sospecha.",
+      "consolaRuta": "admin.microsoft.com > Settings > Org Settings > Security & Privacy > Privileged access > Manage access policies and requests",
+      "procedimiento": [
+        "Localizar las solicitudes en estado Approved del administrador afectado y seleccionar la acción Revoke para anular el permiso de inmediato.",
+        "Revocar sesiones de usuario en Microsoft Entra ID y desactivar asignaciones en Entra PIM.",
+        "Auditar en OfficeActivity todos los cmdlets ejecutados durante la ventana previa y revertir cambios no autorizados."
+      ],
+      "rolResponsable": "M365 PAM Approver / SOC L3",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Privilege Escalation (T1078)",
+      "evidenciaAuditable": "Registro de revocación PAM y auditoría forense de cmdlets ejecutados.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Capacidad nativa Revoke sobre solicitudes previamente aprobadas verificada en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/privileged-access-management-configuration"
+    },
+    {
+      "codigo": "AH-05",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook ejecutivo de distinción entre Rollback seguro y Data Purge Path regulado (salida definitiva)",
+      "objetivo": "Impedir destrucción criptográfica accidental y ejecutar con rigor legal cualquier salida regulada de Exchange Online.",
+      "consolaRuta": "Azure PowerShell + Exchange Online PowerShell + Microsoft Support (Data Purge eDocument)",
+      "procedimiento": [
+        "Verificar alcance: si la empresa permanece en M365, ejecutar únicamente Rollback (Set-Mailbox -DataEncryptionPolicy $null o ticket de soporte para MDEP/SPO manteniendo intactos los Key Vaults).",
+        "Solo ante salida total de Exchange Online (purgar MDEP o SPO DEPs no está soportado): quitar permisos wrap/unwrap de Exchange Online en ambos Key Vaults.",
+        "Ejecutar Set-DataEncryptionPolicy <ID> -PermanentDataPurgeRequested -PermanentDataPurgeReason <Reason> -PermanentDataPurgeContact <Contact> y firmar legalmente el Data Purge eDocument para destruir la DEP y la Availability Key."
+      ],
+      "rolResponsable": "CISO / General Counsel / Executive Representative",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.CO-03",
+      "mitreTactic": "Data Destruction (Compliance Shredding)",
+      "evidenciaAuditable": "Data Purge eDocument firmado por representante legal y constancia de purga auditada bajo SOC 2.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Exclusividad para DEPs de buzones Exchange, no soporte en MDEP/SPO y requisito de Data Purge eDocument verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/purview/customer-key-manage"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "SIEM: Decisiones Customer Lockbox M365 y auditoría completa de Microsoft Operator",
+      "plataforma": "Microsoft Sentinel / Microsoft Defender XDR",
+      "tablaPrincipal": "OfficeActivity",
+      "consulta": "OfficeActivity\n| where TimeGenerated > ago(30d)\n| where Operation =~ 'Set-AccessToCustomerDataRequest'\n    or UserId =~ 'Microsoft Operator'\n    or UserId startswith 'BOXServiceAccount@'\n| project TimeGenerated, UserId, Operation, ClientIP, ResultStatus, OfficeWorkload, Parameters\n| sort by TimeGenerated desc",
+      "proposito": "Detectar cada aprobación o rechazo de Customer Lockbox en M365 y auditar exhaustivamente toda acción posterior ejecutada por ingenieros de Microsoft.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "SIEM: Alerta crítica de Fallback a la Availability Key en Customer Key",
+      "plataforma": "Microsoft Sentinel / Microsoft Defender XDR",
+      "tablaPrincipal": "OfficeActivity",
+      "consulta": "OfficeActivity\n| where TimeGenerated > ago(7d)\n| where RecordType =~ 'CustomerKeyServiceEncryption' or Operation =~ 'Fallback to availability key'\n| project TimeGenerated, OfficeWorkload, Operation, OrganizationId, Parameters\n| sort by TimeGenerated desc",
+      "proposito": "Alertar inmediatamente cuando Exchange Online o Multi-workload recurran a la Availability Key por fallos simultáneos en los dos Key Vaults del cliente.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "SIEM: Vigilancia de operaciones destructivas o fallos HTTP en Azure Key Vault / Managed HSM",
+      "plataforma": "Microsoft Sentinel / Azure Monitor",
+      "tablaPrincipal": "AzureDiagnostics",
+      "consulta": "AzureDiagnostics\n| where TimeGenerated > ago(7d)\n| where ResourceProvider =~ 'MICROSOFT.KEYVAULT'\n| where OperationName in ('KeyDelete', 'KeyPurge', 'KeyUpdate', 'VaultDelete', 'VaultPatch', 'RoleAssignmentCreate', 'RoleAssignmentDelete')\n    or (ResultSignature != 'OK' and httpStatusCode_d >= 400)\n| project TimeGenerated, Resource, OperationName, CallerIPAddress, identity_claim_appid_g, identity_claim_upn_s, httpStatusCode_d, ResultDescription\n| sort by TimeGenerated desc",
+      "proposito": "Monitorear cambios de seguridad, intentos de borrado de claves o errores de permisos sobre las bóvedas criptográficas de Customer Key.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "SIEM: Ciclo completo de políticas, solicitudes y aprobaciones en M365 PAM",
+      "plataforma": "Microsoft Sentinel / Microsoft Defender XDR",
+      "tablaPrincipal": "OfficeActivity",
+      "consulta": "OfficeActivity\n| where TimeGenerated > ago(14d)\n| where Operation has_any ('Enable-ElevatedAccessControl', 'Disable-ElevatedAccessControl', 'New-ElevatedAccessApprovalPolicy', 'Remove-ElevatedAccessApprovalPolicy', 'New-ElevatedAccessRequest', 'Approve-ElevatedAccessRequest', 'Deny-ElevatedAccessRequest')\n| project TimeGenerated, UserId, Operation, ClientIP, ResultStatus, Parameters\n| sort by TimeGenerated desc",
+      "proposito": "Auditar quién solicita, aprueba, rechaza o altera políticas de acceso privilegiado a nivel de tarea en Microsoft 365.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Microsoft Graph PowerShell: Consulta moderna auditLog/queries para Lockbox y M365 PAM",
+      "plataforma": "Microsoft Graph PowerShell (v1.0)",
+      "tablaPrincipal": "security/auditLog/queries",
+      "consulta": "Connect-MgGraph -Scopes 'AuditLogsQuery.Read.All'\n$body = @{\n    displayName = 'Audit_Lockbox_and_PAM_7d'\n    filterStartDateTime = (Get-Date).AddDays(-7).ToUniversalTime().ToString('o')\n    filterEndDateTime   = (Get-Date).ToUniversalTime().ToString('o')\n    operationFilters    = @('Set-AccessToCustomerDataRequest', 'New-ElevatedAccessRequest', 'Approve-ElevatedAccessRequest')\n}\nInvoke-MgGraphRequest -Method POST -Uri 'https://graph.microsoft.com/v1.0/security/auditLog/queries' -Body ($body | ConvertTo-Json)",
+      "proposito": "Sustituir de manera soportada el cmdlet en retiro Search-UnifiedAuditLog (retiro definitivo el 15-oct-2027) mediante la API GA de octubre de 2026.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "PowerShell Criptográfico: Validación no destructiva Customer Key y estado de DEPs",
+      "plataforma": "Azure PowerShell, Exchange Online y SharePoint PowerShell",
+      "tablaPrincipal": "M365CustomerKeyOnboarding / DataEncryptionPolicy",
+      "consulta": "$req = New-CustomerKeyOnboardingRequest -Organization '<TenantGUID>' -Scenario MDEP -Subscription1 '<Sub1>' -KeyIdentifier1 '<KeyURI1>' -Subscription2 '<Sub2>' -KeyIdentifier2 '<KeyURI2>' -OnboardingMode Validate\n$req | Select-Object ID, ValidationResult, FailedValidations\nGet-M365DataAtRestEncryptionPolicyAssignment\nGet-DataEncryptionPolicy | Select-Object Name, Enabled, PolicyState\nGet-SPODataEncryptionPolicy",
+      "proposito": "Comprobar sin impacto productivo las 9 validaciones del servicio de onboarding y el estado de cifrado en Multi-workload, Exchange y SharePoint.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Exchange Online PowerShell: Inventario de políticas y solicitudes en M365 PAM",
+      "plataforma": "Exchange Online PowerShell",
+      "tablaPrincipal": "ElevatedAccessApprovalPolicy / ElevatedAccessRequest",
+      "consulta": "Connect-ExchangeOnline\nGet-ElevatedAccessApprovalPolicy | Format-Table Name, Task, ApprovalType, ApproverGroup -AutoSize\nGet-ElevatedAccessRequest | Select-Object RequestId, Requestor, Task, RequestStatus, DurationHours, CreatedTime",
+      "proposito": "Auditar el catálogo activo de hasta 30 políticas de M365 PAM y el estado de todas las solicitudes JIT recientes.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Cobertura de Auditoría Post-Acceso Lockbox (Microsoft Operator)",
+      "definicion": "Porcentaje de solicitudes Customer Lockbox aprobadas cuyas acciones posteriores de Microsoft Operator fueron auditadas y firmadas en menos de 24 horas.",
+      "formula": "(Solicitudes Lockbox aprobadas con auditoría firmada de Microsoft Operator / Total solicitudes aprobadas) * 100",
+      "metaSugerida": "100 % en <= 24 h",
+      "frecuencia": "Por evento / Mensual",
+      "audiencia": "CISO / DPO / Auditoría Interna",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Asegura verificación efectiva sobre la ventana máxima de 4 horas concedida al ingeniero de soporte."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Cobertura Efectiva de Cifrado Customer Key",
+      "definicion": "Porcentaje de buzones elegibles, sitios SharePoint/OneDrive y Windows 365 Cloud PCs en alcance que operan bajo una DEP activa/registrada.",
+      "formula": "(Activos cifrados con DEP activa y estado Registered / Total de activos en alcance) * 100",
+      "metaSugerida": ">= 99.9 %",
+      "frecuencia": "Semanal",
+      "audiencia": "Cloud Security Architect / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Medido con Get-MailboxStatistics (IsEncrypted), Get-SPODataEncryptionPolicy y estado Intune Cloud PC."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Incidencias de Fallback No Planificado a la Availability Key",
+      "definicion": "Conteo de eventos de auditoría CustomerKeyServiceEncryption (Fallback to availability key) causados por errores de red, firewall o configuración.",
+      "formula": "Conteo(RecordType == 'CustomerKeyServiceEncryption' and Operation == 'Fallback to availability key')",
+      "metaSugerida": "0 eventos por error operativo",
+      "frecuencia": "Diaria / Mensual",
+      "audiencia": "Cryptography Lead / SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Indicador temprano crítico de salud de ambos Azure Key Vaults / Managed HSM."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Cumplimiento de Inmutabilidad en Bóvedas Criptográficas",
+      "definicion": "Porcentaje de Key Vaults / Managed HSM de Customer Key con Soft Delete (90d), Purge Protection, Azure RBAC y claves sin fecha de expiración.",
+      "formula": "(Bóvedas conformes en las 4 propiedades / Total bóvedas de Customer Key) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Mensual",
+      "audiencia": "Cryptography Lead / GRC",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Alineado a las reglas RecoveryLevel, KeyNeverExpires y Azure RBAC de Microsoft Learn."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Margen de Seguridad de Licenciamiento Customer Key",
+      "definicion": "Porcentaje de holgura entre las licencias Customer Key asignadas en el tenant y el máximo de usuarios con licencia Exchange, Teams o SharePoint.",
+      "formula": "((Licencias Customer Key - Máx(Usuarios EXO, Teams, SPO)) / Máx(Usuarios EXO, Teams, SPO)) * 100",
+      "metaSugerida": ">= 5 % de superávit continuo",
+      "frecuencia": "Semanal",
+      "audiencia": "FinOps / Compliance Officer",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Previene la reversión automática al cifrado por defecto documentada en la Service Description."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Tasa de Aprobación Peer-Review en M365 PAM sin Autoaprobación",
+      "definicion": "Porcentaje de solicitudes M365 PAM aprobadas por un miembro distinto del solicitante con referencia válida a ticket de cambio.",
+      "formula": "(Solicitudes PAM con Aprobador != Solicitante y ticket válido / Total solicitudes PAM aprobadas) * 100",
+      "metaSugerida": "100 % (0 autoaprobaciones)",
+      "frecuencia": "Mensual",
+      "audiencia": "Identity Lead / Auditoría Interna",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Garantiza control real de cuatro ojos sobre cmdlets críticos de Exchange Online."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Higiene y No Interactividad de SystemAccounts en M365 PAM",
+      "definicion": "Cantidad total de cuentas excluidas en -SystemAccounts y porcentaje libre de inicios de sesión interactivos humanos.",
+      "formula": "Conteo(SystemAccounts) y % sin SigninLogs interactivos",
+      "metaSugerida": "<= 2 cuentas y 100 % no interactivo",
+      "frecuencia": "Mensual",
+      "audiencia": "Identity Lead / SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Basado en la advertencia de MS Learn de mantener las exclusiones -SystemAccounts excepcionales y auditadas."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Tasa de Éxito en Pruebas Trimestrales de Restauración de Claves",
+      "definicion": "Porcentaje de archivos .backup de claves raíz verificados exitosamente mediante Restore-AzKeyVaultKey en bóveda aislada de laboratorio.",
+      "formula": "(Backups restaurados exitosamente en prueba trimestral / Total claves raíz activas) * 100",
+      "metaSugerida": "100 %",
+      "frecuencia": "Trimestral",
+      "audiencia": "CISO / Comité de Riesgos",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Comprueba empíricamente la capacidad de recuperación antes de necesitar recurrir a la Availability Key."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.SC-07",
+      "descripcionResultado": "Los riesgos planteados por proveedores cloud y terceros en la cadena de suministro se comprenden, controlan y monitorean.",
+      "capacidadMicrosoft": "Microsoft Purview Customer Lockbox y Customer Lockbox for Microsoft Azure (MCSB PA-8) exigen autorización explícita del cliente antes de cualquier acceso humano de soporte.",
+      "evidenciaAuditoria": "Configuración habilitada de Lockbox en M365 y Azure e historial auditado de decisiones Set-AccessToCustomerDataRequest.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles, responsabilidades y autoridades de custodia criptográfica y acceso privilegiado están segregados y aplicados.",
+      "capacidadMicrosoft": "Separación de custodios entre dos suscripciones Azure en Customer Key, rol dedicado Customer Lockbox access approver y grupo aprobador en M365 PAM.",
+      "evidenciaAuditoria": "Asignaciones Azure RBAC segregadas entre Suscripción 1 y 2 y actas de Microsoft Entra Access Reviews.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-05",
+      "descripcionResultado": "Los activos y datos se priorizan según clasificación, sensibilidad regulatoria e impacto operativo.",
+      "capacidadMicrosoft": "Estrategia diferenciada: Customer Key (MDEP, EXO, SPO, Windows 365, Copilot) para el 95 % del patrimonio y Double Key Encryption (DKE) para el ~5 % Top Secret.",
+      "evidenciaAuditoria": "Inventario de DEPs activas y matriz aprobada de clasificación criptográfica.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-06",
+      "descripcionResultado": "Las respuestas a riesgos de configuración se validan proactivamente y se les da seguimiento continuo.",
+      "capacidadMicrosoft": "Ejecución periódica de M365CustomerKeyOnboarding en modo Validate para auditar las 9 reglas críticas sin impacto en producción.",
+      "evidenciaAuditoria": "Reportes semanales PassedValidations con ValidationResult = Success.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AA-05",
+      "descripcionResultado": "Los permisos de acceso y autorizaciones privilegiadas aplican mínimo privilegio y separación de funciones.",
+      "capacidadMicrosoft": "Defensa en profundidad combinando Microsoft Entra PIM (nivel rol) con Microsoft Purview PAM (nivel cmdlet/tarea en Exchange Management runspace).",
+      "evidenciaAuditoria": "Catálogo Get-ElevatedAccessApprovalPolicy y registros de aprobación por pares Approve-ElevatedAccessRequest.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.DS-01",
+      "descripcionResultado": "La confidencialidad, integridad y disponibilidad de los datos en reposo están protegidas criptográficamente.",
+      "capacidadMicrosoft": "Cifrado de servicio con Customer Key sobre Azure Key Vault Premium HSM o Managed HSM (FIPS 140-2 Level 3) con Soft Delete 90d y Purge Protection.",
+      "evidenciaAuditoria": "Propiedades de inmutabilidad en Key Vault / Managed HSM, Get-SPODataEncryptionPolicy (Registered) y cifrado Cloud PC en Intune.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-03",
+      "descripcionResultado": "Las actividades de administradores internos y operadores externos se monitorean continuamente para detectar abusos.",
+      "capacidadMicrosoft": "Auditoría completa de comandos ejecutados por Microsoft Operator tras Lockbox y de tareas elevadas en M365 PAM dentro de Purview Audit y Sentinel.",
+      "evidenciaAuditoria": "Políticas activas en Defender for Cloud Apps y reglas KQL sobre OfficeActivity.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-09",
+      "descripcionResultado": "La infraestructura criptográfica y servicios subyacentes se monitorean para detectar fallos o anomalías.",
+      "capacidadMicrosoft": "Registro automático de eventos CustomerKeyServiceEncryption (Fallback to availability key) y diagnósticos AzureDiagnostics de Key Vault.",
+      "evidenciaAuditoria": "Alertas SIEM sobre Fallback to availability key y códigos HTTP >= 400 en bóvedas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Los incidentes de acceso no autorizado o abuso privilegiado se contienen en tiempo real.",
+      "capacidadMicrosoft": "Denegación inmediata (Deny) en Customer Lockbox y revocación instantánea (Revoke) de ventanas activas aprobadas en M365 PAM.",
+      "evidenciaAuditoria": "Registros de revocación PAM y decisiones ApprovalDecision = Deny en Purview Audit.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-02",
+      "descripcionResultado": "Los incidentes que afectan secretos o claves criptográficas son erradicados de forma segura.",
+      "capacidadMicrosoft": "Reemplazo controlado de claves raíz mediante Set-DataEncryptionPolicy -Replace y Set-M365DataAtRestEncryptionPolicy -Replace respetando guardas de 24-48 h.",
+      "evidenciaAuditoria": "Bitácora de ejecución de -Replace con nuevos Key URIs y preservación de claves históricas.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.RP-03",
+      "descripcionResultado": "La integridad de las copias de respaldo de claves se verifica antes de su uso en contingencias.",
+      "capacidadMicrosoft": "Respaldo cifrado con Backup-AzKeyVaultKey, validación trimestral con Restore-AzKeyVaultKey y recuperación asistida por la Availability Key.",
+      "evidenciaAuditoria": "Actas firmadas de pruebas trimestrales de restauración en laboratorio aislado.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.CO-03",
+      "descripcionResultado": "Las acciones de recuperación, reversión o salida regulada del servicio se documentan y comunican formalmente.",
+      "capacidadMicrosoft": "Flujo formal auditado bajo SOC 2 de Data Purge Path (Data Purge eDocument firmado para destruir DEP y Availability Key en salida de Exchange) o Rollback.",
+      "evidenciaAuditoria": "Protocolo corporativo de Exit Strategy e informes SOC 1 / SOC 2 del Microsoft Service Trust Portal.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Módulo construido íntegramente desde cero contra Microsoft Learn MCP y la Microsoft Purview Service Description actualizada a noviembre de 2026, verificando la cobertura de Customer Lockbox sobre Windows 365 y M365 Copilot (y su contraste con Azure Lockbox MCSB PA-8), la arquitectura de Customer Key con Managed HSM (2 instancias vs. 6 Key Vaults), Windows 365 Cloud PCs, Availability Key, restricciones del Data Purge Path frente a DKE, y la operación granular de M365 PAM complementaria a Entra PIM.",
+    "correccionesAplicadas": [
+      "Verificada en MS Learn la cobertura oficial de Microsoft Purview Customer Lockbox sobre Exchange Online, SharePoint, OneDrive, Teams, Windows 365 y todas las interacciones de Microsoft 365 Copilot (vía Exchange Online), con expiración de 12 h, acceso máximo de 4 h y correos sin enlaces de sign-in.",
+      "Contrastada con precisión la arquitectura de Customer Lockbox for Microsoft Azure (plan Developer, cola de 4 días, +40 servicios incluyendo Azure OpenAI y Foundry, requisito de activar PIM antes de la solicitud y control MCSB PA-8).",
+      "Documentada la diferencia arquitectónica entre Azure Key Vault Premium (exige 6 bóvedas en 3 pares) y Azure Key Vault Managed HSM FIPS 140-2 Level 3 (requiere solo 2 instancias totales en 2 suscripciones de pago) y la migración obligatoria a Azure RBAC.",
+      "Verificado el alcance de la Multi-workload DEP (MDEP): Windows 365 Cloud PCs (re-cifrado con reinicio en lotes de hasta 20.000 desde Intune), Teams, interacciones M365 Copilot, Purview Information Protection (EDM/etiquetas) y CMK en preview para exportaciones directas de eDiscovery.",
+      "Documentada la restricción crítica del Data Purge Path (-PermanentDataPurgeRequested + Data Purge eDocument): soportado exclusivamente para DEPs de buzones Exchange al abandonar el servicio, y NO soportado en Multi-workload ni SharePoint DEPs.",
+      "Establecida la frontera exacta frente a Double Key Encryption (DKE, actualizado oct-2026), que deja el contenido inaccesible a M365 Copilot, eDiscovery, DLP en nube, Office Web, coautoría, AutoSave, Loop y Teams.",
+      "Verificados los parámetros exactos de M365 PAM (tope actual de 30 políticas, expiración de solicitud en 24 h, ventana aprobada default de 4 h) y la transición de auditoría hacia Graph auditLog/queries (GA oct-2026) ante el retiro de Search-UnifiedAuditLog el 15-oct-2027."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Selección priorizada de cmdlets críticos para las 30 políticas disponibles en M365 PAM (S-03)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Dado el límite actual de 30 políticas por organización en M365 PAM, priorizar conectores, reglas de transporte, delegación de buzones, asignaciones RBAC y DEPs de Customer Key maximiza la cobertura contra exfiltración y sabotaje."
+      },
+      {
+        "elemento": "Colchón mínimo del >= 5 % en licencias elegibles de Customer Key (S-06, KPI-05)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Evita que altas masivas de usuarios en Exchange, Teams o SharePoint reduzcan la cobertura por debajo del conteo auditado por Microsoft y provoquen reversión automática al cifrado por defecto."
+      },
+      {
+        "elemento": "Política obligatoria de alerta en Defender for Cloud Apps y revisión forense del 100 % de Microsoft Operator (D-02, M-04)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Compensa la ausencia de notificaciones push nativas post-aprobación en el portal de Microsoft 365 y asegura trazabilidad completa de toda intervención de soporte."
+      },
+      {
+        "elemento": "Ensayo trimestral de Restore-AzKeyVaultKey en bóveda aislada sin colisión de nombres (T-02)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Comprueba empíricamente la validez de los archivos .backup antes de una emergencia real, previniendo fallos por clave preexistente con igual nombre."
+      },
+      {
+        "elemento": "Mapeo unificado a las 6 funciones de NIST CSF 2.0 y modelo de madurez de 5 niveles",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Integra la gobernanza de acceso del proveedor, custodia criptográfica y control JIT de tareas dentro del marco maestro de auditoría del CISO."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Customer Lockbox requests (Microsoft Purview)",
+      "url": "https://learn.microsoft.com/en-us/purview/customer-lockbox-requests",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Guía canónica de Customer Lockbox para M365: cargas soportadas (incluyendo Windows 365 y M365 Copilot), ventanas de 12 h / 4 h y auditoría Microsoft Operator.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-01)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "Customer Lockbox for Microsoft Azure",
+      "url": "https://learn.microsoft.com/en-us/azure/security/fundamentals/customer-lockbox-overview",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Documentación oficial de Azure Lockbox: plan Developer, servicios soportados (OpenAI, Foundry, SQL, AKS), expiración de 4 días, PIM pre-activado y MCSB PA-8.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-07-24)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Overview of Service encryption with Microsoft Purview Customer Key",
+      "url": "https://learn.microsoft.com/en-us/purview/customer-key-overview",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Explica la relación con BitLocker/DKM y SSE, y el alcance exacto de las DEPs para múltiples cargas (incluyendo Copilot y Windows 365), Exchange y SharePoint.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-01)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "What is Microsoft 365 service encryption?",
+      "url": "https://learn.microsoft.com/en-us/purview/microsoft-365-service-encryption",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Detalla el modelo de cifrado de servicio y la diferencia entre claves gestionadas por Microsoft y Customer Key.",
+      "verificacion": "Verificado vía Microsoft Learn (revalidado 2026-11-11)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Set up Customer Key (Azure Key Vault & Managed HSM)",
+      "url": "https://learn.microsoft.com/en-us/purview/customer-key-set-up",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Prerrequisitos de 2 suscripciones de pago, 6 Key Vaults vs. 2 Managed HSM, Soft Delete 90d + Purge Protection, RBAC y módulo M365CustomerKeyOnboarding.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-16)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Manage Customer Key encryption policies",
+      "url": "https://learn.microsoft.com/en-us/purview/customer-key-manage",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Cmdlets de creación/asignación de DEPs, migración de legacy access policies a Azure RBAC, Rollback y Data Purge Path exclusivo de Exchange.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-26)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Learn about the availability key for Customer Key",
+      "url": "https://learn.microsoft.com/en-us/purview/customer-key-availability-key-understand",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Arquitectura de la Availability Key, disparadores de fallback (errores sistémicos vs. Access Denied) y telemetría CustomerKeyServiceEncryption.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-05-27)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Roll or rotate a Customer Key or an availability key",
+      "url": "https://learn.microsoft.com/en-us/purview/customer-key-availability-key-roll",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Procedimientos -Refresh y -Replace, rotación secuencial en SharePoint, esperas de 24h/48h y prohibición de eliminar versiones antiguas.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-26)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Set up Microsoft Purview Customer Key for Windows 365 Cloud PCs",
+      "url": "https://learn.microsoft.com/en-us/windows-365/enterprise/purview-customer-key",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Configuración en Intune Admin Center (Cloud PC encryption type), reinicio de equipos y límite de 20.000 Cloud PCs por lote.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-03-26)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Double Key Encryption (DKE)",
+      "url": "https://learn.microsoft.com/en-us/purview/double-key-encryption",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Define el alcance del ~5 % de datos altamente sensibles y documenta las incompatibilidades con Copilot, eDiscovery, DLP y coautoría.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-10-27)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Learn about privileged access management (Microsoft Purview)",
+      "url": "https://learn.microsoft.com/en-us/purview/privileged-access-management",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Arquitectura en capas de M365 PAM en el sustrato M365, diferenciación frente a Microsoft Entra PIM y límite de 30 políticas.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-11)"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Get started with privileged access management",
+      "url": "https://learn.microsoft.com/en-us/purview/privileged-access-management-configuration",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Configuración paso a paso y cmdlets Enable-ElevatedAccessControl, New-ElevatedAccessApprovalPolicy y New/Approve/Deny-ElevatedAccessRequest.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-06-11)"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Microsoft Purview service description",
+      "url": "https://learn.microsoft.com/en-us/office365/servicedescriptions/microsoft-365-service-descriptions/microsoft-365-tenantlevel-services-licensing-guidance/microsoft-purview-service-description",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": " Fuente contractual oficial de licenciamiento para Customer Key (reglas de validación MDEP/EXO/SPO), Customer Lockbox y Microsoft Purview Suite.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-11-09)"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Microsoft Cloud Security Benchmark v2 — Privileged Access (PA-8)",
+      "url": "https://learn.microsoft.com/en-us/security/benchmark/azure/mcsb-v2-privileged-access",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Estándar de referencia para gobernar el acceso de soporte del proveedor de nube mediante Customer Lockbox.",
+      "verificacion": "Verificado vía Microsoft Learn (revalidado 2026-11-11)"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "Audit log activities in Microsoft Purview",
+      "url": "https://learn.microsoft.com/en-us/purview/audit-log-activities",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Referencia oficial de operaciones registradas en el registro de auditoría unificado de Microsoft Purview.",
+      "verificacion": "Verificado vía Microsoft Learn (actualizado 2026-11-03)"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "Privileged Access Management in Office 365 — Technical Deep Dive",
+      "url": "https://practical365.com/privileged-access-management-in-office-365/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Vasil Michev (Microsoft 365 MVP)",
+      "comentario": "Análisis práctico sobre grupos aprobadores mail-enabled security, políticas JEA/JIT y auditoría en Exchange Online.",
+      "verificacion": "Verificado en Practical 365 (revalidado 2026-11-11)"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "What is Customer Lockbox in Microsoft 365, and how to use it?",
+      "url": "https://blog.sonnes.cloud/what-is-customer-lockbox-in-microsoft-365-and-how-to-use-it/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Michael Morten Sonne (Microsoft Security MVP)",
+      "comentario": "Guía práctica de habilitación, flujo de aprobación y verificación forense de Microsoft Purview Customer Lockbox.",
+      "verificacion": "Verificado en Sonnes.cloud (revalidado 2026-11-11)"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "Microsoft Purview Governance & Protections for Microsoft 365 Copilot",
+      "url": "https://joannecklein.com/category/microsoft-purview/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Joanne Klein (Microsoft Purview MVP)",
+      "comentario": "Buenas prácticas de arquitectura sobre Customer Key, Customer Lockbox y gobierno de información para Microsoft 365 Copilot.",
+      "verificacion": "Verificado en JoanneCKlein.com (actualizado 2026)"
+    },
+    {
+      "id": "REF-19",
+      "titulo": "The NIST Cybersecurity Framework (CSF) 2.0 (NIST CSWP 29)",
+      "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Marco normativo oficial empleado para mapear las subcategorías GV, ID, PR, DE, RS y RC de los tres pilares.",
+      "verificacion": "Verificado contra publicación oficial NIST CSWP 29"
+    }
+  ]
+}

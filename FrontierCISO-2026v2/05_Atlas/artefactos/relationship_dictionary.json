@@ -1,0 +1,1387 @@
+{
+  "ontology_version": "1.0.0",
+  "count": 58,
+  "relationships": [
+    {
+      "id": "R001",
+      "name": "PURSUES",
+      "family": "enterprise",
+      "definition": "Una organización persigue un objetivo empresarial.",
+      "source_types": [
+        "Organization"
+      ],
+      "target_types": [
+        "BusinessObjective"
+      ],
+      "directed": true,
+      "requires_evidence": false,
+      "requires_context": false,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R002",
+      "name": "ENABLES",
+      "family": "enterprise_evolution",
+      "definition": "Habilita un objetivo o una transición.",
+      "source_types": [
+        "BusinessCapability",
+        "Catalyst"
+      ],
+      "target_types": [
+        "BusinessObjective",
+        "Transition"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R003",
+      "name": "REALIZES",
+      "family": "enterprise",
+      "definition": "Un proceso materializa una capacidad.",
+      "source_types": [
+        "BusinessProcess"
+      ],
+      "target_types": [
+        "BusinessCapability"
+      ],
+      "directed": true,
+      "requires_evidence": false,
+      "requires_context": false,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R004",
+      "name": "SUPPORTS",
+      "family": "enterprise",
+      "definition": "Un servicio contribuye a un objetivo.",
+      "source_types": [
+        "BusinessService"
+      ],
+      "target_types": [
+        "BusinessObjective"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": false,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R005",
+      "name": "HAS_INTEREST_IN",
+      "family": "enterprise",
+      "definition": "Una parte tiene interés en un objetivo.",
+      "source_types": [
+        "Stakeholder"
+      ],
+      "target_types": [
+        "BusinessObjective"
+      ],
+      "directed": true,
+      "requires_evidence": false,
+      "requires_context": false,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R006",
+      "name": "PART_OF",
+      "family": "structural",
+      "definition": "Pertenencia estructural.",
+      "source_types": [
+        "Asset",
+        "System",
+        "BusinessProcess"
+      ],
+      "target_types": [
+        "System",
+        "BusinessCapability"
+      ],
+      "directed": true,
+      "requires_evidence": false,
+      "requires_context": false,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R007",
+      "name": "SPECIALIZES",
+      "family": "structural",
+      "definition": "Especialización conceptual.",
+      "source_types": [
+        "Concept"
+      ],
+      "target_types": [
+        "Concept"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": false,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R008",
+      "name": "DEPENDS_ON",
+      "family": "structural",
+      "definition": "Dependencia dirigida y contextual.",
+      "source_types": [
+        "System",
+        "Application",
+        "BusinessCapability"
+      ],
+      "target_types": [
+        "Asset",
+        "System",
+        "BusinessCapability"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R009",
+      "name": "CONTAINS",
+      "family": "technology",
+      "definition": "Un sistema contiene un activo.",
+      "source_types": [
+        "System"
+      ],
+      "target_types": [
+        "Asset"
+      ],
+      "directed": true,
+      "requires_evidence": false,
+      "requires_context": false,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R010",
+      "name": "RUNS_ON",
+      "family": "technology",
+      "definition": "Una aplicación se ejecuta sobre un sistema.",
+      "source_types": [
+        "Application"
+      ],
+      "target_types": [
+        "System"
+      ],
+      "directed": true,
+      "requires_evidence": false,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R011",
+      "name": "PROCESSES",
+      "family": "technology",
+      "definition": "Una aplicación procesa datos.",
+      "source_types": [
+        "Application"
+      ],
+      "target_types": [
+        "Data"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R012",
+      "name": "ACCESSES",
+      "family": "technology",
+      "definition": "Una identidad accede a un activo.",
+      "source_types": [
+        "Identity"
+      ],
+      "target_types": [
+        "Asset"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R013",
+      "name": "GOVERNS",
+      "family": "governance",
+      "definition": "Supervisión institucional.",
+      "source_types": [
+        "GovernanceBody"
+      ],
+      "target_types": [
+        "BusinessCapability"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R014",
+      "name": "HOLDS_AUTHORITY",
+      "family": "governance",
+      "definition": "Una función mantiene autoridad formal.",
+      "source_types": [
+        "Role"
+      ],
+      "target_types": [
+        "Authority"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R015",
+      "name": "AUTHORIZES",
+      "family": "governance",
+      "definition": "Una autoridad autoriza una decisión.",
+      "source_types": [
+        "Authority"
+      ],
+      "target_types": [
+        "Decision"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R016",
+      "name": "CONSTRAINS",
+      "family": "governance",
+      "definition": "Una política restringe un proceso.",
+      "source_types": [
+        "Policy"
+      ],
+      "target_types": [
+        "BusinessProcess"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R017",
+      "name": "REQUIRES",
+      "family": "governance",
+      "definition": "Una obligación exige un objetivo de control.",
+      "source_types": [
+        "Obligation"
+      ],
+      "target_types": [
+        "ControlObjective"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R018",
+      "name": "OWNS",
+      "family": "governance",
+      "definition": "Responsabilidad asignada sobre control o riesgo.",
+      "source_types": [
+        "Role"
+      ],
+      "target_types": [
+        "SecurityControl",
+        "RiskScenario"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R019",
+      "name": "ACCOUNTABLE_FOR",
+      "family": "governance",
+      "definition": "Accountability definida sobre capacidad o resultado.",
+      "source_types": [
+        "Role"
+      ],
+      "target_types": [
+        "BusinessCapability",
+        "SecurityOutcome"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R020",
+      "name": "THREATENS",
+      "family": "risk",
+      "definition": "Una amenaza puede afectar un activo.",
+      "source_types": [
+        "Threat"
+      ],
+      "target_types": [
+        "Asset"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R021",
+      "name": "EXPLOITS",
+      "family": "risk",
+      "definition": "Una amenaza aprovecha una debilidad.",
+      "source_types": [
+        "Threat"
+      ],
+      "target_types": [
+        "Vulnerability"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R022",
+      "name": "CONTRIBUTES_TO",
+      "family": "risk_assurance",
+      "definition": "Contribución causal o funcional, sin implicar suficiencia.",
+      "source_types": [
+        "Vulnerability",
+        "SecurityControl"
+      ],
+      "target_types": [
+        "RiskScenario",
+        "SecurityOutcome"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R023",
+      "name": "MAY_CAUSE",
+      "family": "risk",
+      "definition": "Consecuencia plausible, no confirmada.",
+      "source_types": [
+        "RiskScenario"
+      ],
+      "target_types": [
+        "Consequence"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R024",
+      "name": "MITIGATES",
+      "family": "risk",
+      "definition": "Un control reduce exposición a un escenario.",
+      "source_types": [
+        "SecurityControl"
+      ],
+      "target_types": [
+        "RiskScenario"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R025",
+      "name": "BOUNDS",
+      "family": "risk",
+      "definition": "Una tolerancia limita una consecuencia aceptable.",
+      "source_types": [
+        "RiskTolerance"
+      ],
+      "target_types": [
+        "Consequence"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R026",
+      "name": "LIMITS_IMPACT_OF",
+      "family": "risk",
+      "definition": "Una capacidad limita el impacto de un escenario.",
+      "source_types": [
+        "ResilienceCapability"
+      ],
+      "target_types": [
+        "RiskScenario"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R027",
+      "name": "IMPLEMENTS",
+      "family": "security",
+      "definition": "Un control implementa un objetivo.",
+      "source_types": [
+        "SecurityControl"
+      ],
+      "target_types": [
+        "ControlObjective"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R028",
+      "name": "DETECTS",
+      "family": "security",
+      "definition": "Un control detecta eventos de un tipo definido.",
+      "source_types": [
+        "SecurityControl"
+      ],
+      "target_types": [
+        "SecurityEvent"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R029",
+      "name": "RESPONDS_TO",
+      "family": "security",
+      "definition": "Una capacidad responde a un incidente.",
+      "source_types": [
+        "ResilienceCapability"
+      ],
+      "target_types": [
+        "Incident"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R030",
+      "name": "RECOVERS",
+      "family": "security",
+      "definition": "Una capacidad restaura servicio o sistema.",
+      "source_types": [
+        "ResilienceCapability"
+      ],
+      "target_types": [
+        "BusinessService",
+        "System"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R031",
+      "name": "MAY_TRIGGER",
+      "family": "operations",
+      "definition": "Un evento puede activar una alerta.",
+      "source_types": [
+        "SecurityEvent"
+      ],
+      "target_types": [
+        "SecurityAlert"
+      ],
+      "directed": true,
+      "requires_evidence": false,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R032",
+      "name": "MAY_INDICATE",
+      "family": "operations",
+      "definition": "Una alerta puede indicar un incidente; no lo confirma.",
+      "source_types": [
+        "SecurityAlert"
+      ],
+      "target_types": [
+        "Incident"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R033",
+      "name": "EVALUATES",
+      "family": "assurance_learning",
+      "definition": "Evalúa un control o un resultado de aprendizaje.",
+      "source_types": [
+        "AssessmentResult",
+        "Assessment"
+      ],
+      "target_types": [
+        "SecurityControl",
+        "LearningOutcome"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R034",
+      "name": "SUPPORTED_BY",
+      "family": "epistemic",
+      "definition": "Una afirmación o resultado está respaldado por evidencia.",
+      "source_types": [
+        "Claim",
+        "AssessmentResult"
+      ],
+      "target_types": [
+        "Evidence"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R035",
+      "name": "GROUNDED_IN",
+      "family": "epistemic",
+      "definition": "Una evidencia se fundamenta en una fuente.",
+      "source_types": [
+        "Evidence"
+      ],
+      "target_types": [
+        "Source"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": false,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R036",
+      "name": "ASSERTS",
+      "family": "epistemic",
+      "definition": "Un ensayo formula una afirmación.",
+      "source_types": [
+        "Essay"
+      ],
+      "target_types": [
+        "Claim"
+      ],
+      "directed": true,
+      "requires_evidence": false,
+      "requires_context": false,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R037",
+      "name": "EXPLAINS",
+      "family": "epistemic",
+      "definition": "Un ensayo desarrolla un concepto.",
+      "source_types": [
+        "Essay"
+      ],
+      "target_types": [
+        "Concept"
+      ],
+      "directed": true,
+      "requires_evidence": false,
+      "requires_context": false,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R038",
+      "name": "CONTRADICTS",
+      "family": "epistemic",
+      "definition": "Dos afirmaciones entran en contradicción.",
+      "source_types": [
+        "Claim"
+      ],
+      "target_types": [
+        "Claim"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R039",
+      "name": "SUPERSEDES",
+      "family": "epistemic",
+      "definition": "Una afirmación reemplaza otra con trazabilidad.",
+      "source_types": [
+        "Claim"
+      ],
+      "target_types": [
+        "Claim"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R040",
+      "name": "USES_MODEL",
+      "family": "ai",
+      "definition": "Un agente usa un modelo.",
+      "source_types": [
+        "AIAgent"
+      ],
+      "target_types": [
+        "AIModel"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R041",
+      "name": "INVOKES",
+      "family": "ai",
+      "definition": "Un agente invoca una herramienta.",
+      "source_types": [
+        "AIAgent"
+      ],
+      "target_types": [
+        "Tool"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R042",
+      "name": "EXERCISES",
+      "family": "ai",
+      "definition": "Un agente ejerce autoridad delegada.",
+      "source_types": [
+        "AIAgent"
+      ],
+      "target_types": [
+        "DelegatedAuthority"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R043",
+      "name": "PERMITS",
+      "family": "ai",
+      "definition": "La delegación permite una acción.",
+      "source_types": [
+        "DelegatedAuthority"
+      ],
+      "target_types": [
+        "AutonomousAction"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R044",
+      "name": "AFFECTS",
+      "family": "ai",
+      "definition": "Una acción afecta un activo.",
+      "source_types": [
+        "AutonomousAction"
+      ],
+      "target_types": [
+        "Asset"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R045",
+      "name": "CONSUMES_CONTEXT",
+      "family": "ai",
+      "definition": "Un agente consume contexto.",
+      "source_types": [
+        "AIAgent"
+      ],
+      "target_types": [
+        "AIContext"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R046",
+      "name": "DEVELOPS",
+      "family": "learning",
+      "definition": "Una unidad desarrolla una competencia.",
+      "source_types": [
+        "LearningUnit"
+      ],
+      "target_types": [
+        "Competency"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": false,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R047",
+      "name": "HAS_OUTCOME",
+      "family": "learning",
+      "definition": "Una unidad tiene un resultado de aprendizaje.",
+      "source_types": [
+        "LearningUnit"
+      ],
+      "target_types": [
+        "LearningOutcome"
+      ],
+      "directed": true,
+      "requires_evidence": false,
+      "requires_context": false,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R048",
+      "name": "PRACTICES",
+      "family": "learning",
+      "definition": "Una actividad ejercita una competencia.",
+      "source_types": [
+        "LearningActivity"
+      ],
+      "target_types": [
+        "Competency"
+      ],
+      "directed": true,
+      "requires_evidence": false,
+      "requires_context": false,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R049",
+      "name": "ASSESSES",
+      "family": "learning",
+      "definition": "Una evaluación mide un resultado.",
+      "source_types": [
+        "Assessment"
+      ],
+      "target_types": [
+        "LearningOutcome"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": false,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R050",
+      "name": "PRODUCES",
+      "family": "learning",
+      "definition": "Una actividad produce un artefacto.",
+      "source_types": [
+        "LearningActivity"
+      ],
+      "target_types": [
+        "LearningArtifact"
+      ],
+      "directed": true,
+      "requires_evidence": false,
+      "requires_context": false,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R051",
+      "name": "DEMONSTRATES",
+      "family": "learning",
+      "definition": "Un artefacto aporta evidencia de competencia.",
+      "source_types": [
+        "LearningArtifact"
+      ],
+      "target_types": [
+        "Competency"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R052",
+      "name": "INHIBITS",
+      "family": "evolution",
+      "definition": "Una fuerza restringe una transición.",
+      "source_types": [
+        "Inhibitor"
+      ],
+      "target_types": [
+        "Transition"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R053",
+      "name": "STABILIZES",
+      "family": "evolution",
+      "definition": "Un mecanismo estabiliza un estado.",
+      "source_types": [
+        "HomeostaticMechanism"
+      ],
+      "target_types": [
+        "CapabilityState"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R054",
+      "name": "FROM_STATE",
+      "family": "evolution",
+      "definition": "Estado de origen de una transición.",
+      "source_types": [
+        "Transition"
+      ],
+      "target_types": [
+        "CapabilityState"
+      ],
+      "directed": true,
+      "requires_evidence": false,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R055",
+      "name": "TO_STATE",
+      "family": "evolution",
+      "definition": "Estado destino de una transición.",
+      "source_types": [
+        "Transition"
+      ],
+      "target_types": [
+        "CapabilityState"
+      ],
+      "directed": true,
+      "requires_evidence": false,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R056",
+      "name": "APPLIES_IN",
+      "family": "evolution",
+      "definition": "Contexto de aplicabilidad.",
+      "source_types": [
+        "Transition"
+      ],
+      "target_types": [
+        "ContextProfile"
+      ],
+      "directed": true,
+      "requires_evidence": false,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-106"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R057",
+      "name": "CLASSIFIED_IN",
+      "family": "taxonomy",
+      "definition": "Clasificación editorial en X/Y/Z/H.",
+      "source_types": [
+        "Essay",
+        "Concept"
+      ],
+      "target_types": [
+        "TaxonomyCategory"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": false,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105"
+      ],
+      "status": "proposed"
+    },
+    {
+      "id": "R058",
+      "name": "MAPS_TO",
+      "family": "mapping",
+      "definition": "Correspondencia versionada sin equivalencia automática.",
+      "source_types": [
+        "FrameworkElement",
+        "Concept"
+      ],
+      "target_types": [
+        "FrameworkElement",
+        "Concept"
+      ],
+      "directed": true,
+      "requires_evidence": true,
+      "requires_context": true,
+      "automatic_inverse": false,
+      "validation_rules": [
+        "SV-101",
+        "SV-102",
+        "SV-103",
+        "SV-105",
+        "SV-106"
+      ],
+      "status": "proposed"
+    }
+  ]
+}

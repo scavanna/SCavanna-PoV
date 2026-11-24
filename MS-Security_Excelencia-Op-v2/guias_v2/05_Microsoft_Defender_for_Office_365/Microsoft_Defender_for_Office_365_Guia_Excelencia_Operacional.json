@@ -1,0 +1,1240 @@
+{
+  "schemaVersion": "2.0",
+  "id": "05_Microsoft_Defender_for_Office_365",
+  "orden": 5,
+  "slug": "Microsoft_Defender_for_Office_365",
+  "nombre": "Microsoft Defender for Office 365 (Plan 1 y Plan 2)",
+  "nombreCorto": "Defender for Office 365",
+  "categoria": "SecOps, XDR y SIEM",
+  "bloqueOrigen": "Compilado MSEOP-MD + Revalidado Learn",
+  "fechaValidacion": "2026-11-11",
+  "portalesPrincipales": [
+    "https://security.microsoft.com",
+    "https://admin.exchange.microsoft.com",
+    "https://purview.microsoft.com",
+    "https://entra.microsoft.com"
+  ],
+  "audiencia": [
+    "CISO",
+    "SOC Manager",
+    "SOC L1",
+    "SOC L2",
+    "SOC L3",
+    "Messaging & Collaboration Security Engineer",
+    "Security Admin",
+    "Attack Simulation Administrator",
+    "GRC"
+  ],
+  "relacionM365E5": {
+    "estado": "Incluido en M365 E5",
+    "licencias": [
+      "Microsoft 365 E5",
+      "Microsoft 365 E7",
+      "Office 365 E5",
+      "Microsoft Defender Suite (antes Microsoft 365 E5 Security)",
+      "Microsoft Defender for Office 365 Plan 2",
+      "Microsoft Defender for Office 365 Plan 1 (incluido en Microsoft 365 E3, Office 365 E3 y Business Premium)"
+    ],
+    "prerrequisitos": [
+      "Registros DNS SPF, firma DKIM (2048 bits) y politica DMARC configurados en todos los dominios personalizados (ARC configurado si existen intermediarios legitimos)",
+      "Registro de auditoria unificada de Microsoft Purview habilitado (requisito obligatorio para AIR en MDO Plan 2)",
+      "Microsoft Defender Unified RBAC (URBAC) planificado/activo (modelo predeterminado para nuevas organizaciones MDO Plan 2 desde julio de 2026) y Entra PIM para roles de purga",
+      "Safe Attachments para SharePoint, OneDrive y Microsoft Teams habilitado y Zero-hour Auto Purge (ZAP) para Teams activado",
+      "Configuracion independiente de envios reportados por usuarios activa tanto para Outlook como para Microsoft Teams"
+    ],
+    "notaLicenciamiento": "MDO Plan 2 esta incluido en M365 E5, M365 E7, O365 E5, M365 A5/G5 y Microsoft Defender Suite (Safe Documents requiere especificamente M365 E5 o Defender Suite). Desde julio de 2026, M365 E3 y O365 E3 incluyen MDO Plan 1 (sin Threat Explorer, AIR ni campanas completas de Attack Simulation Training)."
+  },
+  "resumenEjecutivo": "Microsoft Defender for Office 365 (MDO) es la plataforma nativa de proteccion, deteccion, investigacion automatizada, respuesta y simulacion de ataques para el correo electronico y las herramientas de colaboracion empresarial (Exchange Online, Microsoft Teams, SharePoint Online, OneDrive for Business y aplicaciones de Microsoft 365) integrada en Microsoft Defender XDR. Mientras Exchange Online Protection (EOP) aporta higiene perimetral y MDO Plan 1 incorpora prevencion zero-day (Safe Attachments, Safe Links en tiempo de clic, anti-phishing con ML y, desde 2026, ZAP y reportes de usuarios en Microsoft Teams), MDO Plan 2 habilita una operacion SOC completa mediante Threat Explorer, Campaign Views, Automated Investigation and Response (AIR) con auto-remediacion de clusteres de similitud, Attack Simulation Training (AST), tablas completas de Advanced Hunting (incluyendo MessageEvents y CallActivityEvents) e integracion nativa con Security Copilot (Security Alert Triage Agent).",
+  "principiosRectores": [
+    {
+      "principio": "Autenticacion compuesta y verificacion explicita de remitentes (Zero Trust)",
+      "descripcion": "Validar criptograficamente todo dominio propio y entrante combinando SPF, DKIM, DMARC (en progresion a p=reject), ARC e implicit/composite authentication (compauth) antes de evaluar politicas de contenido.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-office-365/email-authentication-about"
+    },
+    {
+      "principio": "Prevencion sin deriva mediante Preset Security Policies (Standard y Strict)",
+      "descripcion": "Adoptar las politicas preestablecidas Standard para la poblacion general y Strict para cuentas prioritarias y de alto riesgo, delegando la actualizacion continua de umbrales recomendados al servicio.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-office-365/preset-security-policies"
+    },
+    {
+      "principio": "Asumir brecha en correo y colaboracion (ZAP, Reclasificacion y AIR)",
+      "descripcion": "Operar controles post-entrega continuos mediante Zero-hour Auto Purge (ZAP) en buzones (48h) y Microsoft Teams, reevaluacion al clic en Safe Links y auto-remediacion de clusteres maliciosos con AIR.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-office-365/zero-hour-auto-purge"
+    },
+    {
+      "principio": "Operacion centrada en incidentes XDR y no en alertas aisladas",
+      "descripcion": "Priorizar y contener desde la cola unificada de incidentes de Microsoft Defender XDR correlacionando senales de correo y Teams con Entra ID, endpoints y aplicaciones SaaS.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-office-365/mdo-sec-ops-guide"
+    },
+    {
+      "principio": "Minimo privilegio y separacion de funciones sobre contenido y purga (URBAC + PIM)",
+      "descripcion": "Separar permisos de lectura de metadatos, previsualizacion de correos asociados a alertas y ejecucion de purgas en buzones mediante Unified RBAC y activacion temporal JIT en Entra PIM.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-office-365/mdo-portal-permissions"
+    },
+    {
+      "principio": "Retroalimentacion continua de ML y reduccion medible del riesgo humano",
+      "descripcion": "Reportar sistematicamente falsos positivos y falsos negativos a Microsoft en vez de crear listas blancas permanentes, y transformar a los usuarios en sensores activos mediante Attack Simulation Training.",
+      "estadoValidacion": "Verificado MS Learn",
+      "fuenteUrl": "https://learn.microsoft.com/en-us/defender-office-365/attack-simulation-training-get-started"
+    }
+  ],
+  "arquitecturaYComponentes": [
+    {
+      "componente": "Preset Security Policies (Built-in, Standard y Strict)",
+      "funcionOperativa": "Aplica baselines automatizados recomendados por Microsoft para antispam, antimalware, anti-phishing, Safe Links y Safe Attachments sin deriva de configuracion.",
+      "portalRuta": "security.microsoft.com > Email & collaboration > Policies & rules > Threat policies > Preset security policies",
+      "integraciones": [
+        "Exchange Online Protection",
+        "Configuration Analyzer",
+        "Priority Accounts"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Safe Attachments y Dynamic Delivery (Correo, SPO, ODB y Teams)",
+      "funcionOperativa": "Detonacion dinamica en sandbox de archivos desconocidos antes de la entrega en correo y escaneo asincrono de archivos maliciosos en bibliotecas colaborativas.",
+      "portalRuta": "security.microsoft.com > Email & collaboration > Policies & rules > Threat policies > Safe Attachments",
+      "integraciones": [
+        "Exchange Online",
+        "SharePoint Online",
+        "OneDrive for Business",
+        "Microsoft Teams"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Safe Links (Correo, Microsoft Teams y Aplicaciones Microsoft 365)",
+      "funcionOperativa": "Inspeccion en tiempo de clic de URLs y codigos QR, con advertencias casi en tiempo real en mensajes de Teams hasta 48 horas despues de la entrega.",
+      "portalRuta": "security.microsoft.com > Email & collaboration > Policies & rules > Threat policies > Safe Links",
+      "integraciones": [
+        "Outlook",
+        "Microsoft Teams",
+        "Microsoft 365 Apps",
+        "UrlClickEvents"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Zero-hour Auto Purge (ZAP) para Correo y Microsoft Teams",
+      "funcionOperativa": "Neutralizacion retroactiva post-entrega de malware, phishing y spam en buzones cloud (48h) y cuarentena automatica de malware y phishing de alta confianza en chats internos y canales estandar/compartidos de Teams.",
+      "portalRuta": "security.microsoft.com > Settings > Email & collaboration > Microsoft Teams protection",
+      "integraciones": [
+        "Quarantine",
+        "EmailPostDeliveryEvents",
+        "MessagePostDeliveryEvents",
+        "AIR"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Threat Explorer, Real-time Detections y Campaign Views",
+      "funcionOperativa": "Investigacion interactiva de 30 dias, filtrado por tecnologias de deteccion (LLM BEC, Prompt injection, Mail bombing, URLs en QR), diagramas Sankey de campanas y ejecucion directa de acciones Take action.",
+      "portalRuta": "security.microsoft.com > Email & collaboration > Explorer / Campaigns",
+      "integraciones": [
+        "AIR",
+        "Tenant Allow/Block List",
+        "Quarantine",
+        "Submissions"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Automated Investigation and Response (AIR) y Action Center",
+      "funcionOperativa": "Playbooks automatizados que investigan alertas, envios de usuario, ZAP y clics, auto-remedian clusteres de similitud maliciosos (URL y archivo) y gestionan aprobaciones con auditoria ApproverUpn.",
+      "portalRuta": "security.microsoft.com > Actions & submissions > Action center / Investigations",
+      "integraciones": [
+        "Microsoft Defender XDR",
+        "Purview Audit",
+        "Microsoft Sentinel",
+        "Security Alert Triage Agent"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Proteccion Avanzada de Microsoft Teams (Mensajes, Dominios Externos y Llamadas)",
+      "funcionOperativa": "Paneles de entidad de mensajes y llamadas de Teams, bloqueo directo de dominios y remitentes externos sincronizado con Teams Admin Center, expulsion administrativa de usuarios de chats (P2) y cacería en CallActivityEvents.",
+      "portalRuta": "security.microsoft.com > Settings > Email & collaboration > Microsoft Teams user reported settings",
+      "integraciones": [
+        "Microsoft Teams Admin Center",
+        "Tenant Allow/Block List",
+        "MessageEvents",
+        "CallActivityEvents"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "componente": "Attack Simulation Training (AST) y Priority Account Protection",
+      "funcionOperativa": "Simulacion realista de ingenieria social (incluyendo codigos QR y OAuth) con asignacion automatica de capacitacion, sumada a heuristicas calibradas para hasta 250 cuentas ejecutivas etiquetadas.",
+      "portalRuta": "security.microsoft.com > Email & collaboration > Attack simulation training / Settings > User tags",
+      "integraciones": [
+        "Microsoft Secure Score",
+        "Exchange Online Mail Flow Reports",
+        "Microsoft Defender XDR"
+      ],
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "rbacYRoles": [
+    {
+      "rol": "URBAC Custom: SOC L1 Email & Collaboration Analyst",
+      "nivelSOC": "Tier 1 / L1",
+      "permisosClave": "Security data basics (read), Alerts (manage) y Email & collaboration metadata (read) sin acceso al cuerpo ni descarga de correos.",
+      "asignacionPIM": "Activa permanente o elegible sin privilegios destructivos",
+      "responsabilidadOperativa": "Triaje inicial de cola de incidentes, analisis de encabezados y escalamiento sin exposicion de contenido confidencial ni capacidad de purga.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "URBAC Custom: SOC L2 Collaboration Responder (+ Exchange Security Operator)",
+      "nivelSOC": "Tier 2 / L2",
+      "permisosClave": "Permisos L1 mas Email & collaboration content: Emails associated with alerts (read) y rol Tenant AllowBlockList Manager en Exchange Online.",
+      "asignacionPIM": "Elegible en Entra PIM (maximo 8 horas con MFA resistente a phishing y justificacion)",
+      "responsabilidadOperativa": "Investigacion de correos ligados a alertas, gestion de Submissions (Outlook y Teams), liberacion validada de cuarentena y bloqueo tactico en TABL.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "URBAC Custom: SOC L3 Threat Hunter & Purge Responder",
+      "nivelSOC": "Tier 3 / L3",
+      "permisosClave": "Email & collaboration content (read) y Email & collaboration advanced actions (manage) (equivalente funcional a Preview + Search and Purge).",
+      "asignacionPIM": "Elegible en Entra PIM (maximo 4 horas con aprobacion cruzada del SOC Lead, limitado a 3-5 analistas)",
+      "responsabilidadOperativa": "Caceria avanzada en Threat Explorer y KQL, inicio manual de AIR, aprobacion de purgas masivas Soft/Hard Delete y expulsion de usuarios en chats de Teams.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Security Administrator",
+      "nivelSOC": "Ingenieria / Administracion de Seguridad",
+      "permisosClave": "Authorization and settings / Security settings / Email & collaboration (manage) y gestion integral de politicas en Defender portal.",
+      "asignacionPIM": "Elegible en Entra PIM (maximo 4 horas con MFA resistente a phishing y ticket de cambio)",
+      "responsabilidadOperativa": "Configuracion de Preset Security Policies, Anti-Phishing, Safe Links/Attachments, ZAP para Teams, Priority Accounts, URBAC y Configuration Analyzer.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Attack Simulation Administrator / Attack Payload Author",
+      "nivelSOC": "Gobierno de Concientizacion / Riesgo Humano",
+      "permisosClave": "Creacion de payloads, programacion de simulaciones y revision de metricas en Attack Simulation Training (no cubierto por URBAC a nov 2026).",
+      "asignacionPIM": "Elegible en Entra PIM (maximo 8 horas durante ventana de campana)",
+      "responsabilidadOperativa": "Diseno y operacion de campanas mensuales de simulacion y formacion sin permisos para alterar politicas productivas de filtrado.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "rol": "Security Reader / Global Reader",
+      "nivelSOC": "Auditoria / GRC / Privacidad",
+      "permisosClave": "Lectura global de politicas, reportes, Microsoft Secure Score, Configuration Analyzer e historial del Action Center sin capacidad de modificacion.",
+      "asignacionPIM": "Elegible en Entra PIM para revisiones mensuales y trimestrales",
+      "responsabilidadOperativa": "Auditoria independiente de cumplimiento NIST CSF 2.0, revision de overrides, control de SoD y trazabilidad de aprobadores.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "actividadesOperacionales": [
+    {
+      "codigo": "D-01",
+      "cadencia": "Diaria",
+      "actividad": "Triaje priorizado de la cola unificada de incidentes MDO en Defender XDR",
+      "objetivo": "Atender en orden estricto de criticidad los incidentes de correo y colaboracion antes de que un clic o compromiso derive en movimiento lateral.",
+      "consolaRuta": "security.microsoft.com > Investigation & response > Incidents & alerts > Incidents",
+      "procedimiento": [
+        "Filtrar incidentes con Status = New / In progress y Severity = High / Medium originados o correlacionados con Defender for Office 365.",
+        "Aplicar el orden oficial de precedencia de Microsoft: 1) Clic en URL potencialmente maliciosa, 2) Usuario restringido para enviar correo, 3) Patrones sospechosos de envio, 4) Reportes multiples de usuarios, 5) Remociones post-entrega ZAP, 6) Entregas por override ETR/IP Allow, 7) Amenazas no purgadas por ZAP deshabilitado.",
+        "Asignar propietario, investigar entidades correlacionadas y clasificar obligatoriamente como True Positive (indicando tipo de amenaza) o False Positive al resolver."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-03",
+      "mitreTactic": "Initial Access / Execution (TA0001 / TA0002)",
+      "evidenciaAuditable": "Exportacion de cola de incidentes, tiempos de asignacion y clasificacion registrada en SecurityIncident.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Orden de precedencia de 7 niveles documentado textualmente en MDO Security Operations Guide; SLAs especificos son decision interna.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/mdo-sec-ops-guide"
+    },
+    {
+      "codigo": "D-02",
+      "cadencia": "Diaria",
+      "actividad": "Revision y aprobacion de investigaciones AIR pendientes en Action Center",
+      "objetivo": "Ejecutar sin demora las remediaciones propuestas por AIR que requieren decision humana y auditar las auto-remediaciones de clusteres.",
+      "consolaRuta": "security.microsoft.com > Actions & submissions > Action center > Pending / History",
+      "procedimiento": [
+        "Verificar en la pestana History las auto-remediaciones automaticas ejecutadas por AIR sobre clusteres de similitud de URLs y archivos.",
+        "Evaluar en la pestana Pending las acciones en espera (purga de buzones, desactivacion de reenvio externo, bloqueo de indicadores) antes de su expiracion de 7 dias.",
+        "Aprobar (usando Soft delete por defecto) o rechazar de forma documentada tras validar encabezados y resultados de detonacion."
+      ],
+      "rolResponsable": "SOC L2 / SOC L3",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Initial Access / Collection (TA0001 / TA0009)",
+      "evidenciaAuditable": "Registro en Action Center History y columna ApproverUpn en la tabla EmailPostDeliveryEvents.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Flujo AIR, auto-remediacion de clusteres y nuevo campo ApproverUpn (octubre 2026) verificados en Microsoft Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/air-about"
+    },
+    {
+      "codigo": "D-03",
+      "cadencia": "Diaria",
+      "actividad": "Gestion de envios reportados por usuarios en Outlook y Microsoft Teams",
+      "objetivo": "Convertir los reportes de usuarios en detecciones tempranas de campanas evasivas y retroalimentar los modelos de ML de Microsoft.",
+      "consolaRuta": "security.microsoft.com > Actions & submissions > Submissions > User reported / User reported Teams messages",
+      "procedimiento": [
+        "Revisar veredictos emitidos por el Security Alert Triage Agent (si Security Copilot esta activo) sobre correos reportados.",
+        "Inspeccionar mensajes de correo y elementos de Teams (mensajes con contexto, llamadas scam y reuniones reportadas) marcados como Should have been blocked o pendientes.",
+        "Enviar falsos negativos y falsos positivos a Microsoft (Submit to Microsoft) y aplicar Mark as and notify con plantillas localizadas."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Initial Access (TA0001 - T1566)",
+      "evidenciaAuditable": "Historial de envios en el portal Submissions, IDs de reevaluacion y notificaciones enviadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Incluye soporte de reportes de llamadas/reuniones de Teams y plantillas localizadas (marzo-octubre 2026).",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/defender-for-office-365-whats-new"
+    },
+    {
+      "codigo": "D-04",
+      "cadencia": "Diaria",
+      "actividad": "Gestion segura de cuarentena y solicitudes de liberacion (Correo y Teams)",
+      "objetivo": "Resolver falsos positivos legitimos sin exponer a los usuarios a malware o phishing de alta confianza.",
+      "consolaRuta": "security.microsoft.com > Email & collaboration > Review > Quarantine (Email / Teams messages)",
+      "procedimiento": [
+        "Atender solicitudes de liberacion recordando que Malware, High confidence phishing y mensajes ZAP de Teams son de gestion exclusiva de administradores.",
+        "Validar alineacion SPF/DKIM/DMARC, compauth y destino de enlaces con permiso granular de previsualizacion.",
+        "Si se confirma falso positivo, liberar marcando Report message to Microsoft for analysis (crea entrada temporal de 45 dias tras ultimo uso)."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "Initial Access (TA0001)",
+      "evidenciaAuditable": "Atribucion de liberacion en el panel de resumen de cuarentena y registro en EmailPostDeliveryEvents.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Restricciones de liberacion y ventana de 45 dias verificadas en documentacion oficial de Quarantine y ZAP.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/zero-hour-auto-purge"
+    },
+    {
+      "codigo": "D-05",
+      "cadencia": "Diaria",
+      "actividad": "Verificacion y rehabilitacion de cuentas en Restricted Entities",
+      "objetivo": "Asegurar la erradicacion completa de compromisos antes de restituir la capacidad de envio de correo a un usuario bloqueado.",
+      "consolaRuta": "security.microsoft.com > Email & collaboration > Review > Restricted entities",
+      "procedimiento": [
+        "Identificar usuarios bloqueados para envio de correo saliente por detecciones de spam o patrones anomalos.",
+        "Confirmar revocacion de sesiones Entra ID, restablecimiento de contrasena, MFA activo y eliminacion de reglas de reenvio u ocultamiento en el buzon.",
+        "Ejecutar Unblock documentando las mitigaciones y monitorear envios del usuario durante las siguientes 24 horas."
+      ],
+      "rolResponsable": "SOC L2",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-05",
+      "mitreTactic": "Persistence / Lateral Movement (TA0003 / TA0008)",
+      "evidenciaAuditable": "Registro de desbloqueo en Restricted entities y lista de verificacion firmada en el ticket de incidente.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Procedimiento oficial para usuarios restringidos en MDO.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/removing-user-from-restricted-users-portal-after-spam"
+    },
+    {
+      "codigo": "D-06",
+      "cadencia": "Diaria",
+      "actividad": "Revision y purga de campanas de phishing y malware con entrega en buzon",
+      "objetivo": "Eliminar mensajes remanentes de campanas coordinadas que hayan alcanzado carpetas Inbox antes de ser clicados.",
+      "consolaRuta": "security.microsoft.com > Email & collaboration > Review > Campaigns",
+      "procedimiento": [
+        "Filtrar campanas de las ultimas 24 horas que presenten mensajes entregados en Inbox no remediados aun por ZAP o AIR.",
+        "Analizar el diagrama Sankey de la campana para medir alcance (Targeted, Inboxed, Clicked) y extraer IOCs.",
+        "Ejecutar Soft delete sobre los mensajes entregados y registrar bloqueos en Tenant Allow/Block List."
+      ],
+      "rolResponsable": "SOC L2",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Initial Access (TA0001)",
+      "evidenciaAuditable": "Informe descargado de Campaign Views y acciones registradas en Action Center.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tarea diaria prescriptiva en MDO Security Operations Guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/mdo-sec-ops-guide"
+    },
+    {
+      "codigo": "D-07",
+      "cadencia": "Diaria",
+      "actividad": "Validacion de eventos ZAP y deteccion de clics ocurridos antes de la purga",
+      "objetivo": "Detectar usuarios que abrieron o hicieron clic en un enlace malicioso durante la ventana previa a la actuacion de ZAP.",
+      "consolaRuta": "security.microsoft.com > Hunting > Advanced hunting / Email & collaboration > Explorer",
+      "procedimiento": [
+        "Consultar eventos con accion ZAP en EmailPostDeliveryEvents y MessagePostDeliveryEvents de las ultimas 24 horas.",
+        "Cruzar por NetworkMessageId o Url con la tabla UrlClickEvents filtrando ActionType == 'ClickAllowed' con timestamp anterior a la purga.",
+        "Iniciar contencion preventiva de sesion e identidad para cualquier usuario expuesto."
+      ],
+      "rolResponsable": "SOC L1 / SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.AE-03",
+      "mitreTactic": "Execution / Credential Access (TA0002 / TA0006)",
+      "evidenciaAuditable": "Ejecucion diaria de consulta KQL documentada y tickets generados por exposicion pre-ZAP.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "ZAP y UrlClickEvents estan verificados en MS Learn; el cruce diario sistematico por KQL es una practica recomendada de excelencia SOC.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/zero-hour-auto-purge"
+    },
+    {
+      "codigo": "D-08",
+      "cadencia": "Diaria",
+      "actividad": "Monitoreo de detecciones LLM BEC, Prompt Injection y Mail Bombing",
+      "objetivo": "Identificar ataques de ingenieria social sin malware e inundaciones de correo precursoras de llamadas fraudulentas en Teams.",
+      "consolaRuta": "security.microsoft.com > Email & collaboration > Explorer",
+      "procedimiento": [
+        "Filtrar en Threat Explorer detecciones recientes por tecnologias LLM BEC, Prompt injection y Mail bombing.",
+        "Para victimas de Mail bombing, verificar en CallActivityEvents y MessageEvents si recibieron llamadas o chats externos sospechosos en las 4 horas posteriores.",
+        "Alertar al usuario afectado y bloquear el dominio externo atacante en Tenant Allow/Block List."
+      ],
+      "rolResponsable": "SOC L2",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Initial Access / Impact (TA0001 / TA0040)",
+      "evidenciaAuditable": "Registro de detecciones revisadas y correlacion con CallActivityEvents.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Detecciones de Mail bombing (jun 2025), Prompt injection (jul 2026) y tabla CallActivityEvents (oct 2026) verificadas en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/defender-for-office-365-whats-new"
+    },
+    {
+      "codigo": "S-01",
+      "cadencia": "Semanal",
+      "actividad": "Revision semanal de tendencias en Threat Protection Status y Mailflow Reports",
+      "objetivo": "Identificar anomalias volumetricas, cambios en vectores de ataque y eficacia por capa de filtrado.",
+      "consolaRuta": "security.microsoft.com > Reports > Email & collaboration > Email & collaboration reports",
+      "procedimiento": [
+        "Analizar la evolucion semanal de malware, phishing de alta confianza, spoofing, impersonacion y spam frente a correo limpio.",
+        "Revisar el Mailflow Status Report para detectar picos de correo saliente o variaciones inusuales de ZAP.",
+        "Registrar hallazgos para ajustar politicas o crear hipotesis de threat hunting."
+      ],
+      "rolResponsable": "SOC L2 / Security Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-03",
+      "mitreTactic": "Initial Access (TA0001)",
+      "evidenciaAuditable": "Exportacion semanal de reportes de estado de proteccion y flujo de correo.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Actividad semanal prescriptiva en MDO Security Operations Guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/mdo-sec-ops-guide"
+    },
+    {
+      "codigo": "S-02",
+      "cadencia": "Semanal",
+      "actividad": "Evaluacion de campanas emergentes en Threat Analytics",
+      "objetivo": "Anteporner defensas y cacería ante nuevas campanas globales de phishing, AiTM o explotacion colaborativa.",
+      "consolaRuta": "security.microsoft.com > Threat intelligence > Threat analytics",
+      "procedimiento": [
+        "Revisar los informes nuevos o actualizados de analistas de Microsoft relacionados con correo, phishing QR, robo de tokens y Teams.",
+        "Comprobar incidentes relacionados en el tenant y brechas de configuracion senaladas en la pestana Exposure.",
+        "Ejecutar las consultas KQL recomendadas en el informe y aplicar mitigaciones preventivas."
+      ],
+      "rolResponsable": "SOC L3 / Threat Hunter",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.RA-03",
+      "mitreTactic": "Reconnaissance / Initial Access (TA0043 / TA0001)",
+      "evidenciaAuditable": "Bitacora semanal de boletines Threat Analytics revisados y acciones derivadas.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Actividad semanal oficial en MDO Security Operations Guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/mdo-sec-ops-guide"
+    },
+    {
+      "codigo": "S-03",
+      "cadencia": "Semanal",
+      "actividad": "Revision de Top Targeted Users y actualizacion de etiquetas Priority Accounts",
+      "objetivo": "Garantizar que los usuarios mas atacados y los nuevos ejecutivos reciban heuristicas reforzadas y politicas Strict.",
+      "consolaRuta": "security.microsoft.com > Email & collaboration > Explorer (Top targeted users) / Settings > User tags",
+      "procedimiento": [
+        "Consultar la pestana Top targeted users en las vistas All email, Malware y Phish de Threat Explorer.",
+        "Cruzar los usuarios mas atacados y altas ejecutivas con la membresia actual de la etiqueta Priority account (maximo 250 cuentas).",
+        "Incorporar cuentas criticas faltantes a Priority accounts y al grupo asignado a la Preset Security Policy Strict."
+      ],
+      "rolResponsable": "SOC L2 / Security Admin",
+      "funcionNIST": "ID",
+      "subcategoriaNIST": "ID.AM-05",
+      "mitreTactic": "Initial Access (TA0001 - T1566)",
+      "evidenciaAuditable": "Listado exportado de Priority accounts y reporte Email issues for priority accounts.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Tarea semanal documentada en MDO Security Operations Guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/priority-accounts-turn-on-priority-account-protection"
+    },
+    {
+      "codigo": "S-04",
+      "cadencia": "Semanal",
+      "actividad": "Threat Hunting proactivo sobre correo evasivo, codigos QR y Microsoft Teams",
+      "objetivo": "Descubrir campanas sutiles que evadieron detecciones preventivas en correo, adjuntos HTML/contenedor y mensajeria/llamadas de Teams.",
+      "consolaRuta": "security.microsoft.com > Hunting > Advanced hunting / Explorer",
+      "procedimiento": [
+        "Ejecutar consultas KQL sobre adjuntos .html/.iso/.lnk/.svg entregados en Inbox y filtrar URLs extraidas de codigos QR en Threat Explorer.",
+        "Cazar enlaces externos sospechosos en MessageEvents y MessageUrlInfo, asi como actividad anomala en CallActivityEvents.",
+        "Ejecutar acciones directas (Submit to Microsoft, Add to TABL, Initiate automated investigation) desde los resultados de Advanced Hunting."
+      ],
+      "rolResponsable": "SOC L3 / Threat Hunter",
+      "funcionNIST": "DE",
+      "subcategoriaNIST": "DE.CM-01",
+      "mitreTactic": "Defense Evasion / Initial Access (TA0005 / TA0001)",
+      "evidenciaAuditable": "Consultas compartidas guardadas, resultados de cacería y acciones disparadas desde Advanced Hunting.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Filtros QR, tablas Message*/CallActivityEvents y acciones directas desde Advanced Hunting verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/threat-explorer-threat-hunting"
+    },
+    {
+      "codigo": "S-05",
+      "cadencia": "Semanal",
+      "actividad": "Auditoria de deriva de configuracion con Configuration Analyzer y ORCA",
+      "objetivo": "Detectar de inmediato cualquier cambio accidental o malicioso que debilite las politicas frente a los perfiles Standard y Strict.",
+      "consolaRuta": "security.microsoft.com > Email & collaboration > Policies & rules > Threat policies > Configuration analyzer",
+      "procedimiento": [
+        "Revisar recomendaciones de Configuration Analyzer contra los perfiles Standard y Strict.",
+        "Ejecutar complementariamente Get-ORCAReport en Exchange Online PowerShell para validacion profunda.",
+        "Remediar desviaciones no autorizadas o registrar la justificacion formal con fecha de vencimiento."
+      ],
+      "rolResponsable": "Security Admin",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "Defense Evasion (TA0005 - T1562)",
+      "evidenciaAuditable": "Informe de Configuration Analyzer / ORCA exportado y tickets de remediacion.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Herramientas oficiales recomendadas en MDO Security Operations Guide; cadencia semanal propuesta para control estricto de drift.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/configuration-analyzer-for-security-policies"
+    },
+    {
+      "codigo": "S-06",
+      "cadencia": "Semanal",
+      "actividad": "Revision y ajuste de Spoof Intelligence e Impersonation Insights",
+      "objetivo": "Cerrar vectores de suplantacion intra-organizacion y cross-domain exigiendo autenticacion estandar a terceros legitimos.",
+      "consolaRuta": "security.microsoft.com > Email & collaboration > Policies & rules > Threat policies > Spoof intelligence / Impersonation insights",
+      "procedimiento": [
+        "Analizar remitentes detectados suplantando dominios propios o externos en la ventana de 7 dias.",
+        "Bloquear infraestructuras maliciosas y abrir requerimiento de correccion SPF/DKIM/DMARC a proveedores legitimos antes de considerar excepciones acotadas.",
+        "Revisar detecciones de impersonacion de usuarios VIP y dominios similares (typosquatting)."
+      ],
+      "rolResponsable": "Security Admin / Messaging Engineer",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "Defense Evasion (TA0005 - T1656)",
+      "evidenciaAuditable": "Registro de decisiones en Spoof intelligence y tickets de alineacion DMARC con proveedores.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Capacidad oficial documentada en anti-spoofing-spoof-intelligence.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/anti-spoofing-spoof-intelligence"
+    },
+    {
+      "codigo": "S-07",
+      "cadencia": "Semanal",
+      "actividad": "Auditoria de System Overrides y Reglas de Transporte de Exchange (ETR)",
+      "objetivo": "Eliminar bypasses silenciosos (SCL=-1, IP Allow o Safe Senders) que entregan phishing o malware detectado por MDO.",
+      "consolaRuta": "security.microsoft.com/reports/TPSMessageOverrideReportATP y admin.exchange.microsoft.com/#/transportrules",
+      "procedimiento": [
+        "Analizar el desglose de mensajes maliciosos entregados por System overrides en el Threat Protection Status Report.",
+        "Auditar reglas de transporte en Exchange Admin Center buscando acciones Set SCL to -1 o redirecciones externas.",
+        "Deshabilitar reglas u overrides sin aprobacion vigente y migrar pruebas de phishing de terceros a Advanced Delivery Policy."
+      ],
+      "rolResponsable": "Security Admin / Messaging Team",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.PO-01",
+      "mitreTactic": "Defense Evasion (TA0005)",
+      "evidenciaAuditable": "Reporte semanal de System overrides y listado auditado de Transport Rules.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Revision de overrides e integracion con Advanced Delivery Policy documentadas en MDO SecOps Guide.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/mdo-sec-ops-guide"
+    },
+    {
+      "codigo": "M-01",
+      "cadencia": "Mensual",
+      "actividad": "Evaluacion mensual de postura en Microsoft Secure Score (Email & Collaboration)",
+      "objetivo": "Medir y elevar de forma continua la postura preventiva y detectiva del plano de correo y colaboracion.",
+      "consolaRuta": "security.microsoft.com > Exposure management > Secure score",
+      "procedimiento": [
+        "Filtrar acciones recomendadas para Microsoft Defender for Office 365 y Exchange Online.",
+        "Evaluar la tendencia de puntaje de los ultimos 30 dias y comparar frente a benchmarks similares.",
+        "Priorizar e implementar de 3 a 5 mejoras de alto impacto mediante control de cambios."
+      ],
+      "rolResponsable": "Security Admin / SOC Manager",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.PO-01",
+      "mitreTactic": "Initial Access (TA0001)",
+      "evidenciaAuditable": "Exportacion mensual de Microsoft Secure Score y plan de accion actualizado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Practica oficial de gestion de postura en el portal Microsoft Defender.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-xdr/microsoft-secure-score"
+    },
+    {
+      "codigo": "M-02",
+      "cadencia": "Mensual",
+      "actividad": "Ajuste fino de politicas Anti-Phishing y Anti-Spam con Policy What-If Insights",
+      "objetivo": "Endurecer umbrales de suplantacion, impersonacion y correo masivo previendo el impacto operativo con datos historicos reales.",
+      "consolaRuta": "security.microsoft.com > Email & collaboration > Policies & rules > Threat policies > Anti-phishing / Anti-spam",
+      "procedimiento": [
+        "Analizar falsos positivos y falsos negativos acumulados en el mes por grupo de usuarios.",
+        "Utilizar Policy what-if insights para evaluar el efecto en volumen de cuarentena antes de ajustar umbrales BCL, spoof o impersonation.",
+        "Aplicar ajustes aprobados manteniendo alineacion con los perfiles Standard y Strict."
+      ],
+      "rolResponsable": "Security Admin / Security Architect",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "Initial Access / Defense Evasion (TA0001 / TA0005)",
+      "evidenciaAuditable": "Capturas de simulacion Policy what-if insights y registro de cambio aprobado.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Capacidad Policy what-if insights verificada en las novedades de MDO en Microsoft Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/anti-phishing-protection-tuning"
+    },
+    {
+      "codigo": "M-03",
+      "cadencia": "Mensual",
+      "actividad": "Limpieza y gobierno de Tenant Allow/Block List (Correo y Dominios Teams)",
+      "objetivo": "Evitar que entradas Allow temporales o bloqueos obsoletos degraden la postura de seguridad del tenant.",
+      "consolaRuta": "security.microsoft.com > Policies & rules > Threat policies > Tenant Allow/Block Lists",
+      "procedimiento": [
+        "Revisar entradas en Domains & addresses (incluyendo bloqueos de Teams), Spoofed senders, URLs, Files e IPs (IPv4/IPv6).",
+        "Confirmar que las entradas Allow procedentes de Submissions conserven la expiracion predeterminada de 45 dias desde el ultimo uso.",
+        "Revocar entradas Spoofed senders sin fecha de expiracion cuyos remitentes ya hayan implementado SPF/DKIM/DMARC."
+      ],
+      "rolResponsable": "Security Admin / SOC L2",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "Initial Access (TA0001)",
+      "evidenciaAuditable": "Exportacion mensual de TABL antes y despues de la depuracion.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Vencimiento de 45 dias tras ultimo uso, soporte IPv6 y bloqueo de dominios de Teams verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/defender-for-office-365-whats-new"
+    },
+    {
+      "codigo": "M-04",
+      "cadencia": "Mensual",
+      "actividad": "Operacion y medicion mensual de Attack Simulation Training (AST)",
+      "objetivo": "Reducir de forma medible la tasa de clic y entrega de credenciales ante tecnicas actuales de ingenieria social.",
+      "consolaRuta": "security.microsoft.com > Email & collaboration > Attack simulation training",
+      "procedimiento": [
+        "Analizar resultados mensuales de Simulation Automations (tasas de compromiso real vs predicho, tasa de reporte y finalizacion de cursos).",
+        "Seleccionar nuevos payloads basados en amenazas reales vistas en el mes (incluyendo codigos QR, Credential Harvest y OAuth Consent).",
+        "Asignar Training Campaigns de refuerzo obligatorio a usuarios reincidentes."
+      ],
+      "rolResponsable": "Attack Simulation Administrator / SOC Manager",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.AT-01",
+      "mitreTactic": "Initial Access / Credential Access (TA0001 / TA0006)",
+      "evidenciaAuditable": "Reporte mensual exportado de campanas AST y cumplimiento de capacitacion.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Capacidades AST, payloads QR y regiones soportadas verificadas en Microsoft Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/attack-simulation-training-get-started"
+    },
+    {
+      "codigo": "M-05",
+      "cadencia": "Mensual",
+      "actividad": "Auditoria de roles Unified RBAC, permisos de purga y activaciones Entra PIM",
+      "objetivo": "Asegurar cumplimiento estricto de minimo privilegio y separacion de funciones sobre el contenido de correo y Teams.",
+      "consolaRuta": "security.microsoft.com > System > Permissions & roles y entra.microsoft.com > Identity Governance > PIM",
+      "procedimiento": [
+        "Auditar asignaciones en roles URBAC con permisos de lectura de contenido o acciones avanzadas (purga) y grupos heredados si existiesen.",
+        "Confirmar cero asignaciones permanentes en roles de administracion o purga, verificando que toda elevacion paso por Entra PIM.",
+        "Cruzar activaciones PIM con las acciones ejecutadas por ApproverUpn en EmailPostDeliveryEvents."
+      ],
+      "rolResponsable": "Security Admin / GRC",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.RR-02",
+      "mitreTactic": "Privilege Escalation / Collection (TA0004 / TA0009)",
+      "evidenciaAuditable": "Informe mensual de revision de accesos privilegiados, logs PIM y auditoria ApproverUpn.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Modelo URBAC (MC1246006), PIM en MDO y columna ApproverUpn verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/pim-in-mdo-configure"
+    },
+    {
+      "codigo": "M-06",
+      "cadencia": "Mensual",
+      "actividad": "Respaldo versionado de politicas MDO/EXO y verificacion de ingesta en Sentinel",
+      "objetivo": "Garantizar capacidad de restauracion rapida de politicas y continuidad de correlacion SIEM.",
+      "consolaRuta": "Exchange Online PowerShell y security.microsoft.com (Sentinel Data Connectors)",
+      "procedimiento": [
+        "Ejecutar script PowerShell mensual exportando politicas AntiPhish, SafeLinks, SafeAttachments, AntiSpam, AntiMalware, TeamsProtection, DKIM y TransportRules.",
+        "Almacenar los artefactos en repositorio controlado con historial de cambios.",
+        "Verificar mediante KQL que las tablas EmailEvents, UrlClickEvents, MessageEvents y CallActivityEvents fluyan sin brechas hacia Sentinel."
+      ],
+      "rolResponsable": "Security Engineer",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.RP-05",
+      "mitreTactic": "Defense Evasion (TA0005)",
+      "evidenciaAuditable": "Registro de respaldo mensual en repositorio Git y grafica de ingesta de tablas en Sentinel.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Cmdlets y conector Sentinel verificados en MS Learn; la rutina mensual de backup versionado es buena practica editorial de ingenieria.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/azure/sentinel/connect-microsoft-365-defender"
+    },
+    {
+      "codigo": "T-01",
+      "cadencia": "Trimestral",
+      "actividad": "Auditoria trimestral de SPF, DKIM (2048-bit), DMARC p=reject y Trusted ARC Sealers",
+      "objetivo": "Impedir la suplantacion criptografica de todos los dominios corporativos activos y estacionados.",
+      "consolaRuta": "security.microsoft.com/dkimv2 y registros DNS publicos",
+      "procedimiento": [
+        "Auditar registros SPF, rotacion y estado de claves DKIM de 2048 bits y politicas DMARC en todos los dominios del tenant y dominios parqueados.",
+        "Analizar reportes agregados DMARC (rua) para avanzar dominios pendientes hacia p=reject.",
+        "Revisar la lista de Trusted ARC Sealers confirmando que solo incluya servicios intermediarios vigentes."
+      ],
+      "rolResponsable": "Messaging Security Architect",
+      "funcionNIST": "PR",
+      "subcategoriaNIST": "PR.PS-01",
+      "mitreTactic": "Initial Access / Defense Evasion (TA0001 / TA0005)",
+      "evidenciaAuditable": "Matriz trimestral de estado SPF/DKIM/DMARC/ARC por dominio corporativo.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Controles de autenticacion verificados en email-authentication-about; cadencia trimestral de auditoria propuesta.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/email-authentication-about"
+    },
+    {
+      "codigo": "SM-01",
+      "cadencia": "Semestral",
+      "actividad": "Recalibracion semestral de alcance Standard/Strict, Alert Tuning y Security Alert Triage Agent",
+      "objetivo": "Alinear la agresividad de controles preventivos y la autonomia de agentes IA con la evolucion del riesgo organizacional.",
+      "consolaRuta": "security.microsoft.com/presetSecurityPolicies y security.microsoft.com/securitysettings/defender/alert_suppression",
+      "procedimiento": [
+        "Evaluar la expansion del perfil Strict hacia unidades de negocio sensibles adicionales (Finanzas, Legal, Compras, TI).",
+        "Auditar todas las reglas de Alert tuning confirmando que no silencien alertas requeridas por el Security Alert Triage Agent.",
+        "Revisar metricas semestrales de precision y acciones revertidas de AIR y del agente de triaje."
+      ],
+      "rolResponsable": "Security Architect / SOC Lead",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.PO-01",
+      "mitreTactic": "Initial Access (TA0001)",
+      "evidenciaAuditable": "Acta semestral de recalibracion de arquitectura MDO y gobierno de IA en el SOC.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Interaccion entre Alert tuning y el agente de triaje documentada en MS Learn; revision semestral formal definida editorialmente.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/air-about"
+    },
+    {
+      "codigo": "A-01",
+      "cadencia": "Anual",
+      "actividad": "Ejercicio Tabletop interdisciplinario de BEC ejecutivo, Quishing AiTM y abuso de Teams",
+      "objetivo": "Validar tiempos reales de coordinacion entre SOC, Identidad, Tesoreria, Legal y Direccion ante un fraude multi-canal.",
+      "consolaRuta": "Ejercicio de mesa basado en escenarios reales en Microsoft Defender XDR",
+      "procedimiento": [
+        "Simular cadena completa: phishing con codigo QR -> robo de sesion AiTM -> reglas ocultas en buzon ejecutivo -> Mail bombing + llamada externa en Teams.",
+        "Medir tiempos de contencion tecnica (MTTC), bloqueo financiero en Tesoreria y escalamiento ejecutivo.",
+        "Documentar brechas en After-Action Report (AAR) y actualizar playbooks operativos."
+      ],
+      "rolResponsable": "CISO / Incident Response Manager",
+      "funcionNIST": "RC",
+      "subcategoriaNIST": "RC.IM-01",
+      "mitreTactic": "Initial Access / Credential Access / Impact (TA0001 / TA0006 / TA0040)",
+      "evidenciaAuditable": "Informe anual After-Action Report firmado y registro de actualizacion de playbooks.",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Alineado a NIST SP 800-61 Rev. 3 y a la disciplina SecOps del Microsoft Security Adoption Framework.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/zero-trust/security-operations-incident-response-readiness"
+    },
+    {
+      "codigo": "A-02",
+      "cadencia": "Anual",
+      "actividad": "Revision anual de cobertura de licencias (E3 P1 vs E5 P2 / Defender Suite), SCU y novedades",
+      "objetivo": "Asegurar que ningun grupo de usuarios quede sin la cobertura esperada y planificar la adopcion de capacidades nuevas.",
+      "consolaRuta": "admin.microsoft.com y learn.microsoft.com/defender-office-365/defender-for-office-365-whats-new",
+      "procedimiento": [
+        "Auditar asignacion de licencias MDO Plan 1 (E3) frente a MDO Plan 2 (E5 / Defender Suite) y Safe Documents.",
+        "Revisar consumo anual de Security Compute Units (SCU) por agentes de Security Copilot asociados a MDO.",
+        "Actualizar la hoja de ruta anual del SOC con las funcionalidades GA liberadas durante el ano."
+      ],
+      "rolResponsable": "CISO / Enterprise Security Architect",
+      "funcionNIST": "GV",
+      "subcategoriaNIST": "GV.PO-01",
+      "mitreTactic": "Initial Access (TA0001)",
+      "evidenciaAuditable": "Informe anual de gobierno de licencias, capacidad SCU y roadmap tecnologico.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Diferencias de servicio E3/E5/Defender Suite verificadas en Service Description oficial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/office365/servicedescriptions/office-365-advanced-threat-protection-service-description"
+    },
+    {
+      "codigo": "AH-01",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de respuesta ante brote masivo de Phishing, AiTM o Quishing (Outbreak)",
+      "objetivo": "Cuantificar el radio de impacto en minutos, purgar todos los buzones afectados y contener sesiones expuestas.",
+      "consolaRuta": "security.microsoft.com/threatexplorer, security.microsoft.com/tenantAllowBlockList y entra.microsoft.com",
+      "procedimiento": [
+        "Cuantificar alcance en Threat Explorer / Campaign Views (incluyendo filtro por URL de codigo QR) y listar usuarios con ClickAllowed en UrlClickEvents.",
+        "Bloquear inmediatamente URLs, hashes SHA256 y dominios en Tenant Allow/Block List y ejecutar Take action > Purge (Soft delete).",
+        "Para todo usuario con clic permitido o inicio de sesion sospechoso en EntraIdSignInEvents, revocar sesiones, marcar como comprometido y auditar MFA."
+      ],
+      "rolResponsable": "SOC L2 / SOC L3",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Initial Access / Credential Access (TA0001 / TA0006)",
+      "evidenciaAuditable": "Timeline del incidente en Defender XDR, entradas TABL y registro de purga con ApproverUpn.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Alineado al Phishing investigation playbook oficial del Microsoft Security Adoption Framework.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/security/zero-trust/security-operations-playbook-phishing"
+    },
+    {
+      "codigo": "AH-02",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de respuesta y rehabilitacion ante compromiso de buzon / fraude BEC",
+      "objetivo": "Cortar el acceso persistente del adversario sobre el buzon comprometido e impedir desvio fraudulento de fondos o datos.",
+      "consolaRuta": "security.microsoft.com, entra.microsoft.com y Exchange Online PowerShell",
+      "procedimiento": [
+        "Deshabilitar temporalmente la cuenta en Entra ID (accion preferida por Microsoft durante la investigacion) y revocar todas las sesiones activas.",
+        "Eliminar metodos MFA no reconocidos, consentimientos OAuth ilicitos, delegaciones de buzon y reglas ocultas de bandeja (Get-InboxRule -IncludeHidden / ForwardingSmtpAddress).",
+        "Investigar MailItemsAccessed y correos enviados por el atacante, alertar a Tesoreria/contrapartes si hubo intento de fraude y rehabilitar con contrasena nueva y MFA resistente a phishing."
+      ],
+      "rolResponsable": "SOC L2 / SOC L3 / Identity Responder",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Persistence / Collection / Exfiltration (TA0003 / TA0009 / TA0010)",
+      "evidenciaAuditable": "Checklist BEC completado, exportacion forense de reglas/auditoria y registro en Action Center.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Secuencia oficial verificada en Respond to a compromised cloud email account.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/responding-to-a-compromised-email-account"
+    },
+    {
+      "codigo": "AH-03",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Playbook de contencion de ataques en Microsoft Teams (Mensajes, Dominios Externos y Chats)",
+      "objetivo": "Interrumpir campanas de ingenieria social, enlaces maliciosos o llamadas fraudulentas ejecutadas sobre Microsoft Teams.",
+      "consolaRuta": "security.microsoft.com (Teams message/call entity panel y Tenant Allow/Block List)",
+      "procedimiento": [
+        "Inspeccionar el Teams message entity panel o Teams call entity panel y cuantificar alcance en MessageEvents, MessageUrlInfo y CallActivityEvents.",
+        "Bloquear el dominio o remitente externo malicioso en Tenant Allow/Block List para Teams (sincroniza con Teams Admin Center y elimina mensajes existentes).",
+        "Utilizar Remove users from Teams chats (MDO P2) para expulsar cuentas internas comprometidas de conversaciones activas y aislar endpoints si hubo descarga."
+      ],
+      "rolResponsable": "SOC L2 / SOC L3",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Initial Access / Lateral Movement (TA0001 / TA0008)",
+      "evidenciaAuditable": "Bloqueo de dominio externo registrado en TABL, accion de remocion de chat e historial del incidente.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Bloqueo de dominios externos en Teams (ene 2026), Remove users from chats GA (abr 2026) y CallActivityEvents (oct 2026) verificados en MS Learn.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/mdo-support-teams-about"
+    },
+    {
+      "codigo": "AH-04",
+      "cadencia": "Ad-Hoc",
+      "actividad": "Ejecucion controlada de purga multi-buzon (Threat Explorer / Purview Content Search)",
+      "objetivo": "Erradicar mensajes maliciosos o derrames criticos de informacion con trazabilidad de doble control y posibilidad de recuperacion.",
+      "consolaRuta": "security.microsoft.com/threatexplorer o purview.microsoft.com (Content Search)",
+      "procedimiento": [
+        "Activar rol elegible en Entra PIM con permisos de purga (URBAC Email & collaboration advanced actions manage o Search and Purge).",
+        "Validar alcance exacto de destinatarios y muestra de mensajes antes de ejecutar la accion.",
+        "Ejecutar Soft delete de forma predeterminada (reservando Hard delete para escenarios criticos con aprobacion expresa del SOC Manager) y verificar ApproverUpn."
+      ],
+      "rolResponsable": "SOC L3",
+      "funcionNIST": "RS",
+      "subcategoriaNIST": "RS.MI-01",
+      "mitreTactic": "Collection / Impact (TA0009 / TA0040)",
+      "evidenciaAuditable": "Autorizacion documentada, registro en Action Center y trazabilidad ApproverUpn en EmailPostDeliveryEvents.",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "Mecanismos de purga verificados en MS Learn; requisito de doble aprobacion para Hard delete es control de gobierno editorial.",
+      "urlSoporte": "https://learn.microsoft.com/en-us/defender-office-365/remediate-malicious-email-delivered-office-365"
+    }
+  ],
+  "consultasKQLyVerificacion": [
+    {
+      "nombre": "Clics permitidos en Safe Links ocurridos antes de la purga post-entrega (ZAP o manual)",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel",
+      "tablaPrincipal": "UrlClickEvents / EmailPostDeliveryEvents",
+      "consulta": "let PurgedEmails = EmailPostDeliveryEvents | where Timestamp > ago(7d) | where ActionType has_any ('ZAP', 'Manual remediation', 'Phish ZAP', 'Malware ZAP') and ActionResult == 'Success' | project PurgeTime = Timestamp, NetworkMessageId, ActionType, ApproverUpn; UrlClickEvents | where Timestamp > ago(7d) and Workload == 'Email' and ActionType == 'ClickAllowed' | join kind=inner PurgedEmails on NetworkMessageId | where Timestamp < PurgeTime | project ClickTime = Timestamp, PurgeTime, AccountUpn, Url, IPAddress, ActionType, ApproverUpn, NetworkMessageId",
+      "proposito": "Identificar usuarios cuya sesion o credenciales pueden haberse comprometido en la ventana temporal previa a que ZAP o el SOC eliminaran el correo.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Auditoria de aprobadores de acciones de remediacion post-entrega (ApproverUpn)",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel",
+      "tablaPrincipal": "EmailPostDeliveryEvents",
+      "consulta": "EmailPostDeliveryEvents | where Timestamp > ago(30d) | where isnotempty(ApproverUpn) | summarize TotalMessages = count(), DistinctRecipients = dcount(RecipientEmailAddress) by ApproverUpn, ActionType, Action, ActionResult | order by TotalMessages desc",
+      "proposito": "Auditar quien aprobo cada purga o accion manual sobre buzones utilizando el campo ApproverUpn incorporado en octubre de 2026.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Correlacion de ataques Mail Bombing seguidos de llamadas en Microsoft Teams",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel",
+      "tablaPrincipal": "EmailEvents / CallActivityEvents",
+      "consulta": "let MailBombed = EmailEvents | where Timestamp > ago(24h) | where DetectionMethods has 'Mail bombing' | summarize BombCount = count(), FirstBomb = min(Timestamp) by RecipientEmailAddress; CallActivityEvents | where Timestamp > ago(24h) | mv-expand P = parse_json(Participants) | extend Upn = tostring(P.Upn) | join kind=inner MailBombed on $left.Upn == $right.RecipientEmailAddress | where Timestamp between (FirstBomb .. (FirstBomb + 4h)) | project Timestamp, FirstBomb, Upn, BombCount, CallId, ActivityType",
+      "proposito": "Detectar la tactica moderna de inundar el buzon del usuario (Mail bombing) para luego contactarlo por llamada de Microsoft Teams suplantando soporte de TI.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Caceria de clics en URLs y purgas post-entrega en Microsoft Teams",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel",
+      "tablaPrincipal": "MessagePostDeliveryEvents / MessageUrlInfo / UrlClickEvents",
+      "consulta": "MessagePostDeliveryEvents | where Timestamp > ago(7d) | join kind=inner (MessageUrlInfo | where Timestamp > ago(7d)) on TeamsMessageId | join kind=inner (UrlClickEvents | where Timestamp > ago(7d) and Workload == 'Teams') on Url | project Timestamp, TeamsMessageId, SenderEmailAddress, Url, ActionType, IsClickedThrough",
+      "proposito": "Rastrear extremo a extremo enlaces maliciosos compartidos por chat o canales de Teams y verificar si algun usuario alcanzo el sitio destino.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Amenazas detectadas por MDO pero entregadas en Inbox debido a System Overrides",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel",
+      "tablaPrincipal": "EmailEvents",
+      "consulta": "EmailEvents | where Timestamp > ago(7d) | where DeliveryLocation in ('Inbox', 'Folder') and ThreatTypes has_any ('Phish', 'Malware') | where isnotempty(OrgLevelAction) or isnotempty(UserLevelAction) | summarize DeliveredThreats = count(), AffectedUsers = dcount(RecipientEmailAddress) by ThreatTypes, OrgLevelAction, OrgLevelPolicy, UserLevelAction, SenderFromDomain | order by DeliveredThreats desc",
+      "proposito": "Identificar reglas de transporte ETR, listas blancas o Safe Senders de usuario que esten anulando los veredictos de seguridad de MDO.",
+      "estadoValidacion": "Verificado MS Learn"
+    },
+    {
+      "nombre": "Caceria de archivos susceptibles de HTML Smuggling o contenedores entregados en Inbox",
+      "plataforma": "Microsoft Defender XDR Advanced Hunting / Microsoft Sentinel",
+      "tablaPrincipal": "EmailAttachmentInfo / EmailEvents",
+      "consulta": "EmailAttachmentInfo | where Timestamp > ago(7d) and FileType in~ ('html', 'htm', 'iso', 'vhd', 'vhdx', 'lnk', 'one', 'svg') | join kind=inner (EmailEvents | where Timestamp > ago(7d) and EmailDirection == 'Inbound' and DeliveryLocation == 'Inbox') on NetworkMessageId | project Timestamp, SenderFromAddress, RecipientEmailAddress, Subject, FileName, FileType, SHA256, NetworkMessageId",
+      "proposito": "Localizar adjuntos de alto riesgo de evasion que hayan llegado al buzon sin firma inicial conocida para detonacion o bloqueo preventivo.",
+      "estadoValidacion": "Verificado MS Learn"
+    }
+  ],
+  "kpisYMetricas": [
+    {
+      "id": "KPI-01",
+      "nombre": "Tiempo medio y p90 de reconocimiento de incidentes MDO (MTTA)",
+      "definicion": "Tiempo transcurrido desde la creacion del incidente con senales de MDO en Defender XDR hasta su asignacion y cambio a estado activo.",
+      "formula": "percentiles(FirstModifiedTime - CreatedTime, 50, 90) por severidad sobre SecurityIncident deduplicado",
+      "metaSugerida": "Mediana (p50) < 15 min / p90 < 30 min en severidad Alta",
+      "frecuencia": "Semanal",
+      "audiencia": "SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Columnas de SecurityIncident documentadas en MS Learn; los umbrales en minutos son propuesta editorial para SOC 24x7."
+    },
+    {
+      "id": "KPI-02",
+      "nombre": "Tiempo de contencion de campana y clics maliciosos (MTTC-MDO)",
+      "definicion": "Tiempo entre la deteccion de una campana entregada o clic permitido y la ejecucion efectiva de la purga de buzones mas revocacion de sesion.",
+      "formula": "percentiles(Timestamp_Purga_o_Revocacion - CreatedTime_Incidente, 50, 90)",
+      "metaSugerida": "p90 < 30 minutos (severidad Alta) / < 2 horas (severidad Media)",
+      "frecuencia": "Semanal",
+      "audiencia": "SOC Manager / CISO",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Emparejar siempre con el conteo de acciones revertidas en Action Center para cuidar la precision."
+    },
+    {
+      "id": "KPI-03",
+      "nombre": "Tasa de automatizacion efectiva en AIR y Security Alert Triage Agent",
+      "definicion": "Porcentaje de investigaciones de correo resueltas por auto-remediacion de clusteres AIR o clasificadas por el agente sin requerir reversion.",
+      "formula": "(Investigaciones auto-remediadas o cerradas sin amenaza y sin reversion / Total investigaciones AIR) * 100",
+      "metaSugerida": "> 80% de automatizacion con < 2% de acciones revertidas",
+      "frecuencia": "Semanal",
+      "audiencia": "SOC Manager",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Auto-remediacion de clusteres e historial de deshacer verificados en MS Learn; meta porcentual consultiva."
+    },
+    {
+      "id": "KPI-04",
+      "nombre": "Mensajes maliciosos entregados por System Overrides",
+      "definicion": "Volumen de correos clasificados como Phish o Malware que ingresaron al Inbox debido a reglas ETR, IP Allow o Safe Senders.",
+      "formula": "Conteo semanal en EmailEvents con ThreatTypes in ('Phish','Malware') y OrgLevelAction/UserLevelAction override",
+      "metaSugerida": "Tendencia a 0 (0 reglas ETR con SCL=-1 sin excepcion temporal aprobada)",
+      "frecuencia": "Semanal",
+      "audiencia": "Security Admin / CISO",
+      "estadoValidacion": "Verificado MS Learn",
+      "notaValidacion": "MDO SecOps Guide exige investigar y eliminar activamente overrides que entreguen correo malicioso."
+    },
+    {
+      "id": "KPI-05",
+      "nombre": "Indice de alineacion en Configuration Analyzer (Standard / Strict)",
+      "definicion": "Porcentaje de parametros de politicas MDO/EOP alineados con las recomendaciones oficiales Standard y Strict sin deriva no documentada.",
+      "formula": "(Recomendaciones cumplidas + excepciones formalmente aprobadas / Total evaluadas en Configuration Analyzer) * 100",
+      "metaSugerida": ">= 95% de alineacion tecnica y 0 desviaciones sin aprobacion",
+      "frecuencia": "Mensual",
+      "audiencia": "Security Architect / GRC",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Herramienta oficial Configuration Analyzer verificada en MS Learn; meta numerica definida editorialmente."
+    },
+    {
+      "id": "KPI-06",
+      "nombre": "Tasa de compromiso en Attack Simulation Training (AST Compromise Rate)",
+      "definicion": "Porcentaje de usuarios evaluados que interactuaron de forma insegura (clic, entrega de credenciales o consentimiento) en simulaciones mensuales.",
+      "formula": "(Usuarios comprometidos en simulacion / Total usuarios incluidos en la campana AST) * 100",
+      "metaSugerida": "< 6% poblacion general y < 3% en Priority Accounts",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO / Comite de Riesgos",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Metrica nativa de AST en Defender portal; umbrales objetivo sujetos a linea base cultural de cada organizacion."
+    },
+    {
+      "id": "KPI-07",
+      "nombre": "Ratio de reporte frente a compromiso humano (Report-to-Compromise Ratio)",
+      "definicion": "Relacion entre usuarios que reportaron proactivamente la simulacion con el boton integrado y usuarios que cayeron en el engaño.",
+      "formula": "Usuarios que reportaron simulacion / Usuarios comprometidos en simulacion",
+      "metaSugerida": "> 3:1 con > 95% de finalizacion de capacitacion correctiva en 30 dias",
+      "frecuencia": "Mensual",
+      "audiencia": "CISO / Concientizacion",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "Mide la efectividad real de los empleados como sensores humanos para el SOC."
+    },
+    {
+      "id": "KPI-08",
+      "nombre": "Cobertura de autenticacion criptografica DMARC p=reject y DKIM",
+      "definicion": "Porcentaje de dominios propios (activos y estacionados) protegidos con politica DMARC en modo reject y firma DKIM de 2048 bits.",
+      "formula": "(Dominios con DMARC p=reject + DKIM 2048-bit activo / Total dominios registrados de la organizacion) * 100",
+      "metaSugerida": "100% de dominios corporativos",
+      "frecuencia": "Trimestral",
+      "audiencia": "CISO / Auditoria Interna",
+      "estadoValidacion": "Propuesta Editorial",
+      "notaValidacion": "MS Learn establece que cualquier configuracion incompleta de SPF/DKIM/DMARC brinda proteccion subestandar."
+    }
+  ],
+  "mapeoNISTCSF20": [
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.PO-01",
+      "descripcionResultado": "Se establecen, comunican y aplican politicas de gestion de riesgos de ciberseguridad basadas en el contexto organizacional.",
+      "capacidadMicrosoft": "Preset Security Policies (Standard y Strict), politicas de cuarentena restringidas para malware/phishing de alta confianza y vencimiento de 45 dias en TABL.",
+      "evidenciaAuditoria": "Exportacion de Get-EOPProtectionPolicyRule / Get-ATPProtectionPolicyRule y reporte sin desvios en Configuration Analyzer.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "GOVERN (GV)",
+      "subcategoria": "GV.RR-02",
+      "descripcionResultado": "Los roles, responsabilidades y autoridades de ciberseguridad se establecen, comunican y hacen cumplir.",
+      "capacidadMicrosoft": "Modelo Microsoft Defender Unified RBAC (URBAC) con permisos granulares separados para metadatos, previsualizacion y purga, gobernados con Entra PIM.",
+      "evidenciaAuditoria": "Configuracion de roles URBAC, historial de activaciones PIM y auditoria de la columna ApproverUpn en EmailPostDeliveryEvents.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.AM-05",
+      "descripcionResultado": "Los recursos y activos se priorizan segun su clasificacion, criticidad y valor para el negocio.",
+      "capacidadMicrosoft": "Etiquetado de hasta 250 ejecutivos y puestos financieros criticos mediante Priority Account Protection y asignacion a politicas Strict.",
+      "evidenciaAuditoria": "Listado exportado de User tags (Priority account) e informe Email issues for priority accounts.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "IDENTIFY (ID)",
+      "subcategoria": "ID.RA-03",
+      "descripcionResultado": "Las amenazas internas y externas relevantes para la organizacion son identificadas y registradas.",
+      "capacidadMicrosoft": "Visibilidad de campanas dirigidas en Campaign Views, Threat Explorer, Threat Analytics y Predicted Compromise Rate en AST.",
+      "evidenciaAuditoria": "Informes descargados de Campaign Views y actas semanales de evaluacion de boletines Threat Analytics.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.PS-01",
+      "descripcionResultado": "Se establecen y mantienen practicas seguras de gestion de configuracion sobre plataformas y servicios.",
+      "capacidadMicrosoft": "Autenticacion SPF/DKIM/DMARC/ARC, Safe Attachments en sandbox, Safe Links en tiempo de clic y bloqueo de dominios externos en Microsoft Teams.",
+      "evidenciaAuditoria": "Registros DNS publicados, informe ORCA y respaldo mensual versionado de politicas MDO/EXO.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "PROTECT (PR)",
+      "subcategoria": "PR.AT-01",
+      "descripcionResultado": "El personal recibe concientizacion y formacion practica para reconocer y reportar amenazas.",
+      "capacidadMicrosoft": "Campanas automatizadas de Attack Simulation Training (incluyendo payloads QR y OAuth) con asignacion adaptativa de modulos formativos.",
+      "evidenciaAuditoria": "Reportes mensuales de cobertura AST, tasas de compromiso/reporte y porcentaje de cursos completados.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.CM-01",
+      "descripcionResultado": "Las redes y servicios de comunicacion se monitorean continuamente para detectar actividades potencialmente adversas.",
+      "capacidadMicrosoft": "Monitoreo continuo de correo, SharePoint, OneDrive y Microsoft Teams (mensajes, URLs y llamadas) con ML, LLM BEC, Prompt injection y Mail bombing.",
+      "evidenciaAuditoria": "Consultas KQL auditables sobre EmailEvents, UrlClickEvents, MessageEvents y CallActivityEvents.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "DETECT (DE)",
+      "subcategoria": "DE.AE-03",
+      "descripcionResultado": "La informacion de eventos adversos se correlaciona desde multiples fuentes para caracterizar incidentes.",
+      "capacidadMicrosoft": "Correlacion nativa de alertas MDO, clics en URLs y reportes de usuarios con señales de Entra ID, MDE y MDCA en incidentes XDR.",
+      "evidenciaAuditoria": "Exportacion de incidentes multi-dominio correlacionados en security.microsoft.com/incidents.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RESPOND (RS)",
+      "subcategoria": "RS.MI-01",
+      "descripcionResultado": "Los incidentes se contienen de forma oportuna para evitar la expansion del compromiso.",
+      "capacidadMicrosoft": "Zero-hour Auto Purge (ZAP) en correo y Teams, auto-remediacion de clusteres en AIR, purga masiva y expulsion de usuarios de chats de Teams.",
+      "evidenciaAuditoria": "Registros de ejecucion en EmailPostDeliveryEvents, MessagePostDeliveryEvents y Action Center History.",
+      "estadoValidacion": "Propuesta Editorial"
+    },
+    {
+      "funcion": "RECOVER (RC)",
+      "subcategoria": "RC.IM-01",
+      "descripcionResultado": "Las lecciones aprendidas de incidentes y ejercicios se incorporan para mejorar controles y procesos futuros.",
+      "capacidadMicrosoft": "Revisiones post-incidente soportadas por Policy what-if insights, ajuste de overrides y nuevas simulaciones AST inspiradas en incidentes reales.",
+      "evidenciaAuditoria": "Informes After-Action Report (AAR) de incidentes/tabletop y trazabilidad de ajustes aplicados en politicas.",
+      "estadoValidacion": "Propuesta Editorial"
+    }
+  ],
+  "validacionYDecisionesEditoriales": {
+    "fechaRevalidacion": "2026-11-11",
+    "resumenAuditoria": "Contenido compilado desde los bloques maestros MSEOP-MD de MDO y revalidado integralmente contra Microsoft Learn mediante MCP en noviembre de 2026. Se actualizaron cambios estructurales de 2025-2026 en licenciamiento E3/Defender Suite, Unified RBAC predeterminado, capacidades de Microsoft Teams (ZAP en P1, bloqueo de dominios externos, expulsion de chats y tabla CallActivityEvents), auto-remediacion de clusteres en AIR, columna ApproverUpn y operacion con el Security Alert Triage Agent.",
+    "correccionesAplicadas": [
+      "Actualizacion de licenciamiento (julio 2026): inclusion de MDO Plan 1 en Microsoft 365 E3 y Office 365 E3, adopcion del nombre comercial Microsoft Defender Suite (antes M365 E5 Security), referencia a M365 E7 y aclaracion de que Safe Documents requiere M365 E5 o Defender Suite.",
+      "Adopcion de Microsoft Defender Unified RBAC (URBAC) como modelo predeterminado para nuevas organizaciones MDO Plan 2 desde julio de 2026 (MC1246006) e inclusion del permiso granular 'Emails associated with alerts (read)' (abril 2026).",
+      "Correccion tecnica sobre AIR en MDO Plan 2: confirmacion de que AIR permanece plenamente vigente (a diferencia del cambio en MDE de septiembre 2026) y aprueba automaticamente la remediacion de clusteres de similitud maliciosos de URLs y archivos.",
+      "Actualizacion de proteccion de Microsoft Teams (enero-octubre 2026): ZAP para Teams y cuarentena administrada disponibles desde MDO Plan 1, bloqueo directo de dominios/remitentes externos de Teams en TABL, Remove users from Teams chats en GA (P2) y pagina independiente teamsUserSubmission (MC1478463).",
+      "Actualizacion del esquema Advanced Hunting a noviembre de 2026: tablas MessageEvents, MessagePostDeliveryEvents, MessageUrlInfo y MessageContents en GA, incorporacion de CallActivityEvents (octubre 2026) y nuevo campo ApproverUpn en EmailPostDeliveryEvents (octubre 2026).",
+      "Incorporacion del Security Alert Triage Agent (antes Phishing Triage Agent) con su requisito operativo de desactivar la regla integrada de Alert tuning de auto-resolucion, mas detecciones nativas de Prompt injection (julio 2026) y Mail bombing.",
+      "Migracion de rutas de cumplimiento hacia el portal unificado Microsoft Purview (purview.microsoft.com) y ajuste del vencimiento predeterminado de entradas Allow por envios en TABL a 45 dias desde el ultimo uso."
+    ],
+    "decisionesEditoriales": [
+      {
+        "elemento": "Metas cuantitativas de SLA y KPIs (MTTA p50 < 15 min, MTTC p90 < 30 min, AST Compromise Rate < 6%)",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft Learn documenta el orden de prioridad y las tablas de metricas, pero indica que cada SOC debe definir sus umbrales segun cobertura horaria y apetito de riesgo."
+      },
+      {
+        "elemento": "Ventanas maximas de elevacion JIT en Entra PIM (4 h para purga/admin, 8 h para respuesta L2) y limite de 3-5 titulares con Search and Purge",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Microsoft recomienda usar PIM con MDO, pero los tiempos exactos de expiracion y aprobacion cruzada constituyen politicas organizacionales de gobierno privilegiado."
+      },
+      {
+        "elemento": "Modelo de Madurez Operacional de 5 niveles y ruta formativa 30-60-90 dias",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Construccion consultiva basada en la escalera de capacidades EOP/P1/P2, el Microsoft Security Adoption Framework (SAF) y SOC-CMM."
+      },
+      {
+        "elemento": "Mapeo de subcategorias y artefactos de auditoria hacia NIST CSF 2.0",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "NIST CSF 2.0 define resultados (outcomes) agnosticos a tecnologia; la trazabilidad con controles de MDO es una propuesta metodologica defendible ante auditoria."
+      },
+      {
+        "elemento": "Rutina mensual de respaldo de politicas en XML versionado y ejercicio Tabletop anual multi-canal",
+        "tipo": "Propuesta Editorial",
+        "justificacion": "Practicas recomendadas de ingenieria de resiliencia y preparacion de respuesta a incidentes alineadas a NIST SP 800-61 Rev. 3."
+      }
+    ]
+  },
+  "referenciasVerificadas": [
+    {
+      "id": "REF-01",
+      "titulo": "Microsoft Defender for Office 365 Security Operations Guide",
+      "url": "https://learn.microsoft.com/en-us/defender-office-365/mdo-sec-ops-guide",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Guia oficial maestra del SOC con orden de precedencia de incidentes, actividades diarias, semanales, ad-hoc, permisos e integracion SIEM.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-02",
+      "titulo": "What's new in Microsoft Defender for Office 365",
+      "url": "https://learn.microsoft.com/en-us/defender-office-365/defender-for-office-365-whats-new",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Historial oficial de novedades 2025-2026: CallActivityEvents, ApproverUpn, reportes separados de Teams, URBAC predeterminado, MDO P1 en E3 y Prompt injection.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-03",
+      "titulo": "Preset security policies in cloud organizations",
+      "url": "https://learn.microsoft.com/en-us/defender-office-365/preset-security-policies",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Documentacion oficial de los perfiles Built-in protection, Standard y Strict y su orden de precedencia.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-04",
+      "titulo": "Microsoft Defender for Office 365 support for Microsoft Teams",
+      "url": "https://learn.microsoft.com/en-us/defender-office-365/mdo-support-teams-about",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Matriz comparativa de capacidades de proteccion en Teams para licencias base, Plan 1 y Plan 2 y configuracion de ZAP para Teams.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-05",
+      "titulo": "Zero-hour auto purge (ZAP) in Microsoft Defender for Office 365",
+      "url": "https://learn.microsoft.com/en-us/defender-office-365/zero-hour-auto-purge",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Alcance tecnico, ventana de 48 horas, interaccion con Dynamic Delivery/Holds y comportamiento en chats y canales de Teams.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-06",
+      "titulo": "Automated investigation and response (AIR) in Microsoft Defender for Office 365 Plan 2",
+      "url": "https://learn.microsoft.com/en-us/defender-office-365/air-about",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Flujo completo de AIR, auto-remediacion de clusteres, permisos URBAC e interaccion con Alert tuning y el agente de triaje.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-07",
+      "titulo": "Email authentication in cloud organizations",
+      "url": "https://learn.microsoft.com/en-us/defender-office-365/email-authentication-about",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Arquitectura de SPF, DKIM, DMARC, ARC y autenticacion implicita/compuesta (compauth) en Microsoft 365.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-08",
+      "titulo": "Microsoft Defender for Office 365 permissions in the Microsoft Defender portal",
+      "url": "https://learn.microsoft.com/en-us/defender-office-365/mdo-portal-permissions",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Gobierno de permisos y transicion hacia Microsoft Defender Unified RBAC por defecto para nuevas organizaciones Plan 2.",
+      "verificacion": "Verificado via MCP Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-09",
+      "titulo": "Respond to a compromised cloud email account",
+      "url": "https://learn.microsoft.com/en-us/defender-office-365/responding-to-a-compromised-email-account",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Playbook oficial de Microsoft para contencion, limpieza de persistencia en buzon y rehabilitacion ante BEC.",
+      "verificacion": "Verificado en Ninja Training 2026 y Microsoft Learn (Nov 2026)"
+    },
+    {
+      "id": "REF-10",
+      "titulo": "Phishing investigation playbook (Microsoft Security Adoption Framework)",
+      "url": "https://learn.microsoft.com/en-us/security/zero-trust/security-operations-playbook-phishing",
+      "tipoFuente": "Microsoft Learn",
+      "autor": "Microsoft Corporation",
+      "comentario": "Playbook operativo actualizado en la disciplina SecOps del Security Adoption Framework (SAF).",
+      "verificacion": "Verificado en Ninja Training 2026 (Nov 2026)"
+    },
+    {
+      "id": "REF-11",
+      "titulo": "Introducing the Microsoft Defender for Office 365 Security Operations Guide",
+      "url": "https://techcommunity.microsoft.com/blog/microsoftdefenderforoffice365blog/introducing-the-microsoft-defender-for-office-365-security-operations-guide/3638250",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Microsoft Defender for Office 365 Team",
+      "comentario": "Publicacion oficial del equipo de producto presentando el modelo operativo SecOps para MDO.",
+      "verificacion": "Verificado en repositorio documental y Tech Community"
+    },
+    {
+      "id": "REF-12",
+      "titulo": "Microsoft Ignite: Transforming phishing response with agentic innovation",
+      "url": "https://techcommunity.microsoft.com/blog/MicrosoftDefenderforOffice365Blog/microsoft-ignite-2025-transforming-phishing-response-with-agentic-innovation/4470791",
+      "tipoFuente": "Blog Oficial Microsoft",
+      "autor": "Microsoft Defender for Office 365 Team",
+      "comentario": "Anuncio oficial de disponibilidad general y evolucion del agente de triaje autonomo de phishing en Defender.",
+      "verificacion": "Verificado en Ninja Training 2026 (Nov 2026)"
+    },
+    {
+      "id": "REF-13",
+      "titulo": "Become a Microsoft Defender for Office 365 Ninja",
+      "url": "https://techcommunity.microsoft.com/blog/microsoftdefenderforoffice365blog/become-a-microsoft-defender-for-office-365-ninja--june-2022/2187392",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "ang31a (Microsoft Defender for Office 365 Engineering)",
+      "comentario": "Programa oficial Ninja Training de MDO organizado por roles de configuracion, investigacion y operaciones.",
+      "verificacion": "Verificado en Ninja Training 2026 (Nov 2026)"
+    },
+    {
+      "id": "REF-14",
+      "titulo": "Sentinel & Defender XDR KQL Queries Repository",
+      "url": "https://github.com/reprise99/Sentinel-Queries",
+      "tipoFuente": "Empleado Microsoft",
+      "autor": "Matt Zorich (reprise99 - Microsoft GHOST)",
+      "comentario": "Repositorio de consultas KQL avanzadas para investigacion forense en Microsoft 365, correo e identidad.",
+      "verificacion": "Verificado en Directorio de Referentes Ninja Training 2026"
+    },
+    {
+      "id": "REF-15",
+      "titulo": "Hunting-Queries-Detection-Rules for Microsoft Defender XDR & Sentinel",
+      "url": "https://github.com/Bert-JanP/Hunting-Queries-Detection-Rules",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Bert-Jan Pals (Microsoft Security MVP)",
+      "comentario": "Coleccion comunitaria de consultas KQL sobre EmailEvents, UrlClickEvents y reglas de deteccion para el SOC.",
+      "verificacion": "Verificado en Directorio de Referentes Ninja Training 2026"
+    },
+    {
+      "id": "REF-16",
+      "titulo": "Jeffrey Appel - Microsoft Security & Defender XDR Technical Blog",
+      "url": "https://jeffreyappel.nl/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Jeffrey Appel (Microsoft Security MVP)",
+      "comentario": "Analisis practicos mensuales de novedades de Microsoft Defender XDR, MDO y respuesta automatizada.",
+      "verificacion": "Verificado en Directorio de Referentes Ninja Training 2026"
+    },
+    {
+      "id": "REF-17",
+      "titulo": "Blog d3fend.me — Operaciones y Laboratorios con Defender XDR y Sentinel",
+      "url": "https://blog.d3fend.me/",
+      "tipoFuente": "MVP Seguridad",
+      "autor": "Jorge Castaneda (Microsoft Security MVP)",
+      "comentario": "Referente tecnico en espanol con practicas de laboratorio y metricas ejecutivas sobre Defender XDR.",
+      "verificacion": "Verificado en Directorio de Referentes Ninja Training 2026"
+    },
+    {
+      "id": "REF-18",
+      "titulo": "NIST Cybersecurity Framework (CSF) 2.0 (CSWP 29)",
+      "url": "https://nvlpubs.nist.gov/nistpubs/CSWP/NIST.CSWP.29.pdf",
+      "tipoFuente": "Marco Normativo",
+      "autor": "National Institute of Standards and Technology (NIST)",
+      "comentario": "Especificacion oficial de las seis funciones y subcategorias basadas en outcomes del NIST CSF 2.0.",
+      "verificacion": "Verificado documento normativo publico"
+    }
+  ]
+}
