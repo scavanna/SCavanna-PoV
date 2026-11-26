@@ -1,7 +1,7 @@
 # Arquitectura y Auditoría de la Serie de 7 Infografías — Agentic SOC Noviembre 2026
 
 **Fecha de corte documental y visual:** 25 de noviembre de 2026  
-**Universo cubierto:** 12 fabricantes enterprise + 6 especialistas pure-play · 10 dimensiones ponderadas · 40 fuentes primarias verificadas  
+**Universo cubierto:** 12 fabricantes enterprise + 6 especialistas pure-play · 10 dimensiones ponderadas · 46 fuentes públicas oficiales verificadas  
 **Formatos entregados:** `.svg` vectorial editable (`1920×1200`), `.png` 4K Retina (`3840×2400`) y `.jpg` de alta densidad (`3840×2400`) — **21 archivos gráficos** + visor interactivo HTML.
 
 ---

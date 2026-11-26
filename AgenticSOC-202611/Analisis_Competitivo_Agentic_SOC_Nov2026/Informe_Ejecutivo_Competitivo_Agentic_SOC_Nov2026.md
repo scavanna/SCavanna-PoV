@@ -50,16 +50,12 @@ Este paquete consolida la investigación técnica y competitiva actualizada al *
 
 ---
 
-## 5. Estructura de Archivos Persistidos en Disco
+## 5. Composición del Paquete Entregable (100% Fuentes Públicas Verificadas)
 
-Carpeta raíz del paquete:
-`C:\Users\scavanna\OneDrive - Microsoft\AB - SOAR LogicApps\Analisis_Competitivo_Agentic_SOC_Nov2026\`
+Todos los datos, fechas de lanzamiento, estados de madurez (GA vs. Preview) y referencias arquitectónicas de este paquete provienen exclusivamente de **documentación técnica pública, *release notes* oficiales, blogs de ingeniería y comunicados públicos** verificados al **25 de noviembre de 2026** (46 fuentes URL públicas registradas con hipervínculos directos en `08_Fuentes_y_Evidencia_Web`):
 
-- `Matriz_Competitiva_Agentic_SOC_12_Fabricantes_Nov2026.xlsx` *(9 hojas con fórmulas dinámicas y gráfico comparativo; copiado también en la raíz de `AB - SOAR LogicApps`)*.
-- `Catalogo_Microsoft_Agentic_Security_Ignite2026.xlsx` *(5 hojas de detalle técnico profundo del stack Microsoft nov-2026; copiado también en la raíz de `AB - SOAR LogicApps`)*.
-- `Informe_Ejecutivo_Competitivo_Agentic_SOC_Nov2026.md` *(este informe ejecutivo y técnico)*.
-- `persistencia\00_extraccion_local_downloads.json` *(extracción íntegra de los 10 PDFs y 3 MDs base — ~688 KB)*.
-- `persistencia\01_indice_documentos_base.md` y `persistencia\01_corpus_battlecards_e_isoc.md` *(corpus estructurado en Markdown)*.
-- `persistencia\02_microsoft_baseline_ignite2026.json` *(línea base técnica estructurada de Microsoft Ignite 2026)*.
-- `persistencia\03_competidores_12_enterprise_nov2026.json` *(dataset completo de los 12 fabricantes enterprise, 6 especialistas y 40 fuentes URL verificadas)*.
-- `persistencia\build_deliverables.py` *(generador reproducible en Python/openpyxl de ambos libros Excel)*.
+- `Matriz_Competitiva_Agentic_SOC_12_Fabricantes_Nov2026.xlsx` — Benchmark integral de 9 hojas con modelo cuantitativo ponderado editable (`SUMPRODUCT`), auditoría GA vs. Preview de 56 capacidades, comparativas de SOAR/AppSec/Gobierno de Agentes IA, criterios de Due Diligence para el CISO y 46 fuentes URL públicas.
+- `Catalogo_Microsoft_Agentic_Security_Ignite2026.xlsx` — Catálogo técnico de 5 hojas con la arquitectura Microsoft de 6 planos, agentes Red/Blue/Green de Perception, los +18 agentes nativos de Security Copilot, Codename MDASH + GHAS Agentic Autofix e ISOC + Azure Logic Apps SOAR.
+- `Informe_Ejecutivo_Competitivo_Agentic_SOC_Nov2026.md` — Síntesis ejecutiva y arquitectónica del análisis.
+- `infografias\` — Serie modular de **7 infografías ejecutivas y técnicas (`IG-01` a `IG-07`)** entregadas en `.svg` vectorial editable (`1920×1200`), `.png` 4K (`3840×2400`) y `.jpg` de alta resolución (`3840×2400`), acompañadas del visor interactivo `Galeria_Serie_7_Infografias_Nov2026.html` y `00_Arquitectura_Serie_Infografias.md`.
+
