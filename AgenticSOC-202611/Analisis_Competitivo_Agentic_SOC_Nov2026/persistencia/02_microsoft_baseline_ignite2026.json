@@ -1,0 +1,241 @@
+{
+  "as_of_date": "2026-11-25",
+  "anchor_event": "Microsoft Ignite 2026 (Nov 17-20, 2026) + GitHub Oct/Nov 2026 Releases",
+  "architectural_planes": [
+    {
+      "plane": "1. Signals, Sensors, Actuators & Unified Data/Context Plane",
+      "products": "ISOC (Integrated SOC in Microsoft Defender) + Microsoft Sentinel + Defender XDR + Security Exposure Management",
+      "status_nov_2026": "Core GA (Nov 17, 2026); Full SIEM breadth & selected data features in Preview",
+      "key_capabilities": "Unifies Sentinel SIEM + Defender XDR in one Defender portal (>165T daily signals, >500 connectors). Core GA: case management, playbooks, workbooks, UEBA, workspace creation, 3P ingestion, built-in data lake, $2.40/GB ingestion, opt-in for existing Sentinel customers (M365 E5/E7/Defender Suite). Preview: 90-day built-in Defender retention, ingest-time normalization, Content Hub, detections-as-code, automation audit logs, Vulnerability Shielding.",
+      "role_vs_others": "Shared operational surface, context graph and actuator plane that feeds Perception and Security Copilot."
+    },
+    {
+      "plane": "2. Multi-Agent Security Outcome Orchestration Plane",
+      "products": "Microsoft Perception (formerly Project Perception)",
+      "status_nov_2026": "Platform GA (Nov 17, 2026); mixed GA/Preview across individual agents & playbooks",
+      "key_capabilities": "Closed-loop Red, Blue, and Green team agents coordinated via Playbooks or natural-language Chat, with dynamic per-job model routing, shared Security Context, human-in-the-loop approval gates, cost estimator/dashboards, and API/MCP integration (Preview) with external SIEM/SOAR/ITSM and 3P signals (AWS, Okta, Salesforce).",
+      "role_vs_others": "Orchestrates teams of specialized agents end-to-end toward measurable security outcomes (unlike single-task assistants)."
+    },
+    {
+      "plane": "3. Embedded & Standalone Interactive/Task Agents Plane",
+      "products": "Microsoft Security Copilot (+15 Microsoft-built agents + 30+ partner agents in Security Store)",
+      "status_nov_2026": "GA platform + M365 E5/E7 inclusion rollout (started Nov 18, 2025); mix of GA & Preview agents",
+      "key_capabilities": "Interactive analyst copilot + task-specific autonomous/scheduled agents embedded in Defender, Entra, Intune, Purview, and Sentinel. Uses SCUs and supports dedicated Entra Agent ID.",
+      "role_vs_others": "Assists human practitioners inline and automates domain-specific operational queues across SecOps, IAM, Endpoint IT, and Data Security."
+    },
+    {
+      "plane": "4. Deterministic Enterprise SOAR & Hybrid Multi-SIEM Integration Plane",
+      "products": "Azure Logic Apps (Sentinel/Defender Playbooks + Custom Connectors + MCP)",
+      "status_nov_2026": "GA (Enterprise Production)",
+      "key_capabilities": "1,400+ enterprise/ITSM/network/on-prem connectors (Data Gateway), deterministic approvals, state persistence, RBAC/Managed Identity, low-cost consumption/Standard tiers, seamless coexistence with Splunk on-prem, ServiceNow, Jira, firewalls, and Perception MCP.",
+      "role_vs_others": "Deterministic, auditable actuator & integration backbone where strict SLA, compliance, and multi-year SIEM coexistence are mandatory."
+    },
+    {
+      "plane": "5. Upstream Agentic AppSec, Vulnerability Discovery & Code Remediation Plane",
+      "products": "Codename MDASH + GitHub Advanced Security (GHAS) Agentic Autofix",
+      "status_nov_2026": "MDASH: Expanded Preview (Nov 17, 2026); GHAS Agentic Autofix: GA on GHEC (Oct 15, 2026) & Public Preview on Azure DevOps (Nov 23, 2026)",
+      "key_capabilities": "MDASH: 5-stage multi-model agentic harness (Prepare -> Scan [100+ specialized subagents] -> Validate [LSP taint/type + cross-model debate] -> Dedupe -> Prove [dynamic PoC/fuzzing]), repos up to 5 GB, regulated clouds, MAI-Cyber-1.1-Flash & MAI-Cyber-2 (Preview) via Microsoft Foundry, feeds Perception Web App Pen Test Agent. GHAS Agentic Autofix: copilot-swe-agent explores multi-file repo context, reruns CodeQL to verify closure, opens PR (up to 25 alerts/PR in Security Campaigns).",
+      "role_vs_others": "MDASH discovers & proves deep/zero-day source-code flaws read-only; GHAS Agentic Autofix + GitHub Copilot generate verified multi-file code fixes in developer workflows."
+    },
+    {
+      "plane": "6. AI & Agentic Insider Governance, Identity & Runtime Containment Plane",
+      "products": "Microsoft Agent 365 + Microsoft Entra Agent ID + Defender Local Agent Runtime Protection + Purview DLP for Agents",
+      "status_nov_2026": "Defender Local Agent Discovery & Runtime Protection on Windows: GA (Nov 2026); 3P Cloud Agent Posture (Bedrock/Vertex/Gemini/Claude) & Dynamic Agent Risk: Preview; Purview Unlabeled Copilot Grounding & Local Agent DLP: Public Preview Jan 2027",
+      "key_capabilities": "Discovers 60 local agent types (Claude Code, OpenAI Codex, GitHub Copilot CLI, OpenClaw, ChatGPT Desktop) + 3P cloud agents; assigns Entra Agent ID with Conditional Access & task-scoped Dynamic Permissions; blocks malicious instructions in the agent loop on Windows; enforces Purview sensitivity/DLP across prompts and files.",
+      "role_vs_others": "Full-stack identity + endpoint OS + data-layer containment ('revoke identity, block runtime loop, enforce data policy'), not just an API gateway cutoff."
+    }
+  ],
+  "perception_agents": [
+    {
+      "team": "Red Team",
+      "name": "Recon Agent",
+      "status": "GA (Nov 17, 2026)",
+      "3p_signals": "Environment/Cloud/Identity graph",
+      "description": "Maps environment, attack paths, choke points, high-value assets, misconfigurations and excess permissions from an attacker perspective."
+    },
+    {
+      "team": "Red Team",
+      "name": "Web App Pen Test Agent",
+      "status": "Public Preview (Nov 17, 2026)",
+      "3p_signals": "Authorized Web Apps + Codename MDASH inputs",
+      "description": "Authorized dynamic web penetration testing (auth, APIs, injection, business logic) with PoC evidence; 31.0% solve rate on Incalmo benchmark (2x OpenAI Codex 15.2%) and 91% safety-boundary adherence."
+    },
+    {
+      "team": "Blue Team",
+      "name": "Alert Triage Agent",
+      "status": "GA (Nov 17, 2026)",
+      "3p_signals": "Okta, Salesforce + Defender workloads",
+      "description": "Classifies true/false positives with transparent evidence rationale; covers ~80% of typical Microsoft Defender alert queue volume."
+    },
+    {
+      "team": "Blue Team",
+      "name": "Attack Investigation Agent",
+      "status": "GA (Nov 17, 2026)",
+      "3p_signals": "Okta, AWS + Endpoint/Identity/Email/AD/Cloud",
+      "description": "Reconstructs end-to-end attack timeline even across non-alerting telemetry, identifies blast radius/compromised entities, and recommends containment."
+    },
+    {
+      "team": "Blue Team",
+      "name": "Detection Authoring Agent",
+      "status": "GA (Nov 17, 2026)",
+      "3p_signals": "Okta, Salesforce, AWS + Defender/Sentinel",
+      "description": "Identifies coverage gaps and translates TI into tenant-aware KQL detections, backtesting against historical tenant data to estimate volume/tuning."
+    },
+    {
+      "team": "Blue Team",
+      "name": "Threat Intelligence Agent",
+      "status": "GA (Nov 17, 2026)",
+      "3p_signals": "External vendor advisories, govt feeds & MS TI",
+      "description": "Extracts attacker TTPs, behaviors, and IOCs from external threat articles into structured findings ready for detection and hunting playbooks."
+    },
+    {
+      "team": "Green Team",
+      "name": "Posture Prioritization Agent",
+      "status": "GA (Nov 17, 2026)",
+      "3p_signals": "Microsoft, AWS, Google Cloud",
+      "description": "Ranks posture exposures by real-world exploitability, reachability, threat intel, and business asset criticality."
+    },
+    {
+      "team": "Green Team",
+      "name": "Risk Reduction Agent",
+      "status": "Public Preview (Nov 17, 2026)",
+      "3p_signals": "Microsoft, AWS, Google Cloud + Intune + Azure WAF",
+      "description": "Coordinates permanent patching via Intune or temporary Vulnerability Shielding / Azure Front Door WAF rules when immediate patching is not feasible."
+    },
+    {
+      "team": "Green Team",
+      "name": "Identity Risk Reduction Agent",
+      "status": "Preview (Learn documented Nov 2026)",
+      "3p_signals": "Microsoft Entra ID / Conditional Access",
+      "description": "Identifies gaps in user/agent identity protection and recommends Conditional Access policy changes for admin approval."
+    }
+  ],
+  "security_copilot_agents": [
+    {
+      "workload": "Microsoft Defender",
+      "name": "Phishing Triage Agent",
+      "status": "GA",
+      "identity": "Entra Agent ID or User",
+      "description": "Autonomously triages user-reported phishing emails in MDO P2 with natural-language verdict rationale."
+    },
+    {
+      "workload": "Microsoft Defender",
+      "name": "Security Alert Triage Agent",
+      "status": "Preview (Email GA; Cloud & Identity Preview)",
+      "identity": "Entra Agent ID or User",
+      "description": "Extended autonomous triage across email/collab, Defender for Cloud/Containers, and Entra/MDI/MDA identity alerts."
+    },
+    {
+      "workload": "Microsoft Defender",
+      "name": "Threat Intelligence Briefing Agent",
+      "status": "GA",
+      "identity": "Entra Agent ID or User",
+      "description": "Generates scheduled/custom TI briefings correlated with tenant MDE device groups, CVEs, and EASM surface."
+    },
+    {
+      "workload": "Microsoft Defender",
+      "name": "Threat Hunting Assistant",
+      "status": "GA",
+      "identity": "User context",
+      "description": "End-to-end NL threat hunting in Advanced Hunting: KQL generation, execution, result interpretation, and next-step guidance."
+    },
+    {
+      "workload": "Microsoft Defender / Sentinel",
+      "name": "Security Analyst Agent",
+      "status": "GA / Preview features",
+      "identity": "User context",
+      "description": "Code-free anomaly detection, clustering, risk scoring, and forecasting over Defender XDR, Sentinel Log Analytics, and Sentinel Data Lake."
+    },
+    {
+      "workload": "Microsoft Defender / Sentinel",
+      "name": "Dynamic Threat Detection Agent",
+      "status": "GA / Always-on backend",
+      "identity": "Managed backend service",
+      "description": "Always-on adaptive AI service uncovering false negatives across Defender and Sentinel, generating dynamic MITRE-mapped alerts."
+    },
+    {
+      "workload": "Microsoft Defender",
+      "name": "Vulnerability Remediation Agent (Defender/Intune)",
+      "status": "GA / Preview",
+      "identity": "RBAC scoped",
+      "description": "Monitors exposure findings from Defender Vulnerability Management and accelerates prioritized remediation handoff to IT."
+    },
+    {
+      "workload": "Microsoft Entra",
+      "name": "Conditional Access Optimization Agent",
+      "status": "GA",
+      "identity": "Dedicated Entra Agent ID",
+      "description": "Scans CA policies every 24h for Zero Trust gaps, overlaps, and unprotected users/apps, proposing one-click policy updates."
+    },
+    {
+      "workload": "Microsoft Entra",
+      "name": "Identity Risk Management Agent",
+      "status": "Preview",
+      "identity": "Dedicated Entra Agent ID",
+      "description": "Investigates risky users/sign-ins in Entra ID Protection, assesses blast radius, and recommends decisive containment."
+    },
+    {
+      "workload": "Microsoft Entra",
+      "name": "Access Review Agent",
+      "status": "Preview (E5 wave)",
+      "identity": "Entra RBAC",
+      "description": "Guides reviewers with peer/usage insights to accelerate least-privilege access certifications in Entra ID Governance."
+    },
+    {
+      "workload": "Microsoft Entra",
+      "name": "Lifecycle Workflows Agent",
+      "status": "Preview (E5 wave)",
+      "identity": "Entra RBAC",
+      "description": "Designs and optimizes Joiner-Mover-Leaver identity automation workflows from natural language."
+    },
+    {
+      "workload": "Microsoft Intune",
+      "name": "Change Review Agent",
+      "status": "GA / Preview",
+      "identity": "Intune RBAC",
+      "description": "Evaluates impact and risk of multi-admin approval requests in Intune before execution."
+    },
+    {
+      "workload": "Microsoft Intune",
+      "name": "Device Offboarding Agent",
+      "status": "GA / Preview",
+      "identity": "Intune RBAC",
+      "description": "Identifies stale/misaligned devices across Intune and Entra ID and orchestrates admin-approved offboarding."
+    },
+    {
+      "workload": "Microsoft Intune",
+      "name": "Policy Configuration Agent",
+      "status": "GA / Preview",
+      "identity": "Intune RBAC",
+      "description": "Imports security baselines/compliance docs or NL instructions and maps them to Intune Settings Catalog policies."
+    },
+    {
+      "workload": "Microsoft Intune",
+      "name": "Vulnerability Remediation Agent (Intune)",
+      "status": "GA / Preview",
+      "identity": "Intune RBAC",
+      "description": "Prioritizes endpoint patching actions inside Intune Admin Center using Defender threat/exploit context."
+    },
+    {
+      "workload": "Microsoft Purview",
+      "name": "Data Loss Prevention (DLP) Alert Triage Agent",
+      "status": "Preview",
+      "identity": "Admin-delegated (90d renewal)",
+      "description": "Evaluates DLP alerts by sensitivity, exfiltration, and policy risk, sorting queues into four priority categories."
+    },
+    {
+      "workload": "Microsoft Purview",
+      "name": "Insider Risk Management (IRM) Triage Agent",
+      "status": "Preview",
+      "identity": "Admin-delegated (90d renewal)",
+      "description": "Evaluates IRM alerts across user risk, file sensitivity, and anomalous activity sequences to surface critical insider cases."
+    },
+    {
+      "workload": "Microsoft Sentinel",
+      "name": "Sentinel MCP Server & Custom Agent Builder",
+      "status": "GA / Preview",
+      "identity": "Entra / SCU scoped",
+      "description": "No-code/pro-code Custom Agent Builder + Sentinel Data Lake / Hunting MCP tools for bespoke SOC and partner agents."
+    }
+  ]
+}
